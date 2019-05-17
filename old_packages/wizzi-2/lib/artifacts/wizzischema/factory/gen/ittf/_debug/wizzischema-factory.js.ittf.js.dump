@@ -1,0 +1,338 @@
+// 11/7/2017:18:0:7  by C:\My\wizzi\v2\packages\wizzi-2\node_modules\wizzi-boot-legacy\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //167
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //168
+$.a($1, $2, 7);
+var $3 = { n: "#", v: "", r: 3, c: 5, s: "f1", u: "f1",  }; //169
+$.a($1, $3, 9);
+var $4 = { n: "#", v: $.ip("f1", "${schema.wzId} WizziModelFactory", "string", 10), r: 4, c: 9, s: "f1", u: "f1",  }; //170
+$.a($3, $4, 11);
+var $5 = { n: "var", v: "path = require('path')", r: 5, c: 5, s: "f1", u: "f1",  }; //171
+$.a($1, $5, 13);
+var $6 = { n: "var", v: "util = require('util')", r: 6, c: 5, s: "f1", u: "f1",  }; //172
+$.a($1, $6, 15);
+var $7 = { n: "var", v: "_ = require('lodash')", r: 7, c: 5, s: "f1", u: "f1",  }; //173
+$.a($1, $7, 17);
+var $8 = { n: "+", v: "", r: 8, c: 5, s: "f1", u: "f1",  }; //174
+$.a($1, $8, 19);
+var $9 = { n: "+", v: "", r: 10, c: 5, s: "f1", u: "f1",  }; //175
+$.a($1, $9, 21);
+var $10 = { n: "var", v: "stringify = require('json-stringify-safe')", r: 11, c: 5, s: "f1", u: "f1",  }; //176
+$.a($1, $10, 23);
+$.s("f1");
+if (request.isWizziPackageSchema) { //177
+    $.n();
+    var $12 = { n: "var", v: "file = require('../../util/file')", r: 13, c: 9, s: "f1", u: "f1",  }; //178
+    $.a($1, $12, 28);
+    var $13 = { n: "var", v: "fail = require('../../util/fail')", r: 14, c: 9, s: "f1", u: "f1",  }; //179
+    $.a($1, $13, 30);
+    var $14 = { n: "var", v: "errors = require('../../errors')", r: 15, c: 9, s: "f1", u: "f1",  }; //180
+    $.a($1, $14, 32);
+    var $15 = { n: "var", v: "log = require('../../util/log')(module)", r: 16, c: 9, s: "f1", u: "f1",  }; //181
+    $.a($1, $15, 34);
+    var $16 = { n: "var", v: "ittf = require('../../ittf/ittf')", r: 17, c: 9, s: "f1", u: "f1",  }; //182
+    $.a($1, $16, 36);
+}
+else {
+    $.n();
+    var $18 = { n: "var", v: "wizzi = require('wizzi')", r: 19, c: 9, s: "f1", u: "f1",  }; //184
+    $.a($1, $18, 41);
+    var $19 = { n: "var", v: "file = wizzi.file", r: 20, c: 9, s: "f1", u: "f1",  }; //185
+    $.a($1, $19, 43);
+    var $20 = { n: "var", v: "fail = wizzi.fail", r: 21, c: 9, s: "f1", u: "f1",  }; //186
+    $.a($1, $20, 45);
+    var $21 = { n: "var", v: "errors = wizzi.errors", r: 22, c: 9, s: "f1", u: "f1",  }; //187
+    $.a($1, $21, 47);
+    var $22 = { n: "var", v: "log = wizzi.log(module)", r: 23, c: 9, s: "f1", u: "f1",  }; //188
+    $.a($1, $22, 49);
+    var $23 = { n: "var", v: "ittf = wizzi.ittf", r: 24, c: 9, s: "f1", u: "f1",  }; //189
+    $.a($1, $23, 51);
+}
+$.n();
+var $24 = { n: "var", v: $.ip("f1", "${schema.wzId}schema = require('./${schema.wzId}-model.g')", "string", 54), r: 25, c: 5, s: "f1", u: "f1",  }; //190
+$.a($1, $24, 55);
+$.s("f1");
+var ROOTELEMENT = schema.rootElement.wzId; //192
+$.n();
+var $26 = { n: "var", v: "md = module.exports = {};", r: 29, c: 5, s: "f1", u: "f1",  }; //193
+$.a($1, $26, 60);
+var $27 = { n: "#", v: "", r: 31, c: 5, s: "f1", u: "f1",  }; //194
+$.a($1, $27, 62);
+var $28 = { n: "#", v: $.ip("f1", "Load a WizziModel of type ${schema.wzId} from an IttfDocument uri", "string", 63), r: 32, c: 9, s: "f1", u: "f1",  }; //195
+$.a($27, $28, 64);
+var $29 = { n: "#", v: "@param {String} ittfDocumentUri", r: 33, c: 9, s: "f1", u: "f1",  }; //196
+$.a($27, $29, 66);
+var $30 = { n: "#", v: "@param {Object} context - the loading context object", r: 34, c: 9, s: "f1", u: "f1",  }; //197
+$.a($27, $30, 68);
+var $31 = { n: "#", v: "@param {Function} callback", r: 35, c: 9, s: "f1", u: "f1",  }; //198
+$.a($27, $31, 70);
+var $32 = { n: "set", v: "md.load", r: 36, c: 5, s: "f1", u: "f1",  }; //199
+$.a($1, $32, 72);
+var $33 = { n: "function", v: "", r: 37, c: 9, s: "f1", u: "f1",  }; //200
+$.a($32, $33, 74);
+var $34 = { n: "param", v: "ittfDocumentUri", r: 38, c: 13, s: "f1", u: "f1",  }; //201
+$.a($33, $34, 76);
+var $35 = { n: "param", v: "context", r: 39, c: 13, s: "f1", u: "f1",  }; //202
+$.a($33, $35, 78);
+var $36 = { n: "param", v: "callback", r: 40, c: 13, s: "f1", u: "f1",  }; //203
+$.a($33, $36, 80);
+var $37 = { n: "if", v: "!ittfDocumentUri", r: 42, c: 13, s: "f1", u: "f1",  }; //204
+$.a($33, $37, 82);
+var $38 = { n: "throw", v: "new TypeError('ittfDocumentUri required')", r: 43, c: 17, s: "f1", u: "f1",  }; //205
+$.a($37, $38, 84);
+var $39 = { n: "if", v: "typeof ittfDocumentUri !== 'string'", r: 44, c: 13, s: "f1", u: "f1",  }; //206
+$.a($33, $39, 86);
+var $40 = { n: "throw", v: "new TypeError('ittfDocumentUri must be a string')", r: 45, c: 17, s: "f1", u: "f1",  }; //207
+$.a($39, $40, 88);
+var $41 = { n: "if", v: "typeof callback !== 'function'", r: 46, c: 13, s: "f1", u: "f1",  }; //208
+$.a($33, $41, 90);
+var $42 = { n: "throw", v: "new TypeError('callback must be a function')", r: 47, c: 17, s: "f1", u: "f1",  }; //209
+$.a($41, $42, 92);
+var $43 = { n: "var", v: "context = context || {}", r: 48, c: 13, s: "f1", u: "f1",  }; //210
+$.a($33, $43, 94);
+var $44 = { n: "var", v: "request = context.__request || {}", r: 49, c: 13, s: "f1", u: "f1",  }; //211
+$.a($33, $44, 96);
+var $45 = { n: "var", v: "start = Date.now()", r: 51, c: 13, s: "f1", u: "f1",  }; //212
+$.a($33, $45, 98);
+var $46 = { n: "#", v: "load the ittfModel", r: 53, c: 13, s: "f1", u: "f1",  }; //213
+$.a($33, $46, 100);
+var $47 = { n: "_", v: "ittf.loadModel", r: 54, c: 13, s: "f1", u: "f1",  }; //214
+$.a($33, $47, 102);
+var $48 = { n: "@", v: "ittfDocumentUri", r: 55, c: 17, s: "f1", u: "f1",  }; //215
+$.a($47, $48, 104);
+var $49 = { n: "@", v: "context", r: 56, c: 17, s: "f1", u: "f1",  }; //216
+$.a($47, $49, 106);
+var $50 = { n: "function", v: "", r: 57, c: 17, s: "f1", u: "f1",  }; //217
+$.a($47, $50, 108);
+var $51 = { n: "param", v: "err", r: 58, c: 21, s: "f1", u: "f1",  }; //218
+$.a($50, $51, 110);
+var $52 = { n: "param", v: "ittfModel", r: 59, c: 21, s: "f1", u: "f1",  }; //219
+$.a($50, $52, 112);
+var $53 = { n: "if", v: "err", r: 60, c: 21, s: "f1", u: "f1",  }; //220
+$.a($50, $53, 114);
+var $54 = { n: "return", v: "callback(err)", r: 61, c: 25, s: "f1", u: "f1",  }; //221
+$.a($53, $54, 116);
+var $55 = { n: "#", v: "TODO implement a stats object inside the request object", r: 63, c: 21, s: "f1", u: "f1",  }; //222
+$.a($50, $55, 118);
+var $56 = { n: "#", v: $.ip("f1", "_ log.info('Loaded Wizzi model instance of schema ${schema.wzId} from Ittf document ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms')", "string", 119), r: 64, c: 21, s: "f1", u: "f1",  }; //223
+$.a($50, $56, 120);
+var $57 = { n: "if", v: "(request.dumpAll || request.dumpIttfModel) && file.isFilePath(ittfDocumentUri)", r: 66, c: 21, s: "f1", u: "f1",  }; //224
+$.a($50, $57, 122);
+var $58 = { n: "var", v: "ittfDumpPath = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.ittf.json')", r: 67, c: 25, s: "f1", u: "f1",  }; //225
+$.a($57, $58, 124);
+var $59 = { n: "_", v: "file.write", r: 68, c: 25, s: "f1", u: "f1",  }; //226
+$.a($57, $59, 126);
+var $60 = { n: "@", v: "ittfDumpPath", r: 69, c: 29, s: "f1", u: "f1",  }; //227
+$.a($59, $60, 128);
+var $61 = { n: "_", v: "stringify", r: 70, c: 29, s: "f1", u: "f1",  }; //228
+$.a($59, $61, 130);
+var $62 = { n: "@", v: "ittfModel", r: 71, c: 33, s: "f1", u: "f1",  }; //229
+$.a($61, $62, 132);
+var $63 = { n: "@", v: "null", r: 72, c: 33, s: "f1", u: "f1",  }; //230
+$.a($61, $63, 134);
+var $64 = { n: "@", v: "2", r: 73, c: 33, s: "f1", u: "f1",  }; //231
+$.a($61, $64, 136);
+var $65 = { n: "_", v: "loadFromIttfModel(ittfModel, ittfDocumentUri, request, callback)", r: 75, c: 21, s: "f1", u: "f1",  }; //232
+$.a($50, $65, 138);
+var $66 = { n: "set", v: "md.loadFromString", r: 77, c: 5, s: "f1", u: "f1",  }; //233
+$.a($1, $66, 140);
+var $67 = { n: "function", v: "", r: 78, c: 9, s: "f1", u: "f1",  }; //234
+$.a($66, $67, 142);
+var $68 = { n: "param", v: "content", r: 79, c: 13, s: "f1", u: "f1",  }; //235
+$.a($67, $68, 144);
+var $69 = { n: "param", v: "context", r: 80, c: 13, s: "f1", u: "f1",  }; //236
+$.a($67, $69, 146);
+var $70 = { n: "param", v: "callback", r: 81, c: 13, s: "f1", u: "f1",  }; //237
+$.a($67, $70, 148);
+var $71 = { n: "if", v: "!content", r: 82, c: 13, s: "f1", u: "f1",  }; //238
+$.a($67, $71, 150);
+var $72 = { n: "throw", v: "new TypeError('content required')", r: 83, c: 17, s: "f1", u: "f1",  }; //239
+$.a($71, $72, 152);
+var $73 = { n: "if", v: "typeof content !== 'string'", r: 84, c: 13, s: "f1", u: "f1",  }; //240
+$.a($67, $73, 154);
+var $74 = { n: "throw", v: "new TypeError('content must be a string')", r: 85, c: 17, s: "f1", u: "f1",  }; //241
+$.a($73, $74, 156);
+var $75 = { n: "if", v: "typeof callback !== 'function'", r: 86, c: 13, s: "f1", u: "f1",  }; //242
+$.a($67, $75, 158);
+var $76 = { n: "throw", v: "new TypeError('callback must be a function')", r: 87, c: 17, s: "f1", u: "f1",  }; //243
+$.a($75, $76, 160);
+var $77 = { n: "var", v: "context = context || {}", r: 88, c: 13, s: "f1", u: "f1",  }; //244
+$.a($67, $77, 162);
+var $78 = { n: "var", v: "request = context.__request || {}", r: 89, c: 13, s: "f1", u: "f1",  }; //245
+$.a($67, $78, 164);
+var $79 = { n: "var", v: "", r: 90, c: 13, s: "f1", u: "f1",  }; //246
+$.a($67, $79, 166);
+var $80 = { n: "decl", v: "start = Date.now()", r: 91, c: 17, s: "f1", u: "f1",  }; //247
+$.a($79, $80, 168);
+var $81 = { n: "decl", v: "ittfDocumentUri = 'text://'", r: 92, c: 17, s: "f1", u: "f1",  }; //248
+$.a($79, $81, 170);
+var $82 = { n: "_", v: "ittf.loadModelFromString", r: 93, c: 13, s: "f1", u: "f1",  }; //249
+$.a($67, $82, 172);
+var $83 = { n: "@", v: "content", r: 94, c: 17, s: "f1", u: "f1",  }; //250
+$.a($82, $83, 174);
+var $84 = { n: "@", v: "context", r: 95, c: 17, s: "f1", u: "f1",  }; //251
+$.a($82, $84, 176);
+var $85 = { n: "function", v: "", r: 96, c: 17, s: "f1", u: "f1",  }; //252
+$.a($82, $85, 178);
+var $86 = { n: "param", v: "err", r: 97, c: 21, s: "f1", u: "f1",  }; //253
+$.a($85, $86, 180);
+var $87 = { n: "param", v: "ittfModel", r: 98, c: 21, s: "f1", u: "f1",  }; //254
+$.a($85, $87, 182);
+var $88 = { n: "if", v: "err", r: 99, c: 21, s: "f1", u: "f1",  }; //255
+$.a($85, $88, 184);
+var $89 = { n: "return", v: "callback(err)", r: 100, c: 25, s: "f1", u: "f1",  }; //256
+$.a($88, $89, 186);
+var $90 = { n: "#", v: "TODO implement a stats object inside the request object", r: 102, c: 21, s: "f1", u: "f1",  }; //257
+$.a($85, $90, 188);
+var $91 = { n: "#", v: "_ log.info('Loaded ittf model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms')", r: 103, c: 21, s: "f1", u: "f1",  }; //258
+$.a($85, $91, 190);
+var $92 = { n: "_", v: "loadFromIttfModel(ittfModel, ittfDocumentUri, request, callback)", r: 105, c: 21, s: "f1", u: "f1",  }; //259
+$.a($85, $92, 192);
+var $93 = { n: "function", v: "loadFromIttfModel", r: 107, c: 5, s: "f1", u: "f1",  }; //260
+$.a($1, $93, 194);
+var $94 = { n: "param", v: "ittfModel", r: 108, c: 9, s: "f1", u: "f1",  }; //261
+$.a($93, $94, 196);
+var $95 = { n: "param", v: "ittfDocumentUri", r: 109, c: 9, s: "f1", u: "f1",  }; //262
+$.a($93, $95, 198);
+var $96 = { n: "param", v: "request", r: 110, c: 9, s: "f1", u: "f1",  }; //263
+$.a($93, $96, 200);
+var $97 = { n: "param", v: "callback", r: 111, c: 9, s: "f1", u: "f1",  }; //264
+$.a($93, $97, 202);
+var $98 = { n: "+", v: "", r: 112, c: 9, s: "f1", u: "f1",  }; //265
+$.a($93, $98, 204);
+var $99 = { n: "var", v: "", r: 113, c: 9, s: "f1", u: "f1",  }; //266
+$.a($93, $99, 206);
+var $100 = { n: "decl", v: "start = Date.now()", r: 114, c: 13, s: "f1", u: "f1",  }; //267
+$.a($99, $100, 208);
+var $101 = { n: "decl", v: $.ip("f1", "${ROOTELEMENT}model", "string", 209), r: 115, c: 13, s: "f1", u: "f1",  }; //268
+$.a($99, $101, 210);
+var $102 = { n: "if", v: "ittfModel.nodes.length == 0", r: 116, c: 9, s: "f1", u: "f1",  }; //269
+$.a($93, $102, 212);
+var $103 = { n: "var", v: $.ip("f1", "${ROOTELEMENT}model = new ${ROOTELEMENT}modelType('EmptyIttfDocument')", "string", 213), r: 117, c: 13, s: "f1", u: "f1",  }; //270
+$.a($102, $103, 214);
+var $104 = { n: "else", v: "", r: 118, c: 9, s: "f1", u: "f1",  }; //271
+$.a($93, $104, 216);
+var $105 = { n: "#", v: "Get the model type of the root node of the ittf model.", r: 119, c: 13, s: "f1", u: "f1",  }; //272
+$.a($104, $105, 218);
+var $106 = { n: "var", v: "rootNode = ittfModel.nodes[0]", r: 120, c: 13, s: "f1", u: "f1",  }; //273
+$.a($104, $106, 220);
+var $107 = { n: "var", v: $.ip("f1", "${ROOTELEMENT}modelType = ${schema.wzId}schema[rootNode.n]", "string", 221), r: 121, c: 13, s: "f1", u: "f1",  }; //274
+$.a($104, $107, 222);
+var $108 = { n: "if", v: $.ip("f1", "!${ROOTELEMENT}modelType", "string", 223), r: 122, c: 13, s: "f1", u: "f1",  }; //275
+$.a($104, $108, 224);
+var $109 = { n: "var", v: $.ip("f1", "maptag = ${schema.wzId}schema.__tagElementMapping[rootNode.n]", "string", 225), r: 123, c: 17, s: "f1", u: "f1",  }; //276
+$.a($108, $109, 226);
+var $110 = { n: "if", v: "typeof maptag === 'string'", r: 124, c: 17, s: "f1", u: "f1",  }; //277
+$.a($108, $110, 228);
+var $111 = { n: "set", v: $.ip("f1", "${ROOTELEMENT}modelType = ${schema.wzId}schema[maptag]", "string", 229), r: 125, c: 21, s: "f1", u: "f1",  }; //278
+$.a($110, $111, 230);
+var $112 = { n: "if", v: $.ip("f1", "!${ROOTELEMENT}modelType", "string", 231), r: 126, c: 17, s: "f1", u: "f1",  }; //279
+$.a($108, $112, 232);
+var $113 = { n: "var", v: "error", r: 127, c: 21, s: "f1", u: "f1",  }; //280
+$.a($112, $113, 234);
+var $114 = { n: "new", v: "errors.WizziModelLoadError", r: 128, c: 25, s: "f1", u: "f1",  }; //281
+$.a($113, $114, 236);
+var $115 = { n: "@", v: $.ip("f1", "'In ${schema.wzId} Factory. Cannot map root node: ' + rootNode.n + ', to any entity of schema: ${schema.wzId}'", "string", 237), r: 129, c: 29, s: "f1", u: "f1",  }; //282
+$.a($114, $115, 238);
+var $116 = { n: "@", v: "ittfDocumentUri", r: 130, c: 29, s: "f1", u: "f1",  }; //283
+$.a($114, $116, 240);
+var $117 = { n: "_", v: "fail.warn(error.message)", r: 131, c: 21, s: "f1", u: "f1",  }; //284
+$.a($112, $117, 242);
+var $118 = { n: "return", v: "callback(error)", r: 132, c: 21, s: "f1", u: "f1",  }; //285
+$.a($112, $118, 244);
+var $119 = { n: "#", v: "Load the WizziModel from the root node of the ittfModel", r: 134, c: 13, s: "f1", u: "f1",  }; //286
+$.a($104, $119, 246);
+var $120 = { n: "set", v: $.ip("f1", "${ROOTELEMENT}model = new ${ROOTELEMENT}modelType(rootNode.v)", "string", 247), r: 135, c: 13, s: "f1", u: "f1",  }; //287
+$.a($104, $120, 248);
+var $121 = { n: "set", v: $.ip("f1", "${ROOTELEMENT}model.loadContext = ittfModel.loadContext", "string", 249), r: 136, c: 13, s: "f1", u: "f1",  }; //288
+$.a($104, $121, 250);
+var $122 = { n: "try", v: "", r: 137, c: 13, s: "f1", u: "f1",  }; //289
+$.a($104, $122, 252);
+var $123 = { n: "#", v: "this is a sync call", r: 138, c: 17, s: "f1", u: "f1",  }; //290
+$.a($122, $123, 254);
+var $124 = { n: "_", v: $.ip("f1", "${ROOTELEMENT}model.loadFromNode(rootNode)", "string", 255), r: 139, c: 17, s: "f1", u: "f1",  }; //291
+$.a($122, $124, 256);
+var $125 = { n: "catch", v: "ex", r: 140, c: 13, s: "f1", u: "f1",  }; //292
+$.a($104, $125, 258);
+var $126 = { n: "var", v: "error", r: 141, c: 17, s: "f1", u: "f1",  }; //293
+$.a($125, $126, 260);
+var $127 = { n: "new", v: "errors.WizziModelLoadError", r: 142, c: 21, s: "f1", u: "f1",  }; //294
+$.a($126, $127, 262);
+var $128 = { n: "@", v: $.ip("f1", "ex.message + '\\nIn ${schema.wzId} Factory, calling loadFromNode.'", "string", 263), r: 143, c: 25, s: "f1", u: "f1",  }; //295
+$.a($127, $128, 264);
+var $129 = { n: "@", v: "ittfDocumentUri", r: 144, c: 25, s: "f1", u: "f1",  }; //296
+$.a($127, $129, 266);
+var $130 = { n: "_", v: "fail.warn(error.message)", r: 145, c: 17, s: "f1", u: "f1",  }; //297
+$.a($125, $130, 268);
+var $131 = { n: "return", v: "callback(error)", r: 146, c: 17, s: "f1", u: "f1",  }; //298
+$.a($125, $131, 270);
+var $132 = { n: "#", v: "TODO implement a stats object inside the request object", r: 148, c: 9, s: "f1", u: "f1",  }; //299
+$.a($93, $132, 272);
+var $133 = { n: "#", v: "_ log.info('Loaded ittfDocument ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms')", r: 149, c: 9, s: "f1", u: "f1",  }; //300
+$.a($93, $133, 274);
+var $134 = { n: "#", v: "TODO Implement an initialize strategy to be declared in the wizzischema", r: 151, c: 9, s: "f1", u: "f1",  }; //301
+$.a($93, $134, 276);
+var $135 = { n: "#", v: "Initialize and verify the loaded model", r: 152, c: 9, s: "f1", u: "f1",  }; //302
+$.a($93, $135, 278);
+var $136 = { n: "var", v: $.ip("f1", "ctx = new ${schema.wzId}schema.${schema.wzId}Context()", "string", 279), r: 153, c: 9, s: "f1", u: "f1",  }; //303
+$.a($93, $136, 280);
+var $137 = { n: "_", v: $.ip("f1", "${ROOTELEMENT}model.wzInitialize(ctx)", "string", 281), r: 154, c: 9, s: "f1", u: "f1",  }; //304
+$.a($93, $137, 282);
+var $138 = { n: "_", v: $.ip("f1", "${ROOTELEMENT}model.wzVerify(ctx)", "string", 283), r: 155, c: 9, s: "f1", u: "f1",  }; //305
+$.a($93, $138, 284);
+var $139 = { n: "if", v: "ctx.schemaIsValid() === false", r: 156, c: 9, s: "f1", u: "f1",  }; //306
+$.a($93, $139, 286);
+var $140 = { n: "var", v: "errorsMessage = ctx.validationErrors.join('\\n');", r: 157, c: 13, s: "f1", u: "f1",  }; //307
+$.a($139, $140, 288);
+var $141 = { n: "var", v: "error", r: 158, c: 13, s: "f1", u: "f1",  }; //308
+$.a($139, $141, 290);
+var $142 = { n: "new", v: "errors.WizziModelLoadError", r: 159, c: 17, s: "f1", u: "f1",  }; //309
+$.a($141, $142, 292);
+var $143 = { n: "@", v: $.ip("f1", "'In ${schema.wzId} Factory.\\nWizziModel has validation errors: \\n' + errorsMessage", "string", 293), r: 160, c: 21, s: "f1", u: "f1",  }; //310
+$.a($142, $143, 294);
+var $144 = { n: "@", v: "ittfDocumentUri", r: 161, c: 21, s: "f1", u: "f1",  }; //311
+$.a($142, $144, 296);
+var $145 = { n: "_", v: "fail.warn(error.message)", r: 162, c: 13, s: "f1", u: "f1",  }; //312
+$.a($139, $145, 298);
+var $146 = { n: "_", v: "callback(error);", r: 163, c: 13, s: "f1", u: "f1",  }; //313
+$.a($139, $146, 300);
+var $147 = { n: "#", v: "TODO implement a stats object inside the request object", r: 165, c: 9, s: "f1", u: "f1",  }; //314
+$.a($93, $147, 302);
+var $148 = { n: "#", v: "_ log.info('Initialized wmt model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms')", r: 166, c: 9, s: "f1", u: "f1",  }; //315
+$.a($93, $148, 304);
+var $149 = { n: "if", v: $.ip("f1", "(request.dumpAll || request.dumpModel) && ${ROOTELEMENT}model.toJson && file.isFilePath(ittfDocumentUri)", "string", 305), r: 168, c: 9, s: "f1", u: "f1",  }; //316
+$.a($93, $149, 306);
+var $150 = { n: "#", v: "dump for debug", r: 169, c: 13, s: "f1", u: "f1",  }; //317
+$.a($149, $150, 308);
+var $151 = { n: "var", v: "ittfModelDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.json')", r: 170, c: 13, s: "f1", u: "f1",  }; //318
+$.a($149, $151, 310);
+var $152 = { n: "_", v: $.ip("f1", "file.write(ittfModelDump, stringify(${ROOTELEMENT}model.toJson(), null, 2))", "string", 311), r: 171, c: 13, s: "f1", u: "f1",  }; //319
+$.a($149, $152, 312);
+var $153 = { n: "#", v: "TODO Generate this wzInitializeAsync call only if requested by the wizzischema", r: 173, c: 9, s: "f1", u: "f1",  }; //320
+$.a($93, $153, 314);
+var $154 = { n: "_", v: $.ip("f1", "${ROOTELEMENT}model.wzInitializeAsync", "string", 315), r: 174, c: 9, s: "f1", u: "f1",  }; //321
+$.a($93, $154, 316);
+var $155 = { n: "@", v: "ctx", r: 175, c: 13, s: "f1", u: "f1",  }; //322
+$.a($154, $155, 318);
+var $156 = { n: "function", v: "", r: 176, c: 13, s: "f1", u: "f1",  }; //323
+$.a($154, $156, 320);
+var $157 = { n: "param", v: "err", r: 177, c: 17, s: "f1", u: "f1",  }; //324
+$.a($156, $157, 322);
+var $158 = { n: "param", v: "result", r: 178, c: 17, s: "f1", u: "f1",  }; //325
+$.a($156, $158, 324);
+var $159 = { n: "if", v: "err", r: 179, c: 17, s: "f1", u: "f1",  }; //326
+$.a($156, $159, 326);
+var $160 = { n: "return", v: "callback(err, null)", r: 180, c: 21, s: "f1", u: "f1",  }; //327
+$.a($159, $160, 328);
+var $161 = { n: "if", v: $.ip("f1", "(request.dumpAll || request.dumpModelAfterInitializeAsync) && ${ROOTELEMENT}model.toJson && file.isFilePath(ittfDocumentUri)", "string", 329), r: 181, c: 17, s: "f1", u: "f1",  }; //328
+$.a($156, $161, 330);
+var $162 = { n: "#", v: "dump for debug", r: 182, c: 21, s: "f1", u: "f1",  }; //329
+$.a($161, $162, 332);
+var $163 = { n: "var", v: "ittfModelDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.after.initializeasync.json')", r: 183, c: 21, s: "f1", u: "f1",  }; //330
+$.a($161, $163, 334);
+var $164 = { n: "_", v: $.ip("f1", "file.write(ittfModelDump, stringify(${ROOTELEMENT}model.toJson(), null, 2))", "string", 335), r: 184, c: 21, s: "f1", u: "f1",  }; //331
+$.a($161, $164, 336);
+var $165 = { n: "_", v: $.ip("f1", "callback(null, ${ROOTELEMENT}model)", "string", 337), r: 185, c: 17, s: "f1", u: "f1",  }; //332
+$.a($156, $165, 338);

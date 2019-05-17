@@ -1,0 +1,18 @@
+wfjob documentation
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var dest_folder         = path.join(__dirname, 'results');
+		var css_ittf_pattern     = '**/*.css.ittf';
+	$$ TODO require wizzi-lab-site
+		
+	line root
+		cwd-folder ${ittf_folder}
+		artifact ./${css_ittf_pattern}
+			src ./${css_ittf_pattern}
+			schema css
+			generator css/document
+			extension css
+	production
+		dest-folder ${dest_folder}
+		line-ref root

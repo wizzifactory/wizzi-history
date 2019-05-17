@@ -1,0 +1,1319 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var _ = require('lodash') ids: undefined undefined
+    +  ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    +  ids: undefined undefined
+    class wzSourceLineInfo ids: undefined undefined
+      ctor  ids: undefined undefined
+        param row ids: undefined undefined
+        param col ids: undefined undefined
+        param sourceKey ids: undefined undefined
+        set this.row = row ids: undefined undefined
+        set this.col = col ids: undefined undefined
+        set this.sourceKey = sourceKey ids: undefined undefined
+      m toString ids: undefined undefined
+        param instance ids: undefined undefined
+        if instance ids: undefined undefined
+          return 'row: ' + this.row + ', col: ' + this.col + ', file: ' + instance.wzSourceFilepath(this.sourceKey) ids: undefined undefined
+        else  ids: undefined undefined
+          return 'row: ' + this.row + ', col: ' + this.col + ', sourceKey: ' + this.sourceKey ids: undefined undefined
+    set md.wzSourceLineInfo = wzSourceLineInfo ids: undefined undefined
+    class wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        set this.wzName = name || '' ids: undefined undefined
+        set this.wzParent = null ids: undefined undefined
+        set this.wzSourceLineInfo = sourceLineInfo ids: undefined undefined
+        set this.wzChildren = [] ids: undefined undefined
+      m wzRoot ids: undefined undefined
+        return this.wzParent == null ? this : this.wzParent.wzRoot() ids: undefined undefined
+      m wzSourceFilepath ids: undefined undefined
+        param sourceKey ids: undefined undefined
+        return this.wzRoot().loadContext.getIttfDocumentUri(sourceKey) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+      m wzInitializeAsync ids: undefined undefined
+        param ctx ids: undefined undefined
+        param callback ids: undefined undefined
+        _ callback(null) ids: undefined undefined
+      m wzAddChild ids: undefined undefined
+        param node ids: undefined undefined
+        set node.wzParent = this ids: undefined undefined
+        set this.wzChildren.push(node) ids: undefined undefined
+      m wzLoadToChildColl ids: undefined undefined
+        param child ids: undefined undefined
+        param type ids: undefined undefined
+        param coll ids: undefined undefined
+        var item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: undefined undefined
+        set item.wzTag = child.n ids: undefined undefined
+        set item.wzParent = this ids: undefined undefined
+        _ coll.push(item) ids: undefined undefined
+        if item.loadFromNode ids: undefined undefined
+          _ item.loadFromNode(child) ids: undefined undefined
+        return true; ids: undefined undefined
+      m wzLoadToChildren ids: undefined undefined
+        param child ids: undefined undefined
+        param type ids: undefined undefined
+        var item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: undefined undefined
+        set item.wzTag = child.n ids: undefined undefined
+        set item.wzParent = this ids: undefined undefined
+        _ this.wzChildren.push(item) ids: undefined undefined
+        if item.loadFromNode ids: undefined undefined
+          _ item.loadFromNode(child) ids: undefined undefined
+        return true ids: undefined undefined
+      m wzLoadOneToOne ids: undefined undefined
+        param child ids: undefined undefined
+        param type ids: undefined undefined
+        param fieldName ids: undefined undefined
+        var item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: undefined undefined
+        set item.wzParent = this ids: undefined undefined
+        set this[fieldName] = item ids: undefined undefined
+        if item.loadFromNode ids: undefined undefined
+          _ item.loadFromNode(child) ids: undefined undefined
+        return true ids: undefined undefined
+      m error ids: undefined undefined
+        param message ids: undefined undefined
+        param node ids: undefined undefined
+        throw new md.wfjobException(message, node, this) ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        set result.wzTag = this.wzTag ids: undefined undefined
+        set result.wzName = this.wzName ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        if this.wzChildren.length > 0 ids: undefined undefined
+          var children = [] ids: undefined undefined
+          foreach item in this.wzChildren ids: undefined undefined
+            _ children.push(item.toJson()) ids: undefined undefined
+          set result.wzChildren = children ids: undefined undefined
+    set md.wfjobBase = wfjobBase ids: undefined undefined
+    +  ids: undefined undefined
+    # element wfjob ids: undefined undefined
+      # The root element of the wfjob schema. ids: undefined undefined
+    class wfjob ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "wfjob" ids: undefined undefined
+        # The base path for the source models used by this "wfjob". ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.modelsBaseFolder = null ids: undefined undefined
+        # The base folder path for the generated artifacts. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.destBaseFolder = null ids: undefined undefined
+        # relation require ids: undefined undefined
+        set this.requires = [] ids: undefined undefined
+        # relation model ids: undefined undefined
+        set this.models = [] ids: undefined undefined
+        # relation line ids: undefined undefined
+        set this.lines = [] ids: undefined undefined
+        # relation production ids: undefined undefined
+        set this.productions = [] ids: undefined undefined
+      m addRequire ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.require(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.requires.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getRequire ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.requires.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m addModel ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.model(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.models.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getModel ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.models.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m addLine ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.line(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.lines.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getLine ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.lines.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m addProduction ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.production(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.productions.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getProduction ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.productions.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.modelsBaseFolder) ids: undefined undefined
+          set result["modelsBaseFolder"] = this.modelsBaseFolder ids: undefined undefined
+        if !isEmpty(this.destBaseFolder) ids: undefined undefined
+          set result["destBaseFolder"] = this.destBaseFolder ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.requires ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['requires'] = items; ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.models ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['models'] = items; ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.lines ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['lines'] = items; ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.productions ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['productions'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 4 && _ch == 'l' ids: undefined undefined
+          if name === 'line' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.line, this.lines); ids: undefined undefined
+        if _l == 5 && _ch == 'm' ids: undefined undefined
+          if name === 'model' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.model, this.models); ids: undefined undefined
+        if _l == 7 && _ch == 'r' ids: undefined undefined
+          if name === 'require' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.require, this.requires); ids: undefined undefined
+        if _l == 10 && _ch == 'p' ids: undefined undefined
+          if name === 'production' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.production, this.productions); ids: undefined undefined
+        if _l == 16 && _ch == 'd' ids: undefined undefined
+          if name === 'dest-base-folder' ids: undefined undefined
+            set this.destBaseFolder = child.v; return true; ids: undefined undefined
+          elif name === 'dest_base_folder' ids: undefined undefined
+            set this.destBaseFolder = child.v; return true; ids: undefined undefined
+        if _l == 18 && _ch == 'm' ids: undefined undefined
+          if name === 'models-base-folder' ids: undefined undefined
+            set this.modelsBaseFolder = child.v; return true; ids: undefined undefined
+          elif name === 'models_base_folder' ids: undefined undefined
+            set this.modelsBaseFolder = child.v; return true; ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.requires ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        foreach item in this.models ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        foreach item in this.lines ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        foreach item in this.productions ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.requires ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        foreach item in this.models ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        foreach item in this.lines ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        foreach item in this.productions ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.wfjob = wfjob ids: undefined undefined
+    # element require ids: undefined undefined
+      # Requires a WizziFactoryPackage. ids: undefined undefined
+      # The IttfNodeValue is the package name. ids: undefined undefined
+      # If the package is not globally installed must be a fully qualified path. ids: undefined undefined
+    class require ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "require" ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+    set md.require = require ids: undefined undefined
+    # element model ids: undefined undefined
+      # A Wizzi model instance acting as a data context during the evaluation of another "model" ids: undefined undefined
+      # or during an artifact generation. ids: undefined undefined
+      # The IttfNodeValue is the name of the model. ids: undefined undefined
+      # The name of the model must be unique in a "wfjob"; it will become the default export name of the context ids: undefined undefined
+      # value that exposes the model during evaluations. ids: undefined undefined
+      # A "model" will be loaded once, and will be reused if ids: undefined undefined
+      # referenced in many evaluations. ids: undefined undefined
+    class model ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "model" ids: undefined undefined
+        #  ids: undefined undefined
+          # The path to the PrimaryIttfDocument of the "model". ids: undefined undefined
+          # When relative, the base path is the "modelsBaseFolder" ids: undefined undefined
+          # declared on the "wfjob" element. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.src = null ids: undefined undefined
+        # The name of the WizziSchema that will validate the "model". ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.schema = null ids: undefined undefined
+        #  ids: undefined undefined
+          # A filepath where the loaded must be dumped for test. ids: undefined undefined
+          # The model must implement the toJson method. See the "exportTo" attribute in wizzischema root nodes. ids: undefined undefined
+          # When declared the loaded model is JSON.stringyfied and written ids: undefined undefined
+          # to the "dumpFile" filepath. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.dumpFile = null ids: undefined undefined
+        # relation modelRef ids: undefined undefined
+        # References to "model" instances acting as data context during this "model" evaluation. ids: undefined undefined
+        # A "model" is referenced by its name. ids: undefined undefined
+        set this.modelRefs = [] ids: undefined undefined
+      m addModelRef ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.modelRef(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.modelRefs.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getModelRef ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.modelRefs.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.src) ids: undefined undefined
+          set result["src"] = this.src ids: undefined undefined
+        if !isEmpty(this.schema) ids: undefined undefined
+          set result["schema"] = this.schema ids: undefined undefined
+        if !isEmpty(this.dumpFile) ids: undefined undefined
+          set result["dumpFile"] = this.dumpFile ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['modelRefs'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 3 && _ch == 's' ids: undefined undefined
+          if name === 'src' ids: undefined undefined
+            set this.src = child.v; return true; ids: undefined undefined
+        if _l == 6 && _ch == 's' ids: undefined undefined
+          if name === 'schema' ids: undefined undefined
+            set this.schema = child.v; return true; ids: undefined undefined
+        if _l == 8 && _ch == 'm' ids: undefined undefined
+          if name === 'modelref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelRef, this.modelRefs); ids: undefined undefined
+        if _l == 9 && _ch == 'd' ids: undefined undefined
+          if name === 'dump-file' ids: undefined undefined
+            set this.dumpFile = child.v; return true; ids: undefined undefined
+          elif name === 'dump_file' ids: undefined undefined
+            set this.dumpFile = child.v; return true; ids: undefined undefined
+        if _l == 9 && _ch == 'm' ids: undefined undefined
+          if name === 'model-ref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelRef, this.modelRefs); ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.model = model ids: undefined undefined
+    # element modelRef ids: undefined undefined
+    class modelRef ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "modelRef" ids: undefined undefined
+        #  ids: undefined undefined
+          # The name of the context property that will expose the loaded model during ids: undefined undefined
+          # an evaluation. Overrides the name of the "model" that is the default export name. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.exportName = null ids: undefined undefined
+        # relation transformer ids: undefined undefined
+        # A model may have one or more transformers. ids: undefined undefined
+        # Transformers are chained and the output of a transformation ids: undefined undefined
+        # is the input for the next one. ids: undefined undefined
+        set this.transformers = [] ids: undefined undefined
+        # relation modelCollection ids: undefined undefined
+        # TODO This is a one-to-one relation, not yet implemented. ids: undefined undefined
+        # Single items of a collection contained in the "model" may act as data contexts ids: undefined undefined
+        # of artifacts where each collection item generates a separate artifact. ids: undefined undefined
+        set this.modelCollections = [] ids: undefined undefined
+      m addTransformer ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.transformer(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.transformers.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getTransformer ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.transformers.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m addModelCollection ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.modelCollection(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.modelCollections.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getModelCollection ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.modelCollections.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.exportName) ids: undefined undefined
+          set result["exportName"] = this.exportName ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.transformers ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['transformers'] = items; ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.modelCollections ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['modelCollections'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 9 && _ch == 'm' ids: undefined undefined
+          if name === 'modelcoll' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelCollection, this.modelCollections); ids: undefined undefined
+        if _l == 10 && _ch == 'm' ids: undefined undefined
+          if name === 'model-coll' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelCollection, this.modelCollections); ids: undefined undefined
+        if _l == 11 && _ch == 'e' ids: undefined undefined
+          if name === 'export-name' ids: undefined undefined
+            set this.exportName = child.v; return true; ids: undefined undefined
+          elif name === 'export_name' ids: undefined undefined
+            set this.exportName = child.v; return true; ids: undefined undefined
+        if _l == 11 && _ch == 't' ids: undefined undefined
+          if name === 'transformer' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.transformer, this.transformers); ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.transformers ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        foreach item in this.modelCollections ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.transformers ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        foreach item in this.modelCollections ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        jst {"n":"if","v":"this.modelCollections.length > 0","childs":[{"n":"set","v":"this.modelCollection = this.modelCollections[0]","childs":[]},{"n":"set","v":"this.collName = this.modelCollection.wzName","childs":[]},{"n":"set","v":"this.collItemName = this.modelCollection.itemName","childs":[]},{"n":"set","v":"this.collPathTemplateValues = []","childs":[]},{"n":"foreach","v":"item in this.modelCollection.pathTemplateValues","childs":[{"n":"_","v":"this.collPathTemplateValues.push","childs":[{"n":"{","v":"","childs":[{"n":"@","v":"token item.token","childs":[]},{"n":"@","v":"attribute item.attribute","childs":[]},{"n":"@","v":"function item.function","childs":[]}]}]}]}]} ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.modelRef = modelRef ids: undefined undefined
+    # element modelCollection ids: undefined undefined
+      # Single items of a collection contained in a "model" may act as data contexts ids: undefined undefined
+      # of artifacts where each collection item generates a separate artifact. ids: undefined undefined
+      # This element, contained in a "modelRef" element, specifies: ids: undefined undefined
+      # . the collection name: the IttfNodeValue of this element ids: undefined undefined
+      # . the export name of the collection item when acting as a data context: the "item-name" attribute ids: undefined undefined
+      # . the property names of the collection item that will be used to build the destination path ids: undefined undefined
+      # of the artifact: the "pathTemplateValues" child elements ids: undefined undefined
+    class modelCollection ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "modelCollection" ids: undefined undefined
+        # The export name of a collection item when acting as a data context. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.itemName = null ids: undefined undefined
+        # relation pathTemplateValue ids: undefined undefined
+        set this.pathTemplateValues = [] ids: undefined undefined
+      m addPathTemplateValue ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.pathTemplateValue(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.pathTemplateValues.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getPathTemplateValue ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.pathTemplateValues.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.itemName) ids: undefined undefined
+          set result["itemName"] = this.itemName ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.pathTemplateValues ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['pathTemplateValues'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 9 && _ch == 'i' ids: undefined undefined
+          if name === 'item-name' ids: undefined undefined
+            set this.itemName = child.v; return true; ids: undefined undefined
+          elif name === 'item_name' ids: undefined undefined
+            set this.itemName = child.v; return true; ids: undefined undefined
+        if _l == 17 && _ch == 'p' ids: undefined undefined
+          if name === 'pathtemplatevalue' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.pathTemplateValue, this.pathTemplateValues); ids: undefined undefined
+        if _l == 19 && _ch == 'p' ids: undefined undefined
+          if name === 'path-template-value' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.pathTemplateValue, this.pathTemplateValues); ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.pathTemplateValues ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.pathTemplateValues ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.modelCollection = modelCollection ids: undefined undefined
+    # element pathTemplateValue ids: undefined undefined
+    class pathTemplateValue ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "pathTemplateValue" ids: undefined undefined
+        #  ids: undefined undefined
+          # The property of the context object (a collection item) containing the value which will replace ids: undefined undefined
+          # the "token" value in the generated artifact path template. ids: undefined undefined
+          # Is alternative to "function" ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.attribute = null ids: undefined undefined
+        #  ids: undefined undefined
+          # The function of the context object (a collection item) that returns the value which will replace ids: undefined undefined
+          # the "token" value in the generated artifact path template. ids: undefined undefined
+          # Is alternative to "attribute" ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.function = null ids: undefined undefined
+        #  ids: undefined undefined
+          # The token that will be replaced by the value returned accessing "attribute" or calling "function" ids: undefined undefined
+          # on a context object. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.token = null ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.attribute) ids: undefined undefined
+          set result["attribute"] = this.attribute ids: undefined undefined
+        if !isEmpty(this.function) ids: undefined undefined
+          set result["function"] = this.function ids: undefined undefined
+        if !isEmpty(this.token) ids: undefined undefined
+          set result["token"] = this.token ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 5 && _ch == 't' ids: undefined undefined
+          if name === 'token' ids: undefined undefined
+            set this.token = child.v; return true; ids: undefined undefined
+        if _l == 8 && _ch == 'f' ids: undefined undefined
+          if name === 'function' ids: undefined undefined
+            set this.function = child.v; return true; ids: undefined undefined
+        if _l == 9 && _ch == 'a' ids: undefined undefined
+          if name === 'attribute' ids: undefined undefined
+            set this.attribute = child.v; return true; ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+    set md.pathTemplateValue = pathTemplateValue ids: undefined undefined
+    # element transformer ids: undefined undefined
+      # A model transformer ids: undefined undefined
+      # The IttfNodeValue is the transformer path {wizzischema}/{transformerName} ids: undefined undefined
+      # to be found in {wizziPackage}/artifacts/{wizzischema}/{transformerName}/trans/main.js ids: undefined undefined
+    class transformer ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "transformer" ids: undefined undefined
+        #  ids: undefined undefined
+          # A filepath where the transformed model must be dumped for test. ids: undefined undefined
+          # When declared the transformed model is JSON.stringyfied and written ids: undefined undefined
+          # to the "dumpFile" filepath. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.dumpFile = null ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.dumpFile) ids: undefined undefined
+          set result["dumpFile"] = this.dumpFile ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 9 && _ch == 'd' ids: undefined undefined
+          if name === 'dump-file' ids: undefined undefined
+            set this.dumpFile = child.v; return true; ids: undefined undefined
+          elif name === 'dump_file' ids: undefined undefined
+            set this.dumpFile = child.v; return true; ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+    set md.transformer = transformer ids: undefined undefined
+    # element artifact ids: undefined undefined
+      # An artifact to be generated. ids: undefined undefined
+      # It is a child element of a "line" element. ids: undefined undefined
+      #  ids: undefined undefined
+      # Can be one of: ids: undefined undefined
+      # . A Wizzi model instance, acting as a template, which WizziSchema targets a code language technology. ids: undefined undefined
+      # . A swig template. ids: undefined undefined
+      # . A code write generation that takes in input a context of one or more WizziModels. ids: undefined undefined
+      # . A final artifact to be copied to a destination folder without transformations. ids: undefined undefined
+      # . A reference to another WfJob, to be executed before the current WfJob where the artifact is declared. ids: undefined undefined
+      #  ids: undefined undefined
+      # Context value objects for template transformations are declared in the "model" element, child of the "wfjob" root element ids: undefined undefined
+      # and may be referenced in the elements "modelRef", children of the "artifact" element. ids: undefined undefined
+      #  ids: undefined undefined
+      # The "src" or "destPath" attributes of an "artifact" element may contain tokens enclosed in graph parens. ids: undefined undefined
+      # When one of the "modelRef@" is a collection model, the artifact generation is repeated ids: undefined undefined
+      # for each item of the collection and the "src" or "destPath" attributes become the template of the destination path. ids: undefined undefined
+      # See the "pathTemplateValues" child elements of the "modelRef" for the values that will replace the tokens. ids: undefined undefined
+      #  ids: undefined undefined
+      # Example ids: undefined undefined
+      #  ids: undefined undefined
+      # artifact ids: undefined undefined
+      # dest-path app/db/{table}Datalayer.js.ittf ids: undefined undefined
+      # ... ids: undefined undefined
+      # model-ref rdbms ids: undefined undefined
+      # model-coll tables ids: undefined undefined
+      # item-name table ids: undefined undefined
+      # path-template-value ids: undefined undefined
+      # attribute tableName ids: undefined undefined
+      # token table ids: undefined undefined
+      #  ids: undefined undefined
+      # model rdbms ids: undefined undefined
+      # ... ids: undefined undefined
+      #  ids: undefined undefined
+      # the Wizzi model instance after loading rdbms: { ids: undefined undefined
+      # .... ids: undefined undefined
+      # tables: [{ ids: undefined undefined
+      # tableName: 'user', ids: undefined undefined
+      # ... ids: undefined undefined
+      # },{ ids: undefined undefined
+      # ... ids: undefined undefined
+      # }] ids: undefined undefined
+      # } ids: undefined undefined
+      #  ids: undefined undefined
+      # will produce an artifact of path .../app/db/userDatalayer.js, and as many as the items in the tables collection. ids: undefined undefined
+      #  ids: undefined undefined
+    class artifact ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "artifact" ids: undefined undefined
+        #  ids: undefined undefined
+          # The path to the primary source document of the artifact. ids: undefined undefined
+          # If relative, the base path is the cwdFolder of the parent line. ids: undefined undefined
+          # Can be a glob pattern ids: undefined undefined
+          # If the artifact is a code write artifact the @src@ attribute must not be declared. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.src = null ids: undefined undefined
+        #  ids: undefined undefined
+          # files returned by the src pattern to be ignored ids: undefined undefined
+          # Can be a glob pattern ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.ignore = null ids: undefined undefined
+        #  ids: undefined undefined
+          # When the artifact source is an Ittf document, is the schema that will load and validate the Wizzi model instance. ids: undefined undefined
+          # May be null if the artifact is a swig template or a final artifact. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.schema = null ids: undefined undefined
+        #  ids: undefined undefined
+          # Indicator that the artifact source document is a wizzi factory job (WfJob). ids: undefined undefined
+          # The job will be executed before any other artifact production of the current WfJob. ids: undefined undefined
+          # This could be autodected from the schema, but autodetection would forbid other uses or transformations ids: undefined undefined
+          # of a "wfjob" model, so the indicator is required. ids: undefined undefined
+        set this.isWfJob = false ids: undefined undefined
+        #  ids: undefined undefined
+          # When the artifact is a Wizzi model instance, acting as a template is the name of ids: undefined undefined
+          # the artifact generator that will transform the template. ids: undefined undefined
+          # When the artifact is a 'swig template' must contain 'swig'. ids: undefined undefined
+          # When the artifact is a code write generation or a final artifact must be omitted. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.generator = null ids: undefined undefined
+        #  ids: undefined undefined
+          # The artifact source file path (@src@) is the default relative destination path ids: undefined undefined
+          # of the generated artifact. When set, this attribute overrides the default. ids: undefined undefined
+          # It may be an absolute path. ids: undefined undefined
+          # If the artifact is a code write generation the @destPath@ attribute must be declared. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.destPath = null ids: undefined undefined
+        #  ids: undefined undefined
+          # The document path extension of the generated artifact. Optional. The default is the #src# extension ids: undefined undefined
+          # without the ending '.ittf' string, if present. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.extension = null ids: undefined undefined
+        # relation transformer ids: undefined undefined
+        # When the artifact source is an Ittf document, the loaded WizziModel may need ids: undefined undefined
+        # one or more transformations before being passed to the artifact generator. ids: undefined undefined
+        # Transformers are chained and the output of a transformation ids: undefined undefined
+        # is the input for the next one. ids: undefined undefined
+        set this.transformers = [] ids: undefined undefined
+        # relation modelRef ids: undefined undefined
+        # References to Wizzi model instances acting as transformation contexts for both wizzi and swig templates. ids: undefined undefined
+        # When a final artifact must not be declared. ids: undefined undefined
+        set this.modelRefs = [] ids: undefined undefined
+      m addTransformer ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.transformer(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.transformers.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getTransformer ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.transformers.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m addModelRef ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.modelRef(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.modelRefs.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getModelRef ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.modelRefs.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.src) ids: undefined undefined
+          set result["src"] = this.src ids: undefined undefined
+        if !isEmpty(this.ignore) ids: undefined undefined
+          set result["ignore"] = this.ignore ids: undefined undefined
+        if !isEmpty(this.schema) ids: undefined undefined
+          set result["schema"] = this.schema ids: undefined undefined
+        set result["isWfJob"] = this.isWfJob; ids: undefined undefined
+        if !isEmpty(this.generator) ids: undefined undefined
+          set result["generator"] = this.generator ids: undefined undefined
+        if !isEmpty(this.destPath) ids: undefined undefined
+          set result["destPath"] = this.destPath ids: undefined undefined
+        if !isEmpty(this.extension) ids: undefined undefined
+          set result["extension"] = this.extension ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.transformers ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['transformers'] = items; ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['modelRefs'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 3 && _ch == 's' ids: undefined undefined
+          if name === 'src' ids: undefined undefined
+            set this.src = child.v; return true; ids: undefined undefined
+        if _l == 6 && _ch == 'i' ids: undefined undefined
+          if name === 'ignore' ids: undefined undefined
+            set this.ignore = child.v; return true; ids: undefined undefined
+        if _l == 6 && _ch == 's' ids: undefined undefined
+          if name === 'schema' ids: undefined undefined
+            set this.schema = child.v; return true; ids: undefined undefined
+        if _l == 8 && _ch == 'm' ids: undefined undefined
+          if name === 'modelref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelRef, this.modelRefs); ids: undefined undefined
+        if _l == 9 && _ch == 'd' ids: undefined undefined
+          if name === 'dest-path' ids: undefined undefined
+            set this.destPath = child.v; return true; ids: undefined undefined
+          elif name === 'dest_path' ids: undefined undefined
+            set this.destPath = child.v; return true; ids: undefined undefined
+        if _l == 9 && _ch == 'e' ids: undefined undefined
+          if name === 'extension' ids: undefined undefined
+            set this.extension = child.v; return true; ids: undefined undefined
+        if _l == 9 && _ch == 'g' ids: undefined undefined
+          if name === 'generator' ids: undefined undefined
+            set this.generator = child.v; return true; ids: undefined undefined
+        if _l == 9 && _ch == 'i' ids: undefined undefined
+          if name === 'is-wf-job' ids: undefined undefined
+            set this.isWfJob = parseboolean(child.v, true, child); return true; ids: undefined undefined
+          elif name === 'is_wf_job' ids: undefined undefined
+            set this.isWfJob = parseboolean(child.v, true, child); return true; ids: undefined undefined
+        if _l == 9 && _ch == 'm' ids: undefined undefined
+          if name === 'model-ref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelRef, this.modelRefs); ids: undefined undefined
+        if _l == 11 && _ch == 't' ids: undefined undefined
+          if name === 'transformer' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.transformer, this.transformers); ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.transformers ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.transformers ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.artifact = artifact ids: undefined undefined
+    # element line ids: undefined undefined
+      # A line is a group of artifacts having the same "cwdFolder". ids: undefined undefined
+    class line ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "line" ids: undefined undefined
+        # The source folder of the artifact templates of this line. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.cwdFolder = null ids: undefined undefined
+        #  ids: undefined undefined
+          # The destination folder of the generated artifacts of this line. ids: undefined undefined
+          # Overrides the attribute "destFolder" of the "production" element. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.destFolder = null ids: undefined undefined
+        # relation artifact ids: undefined undefined
+        # The artifacts of the "line" ids: undefined undefined
+        set this.artifacts = [] ids: undefined undefined
+      m addArtifact ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.artifact(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.artifacts.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getArtifact ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.artifacts.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.cwdFolder) ids: undefined undefined
+          set result["cwdFolder"] = this.cwdFolder ids: undefined undefined
+        if !isEmpty(this.destFolder) ids: undefined undefined
+          set result["destFolder"] = this.destFolder ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.artifacts ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['artifacts'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 8 && _ch == 'a' ids: undefined undefined
+          if name === 'artifact' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.artifact, this.artifacts); ids: undefined undefined
+        if _l == 10 && _ch == 'c' ids: undefined undefined
+          if name === 'cwd-folder' ids: undefined undefined
+            set this.cwdFolder = child.v; return true; ids: undefined undefined
+          elif name === 'cwd_folder' ids: undefined undefined
+            set this.cwdFolder = child.v; return true; ids: undefined undefined
+        if _l == 11 && _ch == 'd' ids: undefined undefined
+          if name === 'dest-folder' ids: undefined undefined
+            set this.destFolder = child.v; return true; ids: undefined undefined
+          elif name === 'dest_folder' ids: undefined undefined
+            set this.destFolder = child.v; return true; ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.artifacts ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.artifacts ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.line = line ids: undefined undefined
+    # element lineRef ids: undefined undefined
+      # A reference to a line. ids: undefined undefined
+    class lineRef ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "lineRef" ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+    set md.lineRef = lineRef ids: undefined undefined
+    # element production ids: undefined undefined
+      # A job execution unit that generates a set of Software artifacts ids: undefined undefined
+      # into one destination folder. ids: undefined undefined
+    class production ids: undefined undefined
+      super wfjobBase ids: undefined undefined
+      ctor  ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        base name ids: undefined undefined
+        base sourceLineInfo ids: undefined undefined
+        set this.wzElement = "production" ids: undefined undefined
+        # The destination folder of the generated artifacts. ids: undefined undefined
+        # TODO avoid this declaration, attributes should be tested for undefined not null ids: undefined undefined
+        # set this.destFolder = null ids: undefined undefined
+        # relation modelRef ids: undefined undefined
+        # References to the context WizziWodels used by this "production". ids: undefined undefined
+        set this.modelRefs = [] ids: undefined undefined
+        # relation lineRef ids: undefined undefined
+        # References to the "line(s)" to be generated. ids: undefined undefined
+        set this.lineRefs = [] ids: undefined undefined
+      m addModelRef ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.modelRef(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.modelRefs.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getModelRef ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.modelRefs.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m addLineRef ids: undefined undefined
+        param name ids: undefined undefined
+        param sourceLineInfo ids: undefined undefined
+        var retval = new md.lineRef(name, sourceLineInfo) ids: undefined undefined
+        set retval.wzParent = this ids: undefined undefined
+        _ this.lineRefs.push(retval) ids: undefined undefined
+        return retval ids: undefined undefined
+      m getLineRef ids: undefined undefined
+        param name ids: undefined undefined
+        var found = null ids: undefined undefined
+        _ this.lineRefs.forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param item ids: undefined undefined
+            set found = found || (item.wzName === name ? item : null) ids: undefined undefined
+        return found; ids: undefined undefined
+      m toJson ids: undefined undefined
+        var result = {} ids: undefined undefined
+        _ this.toJsonProperties(result) ids: undefined undefined
+        _ this.toJsonChildren(result) ids: undefined undefined
+        return result ids: undefined undefined
+      m toJsonProperties ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonProperties.call(this, result) ids: undefined undefined
+        if this.__jsonProps ids: undefined undefined
+          for var k in this.__jsonProps ids: undefined undefined
+            set result[k] = this.__jsonProps[k] ids: undefined undefined
+        if !isEmpty(this.destFolder) ids: undefined undefined
+          set result["destFolder"] = this.destFolder ids: undefined undefined
+      m toJsonChildren ids: undefined undefined
+        param result ids: undefined undefined
+        _ md.wfjobBase.prototype.toJsonChildren.call(this, result) ids: undefined undefined
+        var items, item ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['modelRefs'] = items; ids: undefined undefined
+        set items = [] ids: undefined undefined
+        foreach item in this.lineRefs ids: undefined undefined
+          _ items.push(item.toJson()) ids: undefined undefined
+        set result['lineRefs'] = items; ids: undefined undefined
+      m loadChild ids: undefined undefined
+        param child ids: undefined undefined
+        # Make test case insensitive ids: undefined undefined
+        var  ids: undefined undefined
+          decl item ids: undefined undefined
+          decl ok = false ids: undefined undefined
+          decl name = child.n.toLowerCase() ids: undefined undefined
+          decl _l = name.length ids: undefined undefined
+          decl _ch = name[0] ids: undefined undefined
+        if _l == 7 && _ch == 'l' ids: undefined undefined
+          if name === 'lineref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.lineRef, this.lineRefs); ids: undefined undefined
+        if _l == 8 && _ch == 'l' ids: undefined undefined
+          if name === 'line-ref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.lineRef, this.lineRefs); ids: undefined undefined
+        if _l == 8 && _ch == 'm' ids: undefined undefined
+          if name === 'modelref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelRef, this.modelRefs); ids: undefined undefined
+        if _l == 9 && _ch == 'm' ids: undefined undefined
+          if name === 'model-ref' ids: undefined undefined
+            set return this.wzLoadToChildColl(child, md.modelRef, this.modelRefs); ids: undefined undefined
+        if _l == 11 && _ch == 'd' ids: undefined undefined
+          if name === 'dest-folder' ids: undefined undefined
+            set this.destFolder = child.v; return true; ids: undefined undefined
+          elif name === 'dest_folder' ids: undefined undefined
+            set this.destFolder = child.v; return true; ids: undefined undefined
+        return ok ids: undefined undefined
+      m loadFromNode ids: undefined undefined
+        param node ids: undefined undefined
+        var loaded = false ids: undefined undefined
+        foreach item in node.childs ids: undefined undefined
+          set loaded = this.loadChild(item) ids: undefined undefined
+          if !loaded ids: undefined undefined
+            throw new md.wfjobException("Tag not recognized: " + item.n, item, this) ids: undefined undefined
+      m wzVerify ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        foreach item in this.lineRefs ids: undefined undefined
+          _ item.wzVerify(ctx) ids: undefined undefined
+        _ md.wfjobBase.prototype.wzVerify.call(this, ctx) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.modelRefs ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        foreach item in this.lineRefs ids: undefined undefined
+          _ item.wzInitialize(ctx) ids: undefined undefined
+        jst {"n":"set","v":"this.wfjob = this.wzParent;","childs":[]} ids: undefined undefined
+        jst {"n":"foreach","v":"modelRef in this.modelRefs","childs":[{"n":"var","v":"model = this.wfjob.getModel(modelRef.wzName)","childs":[]},{"n":"if","v":"model == null","childs":[{"n":"_","v":"this.error('Model ' + modelRef.wzName + ' not found.', modelRef)","childs":[]}]},{"n":"set","v":"modelRef.___model = model","childs":[]}]} ids: undefined undefined
+        jst {"n":"set","v":"this.lines = [];","childs":[]} ids: undefined undefined
+        jst {"n":"foreach","v":"lineRef in this.lineRefs","childs":[{"n":"var","v":"line = this.wfjob.getLine(lineRef.wzName)","childs":[]},{"n":"if","v":"line == null","childs":[{"n":"_","v":"this.error('line ' + lineRef.wzName + ' not found.', lineRef)","childs":[]}]},{"n":"_","v":"this.lines.push(line)","childs":[]},{"n":"foreach","v":"artifact in line.artifacts","childs":[{"n":"foreach","v":"modelRef in artifact.modelRefs","childs":[{"n":"var","v":"model = this.wfjob.getModel(modelRef.wzName)","childs":[]},{"n":"if","v":"model == null","childs":[{"n":"_","v":"this.error('Model ' + modelRef.wzName + ' not found.', modelRef)","childs":[]}]},{"n":"set","v":"modelRef.___model = model;","childs":[]}]}]}]} ids: undefined undefined
+        _ md.wfjobBase.prototype.wzInitialize.call(this, ctx) ids: undefined undefined
+    set md.production = production ids: undefined undefined
+    set md.__tagElementMapping = { 'model-ref': 'modelRef', 'modelref': 'modelRef', 'model-coll': 'modelCollection', 'modelcoll': 'modelCollection', 'path-template-value': 'pathTemplateValue', 'pathtemplatevalue': 'pathTemplateValue', 'line-ref': 'lineRef', 'lineref': 'lineRef' } ids: undefined undefined
+    class wfjobException ids: undefined undefined
+      ctor  ids: undefined undefined
+        param message ids: undefined undefined
+        param node ids: undefined undefined
+        param instance ids: undefined undefined
+        # TODO node seems superflous ids: undefined undefined
+        if node && instance ids: undefined undefined
+          set this.message = message + ', row:' + node.r + ', col:' + node.c + ', source:' + instance.wzSourceFilepath(node.u) ids: undefined undefined
+        elif instance ids: undefined undefined
+          set this.message = message + instance.wzSourceLineInfo.toString(instance) ids: undefined undefined
+        else  ids: undefined undefined
+          set this.message = message ids: undefined undefined
+        set this.stack = new Error().stack ids: undefined undefined
+        set this.node = node ids: undefined undefined
+    set md.wfjobException = wfjobException ids: undefined undefined
+    class wfjobContext ids: undefined undefined
+      ctor  ids: undefined undefined
+        set this.validationErrors = [] ids: undefined undefined
+      m schemaIsValid ids: undefined undefined
+        return this.validationErrors.length == 0 ids: undefined undefined
+      m addError ids: undefined undefined
+        param message ids: undefined undefined
+        param node ids: undefined undefined
+        var at = node ? ' At ' + node.wzSourceLineInfo.toString(node) : '' ids: undefined undefined
+        _ this.validationErrors.push ids: undefined undefined
+          @ message + at ids: undefined undefined
+    set md.wfjobContext = wfjobContext ids: undefined undefined
+    function parsestring ids: undefined undefined
+      param value ids: undefined undefined
+      param defaultValue ids: undefined undefined
+      param node ids: undefined undefined
+      if isEmpty( value ) ids: undefined undefined
+        return defaultValue ids: undefined undefined
+      return value ids: undefined undefined
+    function parseboolean ids: undefined undefined
+      param value ids: undefined undefined
+      param defaultValue ids: undefined undefined
+      param node ids: undefined undefined
+      if isEmpty( value ) ids: undefined undefined
+        return defaultValue ids: undefined undefined
+      if !isBoolean(value) ids: undefined undefined
+        throw new nodeException('Must be a boolean value (\"true\" or \"false\"), got:' + value, node) ids: undefined undefined
+      return value === 'true' ? true : false ids: undefined undefined
+    function isBoolean ids: undefined undefined
+      param value ids: undefined undefined
+      return value === 'true' || value === 'false' ids: undefined undefined
+    function isString ids: undefined undefined
+      param value ids: undefined undefined
+      return (typeof value === 'string' || value instanceof String) ids: undefined undefined
+    function isEmpty ids: undefined undefined
+      param value ids: undefined undefined
+      return !isString( value ) || value.length === 0 ids: undefined undefined

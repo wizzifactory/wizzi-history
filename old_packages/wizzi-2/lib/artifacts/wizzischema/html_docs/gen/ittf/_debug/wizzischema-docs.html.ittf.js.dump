@@ -1,0 +1,374 @@
+// 11/7/2017:18:0:7  by C:\My\wizzi\v2\packages\wizzi-2\node_modules\wizzi-boot-legacy\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "html", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //54
+$.a($0, $1, 5);
+var $2 = { n: "head", v: "", r: 2, c: 5, s: "f1", u: "f1",  }; //55
+$.a($1, $2, 7);
+var $3 = { n: "@title", v: $.ip("f1", "Wizzi schema ${schema.name}", "string", 8), r: 3, c: 9, s: "f1", u: "f1",  }; //56
+$.a($2, $3, 9);
+var $4 = { n: "@style", v: "", r: 1, c: 1, s: "f1", u: "f2",  }; //137
+$.a($2, $4, 11);
+$4.v = $4.v ? $4.v : '' //138
+$4.v += ($.textSep + "body {__LS__  font-family: verdana;__LS__  font-size: 13px;__LS__} __LS__.main-left {__LS__  position: fixed;__LS__  margin-left: 5%;__LS__  top: 80px;__LS__  width: 20%;__LS__  height: 80%;__LS__  background: #eee;__LS__  overflow: auto;__LS__} __LS__.main-center {__LS__  top: 80px;__LS__  margin-left: 30%;__LS__  height: 80%;__LS__  width: 50%;__LS__  position: fixed;__LS__  overflow: auto;__LS__  z-index: 1;__LS__} __LS__.well {__LS__  border: solid 1px #aaa;__LS__} __LS__.pretty-table { border: 1px solid #333; width: 100%; margin-top: 30px; }__LS__.pretty-table th, .pretty-table td { border: 1px dotted #666; }__LS__.pretty-table-2 { border: 1px solid #999; width: 100%; margin-top: 20px; }"); //138
+var $6 = { n: "body", v: "", r: 6, c: 5, s: "f1", u: "f1",  }; //58
+$.a($1, $6, 15);
+var $7 = { n: ".", v: "main", r: 7, c: 9, s: "f1", u: "f1",  }; //59
+$.a($6, $7, 17);
+var $8 = { n: "h1", v: $.ip("f1", "Wizzi schema ${schema.name}", "string", 18), r: 8, c: 13, s: "f1", u: "f1",  }; //60
+$.a($7, $8, 19);
+var $9 = { n: ".", v: "main-left", r: 9, c: 13, s: "f1", u: "f1",  }; //61
+$.a($7, $9, 21);
+var $10 = { n: "ul", v: "", r: 10, c: 17, s: "f1", u: "f1",  }; //62
+$.a($9, $10, 23);
+$.s("f1");
+for (var i11=0, l11 = schema.elements.length; i11<l11; i11++) { //63
+    var element = schema.elements[i11]; //63
+    var _index = i11; //63
+    var _count = schema.elements.length; //63
+    $.n();
+    var $12 = { n: "li", v: "", r: 12, c: 25, s: "f1", u: "f1",  }; //64
+    $.a($10, $12, 31);
+    var $13 = { n: "a", v: $.ip("f1", "${element.name}", "string", 32), r: 13, c: 29, s: "f1", u: "f1",  }; //65
+    $.a($12, $13, 33);
+    var $14 = { n: "href", v: $.ip("f1", "#element_${element.name}", "string", 34), r: 14, c: 33, s: "f1", u: "f1",  }; //66
+    $.a($13, $14, 35);
+}
+$.n();
+var $15 = { n: ".", v: "main-center", r: 15, c: 13, s: "f1", u: "f1",  }; //67
+$.a($7, $15, 39);
+$.s("f1");
+if (schema.requires.length > 0) { //68
+    $.n();
+    var $17 = { n: "h5", v: "Require", r: 18, c: 21, s: "f1", u: "f1",  }; //69
+    $.a($15, $17, 44);
+    $.s("f1");
+    for (var i18=0, l18 = schema.requires.length; i18<l18; i18++) { //70
+        var require = schema.requires[i18]; //70
+        var _index = i18; //70
+        var _count = schema.requires.length; //70
+        $.n();
+        var $19 = { n: "div", v: $.ip("f1", "require ${require.name}", "string", 51), r: 20, c: 25, s: "f1", u: "f1",  }; //71
+        $.a($15, $19, 52);
+        $.s("f1");
+        if (require.declareVar) { //72
+            $.n();
+            var $21 = { n: "span", v: $.ip("f1", "&nbsp; declare-var: ${require.declareVar}", "string", 56), r: 22, c: 33, s: "f1", u: "f1",  }; //73
+            $.a($19, $21, 57);
+        }
+    }
+}
+$.s("f1");
+if (schema.exportTos.length > 0) { //74
+    $.n();
+    var $23 = { n: "h5", v: "Exports", r: 25, c: 21, s: "f1", u: "f1",  }; //75
+    $.a($15, $23, 65);
+    $.s("f1");
+    for (var i24=0, l24 = schema.exportTos.length; i24<l24; i24++) { //76
+        var exportTo = schema.exportTos[i24]; //76
+        var _index = i24; //76
+        var _count = schema.exportTos.length; //76
+        $.n();
+        var $25 = { n: "div", v: $.ip("f1", "${exportTo.name}", "string", 72), r: 27, c: 25, s: "f1", u: "f1",  }; //77
+        $.a($15, $25, 73);
+    }
+}
+$.s("f1");
+for (var i26=0, l26 = schema.elements.length; i26<l26; i26++) { //78
+    var element = schema.elements[i26]; //78
+    var _index = i26; //78
+    var _count = schema.elements.length; //78
+    $.n();
+    var $27 = { n: "table", v: "", r: 29, c: 21, s: "f1", u: "f1",  }; //79
+    $.a($15, $27, 83);
+    var $28 = { n: "id", v: $.ip("f1", "element_${element.name}", "string", 84), r: 30, c: 25, s: "f1", u: "f1",  }; //80
+    $.a($27, $28, 85);
+    var $29 = { n: "class", v: "pretty-table", r: 31, c: 25, s: "f1", u: "f1",  }; //81
+    $.a($27, $29, 87);
+    var $30 = { n: "thead", v: "", r: 32, c: 25, s: "f1", u: "f1",  }; //82
+    $.a($27, $30, 89);
+    var $31 = { n: "tr", v: "", r: 33, c: 29, s: "f1", u: "f1",  }; //83
+    $.a($30, $31, 91);
+    var $32 = { n: "th", v: "Element", r: 34, c: 33, s: "f1", u: "f1",  }; //84
+    $.a($31, $32, 93);
+    var $33 = { n: "th", v: "Tag", r: 35, c: 33, s: "f1", u: "f1",  }; //85
+    $.a($31, $33, 95);
+    var $34 = { n: "th", v: "Super", r: 36, c: 33, s: "f1", u: "f1",  }; //86
+    $.a($31, $34, 97);
+    var $35 = { n: "th", v: "Flags", r: 37, c: 33, s: "f1", u: "f1",  }; //87
+    $.a($31, $35, 99);
+    var $36 = { n: "tbody", v: "", r: 38, c: 25, s: "f1", u: "f1",  }; //88
+    $.a($27, $36, 101);
+    var $37 = { n: "tr", v: "", r: 39, c: 29, s: "f1", u: "f1",  }; //89
+    $.a($36, $37, 103);
+    var $38 = { n: "td", v: "", r: 40, c: 33, s: "f1", u: "f1",  }; //90
+    $.a($37, $38, 105);
+    var $39 = { n: "b", v: $.ip("f1", "${element.name}", "string", 106), r: 41, c: 37, s: "f1", u: "f1",  }; //91
+    $.a($38, $39, 107);
+    $.s("f1");
+    if (element.tags) { //92
+        $.n();
+        var $41 = { n: "td", v: $.ip("f1", "${element.tags.join('|')}", "string", 111), r: 43, c: 37, s: "f1", u: "f1",  }; //93
+        $.a($37, $41, 112);
+    }
+    $.n();
+    var $42 = { n: "td", v: $.ip("f1", "${element.super}", "string", 115), r: 44, c: 33, s: "f1", u: "f1",  }; //94
+    $.a($37, $42, 116);
+    var $43 = { n: "td", v: $.ip("f1", "${element.flags}", "string", 117), r: 45, c: 33, s: "f1", u: "f1",  }; //95
+    $.a($37, $43, 118);
+    $.s("f1");
+    if (element.comments.length > 0) { //96
+        $.n();
+        var $45 = { n: "h5", v: "Description", r: 48, c: 25, s: "f1", u: "f1",  }; //97
+        $.a($15, $45, 123);
+        var $46 = { n: "div", v: "", r: 49, c: 25, s: "f1", u: "f1",  }; //98
+        $.a($15, $46, 125);
+        $.s("f1");
+        for (var i47=0, l47 = element.comments.length; i47<l47; i47++) { //99
+            var comment = element.comments[i47]; //99
+            var _index = i47; //99
+            var _count = element.comments.length; //99
+            $.n();
+            var $48 = { n: "span", v: $.ip("f1", "${comment} &nbsp;", "string", 132), r: 51, c: 33, s: "f1", u: "f1",  }; //100
+            $.a($46, $48, 133);
+        }
+    }
+    $.s("f1");
+    if (element.attributes.length > 0) { //101
+        $.n();
+        var $50 = { n: "h5", v: "Attributes", r: 2, c: 5, s: "f1", u: "f3",  }; //206
+        $.a($15, $50, 140);
+        var $51 = { n: "small", v: "", r: 3, c: 5, s: "f1", u: "f3",  }; //207
+        $.a($15, $51, 142);
+        var $52 = { n: "table", v: "", r: 1, c: 1, s: "f2", u: "f6",  }; //334
+        $.a($51, $52, 144);
+        var $53 = { n: "class", v: "table table-condensed table-bordered", r: 3, c: 5, s: "f2", u: "f6",  }; //335
+        $.a($52, $53, 146);
+        var $54 = { n: "style", v: $.ip("f2", "width:${width}%;", "string", 147), r: 4, c: 5, s: "f2", u: "f6",  }; //336
+        $.a($52, $54, 148);
+        var $55 = { n: "thead", v: "", r: 5, c: 13, s: "f1", u: "f3",  }; //209
+        $.a($52, $55, 150);
+        var $56 = { n: "tr", v: "", r: 6, c: 17, s: "f1", u: "f3",  }; //210
+        $.a($55, $56, 152);
+        var $57 = { n: "th", v: "Name", r: 7, c: 21, s: "f1", u: "f3",  }; //211
+        $.a($56, $57, 154);
+        var $58 = { n: "th", v: "Tag", r: 8, c: 21, s: "f1", u: "f3",  }; //212
+        $.a($56, $58, 156);
+        var $59 = { n: "th", v: "Type", r: 9, c: 21, s: "f1", u: "f3",  }; //213
+        $.a($56, $59, 158);
+        var $60 = { n: "th", v: "Default", r: 10, c: 21, s: "f1", u: "f3",  }; //214
+        $.a($56, $60, 160);
+        var $61 = { n: "th", v: "Inherited", r: 11, c: 21, s: "f1", u: "f3",  }; //215
+        $.a($56, $61, 162);
+        var $62 = { n: "th", v: "Flags", r: 12, c: 21, s: "f1", u: "f3",  }; //216
+        $.a($56, $62, 164);
+        var $63 = { n: "th", v: "Description", r: 13, c: 21, s: "f1", u: "f3",  }; //217
+        $.a($56, $63, 166);
+        var $64 = { n: "tbody", v: "", r: 14, c: 13, s: "f1", u: "f3",  }; //218
+        $.a($52, $64, 168);
+        $.s("f1");
+        for (var i65=0, l65 = element.attributes.length; i65<l65; i65++) { //219
+            var attribute = element.attributes[i65]; //219
+            var _index = i65; //219
+            var _count = element.attributes.length; //219
+            $.n();
+            var $66 = { n: "tr", v: "", r: 16, c: 21, s: "f1", u: "f3",  }; //220
+            $.a($64, $66, 176);
+            var $67 = { n: "td", v: $.ip("f1", "${attribute.name}", "string", 177), r: 17, c: 25, s: "f1", u: "f3",  }; //221
+            $.a($66, $67, 178);
+            $.s("f1");
+            if (attribute.tags) { //222
+                $.n();
+                var $69 = { n: "td", v: $.ip("f1", "${attribute.tags.join('|')}", "string", 182), r: 19, c: 29, s: "f1", u: "f3",  }; //223
+                $.a($66, $69, 183);
+            }
+            $.n();
+            var $70 = { n: "td", v: $.ip("f1", "${attribute.type}", "string", 186), r: 20, c: 25, s: "f1", u: "f3",  }; //224
+            $.a($66, $70, 187);
+            var $71 = { n: "td", v: $.ip("f1", "${attribute.default}", "string", 188), r: 21, c: 25, s: "f1", u: "f3",  }; //225
+            $.a($66, $71, 189);
+            var $72 = { n: "td", v: $.ip("f1", "${attribute.inheritedFrom}", "string", 190), r: 22, c: 25, s: "f1", u: "f3",  }; //226
+            $.a($66, $72, 191);
+            var $73 = { n: "td", v: $.ip("f1", "${attribute.flags}", "string", 192), r: 23, c: 25, s: "f1", u: "f3",  }; //227
+            $.a($66, $73, 193);
+            var $74 = { n: "td", v: "", r: 24, c: 25, s: "f1", u: "f3",  }; //228
+            $.a($66, $74, 195);
+            $.s("f1");
+            if (attribute.comments.length > 0) { //229
+                $.n();
+                var $76 = { n: "div", v: "", r: 26, c: 33, s: "f1", u: "f3",  }; //230
+                $.a($74, $76, 200);
+                $.s("f1");
+                for (var i77=0, l77 = attribute.comments.length; i77<l77; i77++) { //231
+                    var comment = attribute.comments[i77]; //231
+                    var _index = i77; //231
+                    var _count = attribute.comments.length; //231
+                    $.n();
+                    var $78 = { n: "span", v: $.ip("f1", "${comment} &nbsp;", "string", 207), r: 28, c: 41, s: "f1", u: "f3",  }; //232
+                    $.a($76, $78, 208);
+                }
+            }
+            $.s("f1");
+            if (attribute.restricts.length > 0) { //233
+                $.n();
+                var $80 = { n: "h5", v: "restrict", r: 30, c: 33, s: "f1", u: "f3",  }; //234
+                $.a($74, $80, 215);
+                $.s("f1");
+                for (var i81=0, l81 = attribute.restricts.length; i81<l81; i81++) { //235
+                    var restrict = attribute.restricts[i81]; //235
+                    var _index = i81; //235
+                    var _count = attribute.restricts.length; //235
+                    for (var i82=0, l82 = restrict.facets.length; i82<l82; i82++) { //236
+                        var facet = restrict.facets[i82]; //236
+                        var _index = i82; //236
+                        var _count = restrict.facets.length; //236
+                        $.n();
+                        var $83 = { n: "table", v: "", r: 33, c: 41, s: "f1", u: "f3",  }; //237
+                        $.a($74, $83, 227);
+                        var $84 = { n: "tr", v: "", r: 34, c: 45, s: "f1", u: "f3",  }; //238
+                        $.a($83, $84, 229);
+                        var $85 = { n: "td", v: $.ip("f1", "${facet.name} ${facet.value}", "string", 230), r: 35, c: 49, s: "f1", u: "f3",  }; //239
+                        $.a($84, $85, 231);
+                        var $86 = { n: "td", v: "", r: 36, c: 49, s: "f1", u: "f3",  }; //240
+                        $.a($84, $86, 233);
+                        $.s("f1");
+                        for (var i87=0, l87 = facet.comments.length; i87<l87; i87++) { //241
+                            var comment = facet.comments[i87]; //241
+                            var _index = i87; //241
+                            var _count = facet.comments.length; //241
+                            $.n();
+                            var $88 = { n: "span", v: $.ip("f1", "${comment} &nbsp;", "string", 240), r: 38, c: 57, s: "f1", u: "f3",  }; //242
+                            $.a($86, $88, 241);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    $.s("f1");
+    if (element.relations.length > 0) { //103
+        $.n();
+        var $90 = { n: "h5", v: "Relations", r: 2, c: 5, s: "f1", u: "f4",  }; //267
+        $.a($15, $90, 252);
+        var $91 = { n: "small", v: "", r: 3, c: 5, s: "f1", u: "f4",  }; //268
+        $.a($15, $91, 254);
+        var $92 = { n: "table", v: "", r: 1, c: 1, s: "f3", u: "f6",  }; //338
+        $.a($91, $92, 256);
+        var $93 = { n: "class", v: "table table-condensed table-bordered", r: 3, c: 5, s: "f3", u: "f6",  }; //339
+        $.a($92, $93, 258);
+        var $94 = { n: "style", v: $.ip("f3", "width:${width}%;", "string", 259), r: 4, c: 5, s: "f3", u: "f6",  }; //340
+        $.a($92, $94, 260);
+        var $95 = { n: "thead", v: "", r: 5, c: 13, s: "f1", u: "f4",  }; //270
+        $.a($92, $95, 262);
+        var $96 = { n: "tr", v: "", r: 6, c: 17, s: "f1", u: "f4",  }; //271
+        $.a($95, $96, 264);
+        var $97 = { n: "th", v: "Name", r: 7, c: 21, s: "f1", u: "f4",  }; //272
+        $.a($96, $97, 266);
+        var $98 = { n: "th", v: "Role", r: 8, c: 21, s: "f1", u: "f4",  }; //273
+        $.a($96, $98, 268);
+        var $99 = { n: "th", v: "Cardinality", r: 9, c: 21, s: "f1", u: "f4",  }; //274
+        $.a($96, $99, 270);
+        var $100 = { n: "th", v: "Inherited", r: 10, c: 21, s: "f1", u: "f4",  }; //275
+        $.a($96, $100, 272);
+        var $101 = { n: "th", v: "Flags", r: 11, c: 21, s: "f1", u: "f4",  }; //276
+        $.a($96, $101, 274);
+        var $102 = { n: "th", v: "Description", r: 12, c: 21, s: "f1", u: "f4",  }; //277
+        $.a($96, $102, 276);
+        var $103 = { n: "tbody", v: "", r: 13, c: 13, s: "f1", u: "f4",  }; //278
+        $.a($92, $103, 278);
+        $.s("f1");
+        for (var i104=0, l104 = element.relations.length; i104<l104; i104++) { //279
+            var relation = element.relations[i104]; //279
+            var _index = i104; //279
+            var _count = element.relations.length; //279
+            $.n();
+            var $105 = { n: "tr", v: "", r: 15, c: 21, s: "f1", u: "f4",  }; //280
+            $.a($103, $105, 286);
+            var $106 = { n: "td", v: $.ip("f1", "${relation.name}", "string", 287), r: 16, c: 25, s: "f1", u: "f4",  }; //281
+            $.a($105, $106, 288);
+            var $107 = { n: "td", v: $.ip("f1", "${relation.role}", "string", 289), r: 17, c: 25, s: "f1", u: "f4",  }; //282
+            $.a($105, $107, 290);
+            var $108 = { n: "td", v: $.ip("f1", "${relation.cardinality}", "string", 291), r: 18, c: 25, s: "f1", u: "f4",  }; //283
+            $.a($105, $108, 292);
+            var $109 = { n: "td", v: $.ip("f1", "${relation.inheritedFrom}", "string", 293), r: 19, c: 25, s: "f1", u: "f4",  }; //284
+            $.a($105, $109, 294);
+            var $110 = { n: "td", v: $.ip("f1", "${relation.flags}", "string", 295), r: 20, c: 25, s: "f1", u: "f4",  }; //285
+            $.a($105, $110, 296);
+            var $111 = { n: "td", v: "", r: 21, c: 25, s: "f1", u: "f4",  }; //286
+            $.a($105, $111, 298);
+            $.s("f1");
+            for (var i112=0, l112 = relation.comments.length; i112<l112; i112++) { //287
+                var comment = relation.comments[i112]; //287
+                var _index = i112; //287
+                var _count = relation.comments.length; //287
+                $.n();
+                var $113 = { n: "span", v: $.ip("f1", "${comment} &nbsp;", "string", 305), r: 23, c: 33, s: "f1", u: "f4",  }; //288
+                $.a($111, $113, 306);
+            }
+        }
+    }
+    $.s("f1");
+    if (element.methods.length > 0) { //105
+        $.n();
+        var $115 = { n: "h5", v: "Methods", r: 2, c: 5, s: "f1", u: "f5",  }; //310
+        $.a($15, $115, 314);
+        var $116 = { n: "small", v: "", r: 3, c: 5, s: "f1", u: "f5",  }; //311
+        $.a($15, $116, 316);
+        var $117 = { n: "table", v: "", r: 1, c: 1, s: "f4", u: "f6",  }; //342
+        $.a($116, $117, 318);
+        var $118 = { n: "class", v: "table table-condensed table-bordered", r: 3, c: 5, s: "f4", u: "f6",  }; //343
+        $.a($117, $118, 320);
+        var $119 = { n: "style", v: $.ip("f4", "width:${width}%;", "string", 321), r: 4, c: 5, s: "f4", u: "f6",  }; //344
+        $.a($117, $119, 322);
+        var $120 = { n: "thead", v: "", r: 5, c: 13, s: "f1", u: "f5",  }; //313
+        $.a($117, $120, 324);
+        var $121 = { n: "tr", v: "", r: 6, c: 17, s: "f1", u: "f5",  }; //314
+        $.a($120, $121, 326);
+        var $122 = { n: "th", v: "Signature", r: 7, c: 21, s: "f1", u: "f5",  }; //315
+        $.a($121, $122, 328);
+        var $123 = { n: "th", v: "Statements", r: 8, c: 21, s: "f1", u: "f5",  }; //316
+        $.a($121, $123, 330);
+        var $124 = { n: "tbody", v: "", r: 9, c: 13, s: "f1", u: "f5",  }; //317
+        $.a($117, $124, 332);
+        $.s("f1");
+        for (var i125=0, l125 = element.methods.length; i125<l125; i125++) { //318
+            var method = element.methods[i125]; //318
+            var _index = i125; //318
+            var _count = element.methods.length; //318
+            $.n();
+            var $126 = { n: "tr", v: "", r: 11, c: 21, s: "f1", u: "f5",  }; //319
+            $.a($124, $126, 340);
+            var $127 = { n: "td", v: "", r: 12, c: 25, s: "f1", u: "f5",  }; //320
+            $.a($126, $127, 342);
+            var $128 = { n: "div", v: $.ip("f1", "${method.name}", "string", 343), r: 13, c: 29, s: "f1", u: "f5",  }; //321
+            $.a($127, $128, 344);
+            $.s("f1");
+            if (method.comments.length > 0) { //322
+                $.n();
+                var $130 = { n: "div", v: "", r: 15, c: 33, s: "f1", u: "f5",  }; //323
+                $.a($127, $130, 349);
+                $.s("f1");
+                for (var i131=0, l131 = method.comments.length; i131<l131; i131++) { //324
+                    var comment = method.comments[i131]; //324
+                    var _index = i131; //324
+                    var _count = method.comments.length; //324
+                    $.n();
+                    var $132 = { n: "span", v: $.ip("f1", "${comment} &nbsp;", "string", 356), r: 17, c: 41, s: "f1", u: "f5",  }; //325
+                    $.a($130, $132, 357);
+                }
+            }
+            $.n();
+            var $133 = { n: "td", v: "", r: 18, c: 25, s: "f1", u: "f5",  }; //326
+            $.a($126, $133, 362);
+            $.s("f1");
+            for (var i134=0, l134 = method.statements.length; i134<l134; i134++) { //327
+                var stm = method.statements[i134]; //327
+                var _index = i134; //327
+                var _count = method.statements.length; //327
+                $.n();
+                var $135 = { n: "div", v: $.ip("f1", "${stm.tag} ${stm.value};", "string", 369), r: 20, c: 33, s: "f1", u: "f5",  }; //328
+                $.a($133, $135, 370);
+            }
+        }
+    }
+}

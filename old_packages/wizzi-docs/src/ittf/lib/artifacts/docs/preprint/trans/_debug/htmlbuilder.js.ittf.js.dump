@@ -1,0 +1,137 @@
+// 28/2/2017:14:15:4
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //68
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //69
+$.a($1, $2, 7);
+var $3 = { n: "var", v: "util = require('util')", r: 4, c: 5, s: "f1", u: "f1",  }; //70
+$.a($1, $3, 9);
+var $4 = { n: "var", v: "HtmlWriter = require('./htmlwriter').HtmlWriter", r: 5, c: 5, s: "f1", u: "f1",  }; //71
+$.a($1, $4, 11);
+var $5 = { n: "var", v: "md = module.exports = {}", r: 7, c: 5, s: "f1", u: "f1",  }; //72
+$.a($1, $5, 13);
+var $6 = { n: "class", v: "HtmlBuilder", r: 9, c: 5, s: "f1", u: "f1",  }; //73
+$.a($1, $6, 15);
+var $7 = { n: "ctor", v: "", r: 10, c: 9, s: "f1", u: "f1",  }; //74
+$.a($6, $7, 17);
+var $8 = { n: "param", v: "noLF", r: 11, c: 13, s: "f1", u: "f1",  }; //75
+$.a($7, $8, 19);
+var $9 = { n: "set", v: "this.noLF = noLF", r: 12, c: 13, s: "f1", u: "f1",  }; //76
+$.a($7, $9, 21);
+var $10 = { n: "set", v: "this.nodes = []", r: 13, c: 13, s: "f1", u: "f1",  }; //77
+$.a($7, $10, 23);
+var $11 = { n: "set", v: "this.currentNode = null", r: 14, c: 13, s: "f1", u: "f1",  }; //78
+$.a($7, $11, 25);
+var $12 = { n: "m", v: "openTag", r: 16, c: 9, s: "f1", u: "f1",  }; //79
+$.a($6, $12, 27);
+var $13 = { n: "param", v: "tag", r: 17, c: 13, s: "f1", u: "f1",  }; //80
+$.a($12, $13, 29);
+var $14 = { n: "param", v: "options", r: 18, c: 13, s: "f1", u: "f1",  }; //81
+$.a($12, $14, 31);
+var $15 = { n: "set", v: "options = options || {}", r: 19, c: 13, s: "f1", u: "f1",  }; //82
+$.a($12, $15, 33);
+var $16 = { n: "if", v: "this.currentNode == null", r: 20, c: 13, s: "f1", u: "f1",  }; //83
+$.a($12, $16, 35);
+var $17 = { n: "set", v: "this.currentNode = this.createNode(tag, null, options)", r: 21, c: 17, s: "f1", u: "f1",  }; //84
+$.a($16, $17, 37);
+var $18 = { n: "_", v: "this.nodes.push(this.currentNode)", r: 22, c: 17, s: "f1", u: "f1",  }; //85
+$.a($16, $18, 39);
+var $19 = { n: "else", v: "", r: 23, c: 13, s: "f1", u: "f1",  }; //86
+$.a($12, $19, 41);
+var $20 = { n: "var", v: "newTag = this.createNode(tag, this.currentNode, options)", r: 24, c: 17, s: "f1", u: "f1",  }; //87
+$.a($19, $20, 43);
+var $21 = { n: "_", v: "this.currentNode.childs.push(newTag)", r: 25, c: 17, s: "f1", u: "f1",  }; //88
+$.a($19, $21, 45);
+var $22 = { n: "set", v: "this.currentNode = newTag", r: 26, c: 17, s: "f1", u: "f1",  }; //89
+$.a($19, $22, 47);
+var $23 = { n: "m", v: "closeTag", r: 28, c: 9, s: "f1", u: "f1",  }; //90
+$.a($6, $23, 49);
+var $24 = { n: "set", v: "this.currentNode = this.currentNode.parent", r: 29, c: 13, s: "f1", u: "f1",  }; //91
+$.a($23, $24, 51);
+var $25 = { n: "m", v: "writeText", r: 31, c: 9, s: "f1", u: "f1",  }; //92
+$.a($6, $25, 53);
+var $26 = { n: "param", v: "text", r: 32, c: 13, s: "f1", u: "f1",  }; //93
+$.a($25, $26, 55);
+var $27 = { n: "if", v: "this.currentNode == null", r: 33, c: 13, s: "f1", u: "f1",  }; //94
+$.a($25, $27, 57);
+var $28 = { n: "_", v: "this.nodes.push", r: 34, c: 17, s: "f1", u: "f1",  }; //95
+$.a($27, $28, 59);
+var $29 = { n: "{", v: "", r: 35, c: 21, s: "f1", u: "f1",  }; //96
+$.a($28, $29, 61);
+var $30 = { n: "@", v: "tag '_text'", r: 36, c: 25, s: "f1", u: "f1",  }; //97
+$.a($29, $30, 63);
+var $31 = { n: "@", v: "text text", r: 37, c: 25, s: "f1", u: "f1",  }; //98
+$.a($29, $31, 65);
+var $32 = { n: "else", v: "", r: 38, c: 13, s: "f1", u: "f1",  }; //99
+$.a($25, $32, 67);
+var $33 = { n: "set", v: "this.currentNode.text += (text || '')", r: 39, c: 17, s: "f1", u: "f1",  }; //100
+$.a($32, $33, 69);
+var $34 = { n: "m", v: "writeAttribute", r: 41, c: 9, s: "f1", u: "f1",  }; //101
+$.a($6, $34, 71);
+var $35 = { n: "param", v: "name", r: 42, c: 13, s: "f1", u: "f1",  }; //102
+$.a($34, $35, 73);
+var $36 = { n: "param", v: "value", r: 43, c: 13, s: "f1", u: "f1",  }; //103
+$.a($34, $36, 75);
+var $37 = { n: "_", v: "this.currentNode.attribs.push", r: 44, c: 13, s: "f1", u: "f1",  }; //104
+$.a($34, $37, 77);
+var $38 = { n: "{", v: "", r: 45, c: 17, s: "f1", u: "f1",  }; //105
+$.a($37, $38, 79);
+var $39 = { n: "@", v: "name name", r: 46, c: 21, s: "f1", u: "f1",  }; //106
+$.a($38, $39, 81);
+var $40 = { n: "@", v: "value value", r: 47, c: 21, s: "f1", u: "f1",  }; //107
+$.a($38, $40, 83);
+var $41 = { n: "m", v: "createNode", r: 49, c: 9, s: "f1", u: "f1",  }; //108
+$.a($6, $41, 85);
+var $42 = { n: "param", v: "tag", r: 50, c: 13, s: "f1", u: "f1",  }; //109
+$.a($41, $42, 87);
+var $43 = { n: "param", v: "parent", r: 51, c: 13, s: "f1", u: "f1",  }; //110
+$.a($41, $43, 89);
+var $44 = { n: "param", v: "options", r: 52, c: 13, s: "f1", u: "f1",  }; //111
+$.a($41, $44, 91);
+var $45 = { n: "return", v: "", r: 53, c: 13, s: "f1", u: "f1",  }; //112
+$.a($41, $45, 93);
+var $46 = { n: "{", v: "", r: 54, c: 17, s: "f1", u: "f1",  }; //113
+$.a($45, $46, 95);
+var $47 = { n: "@", v: "parent parent", r: 55, c: 21, s: "f1", u: "f1",  }; //114
+$.a($46, $47, 97);
+var $48 = { n: "@", v: "tag tag", r: 56, c: 21, s: "f1", u: "f1",  }; //115
+$.a($46, $48, 99);
+var $49 = { n: "@", v: "childs", r: 57, c: 21, s: "f1", u: "f1",  }; //116
+$.a($46, $49, 101);
+var $50 = { n: "[", v: "", r: 58, c: 25, s: "f1", u: "f1",  }; //117
+$.a($49, $50, 103);
+var $51 = { n: "@", v: "attribs", r: 59, c: 21, s: "f1", u: "f1",  }; //118
+$.a($46, $51, 105);
+var $52 = { n: "[", v: "", r: 60, c: 25, s: "f1", u: "f1",  }; //119
+$.a($51, $52, 107);
+var $53 = { n: "@", v: "text ''", r: 61, c: 21, s: "f1", u: "f1",  }; //120
+$.a($46, $53, 109);
+var $54 = { n: "@", v: "inline options.inline", r: 62, c: 21, s: "f1", u: "f1",  }; //121
+$.a($46, $54, 111);
+var $55 = { n: "m", v: "toLines", r: 64, c: 9, s: "f1", u: "f1",  }; //122
+$.a($6, $55, 113);
+var $56 = { n: "var", v: "hw = new HtmlWriter(this.noLF)", r: 65, c: 13, s: "f1", u: "f1",  }; //123
+$.a($55, $56, 115);
+var $57 = { n: "foreach", v: "node in this.nodes", r: 66, c: 13, s: "f1", u: "f1",  }; //124
+$.a($55, $57, 117);
+var $58 = { n: "_", v: "hw.writeElement(node)", r: 67, c: 17, s: "f1", u: "f1",  }; //125
+$.a($57, $58, 119);
+var $59 = { n: "return", v: "hw.toLines()", r: 68, c: 13, s: "f1", u: "f1",  }; //126
+$.a($55, $59, 121);
+var $60 = { n: "m", v: "toText", r: 70, c: 9, s: "f1", u: "f1",  }; //127
+$.a($6, $60, 123);
+var $61 = { n: "return", v: "this.toString()", r: 71, c: 13, s: "f1", u: "f1",  }; //128
+$.a($60, $61, 125);
+var $62 = { n: "m", v: "toString", r: 73, c: 9, s: "f1", u: "f1",  }; //129
+$.a($6, $62, 127);
+var $63 = { n: "var", v: "hw = new HtmlWriter(this.noLF)", r: 74, c: 13, s: "f1", u: "f1",  }; //130
+$.a($62, $63, 129);
+var $64 = { n: "foreach", v: "node in this.nodes", r: 75, c: 13, s: "f1", u: "f1",  }; //131
+$.a($62, $64, 131);
+var $65 = { n: "_", v: "hw.writeElement(node)", r: 76, c: 17, s: "f1", u: "f1",  }; //132
+$.a($64, $65, 133);
+var $66 = { n: "return", v: "hw.toString()", r: 77, c: 13, s: "f1", u: "f1",  }; //133
+$.a($62, $66, 135);
+var $67 = { n: "set", v: "md.HtmlBuilder = HtmlBuilder", r: 79, c: 5, s: "f1", u: "f1",  }; //134
+$.a($1, $67, 137);

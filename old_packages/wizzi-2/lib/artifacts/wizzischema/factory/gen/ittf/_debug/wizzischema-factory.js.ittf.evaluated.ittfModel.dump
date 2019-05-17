@@ -1,0 +1,156 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    #  ids: undefined undefined
+      # wfjob WizziModelFactory ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var _ = require('lodash') ids: undefined undefined
+    +  ids: undefined undefined
+    +  ids: undefined undefined
+    var stringify = require('json-stringify-safe') ids: undefined undefined
+    var file = require('../../util/file') ids: undefined undefined
+    var fail = require('../../util/fail') ids: undefined undefined
+    var errors = require('../../errors') ids: undefined undefined
+    var log = require('../../util/log')(module) ids: undefined undefined
+    var ittf = require('../../ittf/ittf') ids: undefined undefined
+    var wfjobschema = require('./wfjob-model.g') ids: undefined undefined
+    var md = module.exports = {}; ids: undefined undefined
+    #  ids: undefined undefined
+      # Load a WizziModel of type wfjob from an IttfDocument uri ids: undefined undefined
+      # @param {String} ittfDocumentUri ids: undefined undefined
+      # @param {Object} context - the loading context object ids: undefined undefined
+      # @param {Function} callback ids: undefined undefined
+    set md.load ids: undefined undefined
+      function  ids: undefined undefined
+        param ittfDocumentUri ids: undefined undefined
+        param context ids: undefined undefined
+        param callback ids: undefined undefined
+        if !ittfDocumentUri ids: undefined undefined
+          throw new TypeError('ittfDocumentUri required') ids: undefined undefined
+        if typeof ittfDocumentUri !== 'string' ids: undefined undefined
+          throw new TypeError('ittfDocumentUri must be a string') ids: undefined undefined
+        if typeof callback !== 'function' ids: undefined undefined
+          throw new TypeError('callback must be a function') ids: undefined undefined
+        var context = context || {} ids: undefined undefined
+        var request = context.__request || {} ids: undefined undefined
+        var start = Date.now() ids: undefined undefined
+        # load the ittfModel ids: undefined undefined
+        _ ittf.loadModel ids: undefined undefined
+          @ ittfDocumentUri ids: undefined undefined
+          @ context ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param ittfModel ids: undefined undefined
+            if err ids: undefined undefined
+              return callback(err) ids: undefined undefined
+            # TODO implement a stats object inside the request object ids: undefined undefined
+            # _ log.info('Loaded Wizzi model instance of schema wfjob from Ittf document ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: undefined undefined
+            if (request.dumpAll || request.dumpIttfModel) && file.isFilePath(ittfDocumentUri) ids: undefined undefined
+              var ittfDumpPath = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.ittf.json') ids: undefined undefined
+              _ file.write ids: undefined undefined
+                @ ittfDumpPath ids: undefined undefined
+                _ stringify ids: undefined undefined
+                  @ ittfModel ids: undefined undefined
+                  @ null ids: undefined undefined
+                  @ 2 ids: undefined undefined
+            _ loadFromIttfModel(ittfModel, ittfDocumentUri, request, callback) ids: undefined undefined
+    set md.loadFromString ids: undefined undefined
+      function  ids: undefined undefined
+        param content ids: undefined undefined
+        param context ids: undefined undefined
+        param callback ids: undefined undefined
+        if !content ids: undefined undefined
+          throw new TypeError('content required') ids: undefined undefined
+        if typeof content !== 'string' ids: undefined undefined
+          throw new TypeError('content must be a string') ids: undefined undefined
+        if typeof callback !== 'function' ids: undefined undefined
+          throw new TypeError('callback must be a function') ids: undefined undefined
+        var context = context || {} ids: undefined undefined
+        var request = context.__request || {} ids: undefined undefined
+        var  ids: undefined undefined
+          decl start = Date.now() ids: undefined undefined
+          decl ittfDocumentUri = 'text://' ids: undefined undefined
+        _ ittf.loadModelFromString ids: undefined undefined
+          @ content ids: undefined undefined
+          @ context ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param ittfModel ids: undefined undefined
+            if err ids: undefined undefined
+              return callback(err) ids: undefined undefined
+            # TODO implement a stats object inside the request object ids: undefined undefined
+            # _ log.info('Loaded ittf model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: undefined undefined
+            _ loadFromIttfModel(ittfModel, ittfDocumentUri, request, callback) ids: undefined undefined
+    function loadFromIttfModel ids: undefined undefined
+      param ittfModel ids: undefined undefined
+      param ittfDocumentUri ids: undefined undefined
+      param request ids: undefined undefined
+      param callback ids: undefined undefined
+      +  ids: undefined undefined
+      var  ids: undefined undefined
+        decl start = Date.now() ids: undefined undefined
+        decl wfjobmodel ids: undefined undefined
+      if ittfModel.nodes.length == 0 ids: undefined undefined
+        var wfjobmodel = new wfjobmodelType('EmptyIttfDocument') ids: undefined undefined
+      else  ids: undefined undefined
+        # Get the model type of the root node of the ittf model. ids: undefined undefined
+        var rootNode = ittfModel.nodes[0] ids: undefined undefined
+        var wfjobmodelType = wfjobschema[rootNode.n] ids: undefined undefined
+        if !wfjobmodelType ids: undefined undefined
+          var maptag = wfjobschema.__tagElementMapping[rootNode.n] ids: undefined undefined
+          if typeof maptag === 'string' ids: undefined undefined
+            set wfjobmodelType = wfjobschema[maptag] ids: undefined undefined
+          if !wfjobmodelType ids: undefined undefined
+            var error ids: undefined undefined
+              new errors.WizziModelLoadError ids: undefined undefined
+                @ 'In wfjob Factory. Cannot map root node: ' + rootNode.n + ', to any entity of schema: wfjob' ids: undefined undefined
+                @ ittfDocumentUri ids: undefined undefined
+            _ fail.warn(error.message) ids: undefined undefined
+            return callback(error) ids: undefined undefined
+        # Load the WizziModel from the root node of the ittfModel ids: undefined undefined
+        set wfjobmodel = new wfjobmodelType(rootNode.v) ids: undefined undefined
+        set wfjobmodel.loadContext = ittfModel.loadContext ids: undefined undefined
+        try  ids: undefined undefined
+          # this is a sync call ids: undefined undefined
+          _ wfjobmodel.loadFromNode(rootNode) ids: undefined undefined
+        catch ex ids: undefined undefined
+          var error ids: undefined undefined
+            new errors.WizziModelLoadError ids: undefined undefined
+              @ ex.message + '\nIn wfjob Factory, calling loadFromNode.' ids: undefined undefined
+              @ ittfDocumentUri ids: undefined undefined
+          _ fail.warn(error.message) ids: undefined undefined
+          return callback(error) ids: undefined undefined
+      # TODO implement a stats object inside the request object ids: undefined undefined
+      # _ log.info('Loaded ittfDocument ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: undefined undefined
+      # TODO Implement an initialize strategy to be declared in the wizzischema ids: undefined undefined
+      # Initialize and verify the loaded model ids: undefined undefined
+      var ctx = new wfjobschema.wfjobContext() ids: undefined undefined
+      _ wfjobmodel.wzInitialize(ctx) ids: undefined undefined
+      _ wfjobmodel.wzVerify(ctx) ids: undefined undefined
+      if ctx.schemaIsValid() === false ids: undefined undefined
+        var errorsMessage = ctx.validationErrors.join('\n'); ids: undefined undefined
+        var error ids: undefined undefined
+          new errors.WizziModelLoadError ids: undefined undefined
+            @ 'In wfjob Factory.\nWizziModel has validation errors: \n' + errorsMessage ids: undefined undefined
+            @ ittfDocumentUri ids: undefined undefined
+        _ fail.warn(error.message) ids: undefined undefined
+        _ callback(error); ids: undefined undefined
+      # TODO implement a stats object inside the request object ids: undefined undefined
+      # _ log.info('Initialized wmt model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: undefined undefined
+      if (request.dumpAll || request.dumpModel) && wfjobmodel.toJson && file.isFilePath(ittfDocumentUri) ids: undefined undefined
+        # dump for debug ids: undefined undefined
+        var ittfModelDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.json') ids: undefined undefined
+        _ file.write(ittfModelDump, stringify(wfjobmodel.toJson(), null, 2)) ids: undefined undefined
+      # TODO Generate this wzInitializeAsync call only if requested by the wizzischema ids: undefined undefined
+      _ wfjobmodel.wzInitializeAsync ids: undefined undefined
+        @ ctx ids: undefined undefined
+        function  ids: undefined undefined
+          param err ids: undefined undefined
+          param result ids: undefined undefined
+          if err ids: undefined undefined
+            return callback(err, null) ids: undefined undefined
+          if (request.dumpAll || request.dumpModelAfterInitializeAsync) && wfjobmodel.toJson && file.isFilePath(ittfDocumentUri) ids: undefined undefined
+            # dump for debug ids: undefined undefined
+            var ittfModelDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.after.initializeasync.json') ids: undefined undefined
+            _ file.write(ittfModelDump, stringify(wfjobmodel.toJson(), null, 2)) ids: undefined undefined
+          _ callback(null, wfjobmodel) ids: undefined undefined

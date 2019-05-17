@@ -1,0 +1,42 @@
+wfjob test
+	$
+		var sources_folder      = path.join(__dirname, 'sources');
+		var models_folder       = path.join(__dirname, 'models');
+		var dest_folder         = path.join(__dirname, 'results');
+	models-base-folder ${models_folder}
+	dest-base-folder ${dest_folder}
+	
+	model myTestRdbms
+		src test.wftest.ittf            $$ relative to models-base-folder
+		schema wftest                   $$ in wizzi-package wizzi-lab-data
+	line plain_js
+		
+		cwd-folder ${sources_folder}/plain_js
+		
+		artifact any_plain_js
+			src ./**/*.js
+			extension js
+	line generated_js
+		
+		cwd-folder ${sources_folder}/generated_js
+		
+		artifact any_generated_js
+			src ./**/*.js.ittf
+			schema js
+			generator js/module
+			extension js
+	line generated_js_with_model_context
+		cwd-folder ${sources_folder}/generated_js_with_model_context
+		
+		artifact any_generated_js_with_model_context
+			src ./**/*.js.ittf
+			dest-path app/db/{table}Datalayer.js
+			schema js
+			generator js/module
+			extension js
+			model-ref myTestRdbms
+	production p1
+		dest-folder ${dest_folder}
+		line-ref plain_js
+		line-ref generated_js
+		line-ref generated_js_with_model_context

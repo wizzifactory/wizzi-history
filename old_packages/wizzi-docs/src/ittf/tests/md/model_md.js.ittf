@@ -1,0 +1,54 @@
+﻿base_test( model md )
+
+	$append imports
+		var md_factory = require('../../lib/wizzi/models/md-factory.g')
+		var md_artifact = require('../../lib/artifacts/md/document/gen/main')
+
+	var loadModel
+
+	before
+		set loadModel
+			_ md_factory.createLoadModel
+				_ getWizziObject
+
+	it-async should load a basic md ittf document
+
+		_ loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'basic.md.ittf'
+			_ getLoadModelContext
+				{
+			f_cb_test( wizziModel )
+				# log? wizziModel
+				var ctx = new mocks.getGenContext()
+				_ md_artifact.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( result )
+						var artifactText = result.getContent()
+						tobe_string( artifactText, # Hello stefi\n )
+						_ done
+						
+
+	it-async should load a mixed md ittf document
+
+		_ loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mixed.md.ittf'
+			_ getLoadModelContext
+				{
+			f_cb_test( wizziModel )
+				# log? wizziModel
+				var ctx = new mocks.getGenContext()
+				_ md_artifact.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( result )
+						var artifactText = result.getContent()
+						tobe_string( artifactText, # (c) Wizzi\n )
+						_ done
+						

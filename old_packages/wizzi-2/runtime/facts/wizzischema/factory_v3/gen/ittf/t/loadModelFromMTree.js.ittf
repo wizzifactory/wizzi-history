@@ -1,0 +1,77 @@
+$group
+	function loadModelFromMTree
+		param mTree
+		param ittfDocumentUri
+		param request
+		param callback
+		+
+		var
+			decl start = Date.now()
+			decl ${ROOTELEMENT}model
+		if mTree.nodes.length == 0
+			var ${ROOTELEMENT}model = new ${ROOTELEMENT}modelType('EmptyIttfDocument')
+		else
+			# Get the model type of the root node of the ittf model.
+			var rootNode = mTree.nodes[0]
+			var ${ROOTELEMENT}modelType = ${schema.wzId}schema[rootNode.n]
+			if !${ROOTELEMENT}modelType
+				var maptag = ${schema.wzId}schema.__tagElementMapping[rootNode.n]
+				if typeof maptag === 'string'
+					set ${ROOTELEMENT}modelType = ${schema.wzId}schema[maptag]
+				if !${ROOTELEMENT}modelType
+					var error
+						new errors.WizziModelLoadError
+							@ 'In ${schema.wzId} Factory. Cannot map root node: ' + rootNode.n + ', to any entity of schema: ${schema.wzId}'
+							@ ittfDocumentUri
+					return callback(error)
+    
+			# Load the WizziModel from the root node of the mTree
+			set ${ROOTELEMENT}model = new ${ROOTELEMENT}modelType(rootNode.v)
+			set ${ROOTELEMENT}model.loadContext = mTree.loadContext
+			try
+				# this is a sync call
+				_ ${ROOTELEMENT}model.loadFromNode(rootNode)
+			catch ex
+				var error
+					new errors.WizziModelLoadError
+						@ ex.message + '\nIn ${schema.wzId} Factory, calling loadFromNode.'
+						@ ittfDocumentUri
+				return callback(error)
+		
+		# TODO implement a stats object inside the request object
+		# _ log.info('Loaded ittfDocument ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms')
+    
+		# TODO Implement an initialize strategy to be declared in the wizzischema
+		# Initialize and verify the loaded model
+		var ctx = new ${schema.wzId}schema.${schema.wzId}Context()
+		_ ${ROOTELEMENT}model.wzInitialize(ctx)
+		_ ${ROOTELEMENT}model.wzVerify(ctx)
+		if ctx.schemaIsValid() === false
+			var errorsMessage = ctx.validationErrors.join('\n');
+			var error
+				new errors.WizziModelLoadError
+					@ 'In ${schema.wzId} Factory.\nWizziModel has validation errors: \n' + errorsMessage
+					@ ittfDocumentUri
+			_ callback(error);
+			
+		# TODO implement a stats object inside the request object
+		# _ log.info('Initialized wmt model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms')
+    
+		if (request.dumpAll || request.dumpModel) && ${ROOTELEMENT}model.toJson && file.isFilePath(ittfDocumentUri)
+			# dump for debug
+			var mTreeDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.json')
+			_ file.write(mTreeDump, stringify(${ROOTELEMENT}model.toJson(), null, 2))
+    
+		# TODO Generate this wzInitializeAsync call only if requested by the wizzischema
+		_ ${ROOTELEMENT}model.wzInitializeAsync
+			@ ctx
+			function
+				param err
+				param result
+				if err
+					return callback(err, null)
+				if (request.dumpAll || request.dumpModelAfterInitializeAsync) && ${ROOTELEMENT}model.toJson && file.isFilePath(ittfDocumentUri)
+					# dump for debug
+					var mTreeDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.after.initializeasync.json')
+					_ file.write(mTreeDump, stringify(${ROOTELEMENT}model.toJson(), null, 2))
+				_ callback(null, ${ROOTELEMENT}model)

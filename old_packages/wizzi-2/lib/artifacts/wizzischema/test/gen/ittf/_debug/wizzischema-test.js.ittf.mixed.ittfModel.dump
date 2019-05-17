@@ -1,0 +1,87 @@
+  module  ids: 1 88
+    kind jsfile ids: 2 89
+    $ var SCHEMA = schema.wzId; ids: 3 90
+    $ var ROOTELEMENT = schema.rootElement.wzId; ids: 4 91
+    var util = require('util'); ids: 5 92
+    var path = require('path'); ids: 6 93
+    +  ids: 7 94
+    var wizzi = require('wizzi-core').wizzi ids: 8 95
+    +  ids: 9 96
+    var stringify = require('json-stringify-safe') ids: 10 97
+    var file = wizzi.file ids: 11 98
+    var ittf = wizzi.ittf ids: 12 99
+    $if request.toPrettify ids: 13 100
+      var HtmlBuilder = wizzi.HtmlBuilder ids: 14 101
+    $if request.toXml ids: 15 102
+      var XMLWriter = require('xml-writer') ids: 16 103
+    var ${SCHEMA}WizziModel = require('../../models/${SCHEMA}-model.g'); ids: 17 104
+    var ittfContext ids: 18 105
+      {  ids: 19 106
+        @ s1 'alpha' ids: 20 107
+        @ s2 'beta' ids: 21 108
+        @ a1 ['gamma 1', 'gamma 2', 'gamma 3'] ids: 22 109
+        @ a2 ['omega 10', 'omega 20', 'omega 30'] ids: 23 110
+    var filepath = path.join(__dirname, 'ittf', 'test.${SCHEMA}.ittf'); ids: 24 111
+    _ ittf.loadModel ids: 25 112
+      @ filepath ids: 26 113
+      @ ittfContext ids: 27 114
+      function  ids: 28 115
+        param err ids: 29 116
+        param ittfModel ids: 30 117
+        if err ids: 31 118
+          throw new Error(err) ids: 32 119
+        var rootNode = ittfModel.nodes[0] ids: 33 120
+        var ${ROOTELEMENT}modelType = ${SCHEMA}WizziModel[rootNode.n]; ids: 34 121
+        if !${ROOTELEMENT}modelType ids: 35 122
+          var maptag = ${SCHEMA}WizziModel.__tagElementMapping[rootNode.n] ids: 36 123
+          if typeof maptag === 'string' ids: 37 124
+            set ${ROOTELEMENT}modelType = ${SCHEMA}WizziModel[maptag] ids: 38 125
+          if !${ROOTELEMENT}modelType ids: 39 126
+            throw new Error('Cannot map root node ' + rootNode.n + ' to any entity of schema + ${SCHEMA}, filepath: ' + filepath); ids: 40 127
+        var ${ROOTELEMENT}model = new ${ROOTELEMENT}modelType(rootNode.v); ids: 41 128
+        set ${ROOTELEMENT}model.loadContext = ittfModel.loadContext ids: 42 129
+        try  ids: 43 130
+          _ ${ROOTELEMENT}model.loadFromNode(rootNode) ids: 44 131
+        catch ex ids: 45 132
+          throw new Error('Error loading wmt model for ${schema.wzId} model ' + filepath + '.\n' + ex.message + '\n' + ex.stack) ids: 46 133
+        var ctx = new ${SCHEMA}WizziModel.${SCHEMA}Context(); ids: 47 134
+        _ ${ROOTELEMENT}model.wzInitialize(ctx); ids: 48 135
+        _ ${ROOTELEMENT}model.wzVerify(ctx); ids: 49 136
+        var filepathdump = path.join(__dirname, 'ittf', 'test.${SCHEMA}.ittf.dump.json') ids: 50 137
+        var filepathdumpxml = path.join(__dirname, 'ittf', 'test.${SCHEMA}.ittf.dump.xml') ids: 51 138
+        var filepathdumpprettify = path.join(__dirname, 'ittf', 'test.${SCHEMA}.ittf.dump.prettify.html') ids: 52 139
+        if ${ROOTELEMENT}model.toJson ids: 53 140
+          # Export to json for test ids: 54 141
+          # console.log('${ROOTELEMENT}model.toJson', util.inspect(${ROOTELEMENT}model.toJson(), { depth: null })); ids: 55 142
+          _ file.write ids: 56 143
+            @ filepathdump ids: 57 144
+            _ stringify ids: 58 145
+              @ ${ROOTELEMENT}model.toJson() ids: 59 146
+              @ null ids: 60 147
+              @ 2 ids: 61 148
+        else  ids: 62 149
+          # Dump moduel using json-stringify-safe ids: 63 150
+          _ file.write ids: 64 151
+            @ filepathdump ids: 65 152
+            _ stringify ids: 66 153
+              @ ${ROOTELEMENT}model ids: 67 154
+              @ null ids: 68 155
+              @ 2 ids: 69 156
+        $if request.toXml ids: 70 157
+          if ${ROOTELEMENT}model.toXml ids: 71 158
+            # Export to xml for test ids: 72 159
+            var xw = new XMLWriter(2) ids: 73 160
+            _ ${ROOTELEMENT}model.toXml(xw) ids: 74 161
+            _ file.write ids: 75 162
+              @ filepathdumpxml ids: 76 163
+              _ xw.toString() ids: 77 164
+        $if request.toPrettify ids: 78 165
+          if ${ROOTELEMENT}model.toPrettify ids: 79 166
+            # Export to prettify for test ids: 80 167
+            var ctx ids: 81 168
+              {  ids: 82 169
+                @ hb new HtmlBuilder() ids: 83 170
+            _ ${ROOTELEMENT}model.toPrettify(ctx) ids: 84 171
+            _ file.write ids: 85 172
+              @ filepathdumpprettify ids: 86 173
+              _ ctx.hb.toText() ids: 87 174

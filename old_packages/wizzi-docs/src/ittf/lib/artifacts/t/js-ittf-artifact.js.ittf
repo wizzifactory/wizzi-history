@@ -1,0 +1,32 @@
+﻿module
+	$params ittfDocument
+	kind jsfile
+
+	# ${chiappala}
+
+	var util = require('util')
+	var path = require('path')
+	var wizzi = require('wizzi')
+
+	var md = module.exports = {}
+	var myname = 'webpack.config.main'
+
+	set md.gen
+		function
+			param model
+			param ctx
+			param callback
+
+			var ittfDocumentPath = path.join(__dirname, 'ittf', '${ittfDocument}')
+
+			_ wizzi.jsModule
+				@ ittfDocumentPath
+				{
+					$hook
+				function
+					param err
+					param result
+					if err
+						throw new Error(err)
+					_ ctx.w(result)
+					_ callback(null, ctx)

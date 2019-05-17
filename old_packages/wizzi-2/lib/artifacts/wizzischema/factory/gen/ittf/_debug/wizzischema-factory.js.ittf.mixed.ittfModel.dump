@@ -1,0 +1,166 @@
+  module  ids: 1 167
+    kind jsfile ids: 2 168
+    #  ids: 3 169
+      # ${schema.wzId} WizziModelFactory ids: 4 170
+    var path = require('path') ids: 5 171
+    var util = require('util') ids: 6 172
+    var _ = require('lodash') ids: 7 173
+    +  ids: 8 174
+    +  ids: 9 175
+    var stringify = require('json-stringify-safe') ids: 10 176
+    $if request.isWizziPackageSchema ids: 11 177
+      var file = require('../../util/file') ids: 12 178
+      var fail = require('../../util/fail') ids: 13 179
+      var errors = require('../../errors') ids: 14 180
+      var log = require('../../util/log')(module) ids: 15 181
+      var ittf = require('../../ittf/ittf') ids: 16 182
+    $else  ids: 17 183
+      var wizzi = require('wizzi') ids: 18 184
+      var file = wizzi.file ids: 19 185
+      var fail = wizzi.fail ids: 20 186
+      var errors = wizzi.errors ids: 21 187
+      var log = wizzi.log(module) ids: 22 188
+      var ittf = wizzi.ittf ids: 23 189
+    var ${schema.wzId}schema = require('./${schema.wzId}-model.g') ids: 24 190
+    $  ids: 25 191
+      var ROOTELEMENT = schema.rootElement.wzId; ids: 26 192
+    var md = module.exports = {}; ids: 27 193
+    #  ids: 28 194
+      # Load a WizziModel of type ${schema.wzId} from an IttfDocument uri ids: 29 195
+      # @param {String} ittfDocumentUri ids: 30 196
+      # @param {Object} context - the loading context object ids: 31 197
+      # @param {Function} callback ids: 32 198
+    set md.load ids: 33 199
+      function  ids: 34 200
+        param ittfDocumentUri ids: 35 201
+        param context ids: 36 202
+        param callback ids: 37 203
+        if !ittfDocumentUri ids: 38 204
+          throw new TypeError('ittfDocumentUri required') ids: 39 205
+        if typeof ittfDocumentUri !== 'string' ids: 40 206
+          throw new TypeError('ittfDocumentUri must be a string') ids: 41 207
+        if typeof callback !== 'function' ids: 42 208
+          throw new TypeError('callback must be a function') ids: 43 209
+        var context = context || {} ids: 44 210
+        var request = context.__request || {} ids: 45 211
+        var start = Date.now() ids: 46 212
+        # load the ittfModel ids: 47 213
+        _ ittf.loadModel ids: 48 214
+          @ ittfDocumentUri ids: 49 215
+          @ context ids: 50 216
+          function  ids: 51 217
+            param err ids: 52 218
+            param ittfModel ids: 53 219
+            if err ids: 54 220
+              return callback(err) ids: 55 221
+            # TODO implement a stats object inside the request object ids: 56 222
+            # _ log.info('Loaded Wizzi model instance of schema ${schema.wzId} from Ittf document ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: 57 223
+            if (request.dumpAll || request.dumpIttfModel) && file.isFilePath(ittfDocumentUri) ids: 58 224
+              var ittfDumpPath = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.ittf.json') ids: 59 225
+              _ file.write ids: 60 226
+                @ ittfDumpPath ids: 61 227
+                _ stringify ids: 62 228
+                  @ ittfModel ids: 63 229
+                  @ null ids: 64 230
+                  @ 2 ids: 65 231
+            _ loadFromIttfModel(ittfModel, ittfDocumentUri, request, callback) ids: 66 232
+    set md.loadFromString ids: 67 233
+      function  ids: 68 234
+        param content ids: 69 235
+        param context ids: 70 236
+        param callback ids: 71 237
+        if !content ids: 72 238
+          throw new TypeError('content required') ids: 73 239
+        if typeof content !== 'string' ids: 74 240
+          throw new TypeError('content must be a string') ids: 75 241
+        if typeof callback !== 'function' ids: 76 242
+          throw new TypeError('callback must be a function') ids: 77 243
+        var context = context || {} ids: 78 244
+        var request = context.__request || {} ids: 79 245
+        var  ids: 80 246
+          decl start = Date.now() ids: 81 247
+          decl ittfDocumentUri = 'text://' ids: 82 248
+        _ ittf.loadModelFromString ids: 83 249
+          @ content ids: 84 250
+          @ context ids: 85 251
+          function  ids: 86 252
+            param err ids: 87 253
+            param ittfModel ids: 88 254
+            if err ids: 89 255
+              return callback(err) ids: 90 256
+            # TODO implement a stats object inside the request object ids: 91 257
+            # _ log.info('Loaded ittf model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: 92 258
+            _ loadFromIttfModel(ittfModel, ittfDocumentUri, request, callback) ids: 93 259
+    function loadFromIttfModel ids: 94 260
+      param ittfModel ids: 95 261
+      param ittfDocumentUri ids: 96 262
+      param request ids: 97 263
+      param callback ids: 98 264
+      +  ids: 99 265
+      var  ids: 100 266
+        decl start = Date.now() ids: 101 267
+        decl ${ROOTELEMENT}model ids: 102 268
+      if ittfModel.nodes.length == 0 ids: 103 269
+        var ${ROOTELEMENT}model = new ${ROOTELEMENT}modelType('EmptyIttfDocument') ids: 104 270
+      else  ids: 105 271
+        # Get the model type of the root node of the ittf model. ids: 106 272
+        var rootNode = ittfModel.nodes[0] ids: 107 273
+        var ${ROOTELEMENT}modelType = ${schema.wzId}schema[rootNode.n] ids: 108 274
+        if !${ROOTELEMENT}modelType ids: 109 275
+          var maptag = ${schema.wzId}schema.__tagElementMapping[rootNode.n] ids: 110 276
+          if typeof maptag === 'string' ids: 111 277
+            set ${ROOTELEMENT}modelType = ${schema.wzId}schema[maptag] ids: 112 278
+          if !${ROOTELEMENT}modelType ids: 113 279
+            var error ids: 114 280
+              new errors.WizziModelLoadError ids: 115 281
+                @ 'In ${schema.wzId} Factory. Cannot map root node: ' + rootNode.n + ', to any entity of schema: ${schema.wzId}' ids: 116 282
+                @ ittfDocumentUri ids: 117 283
+            _ fail.warn(error.message) ids: 118 284
+            return callback(error) ids: 119 285
+        # Load the WizziModel from the root node of the ittfModel ids: 120 286
+        set ${ROOTELEMENT}model = new ${ROOTELEMENT}modelType(rootNode.v) ids: 121 287
+        set ${ROOTELEMENT}model.loadContext = ittfModel.loadContext ids: 122 288
+        try  ids: 123 289
+          # this is a sync call ids: 124 290
+          _ ${ROOTELEMENT}model.loadFromNode(rootNode) ids: 125 291
+        catch ex ids: 126 292
+          var error ids: 127 293
+            new errors.WizziModelLoadError ids: 128 294
+              @ ex.message + '\nIn ${schema.wzId} Factory, calling loadFromNode.' ids: 129 295
+              @ ittfDocumentUri ids: 130 296
+          _ fail.warn(error.message) ids: 131 297
+          return callback(error) ids: 132 298
+      # TODO implement a stats object inside the request object ids: 133 299
+      # _ log.info('Loaded ittfDocument ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: 134 300
+      # TODO Implement an initialize strategy to be declared in the wizzischema ids: 135 301
+      # Initialize and verify the loaded model ids: 136 302
+      var ctx = new ${schema.wzId}schema.${schema.wzId}Context() ids: 137 303
+      _ ${ROOTELEMENT}model.wzInitialize(ctx) ids: 138 304
+      _ ${ROOTELEMENT}model.wzVerify(ctx) ids: 139 305
+      if ctx.schemaIsValid() === false ids: 140 306
+        var errorsMessage = ctx.validationErrors.join('\n'); ids: 141 307
+        var error ids: 142 308
+          new errors.WizziModelLoadError ids: 143 309
+            @ 'In ${schema.wzId} Factory.\nWizziModel has validation errors: \n' + errorsMessage ids: 144 310
+            @ ittfDocumentUri ids: 145 311
+        _ fail.warn(error.message) ids: 146 312
+        _ callback(error); ids: 147 313
+      # TODO implement a stats object inside the request object ids: 148 314
+      # _ log.info('Initialized wmt model ' + ittfDocumentUri + ' in ' + (Date.now() - start) + ' ms') ids: 149 315
+      if (request.dumpAll || request.dumpModel) && ${ROOTELEMENT}model.toJson && file.isFilePath(ittfDocumentUri) ids: 150 316
+        # dump for debug ids: 151 317
+        var ittfModelDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.json') ids: 152 318
+        _ file.write(ittfModelDump, stringify(${ROOTELEMENT}model.toJson(), null, 2)) ids: 153 319
+      # TODO Generate this wzInitializeAsync call only if requested by the wizzischema ids: 154 320
+      _ ${ROOTELEMENT}model.wzInitializeAsync ids: 155 321
+        @ ctx ids: 156 322
+        function  ids: 157 323
+          param err ids: 158 324
+          param result ids: 159 325
+          if err ids: 160 326
+            return callback(err, null) ids: 161 327
+          if (request.dumpAll || request.dumpModelAfterInitializeAsync) && ${ROOTELEMENT}model.toJson && file.isFilePath(ittfDocumentUri) ids: 162 328
+            # dump for debug ids: 163 329
+            var ittfModelDump = path.join(path.dirname(ittfDocumentUri), '_debug', path.basename(ittfDocumentUri) + '.dump.after.initializeasync.json') ids: 164 330
+            _ file.write(ittfModelDump, stringify(${ROOTELEMENT}model.toJson(), null, 2)) ids: 165 331
+          _ callback(null, ${ROOTELEMENT}model) ids: 166 332

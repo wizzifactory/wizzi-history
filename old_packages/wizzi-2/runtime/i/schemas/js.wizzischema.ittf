@@ -1,0 +1,57 @@
+wizzischema js
+	
+	# A schema modeling a javascript module.
+	e module
+		# The root element of the js schema.
+		a kind
+			default jsfile
+			restrict
+				enum jsfile
+				enum nodejs
+				enum react
+				enum es6
+		a ecma
+			default es5
+			restrict
+				enum es5
+				enum es6
+		a no_strict
+			type boolean
+			default false
+		r resource/s
+		
+		r statement/s
+		m wzinitialize
+			if this.kind === 'react' || this.kind === 'es6'
+				set this.ecma = 'es6'
+			set this.wzModelState = ctx.modelState || {}
+	e resource
+		# A known resource (a javascript source), stored in a repository,
+		# that must be included in the generated artifact.
+	e statement
+		# A generic code statement; the node wzName will be emitted as is.
+		# The indentation will depend to the node depth.
+		# Inside an html tag means a text node without line feed
+		tag +
+		
+		r statement/s
+	e statementmultiline : statement
+		# Inside an html tag means a text node preceded by a line feed
+		tag ++
+	e comment : statement
+		tag #
+	
+	e commentmultiline : statement
+		tag ##
+	$include js/var
+	$include js/objects
+	$include js/statements
+	$include js/function
+	$include js/call
+	$include js/expressions
+	$include js/wz
+	$include js/component
+	$include js/html
+	$include js/debug
+	$include js/test
+	$include js/template

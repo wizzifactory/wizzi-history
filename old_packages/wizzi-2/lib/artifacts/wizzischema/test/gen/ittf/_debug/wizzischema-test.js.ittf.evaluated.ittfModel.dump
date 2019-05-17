@@ -1,0 +1,63 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util'); ids: undefined undefined
+    var path = require('path'); ids: undefined undefined
+    +  ids: undefined undefined
+    var wizzi = require('wizzi-core').wizzi ids: undefined undefined
+    +  ids: undefined undefined
+    var stringify = require('json-stringify-safe') ids: undefined undefined
+    var file = wizzi.file ids: undefined undefined
+    var ittf = wizzi.ittf ids: undefined undefined
+    var wfjobWizziModel = require('../../models/wfjob-model.g'); ids: undefined undefined
+    var ittfContext ids: undefined undefined
+      {  ids: undefined undefined
+        @ s1 'alpha' ids: undefined undefined
+        @ s2 'beta' ids: undefined undefined
+        @ a1 ['gamma 1', 'gamma 2', 'gamma 3'] ids: undefined undefined
+        @ a2 ['omega 10', 'omega 20', 'omega 30'] ids: undefined undefined
+    var filepath = path.join(__dirname, 'ittf', 'test.wfjob.ittf'); ids: undefined undefined
+    _ ittf.loadModel ids: undefined undefined
+      @ filepath ids: undefined undefined
+      @ ittfContext ids: undefined undefined
+      function  ids: undefined undefined
+        param err ids: undefined undefined
+        param ittfModel ids: undefined undefined
+        if err ids: undefined undefined
+          throw new Error(err) ids: undefined undefined
+        var rootNode = ittfModel.nodes[0] ids: undefined undefined
+        var wfjobmodelType = wfjobWizziModel[rootNode.n]; ids: undefined undefined
+        if !wfjobmodelType ids: undefined undefined
+          var maptag = wfjobWizziModel.__tagElementMapping[rootNode.n] ids: undefined undefined
+          if typeof maptag === 'string' ids: undefined undefined
+            set wfjobmodelType = wfjobWizziModel[maptag] ids: undefined undefined
+          if !wfjobmodelType ids: undefined undefined
+            throw new Error('Cannot map root node ' + rootNode.n + ' to any entity of schema + wfjob, filepath: ' + filepath); ids: undefined undefined
+        var wfjobmodel = new wfjobmodelType(rootNode.v); ids: undefined undefined
+        set wfjobmodel.loadContext = ittfModel.loadContext ids: undefined undefined
+        try  ids: undefined undefined
+          _ wfjobmodel.loadFromNode(rootNode) ids: undefined undefined
+        catch ex ids: undefined undefined
+          throw new Error('Error loading wmt model for wfjob model ' + filepath + '.\n' + ex.message + '\n' + ex.stack) ids: undefined undefined
+        var ctx = new wfjobWizziModel.wfjobContext(); ids: undefined undefined
+        _ wfjobmodel.wzInitialize(ctx); ids: undefined undefined
+        _ wfjobmodel.wzVerify(ctx); ids: undefined undefined
+        var filepathdump = path.join(__dirname, 'ittf', 'test.wfjob.ittf.dump.json') ids: undefined undefined
+        var filepathdumpxml = path.join(__dirname, 'ittf', 'test.wfjob.ittf.dump.xml') ids: undefined undefined
+        var filepathdumpprettify = path.join(__dirname, 'ittf', 'test.wfjob.ittf.dump.prettify.html') ids: undefined undefined
+        if wfjobmodel.toJson ids: undefined undefined
+          # Export to json for test ids: undefined undefined
+          # console.log('wfjobmodel.toJson', util.inspect(wfjobmodel.toJson(), { depth: null })); ids: undefined undefined
+          _ file.write ids: undefined undefined
+            @ filepathdump ids: undefined undefined
+            _ stringify ids: undefined undefined
+              @ wfjobmodel.toJson() ids: undefined undefined
+              @ null ids: undefined undefined
+              @ 2 ids: undefined undefined
+        else  ids: undefined undefined
+          # Dump moduel using json-stringify-safe ids: undefined undefined
+          _ file.write ids: undefined undefined
+            @ filepathdump ids: undefined undefined
+            _ stringify ids: undefined undefined
+              @ wfjobmodel ids: undefined undefined
+              @ null ids: undefined undefined
+              @ 2 ids: undefined undefined

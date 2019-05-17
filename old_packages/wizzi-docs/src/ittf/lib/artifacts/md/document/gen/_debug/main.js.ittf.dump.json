@@ -1,0 +1,774 @@
+{
+  "WmtTag": "module",
+  "WmtName": "",
+  "no_iife": false,
+  "use_strict": false,
+  "kind": "jsfile",
+  "exportKind": "var",
+  "includes": [],
+  "statements": [
+    {
+      "WmtTag": "var",
+      "WmtName": "util = require('util')",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "wizzi = require('wizzi-core').wizzi",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "verify = wizzi.verify",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "utilnode = wizzi.utilnode",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "lineparser = wizzi.lineparser",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "md = module.exports = {}",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "myname = 'mdx.document.main'",
+      "statements": []
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "#",
+              "WmtName": "log 'model', util.inspect(model, { depth: 1 })",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItem(model, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "callback(null, ctx)",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "callback"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.genItems",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "var",
+              "WmtName": "",
+              "statements": [
+                {
+                  "WmtTag": "decl",
+                  "WmtName": "opt = options || {}",
+                  "statements": []
+                },
+                {
+                  "WmtTag": "decl",
+                  "WmtName": "from = opt.from || 0",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "for",
+              "WmtName": "var i = from; i < items.length; i++",
+              "statements": [
+                {
+                  "WmtTag": "var",
+                  "WmtName": "item = items[i]",
+                  "statements": []
+                },
+                {
+                  "WmtTag": "_",
+                  "WmtName": "this.genItem(item, ctx)",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "items"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "options"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.genItem",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "if",
+              "WmtName": "this[model.wzElement]",
+              "statements": [
+                {
+                  "WmtTag": "#",
+                  "WmtName": "known element",
+                  "statements": []
+                },
+                {
+                  "WmtTag": "if",
+                  "WmtName": "this[model.wzElement](model, ctx)",
+                  "statements": [
+                    {
+                      "WmtTag": "#",
+                      "WmtName": "ok, processed",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "return",
+                      "WmtName": "",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.mdx",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.h1",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"# \" + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.h2",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"## \" + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.h3",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"### \" + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.h4",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"#### \" + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.h5",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"##### \" + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.h6",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"##### \" + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.p",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "if",
+              "WmtName": "ctx.isCode",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "ctx.indent()",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "if",
+              "WmtName": "ctx.isCode",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "ctx.deindent()",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.br",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w()",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.i",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.write('*' + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.write('*')",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.b",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.write('**' + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.write('**')",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.span",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.write(model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.blank",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.write(' ' + model.wzName)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.code",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"`\" + model.wzName + \"`\")",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.gen.prototype.js",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"```javascript\")",
+              "statements": []
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "ctx.isCode = true",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "this.genItems(model.elements, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "ctx.isCode = false",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "ctx.w(\"```\")",
+              "statements": []
+            },
+            {
+              "WmtTag": "return",
+              "WmtName": "true;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.isLineTag",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "return",
+              "WmtName": "['p', 'br'].indexOf(model.wzElement) > -1;",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+  html  ids: 1 54
+    head  ids: 2 55
+      @title Wizzi schema ${schema.name} ids: 3 56
+      @style  ids: 107 137
+        $. body {__LS__  font-family: verdana;__LS__  font-size: 13px;__LS__} __LS__.main-left {__LS__  position: fixed;__LS__  margin-left: 5%;__LS__  top: 80px;__LS__  width: 20%;__LS__  height: 80%;__LS__  background: #eee;__LS__  overflow: auto;__LS__} __LS__.main-center {__LS__  top: 80px;__LS__  margin-left: 30%;__LS__  height: 80%;__LS__  width: 50%;__LS__  position: fixed;__LS__  overflow: auto;__LS__  z-index: 1;__LS__} __LS__.well {__LS__  border: solid 1px #aaa;__LS__} __LS__.pretty-table { border: 1px solid #333; width: 100%; margin-top: 30px; }__LS__.pretty-table th, .pretty-table td { border: 1px dotted #666; }__LS__.pretty-table-2 { border: 1px solid #999; width: 100%; margin-top: 20px; } ids: 108 138
+    body  ids: 5 58
+      . main ids: 6 59
+        h1 Wizzi schema ${schema.name} ids: 7 60
+        . main-left ids: 8 61
+          ul  ids: 9 62
+            $foreach element in schema.elements ids: 10 63
+              li  ids: 11 64
+                a ${element.name} ids: 12 65
+                  href #element_${element.name} ids: 13 66
+        . main-center ids: 14 67
+          $if schema.requires.length > 0 ids: 15 68
+            h5 Require ids: 16 69
+            $foreach require in schema.requires ids: 17 70
+              div require ${require.name} ids: 18 71
+                $if require.declareVar ids: 19 72
+                  span &nbsp; declare-var: ${require.declareVar} ids: 20 73
+          $if schema.exportTos.length > 0 ids: 21 74
+            h5 Exports ids: 22 75
+            $foreach exportTo in schema.exportTos ids: 23 76
+              div ${exportTo.name} ids: 24 77
+          $foreach element in schema.elements ids: 25 78
+            table  ids: 26 79
+              id element_${element.name} ids: 27 80
+              class pretty-table ids: 28 81
+              thead  ids: 29 82
+                tr  ids: 30 83
+                  th Element ids: 31 84
+                  th Tag ids: 32 85
+                  th Super ids: 33 86
+                  th Flags ids: 34 87
+              tbody  ids: 35 88
+                tr  ids: 36 89
+                  td  ids: 37 90
+                    b ${element.name} ids: 38 91
+                  $if element.tags ids: 39 92
+                    td ${element.tags.join('|')} ids: 40 93
+                  td ${element.super} ids: 41 94
+                  td ${element.flags} ids: 42 95
+            $if element.comments.length > 0 ids: 43 96
+              h5 Description ids: 44 97
+              div  ids: 45 98
+                $foreach comment in element.comments ids: 46 99
+                  span ${comment} &nbsp; ids: 47 100
+            $if element.attributes.length > 0 ids: 48 101
+              $group  ids: 167 205
+                h5 Attributes ids: 168 206
+                small  ids: 169 207
+                  table  ids: 329 334
+                    $args: 100  $params: width
+                    class table table-condensed table-bordered ids: 331 335
+                    style width:${width}%; ids: 332 336
+                    thead  ids: 171 209
+                      tr  ids: 172 210
+                        th Name ids: 173 211
+                        th Tag ids: 174 212
+                        th Type ids: 175 213
+                        th Default ids: 176 214
+                        th Inherited ids: 177 215
+                        th Flags ids: 178 216
+                        th Description ids: 179 217
+                    tbody  ids: 180 218
+                      $foreach attribute in element.attributes ids: 181 219
+                        tr  ids: 182 220
+                          td ${attribute.name} ids: 183 221
+                          $if attribute.tags ids: 184 222
+                            td ${attribute.tags.join('|')} ids: 185 223
+                          td ${attribute.type} ids: 186 224
+                          td ${attribute.default} ids: 187 225
+                          td ${attribute.inheritedFrom} ids: 188 226
+                          td ${attribute.flags} ids: 189 227
+                          td  ids: 190 228
+                            $if attribute.comments.length > 0 ids: 191 229
+                              div  ids: 192 230
+                                $foreach comment in attribute.comments ids: 193 231
+                                  span ${comment} &nbsp; ids: 194 232
+                            $if attribute.restricts.length > 0 ids: 195 233
+                              h5 restrict ids: 196 234
+                              $foreach restrict in attribute.restricts ids: 197 235
+                                $foreach facet in restrict.facets ids: 198 236
+                                  table  ids: 199 237
+                                    tr  ids: 200 238
+                                      td ${facet.name} ${facet.value} ids: 201 239
+                                      td  ids: 202 240
+                                        $foreach comment in facet.comments ids: 203 241
+                                          span ${comment} &nbsp; ids: 204 242
+            $if element.relations.length > 0 ids: 50 103
+              $group  ids: 243 266
+                h5 Relations ids: 244 267
+                small  ids: 245 268
+                  table  ids: 329 338
+                    $args: 100  $params: width
+                    class table table-condensed table-bordered ids: 331 339
+                    style width:${width}%; ids: 332 340
+                    thead  ids: 247 270
+                      tr  ids: 248 271
+                        th Name ids: 249 272
+                        th Role ids: 250 273
+                        th Cardinality ids: 251 274
+                        th Inherited ids: 252 275
+                        th Flags ids: 253 276
+                        th Description ids: 254 277
+                    tbody  ids: 255 278
+                      $foreach relation in element.relations ids: 256 279
+                        tr  ids: 257 280
+                          td ${relation.name} ids: 258 281
+                          td ${relation.role} ids: 259 282
+                          td ${relation.cardinality} ids: 260 283
+                          td ${relation.inheritedFrom} ids: 261 284
+                          td ${relation.flags} ids: 262 285
+                          td  ids: 263 286
+                            $foreach comment in relation.comments ids: 264 287
+                              span ${comment} &nbsp; ids: 265 288
+            $if element.methods.length > 0 ids: 52 105
+              $group  ids: 289 309
+                h5 Methods ids: 290 310
+                small  ids: 291 311
+                  table  ids: 329 342
+                    $args: 100  $params: width
+                    class table table-condensed table-bordered ids: 331 343
+                    style width:${width}%; ids: 332 344
+                    thead  ids: 293 313
+                      tr  ids: 294 314
+                        th Signature ids: 295 315
+                        th Statements ids: 296 316
+                    tbody  ids: 297 317
+                      $foreach method in element.methods ids: 298 318
+                        tr  ids: 299 319
+                          td  ids: 300 320
+                            div ${method.name} ids: 301 321
+                            $if method.comments.length > 0 ids: 302 322
+                              div  ids: 303 323
+                                $foreach comment in method.comments ids: 304 324
+                                  span ${comment} &nbsp; ids: 305 325
+                          td  ids: 306 326
+                            $foreach stm in method.statements ids: 307 327
+                              div ${stm.tag} ${stm.value}; ids: 308 328

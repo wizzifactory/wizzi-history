@@ -1,0 +1,135 @@
+module
+	kind jsfile
+	#
+		# test var
+	var x = 1
+	var y
+		{
+			@ name 'stefi'
+	var
+		decl alpha = 0
+		decl sum
+			function
+				param a
+				param b
+				return a + b
+	
+	#
+		# test objects
+	var obj_1
+		{
+			@ numbers
+				[
+					@ 1
+					@ 2
+			@ letters
+				[
+					@ 'a'
+					@ 'b'
+			@ numbers_letters
+				[
+					{
+						@ num 1
+						@ letter 'a'
+					{
+						@ num 2
+						@ letter 'b'
+			@ start 0
+			@ state
+				{
+					@ value null
+					@ add
+						function
+							param b
+							set this.value = value + b
+	
+	#
+		# test functions
+	function setNumLet
+		param num
+		param letter
+		param mode
+		if mode === 'object'
+			return
+				{
+					@ num num
+					@ letter letter
+		else
+			return  alpha + beta
+	#
+		# test class
+	class animal
+		ctor
+			param kind
+			param numlegs
+			set this.kind = kind
+			set this.numlegs = numlegs
+	class cat
+		super animal
+		ctor
+			param name
+			base 'cat'
+			base 4
+	var miao
+		new cat
+			@ 'miao'
+			_ getLegs('cat')
+	#
+		# test call
+	_ exec
+		@ argument
+		{
+			@ property 'hello'
+		[
+			@ arrayItem1
+			@ arrayItem2
+		function
+			# ... statements ...
+		_ retrieveValue
+			@ argument
+	
+	#
+		# test iife
+	iife 
+		$$ unary-prefix +
+		function
+			param $
+			function high
+				param element
+				_ $(element).addClass('highlight')
+		@ jQuery
+	#
+		# test if
+	if a
+		_ a
+	elif b
+		_ b
+	else
+		_ c
+	#
+		# test switch
+	switch alpha
+		case 0
+			_ beta(0)
+		case 10
+			_ beta(1)
+		default
+			_ beta(null)
+	#
+		# test loops
+	var j = 0
+	while j < 10
+		log j
+		set j++
+	do j > 0
+		log j
+		set j--
+	for k in miao
+		log k, miao[k]
+	foreach a in [1,2,3]
+		log a
+	#
+		# test debug
+	log 'hello', miao
+	log? miao
+	chalk red miao

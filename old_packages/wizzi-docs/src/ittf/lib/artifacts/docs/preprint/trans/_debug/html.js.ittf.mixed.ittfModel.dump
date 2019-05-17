@@ -1,0 +1,348 @@
+  module  ids: 1 249
+    kind jsfile ids: 2 250
+    var util = require('util') ids: 3 251
+    var verify = require('wizzi-core').verify ids: 4 252
+    var error = require('wizzi-core').error ids: 5 253
+    var lineparser = require('wizzi-core').lineparser ids: 6 254
+    var HtmlBuilder = require('./htmlbuilder').HtmlBuilder ids: 7 255
+    var md = module.exports = {} ids: 8 256
+    var myname = 'docs.preprint.html' ids: 9 257
+    var STYLE_DOCS_ITTF_TREE_PANEL = 'docs-ittf-tree-panel' ids: 10 258
+    var STYLE_DOCS_ITTF_TREE_LINE = 'docs-ittf-tree-line' ids: 11 259
+    var STYLE_DOCS_ITTF_NODE_LINENUMS = 'docs-ittf-node-linenums' ids: 12 260
+    var STYLE_DOCS_ITTF_NODE_INDENT = 'docs-ittf-node-indent-' ids: 13 261
+    var STYLE_DOCS_ITTF_NODE_NAME = 'docs-ittf-node-name' ids: 14 262
+    var STYLE_DOCS_ITTF_NODE_VALUE = 'docs-ittf-node-value' ids: 15 263
+    # pretty print ids: 16 264
+    var STYLE_DOCS_ITTF_TREE_PANEL = 'linenums' ids: 17 265
+    var STYLE_DOCS_ITTF_TREE_LINE = 'docs-ittf-tree-line' ids: 18 266
+    var STYLE_DOCS_ITTF_NODE_LINENUMS = 'docs-ittf-node-linenums' ids: 19 267
+    var STYLE_DOCS_ITTF_NODE_INDENT = 'docs-ittf-node-indent-' ids: 20 268
+    var STYLE_DOCS_ITTF_NODE_COMMAND = 'kwd' ids: 21 269
+    var STYLE_DOCS_ITTF_NODE_NAME = 'tag' ids: 22 270
+    var STYLE_DOCS_ITTF_NODE_VALUE = 'pln' ids: 23 271
+    var STYLE_DOCS_ITTF_NODE_EXPR = 'expr' ids: 24 272
+    var STYLE_DOCS_ITTF_NODE_MIX = 'mix' ids: 25 273
+    set md.toHtmlLines ids: 26 274
+      function  ids: 27 275
+        param models ids: 28 276
+        param ctx ids: 29 277
+        set ctx.hb = new HtmlBuilder() ids: 30 278
+        _ md.goItems(models, ctx) ids: 31 279
+        # log myname + '.toText', ctx.hb.toText() ids: 32 280
+        return ctx.hb.toLines() ids: 33 281
+    set md.${wzelement} ids: 497 504
+      $args: toHtmlJsCodeLines  $params: wzelement
+      function  ids: 499 505
+        param model ids: 500 506
+        param ctx ids: 501 507
+        param parent ids: 502 508
+        set ctx.__lang = 'js' ids: 35 283
+        set ctx.hb = new HtmlBuilder(true) ids: 36 284
+        _ ctx.hb.openTag('pre') ids: 37 285
+        _ ctx.hb.writeAttribute('class', 'prettyprint-js') ids: 38 286
+        _ ctx.hb.openTag('ol') ids: 39 287
+        _ ctx.hb.writeAttribute('class', 'linenums') ids: 40 288
+        _ md.goItem(model, ctx) ids: 41 289
+        _ ctx.hb.closeTag('ol') ids: 42 290
+        _ ctx.hb.closeTag('pre') ids: 43 291
+        return ctx.hb.toLines() ids: 44 292
+    set md.toHtmlCodeLines ids: 45 293
+      function  ids: 46 294
+        param model ids: 47 295
+        param ctx ids: 48 296
+        set ctx.hb = new HtmlBuilder(true) ids: 49 297
+        _ ctx.hb.openTag('pre') ids: 50 298
+        _ ctx.hb.writeAttribute('class', 'prettyprint') ids: 51 299
+        _ ctx.hb.openTag('ol') ids: 52 300
+        _ ctx.hb.writeAttribute('class', 'linenums') ids: 53 301
+        _ md.goItem(model, ctx) ids: 54 302
+        _ ctx.hb.closeTag('ol') ids: 55 303
+        _ ctx.hb.closeTag('pre') ids: 56 304
+        # log myname + '.toText', ctx.hb.toText() ids: 57 305
+        return ctx.hb.toLines() ids: 58 306
+    set md.${wzelement} ids: 497 510
+      $args: goItem  $params: wzelement
+      function  ids: 499 511
+        param model ids: 500 512
+        param ctx ids: 501 513
+        param parent ids: 502 514
+        var oper = md[model.wzElement] ids: 60 308
+        if oper ids: 61 309
+          _ oper(model, ctx) ids: 62 310
+        else  ids: 63 311
+          _ errors.NodeError(myname + '.goItem. Unknown wzElement: ' + model.wzTag + '/' + model.wzElement, model); ids: 64 312
+    set md.goItems ids: 65 313
+      function  ids: 66 314
+        param items ids: 67 315
+        param ctx ids: 68 316
+        param options ids: 69 317
+        set options = options || {} ids: 70 318
+        set options.from = options.from || 0 ids: 71 319
+        for var i = options.from; i < items.length; i++ ids: 72 320
+          var item = items[i] ids: 73 321
+          _ md.goItem(item, ctx) ids: 74 322
+    set md.${wzelement} ids: 497 516
+      $args: element  $params: wzelement
+      function  ids: 499 517
+        param model ids: 500 518
+        param ctx ids: 501 519
+        param parent ids: 502 520
+        var nv = lineparser.parseNameValueRaw(model.wzName) ids: 76 324
+        var tag = nv.name() ids: 77 325
+        set model.wzName = nv.value() ids: 78 326
+        _ stdElement(tag, model, ctx) ids: 79 327
+    set md.${wzelement} ids: 497 522
+      $args: h2  $params: wzelement
+      function  ids: 499 523
+        param model ids: 500 524
+        param ctx ids: 501 525
+        param parent ids: 502 526
+        _ ctx.hb.openTag('h2') ids: 81 329
+        _ setAttributes(model, ctx) ids: 82 330
+        _ ctx.hb.writeText(model.wzName) ids: 83 331
+        _ ctx.hb.closeTag('h2') ids: 84 332
+        _ md.goItems(model.items, ctx) ids: 85 333
+    set md.${wzelement} ids: 497 528
+      $args: h3  $params: wzelement
+      function  ids: 499 529
+        param model ids: 500 530
+        param ctx ids: 501 531
+        param parent ids: 502 532
+        _ ctx.hb.openTag('h3') ids: 87 335
+        _ setAttributes(model, ctx) ids: 88 336
+        _ ctx.hb.writeText(model.wzName) ids: 89 337
+        _ ctx.hb.closeTag('h3') ids: 90 338
+        _ md.goItems(model.items, ctx) ids: 91 339
+    set md.${wzelement} ids: 497 534
+      $args: h4  $params: wzelement
+      function  ids: 499 535
+        param model ids: 500 536
+        param ctx ids: 501 537
+        param parent ids: 502 538
+        _ ctx.hb.openTag('h4') ids: 93 341
+        _ setAttributes(model, ctx) ids: 94 342
+        _ ctx.hb.writeText(model.wzName) ids: 95 343
+        _ ctx.hb.closeTag('h4') ids: 96 344
+        _ md.goItems(model.items, ctx) ids: 97 345
+    set md.${wzelement} ids: 497 540
+      $args: ul  $params: wzelement
+      function  ids: 499 541
+        param model ids: 500 542
+        param ctx ids: 501 543
+        param parent ids: 502 544
+        if model.wzName.length > 0 ids: 99 347
+          _ ctx.hb.openTag('h4') ids: 100 348
+          _ ctx.hb.writeText(model.wzName) ids: 101 349
+          _ ctx.hb.closeTag('h4') ids: 102 350
+        _ ctx.hb.openTag('ul') ids: 103 351
+        _ setAttributes(model, ctx) ids: 104 352
+        _ md.goItems(model.items, ctx) ids: 105 353
+        _ ctx.hb.closeTag('ul') ids: 106 354
+    set md.${wzelement} ids: 497 546
+      $args: li  $params: wzelement
+      function  ids: 499 547
+        param model ids: 500 548
+        param ctx ids: 501 549
+        param parent ids: 502 550
+        _ stdElement('li', model, ctx) ids: 108 356
+    set md.${wzelement} ids: 497 552
+      $args: div  $params: wzelement
+      function  ids: 499 553
+        param model ids: 500 554
+        param ctx ids: 501 555
+        param parent ids: 502 556
+        _ stdElement('div', model, ctx) ids: 110 358
+    set md.${wzelement} ids: 497 558
+      $args: p  $params: wzelement
+      function  ids: 499 559
+        param model ids: 500 560
+        param ctx ids: 501 561
+        param parent ids: 502 562
+        _ stdElement('p', model, ctx) ids: 112 360
+    set md.${wzelement} ids: 497 564
+      $args: see  $params: wzelement
+      function  ids: 499 565
+        param model ids: 500 566
+        param ctx ids: 501 567
+        param parent ids: 502 568
+        _ ctx.hb.openTag('p') ids: 114 362
+        _ ctx.hb.openTag('a') ids: 115 363
+        _ ctx.hb.writeAttribute('href', model.href) ids: 116 364
+        _ ctx.hb.writeText('see ' + model.wzName) ids: 117 365
+        _ md.goItems(model.items, ctx) ids: 118 366
+        _ ctx.hb.closeTag('a') ids: 119 367
+        _ ctx.hb.closeTag('p') ids: 120 368
+    set md.${wzelement} ids: 497 570
+      $args: table  $params: wzelement
+      function  ids: 499 571
+        param model ids: 500 572
+        param ctx ids: 501 573
+        param parent ids: 502 574
+        _ ctx.hb.openTag('table') ids: 122 370
+        _ setAttributes(model, ctx) ids: 123 371
+        _ md.goItems(model.items, ctx) ids: 124 372
+        _ ctx.hb.closeTag('table') ids: 125 373
+    set md.${wzelement} ids: 497 576
+      $args: tr  $params: wzelement
+      function  ids: 499 577
+        param model ids: 500 578
+        param ctx ids: 501 579
+        param parent ids: 502 580
+        _ ctx.hb.openTag('tr') ids: 127 375
+        _ setAttributes(model, ctx) ids: 128 376
+        _ md.goItems(model.items, ctx) ids: 129 377
+        _ ctx.hb.closeTag('tr') ids: 130 378
+    set md.${wzelement} ids: 497 582
+      $args: td  $params: wzelement
+      function  ids: 499 583
+        param model ids: 500 584
+        param ctx ids: 501 585
+        param parent ids: 502 586
+        _ stdElement('td', model, ctx) ids: 132 380
+    set md.${wzelement} ids: 497 588
+      $args: plus  $params: wzelement
+      function  ids: 499 589
+        param model ids: 500 590
+        param ctx ids: 501 591
+        param parent ids: 502 592
+        _ ctx.hb.writeText(' ' + model.wzName) ids: 134 382
+    set md.${wzelement} ids: 497 594
+      $args: js  $params: wzelement
+      function  ids: 499 595
+        param model ids: 500 596
+        param ctx ids: 501 597
+        param parent ids: 502 598
+        var js_ctx = {} ids: 136 384
+        set js_ctx.__ittfNode ids: 137 385
+          {  ids: 138 386
+            @ level 0 ids: 139 387
+            @ line 0 ids: 140 388
+        set js_ctx.__lang = 'js' ids: 141 389
+        set js_ctx.hb = new HtmlBuilder(true) ids: 142 390
+        _ js_ctx.hb.openTag('pre') ids: 143 391
+        _ js_ctx.hb.writeAttribute('class', 'prettyprint-js') ids: 144 392
+        _ js_ctx.hb.openTag('ol') ids: 145 393
+        _ js_ctx.hb.writeAttribute('class', 'linenums') ids: 146 394
+        _ md.goItems(model.items, js_ctx) ids: 147 395
+        _ js_ctx.hb.closeTag('ol') ids: 148 396
+        _ js_ctx.hb.closeTag('pre') ids: 149 397
+        var lines = js_ctx.hb.toLines() ids: 150 398
+        _ ctx.hb.writeText(lines[0]) ids: 151 399
+    set md.${wzelement} ids: 497 600
+      $args: ittf  $params: wzelement
+      function  ids: 499 601
+        param model ids: 500 602
+        param ctx ids: 501 603
+        param parent ids: 502 604
+        if model.items.length == 1 ids: 153 401
+          var ittf_ctx = {} ids: 154 402
+          set ittf_ctx.__ittfNode ids: 155 403
+            {  ids: 156 404
+              @ level 0 ids: 157 405
+              @ line 0 ids: 158 406
+          var lines = md.toHtmlCodeLines(model.items[0], ittf_ctx); ids: 159 407
+          _ ctx.hb.writeText(lines[0]) ids: 160 408
+        else  ids: 161 409
+          _ errors.NodeError(myname + '.ittf. ittf node must have one child element', model); ids: 162 410
+    set md.${wzelement} ids: 497 606
+      $args: ittfnode  $params: wzelement
+      function  ids: 499 607
+        param model ids: 500 608
+        param ctx ids: 501 609
+        param parent ids: 502 610
+        if ctx.__lang === 'js' ids: 164 412
+          _ md.ittfnode_js(model, ctx) ids: 165 413
+        else  ids: 166 414
+          _ md.ittfnode_ittf(model, ctx) ids: 167 415
+    set md.${wzelement} ids: 497 612
+      $args: ittfnode_js  $params: wzelement
+      function  ids: 499 613
+        param model ids: 500 614
+        param ctx ids: 501 615
+        param parent ids: 502 616
+        set ctx.__ittfNode.line++ ids: 169 417
+        _ ctx.hb.openTag('li') ids: 170 418
+        _ ctx.hb.writeAttribute('class', 'J' + ('' + ctx.__ittfNode.line).substr(-1,1)) ids: 171 419
+        _ ctx.hb.writeText(spaces(ctx.__ittfNode.level * 4) + verify.htmlEscape(model.wzName) + '\n') ids: 172 420
+        _ ctx.hb.closeTag('li') ids: 173 421
+        set ctx.__ittfNode.level++ ids: 174 422
+        _ md.goItems(model.items, ctx) ids: 175 423
+        set ctx.__ittfNode.level-- ids: 176 424
+    set md.${wzelement} ids: 497 618
+      $args: ittfnode_ittf  $params: wzelement
+      function  ids: 499 619
+        param model ids: 500 620
+        param ctx ids: 501 621
+        param parent ids: 502 622
+        set ctx.__ittfNode.line++ ids: 178 426
+        var  ids: 179 427
+          decl nv = lineparser.parseNameValue(model.wzName) ids: 180 428
+          decl name = nv.name() ids: 181 429
+          decl is_command = name && name.substr(0,1) === '$' ids: 182 430
+          decl is_code = name === '$' || name === '$global' ids: 183 431
+          decl name_style = STYLE_DOCS_ITTF_NODE_NAME ids: 184 432
+          decl value_style = STYLE_DOCS_ITTF_NODE_VALUE ids: 185 433
+        if ['$if', '$elif', '$'].indexOf(name) >= 0 ids: 186 434
+          set value_style = STYLE_DOCS_ITTF_NODE_EXPR ids: 187 435
+        elif ctx.__insideCode ids: 188 436
+          set name_style = STYLE_DOCS_ITTF_NODE_EXPR ids: 189 437
+          set value_style = STYLE_DOCS_ITTF_NODE_EXPR ids: 190 438
+        elif name && name.substr(-1,1) === '(' ids: 191 439
+          set name_style = STYLE_DOCS_ITTF_NODE_MIX ids: 192 440
+        _ ctx.hb.openTag('li') ids: 193 441
+        _ ctx.hb.writeAttribute('class', 'L' + ('' + ctx.__ittfNode.line).substr(-1,1)) ids: 194 442
+        _ ctx.hb.openTag('span', { inline: true }) ids: 195 443
+        _ ctx.hb.writeAttribute('class', 'pnl') ids: 196 444
+        _ ctx.hb.writeText(spaces(ctx.__ittfNode.level * 4)) ids: 197 445
+        _ ctx.hb.closeTag('span', { inline: true }) ids: 198 446
+        _ ctx.hb.openTag('span', { inline: true }) ids: 199 447
+        if is_command ids: 200 448
+          _ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_COMMAND) ids: 201 449
+        else  ids: 202 450
+          _ ctx.hb.writeAttribute('class', name_style) ids: 203 451
+        _ ctx.hb.writeText(nv.name()) ids: 204 452
+        _ ctx.hb.closeTag('span', { inline: true }) ids: 205 453
+        _ ctx.hb.openTag('span', { inline: true }) ids: 206 454
+        _ ctx.hb.writeAttribute('class', value_style) ids: 207 455
+        _ ctx.hb.writeText(' ' + verify.htmlEscape(nv.value())) ids: 208 456
+        _ ctx.hb.closeTag('span', { inline: true }) ids: 209 457
+        _ ctx.hb.closeTag('li') ids: 210 458
+        if is_code ids: 211 459
+          set ctx.__insideCode = true ids: 212 460
+        set ctx.__ittfNode.level++ ids: 213 461
+        _ md.goItems(model.items, ctx) ids: 214 462
+        set ctx.__ittfNode.level-- ids: 215 463
+        if is_code ids: 216 464
+          set ctx.__insideCode = false ids: 217 465
+    function formatLineNum ids: 218 466
+      param line ids: 219 467
+      if line < 10 ids: 220 468
+        return '00' + line ids: 221 469
+      if line < 100 ids: 222 470
+        return '0' + line ids: 223 471
+      return line ids: 224 472
+    function spaces ids: 225 473
+      param num ids: 226 474
+      return Array(num + 1).join(" ") ids: 227 475
+    function stdElement ids: 228 476
+      param tag ids: 229 477
+      param model ids: 230 478
+      param ctx ids: 231 479
+      _ ctx.hb.openTag(tag) ids: 232 480
+      _ setAttributes(model, ctx) ids: 233 481
+      _ ctx.hb.writeText(model.wzName) ids: 234 482
+      _ md.goItems(model.items, ctx) ids: 235 483
+      _ ctx.hb.closeTag(tag) ids: 236 484
+    function setAttributes ids: 237 485
+      param model ids: 238 486
+      param ctx ids: 239 487
+      if model.id ids: 240 488
+        _ ctx.hb.writeAttribute('id', model.id) ids: 241 489
+      if model.class ids: 242 490
+        _ ctx.hb.writeAttribute('class', model.class) ids: 243 491
+      if model.style ids: 244 492
+        _ ctx.hb.writeAttribute('style', model.style) ids: 245 493
+      foreach a in model.attributes ids: 246 494
+        var nv = lineparser.parseNameValueRaw(a.wzName) ids: 247 495
+        _ ctx.hb.writeAttribute(nv.name(), nv.value()) ids: 248 496

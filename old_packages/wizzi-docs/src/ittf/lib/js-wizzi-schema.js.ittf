@@ -1,0 +1,128 @@
+﻿module
+	kind jsfile
+	
+	var a
+	
+	var x = 1
+	
+	var y
+		{
+			@ name 'stefi'
+			@ age 58
+	
+	var fxDouble
+		function
+			param x
+			return x * 2
+	
+	var
+		decl b
+		decl z = 1
+		decl t
+			{
+				@ name 'annie'
+				@ age 58
+		decl fyHalve
+			function
+				param y
+				return y / 2
+
+	
+	function sayHello
+		param name
+		param style
+		if style === 'bold'
+			return 'Hello <b>' + name + '</b>'
+		else
+			return 'Hello ' + name
+	
+	# call statement
+	_ exec
+		@ argument
+		{
+			@ property 'hello'
+		[
+			@ arrayItem1
+			@ arrayItem2
+		function
+			# ... statements ...
+		_ retrieveValue
+			@ argument
+	
+	iife 
+		$$ unary-prefix +
+		function
+			param $
+			function high
+				param element
+				_ $(element).addClass('highlight')
+		@ jQuery
+
+	function Animal
+		param kind
+		param legs
+		param actionFunction
+
+	var obj
+		new Animal
+			@ 'dog'
+			@ 4
+			function 
+				return 'I bark'
+
+	# if [ elif [ elif [ ... ]]] [ else ] node statements
+	if condition
+		# statements
+	elif condition
+		# statements
+	else
+		# statements
+	+
+	# while node statement
+	while condition
+		# statements
+	+
+	# do node statement
+	do condition
+		# statements
+	+
+	# for node statement
+	for js-for-expression
+		# statements
+	+
+	# foreach node statement
+	foreach item-var in js-expression
+		# statements
+
+
+	+
+	# try/catch node statement
+	try
+		# statements
+	catch ex
+		# statements
+	finally
+		# statements
+
+	+
+	# throw node statement
+	throw jsExpression
+
+	class Animal
+		ctor
+			param kind
+			param legs
+			# ... statements ...
+	class Dog
+		super Animal
+		ctor
+			param name
+			base 'bark'
+		m run
+			param time
+			param velocity
+			# ... statements ...
+		m getDistanceRun
+			# ... statements ...
+
+	chalk green commaSeparatedExpressionList

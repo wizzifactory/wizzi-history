@@ -1,0 +1,743 @@
+  module  ids: 1 27
+    kind jsfile ids: 2 28
+    var util = require('util') ids: 3 29
+    var path = require('path') ids: 4 30
+    var _ = require('lodash') ids: 5 31
+    $foreach require in schema.requiredModules ids: 6 32
+      var ${require.declareVar} = require('${require.wzName}')${require.invoke} ids: 7 33
+    +  ids: 8 34
+    var md = module.exports = {} ids: 9 35
+    +  ids: 10 36
+    $group  ids: 53 69
+      class wzSourceLineInfo ids: 54 70
+        ctor  ids: 55 71
+          param row ids: 56 72
+          param col ids: 57 73
+          param sourceKey ids: 58 74
+          set this.row = row ids: 59 75
+          set this.col = col ids: 60 76
+          set this.sourceKey = sourceKey ids: 61 77
+        m toString ids: 62 78
+          param instance ids: 63 79
+          if instance ids: 64 80
+            return 'row: ' + this.row + ', col: ' + this.col + ', file: ' + instance.wzSourceFilepath(this.sourceKey) ids: 65 81
+          else  ids: 66 82
+            return 'row: ' + this.row + ', col: ' + this.col + ', sourceKey: ' + this.sourceKey ids: 67 83
+      set md.wzSourceLineInfo = wzSourceLineInfo ids: 68 84
+    $group  ids: 85 194
+      class ${schema.wzId}Base ids: 86 195
+        ctor  ids: 87 196
+          param name ids: 88 197
+          param sourceLineInfo ids: 89 198
+          set this.wzName = name || '' ids: 90 199
+          set this.wzParent = null ids: 91 200
+          set this.wzSourceLineInfo = sourceLineInfo ids: 92 201
+          set this.wzChildren = [] ids: 93 202
+        m wzRoot ids: 94 203
+          return this.wzParent == null ? this : this.wzParent.wzRoot() ids: 95 204
+        m wzSourceFilepath ids: 96 205
+          param sourceKey ids: 97 206
+          return this.wzRoot().loadContext.getIttfDocumentUri(sourceKey) ids: 98 207
+        m wzVerify ids: 99 208
+        m wzInitialize ids: 100 209
+        m wzInitializeAsync ids: 101 210
+          param ctx ids: 102 211
+          param callback ids: 103 212
+          _ callback(null) ids: 104 213
+        m wzAddChild ids: 105 214
+          param node ids: 106 215
+          set node.wzParent = this ids: 107 216
+          set this.wzChildren.push(node) ids: 108 217
+        m wzLoadToChildColl ids: 109 218
+          param child ids: 110 219
+          param type ids: 111 220
+          param coll ids: 112 221
+          var item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: 113 222
+          set item.wzTag = child.n ids: 114 223
+          set item.wzParent = this ids: 115 224
+          _ coll.push(item) ids: 116 225
+          if item.loadFromNode ids: 117 226
+            _ item.loadFromNode(child) ids: 118 227
+          return true; ids: 119 228
+        m wzLoadToChildren ids: 120 229
+          param child ids: 121 230
+          param type ids: 122 231
+          var item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: 123 232
+          set item.wzTag = child.n ids: 124 233
+          set item.wzParent = this ids: 125 234
+          _ this.wzChildren.push(item) ids: 126 235
+          if item.loadFromNode ids: 127 236
+            _ item.loadFromNode(child) ids: 128 237
+          return true ids: 129 238
+        m wzLoadOneToOne ids: 130 239
+          param child ids: 131 240
+          param type ids: 132 241
+          param fieldName ids: 133 242
+          var item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: 134 243
+          set item.wzParent = this ids: 135 244
+          set this[fieldName] = item ids: 136 245
+          if item.loadFromNode ids: 137 246
+            _ item.loadFromNode(child) ids: 138 247
+          return true ids: 139 248
+        m error ids: 140 249
+          param message ids: 141 250
+          param node ids: 142 251
+          throw new md.${schema.wzId}Exception(message, node, this) ids: 143 252
+        $if request.toJson ids: 144 253
+          m toJsonProperties ids: 145 254
+            param result ids: 146 255
+            set result.wzTag = this.wzTag ids: 147 256
+            set result.wzName = this.wzName ids: 148 257
+          m toJsonChildren ids: 149 258
+            param result ids: 150 259
+            if this.wzChildren.length > 0 ids: 151 260
+              var children = [] ids: 152 261
+              foreach item in this.wzChildren ids: 153 262
+                _ children.push(item.toJson()) ids: 154 263
+              set result.wzChildren = children ids: 155 264
+        $if request.toXml ids: 156 265
+          m toXmlProperties ids: 157 266
+            param xw ids: 158 267
+            _ xw.writeAttribute("wzTag", this.wzTag) ids: 159 268
+            _ xw.writeAttribute("wzName", this.wzName) ids: 160 269
+          m toXmlChildren ids: 161 270
+            param xw ids: 162 271
+            if this.wzChildren.length > 0 ids: 163 272
+              _ xw.startElement('wzChildren') ids: 164 273
+              foreach item in this.wzChildren ids: 165 274
+                _ item.toXml(xw) ids: 166 275
+              _ xw.endElement() ids: 167 276
+        $if request.toPrettify ids: 168 277
+          m toPrettifyProperties ids: 169 278
+            param ctx ids: 170 279
+          m toPrettifyChildren ids: 171 280
+            param ctx ids: 172 281
+            if this.wzChildren.length > 0 ids: 173 282
+              foreach item in this.wzChildren ids: 174 283
+                _ item.toPrettify(xw) ids: 175 284
+      set md.${schema.wzId}Base = ${schema.wzId}Base ids: 176 285
+      $if request.toPrettify ids: 177 286
+        function startPrettify ids: 178 287
+          param ctx ids: 179 288
+          set ctx.state ids: 180 289
+            {  ids: 181 290
+              @ level 0 ids: 182 291
+              @ line 0 ids: 183 292
+          _ ctx.hb.setNoLF(true) ids: 184 293
+          _ ctx.hb.openTag('pre') ids: 185 294
+          _ ctx.hb.writeAttribute('class', 'prettyprint') ids: 186 295
+          _ ctx.hb.openTag('ol') ids: 187 296
+          _ ctx.hb.writeAttribute('class', 'linenums') ids: 188 297
+        function endPrettify ids: 189 298
+          param ctx ids: 190 299
+          _ ctx.hb.closeTag('ol') ids: 191 300
+          _ ctx.hb.closeTag('pre') ids: 192 301
+          _ ctx.hb.setNoLF(false) ids: 193 302
+    +  ids: 13 39
+    $foreach element in schema.elements ids: 14 40
+      $group  ids: 303 402
+        $args: &element  $params: &element
+        # element ${element.wzId} ids: 305 403
+          $foreach c in element.comments ids: 306 404
+            # ${c.wzName} ids: 307 405
+        class ${element.wzId} ids: 308 406
+          super ${element.superType} ids: 309 407
+          ctor  ids: 310 408
+            param name ids: 311 409
+            param sourceLineInfo ids: 312 410
+            base name ids: 313 411
+            base sourceLineInfo ids: 314 412
+            $if element.allowedNameDeclaration() != null ids: 315 413
+              set ${element.allowedNameDeclaration()} ids: 316 414
+            $foreach attribute in element.attributes ids: 317 415
+              $if attribute.isReadOnly == false ids: 318 416
+                $if attribute.allowedDeclaration() != null ids: 319 417
+                  set ${attribute.allowedDeclaration()} ids: 320 418
+                  $foreach facet in attribute.getEnumFacets() ids: 321 419
+                    $if facet.wzId.toLowerCase() !== "@@empty" ids: 322 420
+                      set this.${attribute.wzId.toUpperCase()}_${facet.wzId.toUpperCase()} = "${facet.wzNameEscaped}" ids: 323 421
+            $if !element.IsAbstract ids: 324 422
+              set this.wzElement = "${element.wzId}" ids: 325 423
+            $foreach attribute in element.attributes ids: 326 424
+              $ var comments = attribute.comments ids: 327 425
+              $group  ids: 500 507
+                $if comments.length > 1 ids: 501 508
+                  #  ids: 502 509
+                    $foreach c in comments ids: 503 510
+                      # ${c.wzName} ids: 504 511
+                $elif comments.length == 1 ids: 505 512
+                  # ${ comments[0].wzName } ids: 506 513
+              $if verify.isNotEmpty(attribute.default) ids: 329 427
+                $if attribute.type === 'string' ids: 330 428
+                  set this.${attribute.wzId} = "${attribute.default}" ids: 331 429
+                $else  ids: 332 430
+                  set this.${attribute.wzId} = ${attribute.default} ids: 333 431
+              $else  ids: 334 432
+                # TODO avoid this declaration, attributes should be tested for undefined not null ids: 335 433
+                # set this.${attribute.wzId} = null ids: 336 434
+            $foreach include in element.includes ids: 337 435
+              set this.${include.wzId}Included = [] ids: 338 436
+            $foreach relation in element.relations ids: 339 437
+              # relation ${relation.wzId} ids: 340 438
+              $foreach c in relation.comments ids: 341 439
+                # ${c.wzName} ids: 342 440
+              $if relation.isOneToOne ids: 343 441
+                set this.${relation.wzName} = null ids: 344 442
+              $else  ids: 345 443
+                set this.${relation.wzIdPlural} = [] ids: 346 444
+          $foreach facet in element.getEnumFacets() ids: 347 445
+            $if facet.wzId.toLowerCase() !== "@@empty" ids: 348 446
+              set ${element.wzId}.NAME_${facet.wzId.toUpperCase()} = "${facet.wzNameEscaped}"; ids: 349 447
+              +  ids: 350 448
+          $foreach attribute in element.attributes ids: 351 449
+            $if attribute.isReadOnly == false && attribute.allowedDeclaration() != null ids: 352 450
+              $foreach facet in attribute.getEnumFacets() ids: 353 451
+                $if facet.wzName.toLowerCase() !== "@@empty" ids: 354 452
+                  set ${element.wzId}.${attribute.wzId.toUpperCase()}_${facet.wzId.toUpperCase()} = "${facet.wzNameEscaped}"; ids: 355 453
+                  +  ids: 356 454
+          $foreach attribute in element.attributes ids: 357 455
+            $if attribute.isCalculated ids: 358 456
+              set this.{attribute.wzId} = ${attribute.calculated} ids: 359 457
+            $if attribute.isDataType ids: 360 458
+              # w("public tsi.DataTypes.DataType {attribute.wzId}DataType { get; set; }"); ids: 361 459
+          $foreach relation in element.relations ids: 362 460
+            $if relation.isOneToOne == false ids: 363 461
+              $if !relation.rightElement.isAbstract ids: 364 462
+                m add${relation.childEntityIdCapital} ids: 365 463
+                  param name ids: 366 464
+                  param sourceLineInfo ids: 367 465
+                  var retval = new md.${relation.childEntityId}(name, sourceLineInfo) ids: 368 466
+                  set retval.wzParent = this ids: 369 467
+                  _ this.${relation.wzIdPlural}.push(retval) ids: 370 468
+                  return retval ids: 371 469
+                $if relation.hasAddOnce ids: 372 470
+                  m add${relation.childEntityIdCapital}Once ids: 373 471
+                    function  ids: 374 472
+                      param name ids: 375 473
+                      param sourceLineInfo ids: 376 474
+                      var test = this.get${relation.childEntityIdCapital}(name);"); ids: 377 475
+                      if test == null ids: 378 476
+                        return this.add${relation.childEntityIdCapital}(name, value, sourceLineInfo) ids: 379 477
+                      return null ids: 380 478
+              $if !relation.noGetMethod ids: 381 479
+                m get${relation.childEntityIdCapital} ids: 382 480
+                  param name ids: 383 481
+                  var found = null ids: 384 482
+                  _ this.${relation.wzIdPlural}.forEach ids: 385 483
+                    function  ids: 386 484
+                      param item ids: 387 485
+                      set found = found || (item.wzName === name ? item : null) ids: 388 486
+                  return found; ids: 389 487
+              $if relation.rightElement.addToChildren ids: 390 488
+                m ${relation.wzId} ids: 391 489
+                  # TODO return wzChildren.Where(n => typeof(${relation.childEntityId}).IsAssignableFrom(n.GetType())).Cast<${relation.childEntityId}>().ToList();"); ids: 392 490
+          $group  ids: 514 549
+            $if request.toJson ids: 515 550
+              m toJson ids: 516 551
+                var result = {} ids: 517 552
+                _ this.toJsonProperties(result) ids: 518 553
+                _ this.toJsonChildren(result) ids: 519 554
+                return result ids: 520 555
+              m toJsonProperties ids: 521 556
+                param result ids: 522 557
+                _ md.${element.superType}.prototype.toJsonProperties.call(this, result) ids: 523 558
+                if this.__jsonProps ids: 524 559
+                  for var k in this.__jsonProps ids: 525 560
+                    set result[k] = this.__jsonProps[k] ids: 526 561
+                $foreach attribute in element.attributes ids: 527 562
+                  $if attribute.type === 'string' ids: 528 563
+                    if !isEmpty(this.${attribute.wzId}) ids: 529 564
+                      set result["${attribute.wzId}"] = this.${attribute.wzId} ids: 530 565
+                  $else  ids: 531 566
+                    set result["${attribute.wzId}"] = this.${attribute.wzId}; ids: 532 567
+              m toJsonChildren ids: 533 568
+                param result ids: 534 569
+                _ md.${element.superType}.prototype.toJsonChildren.call(this, result) ids: 535 570
+                $if element.relations.length > 0 ids: 536 571
+                  var items, item ids: 537 572
+                  $foreach relation in element.relations ids: 538 573
+                    $if relation.isOneToOne ids: 539 574
+                      if this.${relation.wzName} != null ids: 540 575
+                        set result['${relation.wzName}'] = this.${relation.wzName}.toJson() ids: 541 576
+                      else  ids: 542 577
+                        set result['${relation.wzName}'] = null ids: 543 578
+                    $else  ids: 544 579
+                      set items = [] ids: 545 580
+                      foreach item in this.${relation.wzIdPlural} ids: 546 581
+                        _ items.push(item.toJson()) ids: 547 582
+                      set result['${relation.wzIdPlural}'] = items; ids: 548 583
+          $group  ids: 584 609
+            $if request.toXml ids: 585 610
+              m toXml ids: 586 611
+                param xw ids: 587 612
+                _ xw.startElement('${element.xmlTag}') ids: 588 613
+                _ this.toXmlProperties(xw) ids: 589 614
+                _ this.toXmlChildren(xw) ids: 590 615
+                _ xw.endElement() ids: 591 616
+              m toXmlProperties ids: 592 617
+                param xw ids: 593 618
+                _ md.${element.superType}.prototype.toXmlProperties.call(this, xw) ids: 594 619
+                $foreach attribute in element.attributes ids: 595 620
+                  _ xw.writeAttribute("${attribute.wzId}", this.${attribute.wzId}) ids: 596 621
+              m toXmlChildren ids: 597 622
+                param xw ids: 598 623
+                _ md.${element.superType}.prototype.toXmlChildren.call(this, xw) ids: 599 624
+                $foreach relation in element.relations ids: 600 625
+                  $if relation.isOneToOne ids: 601 626
+                    if this.${relation.wzName} != null ids: 602 627
+                      _ this.${relation.wzName}.toXml(xw) ids: 603 628
+                  $else  ids: 604 629
+                    _ xw.startElement('${relation.wzIdPlural}') ids: 605 630
+                    foreach item in this.${relation.wzIdPlural} ids: 606 631
+                      _ item.toXml(xw) ids: 607 632
+                    _ xw.endElement() ids: 608 633
+          $group  ids: 634 687
+            $if request.toPrettify ids: 635 688
+              m toPrettify ids: 636 689
+                param ctx ids: 637 690
+                var start = false ids: 638 691
+                if typeof ctx.state === 'undefined' ids: 639 692
+                  _ startPrettify(ctx) ids: 640 693
+                  set start = true ids: 641 694
+                _ ctx.hb.openTag('li') ids: 642 695
+                _ ctx.hb.writeAttribute('class', 'L' + ('' + ctx.state.line).substr(-1,1)) ids: 643 696
+                _ ctx.hb.openTag('span', { inline: true }) ids: 644 697
+                _ ctx.hb.writeAttribute('class', 'pnl') ids: 645 698
+                _ ctx.hb.writeSpaces(ctx.state.level * 4) ids: 646 699
+                _ ctx.hb.closeTag('span', { inline: true }) ids: 647 700
+                _ ctx.hb.openTag('span', { inline: true }) ids: 648 701
+                _ ctx.hb.writeAttribute('class', 'el-tag') ids: 649 702
+                _ ctx.hb.writeText('${element.tag}') ids: 650 703
+                _ ctx.hb.closeTag('span', { inline: true }) ids: 651 704
+                $if element.wzName ids: 652 705
+                  _ ctx.hb.openTag('span', { inline: true }) ids: 653 706
+                  _ ctx.hb.writeAttribute('class', 'el-value') ids: 654 707
+                  _ ctx.hb.writeText(' ' + this.wzName) ids: 655 708
+                  _ ctx.hb.closeTag('span', { inline: true }) ids: 656 709
+                _ ctx.hb.closeTag('li') ids: 657 710
+                set ctx.state.line++ ids: 658 711
+                set ctx.state.level++ ids: 659 712
+                _ this.toPrettifyProperties(ctx) ids: 660 713
+                _ this.toPrettifyChildren(ctx) ids: 661 714
+                set ctx.state.level-- ids: 662 715
+                if start ids: 663 716
+                  _ endPrettify(ctx) ids: 664 717
+              m toPrettifyProperties ids: 665 718
+                param ctx ids: 666 719
+                _ md.${element.superType}.prototype.toPrettifyProperties.call(this, ctx) ids: 667 720
+                $foreach attribute in element.attributes ids: 668 721
+                  _ ctx.hb.openTag('li') ids: 669 722
+                  _ ctx.hb.writeAttribute('class', 'L' + ('' + ctx.state.line).substr(-1,1)) ids: 670 723
+                  _ ctx.hb.writePrettySpaces(ctx.state.level * 4) ids: 671 724
+                  _ ctx.hb.writePrettySpan('${element.tag}', 'attr-tag') ids: 672 725
+                  $if element.wzName ids: 673 726
+                    _ ctx.hb.writePrettySpan(' ' + this.${attribute.wzName}, 'attr-value') ids: 674 727
+                  _ ctx.hb.closeTag('li') ids: 675 728
+                  set ctx.state.line++ ids: 676 729
+              m toPrettifyChildren ids: 677 730
+                param ctx ids: 678 731
+                _ md.${element.superType}.prototype.toPrettifyChildren.call(this, ctx) ids: 679 732
+                $foreach relation in element.relations ids: 680 733
+                  $if relation.isOneToOne ids: 681 734
+                    if this.${relation.wzName} != null ids: 682 735
+                      _ this.${relation.wzName}.toPrettify(ctx) ids: 683 736
+                  $else  ids: 684 737
+                    foreach item in this.${relation.wzIdPlural} ids: 685 738
+                      _ item.toPrettify(ctx) ids: 686 739
+          $group  ids: 740 785
+            $if element.hasAttributesOrChildsToLoad() ids: 741 786
+              m loadChild ids: 742 787
+                param child ids: 743 788
+                # Make test case insensitive ids: 744 789
+                var  ids: 745 790
+                  decl item ids: 746 791
+                  decl ok = false ids: 747 792
+                  decl name = child.n.toLowerCase() ids: 748 793
+                  decl _l = name.length ids: 749 794
+                  decl _ch = name[0] ids: 750 795
+                $foreach ordered in element.choiceOrdered ids: 751 796
+                  if _l == ${ordered.length} && _ch == '${ordered.char}' ids: 752 797
+                    $ var first = true ids: 753 798
+                    $foreach choice in ordered.choices ids: 754 799
+                      $if first ids: 755 800
+                        if name === '${choice.test}' ids: 756 801
+                          $foreach line in choice.codelines ids: 757 802
+                            set ${line} ids: 758 803
+                      $else  ids: 759 804
+                        elif name === '${choice.test}' ids: 760 805
+                          $foreach line in choice.codelines ids: 761 806
+                            set ${line} ids: 762 807
+                      $ first = false; ids: 763 808
+                $foreach t in element.wildTags ids: 764 809
+                  if name.substr(0, ${t.length - 1}) == "${t.substr(0, t.length - 1)}" ids: 765 810
+                    set this[name] = child.v ids: 766 811
+                    return true ids: 767 812
+                $group  ids: 944 958
+                  $args: &element  $params: &element
+                  $if element.includes.length > 0 ids: 946 959
+                    set ok = md.${element.superType}.prototype.loadChild.call(this, child) ids: 947 960
+                    $foreach include in element.includes ids: 948 961
+                      if !ok ids: 949 962
+                        var ${include.actualNameLower} = new md.${include.actualNameId}.Model.${include.rootEntityNameId}();"); ids: 950 963
+                        set ok = ${include.actualNameLower}.loadChild(child); ids: 951 964
+                        if ok ids: 952 965
+                          _ this.${include.actualNameId}Included.push(${include.actualNameLower}) ids: 953 966
+                    return ok ids: 954 967
+                  $else  ids: 955 968
+                    $if verify.isNotEmpty(element.super) ids: 956 969
+                      set ok = md.${element.superType}.prototype.loadChild.call(this, child) ids: 957 970
+                $if verify.isNotEmpty(element.acceptAnyTag) ids: 769 814
+                  if !ok ids: 770 815
+                    set item = new Any${element.acceptAnyTagId}(child.v, new wzSourceLineInfo(child.r, child.c, child.u)) ids: 771 816
+                    set item.wzParent = this ids: 772 817
+                    set item.wzTag = name ids: 773 818
+                    _ this.${element.AcceptAnyTagCollectionId}.push(item) ids: 774 819
+                    _ item.loadFromNode(child) ids: 775 820
+                    set ok = true ids: 776 821
+                return ok ids: 777 822
+              m loadFromNode ids: 778 823
+                param node ids: 779 824
+                var loaded = false ids: 780 825
+                foreach item in node.childs ids: 781 826
+                  set loaded = this.loadChild(item) ids: 782 827
+                  if !loaded ids: 783 828
+                    throw new md.${schema.wzId}Exception("Tag not recognized: " + item.n, item, this) ids: 784 829
+          $group  ids: 830 859
+            $if element.needsVerify(request.emitKey) ids: 831 860
+              m wzVerify ids: 832 861
+                param ctx ids: 833 862
+                $if element.nameIsRequired ids: 834 863
+                  _ ctx.verifyFalse(\"Name\", this.isEmpty(this.wzName), \"Name is required\", this.wzSourceLineInfo) ids: 835 864
+                $if element.allowedNameDeclaration("js") != null ids: 836 865
+                  _ ctx.verifyEnum("${element.wzId}", "Name", this.wzName, this.allowedNames, this) ids: 837 866
+                $foreach attribute in element.attributes ids: 838 867
+                  $if attribute.isReadOnly == false && attribute.restricts.length > 0 ids: 839 868
+                    $if attribute.allowedDeclaration() != null ids: 840 869
+                      _ ctx.verifyEnum("${element.wzId}", "${attribute.wzId}", this.${attribute.wzId}, this.allowed${attribute.wzIdPlural.toUpperCase()}, this) ids: 841 870
+                    $foreach restrict in attribute.restricts ids: 842 871
+                      $foreach facet in restrict.facets ids: 843 872
+                        $if facet.wzName === "length" ids: 844 873
+                        $elif facet.wzName === "max-length" ids: 845 874
+                        $elif facet.wzName === "min-length" ids: 846 875
+                $foreach relation in element.relations ids: 847 876
+                  $if relation.isOneToOne ids: 848 877
+                    if this.${relation.wzName} != null ids: 849 878
+                      _ this.${relation.wzName}.wzVerify(ctx) ids: 850 879
+                  $else  ids: 851 880
+                    foreach item in this.${relation.wzIdPlural} ids: 852 881
+                      _ item.wzVerify(ctx) ids: 853 882
+                $foreach method in element.methods ids: 854 883
+                  $if method.wzName.toLowerCase() == "wzverify" ids: 855 884
+                    $foreach statement in method.statements ids: 856 885
+                      jst ${statement.wzName} ids: 857 886
+                _ md.${element.superType}.prototype.wzVerify.call(this, ctx) ids: 858 887
+          $group  ids: 888 907
+            $if element.needsInitialize(request.emitKey) ids: 889 908
+              m wzInitialize ids: 890 909
+                param ctx ids: 891 910
+                $foreach attribute in element.attributes ids: 892 911
+                  $if attribute.isDataType ids: 893 912
+                    # TODO set ${attribute.wzId}DataType = this.getTypeSystem().CreateDataType(${attribute.wzId}) ids: 894 913
+                $foreach relation in element.relations ids: 895 914
+                  $if relation.isOneToOne ids: 896 915
+                    if this.${relation.wzName} != null ids: 897 916
+                      _ this.${relation.wzName}.wzInitialize(ctx) ids: 898 917
+                  $else  ids: 899 918
+                    foreach item in this.${relation.wzIdPlural} ids: 900 919
+                      _ item.wzInitialize(ctx) ids: 901 920
+                $foreach method in element.methods ids: 902 921
+                  $if method.wzName.toLowerCase() == "wzinitialize" ids: 903 922
+                    $foreach statement in method.statements ids: 904 923
+                      jst ${statement.wzName} ids: 905 924
+                _ md.${element.superType}.prototype.wzInitialize.call(this, ctx) ids: 906 925
+          $foreach method in element.methods ids: 399 497
+            $group  ids: 926 935
+              $if method.isKnownMethod === false ids: 927 936
+                m ${method.wzName} ids: 928 937
+                  $if method.isStatic ids: 929 938
+                    static  ids: 930 939
+                  $foreach param in method.params ids: 931 940
+                    param ${param.wzName} ids: 932 941
+                  $foreach statement in method.statements ids: 933 942
+                    jst ${statement.wzName} ids: 934 943
+        set md.${element.wzId} = ${element.wzId} ids: 401 499
+    $if schema.tagElementMapping && schema.tagElementMapping.length > 0 ids: 16 42
+      set md.__tagElementMapping = ${schema.tagElementMapping} ids: 17 43
+    $group  ids: 971 987
+      class ${schema.wzId}Exception ids: 972 988
+        ctor  ids: 973 989
+          param message ids: 974 990
+          param node ids: 975 991
+          param instance ids: 976 992
+          # TODO node seems superflous ids: 977 993
+          if node && instance ids: 978 994
+            set this.message = message + ', row:' + node.r + ', col:' + node.c + ', source:' + instance.wzSourceFilepath(node.u) ids: 979 995
+          elif instance ids: 980 996
+            set this.message = message + instance.wzSourceLineInfo.toString(instance) ids: 981 997
+          else  ids: 982 998
+            set this.message = message ids: 983 999
+          set this.stack = new Error().stack ids: 984 1000
+          set this.node = node ids: 985 1001
+      set md.${schema.wzId}Exception = ${schema.wzId}Exception ids: 986 1002
+    $group  ids: 1003 1037
+      class ${schema.wzId}Context ids: 1004 1038
+        ctor  ids: 1005 1039
+          set this.validationErrors = [] ids: 1006 1040
+        m schemaIsValid ids: 1007 1041
+          return this.validationErrors.length == 0 ids: 1008 1042
+        m addError ids: 1009 1043
+          param message ids: 1010 1044
+          param node ids: 1011 1045
+          var at = node ? ' At ' + node.wzSourceLineInfo.toString(node) : '' ids: 1012 1046
+          _ this.validationErrors.push ids: 1013 1047
+            @ message + at ids: 1014 1048
+        $foreach require in schema.requiredContextMethods ids: 1015 1049
+          $if require.wzName === "verifyRequired" ids: 1016 1050
+            m verifyFalse ids: 1017 1051
+              param valueType ids: 1018 1052
+              param valueName ids: 1019 1053
+              param value ids: 1020 1054
+              param node ids: 1021 1055
+              if typeof value === 'undefined' || value === null || (typeof value === 'string' && value.length === 0) ids: 1022 1056
+                _ this.validationErrors.push ids: 1023 1057
+                  @ valueType + ' ' + valueName + ' is required. At ' + node.wzSourceLineInfo.toString(node) ids: 1024 1058
+          $if require.wzName == "verifyEnum" ids: 1025 1059
+            m verifyEnum ids: 1026 1060
+              param valueType ids: 1027 1061
+              param valueName ids: 1028 1062
+              param value ids: 1029 1063
+              param allowed ids: 1030 1064
+              param node ids: 1031 1065
+              if value && allowed.indexOf(value) < 0 ids: 1032 1066
+                var allowedStr = 'allowed: ' + allowed.join(', ') ids: 1033 1067
+                _ this.validationErrors.push ids: 1034 1068
+                  @ valueType + ' ' + valueName + ' has an invalid value: ' + value + ' ' + allowedStr + '. At ' + (node.wzSourceLineInfo ? node.wzSourceLineInfo.toString(node) : 'location unavailable') ids: 1035 1069
+      set md.${schema.wzId}Context = ${schema.wzId}Context ids: 1036 1070
+    $group  ids: 1071 1293
+      $foreach rf in schema.requiredFunctions ids: 1072 1294
+        $if rf.wzName === "isArray" ids: 1073 1295
+          function isArray ids: 1074 1296
+            param value ids: 1075 1297
+            return Object.prototype.toString.call( value ) === '[object Array]' ids: 1076 1298
+        $if rf.wzName === "isEmpty" ids: 1077 1299
+          function isEmpty ids: 1078 1300
+            param value ids: 1079 1301
+            return !isString( value ) || value.length === 0 ids: 1080 1302
+        $if rf.wzName === "isNull" ids: 1081 1303
+          function isNull ids: 1082 1304
+            param value ids: 1083 1305
+            return typeof value === 'undefined' || value === null ids: 1084 1306
+        $if rf.wzName === "isNumber" ids: 1085 1307
+          function isNumber ids: 1086 1308
+            param value ids: 1087 1309
+            return !isArray( value ) && (value - parseFloat( value ) + 1) >= 0 ids: 1088 1310
+        $if rf.wzName === "isObject" ids: 1089 1311
+          function isObject ids: 1090 1312
+            param value ids: 1091 1313
+            return value !== null && typeof value === 'object' ids: 1092 1314
+        $if rf.wzName === "isString" ids: 1093 1315
+          function isString ids: 1094 1316
+            param value ids: 1095 1317
+            return (typeof value === 'string' || value instanceof String) ids: 1096 1318
+        $if rf.wzName === "escapeRegExp" ids: 1097 1319
+          function escapeRegExp ids: 1098 1320
+            param str ids: 1099 1321
+            return str.replace(/[\\-\\[\\]/\\{\\}\\(\\)\\*\\+\\?\\.\\\\\\^\\$\\|]/g, \"\\\\$&\") ids: 1100 1322
+        $if rf.wzName === "replaceAll" ids: 1101 1323
+          function replaceAll ids: 1102 1324
+            param str ids: 1103 1325
+            param find ids: 1104 1326
+            param replace ids: 1105 1327
+            return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);"); ids: 1106 1328
+        $if rf.wzName === "isBoolean" ids: 1107 1329
+          function isBoolean ids: 1108 1330
+            param value ids: 1109 1331
+            return value === 'true' || value === 'false' ids: 1110 1332
+        $if rf.wzName === "isInteger" ids: 1111 1333
+          function isInteger ids: 1112 1334
+            param value ids: 1113 1335
+            return isNumber( value ) ids: 1114 1336
+        $if rf.wzName === "isFloat" ids: 1115 1337
+          function isFloat ids: 1116 1338
+            param value ids: 1117 1339
+            return isNumber( value ) ids: 1118 1340
+        $if rf.wzName === "isDate" ids: 1119 1341
+          function isDate ids: 1120 1342
+            param value ids: 1121 1343
+            var parts = value.split('/') ids: 1122 1344
+            return part[0].length === 4 && part[1].length <= 2 && part[2].length <= 2 ids: 1123 1345
+        $if rf.wzName === "parsestring" ids: 1124 1346
+          function parsestring ids: 1125 1347
+            param value ids: 1126 1348
+            param defaultValue ids: 1127 1349
+            param node ids: 1128 1350
+            if isEmpty( value ) ids: 1129 1351
+              return defaultValue ids: 1130 1352
+            return value ids: 1131 1353
+        $if rf.wzName === "parseboolean" ids: 1132 1354
+          function parseboolean ids: 1133 1355
+            param value ids: 1134 1356
+            param defaultValue ids: 1135 1357
+            param node ids: 1136 1358
+            if isEmpty( value ) ids: 1137 1359
+              return defaultValue ids: 1138 1360
+            if !isBoolean(value) ids: 1139 1361
+              throw new nodeException('Must be a boolean value (\"true\" or \"false\"), got:' + value, node) ids: 1140 1362
+            return value === 'true' ? true : false ids: 1141 1363
+        $if rf.wzName === "parseinteger" ids: 1142 1364
+          function parseinteger ids: 1143 1365
+            param value ids: 1144 1366
+            param defaultValue ids: 1145 1367
+            param node ids: 1146 1368
+            if isEmpty(value) ids: 1147 1369
+              return defaultValue ids: 1148 1370
+            if !isInteger(value) ids: 1149 1371
+              throw new nodeException('Must be an int value, got:' + value, node) ids: 1150 1372
+            return parseInt(value, 10) ids: 1151 1373
+        $if rf.wzName === "parsefloat" ids: 1152 1374
+          function parsefloat ids: 1153 1375
+            param value ids: 1154 1376
+            param defaultValue ids: 1155 1377
+            param node ids: 1156 1378
+            if isEmpty(value) ids: 1157 1379
+              return defaultValue ids: 1158 1380
+            if !isFloat(value) ids: 1159 1381
+              throw new nodeException('Must be a float value, got:' + value, node) ids: 1160 1382
+            return parseFloat(value) ids: 1161 1383
+        $if rf.wzName === "parsedate" ids: 1162 1384
+          function parsedate ids: 1163 1385
+            param value ids: 1164 1386
+            param defaultValue ids: 1165 1387
+            param node ids: 1166 1388
+            if isEmpty(value) ids: 1167 1389
+              return defaultValue ids: 1168 1390
+            if !isDate(value) ids: 1169 1391
+              throw new nodeException('Must be a date value (YYYY/MM/DD), got:' + value, node) ids: 1170 1392
+            var parts = input.split('/') ids: 1171 1393
+            return new Date(parts[0], parts[1]-1, parts[2]) ids: 1172 1394
+        $if rf.wzName === "pluralize" ids: 1173 1395
+          function pluralize ids: 1174 1396
+            param value ids: 1175 1397
+            return inflect.pluralize(value) ids: 1176 1398
+        $if rf.wzName === "endsWith" ids: 1177 1399
+          function endsWith ids: 1178 1400
+            param str ids: 1179 1401
+            param suffix ids: 1180 1402
+            return str.substr(str.length - suffix.length) === suffix ids: 1181 1403
+        $if rf.wzName === "startsWith" ids: 1182 1404
+          function startsWith ids: 1183 1405
+            param str ids: 1184 1406
+            param prefix ids: 1185 1407
+            return str.substr(0, prefix.length) === prefix ids: 1186 1408
+        $if rf.wzName === "trim" ids: 1187 1409
+          function trim ids: 1188 1410
+            param str ids: 1189 1411
+            return str.replace(/^\s+|\s+$/g, '') ids: 1190 1412
+        $if rf.wzName === "trimEnd" ids: 1191 1413
+          function trimEnd ids: 1192 1414
+            param str ids: 1193 1415
+            return str.replace(/\s+$/, '') ids: 1194 1416
+        $if rf.wzName === "trimStart" ids: 1195 1417
+          function trimStart ids: 1196 1418
+            param str ids: 1197 1419
+            return str.replace(/^\s+/, '') ids: 1198 1420
+        $if rf.wzName === "format" ids: 1199 1421
+          function format ids: 1200 1422
+            var result = '' ids: 1201 1423
+            var format = arguments[0] ids: 1202 1424
+            for var i = 0;; ids: 1203 1425
+              var open = format.indexOf('{', i) ids: 1204 1426
+              var close = format.indexOf('}', i) ids: 1205 1427
+              if (open < 0) && (close < 0) ids: 1206 1428
+                set result += format.slice(i) ids: 1207 1429
+                break  ids: 1208 1430
+              if (close > 0) && ((close < open) || (open < 0)) ids: 1209 1431
+                if format.charAt((close + 1)) !== '}' ids: 1210 1432
+                  throw  ids: 1211 1433
+                    new Error('format stringFormatBraceMismatch') ids: 1212 1434
+                set result += format.slice(i, close + 1) ids: 1213 1435
+                set i = close + 2 ids: 1214 1436
+                continue  ids: 1215 1437
+              set result += format.slice(i, open) ids: 1216 1438
+              set i = open + 1 ids: 1217 1439
+              if format.charAt(i) === '{' ids: 1218 1440
+                set result += '{' ids: 1219 1441
+                set i++ ids: 1220 1442
+                continue  ids: 1221 1443
+              if close < 0 ids: 1222 1444
+                throw  ids: 1223 1445
+                  new Error('format stringFormatBraceMismatch') ids: 1224 1446
+              var brace = format.substring(i, close) ids: 1225 1447
+              var colonIndex = brace.indexOf(':') ids: 1226 1448
+              var argNumber = parseInt(colonIndex < 0 ? brace : brace.substring(0, colonIndex), 10) + 1 ids: 1227 1449
+              if isNaN(argNumber) ids: 1228 1450
+                throw  ids: 1229 1451
+                  new Error('format stringFormatInvalid') ids: 1230 1452
+              var argFormat ids: 1231 1453
+                iif colonIndex < 0 ids: 1232 1454
+                  then '' ids: 1233 1455
+                  else  ids: 1234 1456
+                    _ brace.substring((colonIndex + 1)) ids: 1235 1457
+              var arg = arguments[argNumber] ids: 1236 1458
+              if (typeof (arg) === "undefined") || (arg === null) ids: 1237 1459
+                set arg = '' ids: 1238 1460
+              if arg.toFormattedString ids: 1239 1461
+                set result += arg.toFormattedString(argFormat) ids: 1240 1462
+              elif arg.format ids: 1241 1463
+                set result += arg.format(argFormat) ids: 1242 1464
+              else  ids: 1243 1465
+                set result += arg.toString() ids: 1244 1466
+              set i = close + 1 ids: 1245 1467
+            return result ids: 1246 1468
+        $if rf.wzName === "parseByType" ids: 1247 1469
+          function parseByType ids: 1248 1470
+            param value ids: 1249 1471
+            param type ids: 1250 1472
+            if type === 'string' ids: 1251 1473
+              return value ids: 1252 1474
+            elif type === 'number' ids: 1253 1475
+              if !(!isArray( value ) && (value - parseFloat( value ) + 1) >= 0) ids: 1254 1476
+                throw new nodeException('Must be a number value, got:' + value, node) ids: 1255 1477
+              return parseFloat(value) ids: 1256 1478
+            elif type === 'boolean' ids: 1257 1479
+              if !(value === 'true' || value === 'false') ids: 1258 1480
+                throw new nodeException('Must be a boolean value (\"true\" or \"false\"), got:' + value, node) ids: 1259 1481
+              return value === 'true' ? true : false ids: 1260 1482
+        $if rf.wzName === "parseNameValue" ids: 1261 1483
+          function parseNameValue ids: 1262 1484
+            param text ids: 1263 1485
+            var  ids: 1264 1486
+              decl name = '' ids: 1265 1487
+              decl value = '' ids: 1266 1488
+            if text && text.length > 0 ids: 1267 1489
+              var  ids: 1268 1490
+                decl ch ids: 1269 1491
+                decl state = 0 ids: 1270 1492
+                decl l = text.length ids: 1271 1493
+              for var i = 0; i < l; i++ ids: 1272 1494
+                set ch = text[i] ids: 1273 1495
+                if ch == ' ' || ch == '\t' ids: 1274 1496
+                  if state == 0 ids: 1275 1497
+                    + ; ids: 1276 1498
+                  elif state == 1 ids: 1277 1499
+                    set state = 2 ids: 1278 1500
+                  elif state == 2 ids: 1279 1501
+                    set value += ch ids: 1280 1502
+                else  ids: 1281 1503
+                  if state == 0 ids: 1282 1504
+                    set name = ch ids: 1283 1505
+                    set state = 1 ids: 1284 1506
+                  elif state == 1 ids: 1285 1507
+                    set name += ch ids: 1286 1508
+                  elif state == 2 ids: 1287 1509
+                    set value += ch ids: 1288 1510
+            return  ids: 1289 1511
+              {  ids: 1290 1512
+                @ name name ids: 1291 1513
+                @ value value ids: 1292 1514
+    $foreach method in schema.methods ids: 21 47
+      function ${method.wzName} ids: 22 48
+        $foreach param in method.params ids: 23 49
+          param ${param.wzName} ids: 24 50
+        $foreach statement in method.statements ids: 25 51
+          jst ${statement.wzName} ids: 26 52

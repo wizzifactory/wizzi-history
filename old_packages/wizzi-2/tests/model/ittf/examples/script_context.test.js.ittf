@@ -1,0 +1,7 @@
+module
+	kind jsfile
+	$foreach site in wftest.sites
+		$foreach menu in site.getMenus()
+			function create${menu.wzName}
+				$foreach item in menu.items
+					var item_${item.wzName} = '${item.wzName}'

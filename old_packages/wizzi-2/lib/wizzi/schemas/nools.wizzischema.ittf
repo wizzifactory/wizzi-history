@@ -1,0 +1,170 @@
+wizzischema nools
+	# Nools, the rule engine.
+	# When using nools you define Flow(s).
+	# A Flow acts as a container for Rule(s)
+	# that can later be used to get a Session.
+	
+	e nools
+		# The root tag of the nools schema.
+		# A nools IttfDocument defines one Flow.
+		# A Flow is a container of Rule(s).
+		# In a Flow you declare Fact types and Rule(s).
+		# Instances of Flow(s) are called Session(s).
+		# In a Session instances of Facts are matched against Rule(s).
+		tag nools
+		
+		r global/s
+		r fact/s
+		r rule/s
+		r agendaGroup/s
+		r function/s
+	
+	e global
+		# Globals are accessible through the current working scope of rule facts in a dsl, 
+		# very similar to using the scope option when compiling.
+		# Note: globals are not part of the working memory and therefore are not accessible 
+		# in the LHS (when) of your rule.
+	e fact
+		# Declares a Fact type.
+		# A Fact type must be a String or a javascript Function.
+		# dsl > define 'type-name' {
+		# In a Session (an istance of a Flow) instances of Fact(s) can be:
+		# . asserted
+		# . retracted
+		# . modified
+		# . retrivied (all or by Type)
+		tag def
+		r propert-y/ies
+		r ctor
+			one-to-one
+		r function/s
+	e ctor
+		# Fact type constructor
+		
+		r param/s
+		r codeline/s
+		m getParams
+			var ret = []
+			foreach item in this.params
+				_ ret.push(item.wzName)
+			return ret
+	
+	e property
+		tag @
+		r function/s
+	
+	# ==========================================================
+	#	RULES
+	# ----------------------------------------------------------
+	e agendaGroup
+		# Agenda groups allow for logical groups of rules within a flow.
+		# Rule(s) that do not have an agenda-group specified are placed into 
+		# the main agenda-group.
+		tag group
+		
+		r rule/s
+	e rule
+		# A Rule
+		# . applyies to a Fact type
+		# . has one or many Constraint(s)
+		# . describe an Action that is execute when the Fact instance
+		#   matches the Constraint(s)
+		a agendaGroup
+			tag agenda-group
+		
+		a autoFocus
+			tag auto-focus
+		
+		a salience
+			# Salience is an option that can be specified on a rule
+			# giving it a priority and allowing the developer some control
+			# over conflict resolution of activations.
+			
+			type integer
+		
+		r option/s
+		r constraint/s
+		r action/s
+	
+	e option
+		tag opt
+	
+	e constraint
+		# Constraints define how a Rule should match Fact instances.
+		# A rule should have an array of at least one or many constraints.
+		
+		is-abstract
+		r constraint/s
+	
+	e when : constraint
+	
+	e for : constraint
+	e and : constraint
+	e or : constraint
+		# The or constraint can be used to check for the existence of multiple facts.
+	e not : constraint
+	e is : constraint
+	
+	e set : constraint
+		# example
+		# ittf: set name = value
+		# dsl : { name: value}
+	
+	e exists : constraint
+		# exists is the logical inversion of a not constraint. 
+		# It checks for the existence of a fact in memory.
+	e from : constraint
+		# The from modifier allows for the checking of facts that are not necessarily in the workingMemory.
+		# The from modifier can be used to access properties on a fact in workingMemory or you can use javascript expressions.
+	
+	#
+	# ACTION
+	#
+	e action
+		# Defines the code of the Action of a Rule.
+		# An Action is a function that should be fired when all constraints in the rule match.
+		# The tag 'then' is for readability of the nools dsl source.
+		tag then
+		r codeline/s
+	#
+	# EVENTS
+	#
+		e event
+		# A Rule Action may also emit events using the sessions emit function.
+		# code -> session.emit('my custom event')
+		# dsl -> emit('my custom event')
+		
+		r codeline/s
+	#
+	# SCOPE
+	#
+	e function
+		# You may define Function(s) that can be used (are in scope)
+		# inside a Rule.
+		
+		r param/s
+		r codeline/s
+		m getParams
+			var ret = []
+			foreach item in this.params
+				_ ret.push(item.wzName)
+			return ret
+	e param
+		# The parameter of a Function
+	e codeline
+		tag +
+	
+	#
+	# CONFLICT RESOLUTION
+	#
+	e conflictResolution
+		tag conflict-resolution
+		r resolutionStrateg-y/ies
+	
+	e resolutionStrategy
+		tag strategy
+		restrict
+			enum salience
+			enum activationRecency
+			enum factRecency
+			enum bucketCounter

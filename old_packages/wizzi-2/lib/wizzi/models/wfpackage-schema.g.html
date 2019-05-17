@@ -1,0 +1,682 @@
+<!doctype html>
+<html VERSION-5="5" VERSION-4="4" version="5">
+    <head>
+        <title>Wizzi schema wfpackage</title>
+        <style>
+            body {
+              font-family: verdana;
+              font-size: 13px;
+            } 
+            .main-left {
+              position: fixed;
+              margin-left: 5%;
+              top: 80px;
+              width: 20%;
+              height: 80%;
+              background: #eee;
+              overflow: auto;
+            } 
+            .main-center {
+              top: 80px;
+              margin-left: 30%;
+              height: 80%;
+              width: 50%;
+              position: fixed;
+              overflow: auto;
+              z-index: 1;
+            } 
+            .well {
+              border: solid 1px #aaa;
+            } 
+            .pretty-table { border: 1px solid #333; width: 100%; margin-top: 30px; }
+            .pretty-table th, .pretty-table td { border: 1px dotted #666; }
+            .pretty-table-2 { border: 1px solid #999; width: 100%; margin-top: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="main">
+            <h1>Wizzi schema wfpackage</h1>
+            <div class="main-left">
+                <ul>
+                    <li><a href="#element_wfpackage">wfpackage</a>
+                    </li>
+                    <li><a href="#element_buildCwd">buildCwd</a>
+                    </li>
+                    <li><a href="#element_schema">schema</a>
+                    </li>
+                    <li><a href="#element_transformer">transformer</a>
+                    </li>
+                    <li><a href="#element_artifact">artifact</a>
+                    </li>
+                    <li><a href="#element_example">example</a>
+                    </li>
+                    <li><a href="#element_ittfExample">ittfExample</a>
+                    </li>
+                    <li><a href="#element_artifactExample">artifactExample</a>
+                    </li>
+                    <li><a href="#element_node">node</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="main-center">
+                <table class="pretty-table" id="element_wfpackage">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>wfpackage</b>
+                            </td>
+                            <td>wfpackage</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>The root tag of the wfpackage schema. &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>srcCwd</td>
+                                <td>src-cwd</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>assetsCwd</td>
+                                <td>assets-cwd</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>buildCwd</td>
+                                <td>buildCwds</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>schema</td>
+                                <td>schemas</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>getJobs</div>
+                                </td>
+                                <td>
+                                    <div>var ret;</div>
+                                    <div>if this.schemas.length > 0;</div>
+                                    <div>foreach item in this.buildCwds;</div>
+                                    <div>return ret;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_buildCwd">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>buildCwd</b>
+                            </td>
+                            <td>build-cwd</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_schema">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>schema</b>
+                            </td>
+                            <td>schema</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>A WizziSchema defined by this WizziFactoryPackage &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>transformer</td>
+                                <td>transformers</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>artifact</td>
+                                <td>artifacts</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>example</td>
+                                <td>examples</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_transformer">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>transformer</b>
+                            </td>
+                            <td>transformer</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>A WizziModelTransformer &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_artifact">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>artifact</b>
+                            </td>
+                            <td>artifact</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>An ArtifactGenerator &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_example">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>example</b>
+                            </td>
+                            <td>example</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>The base node for examples &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>node</td>
+                                <td>nodes</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_ittfExample">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>ittfExample</b>
+                            </td>
+                            <td>ittf-example</td>
+                            <td>example</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>An IttfDocument example &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td>example</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>node</td>
+                                <td>nodes</td>
+                                <td>one-to-many</td>
+                                <td>example</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_artifactExample">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>artifactExample</b>
+                            </td>
+                            <td>artifact-example</td>
+                            <td>example</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>An artifact generation example &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>title</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td>example</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>node</td>
+                                <td>nodes</td>
+                                <td>one-to-many</td>
+                                <td>example</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_node">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>node</b>
+                            </td>
+                            <td>node</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+
+</html>
+

@@ -1,0 +1,80 @@
+﻿$group
+
+	tagoper( project )
+		var node
+			{
+				@ type 'project'
+				@ name model.wzName
+				@ roadmaps
+					[
+				@ todos
+					[
+				@ issues
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		set parent.project = node
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( roadmap )
+		set ctx.roadmapCount++
+		var node
+			{
+				@ type 'roadmap'
+				@ name model.wzName
+				@ id 'roadmap-' + ctx.roadmapCount
+				@ milestones
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.roadmaps.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( milestone )
+		set ctx.milestoneCount++
+		var node
+			{
+				@ type 'milestone'
+				@ name model.wzName
+				@ id 'milestone-' + ctx.milestoneCount
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.milestones.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( todo )
+		set ctx.todoCount++
+		var node
+			{
+				@ type 'todo'
+				@ name model.wzName
+				@ id 'todo-' + ctx.todoCount
+				@ categories
+					[
+				@ tags
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.todos.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( issue )
+		set ctx.issueCount++
+		var node
+			{
+				@ type 'issue'
+				@ name model.wzName
+				@ id 'issue-' + ctx.issueCount
+				@ categories
+					[
+				@ tags
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.issues.push(node)
+		_ md.goItems(model.items, ctx, node)
