@@ -1,0 +1,49 @@
+$group
+
+	#
+		# Get files by glob patterns
+	function getGlobbedFiles
+		param globPatterns
+		param excludes
+
+		+
+		# For context switching
+		var _this = this
+		
+		+
+		# URL paths regex
+		var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i')
+		
+		+
+		# The output array
+		var output = []
+		
+		+
+		# If glob pattern is array so we use each pattern in a recursive way, otherwise we use glob 
+		if _.isArray(globPatterns)
+			_ globPatterns.forEach
+				function
+					param globPattern
+					set output = _.union(output, _this.getGlobbedFiles(globPattern, excludes))
+		
+		elif _.isString(globPatterns)
+			
+			if urlRegex.test(globPatterns)
+				_ output.push(globPatterns)
+			
+			else
+				var files = glob.sync(globPatterns)
+                if excludes
+                    set files
+                        _ files.map
+                            function 
+                                param file
+                                if _.isArray(excludes)
+                                    foreach exclude in excludes
+                                        set file = file.replace(exclude, '')
+                                else 
+                                    set file = file.replace(excludes, '')
+                                return file
+                set output = _.union(output, files)
+				set output = _.filter(output, function (item) { return item.indexOf('/_debug') < 0; })
+		return output

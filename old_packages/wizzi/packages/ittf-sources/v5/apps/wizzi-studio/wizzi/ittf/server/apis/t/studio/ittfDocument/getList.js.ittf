@@ -1,0 +1,23 @@
+﻿$group
+
+	@ getDocuments
+		function
+			param options
+			param callback
+
+			log 'getDocuments', options
+
+			var documents
+				_ paths.documentList
+					@ options
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ documents documents
+					@ status
+						_ success
+							@ 'Documents fetched'
+

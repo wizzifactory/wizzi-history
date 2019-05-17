@@ -1,0 +1,44 @@
+﻿$group
+
+	div
+		class wz-ui-tv-container
+		ul
+			class wz-ui-tv-documents
+			style list-style-type:none; margin:0; padding:0;
+			data-active-document-title-id ${sample.id}-active-document
+			tv-folder( 0 )
+				ul
+					style list-style-type:none; margin:0; padding:0;
+					tv-folder( 10, schemas )
+						ul
+							style list-style-type:none; margin:0; padding:0;
+							tv-document( 20 )
+								a ${sample.schema.name}
+									class wz-ui-tv-document
+									data-doc-path ${sample.schema.path}
+									data-tab-page sample-${sample.id}-tab-${sample.schema.id}
+					
+					$if sample.mixins.length + sample.includes.length > 0
+						tv-folder( 10, t )
+							ul
+								style list-style-type: none; margin:0; padding:0;
+								$foreach mixin in sample.mixins
+									tv-document( 20 )
+										a ${mixin.name}
+											class wz-ui-tv-document
+											data-doc-path ${mixin.path}
+											data-tab-page sample-${sample.id}-tab-${mixin.id}
+
+								$foreach include in sample.includes
+									tv-document( 20 )
+										a ${include.name}
+											class wz-ui-tv-document
+											data-doc-path ${include.path}
+											data-tab-page sample-${sample.id}-tab-${include.id}
+					
+					li
+						tv-document( 10 )
+							a ${sample.primaryIttf.name}
+								class wz-ui-tv-document wz-ui-tv-document-selected
+								data-doc-path ${sample.primaryIttf.path}
+								data-tab-page sample-${sample.id}-tab-${sample.primaryIttf.id}

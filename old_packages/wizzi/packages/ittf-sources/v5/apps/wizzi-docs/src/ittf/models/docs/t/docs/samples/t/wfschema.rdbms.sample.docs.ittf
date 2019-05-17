@@ -1,0 +1,31 @@
+﻿ittf schemas/rdbms.wfschema.ittf
+	kind schema
+	
+	summary
+	
+	- wfschema rdbms
+		
+		- e rdbms
+			- r table/s
+		
+		- e table
+			- r column/s
+			- r index/es
+		
+		- e column
+			- a type
+				- default string
+				- restrict
+					- enum string
+					- enum boolean
+					- enum integer
+					- enum float
+					- enum date
+			- a label
+		
+		- e index
+			- a isPrimary
+				- tag is-primary
+				- type boolean
+			- r column/s
+

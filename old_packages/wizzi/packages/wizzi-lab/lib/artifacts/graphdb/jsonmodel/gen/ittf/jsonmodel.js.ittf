@@ -1,0 +1,188 @@
+module
+	kind jsfile
+	+
+	#
+		# Node ${node.name}
+	+
+	import assert
+	var utils = require('../lib/utils')
+	var errors = require('../lib/errors')
+	var ${node.name}Persister = require('../persisters/${node.name}')
+	+
+	class ${node.name}
+		ctor
+			param persister
+			param store
+			param baseUri
+			if !!persister
+				set this.persister = persister
+			else
+				set this.persister
+					new ${node.name}Persister
+						@ store
+						{
+							@ baseUri baseUri
+			$if node.startNode.fullKeys.length > 0
+				set this._${node.startNode.name}Node = null
+			
+		+
+		$if node.startNode.fullKeys.length > 0
+			m ${node.startNode.name}Node
+				if this._${node.startNode.name}Node == null
+					var type = require('./${node.startNode.name}')
+					set this._${node.startNode.name}Node
+						new type
+							@ null
+							@ this.persister.store
+							@ this.persister.baseUri
+				return this._${node.startNode.name}Node
+		
+		$if !!node.metaDocument
+			
+			$include meta
+
+		$foreach endNode in node.endNodes
+			+
+			m arrayAdd${endNode.label}
+				param array
+				$foreach item in endNode.keys
+					param ${item}
+				_ array.${endNode.role}.push
+					{
+						$foreach item in endNode.keys
+							@ '${item}' ${item}
+			+
+			m arrayRemove${endNode.label}
+				param array
+				set projectOrSection.fragments
+					_ aDelete
+						@ projectOrSection.fragments
+						{
+							@ 'name' fragmentName
+							@ 'schema' schemaName
+
+				$foreach item in endNode.keys
+					param ${item}
+			+
+			m get${endNode.label}
+				$foreach item in endNode.pathKeys
+					param ${item.end}
+				$foreach item in endNode.keys
+					param ${item}
+				param callback
+				+
+				_ this.get${node.name}
+					$foreach item in endNode.pathKeys
+						@ ${item.end}
+					function
+						param err
+						param result
+						if err
+							return callback(err)
+						var ret
+							_ utils.aFind
+								@ result.${endNode.role}
+								{
+									$foreach item in endNode.keys
+										@ '${item}' ${item}
+						if ret
+							return
+								_ callback(null, ret)
+						else
+							return
+								_ callback
+									new errors.NotFoundError
+										_ utils.buildResourceName
+											@ '${node.name}'
+											@ '${endNode.name}'
+										_ utils.buildResourcePath
+											$foreach item in endNode.pathKeys
+												@ ${item.end}
+												$foreach item in endNode.keys
+													@ ${item}
+
+			+
+			m add${endNode.label}
+				$foreach item in endNode.pathKeys
+					param ${item.end}
+				$foreach item in endNode.keys
+					param ${item}
+				param callback
+				+
+				_ this.get${node.name}
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					function
+						param err
+						param result
+						if err
+							return callback(err)
+						+
+						if !result
+							return
+								_ callback
+									new errors.NotFoundError
+										_ utils.buildResourceName
+											@ '${node.name}'
+											@ '${endNode.name}'
+										_ utils.buildResourcePath
+											$foreach item in endNode.pathKeys
+												@ ${item.end}
+											$foreach item in endNode.keys
+												@ ${item}
+						+
+						_ result.${endNode.role}.push
+							{
+								$foreach item in endNode.keys
+									@ '${item}' ${item}
+						+
+						_ self.persister.putMetaData
+							$foreach item in node.pathKeys
+								@ ${item.end}
+							@ result
+							@ callback
+						+
+			m remove${endNode.label}
+				$foreach item in endNode.pathKeys
+					param ${item.end}
+				$foreach item in endNode.keys
+					param ${item}
+				param callback
+				+
+				_ this.get${node.name}
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					function
+						param err
+						param result
+						if err
+							return callback(err)
+						+
+						if !result
+							return
+								_ callback
+									new errors.NotFoundError
+										_ utils.buildResourceName
+											@ '${node.name}'
+											@ '${endNode.name}'
+										_ utils.buildResourcePath
+											$foreach item in endNode.pathKeys
+												@ ${item.end}
+											$foreach item in endNode.keys
+												@ ${item}
+						+
+						set result.${endNode.role}
+							_ utils.aDelete
+								@ result.${endNode.role}
+								{
+									$foreach item in endNode.keys
+										@ '${item}' ${item}
+						+
+						_ self.persister.putMetaData
+							$foreach item in node.pathKeys
+								@ ${item.end}
+							@ result
+							@ callback
+						+
+
+	set module.exports = ${node.name}

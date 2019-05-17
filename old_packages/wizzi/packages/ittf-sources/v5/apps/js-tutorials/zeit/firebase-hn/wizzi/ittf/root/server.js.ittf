@@ -1,0 +1,41 @@
+module
+    kind react
+    const express = require('express')
+    const next = require('next')
+    const dev = process.env.NODE_ENV !== 'production'
+    const app
+        _ next
+            { 
+                @ dev dev
+    const handle = app.getRequestHandler()
+    _ app.prepare().then
+        => 
+            const server = express()
+            _ server.get
+                @ '/p/:id'
+                => 
+                    param req
+                    param res
+                    const actualPage = '/post'
+                    const queryParams
+                        { 
+                            @ id req.params.id
+                    _ app.render(req, res, actualPage, queryParams)
+            _ server.get
+                @ '*'
+                => 
+                    param req
+                    param res
+                    return handle(req, res)
+            _ server.listen
+                @ 3000
+                => 
+                    param err
+                    if err
+                        throw err
+                    _ console.log('> Ready on http://localhost:3000')
+        ._ catch
+            => 
+                param ex
+                _ console.error(ex.stack)
+                _ process.exit(1)

@@ -1,0 +1,67 @@
+﻿$group
+
+	class wzuiTvDocumentsControl
+		ctor
+			param element
+			set this.element = wzui.element(element)
+			set this.documents = []
+			set this.defaultDocument = null
+			set this.activeDocumentTitleElement = null
+		
+		m initialize
+			if this.documents.length === 0
+				return
+			set this.defaultDocument = this.defaultDocument || this.documents[0].element
+			foreach doc in this.documents
+				if doc.element === this.defaultDocument
+					set doc.page.style.display = 'block'
+					_ wzui.addClass(doc.element, 'wz-ui-tv-document-selected')
+					if this.activeDocumentTitleElement
+						var docPath = doc.element.getAttribute("data-doc-path")
+						_ wzui.text(this.activeDocumentTitleElement, docPath)
+				else
+					set doc.page.style.display = 'none'
+					_ wzui.removeClass(doc.element, 'wz-ui-tv-document-selected')
+
+		m setDefaultDocument
+			param element
+			set this.defaultDocument = wzui.element(element)
+		
+		m setActiveDocumentTitleElement
+			param element
+			set this.activeDocumentTitleElement = wzui.element(element)
+
+		m addDocument
+			param element
+
+			set element = wzui.element(element)
+			var pageId = element.getAttribute("data-tab-page")
+			log 'pageId', pageId
+			var pageElement = document.getElementById(pageId)
+			log 'pageElement', pageElement
+			
+			_ wzui.click
+				@ element
+				@ wzuiTvDocumentsControl.createClickHandler(this)
+			
+			_ this.documents.push
+				{
+					@ element element
+					@ page pageElement
+
+	set wzuiTvDocumentsControl.createClickHandler
+		function
+			param tvDocumentsControl
+			return
+				function
+					foreach doc in tvDocumentsControl.documents
+						if doc.element === this
+							set doc.page.style.display = 'block'
+							_ wzui.addClass(doc.element, 'wz-ui-tv-document-selected')
+							if tvDocumentsControl.activeDocumentTitleElement
+								var docPath = doc.element.getAttribute("data-doc-path")
+								log 'docPath', docPath
+								_ wzui.text(tvDocumentsControl.activeDocumentTitleElement, docPath)
+						else
+							set doc.page.style.display = 'none'
+							_ wzui.removeClass(doc.element, 'wz-ui-tv-document-selected')

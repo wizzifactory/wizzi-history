@@ -1,0 +1,26 @@
+﻿api wizzi-plugin.artifactGenerator
+	module
+		standard-path {wizzi-plugin}/lib/artifacts/{schema}/{artifact}/gen/main.js
+
+	{
+		m gen
+			# Executes the generation of an artifact.
+			{ model
+				# Can be a wizzi.modelType instance or a POJO object.
+				# Its the main context object of an artifact generation.
+			{ ctx
+				{ value
+					# This property of the `ctx` parameter can contain
+					# a (optional) secondary context object for the generation.
+					# Its properties comes from:
+					# . the properties of the globalContext object of the 
+					#   wizzi.wizziFactory instance;
+					# . the properties of the `context` parameter passed to
+					#   the wizzi.wizziFactory.generateArtifact method.
+				api-ref wizzi.artifact.genContext
+			cb()
+				{ ctx
+					# Is returned the same wizzi.artifact.genContext instance received,
+					# enriched with the artifact text written in its in-memory buffer.
+					api-ref wizzi.artifact.genContext
+

@@ -1,0 +1,49 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import util ids: undefined undefined
+    import wizzi ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    class paramsCheck ids: undefined undefined
+      ctor  ids: undefined undefined
+        param req ids: undefined undefined
+        set this.req = req ids: undefined undefined
+        set this.errors = null ids: undefined undefined
+      m notEmpty ids: undefined undefined
+        param qb ids: undefined undefined
+        param name ids: undefined undefined
+        var value = this.optional(qb, name) ids: undefined undefined
+        if wizzi.verify.isEmpty(value) ids: undefined undefined
+          _ this.error ids: undefined undefined
+            @ 'String parameter: "' + name + '" must have a value.' ids: undefined undefined
+        return value ids: undefined undefined
+      m notEmptyBody ids: undefined undefined
+        var value = this.optionalBody() ids: undefined undefined
+        if wizzi.verify.isEmpty(value) ids: undefined undefined
+          _ this.error ids: undefined undefined
+            @ 'The body must be not empty.' ids: undefined undefined
+        return value ids: undefined undefined
+      m optional ids: undefined undefined
+        param qb ids: undefined undefined
+        param name ids: undefined undefined
+        var value ids: undefined undefined
+        if qb === 'query' ids: undefined undefined
+          set value = this.req.query[name] ids: undefined undefined
+        elif qb === 'params' ids: undefined undefined
+          set value = this.req.params[name] ids: undefined undefined
+        else  ids: undefined undefined
+          set value = this.req.body[name] ids: undefined undefined
+        return value ids: undefined undefined
+      m optionalBody ids: undefined undefined
+        return this.req.body ids: undefined undefined
+      m error ids: undefined undefined
+        param message ids: undefined undefined
+        if !this.errors ids: undefined undefined
+          set this.errors = [] ids: undefined undefined
+        _ this.errors.push(message) ids: undefined undefined
+      m sendErrors ids: undefined undefined
+        param res ids: undefined undefined
+        _ res.send ids: undefined undefined
+          {  ids: undefined undefined
+            @ code 999 ids: undefined undefined
+            @ error this.errors ids: undefined undefined
+    set md.paramsCheck = paramsCheck ids: undefined undefined

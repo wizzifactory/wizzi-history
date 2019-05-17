@@ -1,0 +1,215 @@
+﻿module wizzi-mtree.loader.loadHistory
+    kind jsfile
+    
+	var util = require('util')
+    var MTreeBrickProvider = null
+	var utilsErrors = require('wizzi-utils').errors
+    
+	#
+		# One mTree loading uses 1 mTreeBrickProvider and 1 loadHistory.
+		#
+		# The loadHistory keeps tracks of the ittf documents loaded
+		# for building one mTree. Once loaded, ittf documents become mTreeBricks,
+		# that may be reused many times for the same mTree and always are cloned.
+		# Every cloned mTreeBrick has its own evalContext.
+		# The loadHistory assigns source keys to ittf documents, loaded once, and 
+		# mTreeBrick keys to every cloned mTreeBricks.
+		# It also checks the mix and include call chain to prevent recursion.
+		#
+		#    ittfDocumentDatas: Map
+		#      key: sourceKey
+		#      item object:
+		#        string ittfDocumentUri
+		#        string content
+		#        string sourceKey
+		#
+		#    mTreeBrickDatas: Map
+		#      key: brickKey
+		#      item object:
+		#        string ittfDocumentUri
+		#        string schema
+		#        { mTreeBrick (cloned)      // mTreeBrick is created by the mTreeBrickProvider
+		#          $mixerBrickKey:String    // key of the mixer mTreeBrickData
+		#                                   // set by the lib/loader/mixer
+		#          $args:String             // args of the mixin call
+		#                                   // set by the lib/loader/mixer
+		#          $params:String           // params received by the mixed mTreeBrick
+		#          byRefParams:Array        // params passed by reference
+		#          calcParamValues:Function  // calculates the values  
+		#        { evalContext
+		#        string sourceKey
+		#        string brickKey
+		#
+		#    [ callChain
+		#      {
+		#        string mixerUri
+		#        string mixedUri
+		#
+
+	wz-class LoadHistory
+		ctor
+			set this.__type = 'LoadHistory'
+			set this.ittfDocumentDatas =
+				{ 
+			set this.mTreeBrickDatas =
+				{ 
+			set this.sourceCount = 0
+			set this.modelCount = 0
+			set this.nodeCount = 0
+			set this.callChain
+				[ 
+    
+		m addIttfDocument
+            param ittfDocumentUri
+            param textContent
+            var sourceKey = 'f' + ++this.sourceCount
+            var ittfDocumentData
+                { 
+                    @ ittfDocumentUri ittfDocumentUri
+                    @ sourceKey sourceKey
+                    @ content textContent
+            set this.ittfDocumentDatas[sourceKey] = ittfDocumentData
+            return ittfDocumentData
+    
+		m addMTreeBrick
+            param ittfDocumentUri
+            param schema
+            param mTreeBrickCloned
+            param options
+            
+			var sourceKey = this.getSourceKey(ittfDocumentUri)
+            if options.include
+                return 
+                    { 
+                        @ sourceKey sourceKey
+                        @ brickKey options.includerBrickKey
+            
+			var brickKey = 'f' + ++this.modelCount
+            var mTreeBrickData
+                { 
+                    @ ittfDocumentUri ittfDocumentUri
+                    @ schema schema
+                    @ sourceKey sourceKey
+                    @ brickKey brickKey
+                    @ mTreeBrick mTreeBrickCloned
+					@ evalContext null
+            set this.mTreeBrickDatas[brickKey] = mTreeBrickData
+            return mTreeBrickData
+    
+		m getMTreeBrickData
+            param brickKey
+            return this.mTreeBrickDatas[brickKey]
+    
+		m getIttfDocumentUri
+            param sourceKey
+            var ittfDocumentData = this.ittfDocumentDatas[sourceKey]
+            return 
+                iif ittfDocumentData
+                    then 
+                        set ittfDocumentData.ittfDocumentUri
+                    else 'Source ittfDocumentUri unavailable'
+    
+		m getIttfDocumentContent
+            param sourceKey
+            var ittfDocumentData = this.ittfDocumentDatas[sourceKey]
+            return 
+                iif ittfDocumentData
+                    then 
+                        set ittfDocumentData.content
+                    else 'Source content unavailable'
+
+		#
+			# params
+			#   string sourceKey
+			#   { errorData
+			#     @ row
+			#     @ column
+			#     @ description
+			#   boolean json
+			#
+		m getIttfDocumentErrorLines
+            param sourceKey
+			param errorData
+			param json
+			var source = this.getIttfDocumentContent(sourceKey)
+			return
+				_ utilsErrors.getErrorLines
+					@ errorData
+					@ source
+					@ json
+
+		m getSourceKey
+            param ittfDocumentUri
+            for var k in this.ittfDocumentDatas
+                if this.ittfDocumentDatas[k].ittfDocumentUri === ittfDocumentUri
+                    return k
+            return null
+    
+		m getIttfDocuments
+            var ret
+                { 
+            for var k in this.ittfDocumentDatas
+                var ittfDocumentData = this.ittfDocumentDatas[k]
+                set ret[this.getIttfDocumentUri(ittfDocumentData.sourceKey)]
+                    { 
+                        @ sourceKey ittfDocumentData.sourceKey
+            return ret
+    
+		m getNewNodeId
+            return ++this.nodeCount
+
+		m enterFragmentCall
+			param mixerUri
+			param mixedUri
+			_ this.callChain.push
+				{
+					@ mixerUri mixerUri
+					@ mixedUri mixedUri
+
+		m exitFragmentCall
+			_ this.callChain.pop()
+
+		m checkForRecursion
+            for var i = 0; i < this.callChain.length; i++
+                if this.callChain[i].mixerUri == this.callChain[i].mixedUri
+                    return true
+                for var j = 0; j < this.callChain.length; j++
+                    if ((this.callChain[j].mixerUri == this.callChain[i].mixedUri) && (this.callChain[j].mixedUri == this.callChain[i].mixerUri))
+                        return true
+            return false
+    
+		m _old_getLoadStateAsync_VIA
+			static
+            param ittfDocumentUri
+            param loadContext
+            param callback
+            
+			if !MTreeBrickProvider
+                set MTreeBrickProvider = require('./mTreeBrickProvider')
+            _ MTreeBrickProvider.createFromUri
+                @ ittfDocumentUri
+                @ loadContext
+                function 
+                    param err
+                    param createdProvider
+                    if err
+                        return callback(err)
+                    _ callback
+                        @ null
+                        { 
+                            @ loadContext loadContext
+                            @ provider createdProvider
+                            @ getPrimaryMTreeBrick
+                                function 
+                                    return createdProvider.getPrimaryMTreeBrick()
+                            @ callChain
+                                [ 
+                            @ checkForLoops
+                                function 
+                                    for var i = 0; i < this.callChain.length; i++
+                                        if this.callChain[i].mixer == this.callChain[i].mixed
+                                            return true
+                                        for var j = 0; j < this.callChain.length; j++
+                                            if ((this.callChain[j].mixer == this.callChain[i].mixed) && (this.callChain[j].mixed == this.callChain[i].mixer))
+                                                return true
+                                    return false

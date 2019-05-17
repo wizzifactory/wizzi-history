@@ -1,0 +1,53 @@
+$group
+	$params &obj3
+	
+	$
+		var obj4 = {};
+
+	$if obj3.properties.length > 0
+		table
+			$foreach prop in obj3.properties
+				$
+					obj4 = prop;
+				tr
+					td ${prop.wzName}
+						@ valign top
+					td 
+						@ valign top
+						span ${prop.type} 
+						$if prop.type === 'object' 
+							span {
+						$if prop.type === 'array' 
+							span [
+						table
+							$if prop.isPOJO
+								tr
+									td POJO
+							$if prop.defaultValue
+								tr
+									td default
+									td ${prop.defaultValue}
+							$if prop.isRequired
+								tr
+									td required
+							$if prop.iface
+								tr
+									td interface
+									td ${prop.iface}
+							$if prop.apiRef
+								tr
+									td api ref
+									td 
+										a ${prop.apiRef}
+											href #${prop.apiRef}
+					
+							$if prop.type === 'object'
+								tr
+									td
+										h1 Sorry too deep in object3
+										$$ ./object4(&obj4)
+							$if prop.type === 'array'
+								tr
+									td
+										h1 Sorry too deep in object3
+										$$ ./array4(&obj4)

@@ -1,0 +1,78 @@
+  module  ids: 1 67
+    kind jsfile ids: 2 68
+    var util = require('util') ids: 3 69
+    var lineParser = require('../../../../util/lineParser') ids: 4 70
+    var md ids: 5 71
+      set module.exports = ids: 6 72
+        {  ids: 7 73
+    var myname = 'json.document.main' ids: 8 74
+    set md.gen ids: 133 140
+      function  ids: 134 141
+        param model ids: 135 142
+        param ctx ids: 136 143
+        param callback ids: 137 144
+        _ md.genItem(model, ctx) ids: 10 76
+        _ callback(null, ctx) ids: 139 146
+    set md.genItem ids: 147 152
+      function  ids: 148 153
+        param model ids: 149 154
+        param ctx ids: 150 155
+        var n = model.n.trim() ids: 12 78
+        if n === '#' ids: 13 79
+          return false ids: 14 80
+        if model.childs.length > 0 ids: 15 81
+          if n === '{' || n === '[' ids: 16 82
+            _ ctx.w(n) ids: 17 83
+            _ md.genItems(model.childs, ctx, { parent: n }) ids: 18 84
+          else  ids: 19 85
+            _ ctx.w('"' + model.n + '":') ids: 20 86
+            _ md.genItems(model.childs, ctx, { parent: null }) ids: 21 87
+          if n === '{' ids: 22 88
+            _ ctx.write('}') ids: 23 89
+          elif n === '[' ids: 24 90
+            _ ctx.write(']') ids: 25 91
+        else  ids: 26 92
+          if n === '{' ids: 27 93
+            _ ctx.w('{}') ids: 28 94
+          elif n === '[' ids: 29 95
+            _ ctx.w('[]') ids: 30 96
+          else  ids: 31 97
+            if model.parent === '{' ids: 32 98
+              if model.n === '@' ids: 33 99
+                var nv ids: 34 100
+                  _ lineParser.parseNameValueRaw ids: 35 101
+                    @ model.v ids: 36 102
+                _ ctx.write('"' + nv.name() + '": ' + nv.value()) ids: 37 103
+              else  ids: 38 104
+                _ ctx.write('"' + model.n + '": ' + model.v) ids: 39 105
+            elif model.parent === '[' ids: 40 106
+              if model.n === '@' ids: 41 107
+                var nv ids: 42 108
+                  _ lineParser.parseNameValueRaw ids: 43 109
+                    @ model.v ids: 44 110
+                _ ctx.write ids: 45 111
+                  @ model.v ids: 46 112
+              else  ids: 47 113
+                _ ctx.write ids: 48 114
+                  @ model.n ids: 49 115
+            else  ids: 50 116
+              _ ctx.write ids: 51 117
+                @ model.n ids: 52 118
+        return true ids: 53 119
+    set md.genItems ids: 157 163
+      function  ids: 158 164
+        param items ids: 159 165
+        param ctx ids: 160 166
+        param options ids: 161 167
+        _ ctx.indent() ids: 55 121
+        var first = true ids: 56 122
+        var written = false ids: 57 123
+        foreach item in items ids: 58 124
+          if !first && written ids: 59 125
+            _ ctx.w(',') ids: 60 126
+          set first = false ids: 61 127
+          if options.parent ids: 62 128
+            set item.parent = options.parent ids: 63 129
+          set written = md.genItem(item, ctx) ids: 64 130
+        _ ctx.w('') ids: 65 131
+        _ ctx.deindent() ids: 66 132

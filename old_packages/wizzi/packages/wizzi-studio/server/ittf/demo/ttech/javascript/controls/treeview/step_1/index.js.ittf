@@ -1,0 +1,49 @@
+﻿module
+	kind es6
+
+	$include g/js/wz/core
+	$include g/js/wz/node
+	$include g/js/wz/ace
+	$include g/js/wz/htmlBuilder
+	$include g/js/wz/contextMenu
+	$include g/js/wz/standalone
+
+	$include js/itemUtils
+	$include js/treeNode
+	$include js/treeView
+	$include js/treeFilesystem
+	$include js/browserFilesystem
+	$include js/appManager
+	$include js/ittfEditor
+	$include js/resultBrowser
+	$include js/resultBar
+	$include js/sampleTreeData
+
+	var folderPath = '/ixdb/wizzi/default'
+	_ wz.fs.getFolders
+        @ folderPath
+        {
+            @ deep false
+		a_cb_throw( result )
+			# log 'getFolders.result', '\n', JSON.stringify(result, null, 2)
+			_ wz.fs.getFiles
+				@ folderPath
+				{
+					@ deep false
+					@ documentContent true
+				a_cb_throw( result )
+					# log 'getFiles.result', '\n', JSON.stringify(result, null, 2)
+
+	_ wz.fs.getTreeFolderView
+		@ folderPath
+		a_cb_throw( result )
+			# log 'getTreeFolderView.result', '\n', JSON.stringify(result, null, 2)
+
+	var app
+		new AppManager
+			{
+				@ rootFolder '/ixdb'
+				@ formsContainerId 'forms-container'
+	_ app.start
+
+	

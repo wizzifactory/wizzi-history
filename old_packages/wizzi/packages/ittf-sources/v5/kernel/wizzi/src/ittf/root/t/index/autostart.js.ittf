@@ -1,0 +1,17 @@
+﻿$group
+
+	#
+		# 'autostart' is executed at the end
+		# of the loading of the Darvin module
+		# only if a darvinfile.js is found in the 
+		# working directory.
+		# For a manual start see the 'start' function.
+	set md.autostart
+		function
+            var darvinCWD = process.cwd()
+            var darvinFilePath = path.join(runnerServerCWD, 'darvinfile.js')
+            if md.file.isFile(darvinFilePath)
+                set md.darvinfile = require(darvinFilePath)
+                _ console.log
+                    _ md.chalk.yellow(('DARVIN FILE ' + darvinFilePath))
+

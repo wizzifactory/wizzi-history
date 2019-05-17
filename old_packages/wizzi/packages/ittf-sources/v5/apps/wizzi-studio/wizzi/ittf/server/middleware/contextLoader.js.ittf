@@ -1,0 +1,374 @@
+﻿module
+	kind jsfile
+
+	import path
+	import async
+	var stringify = require('json-stringify-safe')
+	var wizzi = require('wizzi')
+	var verify = wizzi.verify
+	var prettify = require('wizzi-utils').prettifyFromString
+	var config = require('../config')
+
+	#
+		# req.query._context contains a semicolon separated list of
+		# context models export names. 
+		# For each <export-name> must exists a req.query._<export-name> parameter 
+		# with a type;path value.
+		# The type is the model knwon type or a wizzi schema, the path is the 
+		# relative path of the ittf document of the model, relative to the
+		# filepath of the requested resource.
+		#
+		# Example
+		#   req.query._context = 'cs;info'
+		#   req.query._cs = 'cheatsheet;html'
+		#   req.query._info = 'json;../cslayout.json.ittf'
+		#
+		# If the path value is missing it defaults to ./index.<type>.ittf
+		#
+	set module.exports
+		function
+			param resourceFilePath
+			param req
+			param callback
+
+			var contextRequest = req.query._context
+			if verify.isEmpty(contextRequest)
+				var ss = path.basename(resourceFilePath).split('.')
+				log 'ittf 1', resourceFilePath
+				if ss[ss.length-1] === 'ittf' && ss[ss.length-2] !== 'json'
+					var seedName = ss.slice(0, -2).join('.')
+					log 'ittf 2', seedName
+					var twinJsonPath
+						_ path.join
+							@ path.dirname(resourceFilePath)
+							@ seedName + '.json.ittf'
+					log 'ittf 3', twinJsonPath
+					if wizzi.file.isFile(twinJsonPath)
+						_ return
+							_ buildTwinJsonContext
+								@ 'mpage'
+								@ twinJsonPath
+								@ callback
+					else
+						_ return
+							_ callback
+								@ null
+								{
+				else
+					_ return
+						_ callback
+							@ null
+							{
+			# var userId = req.user.id
+			var ss = contextRequest.split(';')
+			var requests = []
+			foreach s in ss
+				var request
+					{
+						@ exportName s
+				var type_path = req.query['_' + s]
+				log 'contextLoader exportName, type_path', s, type_path
+				if verify.isEmpty(type_path)
+					_ return
+						_ callback
+							{
+								@ requestedResource resourceFilePath
+								@ message 'Missing query param for requested context model: ' + s
+
+				var tp = type_path.split(';')
+				set request.type = tp[0]
+				if tp.length < 2
+					set request.relPath = './index.' + tp[0] + '.ittf'
+				else
+					set request.relPath = tp[1]
+				log 'contextLoader exportName, type_path, relPath', s, type_path, request.relPath
+
+				if request.type === 'cheatsheet'
+					set request.name = request.relPath
+					_ requests.push
+						@ request
+				else
+					set request.fullPath
+						_ path.join
+							_ path.dirname
+								@ resourceFilePath
+							@ request.relPath
+					_ requests.push
+						@ request
+				log 'contextLoader request', request
+
+			log 'contextLoader.requests', requests
+			var resultContext = {}
+			_ async.map
+				@ requests
+				function
+					param request
+					param callback
+					if request.type === 'cheatsheet'
+						return
+							_ loadCheatsheet
+								@ request.name
+								f_cb(model)
+									set resultContext[request.exportName] = model
+									r_cb()
+					else
+						return
+							_ wizzi.model
+								@ request.fullPath
+								f_cb(model)
+									set resultContext[request.exportName] = model
+									r_cb()
+				f_cb()
+					r_cb(resultContext)
+
+	function buildTwinJsonContext
+		param exportName
+		param twinJsonPath
+		param callback
+		_ wizzi.model
+			@ twinJsonPath
+			f_cb(model)
+				log 'ittf 4', model.wzElement
+				return
+					_ callback
+						@ null
+						{
+							@ [exportName] model
+
+	function loadCheatsheet
+		param name
+		param callback
+
+		var csPath
+			_ path.join 
+				@ config.cheatsheetsBasePath
+				@ name
+				@ 'index.meta.ittf'
+
+		_ wizzi.mtree
+			@ csPath
+			{
+			f_cb(mTree)
+			
+				# items are ittf fragments that will be ittf/prettified and generated
+				var _all_items = []
+				# the resulting cheatsheet context object that will be returned when built
+				var result
+					{
+						[ elements
+			
+				foreach itemTop in mTree.nodes[0].children
+					if itemTop.n !== 'element'
+						# set properties of result
+						set result[itemTop.n] = itemTop.v
+				
+				foreach itemTop in mTree.nodes[0].children
+					# log itemTop.n, itemTop.v
+					if itemTop.n === 'element'
+						var elementResult
+							{
+								@ name itemTop.v
+								[ items
+						foreach itemEl in itemTop.children
+							if itemEl.n === 'item'
+								# ittf fragment
+								var itemResult
+									{
+										@ schema result.schema
+										@ render 'artifact'
+								foreach item in itemEl.children
+									if item.n === 'ittf'
+										# log item.n, mTree.toIttf(item.children[0])
+										if item.children.length == 1
+											if (result.schema === 'json' && (item.children[0].n === '{' || item.children[0].n === '[')) ||
+												\b item.children[0].n === ittfRootFromSchema(result.schema) ||
+												\b ittfRootFromSchema(result.schema) === 'any'
+												# is already ok, has the correct root
+												set itemResult[item.n] = mTree.toIttf(item.children[0])
+												set itemResult[item.n + 'Wrapped'] = itemResult[item.n]
+											else
+												# wrap it
+												var ittfNode
+													_ wrapperForSchema
+														@ result.schema
+												foreach node in item.children
+													_ ittfNode.children.push
+														@ node
+												set itemResult[item.n] = mTree.toIttf(item.children[0])
+												set itemResult[item.n + 'Wrapped'] = mTree.toIttf(ittfNode)
+										else
+											# wrap them
+											var ittfNode
+												_ wrapperForSchema
+													@ result.schema
+											foreach node in item.children
+												_ ittfNode.children.push
+													@ node
+											set itemResult[item.n] = mTree.toIttf(item.children[0])
+											set itemResult[item.n + 'Wrapped'] = mTree.toIttf(ittfNode)
+									elif item.n === 'expected'
+										set itemResult[item.n]
+											_ buildExpected
+												@ item
+												._ trim
+									else
+										set itemResult[item.n] = item.v
+										# log item.n, item.v
+								_ elementResult.items.push
+									@ itemResult
+								_ _all_items.push
+									@ itemResult
+							else
+								set elementResult[itemEl.n] = itemEl.v
+						_ result.elements.push
+							@ elementResult
+				var dump
+					_ stringify
+						@ result
+						@ null
+						@ 2
+				# log 'result\n', dump
+				var dump
+					_ stringify
+						_ mTree.toIttf
+						@ null
+						@ 2
+				# log 'jsCheatSheet\n', dump
+				var dump
+					_ stringify
+						@ mTree
+						@ null
+						@ 2
+				# log 'jsCheatSheet\n', dump
+
+				_ async.map
+					@ _all_items
+					function
+						param item
+						param callback
+						log 'contextLoader.prettify', stringify(item.ittf, null, 2)
+						_ prettify
+							@ item.ittf
+							f_cb( pretty )
+								set item.ittfPretty = pretty
+								if item.render === 'script'
+									_ wizzi.mtreeDebugFromText
+										@ item.ittfWrapped
+										{
+										f_cb_no_err(script)
+											if err
+												set item.generated = verify.htmlEscape(stringify(err, null, 2))
+											else
+												set item.generated = verify.htmlEscape(script.mTreeBuildUpScript)
+											_ callback
+												@ null
+								else
+									_ wizzi.genFromText
+										@ item.ittfWrapped
+										{
+										{
+											@ artifactName artifactNameFromSchema(item.schema)
+											{ artifactContext
+												@ noUseStrict true
+												@ noGeneratorComments true
+										f_cb_no_err(artifactText)
+											if err
+												set item.generated = verify.htmlEscape(stringify(err, null, 2))
+											else
+												set artifactText = verify.htmlEscape(artifactText)
+												set item.generated = artifactText
+											_ callback
+												@ null
+					f_cb()
+						var dump
+							_ stringify
+								@ result
+								@ null
+								@ 2
+						# log 'result\n', dump
+						_ callback
+							@ null
+							@ result
+
+	function buildExpected
+		param ittf
+		param sb
+		param indent
+		if typeof sb === 'undefined'
+			set sb = []
+			foreach item in ittf.children
+				_ buildExpected
+					@ item
+					@ sb
+					@ 0
+			return
+				_ verify.htmlEscape
+					_ sb.join('')
+		else
+			_ sb.push
+				@ new Array(indent).join(' ') 
+			_ sb.push
+				@ ittf.v + '\n'
+			foreach item in ittf.children
+				_ buildExpected
+					@ item
+					@ sb
+					@ indent + 4
+
+	function wrapperForSchema
+		param schema
+		if schema === 'js'
+			return
+				{
+					@ n 'module'
+					[ children
+						{
+							@ n 'kind'
+							@ v 'react'
+							[ children
+		elif schema === 'ts'
+			return
+				{
+					@ n 'module'
+					[ children
+		else
+			return
+				{
+					@ n schema
+					[ children
+
+	var schemaArtifactMap
+		{
+			@ js 'js/module'
+			@ ts 'ts/module'
+			@ html 'html/document'
+			@ css 'css/document'
+			@ scss 'scss/document'
+			@ svg 'svg/document'
+			@ vtt 'vtt/document'
+			@ md 'md/document'
+			@ json 'json/document'
+			@ ittf 'ittf/document'
+
+	function artifactNameFromSchema
+		param schema
+		# log 'artifactNameFromSchema', schema, schemaArtifactMap[schema]
+		return schemaArtifactMap[schema]
+
+	var schemaIttfRootMap
+		{
+			@ js 'module'
+			@ ts 'module'
+			@ html 'html'
+			@ css 'css'
+			@ scss 'scss'
+			@ svg 'svg'
+			@ md 'vtt'
+			@ vtt 'vtt'
+			@ json '{'
+			@ ittf 'any'
+
+	function ittfRootFromSchema
+		param schema
+		# log 'ittfRootFromSchema', schema, schemaIttfRootMap[schema]
+		return schemaIttfRootMap[schema]

@@ -1,0 +1,18 @@
+﻿base_test( asIsLoader )
+
+	$append imports
+		var asIsLoader = require('../../lib/ittfTree/asIsLoader')
+
+	it-async should load an ittf tree as is
+
+		_ asIsLoader
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'basic.tests.ittf'
+			{
+			f_cb_test( result )
+				# log? result
+				tobe_object( result )
+				_ done()
+

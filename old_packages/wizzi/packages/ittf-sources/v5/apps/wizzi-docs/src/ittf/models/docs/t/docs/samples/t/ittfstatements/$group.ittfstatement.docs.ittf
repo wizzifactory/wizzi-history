@@ -1,0 +1,18 @@
+﻿$group
+
+	sample $group
+		summary
+
+			p The $group statements is a node that will not be processed. Is used to give 
+				+ a unique root node to Ittf document with more than one root node.
+	
+		ittf my.html.ittf
+			kind primary
+			- $group
+				- $params &names
+				- div
+					- span hello ${dollar}{names[0]}
+				- div
+					- span hello ${dollar}{names[1]}
+
+		$include wfschema.html.sample

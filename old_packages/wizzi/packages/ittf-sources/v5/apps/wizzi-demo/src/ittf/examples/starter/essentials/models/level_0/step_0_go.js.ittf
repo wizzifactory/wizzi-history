@@ -1,0 +1,34 @@
+﻿example-essentials(models)
+
+	# 
+		# DEMO: how to load an IttfDocument into an `html` wizzi model,
+		#       passing a context object to the mTree loader.
+		#
+		# API   wizzi.model(sourcePathOrModelInfo, context?, options?)
+
+	var htmlFriendsPath
+		_ path.join 
+			@ __dirname
+			@ 'step_0'
+			@ 'friends.html.ittf'
+
+	# Load an html model.
+		# The html schema is detected from the path.
+	_ wizzi.model
+		@ htmlFriendsPath
+		{
+			@ friends friendsArray
+		f_cb_test(wizziModel)
+			_ printValue
+				@ 'wizziModel'
+				_ stringify
+					@ wizziModel
+					@ null
+					@ 4
+				@ 'dashes'
+			return
+				_ step_callback(null)
+
+
+
+

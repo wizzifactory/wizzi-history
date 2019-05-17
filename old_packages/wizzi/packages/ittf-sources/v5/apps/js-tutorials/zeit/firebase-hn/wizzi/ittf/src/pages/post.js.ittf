@@ -1,0 +1,33 @@
+module
+    kind react
+    import Layout from '../components/MyLayout.js'
+    import loadDB from '../lib/load-db'
+    const Post
+        => 
+            { 
+                @ item item
+            < Layout 
+                h1 
+                    + {item.title}
+                p 
+                    + URL:
+                    a 
+                        @ target "_blank"
+                        @ href {item.url}
+                        + {item.url}
+    set Post.getInitialProps =
+        async=> 
+            { 
+                @ query query
+            _ console.log('XXX', query.id)
+            const db
+                await 
+                    _ loadDB
+            let item
+                await 
+                    _ db.child('item').child(query.id).once('value')
+            set item = item.val()
+            return 
+                { 
+                    @ item item
+    export-default Post

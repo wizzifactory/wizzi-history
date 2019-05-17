@@ -1,0 +1,24 @@
+﻿api wizzi-plugin.modelTransformer
+	module
+		standard-path {wizzi-plugin}/lib/artifacts/{schema}/{transformer}/trans/main.js
+
+	# 
+
+	{
+		m trans
+			# Executes the transformation of a model.
+			{ model
+				# The model to be transformed.
+				# Can be a wizzi.modelType instance or a POJO object.
+			{ ctx
+				{ value
+					# This property of the `ctx` parameter can contain
+					# a (optional) context object for the trasformation.
+					# Its properties comes from:
+					# . the properties of the globalContext object of the 
+					#   wizzi.wizziFactory instance;
+					# . the properties of the `context` parameter passed to
+					#   the wizzi.wizziFactory.transformModel method.
+				api-ref wizzi.artifact.genContext
+			cb()
+				{ transformedModel

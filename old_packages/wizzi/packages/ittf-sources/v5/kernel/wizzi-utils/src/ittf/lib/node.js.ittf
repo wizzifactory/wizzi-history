@@ -1,0 +1,115 @@
+﻿module 
+    kind jsfile
+	+
+	var verify = require('./verify')
+	+
+	var work
+        { 
+    set work.lineSep = "__LS__"
+    set work.textSep = "__TS__"
+	+
+	var md
+        set module.exports =
+            { 
+
+	#
+		# inline a node hierarchy in a single text line
+		# separated by the "__LS__" sequence
+	set md.nodeToTextLine
+        function 
+            param node
+            var acc
+                [ 
+            if node.children
+                foreach item in node.children
+                    _ textline(item, acc, '')
+            return
+                _ acc.join
+                    @ work.lineSep
+    
+	function textline
+        param node
+        param acc
+        param indent
+        var open = node.tagSuffix == '(' ? '(' : ' '
+        _ acc.push
+			@ indent + node.name + open + (node.value || '')
+        foreach item in node.children
+            _ textline(item, acc, (indent + '  '))
+
+	#
+		# extract the text lines from a text string inlined with `nodeToTextLine`
+	set md.inlinedTextToTextLines
+        function 
+            param text
+			param options
+			set options = options || {}
+            if typeof(text) === 'undefined' || text == null
+				if options.singleLine
+					return text
+				else
+					return 
+						{ 
+							@ text text
+							@ lines null
+            var text
+                _ verify.replaceAll
+                    @ text
+                    @ work.textSep
+                    @ '\n'
+			var ss = text.split('\n')
+			if ss.length == 1
+				if options.singleLine
+					return ss[0]
+				else
+					return 
+						{ 
+							@ text ss[0]
+							@ lines null
+			else 
+				if options.singleLine
+					var para
+						_ verify.replaceAll
+							@ ss[1]
+							@ work.lineSep
+							@ '\n'
+					return ss[0] + para
+				else
+					var lines
+						_ verify.replaceAll
+							@ ss[1]
+							@ work.lineSep
+							@ '\n'
+							._ split('\n')
+					return
+						{ 
+							@ text ss[0]
+							@ lines lines
+
+	set md.replace
+        function 
+            param item
+            param replacers
+			if !item.parent
+				# log 'util/node/replace/item', item
+				foreach repl in replacers
+					# log 'util/node/replace/repl', repl
+            var nodes = item.parent.children
+            set item.parent.children = []
+            foreach child in nodes
+                if child === item
+                    foreach replchild in replacers
+                        set replchild.parent = item.parent
+                        _ item.parent.children.push(replchild)
+                else 
+                    _ item.parent.children.push(child)
+    
+	set md.remove
+        function 
+            param item
+            var nodes = item.parent.children
+            set item.parent.children = []
+            foreach child in nodes
+                if child !== item
+                    _ item.parent.children.push(child)
+

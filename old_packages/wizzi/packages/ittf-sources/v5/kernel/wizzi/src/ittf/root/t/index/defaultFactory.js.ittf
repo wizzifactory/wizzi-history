@@ -1,0 +1,398 @@
+﻿$group
+
+	function DEFAULT_PLUGINS
+		$if isWebpackTarget
+			return
+				[
+					@ wizziCore
+					@ wizziJs
+					@ wizziWeb
+		$else
+			return
+				[
+					@ 'wizzi-core'
+					@ 'wizzi-js'
+					@ 'wizzi-web'
+
+	var DEFAULT_ARTIFACTS
+		{
+			@ css 'css/document'
+			@ graphql 'graphql/docs'
+			@ html 'html/document'
+			@ js 'js/module'
+			@ json 'json/document'
+			@ scss 'scss/document'
+			@ text 'text/document'
+			@ ts 'ts/module'
+			@ xml 'xml/document'
+			@ vtt 'vtt/document'
+			@ vue 'vue/document'
+
+	var DEFAULT_ARTIFACTS_FROM_SCHEMA_ROOT
+		{
+			@ css 'css/document'
+			@ graphql 'graphql/docs'
+			@ html 'html/document'
+			@ module 'js/module'
+			@ '{' 'json/document'
+			@ '[' 'json/document'
+			@ scss 'scss/document'
+			@ text 'text/document'
+			@ xml 'xml/document'
+			@ vtt 'vtt/document'
+			@ vue 'vue/document'
+
+	var DEFAULT_MIME
+		{
+			@ css 'css'
+			@ graphql 'graphql'
+			@ html 'html'
+			@ js 'js'
+			@ json 'json'
+			@ scss 'scss'
+			@ text 'text'
+			@ ts 'ts'
+			@ xml 'xml'
+			@ vtt 'vtt'
+			@ vue 'vue'
+
+	set md.createFactoryLight
+		function
+			param options
+			param callback
+			
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+			
+			var pluginItems = DEFAULT_PLUGINS().concat(options.plugins || [])
+			_ md.fsnoaclFactory
+				{
+					{ plugins
+						@ items pluginItems
+					@ globalContext options.globalContext || {}
+				@ callback
+
+	set md.createJsonFactoryLight
+		function
+			param options
+			param callback
+			
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+			
+			var pluginItems = options.noPlugins ? [] : DEFAULT_PLUGINS().concat(options.plugins || [])
+			_ md.jsonnoaclFactory
+				{
+					{ plugins
+						@ items pluginItems
+					@ jsonFsData options.jsonFsData
+					@ globalContext options.globalContext || {}
+				@ callback
+
+	#
+		# { options
+		#   boolean raw
+		#   { globalContext
+	lightFunction( loadMTree, mtree )
+		if options.raw
+			_ wf.loadMTreeRaw
+				@ ittfDocumentPath
+				@ callback
+		else
+			_ wf.loadMTree
+				@ ittfDocumentPath
+				@ context
+				@ callback
+
+	#
+		# { options
+		#   boolean raw
+		#   { globalContext
+	jsonLightFunction( loadMTreeFromText, mtreeFromText )
+		var ittfDocumentPath = tempIttfUri
+		if options.raw
+			_ wf.loadMTreeRaw
+				@ ittfDocumentPath
+				@ callback
+		else
+			_ wf.loadMTree
+				@ ittfDocumentPath
+				@ context
+				@ callback
+
+	#
+		# { options
+		#   { globalContext
+	lightFunction( loadMTreeDebug, mtreeDebug )
+		_ wf.loadMTreeDebugInfo
+			@ ittfDocumentPath
+			@ context
+			@ callback
+
+	#
+		# { options
+		#   { globalContext
+	jsonLightFunction( loadMTreeDebugFromText, mtreeDebugFromText )
+		var ittfDocumentPath = tempIttfUri
+		_ wf.loadMTreeDebugInfo
+			@ ittfDocumentPath
+			@ context
+			@ callback
+
+	#
+		# params
+		#   string ittfDocumentPath
+		#   or
+		#   { modelDescription
+		#     string src
+		#     string cwd
+		#     	optional
+		#     string schema
+		#     	optional
+		#     string format
+		#     	optional
+		#     string exportName
+		#     	optional - has meaning only for context models.
+		#     [ contexts
+		#     	optional - has the same format of modelConfig
+		#     [ transformers
+		#     	optional
+		#     { formatOptions
+		#       optional
+		#       boolean ittfSources
+		#         # if true returns not the model but its ittf source documents.
+		#   { globalContext
+	lightFunction( loadModel, model )
+		if verify.isObject(ittfDocumentPath)
+			_ wf.loadModelFromConfig
+				@ ittfDocumentPath
+				@ ittfDocumentPath.globalContext || {}
+				@ callback
+		else
+			_ wf.loadModel
+				@ schema
+				@ ittfDocumentPath
+				{
+					@ mTreeBuildUpContext context
+					@ globalContext {}
+				@ callback
+
+	#
+		# params
+		#   string ittfDocumentPath
+	jsonLightFunction( loadModelFromText, modelFromText )
+		var ittfDocumentPath = tempIttfUri
+		_ wf.loadModel
+			@ schema
+			@ ittfDocumentPath
+			{
+				@ mTreeBuildUpContext context
+				@ globalContext {}
+			@ callback
+
+	#
+		# { options
+		#   { artifactContext
+		#   { globalContext
+	lightFunction( generateArtifact, gen, artifact )
+		if verify.isObject(ittfDocumentPath)
+			var artifactName = options.artifactName || DEFAULT_ARTIFACTS_FROM_SCHEMA_ROOT[ittfDocumentPath.wzElement]
+			_ wf.generateArtifact
+				@ ittfDocumentPath
+				@ 'unavailable'
+				@ artifactName
+				@ options.artifactContext || {}
+				@ callback
+		else
+			var artifactName = options.artifactName || getDefaultArtifact(schema)
+			_ wf.loadModelAndGenerateArtifact
+				@ ittfDocumentPath
+				{
+					{ modelRequestContext
+						@ mTreeBuildUpContext context
+					@ artifactRequestContext options.artifactContext
+				@ artifactName
+				@ callback
+
+	#
+		# { options
+		#   { artifactContext
+		#   { globalContext
+	jsonLightFunction( generateArtifactFromText, genFromText, artifactFromText )
+		var artifactName = options.artifactName || getDefaultArtifact(schema)
+		var ittfDocumentPath = tempIttfUri
+		_ wf.loadModelAndGenerateArtifact
+			@ ittfDocumentPath
+			{
+				{ modelRequestContext
+					@ mTreeBuildUpContext context
+				@ artifactRequestContext options.artifactContext
+			@ artifactName
+			@ callback
+
+	lightFunction( generateWizziSchema, schema )
+		_ wf.generateModelTypes
+			@ ittfDocumentPath
+			@ options.outputPackagePath
+			@ name
+			@ context
+			@ callback
+
+	#
+		# { options
+		#   string name
+		#   integer indentSpaces
+		#   integer verbose
+		#   { jobContext
+		#   { globalContext
+	lightFunction( executeWizziJob2, job )
+		_ wf.executeJob
+			{
+				@ name options.name || name
+				@ path ittfDocumentPath
+				@ productionOptions
+					_ md.productionOptions
+						{
+							@ indentSpaces options.indentSpaces || 4
+							@ basedir __dirname
+							@ verbose options.verbose || 2
+				@ modelContext context
+				@ jobContext options.jobContext || {}
+			@ callback
+	#
+		# { options
+		#   string destFolder
+		#   { globalContext
+	lightFunction( generateFolderArtifacts, genFolder, artifactsFolder )
+		var ittfFolderPath = ittfDocumentPath
+		_ folderFilesInfoByPath
+			@ ittfFolderPath
+			@ wf.fileService
+			a_cb( items )
+				log 'generateFolderArtifacts\n', JSON.stringify(items, null, 2)
+				_ async.mapSeries
+					@ items
+					function
+						param item
+						param callback
+						if item.isIttfDocument
+							_ md.gen
+								@ item.fullPath
+								@ context
+								f_cb(artifactText)
+									_ wf.fileService.write
+										_ path.join
+											@ options.destFolder
+											@ item.destRelPath
+										@ artifactText
+										f_cb()
+											_ callback
+												@ null
+												_ path.join
+													@ options.destFolder
+													@ item.destRelPath
+						else
+							_ wf.fileService.copy
+								@ item.fullPath
+								_ path.join
+									@ options.destFolder
+									@ item.destRelPath
+								f_cb()
+									_ callback
+										@ null
+										_ path.join
+											@ options.destFolder
+											@ item.destRelPath
+
+			f_cb_test(result)
+				# log 'result', result
+	
+	function getDefaultArtifact
+		param schema
+		return DEFAULT_ARTIFACTS[schema]
+
+	# TODO this must be done in wizzi-repo on the store filesystem
+	# let it be here to start development
+	function folderFilesInfoByPath
+		param folderPath
+		param fileService
+		param callback
+		_ fileService.getFilesAsync
+			@ folderPath
+			{
+				@ deep true
+			f_cb( files )
+				var result = []
+				foreach f in files
+					_ result.push
+						_ fileInfoByPath
+							@ f.fullPath
+				r_cb( result )
+
+	function ittfDocumentInfoByPath
+		param filePath
+		var result = fileInfoByPath(filePath)
+		if result.isIttfDocument
+			return result
+		else
+			return 
+				{
+					@ is_error true
+					@ message 'The file is not an ittfdocument: ' + result.fullPath
+
+	function fileInfoByPath
+		param filePath
+		param baseFolder
+		if typeof baseFolder === 'undefined'
+			set baseFolder = path.dirname(filePath)
+		set filePath = normalize(filePath)
+		var basename = path.basename(filePath)
+		var dirname = path.dirname(filePath)
+		var relFolder
+			iif path.dirname(filePath).length > baseFolder.length 
+				then path.dirname(filePath).substr(baseFolder.length + 1) 
+				else ''
+		var fileUri
+			_ filePath.substr
+		var ss = basename.split('.')
+		if ss[ss.length-1] === 'ittf'
+			var name = ss.slice(0, ss.length-2).join('.')
+			var schema = ss[ss.length-2]
+			var mime = DEFAULT_MIME[schema] || schema
+			return
+				{
+					@ name name
+					@ basename basename
+					@ isIttfDocument true
+					@ isFragment filePath.indexOf('/t/') > -1
+					@ schema schema
+					@ mime mime
+					@ relFolder relFolder
+					@ fullPath filePath
+					@ destBasename name + '.' + mime
+					@ destRelPath
+						iif relFolder.length > 0
+							then relFolder + '/' + name + '.' + mime
+							else name + '.' + mime
+		else
+			return 
+				{
+					@ name ss.slice(0, ss.length-1).join('.')
+					@ basename basename
+					@ isIttfDocument false
+					@ schema null
+					@ mime ss[ss.length-1]
+					@ relFolder relFolder
+					@ fullPath filePath
+					@ destBasename basename
+					@ destRelPath
+						iif relFolder.length > 0
+							then relFolder + '/' + basename
+							else basename
+
+
+	function normalize
+		param filepath
+		return verify.replaceAll(filepath, '\\', '/')

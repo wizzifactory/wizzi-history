@@ -1,0 +1,46 @@
+﻿base_example()
+
+	$append imports
+		import path
+
+		var codecampPath = 'c:/my/wizzi/v5/codecamps'
+		# var fileBasename = 'index.js'
+		var fileBasename = 'compile.js'
+
+	var options1
+		{
+			@ codePath
+				_ path.join
+					@ codecampPath
+					@ 'react'
+					@ 'src'
+					@ fileBasename
+
+	_ flow
+		f_cb_test(result)
+			log 'flow.result', result
+			_ flowToEventStream
+				f_cb_test(result)
+					log 'flowToEventStream.result', result
+	
+	function flow
+		param callback
+
+		_ manager.flowExec
+			@ options1
+			@ callback
+    
+	function flowToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.flowExecToEventStream
+			@ options1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

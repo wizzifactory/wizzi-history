@@ -1,0 +1,36 @@
+module
+	kind jsfile
+	var codegen = require('wizzi-codegen')
+	var statement = codegen.jsStatement
+	+
+	var myname = 'html.document.js_statement'
+	+
+	var md = module.exports = {}
+
+	md-gen-item( )
+		var stm = md.stm[model.wzElement]
+		if stm
+			_ stm(model, ctx)
+		else 
+			throw ctx.error(myname + '. Unknown statement tag/element: ' + model.wzTag + '/' + model.wzElement, model)
+	
+	md-gen-items( )
+		$$ params: items, ctx, options
+		var
+			decl opt = options || {}
+			decl from = opt.from || 0
+			decl indent = typeof opt.indent === 'undefined' ? true : opt.indent
+
+		if indent
+			_ ctx.indent()
+
+		foreach item in items
+			_ md.genItem(item, ctx)
+				
+		if indent
+			_ ctx.deindent()
+
+	md-stm( codeline )
+		_ ctx.w(model.wzName)
+		_ md.genItems(model.items, ctx)
+

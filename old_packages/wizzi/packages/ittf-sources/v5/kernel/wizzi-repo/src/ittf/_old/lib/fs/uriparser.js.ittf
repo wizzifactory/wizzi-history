@@ -1,0 +1,83 @@
+﻿module wizzi-repo.fs.uriParser
+    kind jsfile
+
+	import url
+
+	set module.exports
+		function parse
+			string uri
+			callback
+
+			set uri = uri.toLowerCase()
+			
+			var ret = {}
+
+            var parsedUri = url.parse(uri)
+            if typeof(parsedUri.protocol) !== 'string'
+				r_cb_wz_err( InvalidArgument, parse )
+					@ 'Uri must have a protocol (must be an absolute url). Received: ' + uri
+            
+			var protocol
+                iif parsedUri.protocol.substr(-1, 1) === ':'
+                    then 
+                        _ parsedUri.protocol.substr(0, (parsedUri.protocol.length - 1))
+                    else 
+                        set parsedUri.protocol
+            
+			# log 'parseuri.parsedUri', parsedUri
+			var name, parts = parsedUri.pathname ? parsedUri.pathname.split('/') : []
+			if parsedUri.pathname && parsedUri.pathname.length > 0 && parsedUri.pathname[0] == '/'
+				_ parts.shift()
+			set name = parts[parts.length-1]
+			set ret.basename = name
+			var nameparts = name.split('.')
+			if nameparts.length > 2 && nameparts[nameparts.length -1] === 'ittf'
+				set ret.isIttfDocument = true
+				set ret.schema = nameparts[nameparts.length -2]
+			else
+				set ret.isIttfDocument = false
+				set ret.extension = nameparts[nameparts.length -1]
+
+			if protocol.length === 1
+                
+				set ret.storeKind = 'filesystem'
+				if ret.isIttfDocument
+					if parts.length < 3
+						r_cb_wz_err( InvalidArgument, parse )
+							@ 'Invalid uri for an IttfDocument. Too short. Received: ' + uri
+					set ret.userId = parts[0]
+					set ret.projectId = parts[1]
+					set ret.uri = uri
+					_ parts.shift()
+					_ parts.shift()
+					set ret.path = parts.join('/')
+				else
+					set ret.path = parts.join('/')
+            
+			elif protocol === 'repo'
+				if parts.length < 2
+					r_cb_wz_err( InvalidArgument, parse )
+						{
+							@ parameter 'uri'
+							@ message 'Invalid uri for an IttfDocument. Too short. Received: ' + uri
+                
+				# log 'wizzi-repo.fs.uriparser.parsedUri.parts', parts
+				# log 'wizzi-repo.fs.uriparser.parsedUri', parsedUri
+				set ret.storeKind = 'repo'
+                set ret.userId = parsedUri.host
+				set ret.projectId = parts[0]
+				set ret.uri = uri
+				_ parts.shift();
+				set ret.path = parts.join('/')
+
+			else
+				r_cb_wz_err( InvalidArgument, parse )
+					@ 'Invalid uri protocol for an IttfDocument. Must be a drive letter or "repo". Received: ' + uri
+
+
+			# log 'parseuri.ret', ret
+
+			return
+				_ callback
+					@ null
+					@ ret

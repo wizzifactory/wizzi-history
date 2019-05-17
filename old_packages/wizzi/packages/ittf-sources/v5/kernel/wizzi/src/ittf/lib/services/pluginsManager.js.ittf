@@ -1,0 +1,59 @@
+﻿module wizzi.pluginsManager
+	kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var _ = require('lodash')
+	var log = require('../util/log')(module)
+	var verify = require('wizzi-utils').verify
+	var file = require('wizzi-utils').file
+	var fail = require('wizzi-utils').fail
+	var errors = require('../errors')
+    var existsSync = fs.existsSync || path.existsSync
+    var realpathSync = fs.realpathSync
+    var exists = fs.exists || path.exists
+    var realpath = fs.realpath
+
+	# TODO
+	# Implement available wizzi factories
+	var availableFactories = []
+
+	class PluginsManager
+		
+		ctor
+			set this.packagePathCache = {}
+			set this.factoryPlugins = []
+			set this.providedSchemas = []
+			set this.providedModelTransformers = []
+			set this.providedArtifactGenerators = []
+
+		$include pluginsManager/initialize
+		$include pluginsManager/register
+		$include pluginsManager/model-factory
+		$include pluginsManager/model-transformer
+		$include pluginsManager/artifact-generator
+		$include pluginsManager/schema-definition
+		$include pluginsManager/getInfo
+
+	# For test - begin
+	var packagePathCache = {}
+	$include pluginsManager/resolve-module
+	$include pluginsManager/resolve-package
+	# For test - end
+
+	set module.exports
+		{
+			@ createManager
+				function createManager
+					{ options
+					callback
+					
+					var pm
+						new PluginsManager
+					_ pm.initialize
+						@ options
+						@ callback
+			
+			@ PluginsManager PluginsManager
+			@ resolveModule resolveModule
+			@ resolvePackage resolvePackage

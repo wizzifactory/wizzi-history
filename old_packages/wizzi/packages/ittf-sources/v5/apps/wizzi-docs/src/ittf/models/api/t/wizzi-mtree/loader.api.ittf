@@ -1,0 +1,220 @@
+﻿$group
+
+	api wizzi-mtree
+		kernel
+		module
+			path wizzi-mtree/index.js
+
+		# This module is the entry point of the mTree loader package.
+		# Usually it is managed by a wizzi.wizziFactory instance and
+		# a direct access to it is unnecessary.
+		
+		iface
+
+			m loadMTree
+				# This function is returned by the wizzi-mtree.createLoadMTree
+				# function and can be called for loading an mTree.
+				# It manages the wizzi-repo.ittfDocumentStore creation and
+				# calls the internal wizzi-mtree.loader.loadMTree.
+				string ittfDocumentUri
+					# The location of the source ittf document.
+				{ loadContext
+					{ mTreeBuildUpContext
+						# 
+					{ __productionManager
+						api-ref wizzi.production.productionManager 
+						required
+				cb()
+					{ mTree
+						api-ref wizzi-mtree.mTree
+				info
+					closure createStore
+						api-ref wizzi-repo.createStore
+					set loadContext.__ittfDocumentStore
+					api-call wizzi-mtree.loader.loadMTree
+
+		{
+			hof createLoadMTree
+				called-by wizzi.wizziFactory.initialize
+
+				# An high order function to obtain a repo configured
+				# mTree loader function.
+
+				function createStore
+					api-ref wizzi-repo.createStore
+					
+					# A function that can be called to create a
+					# wizzi-repo.ittfDocumentStore already configured 
+					# by the current wizzi.wizziFactory instance.
+				
+				{ options
+					boolean useCache
+						# TODO a cache strategy is not implemented yet
+						default false
+					boolean raw
+						# Get the raw ittf nodes.
+						# This means that the returned loadMTree function is used 
+						# for documentation purposes.
+						default false
+				return
+					function loadMTree
+						api-ref wizzi-mtree.loadMTree
+
+						# The function returned can be called to execute the
+						# big job of an mTree loading. The ittf documents
+						# will be searched using the wizzi-repo.ittfDocumentStore
+						# created using the `createStore` function.
+
+	api wizzi-mtree.loader
+		kernel
+		module
+			path wizzi-mtree/lib/loader/index.js
+
+		# The internal module that executes the big job.
+		
+		{
+			m loadMTree
+				called-by wizzi-mtree.loadMTree
+				# The big job of loading an ittf source document
+				# resolving includes, mixups, append-hooks, template commands and expression evaluations.
+				string primaryIttfDocumentUri
+					# The location of the source ittf document.
+				{ loadContext
+					{ mTreeBuildUpContext
+						# An object context which properties are loaded in the 
+						# wizzi-mtree.jsWizziContext used in the evaluation step
+						# of the mTree loading.
+						# Properties, or the object itself, can be a wizzi-modelType
+						# or a POJO.
+					{ __productionManager
+						api-ref wizzi.productionManager 
+						required
+					{ __ittfDocumentStore
+						api-ref wizzi-repo.ittfDocumentStore 
+						required
+				cb()
+					{ mTree
+						api-ref wizzi-mtree.mTree
+
+				info
+					# TODO lots of internal calls
+					#      for technical documentation, not for pubblic api
+
+	api wizzi-mtree.loader.line
+		kernel
+		class-instance
+
+		# The first step of an mTree loading parses the source ittf document
+		# into lines of name-value pairs.
+
+		{
+			integer indent
+				# The number of indentations of the first char in this line.
+				# ??? TODO The number of spaces for one indentation are significant ???
+			string name
+				# The first sequence of chars in a line until the first white-space.
+				# This will become the ittf node name
+			string value
+				# The trimmed sequence of chars and white-spaces 
+				# after the name and until end of line.
+			integer row
+				# The row number of the line in the ittf source document.
+			integer col
+				# The col number of the first char of the name.
+			string sourceKey
+				# The key to the source info of the ittf document.
+				# See the sourceKey property in the wizzi-mtree.loader.mTreeBrick.
+			string tagSuffix
+				restrict
+					enum none
+					enum (
+			boolean hasMacro
+				# Has espressions to be evaluated.
+
+	api wizzi-mtree.loader.node
+		kernel
+		class-instance
+			path wizzi-mtree/lib/loader/nodifier.js
+
+		# The second step of an mTree loading parses the wizzi-mtree.loader.line(s)
+		# into a tree structure of nodes.
+
+		{
+			merge line
+				api-ref wizzi-mtree.loader.line
+			integer id
+				# The unique id of the node in a cloned mTreeBrick
+				# See api-ref wizzi-mtree.loader.mTreeBrick
+			integer parsedId
+				# The id of the node in the original mTreeBrick
+				# See api-ref wizzi-mtree.loader.mTreeBrick
+			{ parent
+				# The parent node.
+				# It is undefined for the root node.
+			{ model
+				# The mTreeBrick to which the node belongs.
+			[ childs
+				# The children nodes.
+				{ node
+					api-ref wizzi-mtree.loader.node
+	
+	api wizzi-mtree.loader.mTreeBrick
+		kernel
+		class-instance
+			path wizzi-mtree/lib/loader/mTree.js
+			
+			# This object always is a cloned object
+			# of an original mTreeBrick loaded from an ittf source document.
+			# The same ittf source document may be mixed in many
+			# branches of the builded wizzi-mtree.mTree.
+			# The wizzi-mtree.loader.loadHistory keeps track
+			# of original mTreeBricks, indexed by a 'sourceKey', and
+			# cloned mTreeBricks, indexed by a 'modelKey'. 
+		{
+			
+			string uri
+				# The location of the source ittf document.
+			
+			string schema
+				# The source ittf document schema.
+			
+			{ loadHistory
+				api-ref wizzi-mtree.loader.loadHistory
+			
+			[ lines
+				{ line
+					api-ref : wizzi-mtree.loader.line
+			
+			[ nodes
+				{ node
+					api-ref : wizzi-mtree.loader.node
+			
+			string sourceKey
+				# The key to the source info of the ittf document
+				# stored in wizzi-mtree.loader.loadHistory.
+			
+			string modelKey
+				# The unique model key of this mTree
+				# stored in wizzi-mtree.loader.loadHistory.
+				# Many mTrees may have the same source key
+				# when the same source ittf document is mixed in various tree branches.
+			
+			boolean mixed
+				# True if this mTree has been mixed
+			
+			string $mixerModelKey
+				# The modelKey of the command node that invoked the mix up.
+			
+			string $args
+				# The node value of the command node that invoked the mix up.
+				# A comma separated list of arguments.
+			
+			string $argArray
+				# The arg array ??? of the command node that invoked the mix up.
+			
+			string $params
+				# The node value of the $params command node of the 
+				# source ittf document, if declared.
+				# A comma separated list of parameters in the form
+				# name[:type][|defaultValue]
+				# Set by the nodifier on the original mTree, then cloned.

@@ -1,0 +1,37 @@
+﻿vue coins
+    
+	template 
+        div 
+            p Name: {{ coin.name }}
+            p Symbol: {{ coin.symbol }}
+            p Price (USD): {{ coin.price_usd }}
+    
+	script 
+        import axios from 'axios'
+        
+		export-default 
+            { 
+                @ name 'Coins'
+                
+				m data
+                    return 
+                        { 
+                            @ coin {}
+                
+				m created
+                    _ this.fetchData
+                
+				{ watch
+                    @ '$route' 'fetchData'
+                
+				{ methods
+                    m fetchData
+                        _ axios.get('https://api.coinmarketcap.com/v1/ticker/' + this.$route.params.id + '/').then
+                            => 
+                                param resp
+                                set this.coin = resp.data[0]
+                                log 'coins.axios.resp', resp
+                            ._ catch
+                                => 
+                                    param err
+									log 'coins.axios.err', err

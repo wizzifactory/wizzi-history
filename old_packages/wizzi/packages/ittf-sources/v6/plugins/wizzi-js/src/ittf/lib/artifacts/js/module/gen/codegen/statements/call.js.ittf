@@ -1,0 +1,211 @@
+﻿loader(call)
+    
+	stm( call
+		if model.__templateChild
+			_ ctx.write('${')
+        var name = (model.wzName || '').trim()
+        var hasParens = u.hasArguments(name)
+		# log hasParens, ctx.__artifact, ctx.__functionNames
+		if hasParens == false && ctx.__artifact === 'xittf/document'
+			if ctx.__functionNames.indexOf(name) < 0
+				set name = ctx.__functionProvider + '.' + name
+        if model.statements.length > 0
+            _ doCallChildStatements_one
+				@ model
+				@ name
+				@ hasParens
+				@ ctx
+				f_cb()
+					if model.__templateChild
+						_ ctx.write('}')
+					r_cb()
+        else 
+            set name = hasParens ? name : (name + '()')
+            _ ctx.write(name)
+            if u.isTopStatement(model, ctx) && u.isDescendentOf(model, 'iif') == false
+                _ ctx.w
+                    _ u.semicolon(name)
+			if model.__templateChild
+				_ ctx.write('}')
+			r_cb()
+    
+	stm( memberCall
+        var name = (model.wzName || '').trim()
+        var hasParens = u.hasArguments(name)
+        if model.statements.length > 0
+            _ doCallChildStatements_one(model, ('.' + name), hasParens, ctx, callback)
+        else 
+            set name = hasParens ? ('.' + name) : ('.' + name) + '()'
+            _ ctx.write(name)
+            if u.isTopStatement(model, ctx)
+                _ ctx.w
+                    _ u.semicolon(name)
+			r_cb()
+    
+	stm( decoratorCall
+        var name = ('@' + model.wzName).trim()
+        var hasParens = u.hasArguments(name)
+        if model.statements.length > 0
+            _ doCallChildStatements_one(model, name, hasParens, ctx, callback)
+        else 
+            set name = hasParens ? name : (name + '()')
+            _ ctx.write(name)
+            if (u.isTopStatement(model, ctx) && (u.isDescendentOf(model, 'iif') == false))
+                _ ctx.w
+                    _ u.semicolon(name)
+			r_cb()
+    
+	stm( callOnValue
+        var hasParens = false
+		if model.wzParent && model.wzParent.wzElement === 'arrowfunction'
+            _ ctx.write('(' + (model.wzName || ''))
+			if model.statements.length == 1
+				_ cnt.genItem
+					@ model.statements[0]
+					@ ctx
+					f_cb()
+						_ ctx.write(')')
+						r_cb()
+			else
+				_ ctx.write(')')
+				r_cb()
+        elif model.wzParent && model.wzParent.wzElement === 'call' && model.statements.length == 1
+			_ ctx.write('(' + (model.wzName || ''))
+			_ cnt.genItem
+				@ model.statements[0]
+				@ ctx
+				f_cb()
+					_ ctx.write(')')
+					r_cb()
+		elif model.statements.length > 0
+            _ doCallChildStatements_one(model, '', hasParens, ctx, callback)
+        else 
+            _ ctx.write('()')
+			r_cb()
+    
+	function doCallChildStatements_one
+        param model
+        param name
+        param hasParens
+        param ctx
+		param callback
+
+        _ ctx.write(name)
+
+		if model.typeParameterInsts && model.typeParameterInsts.length > 0
+			_ ctx.write('<')
+			repeater( 1, model.typeParameterInsts )
+				if index_1 > 0
+					_ ctx.write(', ')
+				if item_1.statements.length == 0
+					_ ctx.write(item_1.wzName)
+					repeater_increment( 1 )
+				elif item_1.statements.length == 1
+					_ cnt.genItem
+						@ item_1.statements[0]
+						@ ctx
+						a_cb()
+							repeater_increment( 1 )
+				else
+					_ ctx.write('*** js.module.statements.call.doCallChildStatements_two not managed ***')
+					repeater_increment( 1 )
+				$append next
+					_ ctx.write('>')
+					_ doCallChildStatements_two(model, name, hasParens, ctx, callback)
+		else
+			_ doCallChildStatements_two(model, name, hasParens, ctx, callback)
+
+	function doCallChildStatements_two
+        param model
+        param name
+        param hasParens
+        param ctx
+		param callback
+        
+		if hasParens === false
+			_ ctx.write('(')
+			# VIA 20/2/19
+				if name.length > 0
+					_ ctx.write('(')
+
+		repeater(1, model.statements)
+			if (u.isCallArgument(item_1) && hasParens) || u.isMemberAccess(item_1)
+				if (hasParens === false) && u.isMemberAccess(item_1)
+					if name.length > 0
+						_ ctx.write(')')
+				if u.isCallArgument(item_1)
+					_ ctx.write('.')
+				var remainings = []
+				for var j = (index_1 + 1); j < model.statements.length; j++
+					_ remainings.push(model.statements[j])
+				return
+					_ doCallChildStatements_call(item_1, ctx, remainings, callback)
+			if index_1 > 0
+				_ ctx.write(', ')
+			_ cnt.genItem
+				@ item_1
+				@ ctx
+				f_cb()
+					repeater_increment(1)
+			$append next
+				+ ;
+				if hasParens === false
+					_ ctx.write(')')
+				if u.isTopStatement(model, ctx) && 
+					\b model.wzElement !== 'decoratorCall' && 
+					$$ 14/5/2018 (gatsby.node.js) | \b !u.parentIs(model, 'arrowfunction') && 
+					\b u.isDescendentOf(model, 'iif') == false
+					_ ctx.w(';')
+				else 
+					# 2/11/17 _ ctx.w()
+				r_cb()
+
+	$include doCallChildStatements_call
+    
+	stm( memberAccess
+        if ctx.__inside_html || (model.wzParent.wzElement === 'xreturn' && ctx.__jskind === 'react')
+            var classTag = ctx.__jskind === 'react' ? 'className' : 'class'
+            _ model.statements.unshift
+                { 
+                    @ wzElement 'jsPropertyOrValue'
+                    @ wzName classTag + ' ' + model.wzName
+                    @ wzParent model
+            set model.wzElement = 'div'
+            set model.wzName = ''
+            _ cnt.stm.div(model, ctx, callback)
+        else 
+            _ ctx.write('.' + model.wzName)
+			r_cb()
+    
+	stm( memberAccessComputed
+		if !model.statements || model.statements.length < 1
+			_ ctx.write('[' + model.wzName + ']')
+			r_cb()
+
+		_ ctx.write('[')
+
+		var first = true
+		repeater(1, model.statements)
+            if u.isMemberAccess(item_1)
+                _ ctx.write(']')
+                _ cnt.genItem
+					@ item_1
+					@ ctx
+					f_cb()
+						if u.isTopStatement(model, ctx) && u.isDescendentOf(model, 'iif') == false
+							_ ctx.w(';')
+						r_cb()
+			else
+				if !first
+					_ ctx.write(', ')
+				_ cnt.genItem
+					@ item_1
+					@ ctx
+					f_cb()
+						set ctx.first = false
+						repeater_increment(1)
+
+			$append next
+				_ ctx.write(']')
+				r_cb()
+

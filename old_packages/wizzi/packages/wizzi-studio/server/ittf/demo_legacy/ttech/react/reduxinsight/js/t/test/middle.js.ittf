@@ -1,0 +1,43 @@
+$group
+
+	function middle_increment
+		return
+			{
+				@ type '++'
+
+	function middle_decrement
+		return
+			{
+				@ type '--'
+
+	function middle_counterReducer
+		param state
+		param action
+
+		set state = state || 0
+
+		switch action.type
+			case '++'
+				return state + 1
+			case '--'
+				return state - 1
+			default
+				return state
+
+	function test_middle
+		log 'test middle started'
+
+		log 'test middle before applyMiddleware'
+		var createStoreWithMiddleware = applyMiddleware(loggerMiddleware)(createStore)
+
+		var counterApp = combineReducers({ counterReducer: middle_counterReducer })
+		
+		log 'test middle before createStoreWithMiddleware'
+		var store = createStoreWithMiddleware(counterApp)
+		
+		log '*** start store updates'
+		log 'test middle initial store', store.getState()
+		_ store.dispatch(middle_increment())
+		log 'test middle current store', store.getState()
+
+		

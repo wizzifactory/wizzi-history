@@ -1,0 +1,22 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m getDir
+		string folderPath
+		options-callback
+		+
+		set folderPath = normalize(folderPath)
+		+
+		var that = this
+		+
+		_ this.fsCommon.getItemByPath
+			@ folderPath
+			f_cb( r )
+				if r
+					_ that.fsCommon.getItemChildren
+						@ r._id
+						f_cb( fsitems )
+							r_cb( fsitems )
+				else
+					r_cb( [] )
+

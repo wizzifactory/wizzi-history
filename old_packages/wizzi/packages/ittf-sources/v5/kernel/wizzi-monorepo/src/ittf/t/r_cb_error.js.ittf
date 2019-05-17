@@ -1,0 +1,11 @@
+﻿$group
+	$params code|@@null, method|@@null
+	
+	return
+		_ callback
+			_ error
+				$if code != null
+					@ '${code}'
+				$if method != null
+					@ '${method}'
+				$hook

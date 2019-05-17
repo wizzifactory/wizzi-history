@@ -1,0 +1,29 @@
+﻿module 
+    kind jsfile
+
+	+
+	import path
+	import util
+	+
+	var expect = require('expect.js')
+    var thisPackageIndex = require('../../index')
+
+	describe loading the dash rdbms WizziModel
+
+		it-async should load the WizziModel
+
+			_ thisPackageIndex.rdbms
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'dash.rdbms.ittf'
+				{
+				function
+					param err
+					param wizziModel
+
+					# log 'dash.rdbms.wizziModel', wizziModel
+
+					tobe_object( wizziModel )
+					_ done
+

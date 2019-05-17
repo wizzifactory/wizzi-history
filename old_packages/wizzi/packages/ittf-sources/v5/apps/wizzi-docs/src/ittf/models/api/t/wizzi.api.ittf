@@ -1,0 +1,159 @@
+﻿$group
+
+	api wizzi
+		kernel
+		# The main API of the wizzi factory.
+		
+		module
+			path wizzi/index.js
+
+		{
+			facade createFactory
+				# To execute artifact productions a wizzi.wizziFactory instance
+				# must be obtained. Many factories, with differents wizzi.wizziFactory.createOptions,
+				# can be create by the same process.
+				implemented-by wizzi.wizziFactory.createFactory
+				string user
+					# ACL not implemented yet. To be used when exposing the factory on the web.
+					# Use user name `stefi`.
+				string role
+					# ACL not implemented yet. To be used when exposing the factory on the web.
+					# Use role `admin`.
+				{ options
+					api-ref wizzi.wizziFactory.createOptions
+				cb()
+					{ wizziFactory
+						api-ref wizzi.wizziFactory
+
+			m executeWizziJob
+				# Executes a wizzi job described by a Wizzi Model of type `wfjob`.
+				{ request
+					string user
+						default stefi
+					string role
+						default admin
+					{ factoryCreateOptions
+						api-ref wizzi.wizziFactory.createOptions
+					{ job
+						string name
+							# A label for messages.
+						string ittfDocumentUri
+							# The path to the 'wfjob' model primary ittf document.
+						{ productionOptions
+							integer indentSpaces
+								default 4
+							string basedir
+								# TODO explain where it is used
+							integer verbose
+								default 2
+								# Not implemented yet
+						{ dumps
+							# (Optional) request for dumps to files of transient objects for debug purposes.
+							string dumpsBaseFolder
+								required
+							{ mTreeBuildupJsWizziScript
+								boolean dump
+								string dumpsBaseFolder
+									default &dumpsBaseFolder/scripts
+							{ mixedMTree
+								boolean dump
+								string dumpsBaseFolder
+									default &dumpsBaseFolder/mixed
+							{ evaluatedMTree
+								boolean dump
+								string dumpsBaseFolder
+									default &dumpsBaseFolder/evaluated
+					{ globalContext
+						# Every wizzi factory loading, transformation and artifact generation
+						# executed by this job
+						# will have the properties of this object injected in its 
+						# context object.
+				cb()
+					# If the callback returns both error and result = null the
+					# job has been successfully executed. 
+					null
+
+				info
+					api-call wizzi.createFactory
+					api-call wizzi.wizziFactory.executeJob
+
+			m startRunnerServer
+				# Can be used at startup of an application that needs to load
+				# Wizzi Models synchronously, for example using the $.model(name, query)
+				# or $.api(name, ...args) sync methods in a jswizzi statement.
+				# This method is async and models can be preloaded implementing the 
+				# onStart and onPrepare callbacks in a wizzifile.js.
+				# See the wizzifile.js documentation. 
+				# TODO links
+				{ options
+					string userid
+					string role
+					string cwd
+						# The wizzifile.js folder.
+						default process.cwd()
+					[ factoryCreateOptions
+						# A collection of named wizzi.wizziFactory.createOptions that
+						# allow models preloading from different store kinds and
+						# plugin configurations. The onStart and onPrepare methods
+						# will be called for each wizzi.wizziFactory.createOptions item.
+						{ item
+							string name
+							{ factoryCreateOptions
+								api-ref wizzi.wizziFactory.createOptions
+
+					string storeKind
+						# Can be different frome the storeKind(s) used by the application.
+						# For now only one storeKind can be used.
+				cb()
+					# If the callback returns both error and result = null the
+					# generation has been successfully executed. 
+					null
+
+			m generateWizziModelTypes
+				
+				# From an ittf document of schema "wfschema"
+				# generates: 
+				# - a Wizzi Model type implementation javascript module
+				# - a Wizzi Model type factory javascript module
+				# - a Wizzi Model type test javascript module
+				# - a Wizzi Model type json documentation
+				# - a Wizzi Model type html documentation
+				# This method is a facade function that creates a new instance
+				# of the wizzi.wizziFactory class and executes 
+				# its `generateWizziModelTypes` method.
+				
+				{ request
+					string user
+						default stefi
+					string role
+						default admin
+					merge
+						{ factoryCreateOptions
+							api-ref wizzi.wizziFactory.createOptions
+					{ wfschema
+						string name
+							# The name of the Wizzi Model type (schema) to be generated.
+						string ittfDocumentUri
+							# The path to the `wfschema` ittf document describing the Wizzi Model type.
+						string outputPackageFolder
+							# The destination base path of the generated artifacts.
+							# The names of the artifacts will be
+							# &outputPackageFolder/lib/wizzi/models/&name-model.g.js
+							# &outputPackageFolder/lib/wizzi/models/&name-factory.g.js
+							# &outputPackageFolder/lib/wizzi/models/&name-schema.g.json
+							# &outputPackageFolder/lib/wizzi/models/&name-schema.g.html
+							# &outputPackageFolder/lib/wizzi/schemas/&name-test.g.js
+				cb()
+					# If the callback returns both error and result = null the
+					# generation has been successfully executed. 
+					null
+
+	$include wizzi/light
+	$include wizzi/wizziFactory
+	$include wizzi/pluginsManager
+	$include wizzi/runnerServer
+	$include wizzi/model
+	$include wizzi/artifact
+	$include wizzi/production
+
+

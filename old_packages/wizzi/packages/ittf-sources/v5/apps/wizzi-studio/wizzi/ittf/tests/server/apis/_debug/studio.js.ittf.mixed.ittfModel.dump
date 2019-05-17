@@ -1,0 +1,45 @@
+  module  ids: 1 44
+    kind jsfile ids: 2 45
+    +  ids: 3 46
+    import path ids: 4 47
+    import util ids: 5 48
+    +  ids: 6 49
+    var expect = require('expect.js') ids: 7 50
+    var studioBasePath ids: 8 51
+      _ path.join ids: 9 52
+        @ __dirname ids: 10 53
+        @ 'studioRepo' ids: 11 54
+    var api = {} ids: 12 55
+    _ require ids: 13 56
+      @ '../../../server/apis/studio' ids: 14 57
+      (  ids: 15 58
+        @ null ids: 16 59
+        {  ids: 17 60
+          @ studiosBasePath studioBasePath ids: 18 61
+        @ api ids: 19 62
+    var studioApi = api.studio ids: 20 63
+    log 'studioApi', studioApi ids: 21 64
+    describe studio api ids: 22 65
+      log 'studio creation' ids: 23 66
+      describe creation ids: 24 67
+        before-async  ids: 25 68
+          _ del ids: 26 69
+            [  ids: 27 70
+              _ path.join ids: 28 71
+                @ studioBasePath ids: 29 72
+                @ '/**/.*' ids: 30 73
+          _ done() ids: 31 74
+        it-async should create a js ittf document ids: 32 75
+          log 'should create a js ittf document' ids: 33 76
+          _ studioApi.createDocument ids: 34 77
+            @ 'examples' ids: 35 78
+            @ 'ecma2015' ids: 36 79
+            @ 'js' ids: 37 80
+            function  ids: 38 81
+              param err ids: 39 82
+              param result ids: 40 83
+              log 'create.artifact', err, result ids: 41 84
+              $group  ids: 87 90
+                $args: result  $params: name
+                _ expect(${name}).to.be.an('object') ids: 89 91
+              _ done() ids: 43 86

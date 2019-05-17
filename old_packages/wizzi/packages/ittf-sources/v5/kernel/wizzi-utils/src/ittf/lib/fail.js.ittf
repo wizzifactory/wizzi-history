@@ -1,0 +1,93 @@
+﻿module 
+    kind jsfile
+    
+	var option = require('./option')
+    var chalk = require('chalk')
+    var md
+        set module.exports =
+            { 
+    
+	set md.code
+        { 
+            @ FATAL_ERROR 1
+            @ MISSING_WFJOBFILE 2
+            @ MISSING_ITTFDOCUMENT 3
+            @ MISSING_MIXIN 4
+            @ MISSING_INCLUDE 5
+            @ ITTF_LOADING_FAILURE 6
+            @ MODEL_LOADING_FAILURE 7
+            @ MISSING_MODELTRANSFORMER 8
+            @ MISSING_ARTIFACTGENERATOR 9
+            @ WARNING 10
+    
+	function dumpStack
+        param e
+        if option('stack')
+            if e.origError && e.origError.stack
+                _ loginfo
+                    @ e.origError.stack
+            elif e.stack
+                _ loginfo
+                    @ e.stack
+    
+	set md.fatal
+        function 
+            param e
+            param errcode
+            var msg = "Fatal error: " + String(e.message || e)
+            _ logerror(msg)
+            _ dumpStack(e)
+            var code
+                iif typeof(errcode) === 'number'
+                    then errcode
+                    else 
+                        set md.code.FATAL_ERROR
+			_ process.exit
+				@ code
+    
+	set md.errorcount = 0
+    set md.warncount = 0
+    set md.warn =
+        function 
+            param e
+            param errcode
+            var msg = 'Warning: ' + (typeof(e) === 'string' ? e : e.message)
+            set msg += option('force') ? '\nUsed --force, continuing.' : '\nUse --force to continue.'
+            set md.warncount++
+            _ logwarn(msg)
+            if !(option('force'))
+                _ dumpStack(e)
+                if false
+                    _ logerror('Aborted due to warnings.')
+					var code
+                        iif typeof (errcode) === 'number'
+                            then errcode
+                            else 
+                                set md.code.WARNING
+                    _ process.exit
+						@ code
+    set md.report =
+        function 
+            if md.warncount > 0
+                _ logerror('Done, but with warnings.')
+            else 
+                _ logsuccess('Done, without errors.')
+    
+	function loginfo
+        param msg
+        _ console.log(msg)
+    
+	function logsuccess
+        param msg
+        _ console.log
+            _ chalk.green(msg)
+    
+	function logwarn
+        param msg
+        _ console.log
+            _ chalk.yellow(msg)
+    
+	function logerror
+        param msg
+        _ console.log
+            _ chalk.red(msg)

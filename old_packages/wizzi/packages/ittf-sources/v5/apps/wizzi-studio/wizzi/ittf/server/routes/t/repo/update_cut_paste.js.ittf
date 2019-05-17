@@ -1,0 +1,55 @@
+﻿$group
+
+	put( /repo/:user/:project/* )
+
+		check-params( )
+			not-undefined( body, kind )
+			optional( body, content )
+			optional( body, copyCut )
+			optional( body, fsitems )
+
+		if kind == 1
+			log 'Kind 1 updateDocument'
+			_ repoApi.updateDocument
+				@ req.params.user
+				@ req.params.project
+				@ req.params['0']
+				@ content
+				f_cb_rest( result )
+					_ sendSuccess
+						@ res
+						@ result.status
+						@ result.data
+		elif kind == 2
+			if copyCut === 'copy'
+				log 'Kind 2 copyPasteFsItems'
+				_ repoApi.copyPasteFsItems
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ fsitems
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+			elif copyCut === 'cut'
+				log 'Kind 2 cutPasteFsItems'
+				_ repoApi.cutPasteFsItems
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ fsitems
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+			else
+				_ sendError
+					@ res
+					@ "The 'copyCut' parameter has an invalid value for kind == 2."
+		else
+			_ sendError
+				@ res
+				@ "The 'kind' parameter has an invalid value"

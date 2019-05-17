@@ -1,0 +1,119 @@
+﻿common/example/index()
+
+	$append imports
+		var wfjobfactory = require('../lib/wizzi/models/wfjob-factory.g')
+		var wfschemafactory = require('../lib/wizzi/models/wfschema-factory.g')
+		var jsonfactory = require('../lib/wizzi/models/json-factory.g')
+		var xmlfactory = require('../lib/wizzi/models/xml-factory.g')
+		var textfactory = require('../lib/wizzi/models/text-factory.g')
+		var ittffactory = require('../lib/wizzi/models/ittf-factory.g')
+		var trans_ittf_htmlpretty = require('../lib/artifacts/ittf/html-pretty/trans/main')
+	+
+	_ executeFiles
+		_ wfjobfactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+		@ 'wfjob'
+	+
+	_ executeFiles
+		_ wfschemafactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+		@ 'wfschema'
+	+
+	_ executeFiles
+		_ jsonfactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+		@ 'json'
+	+
+	_ executeFiles
+		_ xmlfactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+		@ 'xml'
+	+
+	_ executeFiles
+		_ textfactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+		@ 'text'
+	+
+	_ executeFiles
+		_ ittffactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+		@ 'ittf'
+	+
+	function executeFiles
+		param loadModel
+		param schema
+		var suffix
+			iif schema === 'ittf'
+				then '.ittf'
+				else '.' + schema + '.ittf'
+		var ittfPath
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ schema + 's'
+	
+		foreach item in getFiles(ittfPath,schema)
+			set item = item.substring(0, item.length - suffix.length)
+			# log 'wizzi-core.examples.index.item', item, 'schema', schema
+			_ execute(loadModel, item, schema)
+	
+	+
+	function execute
+		param loadModel
+		param name
+		param schema
+		
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ schema + 's'
+				iif schema === 'ittf'
+					then name + '.ittf'
+					else name + '.' + schema + '.ittf'
+		
+		var jsOutput
+			_ path.join
+				@ __dirname
+				@ 'outputs'
+				@ schema + 's'
+				@ name + '.g.' + schema
+		
+		# log 'wizzi-core.examples.index.before-load ittfSource', ittfSource, 'schema', schema
+		_ loadModel
+			@ ittfSource
+			_ getContext
+			f_cb_test( jsWizziModel )
+				# log 'wizzi-core.examples.index.loaded ittfSource', ittfSource, 'schema', schema
+				# log 'jsWizziModel', jsWizziModel
+				if jsWizziModel.toJson
+					_ file.write
+						@ jsOutput
+						_ stringify
+							@ jsWizziModel.toJson()
+							@ null
+							@ 4
+				else
+					_ file.write
+						@ jsOutput
+						_ stringify
+							@ jsWizziModel
+							@ null
+							@ 4
+				if schema === 'ittf'
+					_ trans_ittf_htmlpretty.trans
+						@ jsWizziModel
+						{
+						f_cb_test( transformedModel )
+							_ file.write
+								_ path.join
+									@ __dirname
+									@ 'outputs'
+									@ schema + 's'
+									@ name + '.pretty.' + schema + '.html'
+								_ stringify
+									@ transformedModel
+									@ null
+									@ 4
+
+	

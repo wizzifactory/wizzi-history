@@ -1,0 +1,91 @@
+﻿$group
+
+	get( /api/build/transpile )
+
+		check-params( )
+			optional( query , hash )
+			optional( query , eventstream )
+
+		_ api.build.transpileSnippet
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ res eventstream === 'true' ? res : null
+			f_cb_rest( result )
+				log '/api/build/transpile', result.status
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/build/ast )
+
+		check-params( )
+			optional( query , hash )
+			optional( query , eventstream )
+
+		_ api.build.getSnippetAst
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ res eventstream === 'true' ? res : null
+			f_cb_rest( result )
+				log '/api/build/ast', result.status
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/build/flow )
+
+		check-params( )
+			optional( query , hash )
+			optional( query , eventstream )
+
+		_ api.build.flowSnippet
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ res eventstream === 'true' ? res : null
+			f_cb_rest( result )
+				log '/api/build/flow', result.status
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/build/prettier )
+
+		check-params( )
+			optional( query , hash )
+			optional( query , eventstream )
+
+		_ api.build.prettierSnippet
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ res eventstream === 'true' ? res : null
+			f_cb_rest( result )
+				log '/api/build/prettier', result.status
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/build/eslint )
+
+		check-params( )
+			optional( query , hash )
+			optional( query , eventstream )
+
+		_ api.build.eslintSnippet
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ res eventstream === 'true' ? res : null
+			f_cb_rest( result )
+				log '/api/build/lint', result.status
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

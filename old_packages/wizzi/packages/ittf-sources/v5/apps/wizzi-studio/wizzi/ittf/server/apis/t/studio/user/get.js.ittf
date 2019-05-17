@@ -1,0 +1,42 @@
+﻿$group
+
+	@ getUser
+		function
+			param options
+			param callback
+
+			# options.userId required
+
+			var metaPath
+				_ paths.userMeta
+					@ options
+
+			log 'getUser.metaPath', metaPath
+			if file.isFile(metaPath)
+				return
+					_ callback
+						@ null
+						{
+							@ data
+								_ file.readJSON
+									@ metaPath
+							@ status
+								_ success
+									@ 'User data fetched'
+			else
+				_ file.writeJSON
+					@ metaPath
+					{
+						@ name options.userId
+						@ currentProject null
+				return
+					_ callback
+						@ null
+						{
+							@ data
+								{
+									@ name options.userId
+									@ currentProject null
+							@ status
+								_ success
+									@ 'User data fetched'

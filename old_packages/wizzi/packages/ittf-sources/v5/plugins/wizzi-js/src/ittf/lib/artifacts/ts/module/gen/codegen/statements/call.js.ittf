@@ -1,0 +1,19 @@
+﻿loader( call )
+
+	stm( typeCallSignature
+		_ ctx.write('(')
+		_ u.genTSParams
+			@ model
+			@ ctx
+			@ cnt
+			a_cb()
+				_ ctx.write(')')
+				var ptype 
+					_ u.extractTSSimpleType
+						@ model
+				if ptype
+					log 'property', ptype.wzElement
+					_ ctx.write(': ')
+					_ cnt.stm[ptype.wzElement](ptype, ctx, () => {})
+				_ ctx.w
+				r_cb()

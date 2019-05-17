@@ -1,0 +1,48 @@
+  module  ids: 1 46
+    kind react ids: 2 47
+    var CSSTransitionGroup = React.addons.CSSTransitionGroup ids: 3 48
+    var INTERVAL = 2000 ids: 4 49
+    var ${name} ids: 91 96
+      $args: AnimateDemo  $params: name
+      _ React.createClass ids: 93 97
+        {  ids: 94 98
+          @ getInitialState ids: 6 51
+            function  ids: 7 52
+              return {current: 0} ids: 8 53
+          @ componentDidMount ids: 9 54
+            function  ids: 10 55
+              set this.interval = setInterval(this.tick, INTERVAL) ids: 11 56
+          @ componentWillUnmount ids: 12 57
+            function  ids: 13 58
+              _ clearInterval(this.interval) ids: 14 59
+          @ tick ids: 15 60
+            function  ids: 16 61
+              _ this.setState({current: this.state.current + 1}) ids: 17 62
+          @ render ids: 18 63
+            function  ids: 19 64
+              var children = [] ids: 20 65
+              var pos = 0 ids: 21 66
+              var colors = ['red', 'gray', 'blue'] ids: 22 67
+              for var i = this.state.current; i < this.state.current + colors.length; i++ ids: 23 68
+                var style ids: 24 69
+                  {  ids: 25 70
+                    @ left pos * 128 ids: 26 71
+                    @ background colors[i % colors.length] ids: 27 72
+                set pos++ ids: 28 73
+                _ children.push ids: 29 74
+                  div {i} ids: 30 75
+                    @ key {i} ids: 31 76
+                    @ className "animateItem" ids: 32 77
+                    @ style {style} ids: 33 78
+              return  ids: 34 79
+                < CSSTransitionGroup {children} ids: 35 80
+                  @ className "animateExample" ids: 36 81
+                  @ transitionEnterTimeout {250} ids: 37 82
+                  @ transitionLeaveTimeout {250} ids: 38 83
+                  @ transitionName "example" ids: 39 84
+    _ setInterval ids: 40 85
+      function  ids: 41 86
+        _ ReactDOM.render ids: 42 87
+          < AnimateDemo ids: 43 88
+          @ document.getElementById('container') ids: 44 89
+      @ 50 ids: 45 90

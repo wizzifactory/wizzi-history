@@ -1,0 +1,95 @@
+﻿r-component( AppRouter, none, withPageInfo;../utils/withPageInfo
+
+	$append imports
+		import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+		$include app/imports
+		import MyLink from './mui/AppDrawerNavItem'
+		import Home from './routes/Home'
+		import About from './routes/About'
+		import Topics from './routes/Topics'
+		import CodeHighLightDemo from './routes/CodeHighLightDemo'
+		# import CodePrettierDemo from './routes/CodePrettierDemo'
+		import CodeBeautifyDemo from './routes/CodeBeautifyDemo'
+		import CodeEditorDemo from './routes/CodeEditorDemo'
+		import CodeEditSplit2 from './routes/CodeEditSplit2'
+		import TreeViewDemo from './routes/TreeViewDemo'
+		import FolderCodeEditor from './routes/FolderCodeEditor'
+		import FormDialog from './routes/FormDialog'
+		import Menus from './routes/Menus'
+		import GridDemo from './routes/GridDemo'
+		import NotifierDemo from './routes/NotifierDemo'
+		import WizziProjects from './routes/WizziProjects'
+		import WizziSchemaView from './routes/WizziSchemaView'
+		import WizziProjectStudio from './routes/WizziProjectStudio'
+		import WizziPackages from './routes/WizziPackages'
+		import WizziKernelPackage from './routes/WizziKernelPackage'
+		import WizziPluginPackage from './routes/WizziPluginPackage'
+		import WizziSchemaEditor from './routes/WizziSchemaEditor'
+		import WizziArtifactEditor from './routes/WizziArtifactEditor'
+		import WizziRepo from './routes/WizziRepo'
+		import WizziJobs from './routes/WizziJobs'
+		import WizziJob from './routes/WizziJob'
+		import WizziGists from './routes/WizziGists'
+		import WizziGist from './routes/WizziGist'
+		import WizziSnippets from './routes/WizziSnippets'
+		import WizziSnippet from './routes/WizziSnippet'
+		import WizziSystem from './routes/WizziSystem'
+
+		const drawerWidth = 240
+    
+	style
+		$include app/styles
+        { contentRoutes
+            @ flexGrow 1
+            @ backgroundColor theme.palette.background.default
+            @ padding theme.spacing.unit * 3
+			@ width '100%'
+
+	state
+        @ open false
+    
+	$include app/handlers
+
+	render
+		prop classes
+		prop pageInfo
+		const {open} = this.state
+
+		$include app/drawer
+
+		return
+			< Router 
+				div
+					@ className {classes.appFrame}
+					< AppBar 
+						@ className
+							_ classNames
+								@ classes.appBar
+								{ 
+									@ [classes.appBarShift] open
+									@ [classes['appBarShift-left']] open
+						< Toolbar 
+							@ disableGutters {!open}
+							< IconButton 
+								@ color "inherit"
+								@ aria-label "Open drawer"
+								@ onClick {this.handleDrawerOpen}
+								@ className {classNames(classes.menuButton, open && classes.hide)}
+								< MenuIcon 
+							< Typography
+								@ variant "title"
+								@ color "inherit"
+								@ noWrap
+								+ {pageInfo.title}
+					+ {drawer}
+					main 
+						@ className
+							_ classNames
+								@ classes.content
+								@ classes['content-left']
+								{ 
+									@ [classes.contentShift] open
+									@ [classes['contentShift-left']] open
+						div 
+							@ className {classes.drawerHeader}
+						$include app/routes_content

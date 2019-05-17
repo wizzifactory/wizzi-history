@@ -1,0 +1,18 @@
+﻿$group
+
+	$if isWebpackTarget
+		#
+			# browser virtual file service
+			# params
+			#   { options
+		set md.browserfile
+			function
+				param options
+				param callback
+				if typeof callback === 'undefined'
+					set callback = options
+					set options = {}
+				_ vfile
+					@ callback
+
+

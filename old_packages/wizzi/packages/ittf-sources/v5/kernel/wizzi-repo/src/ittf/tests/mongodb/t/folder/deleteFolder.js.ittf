@@ -1,0 +1,42 @@
+﻿$group
+
+	var deleteFolderEmpty = "c:/my/starters/mongotest/delete/empty"
+	var deleteFolder = "c:/my/starters/mongotest/delete"
+	var file_1 = deleteFolder + "/f_1.js"
+	var file_2 = deleteFolder + "/f_2.js"
+	var content = "Hello "
+
+	describe delete a folder
+
+		before-async
+			_ file.write
+				@ file_1
+				@ content + 'file_1'
+			_ file.write
+				@ file_2
+				@ content + 'file_2'
+			_ doc.createFolder
+				@ deleteFolderEmpty
+				f_cb_test( r )
+					log 'doc.createFolder', r
+					_ doc.uploadFolder
+						@ deleteFolder
+						f_cb_done( r )
+							log 'doc.uploadFolder', r
+
+		it-async should delete an empty folder
+			_ doc.deleteFolder
+				@ deleteFolderEmpty
+				f_cb_done( r )
+					log 'doc.deleteFolder', err, r
+					tobe_true( r.deleted )
+					tobe_number( r.n, 1 )
+					tobe_number( r.ok, 1 )
+
+		it-async should not delete a not empty folder
+			_ doc.deleteFolder
+				@ deleteFolder
+				f_cb_no_err( r )
+					log 'doc.deleteFolder', err, r
+					tobe_true( err.__is_error )
+					_ done

@@ -1,0 +1,72 @@
+﻿module wizzi-repo.jsonDbStore
+    kind jsfile
+
+	import util
+	var vfile = require('wizzi-utils').vfile
+	var JsonFsImpl = require('../json/jsonFsimpl')
+	var errors = require('./errors')
+
+	class JsonDbStore
+        ctor
+            set this.storeKind = 'json'
+			set this.fsimpl = null
+			set this.file = null
+    
+		m init
+			{ options
+				{ jsonFsData
+					optional
+				{ fsJson
+					optional
+			callback
+			var that = this
+			if !options.fsJson && options.jsonFsData
+				set this.fsimpl
+					new JsonFsImpl
+						@ options.jsonFsData
+			else
+				set this.fsimpl
+					new JsonFsImpl
+						{
+			_ this.fsimpl.open
+				{
+					@ fsJson options.fsJson
+				f_cb( notUsed )
+					_ vfile
+						@ that.fsimpl
+						f_cb( file )
+							set that.file = file
+							r_cb( file )
+		
+		m close
+			if this.fsimpl
+				_ this.fsimpl.close
+
+		m documentExists
+			string documentPath
+			callback
+			_ this.file.isFile
+				@ documentPath
+				f_cb_no_err( result )
+					if err
+						r_cb_wz_err( RepoIOError, documentExists, err )
+							{
+								@ parameter 'documentPath'
+								@ message 'Checking existence of document: ' + documentPath
+					return callback(null, result)
+    
+		m getModelContent
+            string documentPath
+            callback
+			_ this.file.read
+				@ documentPath
+				f_cb_no_err( result )
+					if err
+						r_cb_wz_err( RepoIOError, getModelContent, err )
+							{
+								@ parameter 'documentPath'
+								@ message 'Getting content of document: ' + documentPath
+					# log 'getModelContent.received', result
+					return callback(null, result)
+
+	set module.exports = JsonDbStore

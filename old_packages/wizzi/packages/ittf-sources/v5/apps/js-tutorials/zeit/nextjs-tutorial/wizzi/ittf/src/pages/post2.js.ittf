@@ -1,0 +1,34 @@
+﻿module
+    kind react
+    import Layout from '../components/MyLayout.js'
+    import 
+        @ withRouter
+        from 'next/router'
+    import Markdown from 'react-markdown'
+    export-default 
+        _ withRouter
+            => 
+                param props
+                < Layout 
+                    h1 
+                        + {props.router.query.title}
+                    div 
+                        @ className "markdown"
+                        < Markdown 
+                            @ source
+                                `lit 
+                                    + \nThis\bis\bour\bblog\bpost.\nYes.\bWe\bcan\bhave\ba\b[link](/link).\nAnd\bwe\bcan\bhave\ba\btitle\bas\bwell.\n\n###\bThis\bis\ba\btitle\n\nAnd\bhere's\bthe\bcontent.\n\b\b\b\b\b
+                    style-jsx 
+                        global
+                        css
+                            . markdown
+                                font-family 'Arial'
+                            . markdown a
+                                text-decoration none
+                                color blue
+                            . markdown a:hover
+                                opacity 0.6
+                            . markdown h3
+                                margin 0
+                                padding 0
+                                text-transform uppercase

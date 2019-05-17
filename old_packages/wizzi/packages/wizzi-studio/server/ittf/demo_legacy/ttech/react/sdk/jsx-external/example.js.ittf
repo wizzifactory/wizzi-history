@@ -1,0 +1,23 @@
+module
+	kind react
+
+	var ExampleApplication
+		_ React.createClass
+			{
+				@ render
+					function
+						var elapsed = Math.round(this.props.elapsed  / 100)
+						var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' )
+						var message = 'React has been successfully running for ' + seconds + ' seconds.'
+						return
+							p {message}
+	
+	var start = new Date().getTime()
+
+	_ setInterval
+		function
+			_ ReactDOM.render
+				< ExampleApplication
+					@ elapsed {new Date().getTime() - start}
+				@ document.getElementById('container')
+		@ 50

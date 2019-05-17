@@ -1,0 +1,27 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	+
+    var expect = require('expect.js')
+	var thisPackage = require('../../index')
+	+
+	var simpleSource
+		_ path.join
+			@ __dirname
+			@ 'data'
+			@ 'simple.tests.html'
+	+
+	describe the js wizzifier
+		+ 
+		it-async should wizzify a js file
+
+			var ittfExpected = 'html \n    head\n    body\n        div alfa\n'
+			
+			_ thisPackage.htmlWizzify
+				@ simpleSource
+				{
+				f_cb_test( ittf )
+					tobe_string_value.js( ittf, ittfExpected )
+					_ done()

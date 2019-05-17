@@ -1,0 +1,21 @@
+wfschema xittf
+
+	unknown-element-replacer sem
+
+	export-to json
+
+	e statement
+		# A statement line node, with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag _$$
+		r statement/s
+
+	e xittf : statement
+		is-root
+
+	e sem : statement
+		# Semantic element of the preprocessed wizzi schema.
+		# Will be emitted as is.
+		# Every unrecognized ittf node will become a
+		# `sem` element.

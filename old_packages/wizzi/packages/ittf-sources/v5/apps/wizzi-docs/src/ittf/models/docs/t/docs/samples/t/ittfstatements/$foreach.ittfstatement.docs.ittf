@@ -1,0 +1,23 @@
+﻿$group
+
+	sample $foreach
+		summary
+
+			p The $foreach statements repeats the processing of child nodes for each
+				+ element in a context value of type array. The format is:
+			ittf
+				-
+					- $foreach item-name in collection
+						- .. child nodes
+					-
+			p item-name is the variable name that will be assigned to the collection item, collection is
+				+ the name of an array that must exist in the Ittf loader context.
+
+		ittf my.html.ittf
+			kind primary
+			- div
+				- ul
+					- $foreach item in products
+						- li ${dollar}{item.name}
+
+		$include wfschema.html.sample

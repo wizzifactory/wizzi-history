@@ -1,0 +1,152 @@
+﻿r-component( Document )
+
+	$append imports
+		import Drawer from '@material-ui/core/Drawer'
+		import Typography from '@material-ui/core/Typography'
+		import Toolbar from '@material-ui/core/Toolbar'
+		import Button from '@material-ui/core/Button'
+		import ProjectDialog from './ProjectDialog'
+		import DocumentDialog from './DocumentDialog'
+		import DocumentList from './DocumentList'
+		import Splitter from '../../mui/Splitter'
+		import Select from '../../mui/MySelect'
+		import CodeEditor from '../../mui/CodeEditor'
+		import CodeBeautify from '../../mui/CodeBeautify'
+
+		const drawerWidth = 240
+
+	style
+		{ document
+			@ width '100%'
+		{ list
+		{ generated
+		{ toolbar
+		{ editor
+		{ generated
+		{ marginLeft_10
+			@ marginLeft 10
+
+        { appFrame
+			@ zIndex 1
+			@ overflow 'hidden'
+			@ position 'relative'
+			@ display 'flex'
+			@ width '100%'
+        { drawerPaper
+            @ position 'relative'
+            @ width drawerWidth
+
+	state
+		@ openCreateDocumentDialog false
+		@ openCreateProjectDialog false
+		@ splitter1Sizes
+			{
+				@ primary 500
+				@ secondary 500
+
+	$include document/handlers
+	$include document/toolbar_handlers
+
+	render
+		prop classes
+		
+		prop projects
+		prop schemas
+
+		prop documents
+		prop userFragments
+		prop projectFragments
+		
+		prop currentProject
+
+		prop onSelectProject
+		prop onCreateProjectSubmit
+
+		prop selectedUri
+		prop selectedContent
+		prop onSaveDocument
+		
+		prop onSelectDocument
+		prop onSelectFragment
+
+		prop onCreateDocumentSubmit
+		prop onCreateFragmentSubmit 
+			
+		prop onEditorRef
+			
+		prop artifacts
+		prop onSelectArtifactRef
+		prop onGenerateArtifact
+		prop generatedArtifactContent
+		prop generatedArtifactError
+			
+		const generatedContent = generatedArtifactContent || generatedArtifactError 
+
+		const { splitter1Sizes } = this.state
+
+		const editOptions 
+			{
+
+
+		return
+			. {classes.document}
+				$include document/toolbar_render
+				< DocumentDialog
+					@ schemas {schemas}
+					@ open {this.state.openCreateDocumentDialog}
+					@ onRequestClose {this.handleCloseCreateDocumentDialog}
+					@ onCreateDocument {onCreateDocumentSubmit}
+					@ onCreateFragment {onCreateFragmentSubmit}
+				< ProjectDialog
+					@ projects {projects}
+					@ open {this.state.openCreateProjectDialog}
+					@ onRequestClose {this.handleCloseCreateProjectDialog}
+					@ onCreateProject {this.handleCreateProjectSubmit}
+					@ onSelectProject {this.handleSelectProject}
+				. {classes.appFrame}
+					< Drawer
+						@ variant permanent
+						@ anchor left
+						@ classes
+							{ 
+								@ paper classes.drawerPaper
+						. {classes.list}
+							< Typography
+								@ color 'inherit'
+								@ type subheading
+								@ noWrap
+								@ gutterBottom {true}
+								+ Documents
+							< DocumentList
+								@ documents {documents}
+								@ onSelectDocument {onSelectDocument}
+								@ selectedUri {selectedUri}
+						{
+							&&
+								+ userFragments.length > 0
+								. {classes.list}
+									< Typography
+										@ color 'inherit'
+										@ type subheading
+										@ noWrap
+										@ gutterBottom {true}
+										+ User fragments
+									< DocumentList
+										@ documents {userFragments}
+										@ onSelectDocument {onSelectFragment}
+										@ selectedUri {selectedUri}
+						{
+							&&
+								+ projectFragments.length > 0
+								. {classes.list}
+									< Typography
+										@ color 'inherit'
+										@ type subheading
+										@ noWrap
+										@ gutterBottom {true}
+										+ Project fragments
+									< DocumentList
+										@ documents {projectFragments}
+										@ onSelectDocument {onSelectFragment}
+										@ selectedUri {selectedUri}
+					$include document/editbox

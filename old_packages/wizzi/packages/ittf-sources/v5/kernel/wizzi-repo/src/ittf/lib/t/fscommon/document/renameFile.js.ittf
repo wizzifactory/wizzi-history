@@ -1,0 +1,61 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m renameFile
+		string oldPath
+		string newPath
+		callback
+
+		set oldPath = normalize(path.resolve(oldPath))
+		set newPath = normalize(path.resolve(newPath))
+		if oldPath === newPath
+			return
+				_ callback
+					@ null
+					{
+		var oldDirname = normalize(path.dirname(oldPath))
+		var newDirname = normalize(path.dirname(newPath))
+		var oldName = path.basename(oldPath)
+		var newName = path.basename(newPath)
+
+		if oldDirname !== newDirname
+			r_cb_wz_err( InvalidArgument, renameFile )
+				@ 'Document rename file error. Old and new path must have the same base folder: ' + oldDirname + ' !== ' + newDirname
+
+		if oldName === newName
+			r_cb()
+				{
+					@ renamed false
+					@ message 'oldPath and newPath are the same'
+		
+		var that = this
+		
+		_ this.fsCommon.getItemByPath
+			@ oldPath
+			f_cb( fsitem )
+				if fsitem == null
+					r_cb_wz_err( ${fsname}RepoError, renameFile )
+						@ 'Document rename file error. Old path not found: ' + oldPath
+				
+				if fsitem.kind == 0
+					r_cb_wz_err( ${fsname}RepoError, renameFile )
+						@ 'Document rename file error. Is a folder path, not a file path: ' + oldPath
+
+				# log 'wizzi-repo.${source}.document.renameFile.fsitem', fsitem
+
+				_ that.exists
+					@ newPath
+					f_cb( r )
+						if r === true
+							r_cb_wz_err( ${fsname}RepoError, renameFile )
+								@ 'Document rename file error. The new path already exists: ' + newPath
+						else
+							set fsitem.basename = newName
+							set fsitem.path = normalize(path.join(fsitem.dirname, fsitem.basename))
+							_ that.fsCommon.updateItem
+								@ fsitem
+								f_cb( r )
+									r_cb()
+										{
+											@ code "DOCUMENT_RENAMED"
+											@ id r.item._id

@@ -1,0 +1,73 @@
+module
+	$params project, section
+	kind jsfile
+	+
+	$include app-options
+	+
+	var path = require('path')
+	var wizzi = require('wizzi')
+
+	# begin params
+	var $name = '${project} - ${section}'
+	# end params
+
+	function exec
+		param callback
+		_ wizzi.executeWizziJob
+			{
+				@ user 'stefi'
+				@ role 'admin'
+				@ storeKind  'filesystem'
+				@ config
+					{
+						@ wfBaseFolder 'c:\\my\\wizzi\\${appOptions.nextWizziVersion}'
+						@ plugins
+							[
+								@ 'wizzi-core'
+								@ 'wizzi-meta'
+								@ 'wizzi-js'
+								@ 'wizzi-web'
+				@ job
+					{
+						@ name $name
+						@ ittfDocumentUri
+							_ path.join
+								@ __dirname
+								@ 'ittf'
+								@ '${project}'
+								@ '${section}.wfjob.ittf'
+						@ productionOptions
+							_ wizzi.productionOptions
+								{
+									@ indentSpaces 4
+									@ basedir __dirname
+									@ verbose 2
+									@ dumps
+										{
+											@ dumpsBaseFolder
+												_ path.join
+													@ __dirname
+													@ '_debug_dumps'
+											@ mTreeBuildupJsWizziCode
+												{
+													@ dump true
+						@ globalContext {}
+			function
+				param err
+				param result
+				if callback
+					if err
+						_ callback(err)
+					else
+						_ callback(null, result)
+				else
+					if err
+						log "Error executing wizzi instance job", err    
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require && require.main === module
+		_ exec

@@ -1,0 +1,49 @@
+﻿$group
+	$params kind|gist
+
+	$
+		var kindCap = _.capitalize(kind)
+
+	@ dispatchCreateJobGist
+		=>
+			param kind
+			param name
+			param schema
+			param content
+			log 'dispatchCreateJobGist', name, schema, content
+			_ dispatch
+				_ createJobGist
+					@ kind
+					@ name
+					@ schema
+					@ content
+
+	@ dispatchDuplicateJobGist
+		=>
+			param hash
+			param newName
+			log 'dispatchDuplicateJobGist', hash, newName
+			_ dispatch
+				_ duplicateJobGist
+					@ hash
+					@ newName
+
+	@ dispatchRenameJobGist
+		=>
+			param hash
+			param newName
+			log 'dispatchRenameJobGist', hash, newName
+			_ dispatch
+				_ renameJobGist
+					@ hash
+					@ newName
+
+	@ dispatchDeleteJobGist
+		=>
+			param hash
+			log 'dispatchDeleteJobGist', hash
+			_ dispatch
+				_ deleteJobGist
+					@ hash
+
+	common/dispatch( clearJobNavigations

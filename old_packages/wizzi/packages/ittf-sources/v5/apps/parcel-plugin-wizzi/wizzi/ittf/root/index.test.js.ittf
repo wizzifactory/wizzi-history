@@ -1,0 +1,14 @@
+module
+    kind react
+    
+	const Bundler = require('parcel-bundler')
+    
+	_ it
+        @ 'should compile example file'
+        async=> 
+            const bundler = new Bundler('./examples/index.html')
+            _ bundler.addAssetType('js.ittf', require.resolve('./src/WizziJsAsset'))
+            await 
+                _ bundler.bundle
+            await 
+                _ bundler.stop

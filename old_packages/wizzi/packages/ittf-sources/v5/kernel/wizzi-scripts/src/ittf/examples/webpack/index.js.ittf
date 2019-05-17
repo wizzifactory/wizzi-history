@@ -1,0 +1,52 @@
+﻿base_example()
+
+	$append imports
+		import path
+
+		var codecampPath = 'c:/my/wizzi/v5/codecamps'
+
+	var options1
+		{
+			@ entry
+				_ path.join
+					@ codecampPath
+					@ 'react'
+					@ 'src'
+			{ output
+				@ path
+					_ path.join
+						@ codecampPath
+						@ 'react'
+						@ 'dist'
+				@ filename 'bundle.js'
+			@ useReact true
+
+	_ webpack
+		f_cb_test(result)
+			log 'webpack.result', result
+			#
+				_ webpackToEventStream
+					f_cb_test(result)
+						log 'webpackToEventStream.result', result
+	
+	function webpack
+		param callback
+
+		_ manager.webpackExec
+			@ options1
+			@ callback
+    
+	function webpackToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.webpackExecToEventStream
+			@ options1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

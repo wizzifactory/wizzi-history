@@ -1,0 +1,165 @@
+﻿$group
+
+	#
+		# Rules
+		# Node command format
+		#   > $params param1 [,param2 [,param-n]]
+		#   param   : [&]name[:type][|default]
+		#   &       : the paramater is an object passed by reference
+		#   name    : the name of the parameter to use in IttfMacro expressions
+		#   type    : the parameter type
+		#             one-of : string(default), integer, float, boolean, date, object (implicit
+		#                      when '&' declared), macro (implicit, detected from IttfMacro delimiters
+		#                      contained in the default value)
+		#   default : typed-value | @@null | @@undefined
+		#             // warning! `title|null` becomes title = "null" (the quoted string null)
+		#             // if you want title to be null then : `title|@@null`
+		#   string  : quotes are optional, example: `title|"my way"` and `title|my way` are the same
+		#   boolean : true | false
+		#   date    : yyyy/mm/dd
+		#   macro   : an IttfMacro can be passed as a parameter to a mixin, when the parameter
+		#             is referenced we have a double macro substitution 
+		#             TODO verify, explain how this works, macro or macros can be partial 
+		#                  insides of the default value?
+
+	m calcParamValues
+        param args
+
+		# string args
+		#    optional
+
+        var mTreeBrickRoot = this.nodes[0]
+		var params = this.$params
+        var 
+            decl _paramArray
+                [ 
+            decl _argsArray
+                [ 
+        if verify.isNotEmpty(params)
+            set _paramArray = params.trim().split(',')
+        if verify.isNotEmpty(args)
+            set _argsArray = args.trim().split(',')
+        
+		var result
+            [ 
+        
+		for var i = 0; i < _paramArray.length; i++
+            var 
+                decl name
+                decl type = 'string'
+                decl defaultValue = null
+                decl value = null
+                decl hasparamvalue = false
+                decl hasdefaultvalue = false
+            
+			# a param may have the format
+			# 1) name
+			# 2) name|default
+			# 3) name:type|default
+			#    valid types: string(default), integer, float, boolean, date
+			
+			var param_parts
+                _ _paramArray[i].trim()
+                    ._ split(/[|]/)
+            
+			if param_parts.length > 2
+				return
+					_ local_error
+						@ 'MixinParamError'
+						@ 'calcParamValues'
+						@ 'Error evaluating: $params ' + params +
+							\b ' , Argument ' + i + ' is malformed. Expected name[:type[|default]]'
+						@ mTreeBrickRoot
+            
+			if param_parts.length == 2
+                set defaultValue = param_parts[1].trim()
+                set hasdefaultvalue = true
+            
+			set param_parts
+                _ param_parts[0].trim()
+                    ._ split(/[:]/)
+            
+			if param_parts.length > 2
+				return
+					_ local_error
+						@ 'MixinParamError'
+						@ 'calcParamValues'
+						@ 'Error evaluating: $params ' + params +
+							\b ', argument ' + i + ' is malformed. Expected name[:type[|default]]'
+						@ mTreeBrickRoot
+            
+			if param_parts.length == 2
+                set type = param_parts[1]
+            
+			set name = param_parts[0]
+            
+			if name.substr(0, 1) === '&'
+                set name = name.substr(1)
+                set type = 'object'
+            
+			if _argsArray.length > i
+                set value = _argsArray[i].trim()
+                if type === 'object'
+                    if value.substr(0, 1) !== '&'
+						return
+							_ local_error
+								@ 'MixinParamError'
+								@ 'calcParamValues'
+								@ 'Error evaluating: $params ' + params +
+									\b ', argument (' + i + ') must be an object reference. Found ' + value
+								@ mTreeBrickRoot
+                    else
+                        set value = value.substr(1)
+                else 
+                    set value = verify.convert(value, type, true)
+					if value && value.__is_error
+						return
+							_ local_error
+								@ 'MixinParamError'
+								@ 'calcParamValues'
+								@ 'Error evaluating: $params ' + params +
+									\b ', objectifying parameter: ' + i + '/' + name
+								@ mTreeBrickRoot
+								@ value
+
+                set hasparamvalue = true
+            elif hasdefaultvalue
+                set value = verify.convert(defaultValue, type, true)
+				if value && value.__is_error
+					return
+						_ local_error
+							@ 'MixinParamError'
+							@ 'calcParamValues'
+							@ 'Error evaluating: $params ' + params +
+								\b ', converting parameter: ' + i + '/' + name + ' to type ' + type
+							@ mTreeBrickRoot
+							@ value
+            else
+				return
+					_ local_error
+						@ 'MixinParamError'
+						@ 'calcParamValues'
+						@ 'Error evaluating: $params ' + params +
+							\b ', missing value for not optional argument ' + i + ' = ' + name
+						@ mTreeBrickRoot
+            
+			var isIttfMacro
+                iif type === 'object'
+                    then false
+                    else 
+                        _ verify.isIttfMacro(value)
+            
+			_ result.push
+                { 
+                    @ name
+                        iif name.substr(0, 1) === '&'
+                            then 
+                                _ name.substr(1)
+                            else name
+                    @ value value
+                    @ type type
+                    @ isIttfMacro isIttfMacro
+                    @ isByRef type === 'object'
+        
+		return result
+

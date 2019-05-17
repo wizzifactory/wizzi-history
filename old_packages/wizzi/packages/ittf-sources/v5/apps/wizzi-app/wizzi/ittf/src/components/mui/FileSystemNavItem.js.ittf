@@ -1,0 +1,125 @@
+﻿r-component( FileSystemNavItem )
+
+	$append imports
+		import { Link } from 'react-router-dom'
+		import ListItem from '@material-ui/core/ListItem'
+		import Checkbox from '@material-ui/core/Checkbox'
+		import Tooltip from '@material-ui/core/Tooltip'
+		import Button from '@material-ui/core/Button'
+		import Collapse from '@material-ui/core/Collapse'
+		import { FolderIcon, FileIcon, DuplicateIcon, RenameIcon } from './Icons'
+		import DeleteIcon from '@material-ui/icons/Delete'
+
+	prop children
+		node
+	prop classes
+		{
+		required
+	prop onClick
+		func
+	prop to
+		string
+	prop openImmediately
+		boolean
+		default false
+	prop title
+		string
+		required
+	prop kind
+		number
+		required
+	prop onContextMenu
+		func
+
+	style
+		nav_buttons_styles()
+
+	state
+		@ open false
+
+	will-mount
+		if this.props.openImmediately
+			_ this.setState
+				{
+					@ open true
+    
+	=> handleClick
+		_ this.setState
+			{
+				@ open !this.state.open
+
+	render
+		
+		prop classes
+		prop children
+		prop title
+		prop kind
+		prop value
+		prop checked
+		prop onClick
+		prop onContextMenu
+		prop to
+		prop onCheck
+		prop onDuplicate
+		prop onRename
+		prop onDelete
+		prop ariaOwns
+		prop ariaHasPopup
+		prop key
+
+		# log 'FileSystemNavItem.render.ariaOwns', ariaOwns, ariaHasPopup
+
+		if onClick || to
+			return
+				< ListItem
+					@ className {classes.navLink}
+					@ disableGutters
+					{
+						&&
+							+ kind == 0
+							< FolderIcon
+					{
+						&&
+							+ kind == 1
+							< FileIcon
+					{
+						&&
+							+ onCheck
+							< Checkbox
+								@ checked {checked}
+								@ onChange {onCheck} 
+								@ value {value}
+					{
+						&&
+							+ onClick
+							< Button
+								@ id { 'fsitem-' + key }
+								@ className {classNames(classes.button, classes.navLinkButton)}
+								@ onClick {onClick}
+								@ onContextMenu {onContextMenu}
+								@ aria-owns {ariaOwns}
+								@ aria-haspopup {ariaHasPopup}
+								+ {title}
+					{
+						&&
+							+ to
+							< Button
+								@ component {Link}
+								@ to {to}
+								@ className {classNames(classes.button, classes.navLinkButton)}
+								+ {title}
+					dup_ren_del()
+
+		return
+			< ListItem
+				@ className {classes.navItem} 
+				@ disableGutters
+				< Button
+					@ className {classes.button}
+					@ onClick {this.handleClick}
+					+ {title}
+				< Collapse
+					@ in {this.state.open}
+					@ transitionDuration auto
+					@ unmountOnExit
+					+ {children}

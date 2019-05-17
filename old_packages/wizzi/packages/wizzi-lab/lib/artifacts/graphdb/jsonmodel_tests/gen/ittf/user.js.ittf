@@ -1,0 +1,48 @@
+$group
+
+	describe crud user repoApi
+
+		before
+			_ del.sync
+				@ [__dirname + '/db/**']
+				{
+					@ force true
+
+		itasync(
+			\ should create a user meta file,
+			\ repoApi.insertUser,
+			\ userName,
+			\ null
+			
+			async( repoApi.getUser, userName
+				_ expect(result.name).to.be(userName)
+				_ expect(result.email).to.be(null)
+				_ expect(result.projects.length).to.be(0)
+				_ done
+
+		itasync(
+			\ should update a user meta file,
+			\ repoApi.getUser,
+			\ userName
+
+			set result.email = userName + '@gmail.com'
+			
+			async( repoApi.updateUser, result
+				async( repoApi.getUser, userName
+					_ expect(result.name).to.be(userName)
+					_ expect(result.email).to.be(userName + '@gmail.com')
+					_ expect(result.projects.length).to.be(0)
+					_ done
+
+		itasync(
+			\ should create a second user meta file,
+			\ repoApi.insertUser,
+			\ userName + '2',
+			\ null
+			
+			async( repoApi.getUser, userName + '2'
+				_ expect(result.name).to.be(userName + '2')
+				_ expect(result.email).to.be(null)
+				_ expect(result.projects.length).to.be(0)
+				_ done
+

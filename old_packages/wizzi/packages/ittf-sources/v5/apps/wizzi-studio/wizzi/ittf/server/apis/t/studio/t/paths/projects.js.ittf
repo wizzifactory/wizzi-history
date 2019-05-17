@@ -1,0 +1,25 @@
+﻿$group
+
+	@ projectList
+		function
+			param options
+
+			set options = this.detectOptions(options)
+
+			var folderPath
+				_ this.userPath
+					@ options.userId
+			
+			log 'projectList.folderPath', folderPath
+
+			var folders
+				_ this.getFolders
+					@ folderPath
+
+			var projects = []
+			foreach folder in folders
+				if folder.name !== '__'
+					_ projects.push
+						{
+							@ name folder.name
+			return projects

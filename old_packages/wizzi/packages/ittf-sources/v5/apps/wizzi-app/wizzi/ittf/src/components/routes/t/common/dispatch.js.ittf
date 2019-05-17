@@ -1,0 +1,24 @@
+﻿$group
+	$params action, p1|@@null, p2|@@null, p3|@@null, p4|@@null
+
+	@ dispatch${ _.capitalize(action) }
+		=>
+			$if p1 != null
+				param ${p1}
+			$if p2 != null
+				param ${p2}
+			$if p3 != null
+				param ${p3}
+			$if p4 != null
+				param ${p4}
+			log 'dispatch${ _.capitalize(action) }', ${p1 || 'null'}, ${p2 || 'null'}, ${p3 || 'null'}, ${p4 || 'null'}
+			_ dispatch
+				_ ${action}
+					$if p1 != null
+						@ ${p1}
+					$if p2 != null
+						@ ${p2}
+					$if p3 != null
+						@ ${p3}
+					$if p4 != null
+						@ ${p4}

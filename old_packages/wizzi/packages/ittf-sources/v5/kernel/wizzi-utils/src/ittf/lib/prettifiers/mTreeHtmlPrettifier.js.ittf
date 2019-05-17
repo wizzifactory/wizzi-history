@@ -1,0 +1,177 @@
+﻿module
+	kind jsfile
+
+	# pretty print
+	var STYLE_DOCS_ITTF_NODE_LINENUM = 'pp-ln'
+	var STYLE_DOCS_ITTF_NODE_COMMAND = 'pp-kwd'
+	var STYLE_DOCS_ITTF_NODE_NAME = 'pp-tag'
+	var STYLE_DOCS_ITTF_NODE_VALUE = 'pp-pln'
+	var STYLE_DOCS_ITTF_NODE_EXPR = 'pp-expr'
+	var STYLE_DOCS_ITTF_NODE_MIX = 'pp-mix'
+	var STYLE_DOCS_ITTF_NODE_ARG = 'pp-arg'
+
+	var verify = require('../verify')
+	var HtmlBuilder = require('./utils/htmlbuilder').HtmlBuilder
+
+	#
+		# prettify an mTree
+		# params
+		#   { ittfMTreeExRoot
+		#     api-ref wizzi-utils.ittfMTreeEx
+		#     [ children
+		#     { fragments
+		#       string id
+		#
+	set module.exports
+		function
+			{ ittfMTreeExRoot
+				[ children
+				{ fragments
+
+			var ctx
+				{
+					@ __ittfNode
+						{
+							@ line 0
+							@ indent 0
+					@ hb new HtmlBuilder(true)
+					@ fragments ittfMTreeExRoot.fragments
+			
+			_ toHtmlPretty
+				@ ittfMTreeExRoot
+				@ ctx
+
+			return
+				{
+					@ prettyLines ctx.hb.toLines()
+
+	function toHtmlPretty
+		param node
+		param ctx
+
+		set ctx.__ittfNode.line++
+
+		var 
+			decl name = node.n || node.name
+			decl value = node.v || node.value
+			decl children = node.children
+			decl name_style = STYLE_DOCS_ITTF_NODE_NAME
+			decl value_style = STYLE_DOCS_ITTF_NODE_VALUE
+
+		if node.isExpressionCommand()
+			set value_style = STYLE_DOCS_ITTF_NODE_EXPR
+		
+		elif node.isCode()
+			set name_style = STYLE_DOCS_ITTF_NODE_EXPR
+			set value_style = STYLE_DOCS_ITTF_NODE_EXPR
+
+		elif node.isMixinCall()
+			set name_style = STYLE_DOCS_ITTF_NODE_MIX
+
+		var class_even_odd = 'L' + ('' + ctx.__ittfNode.line).substr(-1,1)
+		# _ ctx.hb.openTag('li')
+		# _ ctx.hb.writeAttribute('class', 'L' + ('' + ctx.__ittfNode.line).substr(-1,1))
+		_ ctx.hb.openTag('div')
+		_ ctx.hb.writeAttribute('class', class_even_odd )
+
+		_ ctx.hb.openTag('span', { inline: true })
+		_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_LINENUM)
+		_ ctx.hb.writeText(formatLineNum(ctx.__ittfNode.line) + ' ')
+		_ ctx.hb.closeTag('span', { inline: true })
+
+		_ ctx.hb.openTag('span', { inline: true })
+		_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_VALUE)
+		_ ctx.hb.writeText(spaces(ctx.__ittfNode.indent * 4))
+		_ ctx.hb.closeTag('span', { inline: true })
+
+		_ ctx.hb.openTag('span', { inline: true })
+		if node.isCommand()
+			_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_COMMAND)
+		else
+			if node.isMixinCall()
+				_ ctx.hb.writeAttribute('class', name_style + ' frag-to-link-a')
+			else
+				_ ctx.hb.writeAttribute('class', name_style)
+		if node.isMixinCall()
+			# log 'wizzi-utils.ittfHtmlPrettifier.fragmentName', node.fragmentName, ctx.fragments
+			var dId = ctx.fragments[node.fragmentName] ? ctx.fragments[node.fragmentName].id : null
+			if dId
+				_ ctx.hb.writeAttribute('data-frag-id', dId)
+		_ ctx.hb.writeText(name)
+		_ ctx.hb.closeTag('span', { inline: true })
+
+		if node.isMixinCall()
+			var items = node.getMixinArgs()
+			foreach item in items
+				_ ctx.hb.openTag('span', { inline: true })
+				_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_ARG)
+				_ ctx.hb.writeText(' ' + verify.htmlEscape(item))
+				_ ctx.hb.closeTag('span', { inline: true })
+				if i < items.length -1
+					_ ctx.hb.openTag('span', { inline: true })
+					_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_VALUE)
+					_ ctx.hb.writeText(',')
+					_ ctx.hb.closeTag('span', { inline: true })
+			_ ctx.hb.openTag('span', { inline: true })
+			_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_MIX)
+			_ ctx.hb.writeText(')')
+			_ ctx.hb.closeTag('span', { inline: true })
+		elif node.isIncludeCall()
+			_ ctx.hb.openTag('span', { inline: true })
+			_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_MIX + ' frag-to-link-a')
+			var dId = ctx.fragments[node.fragmentName] ? ctx.fragments[node.fragmentName].id : null
+			if dId
+				_ ctx.hb.writeAttribute('data-frag-id', dId)
+			_ ctx.hb.writeText(' ' + verify.htmlEscape(node.value))
+			_ ctx.hb.closeTag('span', { inline: true })
+		else
+			var items = node.getValueParsed()
+			var sp = ' '
+			foreach item in items
+				if item.t == 0
+					_ ctx.hb.openTag('span', { inline: true })
+					_ ctx.hb.writeAttribute('class', value_style)
+					_ ctx.hb.writeText(sp + verify.htmlEscape(item.v))
+					_ ctx.hb.closeTag('span', { inline: true })
+					set sp = ''
+				else
+					_ ctx.hb.openTag('span', { inline: true })
+					_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_COMMAND)
+					_ ctx.hb.writeText(sp + '${')
+					_ ctx.hb.closeTag('span', { inline: true })
+					set sp = ''
+
+					_ ctx.hb.openTag('span', { inline: true })
+					_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_EXPR)
+					_ ctx.hb.writeText(verify.htmlEscape(item.v))
+					_ ctx.hb.closeTag('span', { inline: true })
+
+					_ ctx.hb.openTag('span', { inline: true })
+					_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_COMMAND)
+					_ ctx.hb.writeText('}')
+					_ ctx.hb.closeTag('span', { inline: true })
+
+		_ ctx.hb.closeTag('li')
+
+		set ctx.__ittfNode.indent++
+		foreach child in children
+			_ toHtmlPretty
+				@ child
+				@ ctx
+		set ctx.__ittfNode.indent--
+
+	function formatLineNum
+		param line
+		if line < 10
+			return '   ' + line
+		elif line < 100
+			return '  ' + line
+		elif line < 1000
+			return ' ' + line
+		else
+			return line
+
+	function spaces
+		param num
+		return Array(num + 1).join(" ")
+

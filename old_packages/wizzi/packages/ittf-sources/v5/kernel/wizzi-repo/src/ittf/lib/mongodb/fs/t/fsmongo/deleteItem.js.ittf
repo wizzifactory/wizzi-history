@@ -1,0 +1,49 @@
+﻿$group
+
+	m deleteItem
+		{ id
+		callback
+
+		var that = this
+
+		_ this.getItemById
+			@ id
+			f_cb( fsitem )
+				if fsitem == null
+					r_cb_wz_err( MongoRepoError, deleteItem )
+						@ 'FsMongo item not found: ' + id
+				_ that._deleteDocument
+					@ id
+					f_cb( r )
+						_ that.db.collection(FSITEMS).deleteOne
+							{
+								@ _id id
+							f_cb( r )
+								delete r.connection
+								delete r.message
+								log 'wizzi-repo.mongodb.FsMongo.deleteItem,r', r
+								if r.deletedCount == 1 && r.result.ok == 1
+									r_cb()
+										{
+											@ code 'FSITEM_DELETED'
+											@ deletedCount r.deletedCount
+								else
+									r_cb_wz_err( MongoRepoError, deleteItem )
+										@ 'FsMongo error deleting item. Result: ' + util.inspect( r.result )
+
+	m _deleteDocument
+		param id
+		param callback
+		_ this.db.collection(DOCUMENTS).deleteOne
+			{
+				@ _id id
+			f_cb( r )
+				delete r.connection
+				delete r.message
+				log 'wizzi-repo.mongodb.FsMongo._deleteDocument.r', r
+				if r.deletedCount == 1 && r.result.ok == 1
+					# log 'wizzi-repo.mongodb.FsMongo._deleteDocument', true
+					r_cb(true)
+				else
+					# log 'wizzi-repo.mongodb.FsMongo._deleteDocument', false
+					r_cb(false)

@@ -1,0 +1,31 @@
+﻿$group
+
+	sample $if
+		summary
+
+			p The $if, $elif and $else statements allow conditional inclunsion/exclusion
+				+ of nodes. The format is:
+			ittf
+				-
+					- $if ittf-expression
+						- .. child nodes
+					- $elif ittf-expression
+						- .. child nodes
+					- $else
+						- .. child nodes
+					-
+			p $if and $elif child nodes will be included in the Ittf model if ittf-expression is true,
+				+ while $else child nodes will be included if ittf-expression is false.
+	
+		ittf my.html.ittf
+			kind primary
+			- div
+				- $ 
+					- var alpha = 10
+				- ul
+					- $if alpha < 5 
+						- li hello down
+					- $else
+						- li hello up
+
+		$include wfschema.html.sample

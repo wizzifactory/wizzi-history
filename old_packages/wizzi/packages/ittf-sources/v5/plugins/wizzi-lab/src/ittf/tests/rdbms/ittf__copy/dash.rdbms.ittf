@@ -1,0 +1,39 @@
+﻿rdbms dash
+
+	t_pk( user, name )
+
+	t_pk( project, userName, name )
+
+	t_pk( section, userName, projectName, name )
+
+	t_pk( schema, userName, projectName, name )
+
+	t_pk( artifact, userName, projectName, schemaName, name )
+
+	t_pk( model, userName, projectName, sectionName, name )
+
+	t_pk( fragment, userName, projectName, sectionName, name )
+
+	r user_projects
+		one user
+		many project
+
+	r project_schemas
+		one project
+		many schema
+
+	r project_models
+		one project
+		many model
+
+	r project_fragments
+		one project
+		many fragment
+
+	r schema_models
+		one schema
+		many model
+
+	r schema_fragments
+		one schema
+		many fragment

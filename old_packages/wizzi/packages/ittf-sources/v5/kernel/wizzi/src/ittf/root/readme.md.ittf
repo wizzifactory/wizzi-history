@@ -1,0 +1,108 @@
+﻿common/kernel( wizzi, ${wfpackage.title}  )
+
+	h2 Features
+	p Exposes the main wizzi factory service components:
+	ul
+		li WizziFactory class
+		li PluginsManager class
+		li RunnerServer class
+	
+	h2 The WizziFactory class
+	p Is the main access point to wizzi factory services. Can be
+		+ used to
+	ul
+		li Execute
+			a wizzi model types generations
+				href #
+			span .
+		li Execute artifact generations
+		li Execute 
+			a wizzi jobs
+				href #
+			span .
+
+	h3 Instance creation
+	js
+		+ wizzi.createFactory(
+		+ 	userid,
+		+ 	role,
+		+ 	options,
+		+ 	callback
+		+ );
+
+	h3 Methods
+	js
+		+ wizziFactoryInstance.generateModelTypes(
+		+ );
+		+ wizziFactoryInstance.generateMTree(
+		+ );
+		+ wizziFactoryInstance.generateWizziModel(
+		+ );
+		+ wizziFactoryInstance.generateArtifact(
+		+ );
+		+ wizziFactoryInstance.executeWizziJob(
+		+ );
+
+	h2 The PluginsManager class
+
+	h3 The RunnerServer class
+
+	h2 Default factory (quick starter)
+	h3 Loads a wizzi magical tree (mTree)
+	js
+		+ var wizzi = require('wizzi');
+		+ var ittfSourcePath = '...';
+		+ var context = {
+		+ ...
+		+ };
+		+ var options = {
+		+ ...
+		+ };
+		+ wizzi.mtree(
+			+ ittfSourcePath,
+			+ context,
+			+ options,
+			+ function(err, mTree) {
+			+ ...
+			+ });
+	
+	h3 Loads a wizzi model
+	js
+		+ var wizzi = require('wizzi');
+		+ var ittfSourcePath = '...';
+		+ var context = {
+		+ ...
+		+ };
+		+ var options = {
+		+ ...
+		+ };
+		+ wizzi.model(
+			+ ittfSourcePath,
+			+ context,
+			+ options,
+			+ function(err, wizziModel) {
+			+ ...
+			+ });
+
+	h3 Generates an artifact
+	js
+		+ var wizzi = require('wizzi');
+		+ var ittfSourcePath = '...';
+		+ var artifactName = '...';
+		+ var modelContext = {
+		+ ...
+		+ };
+		+ var artifactContext = {
+		+ ...
+		+ };
+		+ var options = {
+		+ ...
+		+ };
+		+ wizzi.model(
+			+ ittfSourcePath,
+			+ artifactName,
+			+ context,
+			+ options,
+			+ function(err, artifactText) {
+			+ ...
+			+ });

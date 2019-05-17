@@ -1,0 +1,103 @@
+﻿demo_module( plugin_examples, jsonld, 1 )
+
+	#
+		# Commons
+	var wizziFactoryConfig
+		{
+			@ plugins
+				{
+					[ items
+						@ './jsonld/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+							@ '..'
+
+
+	# 
+		# DEMO: how to load an jsonld ittf document into an mTree.
+	+
+	# Create a filesystem factory without access control
+	_ wizzi.fsnoaclFactory
+		f_cb_throw( wf )
+			# Now we can load the mTree
+			_ wf.loadMTree
+				_ path.join
+					@ __dirname
+					@ 'step_1'
+					@ 'w3c.jsonld.ittf'
+				{
+				f_cb_throw( mTreeModel )
+					# And print the mTree model object
+					log 'mTreeModel', mTreeModel
+					log 'mTreeModel.dump(true)', mTreeModel.dump(true)
+					log 'mTreeModel.toIttf()', mTreeModel.toIttf()
+					log 'mTreeModel.toText()', mTreeModel.toText()
+					_ jsonld_model
+
+	function jsonld_model
+		# Create a filesystem factory without access control
+		# requiring the local plugin.
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				# Now we can load the model
+				_ wf.loadModel
+					_ path.join
+						@ __dirname
+						@ 'step_1'
+						@ 'w3c.jsonld.ittf'
+					{
+					f_cb_throw( wizziModel )
+						# And print the wizzi model object
+						log 'wizziModel', wizziModel
+						log 'wizziModel.toJson()', wizziModel.toJson()
+						var dest
+							_ path.join
+								@ __dirname
+								@ 'outputs'
+								@ 'w3c.jsonld.json'
+						_ wf.fileService.write
+							@ dest
+							_ stringify
+								_ wizziModel.toJson()
+								@ null
+								@ 4
+						if step_callback
+							_ step_callback
+								@ null
+						# _ jsonld_document_artifact
+
+	function jsonld_document_artifact
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				_ wf.loadModelAndGenerateArtifact
+					_ path.join
+						@ __dirname
+						@ 'step_1'
+						@ 'w3c.jsonld.ittf'
+					{
+						@ modelContext {}
+						@ artifactContext {}
+					@ 'jsonld/document'
+					f_cb_throw( artifactText )
+						log 'artifactText', artifactText
+						_ wizzi.file.write
+							_ path.join
+								@ __dirname
+								@ 'output'
+								@ 'w3c.jsonld'
+							@ artifactText
+						if step_callback
+							_ step_callback
+								@ null
+
+
+
+
+
+
+

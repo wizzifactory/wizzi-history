@@ -1,0 +1,15 @@
+﻿$group
+
+	wz-function loadWizziSchema
+		param packageUri
+		param wizzischema
+		param formatOptions
+		param callback
+
+		set formatOptions = formatOptions || {}
+		
+		_ wizzi.runnerServer.loadWizziSchema
+			@ packageUri
+			@ wizzischema
+			@ formatOptions
+			@ callback

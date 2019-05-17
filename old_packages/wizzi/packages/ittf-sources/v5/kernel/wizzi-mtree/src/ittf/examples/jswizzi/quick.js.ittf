@@ -1,0 +1,37 @@
+﻿module
+	kind jsfile
+
+	var JsWizziContext = require('../../lib/jswizzi/jsWizziContext')
+	var jsWizziRunner = require('../../lib/jswizzi/jsWizziRunner')
+
+	var result
+		_ runExpression
+			@ 'var x = { a: "b" }; var y = x.a; return x.b;'
+	log 'result', result
+
+	function runExpression
+		param code
+
+		# without ctor arguments means: isForInterpolation
+		var jsWizziContext
+			new JsWizziContext()
+		# run the expression embedded in a var declaration 'result'
+		var statements
+			iif code.indexOf('return ') > -1
+				then 'var result = function dummy() { ' + code + ' }();'
+				else 'var result = ' + code + ';'
+		var hr
+			_ jsWizziRunner.run
+				@ statements
+				@ jsWizziContext
+				{
+					@ verbose false
+		if hr && hr.__is_error
+			throw new Error(hr)
+		# return the 'result' var from the context
+		return
+			{
+				@ statements statements
+				@ result jsWizziContext.getValue('result')
+
+

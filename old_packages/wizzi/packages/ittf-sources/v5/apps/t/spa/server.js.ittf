@@ -1,0 +1,101 @@
+$group
+	$params &spa
+
+	var config = require('./config')
+
+	$if spa.mongoose
+		var mongoose = require('./mongoose')
+	
+	var serverApp = require('./serverApp')
+	var chalk = require('chalk')
+    
+	$if spa.mongoose
+		+
+		# Initialize Models
+		_ mongoose.loadModels()
+    
+		# Seed DB
+		if config.seedDB
+			_ require('./seed')
+    
+		set module.exports.loadModels =
+			function loadModels
+				_ mongoose.loadModels()
+	+
+	function initServerApp
+		param callback
+		if typeof callback == 'undefined'
+			throw new Error('wizzi-studio/server/start error: a callback function is required')
+
+		log 'initServerApp'
+		var initResult = {}
+		$if spa.mongoose
+			_ mongoose.connect
+				# Connect to DB and initialize serverApp
+				function 
+					param db
+					set initResult.mongodb = db
+					_ serverApp.init
+						@ initResult
+						f_cb( app )
+							_ callback
+								@ null
+								@ app
+								@ initResult
+								@ config
+
+		$else
+			# Initialize serverApp
+			log 'calling serverApp.init'
+			_ serverApp.init
+				@ initResult
+				f_cb( app )
+					_ callback
+						@ null
+						@ app
+						@ initResult
+						@ config
+	# 
+		# Start server
+	set module.exports.start
+        function start
+            param callback
+			if typeof callback == 'undefined'
+				throw new Error('wizzi-studio/server/start error: a callback function is required')
+            _ initServerApp
+                function 
+					param err
+                    param app
+                    param db
+                    param config
+					if err
+						return
+							_ callback(err)
+					+
+                    _ app.listen
+                        @ config.port
+                        function 
+                            
+							log '--'
+                            
+							chalk green config.app.title
+							
+							chalk green 'Environment:\t' + process.env.NODE_ENV
+							
+							chalk green 'Port:\t\t' + config.port
+							
+							$if spa.mongoose
+								chalk green 'Database:\t' + config.db.uri
+                            
+							if process.env.NODE_ENV === 'secure'
+								chalk green 'HTTPs:\ton'
+                            
+							log '--'
+                            
+                            return
+								_ callback
+									@ null
+									@ app
+									@ db
+									@ config
+					+

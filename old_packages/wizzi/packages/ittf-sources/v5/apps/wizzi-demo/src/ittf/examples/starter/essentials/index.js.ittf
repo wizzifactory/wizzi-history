@@ -1,0 +1,40 @@
+﻿module
+	kind jsfile
+
+	import async
+
+	var examples
+		[
+			_ require('./languageschemas')
+			$*
+			_ require('./jswizzi')
+			_ require('./mtrees')
+			_ require('./models')
+			_ require('./languageschemas')
+			_ require('./jobs')
+			_ require('./schemas')
+			_ require('./quick')
+			*$
+
+	function exec
+		param callback
+		_ async.mapSeries
+			@ examples
+			function
+				param example
+				param callback
+				_ example(callback)
+			f_cb_test(results)
+				log 'Starter-essentials examples results\n', results
+				if callback
+					_ callback
+						@ null
+						@ 'Starter-essentials examples executed'
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require.main === module
+		_ exec

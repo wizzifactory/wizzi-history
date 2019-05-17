@@ -1,0 +1,75 @@
+﻿$group
+	$params step, schema, model
+
+	# Create a filesystem factory without access control,
+	# configured with the default wizzi plugins and
+	# a local plugin.
+	_ wizzi.fsnoaclFactory
+		{
+			@ plugins
+				{
+					@ items
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+							@ 'wizzi-web'
+							@ './local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+			@ globalContext globalContext
+
+		f_cb_throw( wf )
+
+			# Now we can generate the wizzi model artifacts.
+			# They will be written in the folder passed as second parameter,
+			# that is the folder of our local plugin.
+			# The wizzi model artifact "${schema}" is created after that the wizzi factory
+			# has been configured with the local plugin. That is ok. The model factory
+			# will be retrieved before use. There is no check for existence at plugin initialization time.
+			_ wf.generateModelTypes
+				_ path.join
+					@ __dirname
+					@ 'step_${step}'
+					@ '${schema}.wfschema.ittf'
+				_ path.join
+					@ __dirname
+					@ 'local'
+				@ '${schema}'
+				@ mTreeBuildupContext
+				f_cb_throw( result )
+					_ printValue
+						@ 'Result'
+						@ 'Wizzi model of schema ${schema} generated. \n' + JSON.stringify(result, null, 2)
+						@ 'dashes'
+					_ wf.loadModel
+						_ path.join
+							@ __dirname
+							@ 'step_${step}'
+							@ '${model}.${schema}.ittf'
+						@ mTreeBuildupContext
+						f_cb_throw( wizziModel )
+							# And print the loaded model
+							_ printValue
+								@ 'Result'
+								@ 'Ittf document ${model}.${schema}.ittf loaded.'
+								@ 'dashes'
+							if wizziModel.toJson
+								_ printValue
+									@ 'wizziModel.toJson()'
+									_ stringify
+										_ wizziModel.toJson
+										@ null
+										@ 4
+									@ 'dashes'
+							else
+								_ printValue
+									@ 'wizziModel'
+									_ stringify
+										@ wizziModel
+										@ null
+										@ 4
+									@ 'dashes'
+							$$ here the mixer of this fragment can append an artifact generation
+							$$ using the wizziModel variable as source model
+							$hook

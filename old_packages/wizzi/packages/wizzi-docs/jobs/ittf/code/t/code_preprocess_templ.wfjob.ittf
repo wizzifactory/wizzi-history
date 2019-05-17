@@ -1,0 +1,40 @@
+wfjob
+	$params kind
+
+	$
+		var models_folder    = 'c:/my/wizzi/v5/apps/wizzi-docs/src/ittf/models/packages';
+		var ittf_lib_folder  = path.join(__dirname, '..', 'dumps', 'package');
+		var dest_folder      = path.join(__dirname, '..', 'preprocess', 'package');
+
+	models-base-folder ${models_folder}
+
+	model wf
+		$if kind === 'kernel'
+			src v5-kernel.wfpackage.ittf
+		$elif kind === 'plugins'
+			src v5-plugins.wfpackage.ittf
+		$else
+			src v5-demo.wfpackage.ittf
+		schema wfpackage
+
+	line one
+		cwd-folder ${ittf_lib_folder}
+		dest-folder ${dest_folder}
+
+		artifact wf.package first transformer
+			src package-dump.ittf.ittf
+			schema ittf
+			is-compile
+			generator ittf/document
+			dest-path {package}.wfpackage.ittf
+			model-ref wf
+				transformer wfpackage/fs-scanner
+				model-coll generatedPackages
+					item-name wfpackage
+					path-template-value
+						attribute value
+						token package
+
+	production
+		dest-folder ${dest_folder}
+		line-ref one

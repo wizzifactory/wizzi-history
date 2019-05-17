@@ -1,0 +1,37 @@
+﻿base_test( mongodb.fsimpl )
+	+
+	$append imports
+		var
+			decl MongoFsImpl = require('../../lib/mongodb/mongoFsimpl')
+			decl MongoClient
+				_ require('mongodb')
+					. MongoClient
+			decl FsMongo = require('../../lib/mongodb/fs/fsmongo')
+			decl Document = require('../../lib/mongodb/fs/document')
+			decl mounted_db
+			decl FSITEMS = 'fsitems'
+			decl DOCUMENTS = 'documents'
+			decl fsmongo
+			decl doc
+	
+	var fsimpl
+		new MongoFsImpl
+			@ null
+			@ 'c:/wz/users'
+
+	$include mongo_before_async
+
+	before-async
+		_ fsimpl.open
+			f_cb_test()
+				_ done
+
+	fscommon/fsimpl/writeFile( db://stefi/wf )
+
+	after-async
+		_ fsimpl.close
+		_ done
+
+	$include mongo_after_async
+
+	

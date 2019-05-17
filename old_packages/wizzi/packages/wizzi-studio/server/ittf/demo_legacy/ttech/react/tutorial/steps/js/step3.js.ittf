@@ -1,0 +1,46 @@
+module
+	kind react
+
+	$
+		var xnode = {
+			text: 'brands',
+			xnodes : [
+				{
+					text: 'fiat',
+					xnodes: []
+				},
+				{
+					text: 'ford',
+					xnodes: []
+				},
+				{
+					text: 'peugeot',
+					xnodes: []
+				},
+				{
+					text: 'opel',
+					xnodes: []
+				}
+			]
+		};
+
+
+	var node 
+		{
+			@ text '${xnode.text}'
+			@ nodes []
+	$foreach xn1 in xnode.xnodes
+		_ node.nodes.push
+			{
+				@ text '${xn1.text}'
+				@ nodes []
+
+	$include step3/treeview
+	$include step3/treenode
+	
+	_ ReactDOM.render
+		e(TreeView)
+			{
+				@ data [node]
+			@ null
+		_ document.getElementById('container')

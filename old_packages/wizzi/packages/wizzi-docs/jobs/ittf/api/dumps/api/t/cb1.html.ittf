@@ -1,0 +1,150 @@
+$group
+	$params &obj1
+	
+	$
+		var obj2 = {};
+
+	
+	$if obj1.xarguments.length > 0
+
+		table
+			$foreach arg in obj1.xarguments 
+				$
+					obj2 = arg;
+				tr
+					td arg
+						@ valign top
+					td ${arg.wzName}
+						@ valign top
+					td ${arg.type}
+						@ valign top
+						$if arg.type === 'alternative'
+							table
+								$foreach v in arg.values
+									$
+										obj2 = arg;
+									tr
+										td | ${v.wzName}
+											@ valign top
+										td
+											@ valign top
+											$if v.wzName != v.type
+												span ${v.type} 
+											$if v.type === 'exception' && v.errors.length > 0
+												table
+													$foreach err in v.errors
+														tr
+															td ${err.wzName}
+											$else
+												table
+													$if v.apiRef
+														tr
+															td api ref
+															td
+																a ${v.apiRef}
+																	href #${v.apiRef}
+													$if v.isPOJO
+														tr
+															td POJO
+													$if v.defaultValue
+														tr
+															td default
+															td ${v.defaultValue}
+													$if v.isRequired
+														tr
+															td required
+													$if v.iface
+														tr
+															td interface
+															td ${v.iface}
+													
+													$if v.type === 'object'
+														tr
+															td
+																./object2(&obj2)
+													$if v.type === 'array'
+														tr
+															td 
+																./array2(&obj2)
+
+						$elif arg.type === 'switch'
+							table
+								$foreach xon in arg.ons
+									tr
+										td | on ${xon.wzName}
+											@ valign top
+											table
+												$foreach v in xon.values
+													$
+														obj2 = v;
+													tr
+														td ${v.wzName}
+															@ valign top
+														td
+															@ valign top
+															$if v.wzName != v.type
+																span ${v.type} 
+															$group
+																table
+																	$if v.apiRef
+																		tr
+																			td api ref
+																			td
+																				a ${v.apiRef}
+																					href #${v.apiRef}
+																	$if v.isPOJO
+																		tr
+																			td POJO
+																	$if v.defaultValue
+																		tr
+																			td default
+																			td ${v.defaultValue}
+																	$if v.isRequired
+																		tr
+																			td required
+																	$if v.iface
+																		tr
+																			td interface
+																			td ${v.iface}
+																	$if v.type === 'object'
+																		tr
+																			td
+																				./object2(&obj2)
+																	$if v.type === 'array'
+																		tr
+																			td 
+																				./array2(&obj2)
+						$else
+							td ${arg.wzName}
+								@ valign top
+							td ${arg.type} 
+								@ valign top
+								table
+									$if arg.apiRef
+										tr
+											td api ref
+											td
+												a ${arg.apiRef}
+													href #${arg.apiRef}
+									$if arg.isPOJO
+										tr
+											td POJO
+									$if arg.defaultValue
+										tr
+											td default
+											td ${arg.defaultValue}
+									$if arg.isRequired
+										tr
+											td required
+									$if arg.iface
+										tr
+											td interface
+											td ${arg.iface}
+									$if arg.type === 'object'
+										tr
+											td
+												./object2(&obj2)
+									$if arg.type === 'array'
+										tr
+											td 
+												./array2(&obj2)

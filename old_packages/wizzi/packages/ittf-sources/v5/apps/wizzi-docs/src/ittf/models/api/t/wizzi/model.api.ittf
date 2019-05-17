@@ -1,0 +1,234 @@
+﻿$group
+
+	api wizzi.model.modelInfoConfig
+		kernel
+
+		# Describes a wizzi.model.modelInfo instance.
+		# The properties `cwd`, `src` and `schema` describe a
+		# main source model or a collection of main source models, when `src`
+		# is a directory or a glob pattern.
+		# The `contexts` properties describe a collection of
+		# context models.
+		# The meaning of main source model and context models vary
+		# for different artifact types.
+		# See the element 'artifact' of the schema 'wfjob'.
+		pojo
+		{
+			string cwd
+				# model base folder
+			string src
+				# | model full path
+				# | model relative path
+				# | 'context' TODO explain
+				# May contain a file pattern /*...
+			string ignore
+				# | ignore full path
+				# | ignore relative path
+				# May contain a file pattern /*...
+			string schema
+				# Wizzi schema of model
+			[ contexts
+				{ context
+					api-ref wizzi.model.modelInfoConfig
+			[ transformers
+				string transformerName
+			string exportName
+				# The name of the context property that references the model
+				# when used as a context object in an evaluation.
+			{ coll
+				# TODO rename to modelCollection
+				api-ref wizzi.model.modelCollectionConfig
+
+	api wizzi.model.modelCollectionConfig
+		kernel
+		pojo
+
+		# Describes a property of type array (a collection property),
+		# of a wizzi.modelType instance, which items should be used
+		# as main context objects in the generation of an artifact
+		# of type model collection. An artifact is generated. 
+		# for each item of the array. The file names of the generated artifacts are
+		# built interpolating a path template with the values of the item object.
+		# See the element 'modelRef' of the wizzi schema 'wfjob'.
+		{
+			string name
+				# The property name of an array (collection) in a wizzi.modelType instance.
+			string itemName
+				# The export name of the item objects, of the array, when loaded in the
+				# evaluation context (wizzi-mtree.jsWizziContext) of an mTree loading. It is the name 
+				# that can be used in jswizzi statements to reference the item object.
+			[ pathTemplateValues
+				# An array mixed of literal tokens and tokens built
+				# from properties of the ityem object. Once joined 
+				# form the destination path of the artifact
+				# generated from that item object.
+				alt
+					{ tokenOrAttribute
+						# When value is an object
+						string token
+							# A literal token
+						string attribute
+							# The name of a property of the item object.
+					{ function
+						# When value is a function
+						function function
+							# A function that returns the artifact path given an item object.
+							{ itemObject
+
+
+	api wizzi.model.modelInfo
+		kernel
+		class-instance
+		
+		{
+			ctor
+				{ config
+					merge modelInfoConfig
+						api-ref wizzi.model.modelInfoConfig
+					{ modelRef
+						string exportName
+
+			m productionManager
+				# Get or set the production manager.
+				{ productionManager
+					api-ref wizzi.production.productionManager
+			
+			m getModelCollectionInfo
+				# Searches the context info configs of this instance 
+				# for a context that has the property `coll`
+				# (a wizzi.model.modelCollectionConfig object).
+				# If not found returns null.
+				return 
+					{ modelCollectionConfig
+						alt
+							{ modelCollectionConfig
+								api-ref wizzi.model.modelCollectionConfig
+							null
+
+			m getModelInfos
+				# From the source models referenced, build a collection of
+				# wizzi.model.modelInfo(s) with the same properties of this
+				# instance, and with a file fullpath value in the `src` property.
+				{ options
+					boolean final
+						# If not true, skip file paths containing the string '__copy'.
+				cb()
+					[ modelInfos
+						{ modelInfo
+							api-ref wizzi.model.modelInfo
+					
+			m srcFullPath
+				return 
+					string fullPath
+						# The full path of the referenced model or models.
+						# Can be a file or a directory.
+
+			m srcGlobPath
+				return 
+					string srcGlobPath
+						# The full path of the referenced model or models used
+						# for search. When the srcFullPath method returns a directory
+						# a glob pattern is added to the directory path. If not declared
+						# a default `/**/*.*`
+
+			m getFiles
+				# Search the model files referenced by this instance.
+				# When the parameter 'options.final' is not true,
+				# which means that they are source ittf documents 
+				# to be processed by generators, file paths containing 
+				# the string '__copy' are skipped. Suffixing folder names
+				# with '__copy' is a convention meaning that their
+				# content must be simply copied to a destination folder.
+				# TODO link a 'wfjob' example.
+				{ options
+					boolean final
+						# If not true, skip file paths containing the string '__copy'.
+				cb()
+					[ files
+						{ fileInfo
+							string fullpath
+							string relpath
+				info
+					api-call wizzi-repo.fileSystem.getGlobbedFiles
+						api-send this.srcGlobPath
+			
+			m getSource
+				# When the model path is a single file, returns
+				# the content string of the referenced model.
+				# If the model path is not a file (is a directory), calling
+				# this method throws an error.
+			
+				cb()
+					string modelContent
+					$append error-types
+						error NotFoundError
+						error IsNotAFileError
+
+			m getSources
+				# When the model path is a directory, returns a
+				# collection of content strings of the models
+				# referenced by this instance.
+				# If the model path is not a directory, calling
+				# this method throws an error.
+				cb()
+					[ sources
+						string modelContent
+					$append error-types
+						error NotFoundError
+						error IsNotADirectoryError
+				info
+					internal-call getFiles
+
+			m getLoadModel
+				# Returns the wizzi-plugin.modelFactory.loadModel for the
+				# wizzi schema of this modelInfo.
+				# Facade method that calls wizzi.productionManager.getLoadModel
+				cb()
+					function loadModel
+						api-ref wizzi-plugin.modelFactory.loadModel
+					$append error-types
+						error NotFoundError
+
+			m getModelTransformer
+				# Facade method that calls wizzi.productionManager.getModelTransformer
+				string trasformerName
+				cb()
+					{ modelTransformer
+						api-ref wizzi-plugin.modelTransformer
+					$append error-types
+						error NotFoundError
+
+			m getArtifactGenerator
+				# Facade method that calls wizzi.productionManager.getArtifactGenerator
+				string generatorName
+				cb()
+					{ artifactGenerator
+						api-ref wizzi-plugin.artifactGenerator
+					$append error-types
+						error NotFoundError
+
+	api wizzi.model.asyncModelLoader
+		kernel
+		module
+			path wizzi/model/asyncModelLoader.js
+		{
+			m loadMany
+				# Loads a collection of wizzi.ModelType instances
+				# defined by a collection of wizzi.model.modelInfo instances.
+				[ modelInfos
+					{ modelInfo
+						api-ref wizzi.model.modelInfo
+				cb()
+					[ wizziModels
+						{ wizziModel
+							api-ref wizzi.ModelType
+
+			m load
+				# Loads a single wizzi.ModelType instance
+				# defined by a wizzi.model.modelInfo instance.
+				{ modelInfo
+					api-ref wizzi.model.modelInfo
+				cb()
+					{ wizziModel
+						api-ref wizzi.ModelType
+

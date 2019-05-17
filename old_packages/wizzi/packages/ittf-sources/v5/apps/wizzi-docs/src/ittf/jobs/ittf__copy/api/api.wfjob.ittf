@@ -1,0 +1,50 @@
+﻿wfjob apis_preprocess
+
+	$
+		var ittf_preprocess_folder = path.join(__dirname, 'preprocess', 'api');
+		var ittf_html_folder       = path.join(__dirname, 'html', 'api');
+		var dest_folder            = "c:/my/wizzi/v5/github/wizzifactory.github.io";
+
+	models-base-folder ${ittf_preprocess_folder}
+
+	model wf
+		src wf.api.ittf
+		schema wfsystem
+
+	line one
+		cwd-folder ${ittf_preprocess_folder}
+		dest-folder ${dest_folder}
+
+		artifact json export of wfsystem with preprocessed api
+			src wf.api.ittf
+			schema wfsystem
+			generator json/export
+			extension api.json
+
+	line two
+		cwd-folder ${ittf_html_folder}
+		dest-folder ${dest_folder}
+
+		artifact html api
+			src wf-api.html.ittf
+			schema html
+			is-compile
+			generator html/document
+			dest-path api.html
+			model-ref wf
+				export-name wfsystem
+
+		artifact css api
+			src wf-api.css.ittf
+			schema css
+			is-compile
+			generator css/document
+			dest-path styles/api.css
+			model-ref wf
+				export-name wfsystem
+
+	production
+		dest-folder ${dest_folder}
+		line-ref one
+		line-ref two
+

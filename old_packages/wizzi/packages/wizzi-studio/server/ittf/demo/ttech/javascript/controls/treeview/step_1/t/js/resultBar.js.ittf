@@ -1,0 +1,103 @@
+﻿$group
+
+	class ResultBar : wz.EventTarget
+		ctor
+			param props
+			set this.state = {}
+			set this.commandEls = {}
+			
+
+		m setState
+			param state
+			foreach k in Object.keys(state)
+				set this.state[k] = state[k]
+			_ this.refresh
+
+		m refresh
+			# log 'ResultBar.refresh', this.state
+			if this.state.isIttf == true
+				if ['wfjob', 'wfschema'].indexOf(this.state.schema) > -1
+					_ this.setActives(['exec', 'mtree', 'debug'])
+				else
+					_ wz.canGen
+						@ this.state.schema
+						a_cb_throw( ok )
+							if ok
+								_ this.setActives(['gen', 'mtree', 'debug'])
+							else
+								_ this.setActives(['mtree', 'debug'])
+			elif wz.canWizzify(this.state.mime)
+				_ this.setActives(['diff'])
+			else
+				_ this.setActives([])
+
+		m setActives
+			param commands
+			foreach k in Object.keys(this.commandEls)
+				_ wz.hide
+					@ this.commandEls[k]
+			foreach k in commands
+				_ wz.show
+					@ this.commandEls[k]
+
+		m render
+
+			var barEl = document.createElement('div')
+			_ barEl.setAttribute('class', 'result-bar')
+			
+			_ barEl.appendChild
+				_ this.createCommand
+					{
+						@ name 'gen'
+						@ label 'gen'
+			_ barEl.appendChild
+				_ this.createCommand
+					{
+						@ name 'diff'
+						@ label 'diff'
+			_ barEl.appendChild
+				_ this.createCommand
+					{
+						@ name 'exec'
+						@ label 'exec'
+			_ barEl.appendChild
+				_ this.createCommand
+					{
+						@ name 'mtree'
+						@ label 'mTree'
+			
+			_ barEl.appendChild
+				_ this.createCommand
+					{
+						@ name 'debug'
+						@ label 'debug'
+			
+			return barEl
+
+		m createCommand
+			param options
+			
+			var cmdEl = document.createElement('div')
+			_ cmdEl.setAttribute('class', 'result-cmd')
+			
+			var cmdButton = document.createElement('button')
+			_ cmdButton.setAttribute('class', 'result-cmd-btn')
+			
+			if options.label
+				set cmdButton.textContent = options.label
+			
+			_ wz.click
+				@ cmdButton
+				=>
+					_ this.emit
+						@ 'command'
+						@ options.name
+			
+			set cmdEl.style.display = 'none'
+
+			_ cmdEl.appendChild(cmdButton)
+			
+			set this.commandEls[options.name] = cmdEl
+			
+			return cmdEl
+

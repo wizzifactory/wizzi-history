@@ -1,0 +1,51 @@
+﻿concept Path resolution of composed documents
+
+	summary
+		p The path resolution algoritm for retrieving mixed and included ittf fragments starts from the 
+			+ composer node.
+			+ The folder uri, of the document containing the composer node, gives the base path.
+			+ The node value of the mix or include node command gives the relative path.
+
+		p At first is searched the path resulting from joining base and relative path using the
+			+ nodejs function path.resolve(...).
+
+		p If this match fails, then the 't' folder rule is applied, starting from the base path
+			+ and going down one step first, and then going up on the folder tree. The rule is
+			+ the same followed by nodejs to locate packages. The wizzi factory uses
+			+ folders named 't' as nodejs uses folders named 'node_modules'.
+
+		p The search for a composed document proceeds as follow:
+		ul
+			li search path.resolve(base-path, relative-path)
+			li search path.resolve(base-path, 't', relative-path)
+			li search path.resolve(path.dirname(base-path), 't', relative-path)
+			li search path.resolve(path.dirname(path.dirname(base-path)), 't', relative-path)
+			li ...
+		p until the document is found or the base-path of the wizzi factory repository, declared
+			+ in the config file, is reached. In the last case the search fails and we 
+			+ have an IttfNotFound error.
+
+		p Example. Given this folder structure
+		ittf
+			- folder-a
+				- t
+					- layouts
+						- site-layout.html.ittf
+				- folder-a1
+					- t
+						- dialog.html.ittf
+					- my-home-page.html.ittf
+
+		p The ittf document my-home-page.html.ittf could contain these two composition node commands:
+		ittf
+			- layouts/site-layout( home )
+				- $include dialog( )
+		
+		p For both commands the base-path is 'folder-a/folder-a1'.
+		
+		p For the include node command the relative path is 'dialog.html.ittf' and the 
+		p document is found by: path.resolve(base-path, 't', relative-path).
+		
+		p For the mix node command the relative path is 'layouts/site-layout' and the 
+		p document is found by: path.resolve(path.dirname(base-path), 't', relative-path).
+				

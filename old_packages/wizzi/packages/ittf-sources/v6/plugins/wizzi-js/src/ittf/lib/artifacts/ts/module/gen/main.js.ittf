@@ -1,0 +1,46 @@
+﻿artifact( v5-wizzi-ts, ts, module, rootElement=module )
+
+	$append imports
+		var statement = require('./codegen/statement')
+		var wzIife = require('./codegen/wziife')
+
+	$append main
+
+		set ctx.__ecma = 'es6'
+		set ctx.__jskind = 'react'
+
+		_ main_init
+			@ model
+			@ ctx
+
+		repeater(1, model.statements)
+			# log 'main item_1.wzElement', item_1.wzElement
+			if item_1.wzElement === 'wzIife'
+				_ wzIife.gen
+					@ item_1
+					@ ctx
+					f_cb()
+						_ ctx.w("")
+						repeater_increment(1)
+			else
+				_ statement.gen
+					@ item_1
+					@ ctx
+					f_cb()
+						repeater_increment(1)
+			$append next
+				_ terminate_artifact
+
+	function main_init
+		param model
+		param ctx
+		
+		# log myname, 'ctx.values', ctx.values
+		if (!!ctx.values.noGeneratorComments) == false
+			_ ctx.w('/*')
+			_ ctx.w('    artifact generator: ' + __filename)
+			_ ctx.w('    primary source IttfDocument: ' + model.wzSourceFilepath('f1'))
+			if (!!ctx.values.isPackageDeploy) == false
+				_ ctx.w('    utc time: ' + new Date().toUTCString())
+			_ ctx.w('*/')
+

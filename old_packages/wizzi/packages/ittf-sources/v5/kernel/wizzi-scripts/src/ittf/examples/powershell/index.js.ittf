@@ -1,0 +1,42 @@
+﻿base_example()
+
+	var psOptions1
+		{
+			@ scriptPath
+				_ path.join
+					@ __dirname
+					@ 'scripts'
+					@ 'sample1.ps1'
+			[ params
+				{
+					@ name 'str'
+					@ value 'node-powershell rocks'
+
+	_ ps
+		f_cb_test(result)
+			log 'ps.result', result
+			_ psToEventStream
+				f_cb_test(result)
+					log 'psToEventStream.result', result
+	
+	function ps
+		param callback
+
+		_ manager.powershellExec
+			@ psOptions1
+			@ callback
+    
+	function psToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.powershellExecToEventStream
+			@ psOptions1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

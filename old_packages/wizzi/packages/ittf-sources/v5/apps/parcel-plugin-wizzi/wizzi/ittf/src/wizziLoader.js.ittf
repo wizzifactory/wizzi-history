@@ -1,0 +1,94 @@
+﻿module
+	kind jsfile
+
+	var fs = require('fs')
+	var wizzi = require('wizzi')
+	
+	var wizziFactoryConfig
+		{
+			{ plugins
+				[ items
+					@ 'wizzi-js' 
+	
+	var wizziFactory = null
+
+	function getWizziFactory
+		param callback
+		if wizziFactory == null
+			_ wizzi.fsnoaclFactory
+				@ wizziFactoryConfig
+				f_cb( wf )
+					set wizziFactory = wf
+					r_cb( wizziFactory )
+		else
+			r_cb( wizziFactory )
+
+	var readWizziJsModuleAsync
+		=>
+			param options
+			param callback
+			var filePath = options.filePath
+			var saveTemp = options.saveTemp
+			_ getWizziFactory
+				f_cb( wf )
+					_ wf.loadModelAndGenerateArtifact
+						@ filePath
+						{
+							{ modelRequestContext
+							{ artifactRequestContext
+						@ 'js/module'
+						f_cb( artifactText
+							log 'artifactText', artifactText
+							if saveTemp
+								var fileTemp = filePath.substr(0, filePath.length - 5)
+								_ fs.writeFileSync(fileTemp, artifactText)
+							return
+								_ callback
+									@ null
+									{
+										@ code artifactText
+
+	var readWizziJsModulePromise
+		=>
+			param options
+			var filePath = options.filePath
+			var saveTemp = options.saveTemp
+			return
+				new Promise
+					=>
+						param resolve
+						param reject
+						
+						_ getWizziFactory
+							=>
+								param err
+								param wf
+								if err
+									return
+										_ reject(err)
+								_ wf.loadModelAndGenerateArtifact
+									@ filePath
+									{
+										{ modelRequestContext
+										{ artifactRequestContext
+									@ 'js/module'
+									=>
+										param err
+										param artifactText
+										if err
+											return
+												_ reject(err)
+										# log 'artifactText', artifactText
+										if saveTemp
+											var fileTemp = filePath.substr(0, filePath.length - 5)
+											_ fs.writeFileSync(fileTemp, artifactText)
+										return
+											_ resolve
+												{
+													@ code artifactText
+
+	set module.exports
+		{
+			@ readWizziJsModuleAsync readWizziJsModuleAsync
+			@ readWizziJsModulePromise readWizziJsModulePromise
+

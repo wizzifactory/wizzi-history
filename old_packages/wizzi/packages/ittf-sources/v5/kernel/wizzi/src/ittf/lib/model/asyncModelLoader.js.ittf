@@ -1,0 +1,463 @@
+﻿module 
+    kind jsfile
+
+	#
+		# Objects
+		#   - Model
+		#     Is the core object of the model driven wizzi factory.
+		#     A model is a single object (wizzi model or POJO) acting as a context object in
+		#     mTree loadings, model transformations and artifact generations.
+		#     Models (single or group of similars) are described by wizzi.model.modelInfo api.
+		#   - Templated model
+		#     A templated model is a model that contains itself template commands and require
+		#     one or more context objects. The process is recursive and has no limit except
+		#     a guard to avoid infinite loops during recursive evaluation of contexts.
+		#   - Context models
+		#     Context models are an array of models acting as a context object for a templated
+		#     model.
+		#     Context models, being models themselves, are also described by wizzi.model.modelInfo api.
+		#   - Model collection
+		#     A model collection is an array property of a model, where each item of
+		#     the array is used as a model acting as a context object.
+		#     The properties of the item can be used to build the destination path of the generated artifact.
+		#     Model collections are described in the wizzi.model.ModelCollectionInfo api.
+
+	# TODO Implement transformModel context objects.
+    
+	var path = require('path')
+    var util = require('util')
+    var async = require('async')
+    var _ = require('lodash')
+	var verify = require('wizzi-utils').verify
+    var log
+        _ require('../util/log')
+            ( 
+                @ module
+    +
+	function logme
+        if false
+            _ console.log.apply(console, arguments)
+    +
+	wz-function loadMany
+        param modelInfos
+        param callback
+
+        if modelInfos.length > 0
+			_ log.setLevel
+				@ modelInfos[0].productionManager().options.verbose
+        
+		# log '+ asyncModelLoader.loadMany, modelInfos', modelInfos
+		_ async.map
+            @ modelInfos
+            @ _load_item
+			f_cb( wizziModels )
+				# log 'asyncModelLoader.loadMany, wizziModels', wizziModels
+				r_cb( wizziModels )
+
+	wz-function load
+        param modelInfo
+        param callback
+        _ log.setLevel
+            @ modelInfo.productionManager().options.verbose
+		_ _load_item
+			@ modelInfo
+			f_cb( wizziModel )
+				# log 'asyncModelLoader.load, wizziModel', wizziModel
+				r_cb( wizziModel )
+
+	wz-function old_VIA_load
+        param modelInfo
+        param callback
+        _ log.setLevel
+            @ modelInfo.productionManager().options.verbose
+        _ log.info
+            @ 'Started.async.load.model'
+            _ modelInfo.srcFullPath()
+        var modelInfos
+            [ 
+                @ modelInfo
+        _ async.map
+            @ modelInfos
+            @ _load_item
+            function 
+                param err
+                param wizziModels
+                if err
+                    return callback(err, null)
+                _ log.info
+                    @ 'Ended.async.load.model'
+                    _ modelInfo.srcFullPath()
+                return
+					_ callback
+						@ null
+						@ wizziModels[0]
+
+	#
+		# Load a single wizzi model using ModelInfo data
+		# The master ModelInfo may contain one or many context ModelInfos
+		# params
+		#   { masterModelInfo
+		#     string id 
+		#     [ contexts
+		#     [ transformers
+		#     string exportName
+		#     string schema
+		#     { coll
+		#     boolean generatorRequireContextOnly
+		#     func getLoadModel
+		#     func productionManager
+		#     func srcFullPath
+	wz-function _load_item
+        param masterModelInfo
+        param callback
+
+		# log '+ asyncModelLoader._load_item, masterModelInfo', masterModelInfo
+        
+		_ logme
+            @ 'AsyncModelLoader._load_item.masterModelInfo.config'
+            _ util.inspect
+                @ masterModelInfo.config
+                { 
+                    @ depth 3
+        
+		if masterModelInfo.contexts && masterModelInfo.contexts.length > 0
+			# The master modelInfo has context ModelInfos, so it is a 'templated model'.
+            # First of all recursively load and evaluate its 'context models'
+			+
+            # (obsolete VIA) step 1 - set the production state on each contextModelInfo
+			foreach contextModelInfo in masterModelInfo.contexts
+                # (obsolete VIA) set contextModelInfo.___state = masterModelInfo.___state
+                _ logme
+                    @ 'AsyncModelLoader._load_item.context'
+                    @ contextModelInfo.id
+                    _ contextModelInfo.srcFullPath()
+            +
+			# log '====== ++++++ masterModelInfo.contexts', masterModelInfo.contexts
+			+
+			# step 2 - recurse contextModelInfo loading
+			_ async.map
+                @ masterModelInfo.contexts
+                @ _load_item
+                function 
+                    param err
+                    param contextWizziModels
+					# log '+ asyncModelLoader._load_item, after load contexts.contextWizziModels', contextWizziModels
+                    if err
+                        _ log.error
+                            @ 'Error.AsyncModelLoader._load_item'
+                            _ util.inspect
+                                @ err
+                                { 
+                                    @ depth null
+                        return callback(err, null)
+                    # log '====== ++++++ contextWizziModels.length', contextWizziModels.length
+					# step 3 - Prepare the loading context object for the master model loading.
+					#          If one context is a model collection, prepare the model collection context
+					var 
+                        decl wizziModelWithModelCollection = null
+                        decl modelCollectionContextWizziModelIndex = -1
+                        decl masterLoadingContext
+                            { 
+                    
+					for var i = 0; i < contextWizziModels.length; i++
+                        var contextWizziModel = contextWizziModels[i]
+                        set masterLoadingContext[contextWizziModel.___exportName] = contextWizziModel
+                        if contextWizziModel.___coll
+                            set wizziModelWithModelCollection = contextWizziModel
+                            set modelCollectionContextWizziModelIndex = i
+                    
+					# log '====== ++++++ modelCollectionContextWizziModelIndex', modelCollectionContextWizziModelIndex
+
+					if modelCollectionContextWizziModelIndex > -1
+						# Yes one of the loaded context models is a model collection.
+						# step 3.b - Prepare the context object of each item of the model collection.
+						#            This is quite complex:
+						#            . We must create a context object for each item in the model collection.
+						#            . Every context object must contain (as properties) all the loaded contextWizziModels
+						#              plus the item itself of the model collection.
+						
+						checked_call( collectionItemsContextObjects
+							_ prepareCollectionItemsContextObjects
+								@ masterModelInfo
+								@ contextWizziModels
+								@ wizziModelWithModelCollection
+								@ masterLoadingContext
+                        
+						if masterModelInfo.generatorRequireContextOnly
+							# There is no source document for the artifact to be generated. 
+							# The ArtifactGenerator simply requires a context object.
+							# So collect the loaded contexts in an array and pass them back.
+
+                            var collModelInstances
+                                [ 
+                            foreach itemContextObject in collectionItemsContextObjects
+                                _ collModelInstances.push
+									_ _.assign
+										{
+										@ itemContextObject.context
+										{
+											@ ___collItem itemContextObject.itemObject
+                            return
+								_ callback(null, collModelInstances)
+                        
+						else 
+							# step 4.b - load a context for each item of the collection context
+                            return
+								_ async.map
+									@ collectionItemsContextObjects
+									@ load_collection_item
+									@ callback
+                    
+					else 
+
+						# step 3.1 - load the context model
+						_ masterModelInfo.getLoadModel
+							f_cb( wizziModelFactory )
+								var loadContext
+									{
+										@ mTreeBuildUpContext
+											_ _.assign
+												{ 
+												@ masterModelInfo.productionManager().globalContext() || {}
+												@ masterLoadingContext
+										@ __productionManager masterModelInfo.productionManager()
+										@ options
+											{
+												@ isCompile masterModelInfo.isCompile
+								# log '====== ++++++ wizziModelFactory, masterModelInfo.srcFullPath()', wizziModelFactory, masterModelInfo.srcFullPath(), Object.keys(masterLoadingContext)
+								_ wizziModelFactory
+									_ masterModelInfo.srcFullPath()
+									@ loadContext
+									f_cb( wizziModel ) 
+										set wizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema)
+										# log '====== ++++++ wizziModel.___exportName', wizziModel.___exportName
+										if masterModelInfo.coll
+											set wizziModel.___coll = masterModelInfo.coll
+										_ logme
+											@ 'AsyncModelLoader._load_item'
+											@ 'success with masterLoadingContext no collectionContext, masterModelInfo'
+											@ masterModelInfo.id
+											@ 'exportName'
+											@ wizziModel.___exportName
+										return
+											_ callback(null, wizziModel)
+        
+		else 
+			# The master modelInfo has no context ModelInfos
+			# simply load it.
+            
+			var srcFullPath = masterModelInfo.srcFullPath()
+			_ masterModelInfo.getLoadModel
+				f_cb( wizziModelFactory )
+					var loadContext
+						{
+							@ mTreeBuildUpContext
+								_ _.assign
+									{ 
+									@ (masterModelInfo.productionManager().globalContext() || {})
+							@ __productionManager masterModelInfo.productionManager()
+							@ options
+								{
+									@ isCompile masterModelInfo.isCompile
+					_ wizziModelFactory
+						@ srcFullPath
+						@ loadContext
+						f_cb( wizziModel )
+							if masterModelInfo.transformers && masterModelInfo.transformers.length > 0
+								_ recurseTransform
+									@ masterModelInfo.transformers
+									@ wizziModel
+									@ masterModelInfo
+									f_cb( transformedWizziModel
+										set transformedWizziModel.___exportName
+											\b = (masterModelInfo.exportName || masterModelInfo.schema)
+										if masterModelInfo.coll
+											# this wizziModel is a context model from which 
+											# will be extracted a collection context,
+											# when bubbling up from the recursive loading
+											set transformedWizziModel.___coll = masterModelInfo.coll
+										# cache the loaded model, one day, may be, will be useful
+										set masterModelInfo.productionManager().setStateModel(srcFullPath, transformedWizziModel)
+										_ logme
+											@ 'AsyncModelLoader._load_item'
+											@ 'success after transformation, masterModelInfo'
+											@ masterModelInfo.id
+											@ 'exportName'
+											@ wizziModel.___exportName
+										# log '+ asyncModelLoader._load_item.after transformations', transformedWizziModel
+										return
+											_ callback(null, transformedWizziModel)
+							else 
+								set wizziModel.___exportName
+									\b = (masterModelInfo.exportName || masterModelInfo.schema)
+								if masterModelInfo.coll
+									# this wizziModel is a context model from which 
+									# will be extracted a collection context, 
+									# when bubbling up from the recursive loading
+									set wizziModel.___coll = masterModelInfo.coll
+								# cache the loaded model, one day, may be, will be useful
+								set masterModelInfo.productionManager().setStateModel(srcFullPath, wizziModel)
+								_ logme
+									@ 'AsyncModelLoader._load_item'
+									@ 'success, masterModelInfo'
+									@ masterModelInfo.id
+									@ 'exportName'
+									@ wizziModel.___exportName
+								return
+									_ callback(null, wizziModel)
+
+	wz-function recurseTransform
+        param modelTransformers
+        param instance
+        param modelInfo
+        param callback
+
+		var len = modelTransformers.length
+		function do_transform
+			param index
+			if index >= len
+				return callback(null, instance)
+        
+			var transformerConfig = modelTransformers[index]
+			_ modelInfo.getModelTransformer
+				@ transformerConfig.name
+				f_cb( modelTransformer )
+					_ modelTransformer.trans
+						@ instance
+						{ 
+							@ wizziFactory modelInfo.getWizziFactory()
+						f_cb( transformedWizziModel
+							if transformerConfig.dumpFile
+								_ transformerConfig.dumpFile
+									@ transformedWizziModel
+							set instance = transformedWizziModel
+							_ do_transform
+								@ index + 1
+		_ do_transform(0)
+
+	wz-function prepareCollectionItemsContextObjects
+        param modelInfo
+        param wizziModelContexts
+        param wizziModelWithModelCollection
+        param masterLoadingContext
+        
+		_ logme
+            @ 'prepareCollectionItemsContextObjects'
+            @ 'modelInfo'
+            @ modelInfo.id
+        
+		var collName = wizziModelWithModelCollection.___coll.name
+		var collItemExportName = wizziModelWithModelCollection.___coll.itemName
+        
+		_ logme
+			@ 'prepareCollectionItemsContextObjects'
+			@ 'collName, collItemExportName' 
+			@ collName
+			@ collItemExportName
+        
+		var collectionArray = wizziModelWithModelCollection[collName]
+        if !verify.isArray(collectionArray)
+			return
+				_ error
+					@ 'Collection is not an array. Name: ' + collName + ', ' + modelInfo.toString()
+					@ 'prepareCollectionItemsContextObjects'
+        
+		var 
+            decl itemContextObjects
+                [ 
+            decl context
+        
+		foreach itemObject in collectionArray
+			set context
+				_ _.assign
+					{
+					@ masterLoadingContext
+            set context[collItemExportName] = itemObject
+			_ itemContextObjects.push
+                { 
+                    @ modelInfo modelInfo
+                    @ itemObject itemObject
+                    @ context context
+            
+			if itemContextObjects.length == 1
+                for var k in context
+                    _ logme('prepareCollectionItemsContextObjects', 'context exportName', k)
+            
+			_ logme
+                @ 'prepareCollectionItemsContextObjects'
+                @ 'itemObject'
+                @ itemObject.wzName
+        
+		return itemContextObjects
+    
+
+    #
+		# Load a single WizziModel using a single collection item as a context.
+		# params
+		#   { collectionLoadData
+		#	  { modelInfo
+		#		string schema
+		#		{ ___state
+		#		{ pman // ProductionManager
+		#	    function srcFullPath
+		#       boolean isCompile
+		#	  { context
+		#       # prepared by prepareCollectionItemsContextObjects
+		#     { itemObject
+
+	wz-function load_collection_item
+        param collectionLoadData
+        param callback
+        
+		var 
+            decl modelInfo = collectionLoadData.modelInfo
+            decl context = collectionLoadData.context
+            decl itemObject = collectionLoadData.itemObject
+        
+		_ modelInfo.getLoadModel
+			f_cb( wizziModelFactory )
+				
+				_ logme
+					@ "AsyncModelLoader.load_collection_item"
+					@ "modelInfo"
+					@ modelInfo.id
+					@ "schema"
+					@ modelInfo.schema
+        
+				var loadContext
+					{
+						@ mTreeBuildUpContext
+							_ _.assign
+								{ 
+								@ modelInfo.productionManager().globalContext() || {}
+								@ context
+						@ __productionManager modelInfo.productionManager()
+						@ options
+							{
+								@ isCompile modelInfo.isCompile
+				
+				# log 'asyncModelLoader.load_collection_item.loadContext', loadContext
+        
+				_ wizziModelFactory
+					_ modelInfo.srcFullPath()
+					@ loadContext
+					f_cb( wizziModel ) 
+						_ logme
+							@ "AsyncModelLoader.load_collection_item"
+							@ "success, wizziModel root"
+							@ wizziModel.wzTag
+							@ wizziModel.wzName
+						set wizziModel.___collItem = itemObject
+						return
+							_ callback(null, wizziModel)
+
+	function error
+        param message
+        param method
+		var err
+			{
+				@ __is_error true
+				@ message message
+				@ source "wizzi/lib/model/asyncModelLoader/" + method
+		_ logme(err)
+		return err

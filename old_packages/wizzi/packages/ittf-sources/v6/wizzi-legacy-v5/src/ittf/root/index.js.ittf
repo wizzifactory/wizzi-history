@@ -1,0 +1,149 @@
+﻿module wizzi.legacy
+    kind jsfile
+
+	import path
+	var verify = require('./lib/util/verify')
+	var vfile = require('./lib/util/fs/vfile')
+	var file = vfile()
+	var fail = require('./lib/util/fail')
+	var errors = require('./wf_errors')
+	var StringWriter = require('./lib/util/stringWriter')
+	var IttfDocumentStore = require('./lib/repo/ittfDocumentStore')
+	var loader = require('./lib/loader')
+	var GenContext = require('./lib/artifact/genContext')
+	var htmlFactory = require('./lib/wizzi/models/html-factory.g')
+	var htmlDocumentArtifact = require('./lib/artifacts/html/document/gen/main') 
+	var jsFactory = require('./lib/wizzi/models/js-factory.g')
+	var jsModuleArtifact = require('./lib/artifacts/js/module/gen/main') 
+
+	var md = module.exports = {}
+
+	genArtifact( js, Module )
+	
+	#
+		# expose the js types for next version bootstrap
+	var jsModelTypeFile
+		_ path.join
+			@ __dirname
+			@  '/lib/wizzi/models/js-model.g.js'
+	
+	if file.exists(jsModelTypeFile)
+		set md.jsModelType = require('./lib/wizzi/models/js-model.g')
+	else
+		log 'WARNING module ./lib/wizzi/models/js-model.g NOT FOUND. During current version bootstrap is OK'
+	
+	genArtifact( html, Document )
+	
+	function createLoadMTree
+		param createStore
+		param options
+		set options = options || {}
+		var useCache = options.useCache || false
+		var ittfDocumentStore
+		return
+			function loadMTree
+				param ittfDocumentUri
+				param requestContext
+				param callback
+				if !useCache || !ittfDocumentStore
+					_ createStore
+						f_cb( store )
+							set ittfDocumentStore = store
+							set requestContext.__ittfDocumentStore = store
+							_ loader.loadMTree
+								@ ittfDocumentUri
+								@ requestContext
+								@ callback
+				else
+					set requestContext.__ittfDocumentStore = ittfDocumentStore
+					_ loader.loadMTree
+						@ ittfDocumentUri
+						@ requestContext
+						@ callback
+
+	+
+	function getCreateStore
+		return
+			function createStore
+				param callback
+				var store
+					new IttfDocumentStore()
+				_ store.init
+					{
+						@ storeKind 'filesystem'
+					f_cb( notUsed )
+						return
+							_ callback
+								@ null
+								@ store
+
+	function createRequestContext
+		param mTreeBuildUpContext
+		return
+			{
+				@ __productionManager
+					_ createProductionManager
+				@ mTreeBuildUpContext mTreeBuildUpContext
+
+	function createProductionManager
+		return
+			{
+				@ wizziFactory
+					{
+				@ productionContext
+					_ createProductionContext
+				@ globalContext
+					function
+
+	function createProductionContext
+		return
+			{
+				@ aclstat
+					{
+				@ ittfEvaluationScripts
+					{
+				@ setAclStat
+					function
+				@ addIttfDocument
+					function
+				@ addMTreeBuildUpScript
+					function
+						param uri
+						param ittfEvalScript
+						set this.ittfEvaluationScripts[uri]
+							{ 
+								@ uri uri
+								@ ittfEvalScript ittfEvalScript
+				@ addMixedMTree
+					function
+				@ addEvaluatedMTree
+					function
+				@ addMTree
+					function
+				@ addWizziModel
+					function
+				@ addArtifact
+					function
+				@ raiseIttfEvaluationScriptError
+					function
+						param uri
+						param exception
+						var script = this.ittfEvaluationScripts[uri]
+						if script && script.ittfEvalScript && exception && exception.lineNumber
+							var lines
+								_ script.ittfEvalScript.getErrorLines(exception)
+									._ join('\n')
+							set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + lines + '\n'
+						else 
+							set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + exception.message + '\n'
+						_ fail.warn(exception)
+						throw exception   
+
+	function getProductionOptions
+		return
+			{ 
+				@ isDebug false
+				@ CRLF '\n'
+				@ indentSpaces 4
+				@ dotgExtensionPrefix false
+				@ dumps {}

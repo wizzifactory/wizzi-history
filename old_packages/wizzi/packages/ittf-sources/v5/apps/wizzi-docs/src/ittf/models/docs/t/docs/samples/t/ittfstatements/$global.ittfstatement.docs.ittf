@@ -1,0 +1,33 @@
+﻿$group
+
+	sample $global
+		summary
+			p Context values declared inside an Ittf document using the $ statement are
+				+ local to the document. To make them global you must declare them
+				+ using the $global statement insted of $. The syntax is the same.
+				+ Single node ...
+
+			ittf
+				-
+					- $global var counter = 0
+					-
+			p ... and multi node ...
+			ittf
+				-
+					- $global
+						- var x = {};
+						- x.value = 10;
+					-
+			p
+
+	
+		ittf my.html.ittf
+			kind primary
+			- div
+				- $ var myFriends = 'Steve,Annie,John'.split(',')
+				- ul
+					- li hello ${dollar}{myFriends[0]}
+					- li hello ${dollar}{myFriends[1]}
+					- li hello ${dollar}{myFriends[2]}
+
+		$include wfschema.html.sample

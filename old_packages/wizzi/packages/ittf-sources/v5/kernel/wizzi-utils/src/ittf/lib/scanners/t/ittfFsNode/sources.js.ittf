@@ -1,0 +1,47 @@
+﻿$group
+
+	# called for example by folderScanner.scan on the root node
+	m setSourcePaths
+		param options
+		if verify.isNotEmpty(options.ittfBasePath)
+			set this.ittfBasePath = unixifyPath(options.ittfBasePath)
+		if verify.isNotEmpty(options.jsCodeBasePath)
+			set this.jsCodeBasePath = unixifyPath(options.jsCodeBasePath)
+		# log 'wizzi-utils.ittfFsNode.setSourcePaths - ittfBasePath, jsCodeBasePath : ', options.ittfBasePath, options.jsCodeBasePath
+	
+	#
+	# FIXME this is NOT OK
+	#       ittfHtmlPrettifier uses IttfMTreeEx to analize the ittf document and to recognize fragments.
+	#       That is a scanning operation that must be executed before prettifying.
+	#
+	m getPrettyAnalizedIttfSource
+		var r = this.root()
+		# log 'wizzi-utils.ittfFsNode.getPrettyAnalizedIttfSource', r.ittfBasePath, this.parts.join('/')
+		if verify.isNotEmpty(r.ittfBasePath)
+			return
+				_ ittfHtmlPrettifier
+					_ path.join
+						@ r.ittfBasePath
+						@ this.parts.join('/')
+					{
+						@ ittfFsNode this
+						@ ittfBasePath (r.ittfBasePath)
+		else
+			return
+				{
+					@ __is_error true
+	
+	m getJsCode
+		var r = this.root()
+		# cut '.ittf' from basename
+		var name = this.basename.substr(0, this.basename.length - 5)
+		# log r.jsCodeBasePath, this.parts.slice(1, this.parts.length -1).join('/'), name
+		if this.schema == 'js'
+			return
+				_ file.read
+					_ path.join
+						@ r.jsCodeBasePath
+						@ this.parts.slice(2, this.parts.length -1).join('/')
+						@ name
+		else
+			return null

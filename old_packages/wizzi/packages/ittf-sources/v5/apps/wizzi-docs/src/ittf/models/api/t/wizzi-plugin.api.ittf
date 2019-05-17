@@ -1,0 +1,69 @@
+﻿$group
+
+	api wizzi-plugin
+		# This API must be implemented by any wizzi plugin.
+		module
+			standard-path {wizzi-plugin}/index.js
+		{
+			m createFactoryPlugin
+				called-by wizzi.pluginsManager
+				# Is the entry point of a plugin implementation.
+				{ wizziObject
+					api-ref wizzi
+				{ options
+				cb()
+					{ factoryPlugin
+						api-ref wizzi-plugin.factoryPlugin
+			m getProvides
+				# TODO modify the api source: replace the object provides with the method getProvides
+				return
+					{
+						[ schemas
+							string name
+						[ modelTransformers
+							string name
+						[ artifactGenerators
+							string name
+
+	api wizzi-plugin.factoryPlugin
+		# Implemented by any wizzi plugin
+		class-instance
+		{
+			m initialize
+				{ wizziPackage
+					api-ref wizzi
+				{ provides
+					[ schemas
+						string name
+					[ modelTransformers
+						string name
+					[ artifactGenerators
+						string name
+				{ options
+
+			m getModelFactory
+				string schemaName
+				return
+					{ modelFactory
+						api-ref wizzi-plugin.modelFactory
+			
+			m getModelTransformer
+				string transformerName
+				return
+					{ modelTransformer
+						api-ref wizzi-plugin.modelTransformer
+			
+			m getArtifactGenerator
+				string generationName
+				return
+					{ artifactGenerator
+						api-ref wizzi-plugin.artifactGenerator
+			
+			m getSchemaDefinition
+				string schemaName
+				return
+					json schemaDefinition
+
+	$include wizzi-plugin/modelFactory
+	$include wizzi-plugin/modelTransformer
+	$include wizzi-plugin/artifactGenerator

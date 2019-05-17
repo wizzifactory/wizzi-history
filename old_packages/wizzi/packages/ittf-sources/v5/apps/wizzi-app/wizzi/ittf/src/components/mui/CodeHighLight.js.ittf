@@ -1,0 +1,32 @@
+﻿r-component( CodeHighLight
+
+	$append imports
+		import Lowlight from 'react-lowlight'
+		
+		# Load any languages you want to use
+		# (see https://github.com/isagalaev/highlight.js/tree/master/src/languages)
+		import js from 'highlight.js/lib/languages/javascript'
+		# Load any theme you want to use
+		import 'highlight.js/styles/monokai.css'
+		# Then register them with lowlight
+		_ Lowlight.registerLanguage('js', js)
+
+
+	style
+		{ codeView
+			@ height '100%'
+			@ width '100%'
+			@ overflow 'auto'
+
+	render
+		prop classes
+		prop codeSnippet
+		prop language
+		return
+			. {classes.codeView}
+				< Lowlight 
+					@ language { language || 'js' }
+					@ value { codeSnippet }
+
+
+

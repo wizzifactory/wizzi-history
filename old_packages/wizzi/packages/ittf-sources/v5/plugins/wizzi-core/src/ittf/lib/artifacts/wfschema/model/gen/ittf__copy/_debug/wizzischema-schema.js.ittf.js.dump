@@ -1,0 +1,920 @@
+// 16/9/2015:11:51:0
+var $0 = {};
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1",  };
+$.a($0, $1, 4);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1",  };
+$.a($1, $2, 6);
+var $3 = { n: "var", v: "util = require('util')", r: 4, c: 5, s: "f1",  };
+$.a($1, $3, 8);
+var $4 = { n: "var", v: "_ = require('lodash')", r: 5, c: 5, s: "f1",  };
+$.a($1, $4, 10);
+$.s("f1");
+for (var i5=0, l5 = schema.requiredModules.length; i5<l5; i5++) {
+    var require = schema.requiredModules[i5];
+$.n();
+var $6 = { n: "var", v: $.ip("f1", "${require.declareVar} = require('${require.wzName}')${require.invoke}", "string", 15), r: 7, c: 9, s: "f1",  };
+$.a($1, $6, 16);
+}
+$.n();
+var $7 = { n: "+", v: "", r: 8, c: 5, s: "f1",  };
+$.a($1, $7, 20);
+var $8 = { n: "var", v: "md = module.exports = {}", r: 9, c: 5, s: "f1",  };
+$.a($1, $8, 22);
+var $9 = { n: "+", v: "", r: 10, c: 5, s: "f1",  };
+$.a($1, $9, 24);
+var $10 = { n: "class", v: "wzSourceLineInfo", r: 3, c: 5, s: "f2",  };
+$.a($1, $10, 26);
+var $11 = { n: "ctor", v: "", r: 4, c: 9, s: "f2",  };
+$.a($10, $11, 28);
+var $12 = { n: "arg", v: "row", r: 5, c: 13, s: "f2",  };
+$.a($11, $12, 30);
+var $13 = { n: "arg", v: "col", r: 6, c: 13, s: "f2",  };
+$.a($11, $13, 32);
+var $14 = { n: "arg", v: "source", r: 7, c: 13, s: "f2",  };
+$.a($11, $14, 34);
+var $15 = { n: "set", v: "this.row = row", r: 8, c: 13, s: "f2",  };
+$.a($11, $15, 36);
+var $16 = { n: "set", v: "this.col = col", r: 9, c: 13, s: "f2",  };
+$.a($11, $16, 38);
+var $17 = { n: "set", v: "this.source = source", r: 10, c: 13, s: "f2",  };
+$.a($11, $17, 40);
+var $18 = { n: "set", v: "md.wzSourceLineInfo = wzSourceLineInfo", r: 12, c: 5, s: "f2",  };
+$.a($1, $18, 42);
+var $19 = { n: "class", v: $.ip("f3", "${schema.wzId}Base", "string", 43), r: 3, c: 5, s: "f3",  };
+$.a($1, $19, 44);
+var $20 = { n: "ctor", v: "", r: 4, c: 9, s: "f3",  };
+$.a($19, $20, 46);
+var $21 = { n: "arg", v: "name", r: 5, c: 13, s: "f3",  };
+$.a($20, $21, 48);
+var $22 = { n: "arg", v: "sourceLineInfo", r: 6, c: 13, s: "f3",  };
+$.a($20, $22, 50);
+var $23 = { n: "set", v: "this.wzName = name || ''", r: 7, c: 13, s: "f3",  };
+$.a($20, $23, 52);
+var $24 = { n: "set", v: "this.wzParent = null", r: 8, c: 13, s: "f3",  };
+$.a($20, $24, 54);
+var $25 = { n: "set", v: "this.wzSourceLineInfo = sourceLineInfo", r: 9, c: 13, s: "f3",  };
+$.a($20, $25, 56);
+var $26 = { n: "set", v: "this.wzChildren = []", r: 10, c: 13, s: "f3",  };
+$.a($20, $26, 58);
+var $27 = { n: "m", v: "wzRoot", r: 12, c: 9, s: "f3",  };
+$.a($19, $27, 60);
+var $28 = { n: "return", v: "this.wzParent == null ? this : this.wzParent.wzRoot()", r: 13, c: 13, s: "f3",  };
+$.a($27, $28, 62);
+var $29 = { n: "m", v: "wzSourceFilepath", r: 15, c: 9, s: "f3",  };
+$.a($19, $29, 64);
+var $30 = { n: "arg", v: "sourceKey", r: 16, c: 13, s: "f3",  };
+$.a($29, $30, 66);
+var $31 = { n: "return", v: "this.wzRoot().loadContext.getSourceFilepath(sourceKey)", r: 17, c: 13, s: "f3",  };
+$.a($29, $31, 68);
+var $32 = { n: "m", v: "wzVerify", r: 19, c: 9, s: "f3",  };
+$.a($19, $32, 70);
+var $33 = { n: "m", v: "wzInitialize", r: 20, c: 9, s: "f3",  };
+$.a($19, $33, 72);
+var $34 = { n: "m", v: "wzInitializeAsync", r: 21, c: 9, s: "f3",  };
+$.a($19, $34, 74);
+var $35 = { n: "arg", v: "ctx", r: 22, c: 13, s: "f3",  };
+$.a($34, $35, 76);
+var $36 = { n: "arg", v: "callback", r: 23, c: 13, s: "f3",  };
+$.a($34, $36, 78);
+var $37 = { n: "_", v: "callback(null);", r: 24, c: 13, s: "f3",  };
+$.a($34, $37, 80);
+var $38 = { n: "m", v: "wzAddChild", r: 26, c: 9, s: "f3",  };
+$.a($19, $38, 82);
+var $39 = { n: "arg", v: "node", r: 27, c: 13, s: "f3",  };
+$.a($38, $39, 84);
+var $40 = { n: "set", v: "node.wzParent = this", r: 28, c: 13, s: "f3",  };
+$.a($38, $40, 86);
+var $41 = { n: "set", v: "this.wzChildren.push(node)", r: 29, c: 13, s: "f3",  };
+$.a($38, $41, 88);
+var $42 = { n: "m", v: "wzLoadToChildColl", r: 31, c: 9, s: "f3",  };
+$.a($19, $42, 90);
+var $43 = { n: "arg", v: "child", r: 32, c: 13, s: "f3",  };
+$.a($42, $43, 92);
+var $44 = { n: "arg", v: "type", r: 33, c: 13, s: "f3",  };
+$.a($42, $44, 94);
+var $45 = { n: "arg", v: "coll", r: 34, c: 13, s: "f3",  };
+$.a($42, $45, 96);
+var $46 = { n: "var", v: "item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.s))", r: 35, c: 13, s: "f3",  };
+$.a($42, $46, 98);
+var $47 = { n: "set", v: "item.wzTag = child.n", r: 36, c: 13, s: "f3",  };
+$.a($42, $47, 100);
+var $48 = { n: "set", v: "item.wzParent = this", r: 37, c: 13, s: "f3",  };
+$.a($42, $48, 102);
+var $49 = { n: "_", v: "coll.push(item)", r: 38, c: 13, s: "f3",  };
+$.a($42, $49, 104);
+var $50 = { n: "if", v: "item.LoadFromNode", r: 39, c: 13, s: "f3",  };
+$.a($42, $50, 106);
+var $51 = { n: "_", v: "item.LoadFromNode(child)", r: 40, c: 17, s: "f3",  };
+$.a($50, $51, 108);
+var $52 = { n: "return", v: "true;", r: 41, c: 13, s: "f3",  };
+$.a($42, $52, 110);
+var $53 = { n: "m", v: "wzLoadToChildren", r: 43, c: 9, s: "f3",  };
+$.a($19, $53, 112);
+var $54 = { n: "arg", v: "child", r: 44, c: 13, s: "f3",  };
+$.a($53, $54, 114);
+var $55 = { n: "arg", v: "type", r: 45, c: 13, s: "f3",  };
+$.a($53, $55, 116);
+var $56 = { n: "var", v: "item = new type(child.v, new wzSourceLineInfo(child.r, child.c, child.s))", r: 46, c: 13, s: "f3",  };
+$.a($53, $56, 118);
+var $57 = { n: "set", v: "item.wzTag = child.n", r: 47, c: 13, s: "f3",  };
+$.a($53, $57, 120);
+var $58 = { n: "set", v: "item.wzParent = this", r: 48, c: 13, s: "f3",  };
+$.a($53, $58, 122);
+var $59 = { n: "_", v: "this.wzChildren.push(item)", r: 49, c: 13, s: "f3",  };
+$.a($53, $59, 124);
+var $60 = { n: "if", v: "item.LoadFromNode", r: 50, c: 13, s: "f3",  };
+$.a($53, $60, 126);
+var $61 = { n: "_", v: "item.LoadFromNode(child)", r: 51, c: 17, s: "f3",  };
+$.a($60, $61, 128);
+var $62 = { n: "return", v: "true", r: 52, c: 13, s: "f3",  };
+$.a($53, $62, 130);
+var $63 = { n: "m", v: "error", r: 54, c: 9, s: "f3",  };
+$.a($19, $63, 132);
+var $64 = { n: "arg", v: "message", r: 55, c: 13, s: "f3",  };
+$.a($63, $64, 134);
+var $65 = { n: "arg", v: "node", r: 56, c: 13, s: "f3",  };
+$.a($63, $65, 136);
+var $66 = { n: "throw", v: $.ip("f3", "new md.${schema.wzId}Exception(message, node, this)", "string", 137), r: 57, c: 13, s: "f3",  };
+$.a($63, $66, 138);
+var $67 = { n: "set", v: $.ip("f3", "md.${schema.wzId}Base = ${schema.wzId}Base", "string", 139), r: 59, c: 5, s: "f3",  };
+$.a($1, $67, 140);
+var $68 = { n: "+", v: "", r: 14, c: 5, s: "f1",  };
+$.a($1, $68, 142);
+var $69 = { n: "class", v: $.ip("f1", "${schema.wzId}", "string", 143), r: 15, c: 5, s: "f1",  };
+$.a($1, $69, 144);
+var $70 = { n: "super", v: $.ip("f1", "${schema.wzId}Base", "string", 145), r: 16, c: 9, s: "f1",  };
+$.a($69, $70, 146);
+var $71 = { n: "ctor", v: "", r: 17, c: 9, s: "f1",  };
+$.a($69, $71, 148);
+var $72 = { n: "arg", v: "name", r: 18, c: 13, s: "f1",  };
+$.a($71, $72, 150);
+var $73 = { n: "arg", v: "sourceLineInfo", r: 19, c: 13, s: "f1",  };
+$.a($71, $73, 152);
+var $74 = { n: "base", v: "name", r: 20, c: 13, s: "f1",  };
+$.a($71, $74, 154);
+var $75 = { n: "base", v: "sourceLineInfo", r: 21, c: 13, s: "f1",  };
+$.a($71, $75, 156);
+var $76 = { n: "set", v: $.ip("f1", "md.${schema.wzId} = ${schema.wzId}", "string", 157), r: 23, c: 5, s: "f1",  };
+$.a($1, $76, 158);
+$.s("f1");
+for (var i77=0, l77 = schema.elements.length; i77<l77; i77++) {
+    var element = schema.elements[i77];
+$.n();
+var $78 = { n: "class", v: $.ip("f4", "${element.wzId}", "string", 163), r: 4, c: 5, s: "f4",  };
+$.a($1, $78, 164);
+var $79 = { n: "super", v: $.ip("f4", "${schema.wzId}Base", "string", 165), r: 5, c: 9, s: "f4",  };
+$.a($78, $79, 166);
+var $80 = { n: "ctor", v: "", r: 6, c: 9, s: "f4",  };
+$.a($78, $80, 168);
+var $81 = { n: "arg", v: "name", r: 7, c: 13, s: "f4",  };
+$.a($80, $81, 170);
+var $82 = { n: "arg", v: "sourceLineInfo", r: 8, c: 13, s: "f4",  };
+$.a($80, $82, 172);
+var $83 = { n: "base", v: "name", r: 9, c: 13, s: "f4",  };
+$.a($80, $83, 174);
+var $84 = { n: "base", v: "sourceLineInfo", r: 10, c: 13, s: "f4",  };
+$.a($80, $84, 176);
+$.s("f4");
+if (element.allowedNameDeclaration("js") != null) {
+$.n();
+var $86 = { n: "#", v: "w(element.AllowedNameDeclaration(\"js\"));", r: 13, c: 17, s: "f4",  };
+$.a($80, $86, 181);
+}
+$.s("f4");
+for (var i87=0, l87 = element.attributes.length; i87<l87; i87++) {
+    var attribute = element.attributes[i87];
+if (attribute.isReadOnly == false) {
+if (attribute.allowedDeclaration("js") != null) {
+$.n();
+var $90 = { n: "#", v: "a(\"COLUMN\", attribute.wzName);", r: 21, c: 25, s: "f4",  };
+$.a($80, $90, 190);
+var $91 = { n: "#", v: "w(attribute.allowedDeclaration(\"js\"));", r: 22, c: 25, s: "f4",  };
+$.a($80, $91, 192);
+$.s("f4");
+for (var i92=0, l92 = attribute.getEnumFacets().length; i92<l92; i92++) {
+    var facet = attribute.getEnumFacets()[i92];
+if (facet.wzId.toLowerCase() !== "@@empty") {
+$.n();
+var $94 = { n: "#", v: "a(\"ENUMNAME\", f.wzName.JsIdentifier());", r: 27, c: 33, s: "f4",  };
+$.a($80, $94, 199);
+var $95 = { n: "#", v: "a(\"ENUM\", f.wzName.StringEscaped());", r: 28, c: 33, s: "f4",  };
+$.a($80, $95, 201);
+var $96 = { n: "#", v: "w(\"public const string {COLUMN|upper}_{ENUMNAME|upper} = \\\"{ENUM}\\\";\");", r: 29, c: 33, s: "f4",  };
+$.a($80, $96, 203);
+var $97 = { n: "#", v: "w(\"this.{COLUMN|upper}_{ENUMNAME|upper} = \\\"{ENUM}\\\";\");", r: 30, c: 33, s: "f4",  };
+$.a($80, $97, 205);
+}
+}
+}
+}
+}
+$.s("f4");
+if (!element.IsAbstract) {
+$.n();
+var $99 = { n: "set", v: $.ip("f4", "this.wzElement = \"${element.wzId}\"", "string", 214), r: 34, c: 17, s: "f4",  };
+$.a($80, $99, 215);
+}
+$.s("f4");
+for (var i100=0, l100 = element.attributes.length; i100<l100; i100++) {
+    var attribute = element.attributes[i100];
+$.n();
+var $101 = { n: "#", v: "WriteComments(attribute.Comments, \"js\");", r: 38, c: 17, s: "f4",  };
+$.a($80, $101, 222);
+$.s("f4");
+if (verify.isNotEmpty(attribute.default)) {
+if (attribute.type === 'string') {
+$.n();
+var $104 = { n: "set", v: $.ip("f4", "this.${attribute.wzId} = \"${attribute.default}\"", "string", 227), r: 42, c: 25, s: "f4",  };
+$.a($80, $104, 228);
+}
+else {
+$.n();
+var $106 = { n: "set", v: $.ip("f4", "this.${attribute.wzId} = ${attribute.default}", "string", 232), r: 44, c: 25, s: "f4",  };
+$.a($80, $106, 233);
+}
+}
+}
+$.s("f4");
+for (var i107=0, l107 = element.includes.length; i107<l107; i107++) {
+    var include = element.includes[i107];
+$.n();
+var $108 = { n: "#", v: "??? a(\"ROOTENTITY\", include.RootelementName.JsIdentifier());", r: 48, c: 17, s: "f4",  };
+$.a($80, $108, 242);
+var $109 = { n: "set", v: $.ip("f4", "this.${include.wzId}Included = []", "string", 243), r: 49, c: 17, s: "f4",  };
+$.a($80, $109, 244);
+}
+$.s("f4");
+for (var i110=0, l110 = element.relations.length; i110<l110; i110++) {
+    var relation = element.relations[i110];
+$.n();
+var $111 = { n: "#", v: "WriteComments(relations.Comments, \"js\")", r: 52, c: 17, s: "f4",  };
+$.a($80, $111, 251);
+var $112 = { n: "set", v: $.ip("f4", "this.${relation.wzIdPlural} = []", "string", 252), r: 53, c: 17, s: "f4",  };
+$.a($80, $112, 253);
+}
+$.s("f4");
+for (var i113=0, l113 = element.getEnumFacets().length; i113<l113; i113++) {
+    var facet = element.getEnumFacets()[i113];
+if (facet.wzId.toLowerCase() !== "@@empty") {
+$.n();
+var $115 = { n: "set", v: $.ip("f4", "md.${element.wzId}.NAME_${facet.wzId.toUpperCase()} = \"${facet.getEscaped()}\"", "string", 260), r: 57, c: 17, s: "f4",  };
+$.a($78, $115, 261);
+}
+}
+$.s("f4");
+for (var i116=0, l116 = element.attributes.length; i116<l116; i116++) {
+    var attribute = element.attributes[i116];
+if (!attribute.isReadOnly) {
+if (attribute.allowedDeclaration("js") != null) {
+for (var i119=0, l119 = attribute.getEnumFacets().length; i119<l119; i119++) {
+    var facet = attribute.getEnumFacets()[i119];
+if (facet.wzName.toLowerCase() !== "@@empty") {
+$.n();
+var $121 = { n: "set", v: $.ip("f4", "md.${element.wzId}.${attribute.wzId.toUpperCase()}_${facet.wzId.toUpperCase()} = \"${facet.getEscaped()}\"", "string", 273), r: 64, c: 29, s: "f4",  };
+$.a($78, $121, 274);
+}
+}
+}
+}
+}
+$.s("f4");
+for (var i122=0, l122 = element.attributes.length; i122<l122; i122++) {
+    var attribute = element.attributes[i122];
+$.n();
+var $123 = { n: "#", v: "a(\"SCOPE\", attribute.wzName.EndsWith(\"Internal\") ? \"private\" : \"public\");", r: 68, c: 13, s: "f4",  };
+$.a($78, $123, 285);
+var $124 = { n: "#", v: "a(\"attribute.wzId\", attribute.wzName.JsIdentifier());", r: 69, c: 13, s: "f4",  };
+$.a($78, $124, 287);
+var $125 = { n: "#", v: "a(\"TAGNAME\", attribute.TagName);", r: 70, c: 13, s: "f4",  };
+$.a($78, $125, 289);
+var $126 = { n: "#", v: "a(\"TYPE\", p.GetType(attribute.Type, \"csharp\"));", r: 71, c: 13, s: "f4",  };
+$.a($78, $126, 291);
+$.s("f4");
+if (attribute.isCalculated) {
+$.n();
+var $128 = { n: "#", v: $.ip("f4", "set this.{attribute.wzId} = ${attribute.calculated}", "string", 295), r: 74, c: 17, s: "f4",  };
+$.a($78, $128, 296);
+}
+$.s("f4");
+if (attribute.isDataType) {
+$.n();
+var $130 = { n: "#", v: "w(\"public tsi.DataTypes.DataType {attribute.wzId}DataType { get; set; }\");", r: 77, c: 17, s: "f4",  };
+$.a($78, $130, 302);
+}
+}
+$.s("f4");
+for (var i131=0, l131 = element.relations.length; i131<l131; i131++) {
+    var relation = element.relations[i131];
+if (!relation.rightElement.isAbstract) {
+$.n();
+var $133 = { n: "m", v: $.ip("f4", "add${relation.childEntityIdCapital}", "string", 310), r: 83, c: 17, s: "f4",  };
+$.a($78, $133, 311);
+var $134 = { n: "arg", v: "name", r: 84, c: 21, s: "f4",  };
+$.a($133, $134, 313);
+var $135 = { n: "arg", v: "sourceLineInfo", r: 85, c: 21, s: "f4",  };
+$.a($133, $135, 315);
+var $136 = { n: "var", v: $.ip("f4", "retval = new md.${relation.childEntityId}(name, sourceLineInfo)", "string", 316), r: 86, c: 21, s: "f4",  };
+$.a($133, $136, 317);
+var $137 = { n: "set", v: "retval.wzParent = this", r: 87, c: 21, s: "f4",  };
+$.a($133, $137, 319);
+var $138 = { n: "_", v: $.ip("f4", "this.${relation.wzIdPlural}.push(retval)", "string", 320), r: 88, c: 21, s: "f4",  };
+$.a($133, $138, 321);
+var $139 = { n: "return", v: "retval", r: 89, c: 21, s: "f4",  };
+$.a($133, $139, 323);
+$.s("f4");
+if (relation.hasAddOnce) {
+$.n();
+var $141 = { n: "m", v: $.ip("f4", "add${relation.childEntityIdCapital}Once", "string", 327), r: 93, c: 21, s: "f4",  };
+$.a($78, $141, 328);
+var $142 = { n: "function", v: "", r: 94, c: 25, s: "f4",  };
+$.a($141, $142, 330);
+var $143 = { n: "arg", v: "name", r: 95, c: 29, s: "f4",  };
+$.a($142, $143, 332);
+var $144 = { n: "arg", v: "sourceLineInfo", r: 96, c: 29, s: "f4",  };
+$.a($142, $144, 334);
+var $145 = { n: "var", v: $.ip("f4", "test = this.get${relation.childEntityIdCapital}(name);\");", "string", 335), r: 97, c: 29, s: "f4",  };
+$.a($142, $145, 336);
+var $146 = { n: "if", v: "test == null", r: 98, c: 29, s: "f4",  };
+$.a($142, $146, 338);
+var $147 = { n: "return", v: $.ip("f4", "this.add${relation.childEntityIdCapital}(name, value, sourceLineInfo)", "string", 339), r: 99, c: 33, s: "f4",  };
+$.a($146, $147, 340);
+var $148 = { n: "return", v: "null", r: 100, c: 29, s: "f4",  };
+$.a($142, $148, 342);
+}
+$.s("f4");
+if (relation.hasTypedGet) {
+$.n();
+var $150 = { n: "#", v: "CurrentContext.SetValue(\"GET_VALUE_STATEMENT\", \"Get\" + r.element.wzName.JsIdentifier() + \"(name)\");", r: 104, c: 21, s: "f4",  };
+$.a($78, $150, 348);
+var $151 = { n: "#", v: "new TypedGetWriter().Write(r.element, CurrentContext);", r: 105, c: 21, s: "f4",  };
+$.a($78, $151, 350);
+}
+}
+$.s("f4");
+if (!relation.noGetMethod) {
+$.n();
+var $153 = { n: "m", v: $.ip("f4", "get${relation.childEntityIdCapital}", "string", 356), r: 109, c: 17, s: "f4",  };
+$.a($78, $153, 357);
+var $154 = { n: "arg", v: "name", r: 110, c: 21, s: "f4",  };
+$.a($153, $154, 359);
+var $155 = { n: "var", v: "found = null", r: 111, c: 21, s: "f4",  };
+$.a($153, $155, 361);
+var $156 = { n: "_", v: $.ip("f4", "this.${relation.wzIdPlural}.forEach", "string", 362), r: 112, c: 21, s: "f4",  };
+$.a($153, $156, 363);
+var $157 = { n: "function", v: "", r: 113, c: 25, s: "f4",  };
+$.a($156, $157, 365);
+var $158 = { n: "arg", v: "item", r: 114, c: 29, s: "f4",  };
+$.a($157, $158, 367);
+var $159 = { n: "set", v: "found = found || (item.wzName === name ? item : null)", r: 115, c: 29, s: "f4",  };
+$.a($157, $159, 369);
+var $160 = { n: "return", v: "found;", r: 116, c: 21, s: "f4",  };
+$.a($153, $160, 371);
+}
+$.s("f4");
+if (relation.rightElement.addToChildren) {
+$.n();
+var $162 = { n: "m", v: $.ip("f4", "${relation.wzId}", "string", 376), r: 120, c: 17, s: "f4",  };
+$.a($78, $162, 377);
+var $163 = { n: "#", v: $.ip("f4", "TODO return wzChildren.Where(n => typeof(${relation.childEntityId}).IsAssignableFrom(n.GetType())).Cast<${relation.childEntityId}>().ToList();\");", "string", 378), r: 121, c: 21, s: "f4",  };
+$.a($162, $163, 379);
+}
+}
+$.s("f4");
+if (element.hasAttributesOrChildsToLoad()) {
+$.n();
+var $165 = { n: "m", v: "loadChild", r: 5, c: 9, s: "f4",  };
+$.a($78, $165, 386);
+var $166 = { n: "arg", v: "child", r: 6, c: 13, s: "f4",  };
+$.a($165, $166, 388);
+var $167 = { n: "var", v: "", r: 8, c: 13, s: "f4",  };
+$.a($165, $167, 390);
+var $168 = { n: "decl", v: "item", r: 9, c: 17, s: "f4",  };
+$.a($167, $168, 392);
+var $169 = { n: "decl", v: "ok = false", r: 10, c: 17, s: "f4",  };
+$.a($167, $169, 394);
+var $170 = { n: "decl", v: "name = child.n.toLowerCase()", r: 11, c: 17, s: "f4",  };
+$.a($167, $170, 396);
+var $171 = { n: "decl", v: "_l = name.length", r: 12, c: 17, s: "f4",  };
+$.a($167, $171, 398);
+var $172 = { n: "decl", v: "_ch = name[0]", r: 13, c: 17, s: "f4",  };
+$.a($167, $172, 400);
+$.s("f4");
+for (var i173=0, l173 = element.choiceOrdered.length; i173<l173; i173++) {
+    var ordered = element.choiceOrdered[i173];
+$.n();
+var $174 = { n: "if", v: $.ip("f4", "_l == ${ordered.length} && _ch == '${ordered.char}'", "string", 405), r: 17, c: 17, s: "f4",  };
+$.a($165, $174, 406);
+$.s("f4");
+var first = true
+for (var i176=0, l176 = ordered.choices.length; i176<l176; i176++) {
+    var choice = ordered.choices[i176];
+if (first) {
+$.n();
+var $178 = { n: "if", v: $.ip("f4", "name === '${choice.test}'", "string", 413), r: 23, c: 29, s: "f4",  };
+$.a($174, $178, 414);
+$.s("f4");
+for (var i179=0, l179 = choice.codelines.length; i179<l179; i179++) {
+    var line = choice.codelines[i179];
+$.n();
+var $180 = { n: "set", v: $.ip("f4", "${line}", "string", 419), r: 25, c: 37, s: "f4",  };
+$.a($178, $180, 420);
+}
+}
+else {
+$.n();
+var $182 = { n: "elif", v: $.ip("f4", "name === '${choice.test}'", "string", 425), r: 27, c: 29, s: "f4",  };
+$.a($174, $182, 426);
+$.s("f4");
+for (var i183=0, l183 = choice.codelines.length; i183<l183; i183++) {
+    var line = choice.codelines[i183];
+$.n();
+var $184 = { n: "set", v: $.ip("f4", "${line}", "string", 431), r: 29, c: 37, s: "f4",  };
+$.a($182, $184, 432);
+}
+}
+$.s("f4");
+first = false;
+}
+}
+$.s("f4");
+for (var i186=0, l186 = element.wildTags.length; i186<l186; i186++) {
+    var t = element.wildTags[i186];
+$.n();
+var $187 = { n: "if", v: $.ip("f4", "name.substr(0, ${t.length - 1}) == \"${t.substr(0, t.length - 1)}\"", "string", 443), r: 35, c: 17, s: "f4",  };
+$.a($165, $187, 444);
+var $188 = { n: "set", v: "this[name] = child.v", r: 36, c: 21, s: "f4",  };
+$.a($187, $188, 446);
+var $189 = { n: "return", v: "true", r: 37, c: 21, s: "f4",  };
+$.a($187, $189, 448);
+}
+$.s("f5");
+if (element.includes.length > 0) {
+$.n();
+var $191 = { n: "set", v: $.ip("f5", "ok = md.${element.super}.prototype.LoadChild.call(this, child)", "string", 453), r: 6, c: 9, s: "f5",  };
+$.a($165, $191, 454);
+$.s("f5");
+for (var i192=0, l192 = element.includes.length; i192<l192; i192++) {
+    var include = element.includes[i192];
+$.n();
+var $193 = { n: "if", v: "!ok", r: 9, c: 13, s: "f5",  };
+$.a($165, $193, 460);
+var $194 = { n: "var", v: $.ip("f5", "${include.actualNameLower} = new md.${include.actualNameId}.Model.${include.rootEntityNameId}();\");", "string", 461), r: 10, c: 17, s: "f5",  };
+$.a($193, $194, 462);
+var $195 = { n: "set", v: $.ip("f5", "ok = ${include.actualNameLower}.LoadChild(child);", "string", 463), r: 11, c: 17, s: "f5",  };
+$.a($193, $195, 464);
+var $196 = { n: "if", v: "ok", r: 12, c: 17, s: "f5",  };
+$.a($193, $196, 466);
+var $197 = { n: "_", v: $.ip("f5", "this.${include.actualNameId}Included.push(${include.actualNameLower})", "string", 467), r: 13, c: 21, s: "f5",  };
+$.a($196, $197, 468);
+}
+$.n();
+var $198 = { n: "return", v: "ok", r: 15, c: 9, s: "f5",  };
+$.a($165, $198, 472);
+}
+else {
+$.s("f5");
+if (verify.isNotEmpty(element.super)) {
+$.n();
+var $201 = { n: "set", v: $.ip("f5", "ok = md.${element.super}.prototype.LoadChild.call(this, child)", "string", 478), r: 20, c: 13, s: "f5",  };
+$.a($165, $201, 479);
+}
+}
+$.s("f4");
+if (verify.isNotEmpty(element.acceptAnyTag)) {
+$.n();
+var $203 = { n: "if", v: "!ok", r: 43, c: 17, s: "f4",  };
+$.a($165, $203, 486);
+var $204 = { n: "set", v: $.ip("f4", "item = new Any${element.acceptAnyTagId}(child.v, new wzSourceLineInfo(child.row, child.col, child.source))", "string", 487), r: 44, c: 21, s: "f4",  };
+$.a($203, $204, 488);
+var $205 = { n: "set", v: "item.wzParent = this", r: 45, c: 21, s: "f4",  };
+$.a($203, $205, 490);
+var $206 = { n: "set", v: "item.wzTag = name", r: 46, c: 21, s: "f4",  };
+$.a($203, $206, 492);
+var $207 = { n: "_", v: $.ip("f4", "this.${element.AcceptAnyTagCollectionId}.push(item)", "string", 493), r: 47, c: 21, s: "f4",  };
+$.a($203, $207, 494);
+var $208 = { n: "_", v: "item.loadFromNode(child)", r: 48, c: 21, s: "f4",  };
+$.a($203, $208, 496);
+var $209 = { n: "set", v: "ok = true", r: 49, c: 21, s: "f4",  };
+$.a($203, $209, 498);
+}
+$.n();
+var $210 = { n: "return", v: "ok", r: 51, c: 13, s: "f4",  };
+$.a($165, $210, 502);
+var $211 = { n: "m", v: "loadFromNode", r: 53, c: 9, s: "f4",  };
+$.a($78, $211, 504);
+var $212 = { n: "arg", v: "node", r: 54, c: 13, s: "f4",  };
+$.a($211, $212, 506);
+var $213 = { n: "var", v: "loaded = false", r: 56, c: 13, s: "f4",  };
+$.a($211, $213, 508);
+var $214 = { n: "foreach", v: "item in node.childs", r: 58, c: 13, s: "f4",  };
+$.a($211, $214, 510);
+var $215 = { n: "set", v: "loaded = this.loadChild(item)", r: 59, c: 17, s: "f4",  };
+$.a($214, $215, 512);
+var $216 = { n: "if", v: "!loaded", r: 60, c: 17, s: "f4",  };
+$.a($214, $216, 514);
+var $217 = { n: "throw", v: $.ip("f4", "new md.${schema.wzId}Exception(\"Tag not recognized: \" + item.n, item, this)", "string", 515), r: 61, c: 21, s: "f4",  };
+$.a($216, $217, 516);
+}
+$.s("f4");
+if (element.needsVerify(request.emitKey)) {
+$.n();
+var $219 = { n: "m", v: "wzVerify", r: 5, c: 9, s: "f4",  };
+$.a($78, $219, 522);
+var $220 = { n: "arg", v: "ctx", r: 6, c: 13, s: "f4",  };
+$.a($219, $220, 524);
+$.s("f4");
+if (element.nameIsRequired) {
+$.n();
+var $222 = { n: "_", v: "ctx.verifyFalse(\\\"Name\\\", this.isEmpty(this.wzName), \\\"Name is required\\\", this.wzSourceLineInfo)", r: 9, c: 17, s: "f4",  };
+$.a($219, $222, 529);
+}
+$.s("f4");
+if (element.allowedNameDeclaration("js") != null) {
+$.n();
+var $224 = { n: "_", v: "ctx.verifyEnum(\\\"Name\\\", this.allowedNames , this.wzName, this.wzSourceLineInfo)", r: 12, c: 17, s: "f4",  };
+$.a($219, $224, 535);
+}
+$.s("f4");
+for (var i225=0, l225 = element.attributes.length; i225<l225; i225++) {
+    var attribute = element.attributes[i225];
+if (attribute.isReadOnly == false && attribute.restricts.length > 0) {
+if (attribute.allowedDeclaration() != null) {
+$.n();
+var $228 = { n: "_", v: $.ip("f4", "ctx.verifyEnum(\\\"${attribute.wzId}\\\", this.Allowed${attribute.wzIdPlural} , this.${attribute.wzId}, this.wzSourceLineInfo)", "string", 543), r: 17, c: 25, s: "f4",  };
+$.a($219, $228, 544);
+}
+$.s("f4");
+for (var i229=0, l229 = attribute.restricts.length; i229<l229; i229++) {
+    var restrict = attribute.restricts[i229];
+for (var i230=0, l230 = restrict.facets.length; i230<l230; i230++) {
+    var facet = restrict.facets[i230];
+if (facet.wzName === "length") {
+}
+else if (facet.wzName === "max-length") {
+}
+else if (facet.wzName === "min-length") {
+}
+}
+}
+}
+}
+$.s("f4");
+for (var i234=0, l234 = element.relations.length; i234<l234; i234++) {
+    var relation = element.relations[i234];
+$.n();
+var $235 = { n: "_", v: $.ip("f4", "this.${relation.wzIdPlural}.forEach", "string", 565), r: 25, c: 17, s: "f4",  };
+$.a($219, $235, 566);
+var $236 = { n: "function", v: "", r: 26, c: 21, s: "f4",  };
+$.a($235, $236, 568);
+var $237 = { n: "arg", v: "item", r: 27, c: 25, s: "f4",  };
+$.a($236, $237, 570);
+var $238 = { n: "_", v: "item.wzVerify(ctx)", r: 28, c: 25, s: "f4",  };
+$.a($236, $238, 572);
+}
+$.s("f4");
+for (var i239=0, l239 = element.methods.length; i239<l239; i239++) {
+    var method = element.methods[i239];
+if (method.emitKey == modelWriter.emitKey && method.wzName.ToLower() == "wzverify") {
+for (var i241=0, l241 = method.statements.length; i241<l241; i241++) {
+    var statement = method.statements[i241];
+$.n();
+var $242 = { n: "#", v: "writeCode(statement)", r: 33, c: 25, s: "f4",  };
+$.a($219, $242, 582);
+}
+}
+}
+$.n();
+var $243 = { n: "_", v: $.ip("f4", "md.${element.superType}.prototype.wzVerify.call(this, ctx)", "string", 587), r: 35, c: 13, s: "f4",  };
+$.a($219, $243, 588);
+}
+$.s("f4");
+if (element.needsInitialize(request.emitKey)) {
+$.n();
+var $245 = { n: "m", v: "wzInitialize", r: 5, c: 9, s: "f4",  };
+$.a($78, $245, 594);
+var $246 = { n: "arg", v: "ctx", r: 6, c: 13, s: "f4",  };
+$.a($245, $246, 596);
+$.s("f4");
+for (var i247=0, l247 = element.attributes.length; i247<l247; i247++) {
+    var attribute = element.attributes[i247];
+if (attribute.isDataType) {
+$.n();
+var $249 = { n: "#", v: $.ip("f4", "TODO set ${attribute.wzId}DataType = this.getTypeSystem().CreateDataType(${attribute.wzId})", "string", 602), r: 10, c: 21, s: "f4",  };
+$.a($245, $249, 603);
+}
+}
+$.s("f4");
+for (var i250=0, l250 = element.relations.length; i250<l250; i250++) {
+    var relation = element.relations[i250];
+$.n();
+var $251 = { n: "_", v: $.ip("f4", "this.${relation.wzIdPlural}.forEach", "string", 610), r: 13, c: 17, s: "f4",  };
+$.a($245, $251, 611);
+var $252 = { n: "function", v: "", r: 14, c: 21, s: "f4",  };
+$.a($251, $252, 613);
+var $253 = { n: "arg", v: "item", r: 15, c: 25, s: "f4",  };
+$.a($252, $253, 615);
+var $254 = { n: "_", v: "item.wzInitialize(ctx)", r: 16, c: 25, s: "f4",  };
+$.a($252, $254, 617);
+}
+$.s("f4");
+for (var i255=0, l255 = element.methods.length; i255<l255; i255++) {
+    var method = element.methods[i255];
+if (method.Emitkey === modelWriter.emitKey && method.wzName.ToLower() == "wzinitialize") {
+for (var i257=0, l257 = method.statements.length; i257<l257; i257++) {
+    var statement = method.statements[i257];
+$.n();
+var $258 = { n: "#", v: "writeCode(statement)", r: 21, c: 25, s: "f4",  };
+$.a($245, $258, 627);
+}
+}
+}
+$.n();
+var $259 = { n: "_", v: $.ip("f4", "md.${element.superType}.prototype.wzInitialize.call(this, ctx)", "string", 632), r: 23, c: 13, s: "f4",  };
+$.a($245, $259, 633);
+}
+$.s("f4");
+for (var i260=0, l260 = element.methods.length; i260<l260; i260++) {
+    var method = element.methods[i260];
+$.n();
+var $261 = { n: "#", v: "new MethodWriter().Write(method, CurrentContext);", r: 130, c: 13, s: "f4",  };
+$.a($78, $261, 640);
+}
+$.n();
+var $262 = { n: "set", v: $.ip("f4", "md.${element.wzId} = ${element.wzId}", "string", 643), r: 132, c: 5, s: "f4",  };
+$.a($1, $262, 644);
+}
+$.n();
+var $263 = { n: "class", v: $.ip("f6", "${schema.wzId}Context", "string", 647), r: 3, c: 5, s: "f6",  };
+$.a($1, $263, 648);
+$.s("f6");
+for (var i264=0, l264 = schema.requires.length; i264<l264; i264++) {
+    var require = schema.requires[i264];
+if (require.kind === "writer" && require.wzName === "verifyFalse") {
+$.n();
+var $266 = { n: "m", v: "verifyFalse", r: 9, c: 17, s: "f6",  };
+$.a($263, $266, 655);
+var $267 = { n: "arg", v: "value", r: 10, c: 21, s: "f6",  };
+$.a($266, $267, 657);
+var $268 = { n: "return", v: "value === false", r: 11, c: 21, s: "f6",  };
+$.a($266, $268, 659);
+}
+$.s("f6");
+if (require.kind == "writer" && require.wzName == "verifyEnum") {
+$.n();
+var $270 = { n: "m", v: "verifyEnum", r: 15, c: 17, s: "f6",  };
+$.a($263, $270, 665);
+var $271 = { n: "arg", v: "value", r: 16, c: 21, s: "f6",  };
+$.a($270, $271, 667);
+var $272 = { n: "arg", v: "allowed", r: 17, c: 21, s: "f6",  };
+$.a($270, $272, 669);
+var $273 = { n: "return", v: "true; // TODO", r: 18, c: 21, s: "f6",  };
+$.a($270, $273, 671);
+}
+}
+$.s("f7");
+for (var i274=0, l274 = schema.requiredFunctions.length; i274<l274; i274++) {
+    var rf = schema.requiredFunctions[i274];
+if (rf.wzName === "isArray") {
+$.n();
+var $276 = { n: "function", v: "isArray", r: 6, c: 13, s: "f7",  };
+$.a($1, $276, 680);
+var $277 = { n: "arg", v: "value", r: 7, c: 17, s: "f7",  };
+$.a($276, $277, 682);
+var $278 = { n: "return", v: "Object.prototype.toString.call( value ) === '[object Array]'", r: 8, c: 17, s: "f7",  };
+$.a($276, $278, 684);
+}
+$.s("f7");
+if (rf.wzName === "isEmpty") {
+$.n();
+var $280 = { n: "function", v: "isEmpty", r: 11, c: 13, s: "f7",  };
+$.a($1, $280, 690);
+var $281 = { n: "arg", v: "value", r: 12, c: 17, s: "f7",  };
+$.a($280, $281, 692);
+var $282 = { n: "return", v: "!isString( value ) || value.length === 0", r: 13, c: 17, s: "f7",  };
+$.a($280, $282, 694);
+}
+$.s("f7");
+if (rf.wzName === "isNull") {
+$.n();
+var $284 = { n: "function", v: "isNull", r: 16, c: 13, s: "f7",  };
+$.a($1, $284, 700);
+var $285 = { n: "arg", v: "value", r: 17, c: 17, s: "f7",  };
+$.a($284, $285, 702);
+var $286 = { n: "return", v: "typeof value === 'undefined' || value === null", r: 18, c: 17, s: "f7",  };
+$.a($284, $286, 704);
+}
+$.s("f7");
+if (rf.wzName === "isNumber") {
+$.n();
+var $288 = { n: "function", v: "isNumber", r: 21, c: 13, s: "f7",  };
+$.a($1, $288, 710);
+var $289 = { n: "arg", v: "value", r: 22, c: 17, s: "f7",  };
+$.a($288, $289, 712);
+var $290 = { n: "return", v: "!isArray( value ) && (value - parseFloat( value ) + 1) >= 0", r: 23, c: 17, s: "f7",  };
+$.a($288, $290, 714);
+}
+$.s("f7");
+if (rf.wzName === "isObject") {
+$.n();
+var $292 = { n: "function", v: "isObject", r: 26, c: 13, s: "f7",  };
+$.a($1, $292, 720);
+var $293 = { n: "arg", v: "value", r: 27, c: 17, s: "f7",  };
+$.a($292, $293, 722);
+var $294 = { n: "return", v: "value !== null && typeof value === 'object'", r: 28, c: 17, s: "f7",  };
+$.a($292, $294, 724);
+}
+$.s("f7");
+if (rf.wzName === "isString") {
+$.n();
+var $296 = { n: "function", v: "isString", r: 31, c: 13, s: "f7",  };
+$.a($1, $296, 730);
+var $297 = { n: "arg", v: "value", r: 32, c: 17, s: "f7",  };
+$.a($296, $297, 732);
+var $298 = { n: "return", v: "(typeof value === 'string' || value instanceof String)", r: 33, c: 17, s: "f7",  };
+$.a($296, $298, 734);
+}
+$.s("f7");
+if (rf.wzName === "escapeRegExp") {
+$.n();
+var $300 = { n: "function", v: "escapeRegExp", r: 36, c: 13, s: "f7",  };
+$.a($1, $300, 740);
+var $301 = { n: "arg", v: "str", r: 37, c: 17, s: "f7",  };
+$.a($300, $301, 742);
+var $302 = { n: "return", v: "str.replace(/[\\\\-\\\\[\\\\]/\\\\{\\\\}\\\\(\\\\)\\\\*\\\\+\\\\?\\\\.\\\\\\\\\\\\^\\\\$\\\\|]/g, \\\"\\\\\\\\$&\\\")", r: 38, c: 17, s: "f7",  };
+$.a($300, $302, 744);
+}
+$.s("f7");
+if (rf.wzName === "replaceAll") {
+$.n();
+var $304 = { n: "function", v: "replaceAll", r: 41, c: 13, s: "f7",  };
+$.a($1, $304, 750);
+var $305 = { n: "arg", v: "str", r: 42, c: 17, s: "f7",  };
+$.a($304, $305, 752);
+var $306 = { n: "arg", v: "find", r: 43, c: 17, s: "f7",  };
+$.a($304, $306, 754);
+var $307 = { n: "arg", v: "replace", r: 44, c: 17, s: "f7",  };
+$.a($304, $307, 756);
+var $308 = { n: "return", v: "str.replace(new RegExp(escapeRegExp(find), 'g'), replace);\");", r: 45, c: 17, s: "f7",  };
+$.a($304, $308, 758);
+}
+$.s("f7");
+if (rf.wzName === "isBoolean") {
+$.n();
+var $310 = { n: "function", v: "isBoolean", r: 48, c: 13, s: "f7",  };
+$.a($1, $310, 764);
+var $311 = { n: "arg", v: "value", r: 49, c: 17, s: "f7",  };
+$.a($310, $311, 766);
+var $312 = { n: "return", v: "value === 'true' || value === 'false'", r: 50, c: 17, s: "f7",  };
+$.a($310, $312, 768);
+}
+$.s("f7");
+if (rf.wzName === "isInt") {
+$.n();
+var $314 = { n: "function", v: "isInt", r: 53, c: 13, s: "f7",  };
+$.a($1, $314, 774);
+var $315 = { n: "arg", v: "value", r: 54, c: 17, s: "f7",  };
+$.a($314, $315, 776);
+var $316 = { n: "return", v: "isNumber( value )", r: 55, c: 17, s: "f7",  };
+$.a($314, $316, 778);
+}
+$.s("f7");
+if (rf.wzName === "isFloat") {
+$.n();
+var $318 = { n: "function", v: "isFloat", r: 58, c: 13, s: "f7",  };
+$.a($1, $318, 784);
+var $319 = { n: "arg", v: "value", r: 59, c: 17, s: "f7",  };
+$.a($318, $319, 786);
+var $320 = { n: "return", v: "isNumber( value )", r: 60, c: 17, s: "f7",  };
+$.a($318, $320, 788);
+}
+$.s("f7");
+if (rf.wzName === "isDate") {
+$.n();
+var $322 = { n: "function", v: "isDate", r: 63, c: 13, s: "f7",  };
+$.a($1, $322, 794);
+var $323 = { n: "arg", v: "value", r: 64, c: 17, s: "f7",  };
+$.a($322, $323, 796);
+var $324 = { n: "var", v: "parts = value.split('/')", r: 65, c: 17, s: "f7",  };
+$.a($322, $324, 798);
+var $325 = { n: "return", v: "part[0].length === 4 && part[1].length <= 2 && part[2].length <= 2", r: 66, c: 17, s: "f7",  };
+$.a($322, $325, 800);
+}
+$.s("f7");
+if (rf.wzName === "parsestring") {
+$.n();
+var $327 = { n: "function", v: "parsestring", r: 69, c: 13, s: "f7",  };
+$.a($1, $327, 806);
+var $328 = { n: "arg", v: "value", r: 70, c: 17, s: "f7",  };
+$.a($327, $328, 808);
+var $329 = { n: "arg", v: "defaultValue", r: 71, c: 17, s: "f7",  };
+$.a($327, $329, 810);
+var $330 = { n: "arg", v: "node", r: 72, c: 17, s: "f7",  };
+$.a($327, $330, 812);
+var $331 = { n: "if", v: "isEmpty( value )", r: 73, c: 17, s: "f7",  };
+$.a($327, $331, 814);
+var $332 = { n: "return", v: "defaultValue", r: 74, c: 21, s: "f7",  };
+$.a($331, $332, 816);
+var $333 = { n: "return", v: "value", r: 75, c: 17, s: "f7",  };
+$.a($327, $333, 818);
+}
+$.s("f7");
+if (rf.wzName === "parseboolean") {
+$.n();
+var $335 = { n: "function", v: "parseboolean", r: 78, c: 13, s: "f7",  };
+$.a($1, $335, 824);
+var $336 = { n: "arg", v: "value", r: 79, c: 17, s: "f7",  };
+$.a($335, $336, 826);
+var $337 = { n: "arg", v: "defaultValue", r: 80, c: 17, s: "f7",  };
+$.a($335, $337, 828);
+var $338 = { n: "arg", v: "node", r: 81, c: 17, s: "f7",  };
+$.a($335, $338, 830);
+var $339 = { n: "if", v: "isEmpty( value )", r: 82, c: 17, s: "f7",  };
+$.a($335, $339, 832);
+var $340 = { n: "return", v: "defaultValue", r: 83, c: 21, s: "f7",  };
+$.a($339, $340, 834);
+var $341 = { n: "if", v: "!isBoolean(value)", r: 84, c: 17, s: "f7",  };
+$.a($335, $341, 836);
+var $342 = { n: "throw", v: "new nodeException('Must be a boolean value (\\\"true\\\" or \\\"false\\\"), got:' + value, node)", r: 85, c: 21, s: "f7",  };
+$.a($341, $342, 838);
+var $343 = { n: "return", v: "value === 'true' ? true : false", r: 86, c: 17, s: "f7",  };
+$.a($335, $343, 840);
+}
+$.s("f7");
+if (rf.wzName === "parseint") {
+$.n();
+var $345 = { n: "function", v: "parseint", r: 89, c: 13, s: "f7",  };
+$.a($1, $345, 846);
+var $346 = { n: "arg", v: "value", r: 90, c: 17, s: "f7",  };
+$.a($345, $346, 848);
+var $347 = { n: "arg", v: "defaultValue", r: 91, c: 17, s: "f7",  };
+$.a($345, $347, 850);
+var $348 = { n: "arg", v: "node", r: 92, c: 17, s: "f7",  };
+$.a($345, $348, 852);
+var $349 = { n: "if", v: "isEmpty(value)", r: 93, c: 17, s: "f7",  };
+$.a($345, $349, 854);
+var $350 = { n: "return", v: "defaultValue", r: 94, c: 21, s: "f7",  };
+$.a($349, $350, 856);
+var $351 = { n: "if", v: "!isInt(value)", r: 95, c: 17, s: "f7",  };
+$.a($345, $351, 858);
+var $352 = { n: "throw", v: "new nodeException('Must be an int value, got:' + value, node)", r: 96, c: 21, s: "f7",  };
+$.a($351, $352, 860);
+var $353 = { n: "return", v: "parseInt(value, 10)", r: 97, c: 17, s: "f7",  };
+$.a($345, $353, 862);
+}
+$.s("f7");
+if (rf.wzName === "parsefloat") {
+$.n();
+var $355 = { n: "function", v: "parsefloat", r: 100, c: 13, s: "f7",  };
+$.a($1, $355, 868);
+var $356 = { n: "arg", v: "value", r: 101, c: 17, s: "f7",  };
+$.a($355, $356, 870);
+var $357 = { n: "arg", v: "defaultValue", r: 102, c: 17, s: "f7",  };
+$.a($355, $357, 872);
+var $358 = { n: "arg", v: "node", r: 103, c: 17, s: "f7",  };
+$.a($355, $358, 874);
+var $359 = { n: "if", v: "isEmpty(value)", r: 104, c: 17, s: "f7",  };
+$.a($355, $359, 876);
+var $360 = { n: "return", v: "defaultValue", r: 105, c: 21, s: "f7",  };
+$.a($359, $360, 878);
+var $361 = { n: "if", v: "!isFloat(value)", r: 106, c: 17, s: "f7",  };
+$.a($355, $361, 880);
+var $362 = { n: "throw", v: "new nodeException('Must be a float value, got:' + value, node)", r: 107, c: 21, s: "f7",  };
+$.a($361, $362, 882);
+var $363 = { n: "return", v: "parseFloat(value)", r: 108, c: 17, s: "f7",  };
+$.a($355, $363, 884);
+}
+$.s("f7");
+if (rf.wzName === "parsedate") {
+$.n();
+var $365 = { n: "function", v: "parsedate", r: 111, c: 13, s: "f7",  };
+$.a($1, $365, 890);
+var $366 = { n: "arg", v: "value", r: 112, c: 17, s: "f7",  };
+$.a($365, $366, 892);
+var $367 = { n: "arg", v: "defaultValue", r: 113, c: 17, s: "f7",  };
+$.a($365, $367, 894);
+var $368 = { n: "arg", v: "node", r: 114, c: 17, s: "f7",  };
+$.a($365, $368, 896);
+var $369 = { n: "if", v: "isEmpty(value)", r: 115, c: 17, s: "f7",  };
+$.a($365, $369, 898);
+var $370 = { n: "return", v: "defaultValue", r: 116, c: 21, s: "f7",  };
+$.a($369, $370, 900);
+var $371 = { n: "if", v: "!isDate(value)", r: 117, c: 17, s: "f7",  };
+$.a($365, $371, 902);
+var $372 = { n: "throw", v: "new nodeException('Must be a date value (YYYY/MM/DD), got:' + value, node)", r: 118, c: 21, s: "f7",  };
+$.a($371, $372, 904);
+var $373 = { n: "var", v: "parts = input.split('/')", r: 119, c: 17, s: "f7",  };
+$.a($365, $373, 906);
+var $374 = { n: "return", v: "new Date(parts[0], parts[1]-1, parts[2])", r: 120, c: 17, s: "f7",  };
+$.a($365, $374, 908);
+}
+$.s("f7");
+if (rf.wzName === "pluralize") {
+$.n();
+var $376 = { n: "function", v: "pluralize", r: 123, c: 13, s: "f7",  };
+$.a($1, $376, 914);
+var $377 = { n: "arg", v: "value", r: 124, c: 17, s: "f7",  };
+$.a($376, $377, 916);
+var $378 = { n: "return", v: "inflect.pluralize(value)", r: 125, c: 17, s: "f7",  };
+$.a($376, $378, 918);
+}
+}

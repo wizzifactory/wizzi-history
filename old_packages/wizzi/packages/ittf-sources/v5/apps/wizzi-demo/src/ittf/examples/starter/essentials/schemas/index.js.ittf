@@ -1,0 +1,28 @@
+﻿example-essentials(schemas)
+
+	var schemaFriendsPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'schemas'
+			@ 'friends.wfschema.ittf'
+
+	var schemaFriendsOutputPath
+		_ path.join 
+			@ __dirname
+			@ 'friendsplugin'
+
+	# Generate the javascript modules of the 'friends' wizzi schema
+	_ wizzi.schema
+		@ schemaFriendsPath
+		{
+			@ comments true
+		{
+			@ outputPackagePath schemaFriendsOutputPath
+		f_cb_test(schemaPaths)
+			log 'schemaPaths of generated schema friends\n', schemaPaths
+			return
+				_ step_callback
+					@ null
+					@ 'models example executed'
+

@@ -1,0 +1,24 @@
+﻿$group
+
+	function makeConsoleApi
+		param config
+
+		var paths = makePaths(config)
+
+		var hasDefaultUserFromConfig = verify.isString(config.user) && verify.isString(config.role)
+		var userAuthRequired = !hasDefaultUserFromConfig
+
+		var createWizziFactory
+			_ makeWizziFactoryCreator
+				@ config.storeKind 
+				@ config.plugins
+				@ config.globalContext
+				@ config.user
+				@ config.role
+
+		return
+			{
+				$include ./getConsoleScriptList
+				$include ./getConsoleScript
+				$include ./saveConsoleScript
+				$include ./runConsoleScript

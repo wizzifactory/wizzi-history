@@ -1,0 +1,48 @@
+﻿graphql
+
+	scalar Time
+	scalar Url
+	
+	type User
+		ID id
+		string authToken
+		string firstName
+		string lastName
+		string email
+		string mobile
+		boolean isOwner
+		ref picture
+			int size
+			type Url
+		ref company
+			type Company
+		string oldField
+			%deprecated
+
+	interface NamedEntity
+		string name
+		
+	interface ValuedEntity
+		int value
+
+	type Person
+		& NamedEntity
+		string name
+		int age
+
+	type Business
+		& NamedEntity
+		& ValuedEntity
+		string name
+		int value
+		int employeeCount
+
+	union SearchResult
+		| Photo
+		| Person
+	
+	enum
+		@ NORTH
+		@ EAST
+		@ SOUTH
+		@ WEST

@@ -1,0 +1,26 @@
+﻿module
+	kind react
+	+
+	import { 
+		\b HB_UPDATE_AST,
+		\b HB_CODE_EDITOR_CURSOR_ACTIVITY
+		\b } from '../actions'
+	+
+	const helpBoardInitialState
+		{
+			@ snippetAst {}
+			@ cursor {}
+			@ astNode {}
+	+
+	r( helpBoard, helpBoardInitialState )
+
+		c( HB_UPDATE_AST
+			{
+				@ ...state
+				@ snippetAst action.snippetAst
+
+		c( HB_CODE_EDITOR_CURSOR_ACTIVITY)
+			{
+				@ ...state
+				@ cursor action.cursor
+				@ astNode action.astNode

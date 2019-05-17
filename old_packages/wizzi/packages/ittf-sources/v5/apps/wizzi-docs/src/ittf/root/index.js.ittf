@@ -1,0 +1,44 @@
+﻿module
+	kind jsfile
+
+	import async
+	var stringify = require('json-stringify-safe')
+
+	var jobs
+		[
+			_ require('./jobs/site')
+			_ require('./jobs/index')
+			_ require('./jobs/concepts')
+			_ require('./jobs/docs')
+			_ require('./jobs/starters')
+			_ require('./jobs/project')
+			_ require('./jobs/api_preprocess')
+			_ require('./jobs/api')
+			_ require('./jobs/code_intro')
+			_ require('./jobs/code_preprocess')
+			_ require('./jobs/code')
+
+	function exec
+		param callback
+
+		_ async.mapSeries
+			@ jobs
+			function
+				param job
+				param callback
+				_ job(callback)
+			f_cb_test(results)
+				log 'docs generation results\n', stringify(results, null, 2)
+				if callback
+					_ callback
+						@ null
+						@ 'docs generation executed'
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require && require.main === module
+		_ exec
+

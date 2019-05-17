@@ -1,0 +1,28 @@
+﻿module wizzi-demo.plugin.lib.artifacts.jsonld.document.gen.main
+	kind jsfile
+
+	# Example of language artifact that targets
+	# the JSON-LG 1.0 (2014) specification.
+	#
+	# This is a code write based artifact generator.
+	# It generates a json document.
+	#
+
+	var md = module.exports = {}
+	var myname = 'wizzi-demo.advanced.plugins.lib.artifacts.jsonld.jsonlg.main';
+
+	set md.gen
+		function gen
+			{ model
+			{ ctx
+			callback
+			# check the model is a wizzi model of type 'jsonld'
+			if model.wzElement !== 'jsonld'
+				return
+					_ callback
+						_ ctx.error
+							@ myname + " error: the model paramater should be an 'jsonld' wizzi model"
+							@ model
+			_ ctx.w("Not implemented yet.")
+			_ callback(null, ctx)
+

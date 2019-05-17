@@ -1,0 +1,165 @@
+{
+  "name": "temp",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [
+    "json"
+  ],
+  "elements": [
+    {
+      "name": "comment",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "#"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "commentable",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "commentable"
+      ],
+      "flags": "is-abstract ",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "temp",
+          "tags": [
+            "temp"
+          ]
+        },
+        {
+          "name": "item",
+          "tags": [
+            "item"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "temp",
+      "super": "commentable",
+      "isRoot": true,
+      "tags": [
+        "temp"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "commentable",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The root tag of the temp schema."
+      ]
+    },
+    {
+      "name": "item",
+      "super": "commentable",
+      "isRoot": false,
+      "tags": [
+        "item"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "commentable",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A wizzi schema comment is considered a markdown text and",
+        "can contain markdown synthax",
+        "",
+        "### Title 1",
+        "## Title 2",
+        "# Title 3",
+        "",
+        "An element comment can be multiline in a single paragraph using the ittf continuation tag 'slash'b or '\\b' or '\\\\b'.",
+        "Could have a second paragraph line ...",
+        "   with an inner line ...",
+        "       and more ...",
+        "           and more deep lines.",
+        "And can embed an ittf ...",
+        "[*ittf\n   function hello\n       param name\n       log 'hello ' + name\n       _ go\n           @ \"charlie\"",
+        "And embed code",
+        "```ruby",
+        "require 'redcarpet'",
+        "markdown = Redcarpet.new(\"Hello World!\")",
+        "puts markdown.to_html",
+        "```"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+module
+	kind jsfile
+
+	$include wizzi-options
+
+	+
+	spa/express-declare( &spa )
+	+
+	_ require('dotenv').config()
+	var config = require('./config')
+	var ittfengine = require('./middleware/ittf')
+	var ittfJsResources = require('./ittfJsResources')
+	var ittfCssResources = require('./ittfCssResources')
+	var ittfoptions
+		{
+			@ jsResources ittfJsResources 
+			@ cssResources ittfCssResources 
+	+
+	spa/express-app( &spa )

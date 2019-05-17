@@ -1,0 +1,112 @@
+﻿loader( if-switch )
+
+    stm( xif
+        _ u.emitBlock
+            @ cnt
+            @ 'if'
+            @ model
+            @ model.statements
+            @ model.statements.length
+            @ ctx
+			@ callback
+    
+	stm( elif
+		_ u.emitBlock
+			@ cnt
+			@ 'else if'
+			@ model
+			@ model.statements
+			@ model.statements.length
+			@ ctx
+			@ callback
+    
+	stm( xelse
+        if model.wzParent.wzElement === 'iif'
+            if model.statements.length > 0
+                _ cnt.genItems
+                    @ model.statements
+                    @ ctx
+                    { 
+                        @ indent true
+					@ callback
+            else 
+                _ ctx.write
+                    @ model.wzName
+				r_cb()
+        else 
+            _ u.emitBlock
+                @ cnt
+                @ 'else'
+                @ model
+                @ model.statements
+                @ model.statements.length
+                @ ctx
+				@ callback
+    
+	stm( xswitch
+        _ ctx.w('switch (' + u.unparen(model.wzName) + ') {')
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent true
+			f_cb()
+				_ ctx.w('}')
+				r_cb()
+    
+	stm( xcase
+        var 
+            decl items = model.statements
+            decl count = model.statements.length
+            decl tag = 'case'
+        if count === 0
+            _ ctx.w(tag + ' ' + model.wzName + ':')
+            r_cb()
+        if ctx.values.__preserveBlock
+            if count > 0 && items[0].wzElement === 'block'
+                _ ctx.w(tag + ' ' + model.wzName + ': {')
+            else 
+                _ ctx.w(tag + ' ' + model.wzName + ':')
+        else 
+            _ ctx.w(tag + ' ' + model.wzName + ': {')
+        _ cnt.genItems
+            @ items
+            @ ctx
+            { 
+                @ indent true
+			f_cb()
+				if ctx.values.__preserveBlock
+					if count > 0 && items[0].wzElement === 'block'
+						_ ctx.w('}')
+					else 
+						+ ;
+				else 
+					_ ctx.w('}')
+				r_cb()
+    
+	stm( xdefault
+        var 
+            decl items = model.statements
+            decl count = model.statements.length
+            decl tag = 'default'
+        if ctx.values.__preserveBlock
+            if count > 0 && items[0].wzElement === 'block'
+                _ ctx.w(tag + ': {')
+            else 
+                _ ctx.w(tag + ':')
+        else 
+            _ ctx.w(tag + ': {')
+		_ cnt.genItems
+            @ items
+            @ ctx
+            { 
+                @ indent true
+			f_cb()
+				if ctx.values.__preserveBlock
+					if count > 0 && items[0].wzElement === 'block'
+						_ ctx.w('}')
+					else 
+						+ ;
+				else
+					_ ctx.w('}')
+				r_cb()

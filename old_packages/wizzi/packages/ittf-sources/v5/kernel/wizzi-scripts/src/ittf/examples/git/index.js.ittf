@@ -1,0 +1,48 @@
+﻿base_example()
+
+	var gitOptions1
+		{
+			@ scriptPath
+				[
+					@ 'cd C:\\My\\wizzi\\v5\\github\\wizzi-utils'
+					@ 'git add .'
+					@ 'git commit -m "0.5.1 commit"'
+					@ 'git push -u origin master'
+					._ join('\n')
+
+	var gitOptions2
+		{
+			@ scriptPath
+				[
+					@ 'cd C:\\My\\wizzi\\v5\\github\\wizzi-mtree'
+					@ 'git add .'
+					@ 'git commit -m "0.5.1 commit"'
+					@ 'git push -u origin master'
+					._ join('\n')
+
+	_ addCommit
+		f_cb_test(result)
+			log 'addCommit.result', result
+			_ addCommitToEventStream
+				f_cb_test(result)
+					log 'addCommitToEventStream.result', result
+
+	function addCommit
+		param callback
+		_ manager.gitExec
+			@ gitOptions1
+			@ callback
+
+	function addCommitToEventStream
+		param callback
+		var res = new MockResponse()
+		_ manager.gitExecToEventStream
+			@ gitOptions2
+			@ res
+			f_cb_test(result)
+				log 'addCommitToEventStream.res.head', res.head
+				log 'addCommitToEventStream.res.stdout', res.stdout
+				log 'addCommitToEventStream.res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

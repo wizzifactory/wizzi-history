@@ -1,0 +1,47 @@
+﻿module
+    kind jsfile
+
+	#
+		# TODO eliminate this
+		#
+		# Config properties can be changed during the startup of the runnerServer,
+		# using the onConfig method of a wizzifile.js.
+		#
+		# property wfBaseFolder
+		# property wfJobsFolder
+		#
+
+	import path
+    
+    var md
+        set module.exports =
+            { 
+    
+	set md.wfBaseFolder = 'c:/my/wizzi/v3'
+	
+	set md.wfJobsFolder
+		_ path.join
+			@ md.wfBaseFolder
+			@ 'wfjobs'
+
+	set md.get
+        function 
+            param key
+            param defaultValue
+            if typeof(md[key]) === 'undefined' && typeof(defaultValue) !== 'undefined'
+                return defaultValue
+            else 
+                return md[key]
+    
+	set md.set
+        function 
+            param key
+            param value
+            set md[key] = value
+			_ onChange
+
+	function onChange
+		set md.wfJobsFolder
+			_ path.join
+				@ md.wfBaseFolder
+				@ 'wfjobs'

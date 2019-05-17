@@ -1,0 +1,178 @@
+﻿base_test(modelInfo)
+
+	$append imports
+		var wizziFactory = require('../../lib/services/wizziFactory')
+		var modelInfo = require('../../lib/model/modelInfo').ModelInfo
+		var mocks = require('../mocks/misc')
+
+	var mi = null
+	
+	before-async
+		_ wizziFactory.createFactory
+			{
+				@ repo
+					{
+						@ storeKind 'filesystem'
+				@ plugins
+					{
+						@ items
+							[
+								@ '../mocks/plugin'
+						@ pluginsBaseFolder __dirname
+				@ test
+					{
+						@ testOnlyMockBaseDir __dirname
+			f_cb_test( wf )
+				var pman
+					_ wf.createProductionManager
+						{
+							@ indentSpaces 4
+							@ basedir __dirname
+						{
+				set mi
+					new modelInfo
+						{
+							@ cwd
+								_ path.join
+									@ __dirname
+									@ 'ittf'
+							@ src 'mock1.tests.ittf'
+							@ schema 'tests'
+				_ mi.productionManager
+					@ pman
+				_ done
+
+	it should check some properties
+		var s1Path
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.tests.ittf'
+				$$ ._ replace(/\\/g, '/')
+		var s1PathIgnore
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				$$ ._ replace(/\\/g, '/')
+		var s1GlobPath
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.tests.ittf'
+				@ '**/*.*'
+				._ replace(/\\/g, '/')
+
+		tobe_string( mi.src(), 'mock1.tests.ittf' )
+		tobe_string_value( mi.srcFullPath(), s1Path )
+		tobe_null( mi.ignoreFullPath() )
+		var misrcGlobPath = mi.srcGlobPath().replace(/\\/g, '/')
+		tobe_string_value( misrcGlobPath, s1GlobPath )
+		tobe_object( mi.srcGlobOptions() )
+		tobe_undefined( mi.srcGlobOptions().ignore )
+
+		tobe_object( mi.productionManagerInstance )
+		if mi.hasContext()
+			foreach ctxMi in this.contexts
+				tobe_object( ctxMi.productionManagerInstance )
+
+		tobe_false( mi.hasContext() )
+
+		tobe_null( mi.getModelCollectionInfo() )
+		
+    
+    
+
+	it-async should retrieve a loadModel function
+		_ mi.getLoadModel
+			f_cb_test( loadModel )
+				tobe_function( loadModel )
+				_ done
+
+	it-async should retrieve a model transformer
+		_ mi.getModelTransformer
+			@ 'tests/trans1'
+			f_cb_test( transformModel )
+				tobe_function( transformModel.trans )
+				_ done
+
+	it-async should retrieve an artifact generator
+		_ mi.getArtifactGenerator
+			@ 'tests/gen1'
+			f_cb_test( artifactGenerator )
+				tobe_function( artifactGenerator.gen )
+				_ done
+
+	it-async should get a single source
+		_ mi.getSource
+			f_cb_test( source )
+				tobe_number( source.length, 11 )
+				_ done
+
+	it-async should get an error trying to ges sources (not a directory)
+		_ mi.getSources
+			f_cb_no_err( sources )
+				log 'should get sources.sources', err, sources
+				tobe_true( err.__is_error )
+				tobe_string( err.name, InvalidOperation )
+				_ done
+
+	it-async should get source files
+		_ mi.getFiles
+			{
+				@ final false
+			f_cb_no_err( files )
+				tobe_true( err.__is_error )
+				_ done
+    
+	it-async should get modelInfos
+		_ mi.getModelInfos
+			{
+				@ final false
+			f_cb_test( modelInfos )
+				tobe_array( modelInfos, 1 )
+				_ done
+
+	it should clone a modelInfo
+		var cloned
+			_ mi.clone
+		tobe_equal( cloned.cwd, mi.cwd )
+		tobe_equal( cloned.src(), mi.src() )
+		tobe_equal( cloned.schema, mi.schema )
+		tobe_equal( cloned.format, mi.format )
+		# TODO check cloned collections
+
+	it-async should read a JSON file
+		_ mi.readJSON
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ 'simple.tests.json'
+			f_cb_test( json )
+				tobe_object( json )
+				_ done
+
+	it-async should read an xml file
+		_ mi.readXml
+			@ 'c:\\TODO.xml'
+			f_cb_no_err( xml )
+				tobe_true( err.__is_error )
+				tobe_string( err.name, NotFound )
+				_ done
+
+	it-async should check if the source exists
+		_ mi.exists
+			f_cb_test( exists )
+				tobe_true( exists )
+				_ done
+
+	it-async should check if the source is a directory
+		_ mi.isDirectory
+			f_cb_test( isDirectory )
+				tobe_false( isDirectory )
+				_ done
+
+	it-async should check if the source is a file
+		_ mi.isFile
+			f_cb_test( isFile )
+				tobe_true( isFile )
+				_ done

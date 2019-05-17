@@ -1,0 +1,109 @@
+$group
+
+	$include defs
+	
+	. navigation
+		position fixed
+        background ${color3} 
+		height  ${header_H}px
+		width 100%
+    
+	. navigation-sub
+		position fixed
+        background ${color3} 
+		height  ${header_H_sub}px
+		width 100%
+
+	. navigation__inner
+        display flex
+        align-items center
+        position relative
+        padding 0.6em 1em
+    
+	media (min-width: 768px)
+        . navigation__inner
+            padding 0 1.5em
+    
+	. navigation__logo
+        margin auto
+    
+	. navigation__links
+        $$ display none
+    
+	media min-width: 768px
+        . navigation__links
+            flex 1 1 auto
+            display flex
+            align-items center
+            -webkit-box-pack end
+            -ms-flex-pack end
+            justify-content flex-end
+    
+	media min-width: 768px
+        . navigation__link
+            display inline-block
+			font-size ${navLinkFontSize}px
+			$if navLinkUCase
+				text-transform uppercase
+            color #ffffff
+            -webkit-transition all 250ms
+            transition all 250ms
+            padding 15px 7px
+        . navigation__link:last-child
+            margin-right 0.75em
+	
+	media min-width: 1024px
+		. navigation__link
+			padding 1.5em
+	
+	. navigation__link:hover
+		color ${color14} $$ #8DD6F9
+	
+	. navigation__link--active
+		color ${color0}
+		background ${color14} $$ #354851
+		font-weight 700
+	
+	. navigation__link--active:hover
+		color ${color0}
+		background ${color14} $$ #354851
+		font-weight 700
+
+	. navigation__search
+		display none
+	
+	. navigation__icon
+		display none
+
+    . navigation__bottom
+        display none
+        background ${color14} $$ #354851
+    
+	media min-width: 768px
+        . navigation__bottom
+            display block
+    
+	. navigation__child
+        font-size ${navChildFontSize}px
+        padding 0.5em 1em 0.6em
+        color ${color0} $$ #dedede
+		font-weight 500
+		$if navChildUCase
+			text-transform uppercase
+    
+	. navigation__child:first-of-type
+        margin-left 0
+    
+	. navigation__child:hover
+        color #ffffff $$ #8DD6F9
+    
+	. navigation__child--active
+        color #ffffff
+		background ${color13} $$ #ffffff
+        font-weight 700
+
+	. navigation__child--active:hover
+        color #ffffff
+        font-weight 700
+
+

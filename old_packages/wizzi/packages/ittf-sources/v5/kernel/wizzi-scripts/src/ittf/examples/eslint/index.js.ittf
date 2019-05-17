@@ -1,0 +1,46 @@
+﻿base_example()
+
+	$append imports
+		import path
+
+		var codecampPath = 'c:/my/wizzi/v5/codecamps'
+		# var fileBasename = 'index.js'
+		var fileBasename = 'compile.js'
+
+	var options1
+		{
+			@ packagePath
+				_ path.join
+					@ codecampPath
+					@ 'react'
+			@ language 'js'
+			@ folder 'src'
+
+	_ eslint
+		f_cb_test(result)
+			log 'eslint.result', result
+			_ eslintToEventStream
+				f_cb_test(result)
+					log 'eslintToEventStream.result', result
+	
+	function eslint
+		param callback
+
+		_ manager.eslintExec
+			@ options1
+			@ callback
+    
+	function eslintToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.eslintExecToEventStream
+			@ options1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

@@ -1,0 +1,157 @@
+﻿$group
+
+	# 
+		# Register a factoryPlugin to this plugins manager
+	m registerFactoryPlugin
+		{ pluginModule
+			func createFactoryPlugin
+		callback
+		var that = this
+		_ pluginModule.createFactoryPlugin
+			@ this.createWizziForPlugin()
+			{
+			f_cb( factoryPlugin )
+				var vld = that.validateFactoryPlugin(factoryPlugin)
+				if vld.__is_error
+					return
+						_ callback
+							@ vld
+				set factoryPlugin.packageName = pluginModule.packageName
+				set factoryPlugin.packagePath = pluginModule.packagePath
+				_ that.factoryPlugins.push(factoryPlugin)
+				checked_call( providesAdded )
+					_ that.addPluginProvides(factoryPlugin)
+				return
+					_ callback(null)
+
+	m createWizziForPlugin
+		return
+			{
+				@ file file
+	
+	m validateFactoryPlugin
+		{ factoryPlugin
+		for var k in factoryPlugin
+			# log 'wizzi.pluginsManager.validatefactoryPlugin.key', k
+		+
+		var methodNames
+			[
+				@ 'getName'
+				@ 'getFilename'
+				@ 'getProvides'
+				@ 'getModelFactory'
+				@ 'getModelTransformer'
+				@ 'getArtifactGenerator'
+				@ 'getSchemaDefinition'
+		foreach methodName in methodNames
+			if verify.isFunction(factoryPlugin[methodName]) == false
+				return 
+					_ error
+						@ 'InvalidFactoryPlugin'
+						@ 'validateFactoryPlugin'
+						@ 'Missing method: ' + methodName
+			try
+				_ factoryPlugin[methodName]('dummy')
+			catch ex
+				return 
+					_ error
+						@ 'InvalidFactoryPlugin'
+						@ 'validateFactoryPlugin'
+						@ 'Error executing method: ' + methodName + ', message: ' + ex.message
+		var providesProperties
+			[
+				@ 'schemas'
+				@ 'modelTransformers'
+				@ 'artifactGenerators'
+		var provides = factoryPlugin.getProvides()
+		foreach propName in providesProperties
+			if verify.isArray(provides[propName]) == false
+				return 
+					_ error
+						@ 'InvalidFactoryPlugin'
+						@ 'validateFactoryPlugin'
+						@ 'Missing property: ' + propName + ' in provides object'
+		# log 'validateFactoryPlugin', factoryPlugin.getName(), true
+		return
+			{
+				@ __is_error false
+
+	m addPluginProvides
+		{ factoryPlugin
+			{ provides
+				[ schemas
+				[ modelTransformers
+				[ artifactGenerators
+
+		var found
+		foreach item in factoryPlugin.provides.schemas
+			set found
+				_ _.find
+					@ this.providedSchemas
+					{
+						@ name item
+			if found
+				return
+					_ error
+						@ 'DuplicatedPluginResource'
+						@ 'addPluginProvides'
+						@ 'Schema ' + item + ' already provided'
+			else
+				_ this.providedSchemas.push
+					{
+						@ name item
+		+
+		foreach item in factoryPlugin.provides.modelTransformers
+			set found
+				_ _.find
+					@ this.providedModelTransformers
+					{
+						@ name item
+			if found
+				return
+					_ error
+						@ 'DuplicatedPluginResource'
+						@ 'addPluginProvides'
+						@ 'Model transformer ' + item + ' already provided'
+			else
+				_ this.providedModelTransformers.push
+					{
+						@ name item
+		+
+		foreach item in factoryPlugin.provides.artifactGenerators
+			set found
+				_ _.find
+					@ this.providedArtifactGenerators
+					{
+						@ name item
+			if found
+				return
+					_ error
+						@ 'DuplicatedPluginResource'
+						@ 'addPluginProvides'
+						@ 'Artifact generator ' + item + ' already provided'
+			else
+				_ this.providedArtifactGenerators.push
+					{
+						@ name item
+
+	m availableSchemas
+		var ret = []
+		foreach item in this.providedSchemas
+			_ ret.push(item.name)
+		return ret
+
+	m availableModelTransformers
+		var ret = []
+		foreach item in this.providedModelTransformers
+			_ ret.push(item.name)
+		return ret
+
+	m availableArtifactGenerators
+		var ret = []
+		foreach item in this.providedArtifactGenerators
+			_ ret.push(item.name)
+		return ret
+
+
+

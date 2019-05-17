@@ -1,0 +1,63 @@
+﻿$group
+	$params name, initialState|{}, saveToStorage|false
+
+	function ${name}Reducer
+		param state
+		param action
+
+		# log ${name}Reducer, state, action
+		
+		if typeof state === 'undefined'
+			$if saveToStorage
+				var ret = defaultStorage().get('${name}-state')
+				return ret ? JSON.parse(ret) : ${initialState}
+			$else
+				return ${initialState}
+		
+		$if saveToStorage
+			
+			function internalProcess
+				param state
+				param action
+				switch action.type
+					$hook
+					default
+						return state
+			
+			var ret = internalProcess(state, action)
+			
+			_ defaultStorage().put
+				@ '${name}-state'
+				@ JSON.stringify(ret)
+
+			return ret
+
+		$else
+			switch action.type
+				$hook
+				default
+					return state
+	+
+	function defaultStorage
+		return storageEngine(window.localStorage)
+
+	function storageEngine
+		param storage
+		return
+			{
+				@ 0 storage
+				@ put
+					function
+						param key, value
+						_ storage.setItem(key, value)
+				@ get 
+					function
+						param key
+						return storage.getItem(key)
+				@ del
+					function
+						param key
+						_ storage.removeItem(key)
+	+
+	export default ${name}Reducer
+

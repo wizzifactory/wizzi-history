@@ -1,0 +1,61 @@
+﻿base_test( ittFsNode )
+	
+	$append imports
+		var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+		var ittfFsNode = require('../../lib/scanners/ittfFsNode')
+		+
+		var root
+	+ 
+	it should add a document
+
+		set root = new ittfFsNode('root', null, true)
+		# log 'root', root
+		var added
+			_ root.addDocument('root/readme.md.ittf')
+		# log 'root', root
+		tobe_true(added)
+		tobe_array(root.folders, 0)
+		tobe_array(root.documents, 1)
+		tobe_string(root.documents[0].schema, md)
+		tobe_false(root.documents[0].isFragment)
+		tobe_string(root.documents[0].path, root/readme.md.ittf)
+		tobe_string(root.documents[0].dirname, root)
+		tobe_string(root.documents[0].basename, readme.md.ittf)
+
+	it should add a document fragment
+		var added
+			_ root.addDocument('root/t/title.md.ittf')
+		# log 'root', root
+		tobe_true(added)
+		tobe_array(root.folders, 1)
+		tobe_array(root.documents, 1)
+		tobe_true(root.folders[0].isTFolder)
+		tobe_string(root.folders[0].basename, t)
+		tobe_array(root.folders[0].documents, 1)
+		tobe_string(root.folders[0].documents[0].basename, title.md.ittf)
+		tobe_string(root.folders[0].documents[0].dirname, root/t)
+		tobe_string(root.folders[0].documents[0].schema, md)
+		tobe_true(root.folders[0].documents[0].isFragment)
+
+	it should check infos
+		_ root.setInfo()
+		# log 'root', root
+		tobe_object_num(root.info.schemas, 1)
+		tobe_string(root.info.schemas['md'].name, md)
+		tobe_array(root.info.lib.documents, 1)
+
+	it-async should write an ittf
+		var ittf = new ittfMTreeEx('wzpackage')
+		_ root.toIttf(ittf)
+		_ ittf.writeFile
+			_ path.join
+				@ __dirname
+				@ 'outputs'
+				@ 'test.wzpackage.ittf'
+			f_cb_test( result )
+				_ done()
+
+
+
+
+

@@ -1,0 +1,31 @@
+﻿module wizzi-repo.lib.utils.FsStream
+	kind jsfile
+
+	class FsStream
+		
+		ctor
+			param filePath
+			param document
+			set this.filePath = filePath
+			set this.document = document
+			set this.buffer = []
+		
+		m write
+			param text
+			_ this.buffer.push(text)
+		
+		m end
+			param callback
+			_ this.document.writeFile
+				@ this.filePath
+				_ this.buffer.join('')
+				function
+					param err
+					param result
+					if typeof(callback) === 'function'
+						if err
+							_ callback(err)
+						else
+							_ callback(null, result)
+
+	set module.exports = FsStream

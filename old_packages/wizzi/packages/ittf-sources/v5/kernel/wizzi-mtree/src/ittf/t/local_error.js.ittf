@@ -1,0 +1,18 @@
+﻿$group
+
+	function local_error
+		param name
+		param method
+		param message
+		param node
+		param inner
+		if node
+			# log 'local_error.node', node
+			var nodeError = new errors.NodeError(message, node)
+			set message = nodeError.message
+		return
+			_ error
+				@ name
+				@ method
+				@ message
+				@ inner

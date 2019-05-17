@@ -1,0 +1,38 @@
+﻿base_test( json.fs.document )
+	+
+	$append imports
+		var 
+			decl assert = require('assert')
+			decl FsJson = require('../../lib/json/fs/fsjson')
+			decl Document = require('../../lib/json/fs/document')
+
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsCommon, doc
+
+	$include json_before_async
+	fscommon/document/createFolder()
+	fscommon/document/write_read_File()
+	fscommon/document/isFile()
+	fscommon/document/copyFile()
+	fscommon/document/deleteFile()
+	fscommon/document/renameFile()
+	fscommon/document/getFolder()
+	fscommon/document/isFolder()
+	$include json_after_async
+
+	$*
+
+	
+	$include file/isFile
+	$include file/copyFile
+	$include file/deleteFile
+	$include file/renameFile
+
+
+	$include file/createFolder
+	$include file/readFile
+	$include file/writeFile
+	*$
+
+	

@@ -1,0 +1,17 @@
+$group
+
+	var schemaDefinitions = {}
+	#
+		# Retrieve a WizziSchema definition in JSON format
+		# schemaDefinitions are searched in the pluginsManager
+	set md.getWizziSchemaDefinition
+		function
+			param schemaName
+			var definition = schemaDefinitions[schemaName]
+			if !definition
+				set definition = md.pluginsManager.getWizziSchemaDefinition(schemaName)
+			if definition != null
+				set schemaDefinitions[schemaName] = definition
+				return definition
+			else
+				return null

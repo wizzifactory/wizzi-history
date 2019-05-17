@@ -1,0 +1,20 @@
+﻿module
+	kind jsfile
+
+	import async
+
+	var examples
+		[
+			_ require('./mtrees')
+			_ require('./models')
+			_ require('./jobs')
+			_ require('./schemas')
+
+	_ async.mapSeries
+		@ examples
+		function
+			param example
+			param callback
+			_ example(callback)
+		f_cb_test(results)
+			log 'essentials examples results\n', results

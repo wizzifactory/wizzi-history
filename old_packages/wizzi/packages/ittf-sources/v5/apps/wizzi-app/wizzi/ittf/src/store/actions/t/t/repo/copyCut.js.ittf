@@ -1,0 +1,43 @@
+﻿$group
+	+
+	decl_rsf( repo_fsitems, paste )
+	decl( COPY_CUT_REPO_FSITEMS )
+	+
+	export
+		const copyCutRepoFsItems
+			=>
+				param copyCut
+				param sourcePath
+				param selectedItems
+				return
+					{
+						@ type COPY_CUT_REPO_FSITEMS
+						@ copyCut copyCut
+						@ sourcePath sourcePath
+						@ selectedItems selectedItems
+	+
+	export
+		const pasteRepoFsItems
+			=>
+				param copyCut
+				param userId
+				param projectId
+				param folderPath
+				param selectedItems
+				return
+					{
+						@ type PASTE_REPO_FSITEMS
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ PASTE_REPO_FSITEMS_REQUEST
+										@ PASTE_REPO_FSITEMS_SUCCESS
+										@ PASTE_REPO_FSITEMS_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + folderPath
+								@ method 'put'
+								@ payload
+									{
+										@ kind KIND_COPYCUT
+										@ copyCut copyCut
+										@ fsitems selectedItems

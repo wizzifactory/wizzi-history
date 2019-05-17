@@ -1,0 +1,20 @@
+﻿$group
+
+	section
+		id main-toc
+		class toc toc sidebar__inner
+
+		h3 Contents:
+		ol
+			$foreach concept in docs.concepts
+				li
+					a ${concept.name}
+						href #${concept.id}
+			$foreach section in docs.sections
+				li
+					a Package: ${section.name}
+					ol
+						$foreach concept in section.concepts
+							li
+								a ${concept.name}
+									href #${concept.id}

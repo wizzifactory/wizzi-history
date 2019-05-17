@@ -1,0 +1,74 @@
+﻿$group
+
+	set md.stat
+		function
+			param userId
+			param projectId
+			param filePath
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+
+			var fsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ filePath
+				
+			# log 'wizzi-io.filesystem.stat.fsPath', fsPath
+
+			_ fsdb.getItemByPath
+				@ fsPath
+				f_cb( fsitem )
+					# log 'wizzi-io.filesystem.stat.fsPath', fsPath, 'fsitem', fsitem
+					if fsitem == null
+						return
+							_ callback
+								{
+									@ er
+										{
+											@ code 'ENOENT'
+					else
+						return 
+							_ callback
+								@ null
+								new FsStat
+									@ fsitem
+
+	set md._stat
+		function
+			param filePath
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+
+			var fsPath
+				_ normalize
+					@ filePath
+				
+			# log 'wizzi-io.filesystem.stat.fsPath', fsPath
+
+			if file.exists(fsPath) == false
+				return
+					_ callback
+						{
+							@ err
+								{
+									@ code 'ENOENT'
+			else
+				return 
+					_ callback
+						@ null
+						new FsStat
+							_ fileToFsItem
+								@ fsPath

@@ -1,0 +1,205 @@
+﻿module
+    kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var iconv = require('iconv-lite')
+	var glob = require('glob')
+	
+	var md = module.exports = {}
+
+    var pathSeparatorRe = /[\/\\]/g
+	set md.defaultEncoding = 'utf8'
+    set md.preserveBOM = false
+
+	set md.exists
+        function 
+            param path_string
+			param callback
+            _ fs.lstat
+				@ String(path_string)
+				f_cb_no_err( stat )
+					if err
+						if err.code === 'ENOENT'
+							return
+								_ callback
+									@ null
+									@ false
+						else
+							return
+								_ callback(err)
+					_ callback
+						@ null
+                        _ stat.isFile() || stat.isDirectory()
+
+	set md.isDirectory
+        function 
+            param path_string
+			param callback
+            _ fs.lstat
+				@ String(path_string)
+				f_cb_no_err( stat )
+					if err
+						if err.code === 'ENOENT'
+							return
+								_ callback
+									@ null
+									@ false
+						else
+							return
+								_ callback(err)
+					_ callback
+						@ null
+                        _ stat.isDirectory()
+    
+	set md.isFile
+        function 
+            param path_string
+			param callback
+            _ fs.lstat
+				@ String(path_string)
+				f_cb_no_err( stat )
+					if err
+						if err.code === 'ENOENT'
+							return
+								_ callback
+									@ null
+									@ false
+						else
+							return
+								_ callback(err)
+					_ callback
+						@ null
+                        _ stat.isFile()
+
+	set md.read
+        function 
+            param path_string
+			param options
+			param callback
+
+            _ fs.readFile
+				@ String(path_string)
+				f_cb( content )
+					if options.encoding !== null
+						set content = iconv.decode(content, (options.encoding || md.defaultEncoding))
+						if !md.preserveBOM && content.charCodeAt(0) === 0xFEFF
+							set content = content.substring(1)
+					_ callback
+						@ null
+						@ content
+
+	set md.getGlobbedFiles
+        function 
+            param globPattern
+            param options
+			param callback
+
+			var removeRoot = options.removeRoot
+
+			_ glob
+				@ String(globPattern)
+				f_cb( files )
+                    if removeRoot
+                        set files
+                            _ files.map
+                                function 
+                                    param file
+									return file.replace(removeRoot, '')
+					# log 'wizzi-repo.fs.file.getGlobbedFiles', files
+					_ callback
+						@ null
+						@ files
+
+	set md.write
+        function 
+            param path_string
+			param content
+			param options
+			param callback
+
+            _ md.mkpath
+				@ path_string
+				f_cb( notUsed )
+					if !Buffer.isBuffer(content)
+						set content = iconv.encode(content, (options.encoding || md.defaultEncoding))
+					_ fs.writeFile
+						@ String(path_string)
+						@ content
+						f_cb( notUsed )
+							return
+								_ callback
+									@ null
+									@ true
+
+	set md.mkpath
+        function 
+            param path_string
+			param callback
+            var dir = path.dirname(path_string)
+            _ md.mkdir(dir, callback)
+    
+	set md.mkdir
+        function 
+            param dirpath
+            param mode
+			param callback
+
+			if typeof (mode) === 'function'
+				set callback = mode, mode = null
+			if mode == null
+                set mode = parseInt('0777', 8) & ~ (process.umask())
+            
+			var part, parts = dirpath.split(pathSeparatorRe)
+			var len = parts.length
+			var pathArray = []
+
+			function repeater
+				param index
+				if index == len
+					# we are done, return
+					return
+						_ callback(null)
+
+				set part = parts[index]
+				_ pathArray.push(part)
+                var subpath = path.resolve(pathArray.join('/'))
+				_ md.exists
+					@ subpath
+					f_cb( result )
+						if result == false
+							_ fs.mkdir
+								@ subpath
+								@ mode
+								f_cb( notUsed )
+									_ process.nextTick
+										function 
+											_ repeater(index + 1)
+						else
+							_ process.nextTick
+								function 
+									_ repeater(index + 1)
+			_ repeater(0)
+
+	set md.copy
+        function 
+            param source_path_string
+			param dest_path_string
+			param callback
+
+            _ md.mkpath
+				@ String(dest_path_string)
+				f_cb( notUsed )
+					_ md.read
+						@ String(source_path_string)
+						{
+						f_cb( content )
+							_ md.write
+								@ String(dest_path_string)
+								@ content
+								{
+								f_cb( notUsed )
+									return
+										_ callback
+											@ null
+											@ true

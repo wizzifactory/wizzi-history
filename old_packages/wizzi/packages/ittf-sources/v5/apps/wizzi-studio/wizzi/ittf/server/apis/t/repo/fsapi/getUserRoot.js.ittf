@@ -1,0 +1,39 @@
+﻿$group
+
+	@ getUserRoot
+		function
+			param userId
+			param callback
+
+			_ repoFS.readDir
+				@ userId
+				@ null
+				@ null
+				f_cb( result )
+					var items = []
+					foreach f in result
+						const parentPath = userId
+						_ items.push
+							{
+								@ basename f.basename
+								@ parentFullPath parentPath
+								@ fullPath parentPath + '/' + f.basename
+								@ parentFolderPath null
+								@ folderPath null
+								@ kind f.kind
+					return
+						_ callback
+							@ null
+							{
+								@ status
+									_ success
+										@ 'Project folders retrieved for user ' + userId
+								@ data
+									{
+										@ kind 0
+										@ userId userId
+										@ projectId null
+										@ folderPath null
+										@ items items
+
+

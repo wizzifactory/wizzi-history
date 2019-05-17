@@ -1,0 +1,90 @@
+﻿$group
+
+	@ getFolderOrFile
+		function
+			param userId
+			param projectId
+			param itemPath
+			param callback
+
+			const fullPath = userId + '/' + projectId + '/' + itemPath
+			var itemPathParts = itemPath.split('/')
+			var basename = itemPathParts[itemPathParts.length-1]
+
+			_ repoFS.isFile
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( isfile )
+					if isfile
+						const fullPathForHash 
+							_ repoFS.fullPathForHash
+								@ userId
+								@ projectId
+								@ itemPath
+						const ss = basename.split('.')
+						const isIttfDocument = ss.length > 0 && ss.pop() === 'ittf'
+						const schema = isIttfDocument && ss.length > 1 ? ss[ss.length-1] : null
+						_ repoFS.readFile
+							@ userId
+							@ projectId
+							@ itemPath
+							f_cb( result )
+								return
+									_ callback
+										@ null
+										{
+											@ status
+												_ success
+													@ 'File retrieved ' + userId + '/' + projectId + '/' + itemPath
+											@ data
+												{
+													@ kind 1
+													@ userId userId
+													@ projectId projectId
+													@ folderPath itemPath
+													@ basename basename
+													@ content result
+													@ isIttfDocument isIttfDocument
+													@ schema schema
+													@ isFragment (fullPath).indexOf('/t/') > - 1
+													@ hash hashEncrypt(fullPathForHash)
+					else
+						const parentPath = fullPath
+						_ repoFS.readDir
+							@ userId
+							@ projectId
+							@ itemPath
+							f_cb( result )
+								var items = []
+								foreach f in result
+									const fileItem
+										{
+											@ basename f.basename
+											@ parentFullPath parentPath
+											@ fullPath parentPath + '/' + f.basename
+											@ parentFolderPath itemPath
+											@ folderPath itemPath + '/' + f.basename
+											@ kind f.kind
+									if f.kind == 1
+										const ss = f.basename.split('.')
+										set fileItem.isIttfDocument = ss.length > 0 && ss.pop() === 'ittf'
+										set fileItem.schema = fileItem.isIttfDocument && ss.length > 1 ? ss[ss.length-1] : null
+										set fileItem.isFragment = (parentPath + '/' + f.basename).indexOf('/t/') > - 1
+									_ items.push(fileItem)
+								return
+									_ callback
+										@ null
+										{
+											@ status
+												_ success
+													@ 'Folder retrieved ' + userId + '/' + projectId + '/' + itemPath
+											@ data
+												{
+													@ kind 0
+													@ userId userId
+													@ projectId projectId
+													@ folderPath itemPath
+													@ basename basename
+													@ items items
+

@@ -1,0 +1,16 @@
+﻿$group
+	$params coll, title
+	h4 ${title}
+	< List
+		{
+			_ ${coll}.map
+				=>
+					param doc
+					param i
+					return
+						< MyLink
+							@ key {i}
+							@ onClick
+								=>
+									_ this.handleSelectIttfDocument(doc.hash, doc.schema, doc.isFragment)
+							@ title {doc.displayName}

@@ -1,0 +1,59 @@
+﻿html
+
+	$
+		var opt = {}
+		opt.title = 'Wizzi file editor';
+		opt.useWizzi = true;
+		opt.useAce = true;
+		opt.useJsonFormatter = true;
+	
+	h/root/empty_layout_opt(&opt)
+
+		$append head-styles
+			css ./index.css.ittf
+	
+		$append body-scripts
+			js ./index.js.ittf
+
+		# root
+
+			. sh
+
+				. sh-he
+
+				. sh-bo
+
+					. sh-bo-ed
+						
+						. sh-bo-ed-1
+
+							. sh-bo-ed-1-sb
+
+								. fl
+									. fl-nodes
+										# tree-view
+
+							. sh-bo-ed-1-ed
+
+								# editor-container
+									. ittf-editor
+										# ittf-editor-title
+										. ittf-editor-panel
+											# editorContainer
+
+					. sh-bo-re
+
+						. sh-bo-re-1
+						
+							. sh-bo-re-1-br
+
+								# result-container
+									. result-browser
+										# result-browser-title
+										. result-browser-panel
+											# browserContainer
+
+							. sh-bo-re-1-sb
+								# result-bar
+			
+				. sh-fo

@@ -1,0 +1,25 @@
+﻿$group
+
+	var oldFolder = "c:/my/starters/darvin/test/rename/old"
+	var file_1 = oldFolder + "/f1.txt"
+	var file_1renamed = oldFolder + "/fr.txt"
+	var content = "Hello rename file "
+
+	describe rename a file
+
+		before-async
+			_ doc.writeFile
+				@ file_1
+				@ content + 'file 1'
+				f_cb_done( r )
+
+		it-async should rename a file
+			_ doc.renameFile
+				@ file_1
+				@ file_1renamed
+				f_cb_test( r )
+					log 'doc.renameFile', r
+					_ doc.readFile
+						@ file_1renamed
+						f_cb_done( read )
+							log 'doc.renameFile read', read

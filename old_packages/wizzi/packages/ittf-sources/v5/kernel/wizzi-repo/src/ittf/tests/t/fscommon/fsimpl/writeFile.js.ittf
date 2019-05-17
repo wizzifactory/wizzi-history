@@ -1,0 +1,41 @@
+﻿$group
+	$params folder:string|""
+
+	describe fs write a file
+
+		it-async should write an hello file
+			_ fsimpl.writeFile
+				@ '${folder}/folder1/hello.js.ittf'
+				@ 'Hello wizzi factory'
+				f_cb_test( result )
+					log 'tests.mongodb.fsimpl.writeFile, result:', result
+					tobe_string( result.code, 'DOCUMENT_WRITTEN' )
+					tobe_string( result.item.content, 'Hello wizzi factory' )
+					_ done
+
+		it-async should read an hello file
+			_ fsimpl.readFile
+				@ '${folder}/folder1/hello.js.ittf'
+				f_cb_test( content )
+					log 'tests.mongodb.fsimpl.readFile, content:', content
+					tobe_string( content, 'Hello wizzi factory' )
+					_ done
+
+		it-async hello.js.ittf should be a file not a directory
+			_ fsimpl.stat
+				@ '${folder}/folder1/hello.js.ittf'
+				f_cb_test( stat )
+					log 'tests.mongodb.fsimpl.stat, stat:', stat
+					tobe_true( stat.isFile() )
+					tobe_false( stat.isDirectory() )
+					_ done
+
+		it-async ${folder} should be a directory not a file
+			_ fsimpl.stat
+				@ '${folder}'
+				f_cb_test( stat )
+					log 'tests.mongodb.fsimpl.stat, stat:', stat
+					tobe_false( stat.isFile() )
+					tobe_true( stat.isDirectory() )
+					_ done
+

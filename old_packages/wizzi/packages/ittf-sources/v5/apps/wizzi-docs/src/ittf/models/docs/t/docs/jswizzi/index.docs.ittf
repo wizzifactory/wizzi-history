@@ -1,0 +1,68 @@
+﻿$group
+
+	summary
+
+		p JsWizzi is a subset of the ECMA-262 javascript standard used by 
+			+ the wizzi factory for processing ittf documents and build mTrees.
+			+ JsWizzi uses the quite efficent <a href="http://esprima.org/">esprima</a> parser
+			+ and is run by a custom javascript engine (JsWizziRunner).
+
+		p Ittf documents may contain Js-Wizzi statements in
+			ul
+				li The value part of nodes (ittf node values are interpolated)
+					ittf
+						- caption ${dollar}{ name.capitalize() }
+				li Conditional expression of $if, $elif, $while command nodes
+					ittf
+						- $if name.substring(1,2) === 'is'
+				li Collection name of $foreach command node
+					ittf
+						- $foreach item in model.getCollection('alfa')
+				li Body of $ and $global command nodes
+					ittf
+						- $ var beta = 100
+
+		p Sample JsWizzi expressions and statements.
+			ittf
+				- ul
+					- $ var i = 0;
+					- $while i < 10
+						- li counting ${dollar}{i}
+						- $ i++;
+
+		p The esprima syntax tree format is expected to be compatible 
+			+ with the Mozilla SpiderMonkey Parser API. 
+		
+		ul Node types implemented by JsWizzi:
+			li VariableDeclaration
+			li Statements
+				ul
+					li EmptyStatement
+					li ExpressionStatement
+					li IfStatement
+					li WhileStatement
+					li DoWhileStatement
+					li ForStatement
+					li ForInStatement
+					li BreakStatement
+					li ContinueStatement
+					li ReturnStatement
+					li TODO SwitchStatement
+			
+			li Expressions
+				ul
+					li UnaryExpression: !
+					li BinaryExpression: +. -, *, /, ==, ===, !=, !==, >=, >, <=, <
+					li UpdateExpressions: ++, --
+					li LogicalExpression: &&, ||
+					li ConditionalExpression: test ? consequent : alternate
+					li CallExpression
+					li MemberExpression
+					li AssignmentExpression: =, *=, /=, %=, +=, -=, <<=, >>=, >>>=, &=, ^=, |= 
+					li ArrayExpression
+					li ObjectExpression
+					li FunctionCall
+			
+			li FunctionDeclaration
+				div Simple function declaration. No prototypes. No function
+					+ objects; functions cannot be built by code and used like objects.

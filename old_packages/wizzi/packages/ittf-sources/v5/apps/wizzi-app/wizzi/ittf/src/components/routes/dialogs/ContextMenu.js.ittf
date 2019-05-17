@@ -1,0 +1,47 @@
+﻿r-component( ContextMenu
+
+	$append imports
+		import Menu from '@material-ui/core/Menu'
+		import MenuItem from '@material-ui/core/MenuItem'
+		function noop
+
+	prop id
+		string
+		default 'context-menu'
+
+	prop onClose
+		func
+		required
+
+	prop anchorEl
+		{
+
+	prop items
+		[
+		required
+
+	style
+
+	render
+		prop classes
+		prop id
+		prop anchorEl
+		prop items
+		prop onClose
+		log 'ContextMenu.render.anchorEl', anchorEl
+		return
+			< Menu 
+				@ id {id}
+				@ anchorEl {anchorEl}
+				@ open {Boolean(anchorEl)}
+				@ onClose {onClose}
+				{
+					_ items.map
+						=>
+							param p
+							param i
+							return
+								< MenuItem 
+									@ key {i}
+									@ onClick {p.onClick}
+									+ {p.label}

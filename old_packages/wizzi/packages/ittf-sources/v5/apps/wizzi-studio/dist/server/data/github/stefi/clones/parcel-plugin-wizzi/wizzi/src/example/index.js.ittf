@@ -1,0 +1,8 @@
+module
+    kind react
+    const Demo = require('./Demo.re')
+    _ document.addEventListener
+        @ 'DOMContentLoaded'
+        function 
+            param event
+            _ document.querySelector('#demo').appendChild(document.createTextNode(Demo.echo('This is calling from JS')))

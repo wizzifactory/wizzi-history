@@ -1,0 +1,22 @@
+﻿$group
+	$params filepath, entity|document, uri|@@null
+
+	if file.isFile(${filepath})
+		return
+			_ callback
+				@ null
+				{
+					@ data
+						_ file.readJSON
+							@ ${filepath}
+					@ status
+						_ success
+							$if uri == null
+								@ '${entity} fetched'
+							$else
+								@ '${entity} ' + ${uri} + ' fetched'
+	else
+		return
+			_ callback
+				_ error
+					@ '${entity} not found: "' + ${filepath} + '"'

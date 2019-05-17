@@ -1,0 +1,90 @@
+﻿vue
+    
+    template 
+        
+		span 
+            
+			v-navigation-drawer 
+                app 
+                v-model drawer
+                class brown lighten-2
+                dark 
+                disable-resize-watcher 
+                v-list 
+                    template 
+                        v-for (item, index) in items
+                        v-list-tile 
+                            :key index
+                            v-list-tile-content {{item.title}}
+                        v-divider 
+                            :key `divider-${index}`
+            v-toolbar 
+                app 
+                color brown darken-4
+                dark 
+                v-toolbar-side-icon 
+                    class hidden-md-and-up
+                    @click drawer = !drawer
+                v-spacer 
+                    class hidden-md-and-up
+                < router-link 
+                    to /
+                    v-toolbar-title {{appTitle}}
+                        to /
+                v-btn Menu
+                    flat 
+                    class hidden-sm-and-down
+                    to /menu
+                v-spacer 
+                    class hidden-sm-and-down
+                v-btn Blog
+                    flat 
+                    class hidden-sm-and-down
+                    to /blog
+                v-spacer 
+                    class hidden-sm-and-down
+                . hidden-sm-and-down
+                    v-if !isAuthenticated
+                    v-btn SIGN IN
+                        flat 
+                        to /sign-in
+                    v-btn JOIN
+                        color brown lighten-3
+                        to /join
+                div 
+                    v-else 
+                    v-btn PROFILE
+                        flat 
+                        to /about
+                    v-btn Logout
+                        outline 
+                        color white
+                        @click logout
+    script 
+        export-default 
+            { 
+                @ name 'AppNavigation'
+                m data
+                    return 
+                        { 
+                            @ appTitle 'Meal Prep'
+                            @ drawer false
+                            [ items
+                                { 
+                                    @ title 'Menu'
+                                { 
+                                    @ title 'Sign In'
+                                { 
+                                    @ title 'Join'
+                { computed
+                    m isAuthenticated
+                        return this.$store.getters.isAuthenticated
+                { methods
+                    m logout
+                        _ this.$store.dispatch('userSignOut')
+                        @id cd
+    style 
+        scoped 
+        < a
+            color white
+            text-decoration none

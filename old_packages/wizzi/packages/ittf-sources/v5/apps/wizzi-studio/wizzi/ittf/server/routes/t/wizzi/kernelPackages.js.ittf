@@ -1,0 +1,30 @@
+﻿$group
+
+	get( /api/wizzi/kernel/packages )
+
+		_ wizziApi.getKernelPackages
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/wizzi/kernel/package )
+
+		check-params( )
+			not-empty( query , xpackage )
+			optional( query , version )
+		
+		_ wizziApi.getKernelPackage
+			{
+				@ userId req.user.id
+				@ packageName xpackage
+				@ version version
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+

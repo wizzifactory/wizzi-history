@@ -1,0 +1,42 @@
+﻿base_test( mongodb.fs.document )
+	+
+	$append imports
+		var 
+			decl MongoClient
+				_ require('mongodb')
+					. MongoClient
+			decl assert = require('assert')
+			decl FsMongo = require('../../lib/mongodb/fs/fsmongo')
+			decl Document = require('../../lib/mongodb/fs/document')
+
+	var mounted_db
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsCommon, doc
+
+	$include mongo_before_async
+	fscommon/document/createFolder()
+	fscommon/document/write_read_File()
+	fscommon/document/isFile()
+	fscommon/document/copyFile()
+	fscommon/document/deleteFile()
+	fscommon/document/renameFile()
+	fscommon/document/getFolder()
+	fscommon/document/isFolder()
+	$include mongo_after_async
+
+	$*
+
+	
+	$include file/isFile
+	$include file/copyFile
+	$include file/deleteFile
+	$include file/renameFile
+
+
+	$include file/createFolder
+	$include file/readFile
+	$include file/writeFile
+	*$
+
+	

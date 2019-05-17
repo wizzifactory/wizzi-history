@@ -1,0 +1,44 @@
+﻿module
+    kind es6
+
+    import mongoose from 'mongoose'
+    
+	const userSchema
+        new mongoose.Schema
+            { 
+                { username
+                    @ type String
+                    @ unique true
+                { email
+                    @ type String
+                    @ unique true
+    
+	set userSchema.statics.findByLogin
+        async-function 
+            param login
+            let user
+                await 
+                    _ this.findOne
+                        { 
+                            @ username login
+            
+			if !user
+                set user =
+                    await 
+                        _ this.findOne
+                            { 
+                                @ email login
+            return user
+    
+	_ userSchema.pre
+        @ 'remove'
+        function 
+            param next
+            _ this.model('Message').deleteMany
+                { 
+                    @ user this._id
+                @ next
+    
+	const User = mongoose.model('User', userSchema)
+    
+	export-default User

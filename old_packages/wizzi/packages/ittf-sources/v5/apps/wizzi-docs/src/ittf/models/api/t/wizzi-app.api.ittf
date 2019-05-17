@@ -1,0 +1,74 @@
+﻿$group
+
+	api wizzi-app
+		# This API should be implemented by applications that
+		# need a synchronous access to wizzi factory services.
+		# The jswizzi code inside an ittf document is executed
+		# synchronously, instead model loading always is asynchronous.
+		# So if an application uses ittf documents,
+		# that need to load context models in the jswizzi code,
+		# those models must be preloaded at start time in an asynchronous way,
+		# implementing the wizzi-app.wizzifile interface.
+		# TODO currently preloaded models cannot have a dynamic context,
+		# and after the loading at start time they are static models.
+		# The advent of compiled ittf documnt templates, that
+		# already has started in wizzi factory v4 (pre-release), should
+		# allow dynamic contexts.
+
+	api wizzi-app.wizzifile
+		module
+			standard-path {wizzi-app}/wizzifile.js
+		
+		# The methods of this API must be implemented by applications.
+		# An application must pass the path of the wizzifile.js file to
+		# the wizzi.runnerServer, at application start up, calling the method
+		# wizzi.startRunnerServer.
+		# The wizzi.runnerServer is a singleton object; calling twice the start
+		# method throws an error.
+				
+		{
+			m onConfig
+				# This handler is invoked before the runner server
+				# verifies its configuration parameters. Can be used to
+				# add or modify configuration values.
+				{ wizziConfig
+					api-ref wizzi.config
+					# The wizzi.config object can be modified.
+				cb()
+					null
+
+			m onStart
+				# This handler is invoked when the runner server
+				# is ready for creating wizzi factories and registering plugins.
+				# Calling the wizzi.runnerServer.registerFactory(factoryToken, wizzi.wizziFactory.createOptions)
+				# imply the creation of a factory identified by `factoryToken`.
+				{ runnerServer
+					api-ref wizzi.runnerServer
+				{ wizziConfig
+					api-ref wizzi.config
+					# The wizzi.config object is read-only.
+				cb()
+					null
+
+				info
+					api-call wizzi.runnerServer.registerApi
+					api-call wizzi.runnerServer.registerFactory
+			
+			m onPrepare
+				# This handler is invoked once for every factory previously registered  
+				# calling the wizzi.runnerServer.registerFactory method.
+				# The parameter `factoryToken` indicates which factory is ready to
+				# receive a loadModel request.
+				string factoryToken
+					# The identifier of a factory registered calling wizzi.runnerServer.registerFactory
+				{ runnerServer
+					api-ref wizzi.runnerServer
+				{ wizziConfig
+					api-ref wizzi.config
+					# The wizzi.config object is read-only.
+				cb()
+					null
+
+				info
+					api-call wizzi.runnerServer.loadModel
+					api-call wizzi.runnerServer.transformModel

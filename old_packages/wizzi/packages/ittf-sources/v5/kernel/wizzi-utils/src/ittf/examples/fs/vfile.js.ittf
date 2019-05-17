@@ -1,0 +1,66 @@
+﻿module
+	kind jsfile
+
+	import path
+	import del
+	var vfile = require('../../lib/fs/vfile')
+	var file = vfile()
+
+	_ del.sync
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ '**'
+			@ '*.*'
+
+	_ file.write
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 't'
+			@ 'alpha.tests.ittf'
+		@ 'tests makepath'
+		f_cb_throw( result )
+			log 'result', result
+
+	_ file.write
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'globs2'
+			@ 'globbed_1.ittf'
+		@ 'globbed 1'
+	
+	_ file.write
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'globs2'
+			@ 'globbed_2.ittf'
+		@ 'globbed 2'
+
+	var result
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+	log 'vfile.result', result
+
+	var result
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+			{
+				@ removeRoot
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+
+	log 'vfile.result', result
+
+

@@ -1,0 +1,18 @@
+﻿$group
+
+	function folderBrowse_step_1
+		
+		log 'wizzi-utils.examples.folderBrowse_step_1 START'
+
+		_ folderBrowse.scan
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'first'
+			{
+				@ rootFolder
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+			f_cb_test( result )
+				log 'result\n', JSON.stringify(result, null, 2)

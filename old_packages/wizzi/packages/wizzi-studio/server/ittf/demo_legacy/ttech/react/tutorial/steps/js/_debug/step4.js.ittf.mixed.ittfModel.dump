@@ -1,0 +1,219 @@
+  module  ids: 1 43
+    kind react ids: 2 44
+    $  ids: 3 45
+      var xnode = {} ids: 4 46
+    $group  ids: 201 213
+      $args: App $params: name
+      var ${name} ids: 203 214
+        _ React.createClass ids: 204 215
+          {  ids: 205 216
+            @ getInitialState ids: 224 229
+              function  ids: 225 230
+                return  ids: 226 231
+                  {  ids: 227 232
+                    @ isModalOpen false ids: 7 49
+            @ ${name} ids: 234 238
+              $args: openModal $params: name
+              function  ids: 236 239
+                _ this.setState ids: 9 51
+                  {  ids: 10 52
+                    @ isModalOpen true ids: 11 53
+            @ ${name} ids: 234 241
+              $args: closeModal $params: name
+              function  ids: 236 242
+                _ this.setState ids: 13 55
+                  {  ids: 14 56
+                    @ isModalOpen false ids: 15 57
+            @ render ids: 244 247
+              function  ids: 245 248
+                var self = this ids: 17 59
+                return  ids: 18 60
+                  _ React.createElement ids: 250 258
+                    $args:  $params: p2|@@null, p3|@@null
+                    @ 'div' ids: 252 259
+                    $if p2 != null ids: 253 260
+                      @ ${p2} ids: 254 261
+                    $if p3 != null ids: 255 262
+                      @ ${p3} ids: 256 263
+                    {  ids: 20 62
+                    _ React.createElement ids: 265 273
+                      $args: Open modal $params: text|@@null
+                      @ 'button' ids: 267 274
+                      {  ids: 268 275
+                        $hook attrs ids: 269 276
+                      $if text != null ids: 270 277
+                        @ '${text}' ids: 271 278
+                      $append attrs ids: 22 64
+                        @ ${name} ids: 282 288
+                          $args: onClick $params: name
+                          function  ids: 284 289
+                            param evt ids: 285 290
+                            _ evt.preventDefault() ids: 286 291
+                            _ self.openModal() ids: 24 66
+                    _ React.createElement ids: 293 302
+                      $args: Modal $params: p1|@@null, p2|@@null, p3|@@null
+                      $if p1 != null ids: 295 303
+                        @ ${p1} ids: 296 304
+                      $if p2 != null ids: 297 305
+                        @ ${p2} ids: 298 306
+                      $if p3 != null ids: 299 307
+                        @ ${p3} ids: 300 308
+                      {  ids: 26 68
+                        @ isOpen this.state.isModalOpen ids: 27 69
+                        @ ${name} ids: 282 312
+                          $args: onClose $params: name
+                          function  ids: 284 313
+                            param evt ids: 285 314
+                            _ evt.preventDefault() ids: 286 315
+                            _ self.closeModal() ids: 29 71
+                      _ React.createElement ids: 317 325
+                        $args: Modal title $params: text|@@null
+                        @ 'h1' ids: 319 326
+                        {  ids: 320 327
+                          $hook attrs ids: 321 328
+                        $if text != null ids: 322 329
+                          @ '${text}' ids: 323 330
+                      _ React.createElement ids: 332 340
+                        $args: hello $params: text|@@null
+                        @ 'p' ids: 334 341
+                        {  ids: 335 342
+                          $hook attrs ids: 336 343
+                        $if text != null ids: 337 344
+                          @ '${text}' ids: 338 345
+                      _ React.createElement ids: 332 347
+                        $args:  $params: text|@@null
+                        @ 'p' ids: 334 348
+                        {  ids: 335 349
+                          $hook attrs ids: 336 350
+                        $if text != null ids: 337 351
+                          @ '${text}' ids: 338 352
+                        _ React.createElement ids: 265 354
+                          $args: Close $params: text|@@null
+                          @ 'button' ids: 267 355
+                          {  ids: 268 356
+                            $hook attrs ids: 269 357
+                          $if text != null ids: 270 358
+                            @ '${text}' ids: 271 359
+                          $append attrs ids: 34 76
+                            @ ${name} ids: 282 362
+                              $args: onClick $params: name
+                              function  ids: 284 363
+                                param evt ids: 285 364
+                                _ evt.preventDefault() ids: 286 365
+                                _ self.closeModal() ids: 36 78
+      set ${name}.propTypes ids: 207 218
+        {  ids: 208 219
+          $hook propTypes ids: 209 220
+      set ${name}.defaultProps ids: 210 221
+        {  ids: 211 222
+          $hook defaultProps ids: 212 223
+    $group  ids: 85 143
+      $group  ids: 201 367
+        $args: Modal $params: name
+        var ${name} ids: 203 368
+          _ React.createClass ids: 204 369
+            {  ids: 205 370
+              @ ${name} ids: 282 378
+                $args: close $params: name
+                function  ids: 284 379
+                  param evt ids: 285 380
+                  _ evt.preventDefault() ids: 286 381
+                  if this.props.onClose ids: 88 146
+                    _ this.props.onClose() ids: 89 147
+              @ ${name} ids: 234 383
+                $args: render $params: name
+                function  ids: 236 384
+                  if this.props.isOpen === false ids: 91 149
+                    return null ids: 92 150
+                  var modalStyle ids: 93 151
+                    {  ids: 94 152
+                      @ position 'absolute' ids: 95 153
+                      @ top '50%' ids: 96 154
+                      @ left '50%' ids: 97 155
+                      @ transform 'translate(-50%, -50%)' ids: 98 156
+                      @ zIndex '9999' ids: 99 157
+                      @ background '#fff' ids: 100 158
+                  if this.props.width && this.props.height ids: 101 159
+                    set modalStyle.width = this.props.width + 'px' ids: 102 160
+                    set modalStyle.height = this.props.height + 'px' ids: 103 161
+                    set modalStyle.marginLeft = '-' + (this.props.width/2) + 'px' ids: 104 162
+                    set modalStyle.marginTop = '-' + (this.props.height/2) + 'px' ids: 105 163
+                    set modalStyle.transform = null ids: 106 164
+                  if this.props.style ids: 107 165
+                    for var key in this.props.style ids: 108 166
+                      set modalStyle[key] = this.props.style[key] ids: 109 167
+                  var backdropStyle ids: 110 168
+                    {  ids: 111 169
+                      @ position 'absolute' ids: 112 170
+                      @ width '100%' ids: 113 171
+                      @ height '100%' ids: 114 172
+                      @ top '0px' ids: 115 173
+                      @ left '0px' ids: 116 174
+                      @ zIndex '9998' ids: 117 175
+                      @ background 'rgba(0, 0, 0, 0.3)' ids: 118 176
+                  if this.props.backdropStyle ids: 119 177
+                    for var key in this.props.backdropStyle ids: 120 178
+                      set backdropStyle[key] = this.props.backdropStyle[key] ids: 121 179
+                  return  ids: 122 180
+                    _ React.createElement ids: 250 386
+                      $args:  $params: p2|@@null, p3|@@null
+                      @ 'div' ids: 252 387
+                      $if p2 != null ids: 253 388
+                        @ ${p2} ids: 254 389
+                      $if p3 != null ids: 255 390
+                        @ ${p3} ids: 256 391
+                      {  ids: 124 182
+                        @ className this.props.containerClassName ids: 125 183
+                      _ React.createElement ids: 250 393
+                        $args:  $params: p2|@@null, p3|@@null
+                        @ 'div' ids: 252 394
+                        $if p2 != null ids: 253 395
+                          @ ${p2} ids: 254 396
+                        $if p3 != null ids: 255 397
+                          @ ${p3} ids: 256 398
+                        {  ids: 127 185
+                          @ className this.props.className ids: 128 186
+                          @ style modalStyle ids: 129 187
+                        @ this.props.children ids: 130 188
+                      iif !this.props.noBackdrop ids: 131 189
+                        then  ids: 132 190
+                          _ React.createElement ids: 250 400
+                            $args:  $params: p2|@@null, p3|@@null
+                            @ 'div' ids: 252 401
+                            $if p2 != null ids: 253 402
+                              @ ${p2} ids: 254 403
+                            $if p3 != null ids: 255 404
+                              @ ${p3} ids: 256 405
+                            {  ids: 134 192
+                              @ className this.props.backdropClassName ids: 135 193
+                              @ style backdropStyle ids: 136 194
+                              @ onClick ids: 137 195
+                                function  ids: 138 196
+                                  param evt ids: 139 197
+                                    _ this.close(evt) ids: 140 198
+                        else  ids: 141 199
+                          _ React.createElement ids: 250 407
+                            $args:  $params: p2|@@null, p3|@@null
+                            @ 'div' ids: 252 408
+                            $if p2 != null ids: 253 409
+                              @ ${p2} ids: 254 410
+                            $if p3 != null ids: 255 411
+                              @ ${p3} ids: 256 412
+        set ${name}.propTypes ids: 207 372
+          {  ids: 208 373
+            $hook propTypes ids: 209 374
+        set ${name}.defaultProps ids: 210 375
+          {  ids: 211 376
+            $hook defaultProps ids: 212 377
+    _ ReactDOM.render ids: 38 80
+      _ React.createElement ids: 293 414
+        $args: App $params: p1|@@null, p2|@@null, p3|@@null
+        $if p1 != null ids: 295 415
+          @ ${p1} ids: 296 416
+        $if p2 != null ids: 297 417
+          @ ${p2} ids: 298 418
+        $if p3 != null ids: 299 419
+          @ ${p3} ids: 300 420
+        {  ids: 40 82
+        @ null ids: 41 83
+      _ document.getElementById('container') ids: 42 84

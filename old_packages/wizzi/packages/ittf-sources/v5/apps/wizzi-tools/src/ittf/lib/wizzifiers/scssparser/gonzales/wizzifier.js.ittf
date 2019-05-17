@@ -1,0 +1,464 @@
+﻿basewizzifier()
+
+	$append imports
+		var scss_parser = require('gonzales-pe')
+		var cleanGonzales = require('./cleanGonzales')
+		function parseInternal
+			param scss
+			param options
+			param callback
+			var syntax
+				_ scss_parser.parse
+					@ scss
+					{
+						@ syntax 'scss'
+			_ cleanGonzales.cleanAst(syntax)
+			return
+				_ callback
+					@ null
+					@ syntax
+            
+    var format
+        function 
+			param parent
+			param ast
+			param options
+			if !ast
+				throw new Error('missing ast. parent is: ' + util.inspect(parent, { depth: 2 }))
+			if parent === null
+				if options.starter
+					set options.starter = false
+				elif options.returnText
+					# ok
+				else
+					_ showstack(options)
+					throw new Error('parent is null.' + util.inspect(ast, 4))
+			if options.verbose
+				log 'ast.type', ast.type
+			var type = ast.type === 'arguments' ? 'xarguments' : ast.type
+			var formatter = format[type]
+			if formatter
+				_ options.stack.push(ast)
+				var result = formatter(parent, ast, options)
+				_ options.stack.pop()
+				return result
+			else
+				throw new Error('no formatter for type: ' + ast.type)
+    
+	function wizzify
+        param scss
+        param options
+        param callback
+		set options = options || {};
+		set options.input = scss
+		set options.stack = []
+		set options.formatTextNodes = []
+		set options.verbose = true
+		_ parseInternal
+			@ scss
+			@ options
+			f_cb( syntax )
+				log JSON.stringify(syntax, null, 2)
+				var root
+					{
+						@ tag 'scss'
+						[ children
+				_ format(root, syntax, options)
+				return
+					_ callback
+						@ null
+						@ root
+
+	f( space, ignore
+
+	f( variable, variable
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = '$' + getTextList(p_content, '')
+			set ret.textified = ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( ident, ident;is-text
+		name( content
+
+	f( id, #;is-text
+		name( content
+
+	f( value, value
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, ' ')
+			set ret.textified = ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( number, number;is-text
+		name( content
+
+	f( string, string;is-text
+		name( content
+
+	f( color, color
+		name( content
+		set ret.textified = '#' + ret.name
+
+	f( uri, uri;is-text
+		name( content
+		set ret.name = 'url(' + ret.name + ')'
+		set ret.textified = ret.name
+
+	f( percentage, %
+		name( content
+		set ret.textified = ret.name + '%' 
+
+	f( important, !important
+	
+	f( block, block
+		f_a(content)
+
+	f( declaration, @
+		f_a_temp(content)
+		if p_content.children.length == 2 && p_content.children[0].tag === 'property' && p_content.children[1].tag === 'value'
+			set ret.name = getNodeText(p_content.children[0])
+			if ret.name[0] === '$'
+				set ret.tag = 'set'
+				set ret.name = ret.name.substr(1)
+			if isTextualNode(p_content.children[1]) 
+				set ret.name += ' ' + getNodeText(p_content.children[1])
+			else
+				foreach item in p_content.children[1].children
+					_ ret.children.push(item)
+
+	f( property, property
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+		#
+			if verify.isArray(node.content)
+				f_a(content)
+			else
+				name(content)
+
+	f( propertyDelimiter, ignore
+
+	f( declarationDelimiter, ignore
+
+	f( stylesheet, skip
+		f_a(content)
+
+	f( ruleset, rule
+		f_a_temp(content)
+		if p_content.children.length == 2 && p_content.children[0].tag === 'selector' && p_content.children[1].tag === 'block'
+			# selectors
+			var sel = p_content.children[0]
+			if sel.children.length == 0
+				throw new Error('ruleset unexpected selector without children: ' + JSON.stringify(node, null, 2))
+			set ret.tag = sel.children[0].tag
+			set ret.name = sel.children[0].name
+			for var i=1; i<sel.children.length; i++
+				_ ret.children.push(sel.children[i])
+			# block
+			foreach item in p_content.children[1].children
+				_ ret.children.push(item)
+
+	f( selector, selector
+		f_a(content)
+		if ret.children.length == 2 && ret.children[0].tag === '&' && ret.children[1].tag === '&-extension'
+			set ret.children[0].name = ret.children[1].name
+			set ret.children = [ ret.children[0] ]
+
+	f( typeSelector, <
+		name(content)
+
+	f( parentSelector, parentSelector 
+		set ret.tag = node.content
+
+	f( parentSelectorExtension, &-extension
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( attributeSelector, [ 
+		f_a(content)
+
+	f( universalSelector, * 
+		f_a(content)
+
+	f( attributeName, attributeName 
+		f_a(content)
+
+	f( attributeMatch, attributeMatch 
+		name(content)
+
+	f( attributeValue, attributeValue 
+		f_a(content)
+
+	f( pseudoClass, : 
+		f_a(content)
+		var p = getChildByTag(ret, 'ident')
+		if p
+			set ret.name = getNodeText(p)
+			_ removeChildByTag(ret, 'ident')
+		set p = getChildByTag(ret, 'xarguments')
+		if p
+			foreach item in p.children
+				_ ret.children.push(item)
+			_ removeChildByTag(ret, 'xarguments')
+		else
+			set ret.textified = ret.name
+
+	f( class, .
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = '.' + ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( include, include
+		f_a(content)
+		var p = getChildByTag(ret, '@@')
+		if p
+			set ret.tag = '@include'
+			_ removeChildByTag(ret, '@@')
+		set p = getChildByTag(ret, 'ident')
+		if p
+			set ret.name = getNodeText(p)
+			_ removeChildByTag(ret, 'ident')
+		set p = getChildByTag(ret, 'xarguments')
+		if p
+			foreach item in p.children
+				_ ret.children.push(item)
+			_ removeChildByTag(ret, 'xarguments')
+		set p = getChildByTag(ret, 'block')
+		if p
+			var block
+				{
+					@ tag '{'
+					[ children
+			foreach item in p.children
+				_ block.children.push(item)
+			_ ret.children.push(block)
+			_ removeChildByTag(ret, 'block')
+
+	f( function, _
+		f_a(content)
+		var p = getChildByTag(ret, 'ident')
+		if p
+			set ret.name = getNodeText(p)
+			_ removeChildByTag(ret, 'ident')
+		set p = getChildByTag(ret, 'xarguments')
+		if p
+			foreach item in p.children
+				_ ret.children.push(item)
+			_ removeChildByTag(ret, 'xarguments')
+		
+
+	f( xarguments, xarguments
+		f_a_temp(content)
+		var acc = []
+		var temp
+			{
+				@ tag null
+				[ children
+		foreach item in p_content.children
+			if item.tag === 'delimiter'
+				if temp.tag !== null
+					_ ret.children.push(temp)
+				var temp
+					{
+						@ tag null
+						[ children
+			else
+				if isTextualNode(item)
+					if temp.tag == null
+						set temp.name = getNodeText(item)
+					else
+						set temp.name += getNodeText(item)
+					set temp.tag = '@'
+				else
+					if item.tag === 'selector'
+						foreach sel in item.children
+							_ ret.children.push(sel)
+					else
+						_ ret.children.push(item)
+						# throw new Error('xarguments. expected selector node: ' + JSON.stringify(node, null, 2))
+					#
+						log '*****', 'xarguments', 'item.tag', item.tag, item.name, isTextualNode(item.children)
+						if item.tag === 'selector' && isTextualNode(item.children)
+							set temp.name = getTextList(item, ' ')
+						else
+							_ temp.children.push(item)
+		if temp.tag !== null
+			_ ret.children.push(temp)
+
+	f( delimiter, delimiter
+
+	f( parentheses, (
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = '(' + ret.name + ')'
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( combinator, combinator
+		set ret.tag = node.content
+
+	f( dimension, dimension
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( operator, operator
+		name(content)
+		set ret.name = ' ' + ret.name + ' '
+		set ret.textified = ret.name
+
+	f( atkeyword, @@
+		name(content)
+
+	f( atrule, @@@
+		f_a(content)
+		var p = getChildByTag(ret, '@@')
+		if p
+			set ret.tag = '@' + getNodeText(p)
+			_ removeChildByTag(ret, '@@')
+		var p_block = getChildByTag(ret, 'block')
+		if p_block
+			_ removeChildByTag(ret, 'block')
+		if isTextualNode(ret.children)
+			set ret.name = getTextList(ret, ' ')
+			set ret.textified = ret.name
+			set ret.children = []
+		else
+			if ret.tag === '@function' && ret.children.length > 0 && ret.children[0].tag === '_'
+				set ret.name = ret.children[0].name || getNodeText(ret.children[0])
+				var acc = []
+				foreach item in ret.children[0].children
+					set item.tag = item.tag === '@' ? 'param' : item.tag
+					_ acc.push(item)
+				set ret.children = acc
+		if p_block
+			foreach item in p_block.children
+				_ ret.children.push(item)
+
+	f( mixin, mixin
+		f_a(content)
+		var p = getChildByTag(ret, '@@')
+		if p
+			set ret.tag = '@mixin'
+			_ removeChildByTag(ret, '@@')
+		var p = getChildByTag(ret, 'ident')
+		if p
+			set ret.name = getNodeText(p)
+			_ removeChildByTag(ret, 'ident')
+		set p = getChildByTag(ret, 'xarguments')
+		if p
+			foreach item in p.children
+				set item.tag = item.tag === '@' ? 'param' : item.tag
+				_ ret.children.push(item)
+			_ removeChildByTag(ret, 'xarguments')
+		set p = getChildByTag(ret, 'block')
+		if p
+			foreach item in p.children
+				_ ret.children.push(item)
+			_ removeChildByTag(ret, 'block')
+
+	f( extend, extend
+		f_a(content)
+		var p = getChildByTag(ret, '@@')
+		if p
+			set ret.tag = '@extend'
+			_ removeChildByTag(ret, '@@')
+		set p = getChildByTag(ret, 'selector')
+		if p
+			if isTextualNode(p)
+				set ret.name = getNodeText(p)
+				_ removeChildByTag(ret, 'selector')
+			elif p.children.length == 1 && isTextualNode(p.children[0])
+				set ret.name = getNodeText(p.children[0])
+				_ removeChildByTag(ret, 'selector')
+	
+	f( placeholder, %
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = ret.name
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( interpolation, #{
+		f_a_temp(content)
+		if isTextualNode(p_content.children)
+			set ret.name = getTextList(p_content, '')
+			set ret.textified = '#{' + ret.name + '}'
+		else
+			foreach item in p_content.children
+				_ ret.children.push(item)
+
+	f( conditionalStatement, conditionalStatement
+		f_a(content)
+		set ret.tag = ret.children[0].tag
+		_ removeChildByPos(ret, 0)
+		var p = getChildByTag(ret, 'block')
+		if p
+			foreach item in p.children
+				_ ret.children.push(item)
+			_ removeChildByTag(ret, 'block')
+
+	f( condition, condition
+		f_a(content)
+		var p = getChildByTag(ret, '@@')
+		if p
+			set ret.tag = '@' + p.name
+			_ removeChildByTag(ret, '@@')
+
+	f( loop, loop
+		f_a(content)
+		var p = getChildByTag(ret, '@@')
+		if p
+			set ret.tag = '@' + p.name
+			_ removeChildByTag(ret, '@@')
+		var p_block = getChildByTag(ret, 'block')
+		if p_block
+			_ removeChildByTag(ret, 'block')
+		if isTextualNode(ret.children)
+			set ret.name = getTextList(ret, ' ')
+			set ret.textified = ret.name
+			set ret.children = []
+		else
+			throw new Error('loop. expected textual. node:' + JSON.stringify(node, null, 2))
+		if p_block
+			foreach item in p_block.children
+				_ ret.children.push(item)
+
+
+	f( default, default
+		name(content)
+
+	f( singlelineComment, /*
+		name(content)
+
+	f( multilineComment, /*
+		name(content)
+
+	$include helper_functions

@@ -1,0 +1,26 @@
+﻿$group
+
+	function ittfDocumentScanner_step_1
+		
+		log 'wizzi-utils.examples.ittfDocumentScanner_step_1 START'
+
+		_ ittfDocumentScanner.scan
+			_ path.join
+				@ "C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/ttech/css/layouts/step_1"
+				@ 'index.html.ittf'
+			{
+				@ rootFolder 'C:/My/wizzi/v5/apps/wizzi-studio/dist/server'
+			f_cb_test( result )
+				log 'ittfDocumentScanner_step_1 err', err
+				var msg
+					_ stringify
+						@ result
+						@ null
+						@ 2
+				# log 'step_4 result', msg
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'outputs'
+						@ 'ittfDocumentScanner.json'
+					@ msg

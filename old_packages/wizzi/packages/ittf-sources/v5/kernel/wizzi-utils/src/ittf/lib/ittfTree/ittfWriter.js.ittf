@@ -1,0 +1,45 @@
+﻿module
+    kind jsfile
+
+	function ittfWriter
+		param node
+		var sb = []
+		_ writeNode
+			@ node
+			@ sb
+			@ 0
+		return sb.join('')
+
+	function writeNode
+		param node
+		param sb
+		param indent
+		_ sb.push
+			new Array(1 + indent * 4).join(' ')
+		if node.tag
+			_ sb.push
+				@ node.tag
+			if node.name
+				_ sb.push
+					@ ' '
+					@ node.name
+		elif node.name
+			_ sb.push
+				@ node.name
+			if node.value
+				_ sb.push
+					@ ' '
+					@ node.value
+		else
+			throw new Error('wizzi-utils.ittfWriter. Invalid node: missing tag or name property.')
+		_ sb.push('\n')
+		if node.children
+			foreach item in node.children
+				_ writeNode
+					@ item
+					@ sb
+					@ indent + 1
+		else
+			throw new Error('wizzi-utils.ittfWriter. Invalid node: missing tag or name property.')
+   
+	set module.exports = ittfWriter

@@ -1,0 +1,42 @@
+﻿$group
+
+	summary
+		p Wizzi jobs are the automation component of the wizzi factory.
+
+	concept The production manager
+
+		summary
+
+			p The production of complex software systems can
+				+ require a great number of model processing, transformations
+				+ and artifact generations.
+
+			p The wizzi.production.productionManager class implements an
+				+ api for scheduling complex jobs. It is the wizzi factory
+				+ task manager.
+
+			p A Wizzi Model type implemented by the 'wizzi-core' plugin , the 'wfjob' schema,
+				+ can be used to describe wizzi factory jobs. A 'wfjob' model organizes models processing
+				+ and artifact generations in production lines that are executed in 
+				+ sequence, so that a line can prepare models and artifacts for the next one.
+
+			p A job is executed calling the following method of the 
+				+ wizzi.wizziFactory instance class.
+
+			ittf
+				- ...
+					- m executeJob
+						- { jobRequest
+							- string name
+								- # for info and error messages
+							- string path
+								- # path to the 'wfjob' ittf document that the wizzi.production.productionManager will load.
+							- { productionOptions
+								- boolean verbose
+									- # not implemented yet
+							- { globalContext
+								- optional
+						- callback
+
+
+

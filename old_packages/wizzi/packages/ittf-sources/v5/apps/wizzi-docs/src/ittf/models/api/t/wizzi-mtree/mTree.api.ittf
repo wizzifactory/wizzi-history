@@ -1,0 +1,51 @@
+﻿$group
+
+	api wizzi-mtree.mTree
+		kernel
+		class-instance
+
+		# The final mTree produced by the evaluation step of the
+		# wizzi-mtree.loader.loadMTree method.
+		# When conformant to a wizzi schema can be used to
+		# load a Wizzi Model.
+
+		{
+			string uri
+				# The location of the source ittf document.
+				# TODO even if the root node is a mixin call to a container document?
+				# or is simply the location of the source ittf document of the resulting 
+				# root node?
+			string $schema
+				# The schema to which this mTree is conformant.
+			{ loadHistory
+				api-ref wizzi-mtree.loader.loadHistory
+			[ nodes
+				{ node
+					api-ref : wizzi-mtree.mTree.node
+
+	api wizzi-mtree.mTree.node
+		kernel
+		class-instance
+	
+		{
+			string n
+				# The value of the source ittf node name
+			string v
+				# The value of the source ittf node value
+			string r
+				# The source ittf node row position
+			string c
+				# The source ittf node name column position
+			string s
+				# The key of the ittfDocumentData of the ittf source document
+				# to which this node belongs. The ittfDocumentData object
+				# can be retrieved, with this key, from the wizzi-mtree.mTree.loadHistory object, 
+				# available as a property of the wizzi-mtree.mTree.
+			string u
+				# The key of the mTreeBrick to which this node belongs.
+				# The mTreeBrick object can be retrieved, with this key, from the 
+				# wizzi-mtree.mTree.loadHistory object, available as a property 
+				# of the wizzi-mtree.mTree.
+			[ children
+				{ node
+					api-ref wizzi-mtree.mTree.node

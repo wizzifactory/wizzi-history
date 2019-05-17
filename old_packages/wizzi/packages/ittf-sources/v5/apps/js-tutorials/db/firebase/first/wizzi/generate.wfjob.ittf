@@ -1,0 +1,74 @@
+﻿wfjob nodejs-es6-firebase
+	
+	$include app-options
+	
+	$
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var ittf_src          = path.join(__dirname, 'ittf', 'src');
+		var ittf_data         = path.join(__dirname, 'ittf', 'data');
+		var dest_folder       = path.resolve(__dirname, '..', 'app');
+		var dest_folder_data  = path.resolve(__dirname, '..', 'data');
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+		$include wfjob/any_html
+
+
+		$if app.useBabel
+			artifact .babelrc
+				src .babelrc.json.ittf
+				schema json
+				generator json/document
+				dest-path .babelrc
+				extension babelrc
+
+	line src
+		cwd-folder ${ittf_src}
+		dest-folder ${dest_folder}/src
+
+		$include wfjob/any_js
+		$include wfjob/any_json
+		$include wfjob/any_css
+		$include wfjob/any_html
+		$include wfjob/any_svg
+
+		artifact any_ittf_inside___copy
+			src ${ittf_src}/**/*__copy/**/*.ittf
+			extension ittf
+
+	line data
+		cwd-folder ${ittf_data}
+		dest-folder ${dest_folder_data}
+
+		artifact any_js_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.js
+			extension js
+		artifact any_css_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.css
+			extension css
+		artifact any_scss_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.scss
+			extension scss
+		artifact any_graphql_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.graphql
+			extension graphql
+		artifact any_svg_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.svg
+			extension svg
+		artifact any_md_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.md
+			extension md
+		artifact any_json_inside___copy
+			src ${ittf_data}/**/*__copy/**/*.json
+			extension json
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref src
+		line-ref data

@@ -1,0 +1,31 @@
+﻿$group
+
+	h3 The ArtifactGenerator 'myhtml/document'
+
+	p An ArtifactGenerator must expose this interface
+
+	js
+		- 
+			- /*
+			-  * @params (Object) model 
+			-  * @params (Object wizzi-core::artifact::genContext) ctx
+			-  */
+			- md.gen = function(model, ctx) {
+				- // statements
+			- };
+
+	p The model param for this generator is a WizziModelInstance
+		+ of type 'myhtml'. 
+	ul It is a tree data structure where each node has the properties:
+		li wzElement : the schema element name;
+		li wzTag : the node name (tag) in the source IttfNode;
+		li wzName : the node value in the source IttfNode;
+		li attributes and related elements objects and collections.
+
+	p The 'myhtml/document' generator traverses the tree data structure and 
+		+ emits the HTML markup into the ctx object.
+
+	js
+		- see the source code in the folder
+			- lib/artifacts/myhtml/document/gen/main.js
+

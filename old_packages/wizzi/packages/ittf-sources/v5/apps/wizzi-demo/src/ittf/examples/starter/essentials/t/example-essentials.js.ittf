@@ -1,0 +1,26 @@
+﻿module
+	$params name, level|0, step|1 
+	kind jsfile
+
+	import path
+	import util
+	import async
+	var stringify = require('json-stringify-safe')
+	var inspect = require('object-inspect')
+	var wizzi = require('wizzi')
+	var file = require('wizzi-utils').file
+	var verify = require('wizzi-utils').verify
+
+	var friendsArray
+		[ 
+			@ 'arthur'
+			@ 'mary'
+
+	demo_prints( ${name}, ${level}, ${step} )
+	
+	set module.exports
+		function exec
+			param step_callback
+			_ heading1
+				@ 'example-essentials starting'
+			$hook

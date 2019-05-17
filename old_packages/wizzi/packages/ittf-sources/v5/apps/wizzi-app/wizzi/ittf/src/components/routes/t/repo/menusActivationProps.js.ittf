@@ -1,0 +1,10 @@
+﻿$group
+	$params menuType|fsItem
+
+	$if menuType === 'fsItem'
+		@ ariaOwns
+			iif this.state.contextMenuAnchorEl
+				then 'fsItem-context-menu'
+				else null
+		@ ariaHasPopup "true"
+		@ onContextMenu {this.handleFsItemContextMenuOpen}

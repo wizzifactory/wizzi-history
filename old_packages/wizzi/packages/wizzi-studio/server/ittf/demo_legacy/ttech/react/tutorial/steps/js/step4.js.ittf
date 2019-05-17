@@ -1,0 +1,50 @@
+module
+	kind react
+
+	$
+		var xnode = {}
+
+	c(App)
+
+		initState()
+			@ isModalOpen false
+
+		f(openModal)
+			_ this.setState
+				{
+					@ isModalOpen true
+		
+		f(closeModal)
+			_ this.setState
+				{
+					@ isModalOpen false
+
+		r()
+			var self = this
+			return
+				div()
+					{
+					button(Open modal)
+						$append attrs
+							onClick()
+								_ self.openModal()
+					e(Modal)
+						{
+							@ isOpen this.state.isModalOpen
+							onClose()
+								_ self.closeModal()
+						h1(Modal title)
+						p(hello)
+						p()
+							button(Close)
+								$append attrs
+									onClick()
+										_ self.closeModal()
+
+	$include step4/modal
+	
+	_ ReactDOM.render
+		e(App)
+			{
+			@ null
+		_ document.getElementById('container')

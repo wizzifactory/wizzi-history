@@ -1,0 +1,191 @@
+﻿module wizzi-repo.index
+    kind jsfile
+	+
+	var chalk = require('chalk')
+	var vfile = require('wizzi-utils').vfile
+	+
+	var md = module.exports = {}
+	+
+	$if gctx_useMongo
+		var MongoDocument = require('./lib/mongodb/fs/document')
+		var MongoFsImpl = require('./lib/mongodb/mongoFsImpl')
+	$else
+		var MongoDocument = {}
+		var MongoFsImpl = {}
+	var JsonFsImpl = require('./lib/json/jsonFsimpl')
+	var IttfDocumentStore = require('./lib/repo/ittfDocumentStore') 
+	set md.ObjectId = require('./lib/utils/objectId') 
+	+
+	set md.MongoFsImpl = MongoFsImpl
+	$if isWebpackTarget == false
+		+
+		#
+			# Filesystem virtual file service
+			# noparams
+		set md.fsfile
+			function fsfile
+				callback
+				# vfile default
+				var fsfile = vfile()
+				return
+					_ callback
+						@ null
+						@ fsfile
+	+
+	$include mongoDb
+	+
+	$include json
+	+
+	$include browser
+	+
+	set md.JsonComponents = require('./lib/json/index') 
+	+
+	#
+		# params
+		#   { options
+		#     string storeKind
+		#       oneOf filesystem, mongodb, localstorage
+		#     string storeUri
+		#       when storeKind == mongodb
+		#     string storeBaseFolder
+		#       when storeKind == mongodb
+	set md.createStoreFactory
+		function createStoreFactory
+			{ options
+				string storeKind
+					optional
+			callback
+			+
+			# log 'wizzi-repo.index.createStoreFactory.options', options
+			+
+			var storeKind = options.storeKind || 'filesystem'
+			if checkStoreKind(storeKind) == false
+				return
+					_ callback
+						_ error
+							@ 'InvalidArgument'
+							@ 'createStoreFactory'
+							{
+								@ parameter 'storeKind'
+								@ message 'invalid storeKind: ' + storeKind + '. Received: ' + storeKind
+			+
+			if storeKind == 'mongodb'
+				if verify.isNotEmpty(options.storeUri) === false
+					r_cb_wz_err( InvalidArgument, createStoreFactory )
+						@ 'The parameter `options.storeUri` is required and must be a string. Received: ' + options.storeUri
+				if verify.isNotEmpty(options.storeBaseFolder) === false
+					r_cb_wz_err( InvalidArgument, createStoreFactory )
+						@ 'The parameter `options.storeBaseFolder` is required and must be a string. Received: ' + options.storeUri
+			elif storeKind == 'json'
+				if verify.isObject(options.storeJsonFsData) === false && verify.isObject(options.storeFsJson) === false
+					r_cb_wz_err( InvalidArgument, createStoreFactory )
+						@ 'The parameter `options.storeJsonFsData` or `options.storeFsJson`is required and must be an object.'
+			return
+				_ callback
+					@ null
+					_ getCreateStore
+						@ storeKind
+						@ options
+
+	function getCreateStore
+		string storeKind
+		{ options
+		return
+			function createStore
+				param callback
+				var store
+					new IttfDocumentStore()
+				_ store.init
+					{
+						@ storeKind storeKind
+						@ storeUri options.storeUri
+						@ storeBaseFolder options.storeBaseFolder
+						@ storeJsonFsData options.storeJsonFsData
+						@ storeFsJson options.storeFsJson
+					f_cb( notUsed )
+						return
+							_ callback
+								@ null
+								@ store
+
+	function checkStoreKind
+		param kind
+		return ['filesystem', 'mongodb', 'json', 'browser'].indexOf(kind) > -1
+
+	# TODO fileService.getFilesAsync
+	set md.folderFilesInfoByPath
+		function
+			param folderPath
+			param fileService
+			_ fileService.getFilesAsync
+				@ folderPath
+				f_cb( files )
+					var result = []
+					foreach f in files
+						_ result.push
+							_ md.fileInfoByPath
+								@ f.fullPath
+					return result
+
+	set md.ittfDocumentInfoByPath
+		function
+			param filePath
+			var result = md.fileInfoByPath(filePath)
+			if result.isIttfDocument
+				return result
+			else
+				return 
+					{
+						@ is_error true
+						@ message 'The file is not an ittfdocument: ' + result.fullPath
+
+	set md.fileInfoByPath
+		function
+			param filePath
+			param baseFolder
+			if typeof baseFolder === 'undefined'
+				set baseFolder = path.dirname(filePath)
+			set filePath = normalize(filePath)
+			var basename = path.basename(filePath)
+			var dirname = path.dirname(filePath)
+			var relFolder
+				iif path.dirname(filePath).length > baseFolder.length 
+					then path.dirname(filePath).substr(baseFolder.length + 1) 
+					else ''
+			var fileUri
+				_ filePath.substr
+			var ss = basename.split('.')
+			if ss[ss.length-1] === 'ittf'
+				var name = ss.slice(0, ss.length-2).join('.')
+				var schema = ss[ss.length-2]
+				var mime = DEFAULT_MIME[schema] || schema
+				return
+					{
+						@ name name
+						@ basename basename
+						@ isIttfDocument true
+						@ isFragment filePath.indexOf('/t/') > -1
+						@ schema schema
+						@ mime mime
+						@ relFolder relFolder
+						@ fullPath filePath
+						@ destBasename name + '.' + mime
+						@ destRelPath
+							iif relFolder.length > 0
+								then relFolder + '/' + name + '.' + mime
+								else name + '.' + mime
+			else
+				return 
+					{
+						@ name ss.slice(0, ss.length-1).join('.')
+						@ basename basename
+						@ isIttfDocument false
+						@ schema null
+						@ mime ss[ss.length-1]
+						@ relFolder relFolder
+						@ fullPath filePath
+						@ destBasename basename
+						@ destRelPath
+							iif relFolder.length > 0
+								then relFolder + '/' + basename
+								else basename

@@ -1,0 +1,248 @@
+﻿concept The 'wfschema' schema
+
+	summary
+
+		p The wfschema, implemented by the wizzi-core plugin,
+			+ is the meta model of a wizzi schema.
+			+ It models a wizzi schema with the same semantic with which
+			+ a wizzi schema models a Wizzi Model.
+
+		p This documentation section has a circularity that may give
+			+ an headache. It documents a schema that describe a schema
+			+ using the same schema notation of the documented schema.
+		p Some hints may help.
+		ul
+			li A wizzi schema describes a model in terms of element types, 
+				+ with attributes, and relations between elements. 
+				+ Elements can extend super elements. Relations, that
+				+ do not have attributes, can be of kind parent-children (one-to-many, the default)
+				+ or parent-singlechild (one-to-one).
+			li Elements are described in a flat list. Relations hierarchy and
+				+ element derivations are inferred from definitions.
+			li The root element can be declared using the element attribute 'isRoot'. If
+				+ not declared the root element is the first of the list.
+			li Elements and attributes may have an optional tag attribute that defines a
+				+ name alias shorter or with an easier mnemonic. wfschema examples:
+				ul
+					li 'e' for 'element'
+					li 'a' for 'attribute'
+					li 'r' for 'relation'
+			li Node names of mTree nodes simply map to an element or attribute tag (or name,
+				+ if a tag is not declared).
+
+		ul The wfschema elements are
+			li wfschema
+			li exportTo
+			li require
+			li element
+			li attribute, string, boolean, integer, float, date
+			li relation
+			li restrict, enum, minLength, maxLength, minValue, maxValue, regexp
+			li method, function
+			li parameter
+
+		h3 wfschema element
+		p The root element of a 'wfschema'.
+		ittf
+			- e wfschema `name`
+				- r require/s
+				- r exportTo/s
+				- r element/s
+
+		h3 exportTo element
+		p An exportTo element causes the insertion in the Wizzi Model classes
+			+ of the prototype functions for exporting the tree data structure of the model in 
+			+ the requested format
+			ul
+				li toJson()
+				li toXml()
+		p The entire Wizzi Model can be exported calling this methods on the root element.
+
+		ittf
+			- ...
+				- e export-to [json|xml]
+
+		h3 require element
+		p A Wizzi Model can contain user defined methods and functions,
+			+ that could need to import objects from other modules. This element 
+			+ allow to insert require statements in the generated Wizzi Model module.
+		ittf
+			- e require `import-name`
+				- string declareVar `name`
+					- tag declare-var
+					- optional
+					- default `import-name`
+				- string invoke `invoke-string`
+					- optional
+				- string kind [module]
+					- # At now we have only one kind, and this attribute is superflous.
+					- # Other kinds could be added in the future.
+					- optional
+					- default module
+		
+		p The generated statement is built in this way:
+		ittf
+			- var `declareVar` = require('`import-name`')[`invoke`]
+		
+		p Example
+		ittf
+			- ...
+				- require wizzi-utils
+					- declare-var verify
+					- invoke .verify
+				- generates:
+					- var verify = require('wizzi-utils').verify
+		
+		h3 Element element
+		p Describes an element type of the schema.
+		ittf
+			- e element `name` [: `super-element-name`]
+				- tag e
+				- string super `super-element-name`
+				- string tag `tag`
+				- string xmlTag `tag`
+					- tag xml-tag
+				- boolean isAbstract
+					- tag is-abstract
+					- default-when-declared true
+				- boolean isRoot
+					- tag is-root
+					- default-when-declared true
+				- boolean nameIsRequired
+					- tag name-is-required
+					- default-when-declared true
+				- boolean addToChildren
+					- tag add-to-children
+					- default-when-declared true
+				- r attribute/s
+				- r relation/s
+				- r method/s
+	
+		h3 Relation element
+		ittf
+			- e relation `related-element-name`[-`plural-suffix-a`]/`plural-suffix-b`
+				- # Examples
+				- #   r column/s (element: column, collection: columns)   
+				- #   r propert-y/ies (element: property, collection: properties)
+				- tag r
+				- boolean oneToOne
+					- tag one-to-one
+					- default-when-declared true
+				- boolean noGet
+					- tag no-get
+					- default-when-declared true
+		
+		p Example:
+		ittf
+			- ...
+				- e table : dbitem
+					- r column/s
+					- r propert-y/ies
+					- r displayLayout
+						- one-to-one
+		p related-element-name plus the eventual plural-suffix-a must give the name of an
+			+ element defined in the schema (that is the related element); in the
+			+ example: column, property, displayLayout.
+
+		h3 attribute element
+		p Describes an attribute of an element 
+		ittf
+			- e attribute `name`
+				- tag a
+				- string tag `tag`
+				- string xmlTag `tag`
+					- tag xml-tag
+				- string type [string|integer|float|boolean|date]
+					- default string
+				- string default `default-value`
+				- string defaultWhenDeclared `default-value` 
+					- tag default-when-declared
+				- boolean isDatatype
+					- tag is-datatype
+					- default-when-declared true
+				- boolean isRequired
+					- tag is-required
+					- default-when-declared true
+				- r restrict/s
+
+		h3 string element
+		ittf
+			- e string `attribut-name` : attribute
+
+		h3 boolean element
+		ittf
+			- e boolean `attribut-name` : attribute
+
+		h3 integer element
+		ittf
+			- e integer `attribut-name` : attribute
+
+		h3 float element
+		ittf
+			- e float `attribut-name` : attribute
+
+		h3 date element
+		ittf
+			- e date `attribut-name` : attribute
+
+		h3 restrict element
+		ittf
+			- e restrict
+				- is-abstract
+
+		h3 enum element
+		ittf
+			- e enum `enum-value` : restrict 
+
+		h3 maxLength element
+		ittf
+			- e maxLength `value` : restrict 
+				- tag max-length
+
+		h3 minLength element
+		ittf
+			- e minLength `value` : restrict 
+				- tag min-length
+
+		h3 maxValue element
+		ittf
+			- e maxValue `value` : restrict 
+				- tag max-value
+
+		h3 minValue element
+		ittf
+			- e minValue `value` : restrict 
+				- tag min-value
+
+		h3 regexp element
+		ittf
+			- e regexp `value` : restrict 
+
+		h3 method element
+		p Declares a method that will be added to the element class.
+			+ A method can access and manipulate the entire 
+			+ Wizzi Model, having access to the 'this.wzRoot()' method of the
+			+ `schema-name`Base class.
+		ittf
+			- e method `name`
+				- tag m
+				- r param/s
+				- r statement/s
+		
+		h3 param element
+		ittf
+			- e param `name`
+		
+		h3 statement element
+		p The statement element uses a subset of the schema 'js'
+			+ implemented by the plugin wizzi-js.
+
+		h3 function element
+		p Declares a method that will be added to the module
+			+ and will be a private function for methods of the model instances.
+		ittf
+			- e function `name`
+				- tag m
+				- r param/s
+				- r statement/s
+

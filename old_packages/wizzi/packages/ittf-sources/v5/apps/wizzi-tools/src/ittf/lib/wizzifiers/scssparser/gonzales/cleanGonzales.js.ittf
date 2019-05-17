@@ -1,0 +1,26 @@
+﻿module
+	kind jsfile
+
+	var verify = require('wizzi-utils').verify
+
+	var md = module.exports = {}
+
+	set md.cleanAst
+		function
+			param ast
+			delete ast.start
+			delete ast.end
+			
+			foreach k in Object.keys(ast)
+				if verify.isArray(ast[k])
+					var temp = []
+					foreach node in ast[k]
+						if node.type === 'space'
+						else
+							_ md.cleanAst(node)
+							_ temp.push(node)
+					set ast[k] = temp
+				if verify.isObject(ast[k])
+					_ md.cleanAst(ast[k])
+			return ast
+					

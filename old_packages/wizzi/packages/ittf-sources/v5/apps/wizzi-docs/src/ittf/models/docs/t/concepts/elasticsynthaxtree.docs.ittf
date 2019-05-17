@@ -1,0 +1,56 @@
+﻿concept Wizzi models as syntax trees
+
+	summary
+
+		ul WizziModelTypes are generated in javascript implementing a logical tree view of the model:
+			li Elements are nodes.
+			li Container elements are parents to attributes and related elements.
+			li There must be only one root element (an element without a parent).
+
+		p The tree structure of a WizziModel can be modeled as the syntax tree structure
+			+ of a programming language (PL) and model instances may act as code templates.
+			
+		p Grammars may be simplified/trivialized, using stereotypes instead of valid symbols.
+			+ The statements of a programming language (PL) are syntactic sugar, the best 
+			+ as possible human readable, that must be parsed into an 
+			+ <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">abstract synthax tree (AST)</a>
+			+ in order to produce the machine instructions to be executed. 
+			
+		p The grammar of a PL is a transformation rule from syntactic sugar to AST.
+			+ An AST is less human readable but more powerful of a PL. It is made of
+			+ nodes that express the semantics of instructions and can be traversed to
+			+ extract relations between nodes. Compilers use the concept of
+			+ <a href="https://en.wikipedia.org/wiki/Abstract_semantic_graph">Abstract semantic graph (ASG)</a>
+			+ for trasformations of ASTs that may contain shared subterms (also known as "common subexpressions").
+
+		p ASTs and their traversals and trasformations are a powerful tool for compiling
+			+ machine instructions. Why this power can't be used in model driven generation of
+			+ software artifacts, which are the inputs to compilers?
+
+		p Well, obviously software factories try just to do that. Every modeling methodology is, in
+			+ this respect, a kind of sintactic sugar around implicit ASTs that artifact generators
+			+ traverse and trasform in the best intelligent way they can do.
+
+		p But why not to use explicit ASTs as models of the software factory. ASTs transformations could
+			+ be executed in every step of the factory life-cycle: models design, model instances 
+			+ construction and models processing in the final artifact generation step.
+
+		p That is the idea on which is founded the Wizzi Factory. Everything: schemas, models, templates and
+			+ generators, became ASTs, with plenty of functionality to traverse, transform, build the
+			+ node branches of the tree.
+
+		p That means that we go back to early times when programs where punched in machine code?
+
+		p Or may an AST be elastic and contain a mix of formal tree structures and syntactic sugar,
+			+ to have a balance between the power of the AST and the readability of a more
+			+ natural language.
+
+		p A compiler that should digest an "elastic AST" could simply spit it. 
+		
+		p But an ArtifactGenerator that is created from the same designer/programmer/team that has 
+			+ created the "elastic AST" schema 
+			+ can well digest it without too much hassle.
+
+		p The ArtifactGenerators of the Wizzi Factory are built on the concepts 
+			+ of "Elastic syntax trees" and "LanguageWizziSchema".
+

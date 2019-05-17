@@ -1,0 +1,78 @@
+﻿$group
+
+	=> handleSelectSchema
+		param e
+		_ this.setState
+			{
+				@ selectedSchema e.target.value
+
+	=> handleSelectIttfDocument
+		param hash
+		param schema
+		param isFragment
+		_ this.setState
+			{
+				@ selectedDocumentHash hash
+				@ selectedDocumenSchema schema
+				@ selectedDocumenIsFragment isFragment
+		prop dispatchGetIttfDocument
+		_ dispatchGetIttfDocument
+			@ hash
+
+	=> handleSelectIttfDocumentByItem
+		param item
+		log 'WizziKernelPackage.handleSelectIttfDocumentByItem.item', item
+		_ this.setState
+			{
+				@ selectedDocumentHash item.hash
+				@ selectedDocumenSchema item.schema
+				@ selectedDocumenIsFragment item.isFragment
+		prop dispatchGetIttfDocument
+		_ dispatchGetIttfDocument
+			@ item.hash
+
+	=> handleMTreeDebugInfo
+		prop dispatchGetMTreeDebugInfo
+		if this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ dispatchGetMTreeDebugInfo
+				@ this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ this.setState
+				{
+					@ mTreeDebugInfoOpen true
+					@ lastDebugInfoAction WF_ACTION.MTREE_SCRIPT
+
+	=> handleGenerateDefaultArtifact
+		prop dispatchGenerateDefaultArtifact
+		if this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ dispatchGenerateDefaultArtifact
+				@ this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ this.setState
+				{
+					@ mTreeDebugInfoOpen true
+					@ lastDebugInfoAction WF_ACTION.GEN_ARTIFACT
+
+	=> handleExecuteWfJob
+		prop dispatchExecuteWfJob
+		if this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ dispatchExecuteWfJob
+				@ this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ this.setState
+				{
+					@ mTreeDebugInfoOpen true
+					@ lastDebugInfoAction WF_ACTION.EXEC_JOB
+
+	=> handleGenerateWfSchema
+		prop dispatchGenerateWfSchema
+		if this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ dispatchGenerateWfSchema
+				@ this.state.selectedDocumentHash || this.props.selectedDocumentHash
+			_ this.setState
+				{
+					@ mTreeDebugInfoOpen true
+					@ lastDebugInfoAction WF_ACTION.GEN_SCHEMA
+
+	=> handleMTreeDebugInfoClose
+		_ this.setState
+			{
+				@ mTreeDebugInfoOpen false
+

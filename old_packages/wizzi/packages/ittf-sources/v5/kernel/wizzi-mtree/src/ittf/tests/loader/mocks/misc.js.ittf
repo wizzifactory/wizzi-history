@@ -1,0 +1,93 @@
+﻿module
+	kind jsfile
+
+	import path
+	var file = require('wizzi-utils').file
+	var IttfDocumentStore = require('./ittfDocumentStore')
+
+	set module.exports
+		{
+			@ IttfDocumentStore IttfDocumentStore
+			@ ProductionManager
+				{
+					@ productionContext
+						{
+							@ aclstat
+								{
+							@ addIttfDocument
+								function
+									param uri
+									param content
+							@ addMixedMTree
+								function
+									param uri
+									param content
+							@ addEvaluatedMTree
+								function
+									param uri
+									param content
+							@ addMTreeBuildUpScript
+								function
+									param uri
+									param jsScriptCoder
+									log 'addMTreeBuildUpScript'
+									_ file.write
+										_ path.join
+											@ path.dirname(uri)
+											@ '_debug_dumps'
+											@ path.basename(uri)
+										@ jsScriptCoder.toCode()
+
+			@ ProductionContext
+				{
+					@ IttfDocumentStoreType IttfDocumentStore
+					
+					@ dump true
+
+					@ addIttfDocument
+						function
+							param uri
+							param content
+					
+					@ mTreeBuildUpScripts
+						{
+					
+					@ addMTreeBuildUpScript
+						function
+							param uri
+							param jsScriptCoder
+
+							var uri = uri
+							var script = jsScriptCoder.toCode()
+							set this.mTreeBuildUpScripts[uri]
+								{
+									@ uri uri
+									@ script script
+							log script, uri
+							if this.dump
+								log 'dump'
+								_ file.write
+									_ path.join
+										@ path.dirname(uri)
+										@ '_debug'
+										@ path.basename(uri) + '.js.dump'
+									@ script
+
+					@ raiseIttfEvaluationScriptError
+						function
+							param uri
+							param exception
+							
+							var uri = uri
+							var script = this.mTreeBuildUpScripts[uri]
+							if script && script.ittfEvalScript && exception && exception.lineNumber
+								var lines = script.ittfEvalScript.getErrorLines(exception).join('\n')
+								set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + lines + '\n'
+							else
+								set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + exception.message + '\n'
+							# In case of --force proceed inside the try/catch flow
+							throw exception
+
+
+		
+

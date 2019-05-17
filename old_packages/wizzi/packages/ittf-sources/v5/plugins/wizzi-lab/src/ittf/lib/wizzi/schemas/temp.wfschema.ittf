@@ -1,0 +1,42 @@
+﻿wfschema temp
+
+	# A generic schema for testing new features in wizzi-lab.
+
+	export-to json
+
+	$include common/comments
+	
+	e temp : commentable
+		# The root tag of the temp schema.
+		is-root
+		
+		r item/s
+
+	e item : commentable
+		
+		# A wizzi schema comment is considered a markdown text and
+		# can contain markdown synthax 
+		# 
+		# ### Title 1
+		# ## Title 2
+		# # Title 3
+		#
+		# An element comment can be multiline in a single paragraph
+			\b using the ittf continuation tag 'slash'b or '\b' or '\\b'.
+		# Could have a second paragraph line ...
+			# with an inner line ...
+				# and more ...
+					# and more deep lines.
+		# And can embed an ittf ...
+		# [*ittf
+			# function hello
+				# param name
+				# log 'hello ' + name
+				# _ go
+					# @ "charlie"
+		# And embed code
+		# ```ruby
+		# require 'redcarpet'
+		# markdown = Redcarpet.new("Hello World!")
+		# puts markdown.to_html
+		# ```

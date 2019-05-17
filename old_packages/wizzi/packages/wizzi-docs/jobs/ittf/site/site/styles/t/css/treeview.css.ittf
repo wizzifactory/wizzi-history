@@ -1,0 +1,74 @@
+$group
+    
+	. treeview
+        + .treeview *
+        padding 0
+        margin 0
+        list-style none
+    
+	. treeview label[for]::before
+        + .treeview label span::before
+        content "\25b6"
+        display inline-block
+        margin 2px 0 0
+        width 13px
+        height 13px
+        vertical-align top
+        text-align center
+        color #e74c3c
+        font-size 10px
+        line-height 13px
+    
+	. treeview li ul
+        margin 0 0 0 11px
+    
+	. treeview *
+        vertical-align middle
+    
+	. treeview
+        font normal 13px/16px "Segoe UI", Arial, Sans-serif
+    
+	. treeview li
+        -webkit-user-select none
+        -moz-user-select none
+        user-select none
+    
+	. treeview input[type="checkbox"]
+        display none
+    
+	. treeview label
+        cursor pointer
+    
+	. treeview label[for]::before
+        -webkit-transform translatex(-12px)
+        -moz-transform translatex(-12px)
+        -ms-transform translatex(-12px)
+        -o-transform translatex(-12px)
+        transform translatex(-12px)
+    
+	. treeview label span::before
+        -webkit-transform translatex(8px)
+        -moz-transform translatex(8px)
+        -ms-transform translatex(8px)
+        -o-transform translatex(8px)
+        transform translatex(8px)
+    
+	. treeview input[type="checkbox"][id]:checked ~ label[for]::before
+        content "\25bc"
+    
+	. treeview input[type="checkbox"][id]:not(:checked) ~ ul
+        display none
+    
+	. treeview label:not([for])
+        margin 0 4px 0 0
+    
+	. treeview label span::before
+        content ""
+        border solid 1px #1375b3
+        color #1375b3
+        opacity .50
+    
+	. treeview label input:checked + span::before
+        content "\2714"
+        box-shadow 0 0 2px rgba(0, 0, 0, .25) inset
+        opacity 1

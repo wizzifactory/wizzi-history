@@ -1,0 +1,22 @@
+module
+    kind react
+    _ describe
+        @ 'Sapper template app'
+        => 
+            _ beforeEach
+                => 
+                    _ cy.visit('/')
+            _ it
+                @ 'has the correct <h1>'
+                => 
+                    _ cy.contains('h1', 'Great success!')
+            _ it
+                @ 'navigates to /about'
+                => 
+                    _ cy.get('nav a').contains('about').click
+                    _ cy.url().should('include', '/about')
+            _ it
+                @ 'navigates to /blog'
+                => 
+                    _ cy.get('nav a').contains('blog').click
+                    _ cy.url().should('include', '/blog')

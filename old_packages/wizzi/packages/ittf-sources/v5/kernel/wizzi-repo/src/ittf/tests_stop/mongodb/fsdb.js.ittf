@@ -1,0 +1,35 @@
+﻿base_test( mongodb.document.fsmongo )
+	+
+	$append imports
+		var 
+			decl MongoClient
+				_ require('mongodb')
+					. MongoClient
+			decl FsMongo = require('../../lib/mongodb/fs/fsmongo')
+			decl Document = require('../../lib/mongodb/fs/document')
+
+	var mounted_db
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsmongo, doc
+
+	var hellotxt_item = null
+
+	$include mongo_before_async
+	$include fsmongo/createItem
+	$include fsmongo/updateItem
+	$include fsmongo/writeDocument
+	$include fsmongo/readDocument
+	$include fsmongo/deleteItem
+	$include mongo_after_async
+		
+	$*
+	
+	$include fsmongo/updateItem
+	$include fsmongo/getItem
+	$include fsmongo/read
+	$include fsmongo/write
+	*$
+
+
+	

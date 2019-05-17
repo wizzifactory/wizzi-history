@@ -1,0 +1,31 @@
+﻿module
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+	# source https://github.com/sindresorhus/path-is-absolute/blob/master/index.js
+	# license (MIT)
+
+	function posix
+        param path
+		# wizzi factory storekind mongodb
+		if path.substr(0,3) === 'db:' || path.substr(0,3) === 'ls:' || path.substr(0,5) === 'json:'
+			return true
+        return path.charAt(0) === '/'
+    
+	function win32
+        param path
+		# wizzi factory storekind mongodb
+		if path.substr(0,3) === 'db:' || path.substr(0,3) === 'ls:' || path.substr(0,5) === 'json:'
+			return true
+        var splitDeviceRe = /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/
+        var result = splitDeviceRe.exec(path)
+        var device = (result[1] || '')
+        var isUnc = Boolean((device && (device.charAt(1) !== ':')))
+        return Boolean((result[2] || isUnc))
+    
+	set module.exports = process.platform === 'win32' ? win32 : posix
+    
+	set module.exports.posix = posix
+    
+	set module.exports.win32 = win32

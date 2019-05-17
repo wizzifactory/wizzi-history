@@ -1,0 +1,154 @@
+$group
+
+	$function buildup_type
+		$param title
+		$param api
+		$param type
+		
+		h3 ${title}
+
+		$if type.properties.length > 0
+
+			h5 Properties
+
+			$foreach p in type.properties
+				. gsf-smr-0 api-property-panel
+					. gsf-smr-1 api-property
+						@ name ${api.wzName}.property.${p.wzName}
+						@ id ${api.wzName}.property.${p.wzName}
+						$_ typed_name
+							$@ p
+							$@ 'property'
+
+					$_ comments
+						$@ p
+						$@ 2
+						$@ 'property'
+
+					$if p.apiRef
+						. gsf-smr-2
+							span api-ref
+								class api-label-api-ref
+							span
+								class api-ref
+								a ${p.apiRef}
+									href #${p.apiRef}
+					$if p.type === 'object'
+						$_ buildup_object
+							$@ p
+							$@ 3
+								
+					$if p.type === 'array'
+						$_ buildup_array
+							$@ p
+							$@ 3
+	
+		$if type.methods.length > 0
+			
+			h5 Methods
+			
+			$foreach m in type.methods
+				
+				$
+					var methodName = m.wzTag === 'ctor' ? 'constructor' : m.wzName;
+				
+				. gsf-smr-0 api-method-panel
+					@ name ${api.wzName}.${methodName}
+					@ id ${api.wzName}.${methodName}
+					. gsf-smr-1 api-method
+						span ${api.wzName}.${methodName}(...)
+					. gsf-smr-2
+						$if m.isAsync
+							span async&nbsp;
+						$if m.type
+							span ${m.type}
+						$if m.isInternal
+							span , internal method
+						$if m.implementedBy
+							span , implemented by 
+								a &nbsp;${m.implementedBy}
+									href #${m.implementedBy}
+						$if m.calledBy
+							span , called by 
+								a ${m.calledBy}
+									href #${m.calledBy}
+						$if m.throwIf
+							span , throw if ${m.throwIf}
+
+					$_ comments
+						$@ m
+						$@ 2
+						$@ 'method'
+						
+					$if m.params.length > 0
+						. gsf-smr-2 api-method-section-title
+							span Params
+					
+						$foreach p in m.params
+							. gsf-smr-3 api-param-panel
+
+								$_ typed_name
+									$@ p
+									$@ 'param'
+
+								$_ comments
+									$@ p
+									$@ 4
+									$@ 'param'
+
+								$_ api_ref
+									$@ p
+									$@ 4
+
+								$if p.isPOJO
+									. gsf-smr-4
+										span POJO
+						
+								$if p.defaultValue
+									. gsf-smr-4
+										span default ${p.defaultValue}
+						
+								$if p.isRequired
+									. gsf-smr-4
+										span required
+						
+								$if p.iface
+									. gsf-smr-4
+										span interface ${p.iface}
+			
+								$if p.type === 'object'
+									$_ buildup_object
+										$@ p
+										$@ 5
+								
+								$if p.type === 'array'
+									$_ buildup_array
+										$@ p
+										$@ 5
+
+								$if p.type === 'callback-function'
+									$_ buildup_cb
+										$@ p
+										$@ 5
+
+						$if m.return
+							. gsf-smr-2 api-method-section-title
+								span Return
+							$foreach v in m.return.values
+								$_ typed_value
+									$@ v
+									$@ 3
+
+						$if m.info
+							. gsf-smr-2 api-method-section-title
+								span Info
+
+							$_ comments
+								$@ m.info
+								$@ 3
+								$@ 'info'
+
+							$foreach it in m.info.infoItems
+								$_ info_item
+									$@ it
+									$@ 3

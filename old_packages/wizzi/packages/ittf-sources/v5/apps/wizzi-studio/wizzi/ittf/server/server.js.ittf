@@ -1,0 +1,10 @@
+﻿module
+	kind jsfile
+
+	var randomstring = require("randomstring")
+	set process.env.PROCESS_ENCRYPTION_KEY = randomstring.generate(32)
+
+	$include wizzi-options
+	+
+	spa/server( &spa )
+

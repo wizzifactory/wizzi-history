@@ -1,0 +1,85 @@
+﻿$group
+
+	m toFsJson
+		const fsJson
+			{
+				@ items []
+				@ documents []
+		const main
+			{
+				@ _id new ObjectId()
+				@ parentId null
+				@ path this.snippetItemObject.path
+		_ fsJson.items.push(main)
+		_ fsJson.documents.push
+			{
+				@ _id main._id
+				@ content this.snippetItemObject.content
+		log 'WizziArchive.toFsJson. Return : ', fsJson
+		return fsJson
+	
+	m loadFromFsJson
+		param json
+		log 'WizziArchive.fromFsJson json: ', json, 'items',json.items
+		if json.items && json.items.length > 0
+			set this.snippetItemObject
+				{
+					@ path json.items[0].path
+					@ content json.documents[0].content
+					@ _id new ObjectId(json.items[0]._id)
+			log 'WizziArchive.fromFsJson this.snippetItemObject: ', this.snippetItemObject
+
+	m retrieveFromServer
+		param archiveName
+		param callback
+		
+		log 'WizziArchive.retrieveFromServer archiveName: ' + archiveName
+		
+		const that = this
+		
+		_ WizziArchive.getFbFsClient
+			._ getSnippetArchive
+				@ archiveName
+				f_cb_no_err( payload )
+					if err
+						log 'WizziArchive.retrieveFromServer err: ', err
+						return
+							_ callback(err)
+					
+					log 'WizziArchive.retrieveFromServer jsonFs: ', 'payload', payload, 'data', payload.data, 'fsjson', payload.data.fsjson
+					
+					const json = JSON.parse(payload.data.fsjson)
+					_ that.loadFromFsJson(json)
+					
+					return
+						_ callback(null)
+
+	m scheduleServerUpload
+		param archiveName
+		param callback
+		
+		if this.timer1
+			_ clearTimeout(this.timer1)
+			log 'WizziArchive.scheduleServerUpload. Cleared previous schedule.', new Date()
+		
+		# Closure on this, not this.toFsJson().
+		# The archive will be saved after x seconds with its future value.
+		const that = this
+		
+		set this.timer1
+			_ setTimeout
+				function
+					_ WizziArchive.getFbFsClient
+						._ saveSnippetArchive
+							@ archiveName
+							{
+								@ fsjson
+									_ JSON.stringify
+										_ that.toFsJson
+							@ callback
+					log 'WizziArchive.scheduleServerUpload. Called fbFs.save.', new Date()
+				@ 2 * 1000
+		
+		log 'WizziArchive.scheduleServerUpload. Set schedule.', new Date()
+
+

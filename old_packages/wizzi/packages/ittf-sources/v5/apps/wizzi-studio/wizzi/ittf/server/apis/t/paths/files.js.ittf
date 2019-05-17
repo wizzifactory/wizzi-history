@@ -1,0 +1,114 @@
+﻿$group
+
+	@ getFolderFiles
+		function
+			param folderPath
+			param baseFolderPath
+			param baseUri
+			param callback
+
+			if typeof callback === 'undefined'
+				set callback = baseUri
+				set baseUri = ''
+
+			var glob = this.normalize(folderPath) + '/*.*'
+			var files
+				_ file.getGlobbedFiles
+					@ glob
+
+			log 'wizzi-studio.apis.gists.getFolderFiles', glob, files
+			var ret = []
+			foreach item in files
+				_ ret.push
+					_ this.fileInfoByPath
+						@ item
+						@ baseFolderPath 
+						@ baseUri
+			r_cb_success_quoted( Got folder files )
+				@ items ret
+
+	@ getIttfFilesOfSchema
+		function
+			param folderPath
+			param schemaName
+
+			var suffix = '.' + schemaName + '.ittf'
+			var glob = this.normalize(folderPath) + '/*.' + schemaName + '.ittf'
+			
+			var files
+				_ file.getGlobbedFiles
+					@ glob
+			
+			log 'getFolderIttfFiles', glob, schemaName, files
+			var ret = []
+			foreach item in files
+				var dirName = path.dirname(item)
+				var baseName = path.basename(item)
+				var name = baseName.substring(0, baseName.length - suffix.length)
+				_ ret.push
+					{
+						@ name name
+						@ baseName baseName
+						@ dirName dirName
+						@ fullPath
+							_ this.normalize
+								_ path.join
+									@ dirName
+									@ path.basename(item)
+			return ret
+
+	@ fsItemExists
+		function
+			param filePath
+			param callback
+			return
+				_ callback
+					@ null
+					_ file.exists
+						@ filePath
+
+	@ getFile
+		function
+			param filePath
+			param callback
+			_ file.readFile
+				@ filePath
+				@ callback
+
+	@ putFile
+		function
+			param filePath
+			param content
+			param callback
+			_ file.writeFile
+				@ filePath
+				@ content
+				@ callback
+
+	@ deleteFile
+		function
+			param filePath
+			param callback
+			_ file.deleteFile
+				@ filePath
+				@ callback
+
+	@ duplicateFsItem
+		function
+			param itemPath
+			param newPath
+			param callback
+			_ file.duplicate
+				@ itemPath
+				@ newPath
+				@ callback
+
+	@ renameFsItem
+		function
+			param oldPath
+			param newPath
+			param callback
+			_ file.rename
+				@ oldPath
+				@ newPath
+				@ callback

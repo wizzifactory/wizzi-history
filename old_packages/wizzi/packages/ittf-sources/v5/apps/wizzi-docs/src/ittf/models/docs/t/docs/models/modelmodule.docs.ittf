@@ -1,0 +1,156 @@
+﻿concept The Wizzi Model javascript module
+
+	summary
+
+		p A Wizzi Model is a javascript module containg a javascript class for each
+			+ element defined in its 'wfschema' and some standard base
+			+ and helper classes.
+
+		h4 Wizzi model classes
+		table
+			tr
+				td wzSourceLineInfo
+				td source map item with source file path, row, col of a node
+			tr
+				td `schema-name`Exception
+				td exception object for this Wizzi Model
+			tr
+				td `schema-name`Context
+				td context object for the methods wzInitialize and wzVerify
+			tr
+				td `schema-name`Base
+				td base class for all element classes
+			tr
+				td `element-name`
+				td one class for each element of the schema
+
+		h4 The wzSourceLineInfo API
+		ittf 
+			- class wzSourceLineInfo
+				- ctor 
+					- integer row
+						- # 1-based row position of the source ittf node
+					- integer col
+						- # 1-based column position position of the source ittf node
+					- string sourceKey
+						- # Key to the source ittf document infos stored in the 'loadHistory' object
+						- # The 'loadHistory' is a property of the root element
+				- m toString
+					- { elementInstance?
+
+		h4 The `schema-name`Exception API
+		ittf 
+			- class `schema-name`Exception
+				- ctor
+					- string message
+					- { ittfNode
+					- { elementInstance
+
+		h4 The `schema-name`Context API
+		ittf 
+			- class `schema-name`Context
+				- boolean schemaIsValid
+				- m addError
+					- string message
+					- { mTreeNode
+				- m verifyEnum
+					- string valueType
+					- string valueName
+					- string value
+					- [ allowed
+						- string allowedValue
+					- { mTreeNode
+
+		h4 The `schema-name`Base API
+		ittf 
+			- class `schema-name`Base
+				
+				- string wzName
+				- string wzTag
+				- [ wzChildren
+				
+				- ctor
+					- string name
+						- # the node-value of the source mTreeNode
+						- # that becomes the 'wzName' of the newly created element 
+					- { sourceLineInfo
+						- api-ref wizzimodel.wzSourceLineInfo
+					
+				- m wzRoot
+					- # Return the model root element instance
+				
+				- m wzSourceFilepath
+					- # Returns the filepath of an ittf source document given its 'sourceKey'
+					- string sourceKey
+				
+				- m wzAddChild
+					- # Add a child node to the wzChildren collection
+					- { elementInstance
+
+				- m wzLoadToChildColl
+					- # Creates a new element instance given the type of its source mTreeNode
+					- # Append it to the collection passed as parameter.
+					- # Call the loadFromNode method of the newly created element
+					- # with the source mTreeNode as argument.
+					- { mTreeNode
+						- # the mTreeNode that we are loading
+					- { type
+						- # the javascript class of the Wizzi Model element 
+						- # that is the type for mTreeNode given its node-name
+					- { coll
+						- # the collection to which the newly created element should be appended
+
+				- m wzLoadToChildren
+					- # Creates a new element instance given the type of its source mTreeNode
+					- # Append it to the wzChildren collection.
+					- # Call the loadFromNode method of the newly created element
+					- # with the source mTreeNode as argument.
+					- { mTreeNode
+					- { type
+				
+				- m wzLoadOneToOne
+					- # Creates a new element instance given the type of its source mTreeNode
+					- # Assign it to the `fieldName` property.
+					- # Call the loadFromNode method of the newly created element
+					- # with the source mTreeNode as argument.
+					- { mTreeNode
+					- { type
+					- string fieldName
+				
+				- m error
+					- # throw a `schema-name`Exception
+					- string message
+					- { mTreeNode
+
+		h4 The `element-name` API
+		ittf 
+			- class `element-name`
+				
+				- m loadChild
+					- # Tests if the mTreeNode name is a valid child element or attribute.
+					- # If yes call the proper add method and return true.
+					- # If no return false.
+					- { mTreeNode
+				
+				- m loadFromNode
+					- # Calls the loadChild method on this element
+					- # for each child node of the mTreeNode to load.
+					- { mTreeNode
+				
+				- m wzInitialize
+					- # Initialize the element
+					- # Called after the source mTree has been succesfully loaded.
+					- param ctx
+						- api-ref `schema-name`Context
+				
+				- m wzVerify
+					- # Verify if the element is valid
+					- # Called after the wzInitialize method.
+					- { ctx
+						- api-ref `schema-name`Context
+
+    
+
+
+
+

@@ -1,0 +1,25 @@
+﻿example-essentials(css.languageschema)
+
+	$
+		var name = 'css.languageschema';
+		var levels = ['0'];
+
+	_ heading1
+		@ 'loaded'
+
+	var samples
+		[
+			$foreach level in levels
+				@ require('./level_${level}')
+
+	_ async.series
+		@ samples
+		f_cb_throw()
+			var msg = '${name} - samples - done.'
+			log msg
+			if step_callback
+				return
+					_ step_callback
+						@ null
+						@ msg
+

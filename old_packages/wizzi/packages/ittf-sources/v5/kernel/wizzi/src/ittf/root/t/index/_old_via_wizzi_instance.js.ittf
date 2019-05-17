@@ -1,0 +1,77 @@
+$group
+
+	#
+		# TODO
+		# Why we cannot pass the wizziFactory instance created
+		# for a job to the ProductionManager
+		# avoiding a static object that must be guarded ???
+
+	var job_wizziFactory = null
+	+
+	#
+		# start a wizzi factory instance for a job execution
+	set md.startJobWizziFactoryInstance
+        function 
+			param user
+			param role
+			param storeKind
+            param configOptions
+			param configJob
+            param callback
+
+			if job_wizziFactory != null
+				# TODO enque wizzi job requests
+				throw new Error('A wizzi job already is running. Only one at a time is allowed.')
+
+			log 'startJobWizziFactoryInstance.user', user
+			log 'startJobWizziFactoryInstance.role', role
+			log 'startJobWizziFactoryInstance.storeKind', storeKind
+			log 'startJobWizziFactoryInstance.configOptions', configOptions
+			log 'startJobWizziFactoryInstance.configJob', configJob
+
+			set configOptions = Object.assign({}, configOptions)
+
+			var wfBaseFolder = configOptions.wfBaseFolder
+			if wfBaseFolder && wfBaseFolder.length > 0
+				_ md.config.set('wfBaseFolder', wfBaseFolder)
+
+			var repoUri = configOptions.repoUri
+			var repoBaseFolder = configOptions.repoBaseFolder
+
+			var plugins 
+				[
+					@ 'wizzi-core'
+			foreach item in configOptions.plugins
+				if plugins.indexOf(item) < 0
+					_ plugins.push(item)
+			log 'startJobWizziFactoryInstance.plugins', plugins
+			
+			_ wizziFactory.createFactory
+				@ user
+				@ role
+				{
+					@ repo
+						{
+							@ storeKind storeKind
+					@ plugins
+						{
+							@ items plugins
+					@ globalContext configJob.globalContext || {}
+				f_cb( wizziFactory )
+					set job_wizziFactory = wizziFactory
+					log '*'
+					log '* module ' + __filename
+					log '*'
+					log chalk.yellow('WIZZI PRODUCTION INSTANCE STARTED')
+					return callback(null)
+	
+	+
+	#
+		# terminate a wizzi instance
+	set md.terminateJobWizziFactoryInstance
+        function 
+			param callback
+			set job_wizziFactory = null
+			log chalk.yellow('WIZZI PRODUCTION INSTANCE TERMINATED')
+			_ callback(null)
+

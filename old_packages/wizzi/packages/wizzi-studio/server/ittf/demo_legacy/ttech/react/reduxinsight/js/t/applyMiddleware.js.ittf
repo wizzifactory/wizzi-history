@@ -1,0 +1,51 @@
+$group
+    
+    function applyMiddleware
+		var middlewares = argumentsToArray(arguments)
+
+		log 'entered applyMiddleware.middlewares'
+        
+		return
+            function 
+                param next
+
+				log 'next should be the function createStore'
+				log 'entered.applyMiddleware.next', next
+
+                return 
+                    function 
+                        param reducer
+                        param initialState
+
+						log 'entered.applyMiddleware.reducer,initialState', reducer, initialState
+						log 'applyMiddleware.create the store using the next closure'
+						var store = next(reducer, initialState)
+
+                        var dispatch = store.dispatch
+
+                        var chain
+                            [ 
+                        
+						var middlewareAPI
+                            { 
+                                @ getState store.getState
+                                @ dispatch
+                                    function dispatch
+                                        param action
+                                        return dispatch(action)
+                        
+						set chain =
+                            _ middlewares.map
+                                function 
+                                    param middleware
+                                    return middleware(middlewareAPI)
+                        
+						log 'applyMiddleware.before calling compose.chain', chain
+						set dispatch = compose.apply(undefined, chain)(store.dispatch)
+                        
+						return 
+                            _ _extends
+                                { 
+                                @ store
+                                { 
+                                    @ dispatch dispatch

@@ -1,0 +1,115 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m getFiles
+		string folderPath
+		options-callback
+		+
+		set folderPath = normalize(folderPath, true)
+		var deep = options.deep
+		var extension = options.extension
+		var documentContent = options.documentContent || false
+		+
+		var that = this
+		
+		function get_files_Async
+			param singleFolderPath
+			param callback
+			# log 'wizzi-repo.${source}.document.get_files_Async', singleFolderPath
+			+
+			_ that.fsCommon.getItemByPath
+				@ singleFolderPath
+				f_cb( r )
+					# log 'wizzi-repo.${source}.document.get_files_Async.r', r
+					if r
+						_ that.fsCommon.getItemChildren
+							@ r._id
+							f_cb_no_err( r2 )
+								# log 'wizzi-repo.${source}.document.getItemChildren.err.r2', err, r2
+								if err
+									return
+										_ callback(err)
+								else
+									r_cb(r2)
+					else
+						r_cb( null )
+
+		function recurser
+			param folderPaths
+			param files
+			param ids
+			param basenames
+
+			return
+				new Promise
+					function
+						param resolve
+						param reject
+						_ async.map
+							@ folderPaths
+							@ get_files_Async
+							f_cb_no_err( fsitemsArray )
+								# log 'wizzi-repo.${source}.document.getfiles err, fsitemsArray', err, fsitemsArray
+								if err
+									return
+										_ reject
+											@ err
+								var subfolders = []
+								foreach fsitems in fsitemsArray
+									if fsitems != null
+										foreach item in fsitems
+											if item.kind == 0
+												_ subfolders.push(item.path)
+											else
+												if !extension || item.path.substr(-extension.length) === extension
+													_ files.push(item.path)
+													_ ids.push(item._id)
+													_ basenames.push(item.basename)
+								if deep && subfolders.length > 0
+									_ recurser
+										@ subfolders
+										@ files
+										@ ids
+										@ basenames
+										._ then
+											function
+												_ resolve()
+								else
+									_ resolve()
+
+		var files = []
+		var ids = []
+		var basenames = []
+		_ recurser
+			@ [folderPath]
+			@ files
+			@ ids
+			@ basenames
+			._ then
+				function
+					# log 'wizzi-repo.${source}.document.getfiles', 'folderPath', folderPath, 'files', files, 'ids', ids, 'documentContent', documentContent
+					if !documentContent
+						return
+							_ callback(null, files)
+					else
+						_ that.getContentsByIds
+							@ ids
+							f_cb( contents )
+								# log 'wizzi-repo.${source}.document.getfiles.contents', contents
+								var ret = []
+								for var i=0; i<files.length; i++
+									_ ret.push
+										{
+											@ basename basenames[i]
+											@ path files[i]
+											@ fullPath files[i]
+											@ content contents[i]
+								return
+									_ callback(null, ret)
+				._ catch
+					function
+						param err
+						return
+							_ callback(err)
+
+

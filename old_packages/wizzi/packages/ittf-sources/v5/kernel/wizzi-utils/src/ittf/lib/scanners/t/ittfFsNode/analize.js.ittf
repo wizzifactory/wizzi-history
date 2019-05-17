@@ -1,0 +1,65 @@
+﻿$group
+	
+	$* VIA
+
+	m analize
+		
+		if this.path.indexOf('/tests/') > -1
+			set this.isTest = true
+		
+		if this.path.indexOf('/examples/') > -1
+			set this.isExample = true
+		
+		if this.path.indexOf('/util/') > -1 || this.path.indexOf('/utils/') > -1
+			set this.isUtil = true
+		
+		if this.containsDocument('generate.wfjob.ittf') &&
+			\b this.containsFolder('ittf')
+			if this.isTest || this.isExample
+				set this.isJobFolder = true
+			else
+				set this.isPackageRoot = true
+	
+		if this.isDirectory
+			foreach folder in this.folders
+				_ folder.analize()
+			foreach d in this.documents
+				_ d.analize()
+
+	*$
+
+	m containsDocument
+		param testBaseName
+		foreach d in this.documents
+			if d.basename === testBaseName
+				return true
+	
+	m containsFolder
+		param testBaseName
+		foreach f in this.folders
+			if f.basename === testBaseName
+				return true
+	
+	m searchDocument
+		param dpath
+		var searchPath = unixifyPath(dpath)
+		var r = this.root()
+		return r.__searchDocument(searchPath)
+	
+	m __searchDocument
+		param dpath
+		# log '__searchDocument, this.path, dpath', this.path, dpath
+		if this.path === dpath
+			return this
+		else if this.isDirectory
+			var ret = null
+			foreach d in this.documents
+				set ret = d.__searchDocument(dpath)
+				if ret != null
+					return ret
+			foreach f in this.folders
+				set ret = f.__searchDocument(dpath)
+				if ret != null
+					return ret
+		return null
+

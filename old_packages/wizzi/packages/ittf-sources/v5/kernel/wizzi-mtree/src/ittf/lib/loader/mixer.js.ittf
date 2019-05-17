@@ -1,0 +1,241 @@
+﻿module wizzi-mtree.loader.mixer
+    kind jsfile
+    
+	var util = require('util')
+    var path = require('path')
+	var assert = require('assert')
+    var async = require('async')
+    var errors = require('../errors')
+    var includer = require('./includer')
+    var utilnode = require("../util/node")
+    
+	set module.exports =
+        function 
+            { mTreePiece
+            { mTreeBrickProvider
+            callback
+
+			_ assert.equal(mTreeBrickProvider.__type, 'MTreeBrickProvider', 'param mTreeBrickProvider must be of type MTreeBrickProvider')
+            
+			set mTreePiece.mixed = false
+            
+			_ mixNodeCollection
+                @ mTreePiece.nodes
+                @ null
+                f_cb( mixedNodes
+                    set mTreePiece.nodes = mixedNodes
+                    return callback(null, mTreePiece)
+            
+			function mixNodeCollection
+                param mixerNodes
+                param resultingNodes_Parent
+                param callback
+                
+				var mixedNodesAccumulator
+                    [ 
+                
+				var len = mixerNodes.length
+                
+				function repeater
+                    param index
+                    if index === len
+                        return callback(null, mixedNodesAccumulator)
+                    _ mixNodeIfTheCase
+                        @ mixerNodes[index]
+                        f_cb( mixedNodes
+                            _ appendItemsToCollection(mixedNodes, mixedNodesAccumulator, resultingNodes_Parent)
+                            _ process.nextTick
+                                function 
+                                    _ repeater(index + 1)
+                _ repeater(0)
+
+			#
+				# params
+				#     mixerNode: Object - may contain a mixin call if name ends with '('; example: class()  
+				#     If the mixerNode is a mixin call
+				#         fetches the mixed document and mixes it
+				#     else
+				#         go down and execute the mix operation on the children nodes of the mixerNode.
+			function mixNodeIfTheCase
+                param mixerNode
+                param callback
+                var isMixinCall = false
+                
+				if mixerNode.tagSuffix === '('
+                    if utilnode.isParentOfName(mixerNode, ['$', '$global']) == false
+                        set isMixinCall = true
+                    else 
+                        set mixerNode.name += mixerNode.tagSuffix
+                        set mixerNode.tagSuffix = null
+                
+				if isMixinCall
+					# mixerNode.name is the name of the mixin to include (IttfFragment) 
+					# mixerNode.value is a comma separated list of arguments of the mixin call
+					# mixerNode.model.uri is the mixer IttfDocument uri; its folder is the base path
+					#   for resolving the uri of the mixin
+                    var args = mixerNode.value.trim()
+                    if args.substr(-1, 1) === ')'
+                        set mixerNode.value = args.substring(0, args.length - 1)
+                    var mixeruri = mixerNode.model.uri
+                    var mixerbasedir = path.dirname(mixeruri)
+					## load the parsed mTreeBrickModel of the mixin (we name it 'the mixed')
+                    _ mTreeBrickProvider.get
+                        { 
+                            @ from 'store'
+                            @ basedir mixerbasedir
+                            @ relpath mixerNode.name
+                        f_cb_no_err( mixedNodifiedMTree )
+							if err
+								log 'wizzi-mtree.loader.mixer.err', err
+								log 'wizzi-mtree.loader.mixer.mixerNode', mixerNode.name, mixerNode.value
+								return
+									_ callback
+										@ err
+							_ mTreeBrickProvider.enterFragmentCall
+								@ mixeruri
+								@ mixedNodifiedMTree.uri
+                            if mTreeBrickProvider.checkForRecursion()
+								return
+									_ callback
+										_ local_error
+											@ 'InvalidIttfError'
+											@ 'default'
+											@ 'Recursive mixin or include: ' + mixerNode.name
+											@ mixerNode
+							# before mixing the mixedNodifiedMTree
+							# resolve its eventual includes
+							_ includer
+                                @ mixedNodifiedMTree
+                                @ mTreeBrickProvider
+                                f_cb( mixedIncludedMTree )
+									# now mix the mixed root nodes
+                                    _ mixCalleeRootNodes
+                                        @ mixedIncludedMTree.nodes
+                                        @ mixerNode
+                                        f_cb( mixedNodes
+                                            _ mTreeBrickProvider.exitFragmentCall()
+                                            _ callback(null, mixedNodes)
+                
+				elif mixerNode.name === '$.'
+					# mixerNode is a TEXT CONTAINER (CDATA)
+                    if mixerNode.children.length > 0
+                        set mixerNode.value = utilnode.nodeToTextLine(mixerNode)
+                        set mixerNode.children = []
+                    return 
+                        _ callback
+                            @ null
+                            [ 
+                                @ mixerNode
+                else 
+					# mixerNode IS NOT a mixin call
+					# but its children could contain mixin calls
+					# so analyze and mix its children before returning it
+                    _ mixNodeCollection
+                        @ mixerNode.children
+                        @ mixerNode
+                        f_cb( mixedNodes
+                            set mixerNode.children = mixedNodes
+							# return a node collection with mixerNode as the only element
+                            return 
+                                _ callback
+                                    @ null
+                                    [ 
+                                        @ mixerNode
+            
+			function mixCalleeRootNodes
+                param mixedRootNodes
+                param mixerNode
+                param callback
+                var 
+                    decl mixedRootNode
+                    decl len = mixedRootNodes.length
+                    decl mixedNodesAccumulation
+                        [ 
+
+				#
+					# The mixedNodifiedMTree may contain multiple root nodes.
+					# The $group command is used as the root node of an IttfDocument
+					#   when multiple root nodes have to be declared.
+					# So the repeater function execute the mixup of every child node of the mixedNodifiedMTree
+					#   and accumulates the resulting mixed nodes in the var "mixedNodesAccumulation"
+
+                function repeater
+                    param index
+                    if index === len
+						# we are done, return the result
+						var firstSemanticNode = getFirstSemanticNode(mixedNodesAccumulation)
+						if firstSemanticNode != null
+							# log 'wizzi-mtree.mixer.firstSemanticNode' , firstSemanticNode.name, firstSemanticNode.value
+							set firstSemanticNode.__firstOfMixedNodes = true
+                        return callback(null, mixedNodesAccumulation)
+                    set mixedRootNode = mixedRootNodes[index]
+
+					# TODO to set $args and $mixerBrickKey on mixedRootNodes should be the same and more clear
+					# THEY ARE NOT SET ON ROOT NODES BUT ON THE MODEL
+					# sets the mixer args for the evaluation step (see ./evaluator.js)
+                    set mixedRootNode.model.$args = mixerNode.value
+                    set mixedRootNode.model.$mixerBrickKey = mixerNode.model.brickKey
+                    set mTreePiece.mixed = true
+                    
+					# search a default hook inside the mixedRootNode
+					var hook = utilnode.findIttfCommand(mixedRootNode, 'default', 'hook')
+                    
+		            # The mixerNode.children, when mixed, 
+					# must be added to each mixedRootNode.
+					_ mixNodeCollection
+                        @ mixerNode.children
+                        @ mixedRootNode
+                        f_cb( mixedNodes
+                            if hook
+								# A default hook was found,
+								# the mixer node children must replace the $hook node;
+								# utilnode.replace will set the parent of the nodes of 
+								# mixedNodes to the parent of hook.
+                                _ utilnode.replace(hook, mixedNodes)
+                            else 
+								# A default hook was not found,
+								# the mixer node children must be
+								# appended to the last child of the mixedRootNode;
+								# the mixedRootNode becomes the parent of the mixer node children.
+								foreach item in mixedNodes
+                                    _ mixedRootNode.children.push
+                                        @ item
+							#
+								# It seams we are done, but there is a notch.
+								# mixedRootNode could contain itself a mixin call.
+								# It must be analyzed and mixed if the case.
+								# Set the mixerNode.parent as its parent
+								# and add it to the resultMixedNodes collection.
+                            _ mixNodeIfTheCase
+                                @ mixedRootNode
+                                f_cb( mixedNodes
+                                    _ appendItemsToCollection
+                                        @ mixedNodes
+                                        @ mixedNodesAccumulation
+                                        @ mixerNode.parent
+									_ process.nextTick
+										function 
+											_ repeater(index + 1)
+                _ repeater(0)
+            
+			function appendItemsToCollection
+                param items
+                param collection
+                param parent
+                foreach item in items
+                    if parent
+                        set item.parent = parent
+                    _ collection.push(item)
+
+	function getFirstSemanticNode
+		param nodes
+		foreach node in nodes
+			if node.name[0] != '$' || ((node.name === '$' || node.name === '$global') && node.value && node.value.length > 0)
+				return node
+			else
+				var ret = getFirstSemanticNode(node.children)
+				if ret
+					return ret
+		return null
+
+	$include local_error

@@ -1,0 +1,47 @@
+﻿$group
+
+	@ getPackages
+		function
+			param options
+			param callback
+
+			_ this.getCommons
+				@ options
+				f_cb_api( commons )
+					return
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ packages commons.data.packages
+								@ status
+									_ success
+										@ 'Package list fetched'
+
+	@ getPackage
+		function
+			param options
+			param callback
+
+			var packageId = options.packageId
+
+			_ this.getCommons
+				@ options
+				f_cb_api( commons )
+
+					var xpackage
+						_ _.find
+							@ commons.data.packages
+							{
+								@ 'name' packageId
+					return
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ package xpackage
+								@ status
+									_ success
+										@ 'Package fetched'

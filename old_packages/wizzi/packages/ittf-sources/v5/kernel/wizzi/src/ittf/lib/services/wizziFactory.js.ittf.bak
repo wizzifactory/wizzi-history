@@ -1,0 +1,88 @@
+﻿module wizzi.wizziFactory
+	kind jsfile
+	+
+	var util = require('util')
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	+
+	var repo = require('wizzi-repo')
+	var mtree = require('wizzi-mtree')
+	var acl = require('../acl')
+	var productionOptions = require('../production/options')
+	var ProductionManager = null
+	var GenContext = require('../artifact/genContext')
+	var verify = require('wizzi-utils').verify
+	var file = require('wizzi-utils').file
+	var StringWriter = require('../util/stringWriter')
+	var errors = require('../errors')
+	var log = require('../util/log')(module)
+	var PluginsManager = require('./pluginsManager')
+	var StorePool = require('./storePool')
+	var bootModelUri = "../wizzi/models/bootstrap/wfschema-boot-model"
+	var bootModelDefUri = "../wizzi/models/bootstrap/wfschema-boot-modelDef"
+	var BootWizziSchema = null
+	var ModelInfo = null
+	var AsyncModelLoader = null
+	+
+	class WizziFactory
+		ctor
+			param user
+			param role
+			set this.__type = 'WizziFactory'
+			set this.user = user
+			set this.role = role
+			set this.storeKind = null
+			set this.fileService = null
+			set this.storePool = new StorePool(this)
+			# loadMTree is a method of this class, we need an alias
+			set this.__loadMTree = null
+			# loadMTreeRaw is a method of this class, we need an alias
+			set this.__loadMTreeRaw = null
+			set this.pluginsManager = null
+			set this.modelLoaders = {}
+			set this.modelTransformers = {}
+			set this.artifactGenerators = {}
+			set this.schemaDefinitions = {}
+			set this.globalContext = {}
+
+		$include wizziFactory/initialize
+		$include wizziFactory/terminate
+		$include wizziFactory/request-context
+		$include wizziFactory/mtree-loading
+		$include wizziFactory/model-loading
+		$include wizziFactory/model-transformation
+		$include wizziFactory/artifact-generation
+		$include wizziFactory/schema-definition
+		$include wizziFactory/modelTypes-generation
+	
+	$include wizziFactory/detectSchema
+
+	function getProductionManager
+		if ProductionManager == null
+			set ProductionManager = require('../production/manager')
+		return ProductionManager
+
+	set module.exports
+		{
+			@ createFactory
+				function
+					param user
+					param role
+					param options
+					param callback
+					log 'wizzi.wizziFactory.createFactory.options', options
+					if typeof(callback) === 'undefined' &&
+						\b typeof(options) === 'undefined'
+						# no ACL required
+						set options = user
+						set callback = role
+						set user = 'stefi'
+						set role = 'admin'
+					log 'wizzi.wizziFactory.createFactory.globalContext', options.globalContext
+					var wf
+						new WizziFactory
+							@ user
+							@ role
+					_ wf.initialize
+						@ options
+						@ callback

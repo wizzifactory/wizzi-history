@@ -1,0 +1,317 @@
+  module  ids: 1 308
+    kind jsfile ids: 2 309
+    +  ids: 3 310
+    var assert = require('assert') ids: 4 311
+    var path = require('path') ids: 5 312
+    var util = require('util') ids: 6 313
+    var _ = require('lodash') ids: 7 314
+    var verify = require('../util/verify') ids: 8 315
+    var errors = require('../errors') ids: 9 316
+    var fail = require('../util/fail') ids: 10 317
+    var log ids: 11 318
+      _ require('../util/log') ids: 12 319
+        (  ids: 13 320
+          @ module ids: 14 321
+    var interpolate = require('../util/interpolate') ids: 15 322
+    var ModelInfo = require("../model/modelinfo").ModelInfo ids: 16 323
+    +  ids: 17 324
+    #  ids: 18 325
+      # ArtifactInfo is a wrapper around an <artifact> element ids: 19 326
+      # of a <wfjob> WizziModel. ids: 20 327
+      # The config parameter has already been preprocessed ids: 21 328
+      # by the lib/production/wfjob.js module. ids: 22 329
+      # param config:Object { ids: 23 330
+      # name:String, ids: 24 331
+      # options:Object { ids: 25 332
+      # basedir:String // Uri ids: 26 333
+      # dotgExtensionPrefix:Boolean ids: 27 334
+      # }, ids: 28 335
+      # model:Object {  // ModelInfo config object ids: 29 336
+      # see lib/production/wfjob.js for creation ids: 30 337
+      # see lib/model/modelInfo.js for use ids: 31 338
+      # }, ids: 32 339
+      # isWfJob:Boolean, ids: 33 340
+      # transformers:Array { ids: 34 341
+      # name:String ids: 35 342
+      # dumpFile:String    // Uri ids: 36 343
+      # }, ids: 37 344
+      # gen:Object { ids: 38 345
+      # generator:String // generator name ids: 39 346
+      # }, ids: 40 347
+      # dest:Object { ids: 41 348
+      # fullpath:String    // Uri ids: 42 349
+      # folder:String      // a basepath Uri, may be relative ids: 43 350
+      # baseFolder:String  // a basepath Uri (required when folder is relative) ids: 44 351
+      # path:String        // relative path ids: 45 352
+      # extension:String ids: 46 353
+      # } ids: 47 354
+      # } ids: 48 355
+    +  ids: 49 356
+    function logme ids: 50 357
+      if false ids: 51 358
+        _ console.log.apply(console, arguments) ids: 52 359
+    +  ids: 53 360
+    wz-class ArtifactInfo ids: 54 361
+      ctor  ids: 55 362
+        param config ids: 56 363
+        set this.name = config.name ids: 57 364
+        set this.options = config.options ids: 58 365
+        if verify.isObject(config.model) ids: 59 366
+          set this.modelInfo = new ModelInfo(config.model) ids: 60 367
+          set this.contextInfos = null ids: 61 368
+        else  ids: 62 369
+          set this.contextInfos = [] ids: 63 370
+          foreach item in config.contexts ids: 64 371
+            _ this.contextInfos.push ids: 65 372
+              new ModelInfo(item) ids: 66 373
+          set this.modelInfo = null ids: 67 374
+        set this.isWfJob = config.isWfJob ids: 68 375
+        set this.transformers = config.transformers ids: 69 376
+        set this.gen = config.gen ids: 70 377
+        set this.dest = config.dest ids: 71 378
+        set this.wfjob = config.wfjob ids: 72 379
+        set this.genWriters = [] ids: 73 380
+      m initialize ids: 74 381
+        param productionManager ids: 75 382
+        set this.productionManager = productionManager ids: 76 383
+        if this.modelInfo ids: 77 384
+          _ this.modelInfo.productionManager ids: 78 385
+            @ productionManager ids: 79 386
+        else  ids: 80 387
+          foreach item in this.contextInfos ids: 81 388
+            _ item.productionManager ids: 82 389
+              @ productionManager ids: 83 390
+        set this.options ids: 84 391
+          _ _.merge ids: 85 392
+            {  ids: 86 393
+            @ productionManager.options || {} ids: 87 394
+            @ this.options || {} ids: 88 395
+      m addGenWriter ids: 89 396
+        param ctx ids: 90 397
+        _ this.genWriters.push(ctx) ids: 91 398
+      m isWizziFactoryJob ids: 92 399
+        return this.modelInfo != null && this.modelInfo.getContextCollectionInfo() == null && this.isWfJob ids: 93 400
+      m isWizziModelArtifact ids: 94 401
+        return this.modelInfo != null && this.modelInfo.getContextCollectionInfo() == null && verify.isObject(this.gen) && verify.isNotEmpty(this.gen.generator) ids: 95 402
+      m isWizziCollectionArtifact ids: 98 403
+        return this.modelInfo != null && verify.isObject(this.modelInfo.getContextCollectionInfo()) && verify.isObject(this.gen) ids: 99 404
+      m isCodeWriteArtifact ids: 102 405
+        return this.modelInfo == null && verify.isObject(this.gen) && verify.isNotEmpty(this.gen.generator) ids: 103 406
+      m isFinalArtifact ids: 104 407
+        return this.modelInfo != null && (verify.isObject(this.gen) === false || verify.isEmpty(this.gen.generator)) ids: 105 408
+      m getItemsToPersistToFile ids: 107 409
+        param callback ids: 108 410
+        var check ids: 109 411
+          {  ids: 110 412
+        var items ids: 111 413
+          [  ids: 112 414
+        foreach genWriter in this.genWriters ids: 113 415
+          var srcPath = genWriter.srcPath ids: 114 416
+          if this.isWizziCollectionArtifact() ids: 115 417
+            var collectionItem = genWriter.model ids: 116 418
+            _ assert.strictEqual ids: 117 419
+              _ verify.isObject(collectionItem) ids: 118 420
+              @ true ids: 119 421
+              @ 'genWriter.model must contain an object.' ids: 120 422
+            $group  ids: 610 617
+              $args: ipcontext  $params: varName, message|@@null
+              var ${varName} ids: 612 618
+                _ this.getInterpolatePathNameContext(collectionItem) ids: 122 424
+              if ${varName} && ${varName}.__is_error ids: 614 620
+                log '__is_error ${message}', ${varName} ids: 615 621
+                return callback(${varName}) ids: 616 622
+            $group  ids: 610 623
+              $args: destUri  $params: varName, message|@@null
+              var ${varName} ids: 612 624
+                _ this.getDestinationUri(srcPath) ids: 124 426
+              if ${varName} && ${varName}.__is_error ids: 614 626
+                log '__is_error ${message}', ${varName} ids: 615 627
+                return callback(${varName}) ids: 616 628
+            var filepath ids: 125 427
+              _ interpolate ids: 126 428
+                @ destUri ids: 127 429
+                @ ipcontext ids: 128 430
+                {  ids: 129 431
+                  @ delimiter '{}' ids: 130 432
+            _ logme('ArtifactInfo.getItemsToPersistToFile.ipcontext', ipcontext, 'filepath', filepath) ids: 131 433
+            if check[filepath] ids: 132 434
+              return  ids: 133 435
+                _ this.error ids: 134 436
+                  @ "Duplicated destination filepath: " + filepath ids: 135 437
+                  @ "getItemsToPersistToFile" ids: 136 438
+            set check[filepath] = true ids: 137 439
+            var persisteable ids: 138 440
+              {  ids: 139 441
+                @ artifactInfo this ids: 140 442
+                @ genWriter genWriter ids: 141 443
+                @ filepath filepath ids: 142 444
+            _ items.push(persisteable) ids: 143 445
+          else  ids: 144 446
+            $group  ids: 610 629
+              $args: destUri  $params: varName, message|@@null
+              var ${varName} ids: 612 630
+                _ this.getDestinationUri(srcPath) ids: 146 448
+              if ${varName} && ${varName}.__is_error ids: 614 632
+                log '__is_error ${message}', ${varName} ids: 615 633
+                return callback(${varName}) ids: 616 634
+            var persisteable ids: 147 449
+              {  ids: 148 450
+                @ artifactInfo this ids: 149 451
+                @ genWriter genWriter ids: 150 452
+                @ filepath destUri ids: 151 453
+            _ items.push(persisteable) ids: 152 454
+        _ callback(null, items) ids: 153 455
+      m getInterpolatePathNameContext ids: 154 456
+        param collectionItem ids: 155 457
+        if this.isWizziCollectionArtifact() ids: 156 458
+          var result ids: 157 459
+            {  ids: 158 460
+          var info = this.modelInfo.getContextCollectionInfo() ids: 159 461
+          foreach templValue in info.pathTemplateValues ids: 160 462
+            if templValue.function ids: 161 463
+              set result[templValue.token] = collectionItem[templValue.function]() ids: 162 464
+              if verify.isEmpty(result[templValue.token]) ids: 163 465
+                return  ids: 164 466
+                  _ this.error ids: 165 467
+                    @ 'the path template value function must return a not empty string for token: "' + templValue.token + '"' ids: 166 468
+                    @ 'getInterpolatePathNameContext' ids: 167 469
+            elif templValue.attribute ids: 168 470
+              set result[templValue.token] = collectionItem[templValue.attribute] ids: 169 471
+              _ logme ids: 170 472
+                @ 'result[templValue.token]' ids: 171 473
+                @ result[templValue.token] ids: 172 474
+                _ verify.isEmpty ids: 173 475
+                  @ result[templValue.token] ids: 174 476
+              if verify.isEmpty(result[templValue.token]) ids: 175 477
+                return  ids: 176 478
+                  _ this.error ids: 177 479
+                    @ 'the path template value attribute "' + templValue.attribute + '" must return a not empty string for token: "' + templValue.token + '"' ids: 178 480
+                    @ 'getInterpolatePathNameContext' ids: 179 481
+            else  ids: 180 482
+              return  ids: 181 483
+                _ this.error ids: 182 484
+                  @ 'path template value must contain an attribute or a function value for token: "' + templValue.token + '"' ids: 183 485
+                  @ 'getInterpolatePathNameContext' ids: 184 486
+          return result ids: 185 487
+        else  ids: 186 488
+          return  ids: 187 489
+            _ this.error ids: 188 490
+              @ "Method called on an artifact that is not a wizzi collection artifact." ids: 189 491
+              @ 'getInterpolatePathNameContext' ids: 190 492
+      m getDestinationUri ids: 191 493
+        param srcPath ids: 192 494
+        var dest = this.dest ids: 193 495
+        var opt = this.options ids: 194 496
+        var msg ids: 195 497
+          [  ids: 196 498
+            @ 'ArtifactInfo.getDestinationUri' ids: 197 499
+            @ 'config.dest' ids: 198 500
+        if verify.isNotEmpty(dest.fullpath) ids: 199 501
+          return dest.fullpath ids: 200 502
+        if verify.isEmpty(dest.folder) ids: 201 503
+          return  ids: 202 504
+            _ this.error ids: 203 505
+              @ 'A not empty dest.folder is required' ids: 204 506
+              @ 'getDestinationUri' ids: 205 507
+        var destpath ids: 206 508
+        if dest.path && verify.isAbsolutePath(dest.path) ids: 207 509
+          set destpath = path.join(dest.path, srcPath) ids: 208 510
+        else  ids: 209 511
+          set srcPath = dest.path ? dest.path : srcPath ids: 210 512
+          if verify.isEmpty(srcPath) ids: 211 513
+            return  ids: 212 514
+              _ this.error ids: 213 515
+                @ 'A not empty srcPath is required' ids: 214 516
+                @ 'getDestinationUri' ids: 215 517
+          set destpath = path.join(dest.folder, srcPath) ids: 216 518
+        if this.isFinalArtifact() === false ids: 217 519
+          var ext ids: 218 520
+          if dest.extension === '@@null' ids: 219 521
+            set ext = "" ids: 220 522
+          else  ids: 221 523
+            var ext = (dest.extension || '.js') ids: 222 524
+            set ext = verify.startsWith(ext, '.') ? ext : ('.' + ext) ids: 223 525
+            if ext.toLowerCase() !== '.ittf' ids: 224 526
+              if destpath.substr(- (5), 5).toLowerCase() === '.ittf' ids: 225 527
+                set destpath = destpath.substr(0, (destpath.length - 5)) ids: 226 528
+            set ext = verify.endsWith(destpath, ext) ? '' : this.options.dotgExtensionPrefix ? ('.g' + ext) : ext ids: 227 529
+          set destpath = (destpath + ext) ids: 228 530
+        else  ids: 229 531
+          if destpath.indexOf('__copy') >= 0 ids: 230 532
+            set destpath = verify.replaceAll(destpath, '__copy', '') ids: 231 533
+        if verify.isAbsolutePath(destpath) ids: 232 534
+          return destpath ids: 233 535
+        if verify.isEmpty(dest.baseFolder) ids: 234 536
+          return  ids: 235 537
+            _ this.error ids: 236 538
+              @ 'When dest.folder is a relative path, a not empty dest.baseFolder value is required.' ids: 237 539
+              @ 'getDestinationUri' ids: 238 540
+        return  ids: 239 541
+          _ path.join ids: 240 542
+            @ dest.baseFolder ids: 241 543
+            @ destpath ids: 242 544
+      m error ids: 243 545
+        param message ids: 244 546
+        param method ids: 245 547
+        var err ids: 246 548
+          {  ids: 247 549
+            @ __is_error true ids: 248 550
+            @ message message ids: 249 551
+            @ source "wizzi/lib/production/artifactinfo.js/" + method ids: 250 552
+            @ modelInfo this.modelInfo ids: 251 553
+        _ logme(err) ids: 252 554
+        return err ids: 253 555
+      m dump ids: 254 556
+        throw  ids: 255 557
+          new Error('Not implemented') ids: 256 558
+      m relPath ids: 257 559
+        if this.modelInfo ids: 258 560
+          return  ids: 259 561
+            _ this.modelInfo.srcFullPath() ids: 260 562
+              ._ substr(this.options.basedir.length + 1) ids: 261 563
+        else  ids: 262 564
+          return 'null' ids: 263 565
+      m toString ids: 264 566
+        return  ids: 265 567
+          [  ids: 266 568
+            @ '\n' ids: 267 569
+            @ 'ArtifactInfo ' ids: 268 570
+            @ 'name:' ids: 269 571
+            _ this.name ids: 270 572
+            @ 'model.src:' ids: 271 573
+            _ this.relPath ids: 272 574
+            @ ', gen.generator:' ids: 273 575
+            iif this.gen ids: 274 576
+              then  ids: 275 577
+                set this.gen.generator ids: 276 578
+              else 'none' ids: 277 579
+            @ '\n' ids: 278 580
+            ._ join(' ') ids: 279 581
+      m terminate ids: 280 582
+        if this.modelInfo ids: 281 583
+          _ this.modelInfo.terminate() ids: 282 584
+        if this.contextInfos ids: 283 585
+          foreach item in this.contextInfos ids: 284 586
+            _ item.terminate() ids: 285 587
+        if this.genWriters ids: 286 588
+          foreach item in this.genWriters ids: 287 589
+            _ item.terminate() ids: 288 590
+      m isArtifactConfig ids: 289 591
+        static  ids: 290 592
+        param test ids: 291 593
+        if !test ids: 292 594
+          return false ids: 293 595
+        if !verify.isObject(test.options) ids: 294 596
+          return false ids: 295 597
+        if !verify.isObject(test.model) && !verify.isObject(test.contexts) ids: 296 598
+          return false ids: 297 599
+        if !verify.isObject(test.dest) ids: 298 600
+          return false ids: 299 601
+        if !verify.isObject(test.gen) ids: 300 602
+          return false ids: 301 603
+        return true ids: 302 604
+      m isArtifactInstance ids: 303 605
+        static  ids: 304 606
+        param test ids: 305 607
+        throw  ids: 306 608
+          new Error('Not implemented') ids: 307 609

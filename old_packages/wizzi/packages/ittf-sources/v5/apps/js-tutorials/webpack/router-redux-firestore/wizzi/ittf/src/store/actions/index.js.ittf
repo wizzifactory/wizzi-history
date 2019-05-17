@@ -1,0 +1,20 @@
+﻿module
+	kind es6
+
+	$include app-options
+	
+	react/store/actions/index( &app )
+
+	$foreach a in app.actions
+		wz-const ${a.name.toUpperCase()} = '${a.name.toUpperCase()}'
+	+
+	$foreach a in app.actions
+		wz-const ${camelCase(a.name)}
+			=>
+				$foreach p in a.params
+					param ${p}
+				return
+					{
+						@ type ${a.name.toUpperCase()}
+						$foreach p in a.params
+							@ ${p} ${p}

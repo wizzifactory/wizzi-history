@@ -1,0 +1,100 @@
+﻿$group
+	$params name
+
+	e ${name} : commentable
+		a type
+			restrict
+				enum string
+				enum boolean
+				enum integer
+				enum float
+				enum date
+				enum object
+				enum any
+				enum array
+				enum function
+				$if name === 'param'
+					enum alternative
+					enum callback-function
+				$if name === 'argument'
+					enum alternative
+					enum switch
+					enum exception
+				$if name === 'property'
+					enum mergedobject
+					enum alternative
+					enum switch
+				$if name === 'value'
+					enum any
+					enum null
+					enum json
+					enum exception
+				$if name === 'item'
+					enum alternative
+		a_tag( defaultValue, default )
+		a_tag( isRequired, is-required )
+		a_flag(isPOJO, pojo)
+		a_tag(apiRef, api-ref)
+		a iface
+	
+		$if name === 'param'
+			r value/s
+				# when type == alternative
+			r argument/s
+				# when type == callback-function
+			r propert-y/ies
+				# when type == object
+			r item/s
+				# when type == array
+
+		$if name === 'argument'
+			r value/s
+				# when type == alternative
+			r on/s
+				# when type == switch
+			r propert-y/ies
+				# when type == object
+			r item/s
+				# when type == array
+
+		$if name === 'value'
+			r propert-y/ies
+				# when type == object
+			r item/s
+				# when type == array
+			r error/s
+				# when type == exception
+
+		$if name === 'item'
+			r propert-y/ies
+				# when type == object
+			r item/s
+				# when type == array
+			r value/s
+				# when type == alternative
+
+		$if name === 'property'
+			r propert-y/ies
+				# when type == object
+			r item/s
+				# when type == array
+			r param/s
+				# when type == function
+			r value/s
+				# when type == alternative
+			r on/s
+				# when type == switch
+				
+		a_tag( apiRef, api-ref )
+
+		r restrict
+			one-to-one
+
+	e on : commentable
+		r value/s
+
+	e error : commentable
+		
+
+
+

@@ -1,0 +1,30 @@
+﻿$group
+
+	set md.isFolder
+		function
+			param userId
+			param projectId
+			param path_string
+			param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+			var fsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ path_string
+				
+			# log 'wizzi-io.filesystem.isFolder.fsPath', fsPath
+
+			var exists
+				_ file.isDirectory
+					@ fsPath
+			# log 'wizzi-io.filesystem.isFolder.fsPath', fsPath, 'exists', exists
+			return 
+				_ callback(null, exists)

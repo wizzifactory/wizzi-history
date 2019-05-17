@@ -1,0 +1,53 @@
+wfjob
+	$params kind
+	
+	$
+		var ittf_preprocess_folder = path.join(__dirname, '..', 'preprocess', 'package');
+		var ittf_html_folder       = path.join(__dirname, '..', 'html', 'package');
+		var dest_folder            = "c:/my/wizzi/v5/github/wizzifactory.github.io";
+		var pkgs;
+		if (kind === 'kernel') {
+			pkgs = ['wizzi', 'wizzi-mtree', 'wizzi-repo', 'wizzi-utils'];
+		} else if (kind === 'plugins') {
+			pkgs = ['wizzi-core', 'wizzi-js', 'wizzi-web'];
+		} else {
+			pkgs = ['wizzi-demo'];
+		}
+
+	models-base-folder ${ittf_preprocess_folder}
+
+	$foreach pkg in pkgs
+		model wf-${pkg}
+			src ${pkg}.wfpackage.ittf
+			schema wfpackage
+
+	line one
+		cwd-folder ${ittf_preprocess_folder}
+		dest-folder ${dest_folder}
+
+		$foreach pkg in pkgs
+			artifact json export of wfpackage with preprocessed package
+				src ${pkg}.wfpackage.ittf
+				schema wfpackage
+				generator json/export
+				extension json
+
+	line two
+		cwd-folder ${ittf_html_folder}
+		dest-folder ${dest_folder}
+
+		$foreach pkg in pkgs
+			artifact html package
+				src package.html.ittf
+				schema html
+				is-compile
+				generator html/document
+				dest-path code/${pkg}.html
+				model-ref wf-${pkg}
+					export-name wfpackage
+
+	production
+		dest-folder ${dest_folder}
+		line-ref one
+		line-ref two
+

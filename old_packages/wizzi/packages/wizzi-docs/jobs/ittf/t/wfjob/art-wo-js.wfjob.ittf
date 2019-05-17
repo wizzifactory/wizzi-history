@@ -1,0 +1,12 @@
+artifact ${name}
+	$params name, destname|@@null, models|@@null
+	src ${name}
+	$if destname
+		dest-path ${destname}
+	generator js/module
+	schema js
+	extension js
+
+	$ var ms = models ? models.trim().split(',') : []
+	$foreach m in ms
+		model-ref ${m}

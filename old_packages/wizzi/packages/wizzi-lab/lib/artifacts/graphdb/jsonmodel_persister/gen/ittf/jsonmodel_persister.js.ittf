@@ -1,0 +1,136 @@
+module
+	kind jsfile
+	+
+	#
+		# Node ${node.name}
+	+
+	import util
+	import path
+	var utils = require('../lib/utils')
+	+
+	class ${node.name}Persister
+		ctor
+			param store
+			param options
+			set this.store = store
+			set this.options = options
+			set this.baseUri = options.baseUri
+		+
+		m existsMetaData
+			$foreach item in node.pathKeys
+				param ${item.end}
+			$foreach item in node.keys
+				param ${item}
+			param callback
+			+
+			var uri
+				_ this.get${node.name}MetaDataUri
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					$foreach item in node.keys
+						@ ${item}
+			return this.store.exists(uri, callback)
+
+		+
+		m getMetaData
+			$foreach item in node.pathKeys
+				param ${item.end}
+			$foreach item in node.keys
+				param ${item}
+			param callback
+			+
+			var uri
+				_ this.get${node.name}MetaDataUri
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					$foreach item in node.keys
+						@ ${item}
+			# must return NotFoundError if jsonmodel does not exists
+			_ this.store.readJSON(uri, callback)
+
+		+
+		m putMetaData
+			$foreach item in node.pathKeys
+				param ${item.end}
+			$foreach item in node.keys
+				param ${item}
+			param item
+			param callback
+			+
+			var uri
+				_ this.get${node.name}MetaDataUri
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					$foreach item in node.keys
+						@ ${item}
+			# must return NotFoundError if jsonmodel does not exists
+			_ this.store.writeJSON(uri, item, callback)
+		
+		+
+		m deleteMetaData
+			$foreach item in node.pathKeys
+				param ${item.end}
+			$foreach item in node.keys
+				param ${item}
+			param callback
+			+
+			var uri
+				_ this.get${node.name}MetaDataUri
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					$foreach item in node.keys
+						@ ${item}
+			# must return NotFoundError if jsonmodel does not exists
+			_ this.store.delete(uri, callback)
+		+
+		#
+			# Uri builders
+		+
+		$if !!node.metaDocument
+			m get${node.name}MetaDataUri
+				$foreach item in node.pathKeys
+					param ${item.end}
+				$foreach item in node.keys
+					param ${item}
+				var ctx
+					{
+						$foreach item in node.pathKeys
+							@ ${item.end} ${item.end}
+						$foreach item in node.keys
+							@ ${item} ${item}
+				var uri
+					_ path.join
+						@ this.baseUri
+						$foreach item in node.metaDocument.pathSegments
+							$if item.indexOf('{') > -1
+								@ utils.interpolate('${item}', ctx)
+							$else
+								@ '${item}'
+
+				return uri
+		
+		$foreach docu in node.otherDocuments
+			+
+			m get${docu.name}Uri
+				$foreach item in node.pathKeys
+					param ${item.end}
+				$foreach item in node.keys
+					param ${item}
+				var ctx
+					{
+						$foreach item in node.pathKeys
+							@ ${item.end} ${item.end}
+						$foreach item in node.keys
+							@ ${item} ${item}
+				var uri
+					_ path.join
+						@ this.baseUri
+						$foreach item in docu.pathSegments
+							$if item.indexOf('{') > -1
+								@ utils.interpolate('${item}', ctx)
+							$else
+								@ '${item}'
+				return uri
+		
+	+
+	set module.exports = ${node.name}Persister

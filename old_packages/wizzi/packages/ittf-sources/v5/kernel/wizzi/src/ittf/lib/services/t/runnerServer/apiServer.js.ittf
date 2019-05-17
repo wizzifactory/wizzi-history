@@ -1,0 +1,31 @@
+﻿$group
+		
+	m registerApi
+        string apiName
+        func apiFunction
+		
+		set this.apis[apiName] = apiFunction
+		log chalk.yellow('WIZZI RunnerServer. Registered Api: ' + apiName)
+    
+	m callApi
+        string apiName
+		
+		var args
+		var apiFunction = this.apis[apiName]
+		if _.isFunction(apiFunction) == false
+			set apiFunction = this.apis['default']
+			if _.isFunction(apiFunction) == false
+				r_wz_err( InvalidArgument, callApi )
+					@ 'apiName: "' + apiName + '" is not a function'
+			else
+				set args = arguments
+		else
+			set args = Array.prototype.slice.call(arguments, 1)
+        
+		try
+			return apiFunction.apply(this, args)
+		catch ex
+			r_wz_err( OperationError, callApi, ex )
+				@ 'apiName "' + apiName + '" exception: ' + ex.message 
+
+

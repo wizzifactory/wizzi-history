@@ -1,0 +1,11 @@
+﻿$group
+	$params item|item, parent|parent, oper|undeclared, tryoper|@@null
+
+	elif ${item}.name === '#'
+		_ md.comment(${item}, ctx, ${parent})
+	$if tryoper != null
+		else
+			_ md.${tryoper}(${item}, ctx, ${parent})
+	$else
+		else
+			newnode( ***, ${item}.name + ' ' + ${item}.value + ' oper: ${oper}'  )

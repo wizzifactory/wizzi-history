@@ -1,0 +1,21 @@
+﻿example-essentials(languageschemas)
+
+	var examples
+		[
+			$$ _ require('./css')
+			_ require('./js')
+			$$ _ require('./vue')
+			$$ _ require('./html')
+
+	_ async.mapSeries
+		@ examples
+		function
+			param example
+			param callback
+			_ example(callback)
+		f_cb_test(results)
+			log 'languageschemas examples results\n', results
+			return
+				_ step_callback
+					@ null
+					@ 'languageschemas example executed'

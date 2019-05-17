@@ -1,0 +1,185 @@
+﻿module wizzi-mtree.loader.appender
+    kind jsfile
+    
+	var util = require('util')
+    var errors = require('../errors')
+    var utilnode = require('../util/node')
+
+	#
+		# Ittf commands
+		#   $group
+		#   $append
+		#   $override
+    
+	set module.exports
+        function 
+            { mixedMTreePiece
+            callback
+            
+			var appends
+                { 
+            var groups
+                [ 
+            var overrides
+                [ 
+            var ctx
+                { 
+                    @ id 1
+            
+			foreach node in mixedMTreePiece.nodes
+                _ assignId
+                    @ node
+                    @ ctx
+            
+			var errors
+                [ 
+            
+			foreach node in mixedMTreePiece.nodes
+                _ searchAppend(node, node, appends, groups, overrides, errors, mixedMTreePiece)
+                if errors.length > 0
+					return
+						_ callback
+							@ errors[0]
+            for var key in appends
+				# log 'wizzi-mtree.loader.appender.appends.key', key, appends[key]
+                var appobj = appends[key]
+                _ utilnode.replace
+                    @ appobj.appto
+                    @ appobj.items
+            for var key in overrides
+                var overobj = overrides[key]
+                _ utilnode.replace
+                    @ overobj.virt
+                    @ overobj.items
+            foreach item in groups
+				if !item.parent 
+					return
+						_ callback
+							_ local_error
+								@ 'InvalidIttfError'
+								@ 'default'
+								@ "The tag $group must have a parent and cannot be the root of a primary ittf document. Hint: check for ittf fragments not in a tfolder."
+								@ item
+                _ utilnode.replace
+                    @ item
+                    @ item.children
+            var toremove
+                [ 
+            foreach node in mixedMTreePiece.nodes
+                _ searchPendingNodes(node, toremove)
+            foreach item in toremove
+                _ utilnode.remove(item)
+            _ callback(null, mixedMTreePiece)
+    
+	function searchAppend
+        param item
+        param root
+        param appends
+        param groups
+        param overrides
+        param errors
+		param mixedMTreePiece
+        
+		if item.name === '$group'
+            _ groups.push(item)
+        
+		elif item.name === '$append'
+            if !item.value
+                _ errors.push
+					_ local_error
+						@ 'InvalidIttfError'
+						@ 'searchAppend'
+						@ "The tag $append requires a node-value."
+						@ item
+                return 
+            var appto
+                _ utilnode.findHookExt
+                    @ item
+                    _ item.value.trim()
+					@ 1
+            if appto == null
+				set appto
+					_ utilnode.findHookExt
+						@ item
+						_ item.value.trim()
+						@ 0
+				if appto == null
+					log 'mixedMTreePiece.dump\n', mixedMTreePiece.toText()
+					_ errors.push
+						_ local_error
+							@ 'InvalidIttfError'
+							@ 'searchAppend'
+							@ 'Cannot find hook ' + (item.value || '') + ', root is ' + root.name 
+								\b + ' ' + (root.value || '') + ', in ' + item.model.uri + ', brickKey ' + item.model.brickKey
+								\b + ', remember that $hook/$append does not work between sibling nodes.' 
+								\b + 'After mixup the $hook node must be a parent node or a descendant of a parent node of $append'
+								\b + ', but not a sibling node.'
+							@ item
+					return 
+            var appobj = appends[item.id]
+            if appobj
+                set appobj.items = appobj.items.concat(item.children)
+            else 
+                set appobj =
+                    { 
+                        @ appto appto
+                        @ items item.children
+                set appends[item.id] = appobj
+        
+		elif item.name === '$override'
+            if !(item.value)
+                _ errors.push
+					_ local_error
+						@ 'InvalidIttfError'
+						@ 'searchAppend'
+						@ "The tag $override requires a value."
+						@ item
+                return 
+            var virt
+                _ utilnode.findVirtual
+                    @ item
+                    _ item.value.trim()
+            if virt == null
+                _ errors.push
+					_ local_error
+						@ 'InvalidIttfError'
+						@ 'searchAppend'
+                        @ 'Cannot find virtual to override ' + (item.value || '') + ', root is ' + root.name + ' ' + root.value
+						@ item
+                return 
+            var overobj = overrides[item.value]
+            if overobj
+                _ errors.push
+					_ local_error
+						@ 'InvalidIttfError'
+						@ 'searchAppend'
+						@ 'The virtual node ' + item.value + ' has already been overridden. Root is ' + root.name + ' ' + root.value
+						@ item
+                return 
+            else 
+                set overobj =
+                    { 
+                        @ virt virt
+                        @ over item
+                        @ items item.children
+                set overrides[item.value] = overobj
+        
+		foreach child in item.children
+            _ searchAppend(child, root, appends, groups, overrides, errors, mixedMTreePiece)
+    
+	function searchPendingNodes
+        param item
+        param toremove
+        if ['$hook', '$append', '$override'].indexOf(item.name) >= 0
+            _ toremove.push(item)
+        foreach child in item.children
+            _ searchPendingNodes(child, toremove)
+    
+	function assignId
+        param item
+        param ctx
+        set item._id = ctx.id++
+        foreach child in item.children
+			_ assignId(child, ctx)
+
+	$include local_error

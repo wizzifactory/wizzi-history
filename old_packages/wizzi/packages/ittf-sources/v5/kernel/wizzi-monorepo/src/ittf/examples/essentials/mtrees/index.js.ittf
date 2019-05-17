@@ -1,0 +1,27 @@
+﻿example-essentials()
+
+	var htmlFriendsPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'mtrees'
+			@ 'friends.html.ittf'
+
+	# Load a magical tree from an ittf document and a context object.
+	_ wizzi.mtree
+		@ htmlFriendsPath
+		{
+			@ friends friendsArray
+		f_cb_test(mTreeModel)
+			var dump
+				_ stringify
+					_ mTreeModel.toIttf
+					@ null
+					@ 2
+			log 'mTree friends\n', dump
+			return
+				_ callback
+					@ null
+					@ 'mtrees example executed'
+
+

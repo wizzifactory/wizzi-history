@@ -1,0 +1,174 @@
+﻿$group
+
+	m getSnippets
+		param options
+		param callback
+		const getOptions = {}
+		if options.schema
+			var snippets = snippetsCache.get(options.schema)
+			if snippets
+				r_cb( snippets )
+			set getOptions.where
+				{
+					@ field 'schema'
+					@ op '=='
+					@ value options.schema
+			_ this.fb.getCollection
+				_ this.pathNames.snippetsCollPath
+				@ getOptions
+				f_cb( snippets )
+					_ snippetsCache.set(options.schema, snippets)
+					r_cb( snippets )
+		else
+			r_cb_error( Error )
+				@ 'getSnippets requires a schema property in the options parameters'
+
+	m getSnippet
+		param schemaName
+		param name
+		param callback
+		_ this.getSnippets
+			{
+				@ schema schemaName
+			f_cb( snippets )
+				log 'WizziStore.getSnippet', schemaName, name, snippets
+				foreach item in snippets
+					if item.data.name === name
+						log 'WizziStore.getSnippet', 'got', item
+						r_cb( item )
+				log 'WizziStore.getSnippet', 'not found'
+				r_cb( null )
+
+	m setSnippet
+		param schemaName
+		param name
+		param content
+		param callback
+		const that = this
+		_ this.getSnippets
+			{
+				@ schema schemaName
+			f_cb( snippets )
+				var inserted = 0
+				var updated = 0
+				var snippetData = null
+				foreach item in snippets
+					if item.name === name
+						set item.content = content
+						set snippetData = item
+				if snippetData == null
+					# TODO this changes cache content. Is it OK?
+					set snippetData
+						{
+							@ path
+								_ that.pathNames.snippetRelPath
+									@ name
+									@ schemaName
+							{ data
+								@ schema schemaName
+								@ name name
+								@ content content
+					_ snippets.push(snippetData)
+					set inserted++
+				else
+					set updated++
+				_ that.updatesQueue.set
+					_ that.pathNames.snippetPath
+						@ name
+						@ schemaName
+					@ snippetData
+				_ that.setSchemaSnippet
+					@ schemaName
+					@ name
+				_ that.scheduleCloudUpdate
+				const result
+					{
+						@ inserted inserted
+						@ updated updated
+						@ item snippetData
+						@ schemas that.schemas
+						@ message 'WizziStore.setSnippet successfull ' + schemaName + '/' + name
+				r_cb( result)
+
+	m deleteSnippet
+		param schemaName
+		param name
+		param callback
+		const that = this
+		_ this.getSnippets
+			{
+				@ schema schemaName
+			f_cb( snippets )
+				var copy = [], snippetData
+				foreach item in snippets
+					if item.name !== name
+						_ copy.push(item)
+					else
+						set snippetData = item
+				if snippets.length == copy.length
+					r_cb_error( Error
+						@ 'Delete error. Snippet does not exists: ' + schemaName + '/' + name
+				_ snippetsCache.set(schemaName, copy)
+				_ that.updatesQueue.delete
+					_ that.pathNames.snippetPath
+						@ name
+						@ schemaName
+				_ that.removeSchemaSnippet
+					@ schemaName
+					@ name
+				_ that.scheduleCloudUpdate
+				const message = 'WizziStore.deleteSnippet successfull ' + schemaName + '/' + name
+				log message
+				const result
+					{
+						@ deleted 1
+						@ item snippetData
+						@ schemas that.schemas
+						@ message message 
+				r_cb( result)
+
+	m renameSnippet
+		param schemaName
+		param oldName
+		param newName
+		param callback
+		const that = this
+		_ this.getSnippets
+			{
+				@ schema schemaName
+			f_cb( snippets )
+				var oldItem = null
+				foreach item in snippets
+					if item.name === newName
+						r_cb_error( Error
+							@ 'Rename error. Snippet new name already exists: ' + schemaName + '/' + newName
+					if item.name === oldName
+						set item.name = newName
+						set oldItem = item
+				if oldItem == null
+					r_cb_error( Error
+						@ 'Rename error. Snippet new name already exists: ' + schemaName + '/' + newName
+				_ snippetsCache.set(schemaName, snippets)
+				_ that.updatesQueue.delete
+					_ that.pathNames.snippetPath
+						@ oldName
+						@ schemaName
+				_ that.renameSchemaSnippet
+					@ schemaName
+					@ oldName
+					@ newName
+				_ that.updatesQueue.set
+					_ that.pathNames.snippetPath
+						@ newName
+						@ schemaName
+					@ oldItem
+				_ that.scheduleCloudUpdate
+				const message = 'renameSnippet successfull ' + schemaName + '/' + oldName + '/' + newName
+				log message
+				const result
+					{
+						@ schemas that.schemas
+						@ message message 
+				r_cb( result)
+
+

@@ -1,0 +1,112 @@
+﻿module
+	kind jsfile
+
+	var babel = require("@babel/core")
+	var wizziLoader = require("./wizziLoader")
+
+	var babelOptions
+		{
+			@ babelrc false
+			[ presets
+				@ '@babel/env'
+				@ '@babel/react'
+			{ caller
+				@ name 'wizzi-bundlers'
+				@ supportsStaticESM true
+				@ supportsDynamicImport true
+
+	function babelTransformSync
+		param code
+
+		return
+			_ babel.transform
+				@ code
+				@ babelOptions
+
+	function babelTransform
+		param code
+
+		return
+			new Promise
+				=>
+					param resolve
+					param reject
+					_ babel.transform
+						@ code
+						@ babelOptions
+						=>
+							param err
+							param result
+							if err
+								return
+									_ reject
+										@ err
+							log 'babelTransform', result
+							return
+								_ resolve
+									@ result
+
+	function babelTransformFile
+		param filePath
+		return
+			new Promise
+				=>
+					param resolve
+					param reject
+					_ babel.transformFile
+						@ filePath
+						@ babelOptions
+						=>
+							param err
+							param result
+							if err
+								return
+									_ reject
+										@ err
+							return
+								_ resolve
+									@ result
+
+	function babelTransformWizziFile
+		param filePath
+
+		return
+			new Promise
+				=>
+					param resolve
+					param reject
+
+					_ wizziLoader.readWizziJsModulePromise
+						{
+							@ filePath filePath
+						._ then
+							=>
+								param artifact
+								log 'babelTransformWizziFile.artifact', artifact
+								_ babelTransform
+									@ artifact.code
+									._ then
+										=>
+											param result
+											return
+												_ resolve
+													@ result
+									._ catch
+										=>
+											param err
+											return
+												_ reject
+													@ err
+						._ catch
+							=>
+								param err
+								return
+									_ reject
+										@ err
+
+	set module.exports
+		{
+			@ babelTransform babelTransform
+			@ babelTransformSync babelTransformSync
+			@ babelTransformFile babelTransformFile
+			@ babelTransformWizziFile babelTransformWizziFile

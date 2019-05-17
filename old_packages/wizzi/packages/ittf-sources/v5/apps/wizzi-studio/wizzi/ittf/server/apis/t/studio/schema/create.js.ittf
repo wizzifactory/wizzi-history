@@ -1,0 +1,60 @@
+﻿$group
+
+	@ createSchema
+		function
+			param projectName
+			param schemaName
+			param callback
+
+			var metaPath
+				_ paths.documentMeta
+					@ projectName
+					@ schemaName
+
+			check_file_already_exists( metaPath, studioApi.createSchema. Ittf schema meta
+
+			var ittfPath
+				_ paths.schemaIttf
+					@ projectName
+					@ schemaName
+
+			check_file_already_exists( ittfPath, tudioApi.createSchema. Ittf schema
+
+			var ittfContent = 'wizzischema ' + schemaName
+			_ file.write
+				@ ittfPath
+				@ ittfContent
+
+			var schema
+				{
+					@ schema schemaName
+					@ project projectName
+					@ fullMetaPath metaPath
+					@ fullIttfPath ittfPath
+					@ uri paths.uriFromPath(ittfPath, true)
+					@ created u.now_GMYHMS()
+					@ lastUpdated u.now_GMYHMS()
+					@ fragmentsLastUpdated null
+					@ fragmentsLastUpdatedName null
+					@ models
+						[
+					@ contextValues
+						[
+
+			_ file.writeJSON
+				@ metaPath
+				@ document
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ name documentName
+							@ schema schemaName
+							@ project projectName
+							@ uri paths.uriFromPath(ittfPath, true)
+							@ ittfContent ittfContent
+					@ status
+						_ success
+							@ 'Ittf document created: "' + paths.uriFromPath(ittfPath, true) + '"'

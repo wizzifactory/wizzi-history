@@ -1,0 +1,78 @@
+﻿$group
+	+
+	decl_rsf( snippet, wizzify )
+	+
+	# thunk.withExtraArgument
+	wz-const wizzifySnippet
+		=>
+			param schemaName
+			param snippetName
+			param snippetCode
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					log '*** store.actions.snippet.wizzifySnippet'
+					
+					const wizzi = extraArgument.wizzi
+					
+					_ dispatch
+						_ requestSnippetWizzify
+							@ schemaName
+							@ snippetName
+							@ snippetCode
+
+					_ wizzi.wizzify
+						@ schemaName
+						@ snippetCode
+						f_cb_no_err( result )
+							if err
+								return
+									_ dispatch
+										_ failSnippetWizzify
+											@ schemaName
+											@ snippetName
+											@ err
+							else
+								_ dispatch
+									_ completeSnippetWizzify
+										@ schemaName
+										@ snippetName
+										@ result
+
+
+	wz-const requestSnippetWizzify
+		=>
+			param schemaName
+			param snippetName
+			return
+				{
+					@ type WIZZIFY_SNIPPET_REQUEST
+					@ schemaName schemaName
+					@ snippetName snippetName
+	
+	wz-const failSnippetWizzify
+		=>
+			param schemaName
+			param snippetName
+			param error
+			return
+				{
+					@ type WIZZIFY_SNIPPET_FAILURE
+					@ schemaName schemaName
+					@ snippetName snippetName
+					@ error error
+	
+	wz-const completeSnippetWizzify
+		=>
+			param schemaName
+			param snippetName
+			param wizzifiedSnippet
+			return
+				{
+					@ type WIZZIFY_SNIPPET_SUCCESS
+					@ schemaName schemaName
+					@ snippetName snippetName
+					@ wizzifiedSnippet wizzifiedSnippet

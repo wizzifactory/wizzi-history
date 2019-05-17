@@ -1,0 +1,165 @@
+﻿mdx
+
+	p
+		@ align center
+		a
+			href https://wizzifactory.github.io
+			@ rel noopener
+			@ target _blank
+			img
+				@ width 450
+				@ src https://wizzifactory.github.io/images/logo.svg
+				@ alt Wizzi
+	
+	h1 Wizzi
+	p A model driven artifact factory
+	ul
+		li Design models that express your components features.
+		li Write model transformers and artifact generators that target your preferred technologies.
+		li Wizzify existing code.
+		li Apply templating and composition features to the wizzified code.
+		li Generate your artifacts from models.
+
+	h2 What is not
+		li Wizzi is NOT REACTIVE, it is a SOURCE BUILDER 
+		li Wizzi DOES NOT IMPLEMNT technologies, it TARGETS technologies  
+
+	h2 Installation
+	p Wizzi is available as an [npm package](https://www.npmjs.com/package/wizzi).
+
+	sh
+		+ npm install wizzi --save-dev
+	
+	h2 Usage (using the default factory for a quick start)
+	p The default factory is an internally configured factory that uses a `filesystem` store and has three
+		\b pre-loaded plugins: `wizzi-core`, `wizzi-js` and `wizzi-web`. It is a starter factory to play with
+		\b that targets common web technologies.
+	
+	h3 mTree loading
+	p Loads in memory an mTree defined by an ittf document.
+	js
+		+ var wizzi = require('wizzi');
+		+ wizzi.mtree(
+			+ sourcePath,
+			+ context,
+			+ options,
+			+ function(err, mTree) {
+			+ ...
+			+ });
+	table
+		param( sourcePath, The path to the ittf document that describes the mTree.
+		param( context, An object which properties will be context values in the mTree build of the ittf document.
+	
+	h3 Wizzi model loading
+	p Instantiates a wizzi model, loads it from an mTree object, validates and initializes it.
+	js
+		+ var wizzi = require('wizzi');
+		+ wizzi.model(
+			+ sourcePath,
+			+ context,
+			+ function(err, wizziModel) {
+			+ ...
+			+ });
+
+	table
+		param( sourcePath, The path to the ittf document that describes the model.
+		param( context, An object which properties will be context values in the mTree build of the ittf document.
+
+
+	h3 Artifact generation
+	p Loads a wizzi model that describes an artifact and executes the generation.
+	js
+		+ var wizzi = require('wizzi');
+		+ wizzi.gen(
+			+ sourcePath,
+			+ context,
+			+ options,
+			+ function(err, artifactText) {
+			+ ...
+			+ });
+	table
+		param( sourcePath, The path to the ittf document that describes the artifact.
+		param( context, An object which properties will be context values in the mTree build of the ittf document.
+		options()
+			param( artifactName, The name of the artifact to be generated. Defaults to the default artifact of the ittf document schema.
+			param( artifactContext, An object which properties will be values of the artifact generation context.
+
+	h3 Wizzi schema generation
+	p Generates the artifacts that implement a new wizzi model. The model is described by a wizzi schema (a `wfschema` ittf document).
+	js
+		+ var wizzi = require('wizzi');
+		+ wizzi.schema(
+			+ schemaPath,
+			+ context,
+			+ options,
+			+ function(err, generationResult) {
+				+ ...
+			+ });
+	table
+		param( schemaPath, The path to the `wfschema` document that describes the new wizzi model.
+		param( context, An object which properties will be context values in the mTree build up of the `wfschema` document.
+		options()
+			param( outputPackagePath, The path to the plugin package that will export the new wizzi model.
+
+
+	h3 Wizzi job execution
+	p Executes the artifact generations described by a `wfjob` model.
+	js
+		+ var wizzi = require('wizzi');
+		+ wizzi.job(
+			+ surcePath,
+			+ context,
+			+ options,
+			+ function(err, jobresults) {
+			+ ...
+			+ });
+
+	table
+		param( surcePath, The path to the `wfjob` document that describes the artifact generations to be executed.
+		param( context, An object which properties will be context values in the mTree build up of the `wfjob` document.
+		options()
+			param( name, The name of the job.
+
+	h3 Folder generation
+	p Executes the artifact generation of all the artifacts contained in a folder. Uses the default artifact generator of the
+		\b ittf document schema.
+	js
+		+ var wizzi = require('wizzi');
+		+ wizzi.genFolder(
+			+ sourcePath,
+			+ context,
+			+ function(err, generationResults) {
+				+ ...
+			+ });
+	table
+		param( surcePath, The path of the folder that contains the ittf documents that describe the artifacts.
+		param( context, An object which properties will be context values in the mTree build up of each ittf document.
+
+
+	h2 Examples
+	p Are you looking for an example to get started?
+	p
+		a We host some
+			@ href https://github.com/wizzifactory/wizzi/tree/master/examples
+
+	h2 Documentation
+	p Check out our [documentation website](https://wizzifactory.github.io/).
+
+	h2 Roadmap
+	p The future plans can be found in the [ROADMAP.md](https://github.com/wizzifactory/wizzi/blob/master/roadmap.md) file.
+
+	$*
+	h2 Questions
+	p For *how-to* questions and other non-issues,
+		\b please use [StackOverflow](http://stackoverflow.com/questions/tagged/wizzi) instead of Github issues.
+		\b There is a StackOverflow tag called "wizzi" that you can use to tag your questions.
+	*$
+
+	h2 Contributing
+	p We'd greatly appreciate any [contribution](https://github.com/wizzifactory/wizzi/blob/master/contributing.md) you make.
+
+	h2 Changelog
+	p Recently Updated?
+	p Please read the [CHANGELOG.md](https://github.com/wizzifactory/wizzi/blob/master/changelog.md).
+
+

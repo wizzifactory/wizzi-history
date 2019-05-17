@@ -1,0 +1,56 @@
+﻿$group
+
+	#
+		# This allows model loadings and generations from text strings
+		# params
+		#   { options
+		#     { globalContext
+		#       optional
+
+	m createSingleTextSourceFactory
+		param ittfContent
+		param schema
+		param options
+		param callback
+
+		if typeof callback === 'undefined'
+			set callback = options
+			set options = {}
+
+		var tempIttfDocumentUri = "c:/basefolder/temp." + schema + '.ittf'
+		var documents
+			[
+				{
+					@ path tempIttfDocumentUri
+					@ content ittfContent
+
+		_ JsonComponents.createJsonFsData
+			@ documents
+			a_cb( jsonFsData )
+				set options.jsonFsData = jsonFsData
+				_ this.createJsonFactory
+					@ options
+					f_cb( wf )
+						return
+							_ callback
+								@ null
+								{
+									@ wizziFactory wf
+									@ ittfDocumentUri tempIttfDocumentUri
+
+	m createJsonFactory
+		param options
+		param callback
+
+		var wf
+			new WizziFactory
+				@ this.user
+				@ this.role
+		_ wf.initialize
+			{
+				{ repo
+					@ storeKind 'json'
+					@ storeJsonFsData options.jsonFsData
+				@ plugins this.pluginsOptions
+				@ globalContext options.globalContext || {}
+			@ callback

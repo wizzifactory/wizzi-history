@@ -1,0 +1,136 @@
+﻿$group
+	
+	m analize2
+		param callback
+
+		# log 'wizzi-utils.ittfFsNode.analize2.path', this.path
+		
+		var r = this.root()
+		
+		if r === this
+			_ this.setIds
+
+		if this.path.indexOf('/tests/') > -1
+			set this.isTest = true
+		
+		if this.path.indexOf('/examples/') > -1
+			set this.isExample = true
+		
+		if this.path.indexOf('/util/') > -1 || this.path.indexOf('/utils/') > -1
+			set this.isUtil = true
+		
+		if this.containsDocument('generate.wfjob.ittf') &&
+			\b this.containsFolder('ittf')
+			if this.isTest || this.isExample
+				set this.isJobFolder = true
+			else
+				set this.isPackageRoot = true
+
+		if !this.isDirectory && !this.isFragment
+			var schema = r.info.schemas[this.schema]
+			if !schema
+				set schema
+					{
+						@ name this.schema
+						@ documents []
+				set r.info.schemas[this.schema] = schema
+				# log 'created schema', schema, r.info.schemas
+			else
+				# log 'found', schema, r.info.schemas
+			_ schema.documents.push(this)
+			if this.isTest
+				_ r.info.test.documents.push(this)
+			elif this.isExample
+				_ r.info.example.documents.push(this)
+			elif this.isUtil
+				_ r.info.util.documents.push(this)
+			else
+				_ r.info.lib.documents.push(this)
+		
+		var that = this
+
+		if this.isDirectory
+			
+			_ async.map
+				@ this.folders
+				function
+					param folder
+					param callback
+					_ folder.analize2
+						@ callback
+				f_cb( folderResult )
+					_ async.map
+						@ that.documents
+						function
+							param d
+							param callback
+							_ d.analize2
+								@ callback
+						f_cb( dResult )
+							return
+								_ callback
+									@ null
+
+		else
+			
+			_ IttfMTreeEx.createFrom
+				_ path.join
+					@ r.ittfBasePath
+					@ this.parts.join('/')
+				{
+					@ file r.file
+				f_cb( mTreeEx )
+					
+					# log 'wizzi-utils.ittfFsNode.analize2.created mTreeEx'
+					
+					var ctx
+						{
+							@ fragments {}
+							@ externalFragments {}
+							@ ittfReferences {}
+							@ ittfFsNode this
+							@ ittfBasePath r.ittfBasePath
+			
+					_ mTreeEx.analize
+						@ ctx
+						f_cb()
+
+							set that.mTreeEx = mTreeEx
+							set that.fragments = ctx.fragments
+
+							var max_repeat = 3
+
+							function repeat
+								param count
+						
+								# log 'wizzi-utils.ittfFsNode.analize2.repeat count', count
+						
+								if Object.keys(ctx.externalFragments).length < 1 || count > max_repeat
+									return
+										_ callback
+											@ null
+					
+								_ async.map
+									_ Object.keys(ctx.externalFragments)
+									function
+										param k
+										param callback
+										# log 'wizzi-utils.ittfFsNode.analize2.repeat externalFragment', ctx.externalFragments[k].uri
+										var dnode
+											_ r.addExternalDocument(ctx.externalFragments[k].uri)
+										# log 'external dnode', dnode
+										_ dnode.setIds
+										_ dnode.analize2
+											f_cb()
+												set ctx.fragments = {}
+												set ctx.externalFragments = {}
+												_ mTreeEx.analize
+													@ ctx
+												set this.fragments = ctx.fragments
+												# log 'wizzi-utils.ittfFsNode.analize2.externalFragments', ctx.externalFragments
+												return
+													_ callback
+														@ null
+									f_cb( result )
+										_ repeat(count + 1)
+							_ repeat(1)

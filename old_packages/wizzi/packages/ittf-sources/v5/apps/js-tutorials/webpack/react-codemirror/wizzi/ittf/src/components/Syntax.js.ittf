@@ -1,0 +1,67 @@
+﻿r-component( Syntax )
+
+	$append imports
+		
+		let prism = require('prismjs')
+
+	ctor
+
+		set this.controlled = `
+			$.
+				require('codemirror/lib/codemirror.css');
+				require('codemirror/theme/material.css');
+				require('codemirror/theme/neat.css');
+				require('codemirror/mode/xml/xml.js');
+				require('codemirror/mode/javascript/javascript.js');
+				
+				import {Controlled as CodeMirror} from 'react-codemirror2';
+				
+				<CodeMirror
+					value={this.state.value}
+					options={options}
+					onBeforeChange={(editor, data, value) => {
+						this.setState({value});
+					}}
+					onChange={(editor, value) => {
+						console.log('controlled', {value});
+					}}
+				/>`.trim();
+
+		set this.uncontrolled = `
+			$.
+				require('codemirror/lib/codemirror.css');
+				require('codemirror/theme/material.css');
+				require('codemirror/theme/neat.css');
+				require('codemirror/mode/xml/xml.js');
+				require('codemirror/mode/javascript/javascript.js');
+
+				import {UnControlled as CodeMirror} from 'react-codemirror2';
+				
+				<CodeMirror
+					value={value}
+					options={options}
+					onChange={(editor, value) => {
+						console.log('uncontrolled', {value});
+					}}
+				/>`.trim();
+
+	m tokenize
+
+		let code
+			_ prism.highlight
+				iif this.props.controlled
+					then this.controlled
+					else this.uncontrolled
+				@ prism.languages.javascript
+
+		return
+			{
+				@ __html code
+	
+	render
+		
+		return
+			pre
+				@ className syntax-block
+				code
+					@ dangerouslySetInnerHTML { this.tokenize() }

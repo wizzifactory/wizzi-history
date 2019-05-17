@@ -1,0 +1,13 @@
+module
+    kind react
+    const Bundler = require('parcel-bundler')
+    _ it
+        @ 'should compile reason file'
+        async=> 
+            const bundler = new Bundler('./example/index.html')
+            _ bundler.addAssetType('re', require.resolve('./BuckleScriptAsset'))
+            _ bundler.addAssetType('ml', require.resolve('./BuckleScriptAsset'))
+            await 
+                _ bundler.bundle
+            await 
+                _ bundler.stop

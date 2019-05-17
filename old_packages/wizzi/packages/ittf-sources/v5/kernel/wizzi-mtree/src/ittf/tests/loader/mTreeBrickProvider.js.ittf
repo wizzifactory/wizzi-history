@@ -1,0 +1,127 @@
+﻿base_test( mTreeBrickProvider )
+	
+	$append imports
+		var MTreeBrickProvider = require('../../lib/loader/mTreeBrickProvider')
+		var errors = require('../../lib/errors')
+		var mocks = require('./mocks/misc')
+	
+	initStore()
+
+	it-async should get a protocol error
+		_ MTreeBrickProvider.createFromUri
+			@ 'alfa.txt'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_no_err( content )
+				_ expect(err.name).to.be('InvalidRequestError')
+				_ expect(err.code).to.be('UriError')
+				_ done()
+
+	it-async should get a uri error
+		_ MTreeBrickProvider.createFromUri
+			@ 'http://alpha.txt'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_no_err( content )
+				_ expect(err.name).to.be('InvalidRequestError')
+				_ expect(err.code).to.be('UriError')
+				_ done()
+			
+	it-async should get an invalid request error
+		_ MTreeBrickProvider.createFromUri
+			@ 'repo://alpha.txt'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_no_err( content )
+				_ expect(err.name).to.be('InvalidRequestError')
+				_ done()
+
+	it-async should get a RepoIOError (NotFound)
+		_ MTreeBrickProvider.createFromUri
+			_ path.join
+				@ __dirname
+				@ 'dummy'
+				@ 'alpha.txt'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_no_err( content )
+				_ expect(err.name).to.be('RepoIOError')
+				_ done()
+
+	it-async should load the raw MTreeBrick
+		_ MTreeBrickProvider.createFromUri
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'doc1.tests.ittf'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_test( provider )
+				# log 'err, provider', err, provider
+				_ expect(provider).to.be.an('object')
+				var mTreeBrick = provider.getPrimaryMTreeBrick()
+				_ expect(mTreeBrick).to.be.an('object')
+				_ expect(mTreeBrick.$schema).to.be('tests')
+				_ expect(mTreeBrick.sourceKey).to.be('f1')
+				_ expect(mTreeBrick.brickKey).to.be('f1')
+				_ expect(mTreeBrick.nodes).to.be.an('array')
+				_ expect(mTreeBrick.nodes[0]).to.be.an('object')
+				_ expect(mTreeBrick.nodes[0].name).to.be('tests')
+				_ expect(mTreeBrick.nodes[0].value).to.be('School')
+				_ expect(mTreeBrick.nodes[0].children).to.be.an('array')
+				_ expect(mTreeBrick.nodes[0].children.length).to.be(3)
+				var loadHistory = provider.loadHistory
+				_ expect(loadHistory).to.be.an('object')
+				_ done()
+
+	it-async should load the raw mTreeBrick
+		_ MTreeBrickProvider.createFromUri
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'doc1.tests.ittf'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_test( provider )
+				# log 'err, provider', err, provider
+				_ expect(provider).to.be.an('object')
+				_ provider.get
+					{
+						@ from 'store'
+						@ basedir
+							_ path.join
+								@ __dirname
+								@ 'repo'
+								@ 'data'
+						@ relpath 'frag1.tests.ittf'
+					f_cb_test( mTreeBrick )
+						# log 'err, mTreeBrick', err, mTreeBrick
+						_ expect(mTreeBrick).to.be.an('object')
+						_ expect(mTreeBrick.$schema).to.be('tests')
+						_ expect(mTreeBrick.nodes).to.be.an('array')
+						_ expect(mTreeBrick.nodes[0]).to.be.an('object')
+						_ expect(mTreeBrick.nodes[0].name).to.be('property')
+						_ expect(mTreeBrick.nodes[0].value).to.be('Nemo')
+						_ done()
+
+

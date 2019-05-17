@@ -1,0 +1,28 @@
+﻿$group
+
+	$function info_item
+		$param item
+		$param smr
+
+		. gsf-smr-${smr}
+			$if item.wzTag === 'dependency'
+				span ${item.type}
+					class api-info-tag
+				span ${item.wzTag}
+					class api-info-tag
+				span
+					a ${item.wzName}
+						href #${item.wzName}
+			$else
+				span ${item.wzTag}
+					class api-info-tag
+				span
+					a ${item.wzName}
+						href #${item.wzName}
+			$foreach child in item.infoItems
+				$_ info_item
+					$@ child
+					@ smr+1
+
+
+

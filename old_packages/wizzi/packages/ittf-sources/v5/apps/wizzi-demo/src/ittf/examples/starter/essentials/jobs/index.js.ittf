@@ -1,0 +1,30 @@
+﻿example-essentials(jobs)
+
+	var jobsPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'jobs'
+
+	# Execute a wizzi job
+	_ wizzi.job
+		_ path.join 
+			@ jobsPath
+			@ 'step_1.wfjob.ittf'
+		{
+			@ friends friendsArray
+		{
+			@ name 'step_1'
+			{ jobContext
+				{ options
+					@ destFolder 'output'
+			{ globalContext
+				{ options
+					@ destFolder 'output'
+		f_cb_test(jobResults)
+			log 'results of job step_1\n', stringify(jobResults, null, 2)
+			return
+				_ step_callback
+					@ null
+					@ 'jobs example executed'
+

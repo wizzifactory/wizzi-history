@@ -1,0 +1,84 @@
+﻿base_test( evaluator )
+	
+	$append imports
+		var mocks = require('./mocks/misc')
+		var MTreeBrickProvider = require('../../lib/loader/mTreeBrickProvider')
+		var mixer = require('../../lib/loader/mixer')
+		var appender = require('../../lib/loader/appender')
+		var evaluator = require('../../lib/loader/evaluator')
+
+	var
+		decl store
+		decl evaluatedModel
+		decl node
+
+	before-async
+
+		set store = new mocks.IttfDocumentStore()
+		_ store.init
+			{
+				@ storeKind 'filesystem'
+			f_cb_no_err( notUsed )
+				_ done
+
+	it-async should load and evaluate
+			
+		var content_filepath
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'evaluator_1.tests.ittf'
+
+		var loadContext
+            {
+				@ mTreeBuildUpContext
+					{
+				@ productionContext mocks.ProductionContext
+				@ __ittfDocumentStore store
+            
+		_ MTreeBrickProvider.createFromUri
+			@ content_filepath
+			@ loadContext
+			f_cb_no_err( provider )
+				var mTree = provider.getPrimaryMTreeBrick()
+                _ mixer
+                    @ mTree
+                    @ provider
+                    f_cb_test( mixedModel )
+						_ appender
+							@ mixedModel
+							f_cb_test( appendedModel )
+								_ evaluator
+									@ appendedModel
+									@ loadContext
+									f_cb_test( result )
+										set evaluatedModel = result
+										$*
+										_  console.log
+											@ 'err'
+											@ err
+											@ 'evaluator.evaluatedModel'
+											_ util.inspect
+												@ evaluatedModel
+												{ 
+													@ depth null
+										*$
+										_ done()
+		
+	it nodes[0]
+		tobe_object( evaluatedModel )
+		tobe_array( evaluatedModel.nodes, 1 )
+		tobe_object( evaluatedModel.nodes[0] )
+		set node = evaluatedModel.nodes[0]
+		tobe_number( node.r, 1 )
+		tobe_number( node.c, 1 )
+		tobe_string( node.n, 'test' )
+
+	it nodes [0][0]
+		tobe_array( evaluatedModel.nodes[0].children, 1 )
+		set node = evaluatedModel.nodes[0].children[0]
+		tobe_number( node.r, 2 )
+		tobe_number( node.c, 5 )
+		tobe_string( node.n, 'team' )
+		tobe_string( node.v, 'INTER' )

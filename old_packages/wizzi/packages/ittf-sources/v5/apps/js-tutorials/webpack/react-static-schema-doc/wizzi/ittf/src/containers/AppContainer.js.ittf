@@ -1,0 +1,19 @@
+﻿r-container( App )
+
+	$append imports
+		import SchemaElementDoc from '../components/SchemaElementDoc'
+		import tempSchema from './temp-schema.g.json'
+	
+	render
+
+		var element
+			_ tempSchema.elements.find
+				=>
+					param e
+					return e.name == 'item'
+		set element = element || tempSchema.elements[0]
+
+		return
+			div
+				< SchemaElementDoc
+					@ element {element}

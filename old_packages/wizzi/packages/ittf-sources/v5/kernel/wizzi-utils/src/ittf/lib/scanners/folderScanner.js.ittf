@@ -1,0 +1,137 @@
+﻿module 
+    kind jsfile
+    
+	var path = require('path')
+	var verify = require('../verify')
+	var vfile = require('../fs/vfile')
+	var IttfMTreeEx = require('../ittfTree/ittfMTreeEx')
+	var IttfFsNode = require('./ittfFsNode')
+
+	var md
+        set module.exports =
+            { 
+	
+	#
+		#
+		# Scans a folder searching for *.ittf files
+		# Returns a wizzi.utils.IttfMTreeEx instance
+		# loaded with an mTree conformant to the 
+		# 'wzpackage' schema.
+		#
+		# params
+		#   string folderPath
+		#   { options
+		#     string name
+		#       # the name of the 'wzpackage' wizzi model that
+		#       # will be generated from this folder
+		#     string gitPath 
+		#       # the base path to the 'main' generated artifact
+		#       # in the future, could be used for linking the ittf document
+		#       # of a language type to the generated code.
+		#     { file
+		#       virtual filesystem
+		#       optional
+		#
+	set md.scan
+        function 
+            string folderPath
+			{ options
+			callback
+
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+
+			if options.file
+				_ md.scanExec
+					@ options.file
+					@ folderPath
+					@ options
+					@ callback
+			else
+				_ vfile
+					f_cb( file )
+						_ md.scanExec
+							@ file
+							@ folderPath
+							@ options
+							@ callback
+
+	set md.scanExec
+        function 
+			param file
+            param folderPath
+			param options
+			param callback
+
+			_ file.isDirectory
+				@ folderPath
+				f_cb( result )
+					
+					if result == false
+						return
+							_ callback
+								_ error
+									@ '999'
+									@ 'scan'
+									@ 'Parameter folderPath must be an existing folder'
+
+					var removeRoot = path.dirname(folderPath)
+					# log 'folderPath, removeRoot', folderPath, removeRoot
+					var baseFolder = path.basename(folderPath)
+
+					_ file.getGlobbedFilesEx
+						_ path.join
+							@ folderPath
+							@ '**/*.ittf'
+						{
+							@ removeRoot removeRoot
+							@ dot true
+							@ ignore
+								_ path.join
+									@ folderPath
+									@ '**/node_modules/**/*.*'
+						f_cb_test( ittfs )
+						
+							# log 'ittfs\n', JSON.stringify(ittfs, null, 2)
+						
+							var ittfMTreeEx = new IttfMTreeEx('wzpackage', options.name)
+						
+							var root
+								new IttfFsNode
+									@ baseFolder
+									@ null
+									{
+										@ isDirectory true
+										@ file file
+						
+							_ root.setSourcePaths
+								{
+									@ ittfBasePath removeRoot
+									@ jsCodeBasePath options.gitPath
+			
+							# create the IttfFsNode tree structure of the scanned folder
+							foreach ittf in ittfs
+				
+								_ root.addDocument
+									@ ( ittf[0] === '/' ? ittf.substr(1) : ittf )
+									{
+										@ basePath removeRoot
+										@ gitPath options.gitPath
+			
+							# analize all IttfFsNode(s) starting from root
+							# this also searches mixed or included ittf fragments that are 
+							# outside (up) of folderPath
+							_ root.analize2
+								f_cb_test()
+									
+									# export folder infos to an mTree conformant to the
+									# 'wzpackage' schema.
+									_ root.toIttf2(ittfMTreeEx)
+			
+									# log 'IttfFsNode.ittfMTreeEx\n', ittfMTreeEx.toString()
+
+									return
+										_ callback
+											@ null
+											@ ittfMTreeEx

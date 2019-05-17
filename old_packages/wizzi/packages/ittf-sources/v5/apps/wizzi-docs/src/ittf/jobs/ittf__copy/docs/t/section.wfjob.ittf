@@ -1,0 +1,33 @@
+﻿wfjob wizzi-docs-${name}
+	$params name
+	
+	$
+		var models_folder     = "c:/my/wizzi/v5/apps/wizzi-docs/src/ittf/models/docs";
+		var html_folder       = path.join(__dirname, '..', 'html');
+		var dest_folder       = "c:/my/wizzi/v5/github/wizzifactory.github.io";
+
+	models-base-folder ${models_folder}
+
+	model ${name}
+		src ${name}.docs.ittf
+		schema docs
+
+	line html
+		cwd-folder ${html_folder}
+
+		wfjob/art-wo-html( ${name}.html.ittf )
+			model-ref ${name}
+				transformer docs/preprint
+
+	line css
+		cwd-folder ${html_folder}
+		dest-folder ${dest_folder}/styles
+
+		wfjob/art-wo-css( ${name}.css.ittf )
+			model-ref ${name}
+				transformer docs/preprint
+
+	production
+		dest-folder ${dest_folder}
+		line-ref html
+		line-ref css

@@ -1,0 +1,306 @@
+// 15/6/2018:11:5:34  by C:\my\wizzi\v5\apps\node_modules\wizzi-mtree\lib\loader\evaluator.js
+$.n(); // set the context state to NodeContext
+var $0 = {}; // the root node of the MTree buildup
+var $1 = { n: "{", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //16
+$.a($0, $1, 5);
+$.s("f1");
+var app = {}; //86
+app.name = 'nextjs-starter'; //87
+app.description = 'Next-js starter example app'; //88
+app.useNextjs = true; //89
+app.useServer = true; //90
+if (app.useNextjs) { //91
+app.useReact = true; //92
+}  //93
+if (app.useRedux) { //94
+app.useReact = true; //95
+}  //96
+if (app.useMaterialUi) { //97
+app.useReact = true; //98
+if (!app.rootContainer) { //99
+app.rootContainer = 'MuiThemeContainer'; //100
+}  //101
+if (!app.primaryColor) { //102
+app.primaryColor = 'orange'; //103
+app.secondaryColor = 'green'; //104
+app.accentColor = 'red'; //105
+}  //106
+if (!app.useCssBaseline) { //107
+app.useCssBaseline = false; //108
+}  //109
+}  //110
+if (app.useReact && !app.useNextjs) { //111
+app.useWebpack = true; //112
+app.useBabel = true; //113
+app.webpack = {}; //114
+app.webpack.loadCss = true; //115
+if (!app.rootContainer) { //116
+app.rootContainer = 'AppContainer'; //117
+}  //118
+if (!app.rootElementId) { //119
+app.rootElementId = 'app'; //120
+}  //121
+}  //122
+if (app.useMaterialUi) { //123
+if (!app.primaryColor) { //124
+app.primaryColor = 'orange'; //125
+app.secondaryColor = 'green'; //126
+app.accentColor = 'red'; //127
+}  //128
+}  //129
+if (!app.version) { //130
+app.version = '0.0.1'; //131
+}  //132
+if (!app.author) { //133
+app.author = 'Stefano Bassoli'; //134
+}  //135
+if (!app.license) { //136
+app.license = 'MIT'; //137
+}  //138
+$.n();
+var $3 = { n: "name", v: $.ip("f1", "\"${app.name}\"", "string", 61, false), r: 4, c: 5, s: "f1", u: "f1",  }; //18
+$.a($1, $3, 62);
+var $4 = { n: "version", v: $.ip("f1", "\"${app.version}\"", "string", 63, false), r: 5, c: 5, s: "f1", u: "f1",  }; //19
+$.a($1, $4, 64);
+var $5 = { n: "description", v: $.ip("f1", "\"${app.description}\"", "string", 65, false), r: 6, c: 5, s: "f1", u: "f1",  }; //20
+$.a($1, $5, 66);
+var $6 = { n: "author", v: $.ip("f1", "\"${app.author}\"", "string", 67, false), r: 7, c: 5, s: "f1", u: "f1",  }; //21
+$.a($1, $6, 68);
+var $7 = { n: "license", v: $.ip("f1", "\"${app.license}\"", "string", 69, false), r: 8, c: 5, s: "f1", u: "f1",  }; //22
+$.a($1, $7, 70);
+var $8 = { n: "main", v: "\"index.js\"", r: 10, c: 5, s: "f1", u: "f1",  }; //23
+$.a($1, $8, 72);
+var $9 = { n: "{", v: "scripts", r: 12, c: 5, s: "f1", u: "f1",  }; //24
+$.a($1, $9, 74);
+var $10 = { n: "test", v: "\"echo \\\"Error: no test specified\\\" && exit 1\"", r: 13, c: 9, s: "f1", u: "f1",  }; //25
+$.a($9, $10, 76);
+$.s("f2");
+if (app.useNextjs) { //152
+    $.n();
+    var $12 = { n: "build", v: "\"next build\"", r: 5, c: 9, s: "f2", u: "f3",  }; //153
+    $.a($9, $12, 81);
+    $.s("f2");
+    if (app.useServer) { //154
+        $.n();
+        var $14 = { n: "dev", v: "\"node server.js\"", r: 7, c: 13, s: "f2", u: "f3",  }; //155
+        $.a($9, $14, 86);
+        var $15 = { n: "start", v: "\"set NODE_ENV=development&&node server.js\"", r: 8, c: 13, s: "f2", u: "f3",  }; //156
+        $.a($9, $15, 88);
+    }
+}
+else if (app.useWebpack) { //157
+    $.n();
+    var $17 = { n: "build", v: "\"webpack\"", r: 11, c: 9, s: "f2", u: "f3",  }; //158
+    $.a($9, $17, 94);
+}
+else if (app.useBabel) { //159
+    $.n();
+    var $19 = { n: "build", v: "\"rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files\"", r: 14, c: 9, s: "f2", u: "f3",  }; //160
+    $.a($9, $19, 99);
+    var $20 = { n: "start", v: "\"npm run build && node dist/src/index.js\"", r: 15, c: 9, s: "f2", u: "f3",  }; //161
+    $.a($9, $20, 101);
+}
+$.n();
+var $21 = { n: "{", v: "dependencies", r: 16, c: 5, s: "f1", u: "f1",  }; //27
+$.a($1, $21, 105);
+$.s("f3");
+if (app.useFirestoreServer) { //198
+    $.n();
+    var $23 = { n: "@google-cloud/firestore", v: "\"^0.14.1\"", r: 5, c: 9, s: "f3", u: "f4",  }; //199
+    $.a($21, $23, 110);
+}
+$.s("f3");
+if (app.useMaterialUi) { //200
+    $.n();
+    var $25 = { n: "@material-ui/core", v: "\"^1.1.0\"", r: 8, c: 9, s: "f3", u: "f4",  }; //201
+    $.a($21, $25, 116);
+    var $26 = { n: "@material-ui/icons", v: "\"^1.1.0\"", r: 9, c: 9, s: "f3", u: "f4",  }; //202
+    $.a($21, $26, 118);
+}
+$.s("f3");
+if (app.useMaterialUi) { //203
+    $.n();
+    var $28 = { n: "classnames", v: "\"^2.2.5\"", r: 12, c: 9, s: "f3", u: "f4",  }; //204
+    $.a($21, $28, 124);
+}
+$.s("f3");
+if (app.useCodemirror) { //205
+    $.n();
+    var $30 = { n: "codemirror", v: "\"^5.38.0\"", r: 15, c: 9, s: "f3", u: "f4",  }; //206
+    $.a($21, $30, 130);
+}
+$.s("f3");
+if (app.useExpress) { //207
+    $.n();
+    var $32 = { n: "express", v: "\"^4.15.2\"", r: 18, c: 9, s: "f3", u: "f4",  }; //208
+    $.a($21, $32, 136);
+}
+$.s("f3");
+if (app.useFirestoreBrowser) { //209
+    $.n();
+    var $34 = { n: "firebase-admin", v: "\"^4.0.3\"", r: 21, c: 9, s: "f3", u: "f4",  }; //210
+    $.a($21, $34, 142);
+}
+$.s("f3");
+if (app.useMarkdown) { //211
+    $.n();
+    var $36 = { n: "highlight.js", v: "\"^9.12.0\"", r: 24, c: 9, s: "f3", u: "f4",  }; //212
+    $.a($21, $36, 148);
+    var $37 = { n: "markdown-it", v: "\"^8.4.1\"", r: 25, c: 9, s: "f3", u: "f4",  }; //213
+    $.a($21, $37, 150);
+}
+$.s("f3");
+if (app.useExpress) { //214
+    $.n();
+    var $39 = { n: "morgan", v: "\"^1.8.1\"", r: 28, c: 9, s: "f3", u: "f4",  }; //215
+    $.a($21, $39, 156);
+}
+$.s("f3");
+if (app.useNextjs) { //216
+    $.n();
+    var $41 = { n: "next", v: "\"^4.1.0\"", r: 31, c: 9, s: "f3", u: "f4",  }; //217
+    $.a($21, $41, 162);
+}
+$.s("f3");
+if (app.useReact) { //218
+    $.n();
+    var $43 = { n: "react", v: "\"^16.0.0\"", r: 34, c: 9, s: "f3", u: "f4",  }; //219
+    $.a($21, $43, 168);
+    var $44 = { n: "react-dom", v: "\"^16.0.0\"", r: 35, c: 9, s: "f3", u: "f4",  }; //220
+    $.a($21, $44, 170);
+    $.s("f3");
+    if (app.useRedux) { //221
+        $.n();
+        var $46 = { n: "react-redux", v: "\"^5.0.1\"", r: 37, c: 13, s: "f3", u: "f4",  }; //222
+        $.a($21, $46, 175);
+        var $47 = { n: "redux-devtools-extension", v: "\"^2.13.2\"", r: 38, c: 13, s: "f3", u: "f4",  }; //223
+        $.a($21, $47, 177);
+        var $48 = { n: "redux-logger", v: "\"^3.0.6\"", r: 39, c: 13, s: "f3", u: "f4",  }; //224
+        $.a($21, $48, 179);
+        var $49 = { n: "redux", v: "\"^3.6.0\"", r: 40, c: 13, s: "f3", u: "f4",  }; //225
+        $.a($21, $49, 181);
+        var $50 = { n: "redux-thunk", v: "\"^2.1.0\"", r: 41, c: 13, s: "f3", u: "f4",  }; //226
+        $.a($21, $50, 183);
+    }
+    $.s("f3");
+    if (app.useServer) { //227
+        $.n();
+        var $52 = { n: "react-render-html", v: "\"^0.5.2\"", r: 43, c: 13, s: "f3", u: "f4",  }; //228
+        $.a($21, $52, 189);
+    }
+    $.s("f3");
+    if (app.useSplitter) { //229
+        $.n();
+        var $54 = { n: "react-split-pane", v: "\"^0.1.77\"", r: 45, c: 13, s: "f3", u: "f4",  }; //230
+        $.a($21, $54, 195);
+    }
+}
+$.n();
+var $55 = { n: "{", v: "devDependencies", r: 19, c: 5, s: "f1", u: "f1",  }; //29
+$.a($1, $55, 200);
+$.s("f4");
+if (app.useNextjs) { //282
+    $.n();
+    var $57 = { n: "babel-plugin-inline-dotenv", v: "\"^1.1.1\"", r: 5, c: 9, s: "f4", u: "f5",  }; //283
+    $.a($55, $57, 205);
+    var $58 = { n: "babel-plugin-transform-inline-environment-variables", v: "\"^0.1.1\"", r: 6, c: 9, s: "f4", u: "f5",  }; //284
+    $.a($55, $58, 207);
+}
+else if (app.useBabel) { //285
+    $.s("f4");
+    if (app.useReact) { //286
+        $.n();
+        var $61 = { n: "@babel/cli", v: "\"7.0.0-beta.42\"", r: 11, c: 13, s: "f4", u: "f5",  }; //287
+        $.a($55, $61, 214);
+        var $62 = { n: "@babel/core", v: "\"7.0.0-beta.42\"", r: 12, c: 13, s: "f4", u: "f5",  }; //288
+        $.a($55, $62, 216);
+        var $63 = { n: "@babel/node", v: "\"7.0.0-beta.42\"", r: 13, c: 13, s: "f4", u: "f5",  }; //289
+        $.a($55, $63, 218);
+        var $64 = { n: "@babel/plugin-transform-object-assign", v: "\"7.0.0-beta.42\"", r: 14, c: 13, s: "f4", u: "f5",  }; //290
+        $.a($55, $64, 220);
+        var $65 = { n: "@babel/plugin-transform-runtime", v: "\"7.0.0-beta.42\"", r: 15, c: 13, s: "f4", u: "f5",  }; //291
+        $.a($55, $65, 222);
+        var $66 = { n: "@babel/preset-env", v: "\"7.0.0-beta.42\"", r: 18, c: 13, s: "f4", u: "f5",  }; //292
+        $.a($55, $66, 224);
+        var $67 = { n: "@babel/preset-flow", v: "\"7.0.0-beta.42\"", r: 19, c: 13, s: "f4", u: "f5",  }; //293
+        $.a($55, $67, 226);
+        var $68 = { n: "@babel/preset-react", v: "\"7.0.0-beta.42\"", r: 20, c: 13, s: "f4", u: "f5",  }; //294
+        $.a($55, $68, 228);
+        var $69 = { n: "@babel/preset-stage-1", v: "\"7.0.0-beta.42\"", r: 21, c: 13, s: "f4", u: "f5",  }; //295
+        $.a($55, $69, 230);
+        var $70 = { n: "@babel/register", v: "\"7.0.0-beta.42\"", r: 22, c: 13, s: "f4", u: "f5",  }; //296
+        $.a($55, $70, 232);
+        var $71 = { n: "#", v: "https://github.com/DefinitelyTyped/DefinitelyTyped", r: 23, c: 13, s: "f4", u: "f5",  }; //297
+        $.a($55, $71, 234);
+        var $72 = { n: "@types/react", v: "\"^16.3.14\"", r: 24, c: 13, s: "f4", u: "f5",  }; //298
+        $.a($55, $72, 236);
+        var $73 = { n: "#", v: "https://github.com/postcss/autoprefixer", r: 25, c: 13, s: "f4", u: "f5",  }; //299
+        $.a($55, $73, 238);
+        var $74 = { n: "autoprefixer", v: "\"^8.0.0\"", r: 26, c: 13, s: "f4", u: "f5",  }; //300
+        $.a($55, $74, 240);
+        var $75 = { n: "#", v: "https://github.com/moroshko/autosuggest-highlight", r: 27, c: 13, s: "f4", u: "f5",  }; //301
+        $.a($55, $75, 242);
+        var $76 = { n: "autosuggest-highlight", v: "\"^3.1.1\"", r: 28, c: 13, s: "f4", u: "f5",  }; //302
+        $.a($55, $76, 244);
+        var $77 = { n: "babel-eslint", v: "\"^8.2.2\"", r: 29, c: 13, s: "f4", u: "f5",  }; //303
+        $.a($55, $77, 246);
+        var $78 = { n: "babel-loader", v: "\"8.0.0-beta.2\"", r: 30, c: 13, s: "f4", u: "f5",  }; //304
+        $.a($55, $78, 248);
+        var $79 = { n: "babel-plugin-istanbul", v: "\"^4.1.5\"", r: 31, c: 13, s: "f4", u: "f5",  }; //305
+        $.a($55, $79, 250);
+        var $80 = { n: "babel-plugin-module-resolver", v: "\"^3.0.0\"", r: 32, c: 13, s: "f4", u: "f5",  }; //306
+        $.a($55, $80, 252);
+        var $81 = { n: "babel-plugin-preval", v: "\"^1.6.4\"", r: 33, c: 13, s: "f4", u: "f5",  }; //307
+        $.a($55, $81, 254);
+        var $82 = { n: "babel-plugin-react-remove-properties", v: "\"^0.2.5\"", r: 34, c: 13, s: "f4", u: "f5",  }; //308
+        $.a($55, $82, 256);
+        var $83 = { n: "babel-plugin-transform-dev-warning", v: "\"^0.1.0\"", r: 35, c: 13, s: "f4", u: "f5",  }; //309
+        $.a($55, $83, 258);
+        var $84 = { n: "babel-plugin-transform-react-constant-elements", v: "\"^6.23.0\"", r: 36, c: 13, s: "f4", u: "f5",  }; //310
+        $.a($55, $84, 260);
+        var $85 = { n: "babel-plugin-transform-react-remove-prop-types", v: "\"^0.4.10\"", r: 37, c: 13, s: "f4", u: "f5",  }; //311
+        $.a($55, $85, 262);
+    }
+    else {
+        $.n();
+        var $87 = { n: "@babel/cli", v: "\"7.0.0-beta.42\"", r: 40, c: 13, s: "f4", u: "f5",  }; //313
+        $.a($55, $87, 267);
+        var $88 = { n: "@babel/core", v: "\"7.0.0-beta.42\"", r: 41, c: 13, s: "f4", u: "f5",  }; //314
+        $.a($55, $88, 269);
+        var $89 = { n: "@babel/preset-env", v: "\"7.0.0-beta.42\"", r: 42, c: 13, s: "f4", u: "f5",  }; //315
+        $.a($55, $89, 271);
+        var $90 = { n: "rimraf", v: "\"^2.6.1\"", r: 43, c: 13, s: "f4", u: "f5",  }; //316
+        $.a($55, $90, 273);
+    }
+}
+$.s("f4");
+if (app.useWebpack) { //317
+    $.n();
+    var $92 = { n: "fg-loadcss", v: "\"^2.0.1\"", r: 46, c: 9, s: "f4", u: "f5",  }; //318
+    $.a($55, $92, 280);
+    var $93 = { n: "file-loader", v: "\"^1.1.5\"", r: 47, c: 9, s: "f4", u: "f5",  }; //319
+    $.a($55, $93, 282);
+    var $94 = { n: "jss-rtl", v: "\"^0.2.1\"", r: 48, c: 9, s: "f4", u: "f5",  }; //320
+    $.a($55, $94, 284);
+    var $95 = { n: "raw-loader", v: "\"^0.5.1\"", r: 49, c: 9, s: "f4", u: "f5",  }; //321
+    $.a($55, $95, 286);
+    var $96 = { n: "url-loader", v: "\"^1.0.1\"", r: 50, c: 9, s: "f4", u: "f5",  }; //322
+    $.a($55, $96, 288);
+    $.s("f4");
+    if (app.webpack.loadCss || app.importMainStyles) { //323
+        $.n();
+        var $98 = { n: "css-loader", v: "\"^0.28.11\"", r: 52, c: 13, s: "f4", u: "f5",  }; //324
+        $.a($55, $98, 293);
+        var $99 = { n: "style-loader", v: "\"^0.21.0\"", r: 53, c: 13, s: "f4", u: "f5",  }; //325
+        $.a($55, $99, 295);
+    }
+    $.n();
+    var $100 = { n: "#", v: "https://github.com/typekit/webfontloader", r: 54, c: 9, s: "f4", u: "f5",  }; //326
+    $.a($55, $100, 299);
+    var $101 = { n: "webfontloader", v: "\"^1.6.28\"", r: 55, c: 9, s: "f4", u: "f5",  }; //327
+    $.a($55, $101, 301);
+    var $102 = { n: "webpack", v: "\"3.10.0\"", r: 56, c: 9, s: "f4", u: "f5",  }; //328
+    $.a($55, $102, 303);
+    var $103 = { n: "webpack-bundle-analyzer", v: "\"^2.9.1\"", r: 57, c: 9, s: "f4", u: "f5",  }; //329
+    $.a($55, $103, 305);
+}

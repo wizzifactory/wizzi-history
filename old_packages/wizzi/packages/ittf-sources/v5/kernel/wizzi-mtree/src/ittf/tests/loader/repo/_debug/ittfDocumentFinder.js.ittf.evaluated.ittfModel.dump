@@ -1,0 +1,140 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    +  ids: undefined undefined
+    import path ids: undefined undefined
+    import del ids: undefined undefined
+    +  ids: undefined undefined
+    var expect = require('expect.js') ids: undefined undefined
+    var IttfDocumentStore = require('../../../lib/ittf/repo/ittfDocumentStore') ids: undefined undefined
+    var IttfDocumentFinder = require('../../../lib/ittf/repo/ittfDocumentFinder') ids: undefined undefined
+    var errors = require('../../../lib/ittf/repo/errors') ids: undefined undefined
+    +  ids: undefined undefined
+    var store ids: undefined undefined
+      new IttfDocumentStore ids: undefined undefined
+    var finder ids: undefined undefined
+    +  ids: undefined undefined
+    describe using the IttfDocumentFinder to locate documents and load the text content ids: undefined undefined
+      before-async  ids: undefined undefined
+        _ del.sync ids: undefined undefined
+          @ [__dirname + '/dummydocfinder/**'] ids: undefined undefined
+          {  ids: undefined undefined
+            @ force true ids: undefined undefined
+        _ store.init ids: undefined undefined
+          {  ids: undefined undefined
+            @ storeKind 'filesystem' ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param result ids: undefined undefined
+            log 'err, result', err, result ids: undefined undefined
+            set finder = new IttfDocumentFinder(store) ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get an invalid path error ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri null ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir null ids: undefined undefined
+            @ relpath null ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err.name).to.be('InvalidRequestError') ids: undefined undefined
+            _ expect(err.code).to.be('InvalidPath') ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get an invalid path error ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri null ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir null ids: undefined undefined
+            @ relpath '/ass.fidanken.ittf' ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err.name).to.be('InvalidRequestError') ids: undefined undefined
+            _ expect(err.code).to.be('InvalidPath') ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get an invalid path error ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri null ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir null ids: undefined undefined
+            @ relpath 'ass.fidanken.ittf' ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err.name).to.be('InvalidRequestError') ids: undefined undefined
+            _ expect(err.code).to.be('InvalidPath') ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get an invalid path error ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri null ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir '/hello' ids: undefined undefined
+            @ relpath null ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err.name).to.be('InvalidRequestError') ids: undefined undefined
+            _ expect(err.code).to.be('InvalidPath') ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get a valid uri ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri ids: undefined undefined
+              _ path.join ids: undefined undefined
+                @ __dirname ids: undefined undefined
+                @ 'data' ids: undefined undefined
+                @ 'doc1.tests.ittf' ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir null ids: undefined undefined
+            @ relpath null ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err).to.be(null) ids: undefined undefined
+            _ expect(foundUri).to.be.a('string') ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get a valid uri for a call to a down t fragment ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri null ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir ids: undefined undefined
+              _ path.join ids: undefined undefined
+                @ __dirname ids: undefined undefined
+                @ 'data' ids: undefined undefined
+            @ relpath 'frag1.tests.ittf' ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err).to.be(null) ids: undefined undefined
+            _ expect(foundUri).to.be.a('string') ids: undefined undefined
+            _ done() ids: undefined undefined
+      it-async should get a valid uri for a call to an up t fragment ids: undefined undefined
+        _ finder.resolvePath ids: undefined undefined
+          {  ids: undefined undefined
+            @ ittfDocumentUri null ids: undefined undefined
+            @ include false ids: undefined undefined
+            @ includerModelKey null ids: undefined undefined
+            @ basedir ids: undefined undefined
+              _ path.join ids: undefined undefined
+                @ __dirname ids: undefined undefined
+                @ 'data' ids: undefined undefined
+                @ 'sub' ids: undefined undefined
+                @ 'sub' ids: undefined undefined
+            @ relpath 'frag2.tests.ittf' ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param foundUri ids: undefined undefined
+            _ expect(err).to.be(null) ids: undefined undefined
+            _ expect(foundUri).to.be.a('string') ids: undefined undefined
+            _ done() ids: undefined undefined

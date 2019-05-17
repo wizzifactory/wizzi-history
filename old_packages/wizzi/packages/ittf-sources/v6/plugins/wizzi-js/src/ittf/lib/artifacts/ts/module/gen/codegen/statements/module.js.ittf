@@ -1,0 +1,73 @@
+﻿loader( module )
+
+	stm( typeDeclare
+		repeater( 1, model.statements )
+			_ ctx.write('declare ')
+			_ cnt.genItem
+				@ item_1
+				@ ctx
+				a_cb()
+					repeater_increment( 1 )
+			$append next
+				r_cb()
+
+	stm( typeModule
+		_ ctx.write('module ' + model.wzName)
+		_ ctx.w(' {')
+		_ cnt.genItems
+			@ model.statements
+			@ ctx
+			f_cb()
+				_ ctx.w('}')
+				r_cb()
+
+	stm( typeTypeAlias
+		_ ctx.write('type ' + model.wzName)
+		_ u.genTSTypeParameters
+			@ model
+			@ ctx
+			@ cnt
+			a_cb()
+				if model.statements.length == 1
+					_ ctx.write(' = ')
+					_ cnt.genItem
+						@ model.statements[0]
+						@ ctx
+						f_cb()
+							_ ctx.w(';')
+							r_cb()
+				else
+					return
+						_ callback
+							_ ctx.error(':type typeTypeAlias must have one children. found: ' + model.statements.length, model)
+
+	stm( typeFunctionDeclare
+		_ ctx.write('function ' + model.wzName)
+		# log 'typeFunctionDeclare enter 1'
+		_ u.genTSTypeParameters
+			@ model
+			@ ctx
+			@ cnt
+			a_cb()
+				# log 'typeFunctionDeclare enter 2'
+				_ ctx.write('(')
+				_ u.genTSParams
+					@ model
+					@ ctx
+					@ cnt
+					a_cb()
+						# log 'typeFunctionDeclare cb 1'
+						_ ctx.write(')')
+						if model.typeReturn
+							# log 'typeFunctionDeclare typeReturn', model.typeReturn.wzElement
+							_ ctx.write(': ')
+							_ cnt.stm.typeReturn
+								@ model.typeReturn
+								@ ctx
+								a_cb()
+									_ ctx.w(';')
+									# log 'typeFunctionDeclare exit 1'
+									r_cb()
+						else
+							# log 'typeFunctionDeclare exit 2'
+							r_cb()

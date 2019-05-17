@@ -1,0 +1,42 @@
+﻿$group
+
+	h4 Language Wizzi Schemas
+
+	p The most part of artifact generators 
+		+ targets imperative programming languages (PLs).
+		+ The Wizzi Factory apply the power of ITTF Processing to PLs also.
+
+	p A language Wizzi Schema describes a tree data structure
+		+ that an artifact generator can transform
+		+ targeting the syntax of a PL grammar.
+		
+	p It can be viewd as a profile of a PL grammar that is implemented partially,
+		+ with some of its symbols stereotyped.
+
+	p The schema developer should try to find the optimal balance
+		+ between convenience and completeness and
+		+ define the proper approximation of the schema in respect to the PL grammar.
+		+ The purpose of a language schema is not to map a PL grammar but to make pieces of code
+		+ templeatable and computable when convenient.
+
+	p The Wizzi Factory is entirely coded using the `js` Wizzi Schema implemented
+		+ by the `wizzi-js` plugin.
+
+	h4 Example of a `js` ITTF Document
+	ittf
+		- module
+			- kind jsfile
+			- class Horse
+				- super Animal
+				- ctor
+					- param name
+					- base name
+				- m say
+					- log 'Hiiii i am ' + this.name
+		
+				- m create
+					- static
+					- param name
+					- return
+						- new Horse
+							- @ name

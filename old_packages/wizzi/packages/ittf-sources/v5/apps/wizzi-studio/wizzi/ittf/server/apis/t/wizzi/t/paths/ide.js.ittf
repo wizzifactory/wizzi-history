@@ -1,0 +1,12 @@
+﻿$group
+
+	@ schemaOutputPath
+		function
+			param packageName
+			param schemaName
+			return
+				_ path.join
+					@ config.generatedPluginsOutputBasePath
+					@ packageName || config.defaultGeneratedPlugin
+					@ 'wizzi'
+					@ 'models'

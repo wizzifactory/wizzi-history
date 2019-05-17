@@ -1,0 +1,25 @@
+﻿example-essentials(genFolder)
+	
+	var genFolderPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'genfolder'
+			@ 'index.js.ittf'
+
+	var genFolderDest
+		_ path.join 
+			@ __dirname
+			@ 'genfolder_out'
+		
+	# Generate all the artifacts in a folder 
+	_ wizzi.genFolder
+		@ genFolderPath
+		{
+			@ friends friendsArray
+		{
+			@ destFolder genFolderDest
+			@ copyInclude ['*']
+			@ copyExclude []
+		f_cb_test(schemaPaths)
+			log 'genFolder wrote generated and copied files to dest folder\n', schemaPaths

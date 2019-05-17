@@ -1,0 +1,15 @@
+﻿$group
+
+	get( /api/studio/artifact )
+		check-params( )
+			not-empty( query , uri )
+			not-empty( query , artifact )
+
+		_ studioApi.generateArtifact
+			@ uri
+			@ artifact
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

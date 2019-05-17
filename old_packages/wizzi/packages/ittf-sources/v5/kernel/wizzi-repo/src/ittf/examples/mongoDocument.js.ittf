@@ -1,0 +1,264 @@
+﻿base_example( wizzi-repo.examples.mongoDocument )
+	
+	$append imports
+		var Document = require('../lib/mongodb/fs/document')
+
+	$include folder_data
+
+	_ heading1('start')
+
+	_ Document.create
+		f_cb_test( doc )
+
+			_ doc.isFile
+				@ file_1_path
+				f_cb_test( result )
+					_ heading2('clear')
+					_ printValue
+						@ 'isFile.file_1'
+						@ result
+					if result
+						_ doc.deleteFile
+							@ file_1_path
+							f_cb_test( result )
+								_ printValue
+									@ 'deleted.file_1'
+									@ result
+								_ _clear2
+					else
+						_ _clear2
+			
+			function _clear2
+				_ doc.isFile
+					@ file_2_path
+					f_cb_test( result )
+						_ printValue
+							@ 'isFile.file_2'
+							@ result
+						if result
+							_ doc.deleteFile
+								@ file_2_path
+								f_cb_test( result )
+									_ printValue
+										@ 'deleted.file_2'
+										@ result
+									_ _clear3
+						else
+							_ _clear3
+
+			function _clear3
+				_ doc.isFile
+					@ file_3_path
+					f_cb_test( result )
+						_ printValue
+							@ 'isFile.file_3'
+							@ result
+						if result
+							_ doc.deleteFile
+								@ file_3_path
+								f_cb_test( result )
+									_ printValue
+										@ 'deleted.file_3'
+										@ result
+									_ _clear4
+						else
+							_ _clear4
+
+			function _clear4
+				_ doc.isFile
+					@ file_4_path
+					f_cb_test( result )
+						_ printValue
+							@ 'isFile.file_4'
+							@ result
+						if result
+							_ doc.deleteFile
+								@ file_4_path
+								f_cb_test( result )
+									_ printValue
+										@ 'deleted.file_4'
+										@ result
+									_ _clear5
+						else
+							_ _clear5
+
+			function _clear5
+				_ doc.isFile
+					@ file_5_path
+					f_cb_test( result )
+						_ printValue
+							@ 'isFile.file_5'
+							@ result
+						if result
+							_ doc.deleteFile
+								@ file_5_path
+								f_cb_test( result )
+									_ printValue
+										@ 'deleted.file_5'
+										@ result
+									_ _clear6
+						else
+							_ _clear6
+
+			function _clear6
+				_ doc.isFile
+					@ file_6_path
+					f_cb_test( result )
+						_ printValue
+							@ 'isFile.file_6'
+							@ result
+						if result
+							_ doc.deleteFile
+								@ file_6_path
+								f_cb_test( result )
+									_ printValue
+										@ 'deleted.file_6'
+										@ result
+									_ _writeFile
+						else
+							_ _writeFile
+
+			function _writeFile
+				_ doc.writeFile
+					@ file_1_path
+					@ 'Hello wizzi factory\n\t from folder1/hello.js.ittf'
+					f_cb_test( result )
+						_ heading2('writeFile')
+						_ printValue
+							@ 'result'
+							@ result
+						_ _createWriteStream
+			
+			function _createWriteStream
+				_ doc.createWriteStream
+					@ file_7_path
+					f_cb_test( stream )
+						_ heading2('createWriteStream')
+						_ printValue
+							@ 'stream'
+							@ stream
+						_ stream.write('Hello createWriteStream\n')
+						_ stream.write('Welcome\n')
+						_ stream.end
+							f_cb_test( result )
+								_ printValue
+									@ 'result'
+									@ result
+								_ _readFile
+
+			function _readFile
+				_ doc.readFile
+					@ file_1_path
+					f_cb_test( content )
+						_ heading2('readFile')
+						_ printValue
+							@ 'content'
+							@ content
+						_ doc.readFile
+							@ file_7_path
+							f_cb_test( content )
+								_ printValue
+									@ 'content'
+									@ content
+								_ _uploadFolder
+
+			function _uploadFolder
+				_ heading2('uploadFolder')
+				_ doc.uploadFolder
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'mongoDocument'
+					@ folder_3_path
+					f_cb_test( result )
+						_ printValue
+							@ 'result'
+							@ result
+						_ _renameFile
+
+			function _renameFile
+				_ doc.isFile
+					@ file_2_path
+					f_cb_test( result )
+						_ heading2('renameFile')
+						_ printValue
+							@ 'isFile.before.rename'
+							@ result
+						_ doc.renameFile
+							@ file_1_path
+							@ file_2_path
+							f_cb_test( result )
+								_ printValue
+									@ 'rename.result'
+									@ result
+								_ doc.isFile
+									@ file_2_path
+									f_cb_test( result )
+										_ printValue
+											@ 'isFile.after.rename'
+											@ result
+										_ _copyFile
+
+			function _copyFile
+				_ doc.isFile
+					@ file_3_path
+					f_cb_test( result )
+						_ heading2('copyFile')
+						_ printValue
+							@ 'isFile.before.copy'
+							@ result
+						_ doc.copyFile
+							@ file_2_path
+							@ file_3_path
+							f_cb_test( result )
+								_ printValue
+									@ 'copy.result'
+									@ result
+								_ doc.isFile
+									@ file_3_path
+									f_cb_test( result )
+										_ printValue
+											@ 'isFile.after.copy'
+											@ result
+										_ _copyFolder
+
+			function _copyFolder
+				_ heading2('copyFolder')
+				_ doc.copyFolder
+					@ folder_1_path
+					@ folder_2_path
+					f_cb_test( result )
+						_ printArray
+							@ 'copied'
+							@ result
+							[
+								@ 'newid'
+						_ _getDir
+
+			function _getDir
+				_ doc.copyFile
+					@ file_2_path
+					@ file_4_path
+					f_cb_test( result )
+						_ heading2('getDir')
+						_ printValue
+							@ 'copied.file_4_path'
+							@ result
+						_ doc.getDir
+							@ folder_1_path
+							f_cb_test( result )
+						
+								_ printArray
+									@ 'dir'
+									@ result
+									[
+										@ '_id'
+										@ 'path'
+										@ 'kind'
+								_ doc.close
+
+
+
+
+
+

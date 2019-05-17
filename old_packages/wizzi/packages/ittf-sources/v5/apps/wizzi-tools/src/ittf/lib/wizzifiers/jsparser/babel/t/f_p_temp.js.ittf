@@ -1,0 +1,60 @@
+﻿$group
+	$params name, throwIfUndefined:boolean|true
+
+	# process AST-node-property ${name} and set it in a var
+
+	$
+		var namevar = _.replace(name, '.', '_')
+
+	var p_${namevar} = null
+
+	if typeof(node.${name}) !== 'undefined'
+		
+		set p_${namevar} 
+			{
+				@ textified null
+				@ isText false
+				@ ASTProp '${namevar}'
+				[ children
+
+		if node.${name} == null
+			set p_${namevar}.text = "null"
+		else
+			if !node.${name}.type
+				throw 'Node ${namevar} has no type: ' + JSON.stringify(node, null, 2)
+		
+			# log 'f_p_temp ${namevar} before format'
+
+			_ format
+				@ p_${namevar} 
+				@ node.${name}
+				@ options
+
+			# log 'f_p_temp ${namevar} after format', p_${namevar} 
+
+			if p_${namevar}.children.length == 1 
+
+				set p_${namevar}.tag = p_${namevar}.children[0].tag
+				
+				if !(p_${namevar}.children[0].isText || p_${namevar}.children[0].textified)
+					set p_${namevar}.name = p_${namevar}.children[0].name
+					set p_${namevar}.source = p_${namevar}.children[0].source
+					set p_${namevar}.children = p_${namevar}.children[0].children
+			
+				else
+
+					if p_${namevar}.children[0].textified
+						set p_${namevar}.textified = p_${namevar}.children[0].textified
+						set p_${namevar}.name = p_${namevar}.children[0].name
+						set p_${namevar}.source = p_${namevar}.children[0].source
+			
+					if p_${namevar}.children[0].isText
+						set p_${namevar}.isText = true
+						set p_${namevar}.name = p_${namevar}.children[0].name
+						set p_${namevar}.source = p_${namevar}.children[0].source
+					
+					set p_${namevar}.children = []
+	
+	$if throwIfUndefined
+		else
+			throw new Error('AST-node-property ${namevar} undefined: ' + JSON.stringify(node, null, 2))

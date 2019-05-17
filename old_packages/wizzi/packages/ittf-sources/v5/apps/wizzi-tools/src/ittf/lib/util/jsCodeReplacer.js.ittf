@@ -1,0 +1,126 @@
+﻿module
+	kind jsfile
+
+	var verify = require('wizzi-utils').verify;
+
+	var md = module.exports = {}
+
+	set md.clean
+		function
+			param code
+			var replaceds = []
+			if !code 
+				return replaceds
+			var 
+				decl i = 0
+				decl len = code.length
+				decl state = 0
+				decl counter = 0
+				decl internalGraph = 0
+				decl ch
+			var codeCleaned = []
+			var codeSpan = []
+			var ws = []
+			while true
+				if i >= len
+					return
+						{
+							@ replaceds replaceds
+							@ codeCleaned codeCleaned.join('')
+				set ch = code[i]
+				if ch == '{' && state == 0
+					set state = 1
+				elif ch == '{' && state == 1
+					set state = 2
+				elif (ch == ' ' || ch == '\t') && state == 1
+					_ ws.push(ch)
+				elif ch == '{' && state == 2
+					_ codeSpan.push(ch)
+					set internalGraph++
+				elif ch == '}' && state == 2 && internalGraph > 0
+					_ codeSpan.push(ch)
+					set internalGraph--
+				elif ch == '}' && state == 2
+					set state = 3
+				elif (ch == ' ' || ch == '\t') && state == 3
+					_ ws.push(ch)
+				elif ch == '}' && state == 3
+					var token = '/*;;' + ++counter + ';;*/'
+					var key = ';;' + counter + ';;'
+					_ replaceds.push
+						{
+							@ token token
+							@ key key
+							@ code codeSpan.join('')
+					_ codeCleaned.push(token)
+					set codeSpan.length = 0
+					set state = 0
+				elif state == 2
+					_ codeSpan.push(ch)
+				elif state == 1
+					_ codeCleaned.push('{')
+					_ codeCleaned.push(ws.join(''))
+					set ws.length = 0
+					_ codeCleaned.push(ch)
+					set state = 0
+				elif state == 3
+					_ codeCleaned.push('}')
+					_ codeCleaned.push(ws.join(''))
+					set ws.length = 0
+					_ codeCleaned.push(ch)
+					set state = 2
+				else
+					_ codeCleaned.push(ch)
+				# log '-', state, internalGraph, codeCleaned.join(''), '/', codeSpan.join('')
+				# log '-', state, internalGraph, codeSpan.join('')
+				set i++
+
+	set md.restore
+		function
+			param code
+			param replaceds
+			if !code
+				return
+			foreach item in replaceds
+				set code = verify.replaceAll(code, item.key, item.code)
+			return code
+
+	set md.restoreInside
+		function
+			param code
+			param replaceds
+			if !code
+				return
+			var match = md.getKey(code, replaceds)
+			if match == null
+				return
+			return
+				_ verify.replaceAll(code, '/*' + match.key + '*/', '{{' + match.code + '}}')
+
+	set md.isInside
+		function
+			param code
+			param replaceds
+			var match = md.getKey(code, replaceds)
+			if match == null
+				return false
+			if code.trim().length > match.key.length
+				return true
+
+	set md.isKey
+		function
+			param code
+			param replaceds
+			return md.getKey(code, replaceds) != null
+
+	set md.getKey
+		function
+			param code
+			param replaceds
+			foreach item in replaceds
+				log 'isKey', code, item.key
+				if code.indexOf(item.key) > -1
+					return item
+			return null
+
+

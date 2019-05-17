@@ -1,0 +1,213 @@
+﻿base_test( vfile )
+	
+	$append imports
+		var vfile = require('../../lib/fs/vfile')
+		var file = vfile()
+		var glob = require('../../lib/glob')
+
+	before
+		_ del.sync
+			[
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+			{
+				@ force true
+
+	it should create the first file in the ittf folder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'gc_one.ittf'
+			@ 'first one\nsecond one'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'folder_one'
+				@ 'gc_two.ittf'
+			@ 'first one\nsecond one'
+
+
+	it should check existence of file
+		var exists
+			_ file.exists
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'gc_one.ittf'
+		tobe_true(exists)
+		set exists
+			_ file.exists
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'astrumb.ittf'
+		tobe_false(exists)
+		var isFile
+			_ file.isFile
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'gc_one.ittf'
+		tobe_true(isFile)
+		set isFile
+			_ file.isFile
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'astrumb.ittf'
+		tobe_false(isFile)
+		set isFile
+			_ file.isFile
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_one'
+		tobe_false(isFile)
+		var isDirectory
+			_ file.isDirectory
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'gc_one.ittf'
+		tobe_false(isDirectory)
+
+	it should check existence of folder
+		var exists
+			_ file.exists
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_one'
+		tobe_true(exists)
+		set exists
+			_ file.exists
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_astrumb'
+		tobe_false(exists)
+		var isDirectory
+			_ file.isDirectory
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_one'
+		tobe_true(isDirectory)
+		set isDirectory
+			_ file.isDirectory
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'astrumb.ittf'
+		tobe_false(isDirectory)
+		var isFile
+			_ file.isFile
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_one'
+		tobe_false(isFile)
+
+	it should create folder
+		_ file.mkdir
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'folder_created_one'
+		var isDirectory
+			_ file.isDirectory
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_created_one'
+		tobe_true(isDirectory)
+		_ file.mkdir
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'folder_created_one'
+				@ 'alfa'
+				@ 'beta'
+		var isDirectory
+			_ file.isDirectory
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'folder_created_one'
+					@ 'alfa'
+					@ 'beta'
+		tobe_true(isDirectory)
+
+	it should write/read a file
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'gc_one.ittf'
+			@ 'first one\nsecond one'
+		var contents
+			_ file.read
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'gc_one.ittf'
+		tobe_string( contents, first one\nsecond one )
+
+	it should write/read a file on a new folder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'alca'
+				@ 'traz'
+				@ 'gc_one.ittf'
+			@ 'first one\nsecond one'
+		var contents
+			_ file.read
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'alca'
+					@ 'traz'
+					@ 'gc_one.ittf'
+		tobe_string( contents, first one\nsecond one )
+
+	it should write/read a json file
+		var obj
+			{
+				@ name 'stefi'
+				[ friends
+					{
+						@ name 'arth'
+					{
+						@ name 'marilu'
+		_ file.writeJSON
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'abrac.json'
+			@ obj
+		var obj_read
+			_ file.readJSON
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'abrac.json'
+		tobe_eql( obj, obj_read )
+
+	$include vfile/glob
+
+
+
+
+
+
+
+
+
+
+
+							

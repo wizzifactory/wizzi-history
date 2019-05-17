@@ -1,0 +1,351 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	# var verify = require('../../../../util/verify')
+	# var lineparser = require('../../../../util/lineparser')
+	var verify = require('wizzi-utils').verify
+	var errors = require('../../../../errors')
+	var HtmlBuilder = require('./htmlbuilder').HtmlBuilder
+
+	var md = module.exports = {}
+	var myname = 'docs.preprint.html'
+
+	var STYLE_DOCS_ITTF_TREE_PANEL = 'docs-ittf-tree-panel'
+	var STYLE_DOCS_ITTF_TREE_LINE = 'docs-ittf-tree-line'
+	var STYLE_DOCS_ITTF_NODE_LINENUMS = 'docs-ittf-node-linenums'
+	var STYLE_DOCS_ITTF_NODE_INDENT = 'docs-ittf-node-indent-'
+	var STYLE_DOCS_ITTF_NODE_NAME = 'docs-ittf-node-name'
+	var STYLE_DOCS_ITTF_NODE_VALUE = 'docs-ittf-node-value'
+
+	# pretty print
+	var STYLE_DOCS_ITTF_TREE_PANEL = 'linenums'
+	var STYLE_DOCS_ITTF_TREE_LINE = 'docs-ittf-tree-line'
+	var STYLE_DOCS_ITTF_NODE_LINENUMS = 'docs-ittf-node-linenums'
+	var STYLE_DOCS_ITTF_NODE_INDENT = 'docs-ittf-node-indent-'
+	var STYLE_DOCS_ITTF_NODE_COMMAND = 'pp-kwd'
+	var STYLE_DOCS_ITTF_NODE_NAME = 'pp-tag'
+	var STYLE_DOCS_ITTF_NODE_VALUE = 'pp-pln'
+	var STYLE_DOCS_ITTF_NODE_EXPR = 'pp-expr'
+	var STYLE_DOCS_ITTF_NODE_MIX = 'pp-mix'
+
+	var TAB_SPACES = 2
+
+	set md.toHtmlLines
+		function
+			param models
+			param ctx
+
+			set ctx.hb = new HtmlBuilder()
+
+			_ md.goItems(models, ctx)
+
+			# log myname + '.toText', ctx.hb.toText() 
+			return ctx.hb.toLines()
+
+	tagoper( toHtmlJsCodeLines )
+		set ctx.__lang = 'js'
+		set ctx.hb = new HtmlBuilder(true)
+
+		_ ctx.hb.openTag('pre')
+		_ ctx.hb.writeAttribute('class', 'prettyprint-js')
+		_ ctx.hb.openTag('ol')
+		_ ctx.hb.writeAttribute('class', 'linenums')
+
+		_ md.goItem(model, ctx)
+		
+		_ ctx.hb.closeTag('ol')
+		_ ctx.hb.closeTag('pre')
+
+		return ctx.hb.toLines()
+
+	set md.toHtmlCodeLines
+		function
+			param model
+			param ctx
+
+			set ctx.hb = new HtmlBuilder(true)
+			
+			_ ctx.hb.openTag('pre')
+			_ ctx.hb.writeAttribute('class', 'prettyprint')
+			_ ctx.hb.openTag('ol')
+			_ ctx.hb.writeAttribute('class', 'linenums')
+
+			_ md.goItem(model, ctx)
+
+			_ ctx.hb.closeTag('ol')
+			_ ctx.hb.closeTag('pre')
+
+			# log myname + '.toText', ctx.hb.toText() 
+			return ctx.hb.toLines()
+
+	tagoper( goItem )
+		var oper = md[model.wzElement]
+		if oper
+			_ oper(model, ctx)
+		else
+			throw new errors.NodeError(myname + '.goItem. Unknown wzElement: ' + model.wzTag + '/' + model.wzElement, model);
+
+	set md.goItems
+		function
+			param items
+			param ctx
+			param options
+
+			set options = options || {}
+			set options.from = options.from || 0
+		
+			for var i = options.from; i < items.length; i++
+				var item = items[i]
+				_ md.goItem(item, ctx)
+
+	tagoper( element )
+		var nv = verify.parseNameValue(model.wzName)
+		var tag = nv.name()
+		set model.wzName = nv.value()
+		_ stdElement(tag, model, ctx)
+
+	tagoper( h1 )
+		_ stdElement_heading('h1', model, ctx)
+
+	tagoper( h2 )
+		_ stdElement_heading('h2', model, ctx)
+
+	tagoper( h3 )
+		_ stdElement_heading('h3', model, ctx)
+
+	tagoper( h4 )
+		_ stdElement_heading('h4', model, ctx)
+
+	tagoper( h5 )
+		_ stdElement_heading('h5', model, ctx)
+
+	tagoper( h6 )
+		_ stdElement_heading('h6', model, ctx)
+
+	tagoper( ul )
+		if model.wzName.length > 0
+			_ ctx.hb.openTag('h4')
+			_ ctx.hb.writeText(model.wzName)
+			_ ctx.hb.closeTag('h4')
+		_ ctx.hb.openTag('ul')
+		_ setAttributes(model, ctx)
+		_ md.goItems(model.items, ctx)
+		_ ctx.hb.closeTag('ul')
+	
+	tagoper( li )
+		_ stdElement('li', model, ctx)
+	
+	tagoper( a )
+		_ stdElement('a', model, ctx)
+
+	tagoper( div )
+		_ stdElement('div', model, ctx)
+
+	tagoper( p )
+		_ stdElement('p', model, ctx)
+	
+	tagoper( span )
+		_ stdElement('span', model, ctx)
+	
+	tagoper( br )
+		_ ctx.hb.openTag('br')
+		if model.wzName.length > 0 || model.items.length
+			_ ctx.hb.openTag('span')
+			_ ctx.hb.writeText(model.wzName)
+			_ md.goItems(model.items, ctx)
+			_ ctx.hb.closeTag('span')
+
+	tagoper( see )
+		_ ctx.hb.openTag('p')
+		_ ctx.hb.openTag('a')
+		_ ctx.hb.writeAttribute('href', model.href)
+		_ ctx.hb.writeText('see ' + model.wzName)
+		_ md.goItems(model.items, ctx)
+		_ ctx.hb.closeTag('a')
+		_ ctx.hb.closeTag('p')
+
+	tagoper( table )
+		_ ctx.hb.openTag('table')
+		_ setAttributes(model, ctx)
+		_ md.goItems(model.items, ctx)
+		_ ctx.hb.closeTag('table')
+
+	tagoper( tbody )
+		_ stdElement('tbody', model, ctx)
+
+	tagoper( tr )
+		_ ctx.hb.openTag('tr')
+		_ setAttributes(model, ctx)
+		_ md.goItems(model.items, ctx)
+		_ ctx.hb.closeTag('tr')
+
+	tagoper( th )
+		_ stdElement('th', model, ctx)
+
+	tagoper( td )
+		_ stdElement('td', model, ctx)
+
+	tagoper( plus )
+		_ ctx.hb.writeText(' ' + model.wzName)
+
+	tagoper( js )
+
+		var js_ctx = {}
+		set js_ctx.__ittfNode
+			{
+				@ level 0
+				@ line 0
+
+		set js_ctx.__lang = 'js'
+		set js_ctx.hb = new HtmlBuilder(true)
+
+		_ js_ctx.hb.openTag('pre')
+		_ js_ctx.hb.writeAttribute('class', 'prettyprint-js')
+		_ js_ctx.hb.openTag('ol')
+		_ js_ctx.hb.writeAttribute('class', 'linenums')
+
+		_ md.goItems(model.items, js_ctx)
+		
+		_ js_ctx.hb.closeTag('ol')
+		_ js_ctx.hb.closeTag('pre')
+
+		var lines = js_ctx.hb.toLines()
+		_ ctx.hb.writeText(lines[0])
+
+	tagoper( ittf )
+		if model.items.length == 1
+			var ittf_ctx = {}
+			set ittf_ctx.__ittfNode
+				{
+					@ level 0
+					@ line 0
+			var lines = md.toHtmlCodeLines(model.items[0], ittf_ctx);
+			_ ctx.hb.writeText(lines[0])
+		else
+			throw new errors.NodeError(myname + '.ittf. ittf node must have one child element', model);
+
+	tagoper( ittfnode )
+		if !ctx.__ittfNode
+			throw new errors.NodeError(myname + '.ittf. ittf node called without before calling ittf', model);
+		if ctx.__lang === 'js'
+			_ md.ittfnode_js(model, ctx)
+		else
+			_ md.ittfnode_ittf(model, ctx)
+
+	tagoper( ittfnode_js )
+		set ctx.__ittfNode.line++
+
+		_ ctx.hb.openTag('li')
+		_ ctx.hb.writeAttribute('class', 'J' + ('' + ctx.__ittfNode.line).substr(-1,1))
+		
+		_ ctx.hb.writeText(spaces(ctx.__ittfNode.level * TAB_SPACES) + verify.htmlEscape(model.wzName) + '\n')
+
+		_ ctx.hb.closeTag('li')
+		
+		set ctx.__ittfNode.level++
+		_ md.goItems(model.items, ctx)
+		set ctx.__ittfNode.level--
+
+	tagoper( ittfnode_ittf )
+
+		set ctx.__ittfNode.line++
+
+		var 
+			decl nv = verify.parseNameValue(model.wzName)
+			decl name = nv.name()
+			decl is_command = name && name.substr(0,1) === '$'
+			decl is_code = name === '$' || name === '$global'
+			decl name_style = STYLE_DOCS_ITTF_NODE_NAME
+			decl value_style = STYLE_DOCS_ITTF_NODE_VALUE
+
+		if ['$if', '$elif', '$'].indexOf(name) >= 0
+			set value_style = STYLE_DOCS_ITTF_NODE_EXPR
+		
+		elif ctx.__insideCode
+			set name_style = STYLE_DOCS_ITTF_NODE_EXPR
+			set value_style = STYLE_DOCS_ITTF_NODE_EXPR
+
+		elif name && name.substr(-1,1) === '('
+			set name_style = STYLE_DOCS_ITTF_NODE_MIX
+
+		_ ctx.hb.openTag('li')
+		_ ctx.hb.writeAttribute('class', 'L' + ('' + ctx.__ittfNode.line).substr(-1,1))
+
+		_ ctx.hb.openTag('span', { inline: true })
+		_ ctx.hb.writeAttribute('class', 'pnl')
+		_ ctx.hb.writeText(spaces(ctx.__ittfNode.level * TAB_SPACES))
+		_ ctx.hb.closeTag('span', { inline: true })
+
+		_ ctx.hb.openTag('span', { inline: true })
+		if is_command
+			_ ctx.hb.writeAttribute('class', STYLE_DOCS_ITTF_NODE_COMMAND)
+		else
+			_ ctx.hb.writeAttribute('class', name_style)
+		_ ctx.hb.writeText(nv.name())
+		_ ctx.hb.closeTag('span', { inline: true })
+
+		_ ctx.hb.openTag('span', { inline: true })
+		_ ctx.hb.writeAttribute('class', value_style)
+		_ ctx.hb.writeText(' ' + verify.htmlEscape(nv.value()))
+		_ ctx.hb.closeTag('span', { inline: true })
+
+		_ ctx.hb.closeTag('li')
+
+		if is_code
+			set ctx.__insideCode = true
+		set ctx.__ittfNode.level++
+		_ md.goItems(model.items, ctx)
+		set ctx.__ittfNode.level--
+		if is_code
+			set ctx.__insideCode = false
+
+	function formatLineNum
+		param line
+		if line < 10
+			return '00' + line
+		if line < 100
+			return '0' + line
+		return line
+
+	function spaces
+		param num
+		return Array(num + 1).join(" ")
+
+	function stdElement
+		param tag
+		param model
+		param ctx
+		_ ctx.hb.openTag(tag)
+		_ setAttributes(model, ctx)
+		_ ctx.hb.writeText(model.wzName)
+		_ md.goItems(model.items, ctx)
+		_ ctx.hb.closeTag(tag)
+
+	function stdElement_heading
+		param tag
+		param model
+		param ctx
+		_ ctx.hb.openTag(tag)
+		_ setAttributes(model, ctx)
+		_ ctx.hb.writeText(model.wzName)
+		_ ctx.hb.closeTag(tag)
+		_ md.goItems(model.items, ctx)
+
+	function setAttributes
+		param model
+		param ctx
+		if model.id
+			_ ctx.hb.writeAttribute('id', model.id)
+		if model.class
+			_ ctx.hb.writeAttribute('class', model.class)
+		if model.style
+			_ ctx.hb.writeAttribute('style', model.style)
+		if model.href
+			_ ctx.hb.writeAttribute('href', model.href)
+		foreach a in model.attributes
+			var nv = verify.parseNameValue(a.wzName)
+			_ ctx.hb.writeAttribute(nv.name(), nv.value())
+		
+
+

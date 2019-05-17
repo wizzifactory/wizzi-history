@@ -1,0 +1,24 @@
+﻿$group
+
+	vfile/m( deleteFolder, rmdir, options )
+
+		set options = options || {}
+
+		$append async
+
+			var that = this
+			_ this.isDirectory
+				@ path_string
+				f_cb(result)
+					if result == false
+						r_cb()
+							new Error
+								@ `'${path_string}' is not a directory`
+					_ that.rimraf
+						@ path_string
+						@ options
+						@ callback
+		
+		$append sync
+
+			new Error('Not implemented')

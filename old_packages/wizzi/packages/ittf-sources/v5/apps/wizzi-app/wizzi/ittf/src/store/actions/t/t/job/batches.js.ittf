@@ -1,0 +1,63 @@
+﻿$group
+
+	export
+		const getJobBatches
+			=>
+				return
+					{
+						@ type GET_JOB_BATCHES
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_JOB_BATCHES_REQUEST
+										@ GET_JOB_BATCHES_SUCCESS
+										@ GET_JOB_BATCHES_FAILURE
+								@ url '/api/jobs/batches'
+								@ queryParams
+									{
+								@ method 'get'
+
+	export
+		const getJobBatch
+			=>
+				param hash
+				param version
+				param xpackage
+				return
+					{
+						@ type GET_JOB_BATCH
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_JOB_BATCH_REQUEST
+										@ GET_JOB_BATCH_SUCCESS
+										@ GET_JOB_BATCH_FAILURE
+								@ url '/api/jobs/batch'
+								@ queryParams
+									{
+										@ hash hash
+										@ version version
+										@ xpackage xpackage
+								@ method 'get'
+
+	export
+		const executeJobBatch
+			=>
+				param hash
+				return
+					{
+						@ type EXEC_JOB_BATCH
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ EXEC_JOB_BATCH_REQUEST
+										@ EXEC_JOB_BATCH_SUCCESS
+										@ EXEC_JOB_BATCH_FAILURE
+								@ url '/api/jobs/batch'
+								@ payload
+									{
+										@ hash hash
+								@ method 'post'

@@ -1,0 +1,34 @@
+﻿concept Build up of Wizzi Model instances
+
+	summary
+
+		p The buildup of a model from one or many IttfDocuments is a powerful process of
+			+ the wizzi factory.
+		
+		ul An IttfDocument may contain two kind of nodes:
+			li Domain nodes: name/value pairs which semantics is described by a wizzi schema.
+				ittf
+					- table User
+						- column Email
+			li Command nodes: processing and conditional statements.
+				ittf
+					- $if condition
+						- statements
+
+		ul Command nodes allow:
+			li Inclusion or mix up of other IttfDocuments. 
+			li Conditional inclusion/exclusion of node branches using context values.
+			li Template expansion of node branches.
+			li Creation or modification of context values.
+
+		p The mixup of IttfDocuments can be recursive: a mixin can in turn mixup other mixins.
+			+ The command node invoking a mixin inclusion may be the root
+			+ node of on IttfDocument, allowing a partial branch to mixup its container branch or root and 
+			+ to be appended to a declared node (see the command nodes: $append and $hook).
+
+		p The final step of the build up is the template evaluation, which rebuilds the nodes
+			+ of the source IttfDocuments in an in-memory
+			+ tree structure, the mTree (magical tree), that contains only domain nodes.
+			
+		p The mTree is the source object that may be loaded into a typed Wizzi Model. 
+

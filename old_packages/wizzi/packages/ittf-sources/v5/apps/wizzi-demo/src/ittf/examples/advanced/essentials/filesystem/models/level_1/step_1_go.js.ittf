@@ -1,0 +1,74 @@
+﻿demo_module( wizzimodel, 0, 3 )
+
+	# 
+		# Wizzi model
+		# How to load an IttfDocument into an `html` wizzi model,
+		# passing a context object to the mTree loader and
+		# passing a value to the globalContext using the options parameter.
+		#
+		# API wizzi.model(sourcePathOrSourceConfig, context?, options?)
+	+
+	var wizziFactoryConfig
+		{
+			@ plugins
+				{
+					[ items
+						@ 'wizzi-core'
+						@ 'wizzi-js'
+						@ 'wizzi-web'
+						@ './jsonld/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+							@ 'plugins'
+	+
+	var wizziModelConfig
+		{
+			@ src 'basic.html.ittf'
+			@ cwd
+				_ path.join
+					@ __dirname
+					@ 'step_3'
+			[ contexts
+				{
+					@ src 'wf.jsonld.ittf'
+					@ cwd
+						_ path.join
+							@ __dirname
+							@ 'step_3'
+							@ 'models'
+					@ schema 'jsonld'
+					@ exportName 'wf'
+					[ contexts
+						{
+							@ src 'wf.json.ittf'
+							@ cwd
+								_ path.join
+									@ __dirname
+									@ 'step_3'
+									@ 'models'
+							@ schema 'json'
+							@ exportName 'data'
+
+			@ schema 'html'
+
+	+
+	loadModel_from_config(3, basic.html.ittf, print:model dashes)
+		_ wf.generateArtifact
+			@ wizziModel
+			_ path.join
+				@ __dirname
+				@ 'step_3'
+				@ 'basic.html.ittf'
+			@ 'html/document'
+			{
+			f_cb_throw( artifactText )
+				# And print the wizzi model object
+				_ printValue
+					@ 'artifactText'
+					@ artifactText
+					@ 'dashes'
+				return
+					_ step_callback(null)

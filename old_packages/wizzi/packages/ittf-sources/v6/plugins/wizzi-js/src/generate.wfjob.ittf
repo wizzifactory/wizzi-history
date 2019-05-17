@@ -1,0 +1,58 @@
+﻿wfjob wizzi-js v6
+	
+	$
+		var ittf_meta_folder    = path.join(__dirname, 'ittf', 'meta');
+		var ittf_lib            = path.join(__dirname, 'ittf', 'lib');
+		var ittf_examples       = path.join(__dirname, 'ittf', 'examples');
+		var ittf_root_folder    = path.join(__dirname, 'ittf', 'root');
+		var ittf_tests          = path.join(__dirname, 'ittf', 'tests');
+		var dest_folder         = path.join(__dirname, '..', 'dist');
+
+	model meta
+		schema json
+		src ${ittf_meta_folder}/index.json.ittf
+
+	line ittf-lib
+		cwd-folder ${ittf_lib}
+		dest-folder ${dest_folder}/lib
+
+		wfjob/any_js()
+			ignore ${ittf_lib}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_lib}/**/*__copy/**/*.ittf
+			extension ittf
+
+	line ittf-examples
+		cwd-folder ${ittf_examples}
+		dest-folder ${dest_folder}/examples
+
+		wfjob/any_js()
+			ignore ${ittf_examples}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_examples}/**/*__copy/**/*.ittf
+			extension ittf
+
+	$include wfjob/root	
+
+	line ittf-tests
+		cwd-folder ${ittf_tests}
+		dest-folder ${dest_folder}/tests
+
+		wfjob/any_js()
+			ignore ${ittf_tests}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_tests}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_tests_ittf
+		$include wfjob/any_expected
+
+	production
+		dest-folder ${dest_folder}
+		line-ref ittf-lib
+		line-ref ittf-examples
+		line-ref ittf-root
+		line-ref ittf-tests

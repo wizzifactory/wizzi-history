@@ -1,0 +1,20 @@
+﻿example-essentials( mtree_composition, 0, 2 )
+
+
+	# 
+		# DEMO: How to load a composed ittf document into an mTree.
+		# 
+		# We use an `html` ittf document to show an example of
+		# composition, calling mixins.
+		#
+		# The `html` artifact here is not generated.
+		# We build the mTree only, just to take a look to node transformations.
+	+
+	log '    The primary ittf document `composed_1.html.ittf` mixes the `lia.html.ittf` mixin'
+	log 'You can se the raw ittf documents and the builded mTree'
+	+
+	loadMTree( 2, composed_1.html.ittf, raw;print:dump )
+		loadMTree( 2, t/lia.html.ittf, raw;print:dump )
+			loadMTree( 2, composed_1.html.ittf, print:dump )
+				_ step_callback(null)
+

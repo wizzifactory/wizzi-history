@@ -1,0 +1,155 @@
+module
+    kind react
+    
+	# Script code to inject on page
+    # Selects snippets then returns array of their currentSrc
+    const scriptCode
+        `lit 
+            + (function() {\n
+			+ \b     var srcArray = [];\n
+			+ \b     let svgs = document.querySelectorAll('svg');\n
+			+ \b     Array.from(svgs).map(function(svg) {\n
+			+ \b        srcArray.push({ code: svg.outerHTML, language: 'svg' });\n
+			+ \b     });\n
+            + \b     let snippets = document.querySelectorAll('pre > code');\n
+            + \b     Array.from(snippets).map(function(snippet) {\n
+			+ \b        var isTs = snippet.className && ( snippet.className.indexOf('ts') > -1 || snippet.className.indexOf('typescript') > -1 )\n
+			+ \b        var isJs = snippet.className && ( snippet.className.indexOf('js') > -1 || snippet.className.indexOf('javascript') > -1 )\n
+			+ \b        var lang = isTs ? 'typescript' : isJs ? 'javascript' : 'undetected, class=' + snippet.className;\n
+            + \b        srcArray.push({ code: snippet.textContent, language: lang });\n
+            + \b     });\n
+            + \b     return srcArray\n
+            + \b   })();
+
+	function wizzifySnippet
+		param snippet
+		param ittfCodeElement
+		var payload
+			{
+				@ code snippet.code
+				@ mime 'js'
+		_ fetch
+			@ 'http://localhost:3014/api/crawl/wizzify'
+			{
+				@ method 'post'
+				{ headers
+					@ 'Accept' 'application/json'
+					@ 'Content-Type' 'application/json'
+				@ body JSON.stringify(payload)
+			._ then
+				=>
+					param response
+					return response.json()
+			._ then
+				=>
+					param json
+					log 'exec_with_payload.response.json', json
+					if json.error
+						set ittfCodeElement.textContent = err.message || JSON.stringify({ err: err.error }, null, 2)
+					else
+						set ittfCodeElement.textContent = json.data.ittf
+						set snippet.ittf = json.data.ittf
+            ._ catch
+                function 
+                    param err
+                    set ittfCodeElement.textContent = err.message || JSON.stringify({ err: err.error }, null, 2)
+					
+    
+	# Declare add snippet function to save downloaded snippets
+    function addSnippet
+        param snippet
+        _ chrome.storage.local.get
+            @ 'savedSnippets'
+            function 
+                param result
+                let downloadsArray = result.savedSnippets || []
+				# avoid duplicates
+				foreach item in downloadsArray
+					if item.code === snippet.code
+						if item.ittf !== snippet.ittf
+							set item.ittf = snippet.ittf
+							_ chrome.storage.local.set
+								{ 
+									@ 'savedSnippets' downloadsArray
+						return
+                log 'add ', snippet
+				_ downloadsArray.push(snippet)
+                _ chrome.storage.local.set
+                    { 
+                        @ 'savedSnippets' downloadsArray
+                    function 
+                        if chrome.runtime.lastError
+                            log chrome.runtime.lastError
+                        else
+                            log 'Snippet saved successfully'
+     
+    # Grabs the snippetDiv from the popup
+    let snippetDiv = document.getElementById('snippet_div')
+    function setUp
+        param array
+		_ chrome.tabs.getCurrent
+			=>
+				param tab
+				_ chrome.storage.local.get
+					[ 
+						@ 'saveSnippets'
+					function 
+						param config
+						for let snippet of array
+							set snippet.url = tab.url.replace(/['\\'|':']/, '-')
+							let newSnippet = document.createElement('div')
+							set newSnippet.className = 'snippet-pane'
+							let leftPane = document.createElement('div')
+							set leftPane.className = 'snippet-left-pane'
+							let buttonSave = document.createElement('button')
+							set buttonSave.textContent = 'Save'
+							_ buttonSave.addEventListener
+								@ 'click'
+								=>
+									if config.saveSnippets === true
+										# If true, call addSnippet function
+										_ addSnippet(snippet)
+							let buttonBreak = document.createElement('br')
+							let buttonWizzify = document.createElement('button')
+							set buttonWizzify.textContent = 'Wizzify'
+							let rightPane = document.createElement('div')
+							set rightPane.className = 'snippet-right-pane'
+							let snippetPre = document.createElement('pre')
+							let snippetCode = document.createElement('code')
+							set snippetCode.textContent = snippet.code
+							let ittfBreak = document.createElement('br')
+							let ittfPre = document.createElement('pre')
+							let ittfCode = document.createElement('code')
+							_ snippetDiv.appendChild(newSnippet)
+							_ newSnippet.appendChild(leftPane)
+							_ newSnippet.appendChild(rightPane)
+							_ leftPane.appendChild(buttonSave)
+							_ leftPane.appendChild(buttonBreak)
+							_ leftPane.appendChild(buttonWizzify)
+							_ rightPane.appendChild(snippetPre)
+							_ snippetPre.appendChild(snippetCode)
+							_ rightPane.appendChild(ittfBreak)
+							_ rightPane.appendChild(ittfPre)
+							_ ittfPre.appendChild(ittfCode)
+							_ buttonWizzify.addEventListener
+								@ 'click'
+								=>
+									_ wizzifySnippet
+										@ snippet
+										@ ittfCode
+     
+    # Runs script when popup is opened
+    _ chrome.tabs.executeScript
+        { 
+            @ code scriptCode
+        function 
+            param result
+			log 'chrome.tabs.executeScript', result
+            _ setUp(result[0])
+    
+	let optionsButton = document.getElementById('options_button')
+    set optionsButton.onclick =
+        function 
+            _ chrome.tabs.create
+                { 
+                    @ url "options.html"

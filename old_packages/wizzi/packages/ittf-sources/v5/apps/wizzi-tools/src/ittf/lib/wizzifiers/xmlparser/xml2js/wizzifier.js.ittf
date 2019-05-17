@@ -1,0 +1,124 @@
+﻿basewizzifier()
+
+	$append imports
+		var xml2js = require('xml2js')
+		var xml_parser
+			new xml2js.Parser()
+		function parseInternal
+			param xml
+			param options
+			param callback
+            _ xml_parser.parseString
+                @ xml
+				f_cb(result)
+					_ callback(null, result)
+    
+	function appendChilds
+        param name
+        param nodeArray
+        param parent
+        # log 'appendChilds.name', name
+		foreach node in nodeArray
+            if verify.isString(node)
+                set parent.name = node
+            else 
+                var ac = getAttribsAndChilds(node)
+                var tag
+                    { 
+                        @ tag name
+                        @ children
+                            [ 
+                _ parent.children.push(tag)
+                var aObj = ac.a
+                for var aName in aObj
+                    _ tag.children.push
+                        { 
+                            @ tag '@'
+                            @ name (((aName + ' ')) + aObj[aName])
+                            @ children
+                                [ 
+                foreach childnode in ac.c
+                    if verify.isArray(childnode.value) === false
+                        log "Error: value is not an array: " + childnode.name + ',' + childnode.value
+                    else 
+                        _ appendChilds
+                            @ childnode.name
+                            @ childnode.value
+                            @ tag
+    
+	function getAttribsAndChilds
+        param node
+        var attribs
+            { 
+        var children
+            [ 
+        for var prop in node
+            if node.hasOwnProperty(prop)
+                if prop === '$'
+                    var attribsObj = node[prop]
+                    # log('getAttribsAndChilds.$', attribsObj, true)
+                    for var k in attribsObj
+                        set attribs[k] = attribsObj[k]
+                else 
+                    var value = node[prop]
+                    var isArray = verify.isArray(value)
+                    _ children.push
+                        { 
+                            @ name prop
+                            @ value node[prop]
+        return 
+            { 
+                @ a attribs
+                @ c children   
+
+	function wizzify
+        param xml
+        param options
+        param callback
+        var wizziTree
+            { 
+                @ children
+                    [ 
+		_ parseInternal
+            @ xml
+			@ options
+			f_cb( result )
+				if options.dumpfile
+                    _ file.write
+                        @ options.dumpfile
+                        _ JSON.stringify(result, null, 2)
+                    
+				for var prop in result
+                    if result.hasOwnProperty(prop)
+                        var root = result[prop]
+                        if verify.isObject(root) === false
+							return
+								_ callback
+									new Error("Root is not an object. Prop: " + prop + ', root: ' + root)
+                        var ac = getAttribsAndChilds(root)
+                        set wizziTree =
+                            { 
+                                @ tag prop
+                                @ attribs
+                                    [ 
+                                @ children
+                                    [ 
+                        var aObj = ac.a
+                        for var aName in aObj
+                            _ wizziTree.children.push
+                                { 
+                                    @ tag '@'
+                                    @ name (((aName + ' ')) + aObj[aName])
+                                    @ children
+                                        [ 
+                        for var j = 0; j < ac.c.length; j++
+                            var childnode = ac.c[j]
+                            if verify.isArray(childnode.value) === false
+                                log "Error: value is not an array: " + childnode.name + ',' + childnode.value
+                            else 
+                                _ appendChilds
+                                    @ childnode.name
+                                    @ childnode.value
+                                    @ wizziTree
+                log "wizziTree", wizziTree
+                _ callback(null, wizziTree)

@@ -1,0 +1,83 @@
+﻿concept Ittf notation
+
+	summary
+
+		p Documents are made of 'phisical' text lines separated by a:
+			ul
+				li x'000a' char or
+				li x'000d' char or
+				li x'000a' + x'000d' couple of chars
+		
+		p A line is made of a node-name and a node-value separated by a
+			+ white-char (space or tab).
+
+		ittf
+			- name value
+				- name value
+		
+		p Node-values always are trimmed, you cannot have a node-value
+			+ that starts or ends with a white-char sequence.
+
+		p Example. When loaded, both these nodes will containg the 'value' string in the node-value.
+		ittf
+			- name1 value
+				- name2      value
+
+		p The node hierarchy is built calculating the indentation of node-names
+			+ in a text line. Every tab or every 4 space chars preeceding a node-name
+			+ count for one level of indentation.
+
+		p The node-name of the first line (the root node-name) must have indentation zero.
+			+ The node-name must start at column 1 (1-based) of the first row.
+
+		p An ittf document cannot have more than one root node. If the semantic of a
+			+ document require more than one root node, a convenience '$group'
+			+ node command can be used. It must be the root node of a composed document (included
+			+ or mixed) and is ignored during the mTree build up, so that all its childs become
+			+ root nodes of the included document.
+
+		p Example. Ittf document with two root nodes.
+		ittf
+			- $group
+				- root1 value1
+				- root2 value2
+		
+		p A line becomes a node which parent is the first preceeding line with a lesser
+			+ indentation. 
+
+		p Phisical text lines may have line continuatios and a 'logical' line
+			+ may contain many phisical lines. There are three pre-defined
+			+ node-names that allow line continuation:
+			ul
+				li '\' means that the node-value is joined to the node-value
+					+ of the parent node without separation.
+				li '\b' means that the node-value is joined to the node-value
+					+ of the parent node with one space char separator.
+				li '\n' means that the node-value is joined to the node-value
+					+ of the parent node with one Line Feed char separator.
+
+		p Example of line continuation. Both 'name1'  and 'name2' have the same value.
+		ittf
+			- root
+				- name1 I am
+					- \b a single
+					- \b line
+				- name2 I am a single line
+
+		p Node names and values are text strings by design, and never require quotes
+			+ (they are unquoted by the lexer). The wizzi factory is a text manipulator.
+			+ If the semantic of a node-value require that it is treated as a different type
+			+ (boolean, integer, float or date), that can be done using wizzi schemas, 
+			+ that apply types to the tree structure resulting from loading an ittf 
+			+ document (see mTrees).
+		
+		p One exception to this rule is when an argument is passed to a mixed ittf document,
+			+ and will become part of its evaluation context. Types different from string
+			+ can be usefull in jswizzi statements and expessions. The '$params' node command, that
+			+ declares the parameters received by a mixed ittf document, may assign a type to
+			+ passed arguments.
+
+		p In any case the lexer do not detect types. When needed they must be declared.
+
+
+

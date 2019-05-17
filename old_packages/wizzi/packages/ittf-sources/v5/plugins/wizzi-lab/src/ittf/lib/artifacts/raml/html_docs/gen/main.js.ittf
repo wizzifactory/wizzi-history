@@ -1,0 +1,58 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var site = require('wizzi')
+
+	var md = module.exports = {}
+	var myname = 'raml.html.docs.main'
+
+	set md.gen
+		function
+			param model
+			param ctx
+			param callback
+
+			$* VIA
+			var ittfDocumentPath = path.join(__dirname, 'ittf', 'raml-docs.html.ittf')
+			var htmlContext
+				{
+					@ raml model
+					@ request
+						{
+			# log 'htmlContext', util.inspect(htmlContext, { depth: 2 })
+			_ site.htmlDocument
+				@ ittfDocumentPath
+				@ htmlContext
+				function
+					param err
+					param result
+					if err
+						throw new Error(err)
+					_ ctx.w(result)
+					_ callback(null, ctx)
+			*$
+
+			_ wizzi.fsnoaclFactory
+				{
+					{ plugins
+						[ items
+							@ 'wizzi-core'
+							@ 'wizzi-web'
+				f_cb( wf )
+					_ wf.loadModelAndGenerateArtifact
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ 'raml-docs.html.ittf'
+						{
+							{ modelRequestContext
+								{ mTreeBuildUpContext
+									@ raml model
+							@ artifactRequestContext {}
+						@ 'html/document'
+						f_cb( artifactText )
+							log 'raml.html_docs.artifactText', artifactText
+							_ ctx.w(artifactText)
+							r_cb( ctx )

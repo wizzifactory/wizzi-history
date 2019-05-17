@@ -1,0 +1,65 @@
+﻿wui-func( Paper )
+
+	$append import
+		import warning from 'warning'
+
+	$append styles-before
+		const shadows = {}
+		_ theme.shadows.forEach
+			=>
+				param shadow, index
+				set shadows[`dp${index}`] 
+					{
+						@ boxShadow shadow
+
+	$append styles
+		@ paper
+			{
+				@ backgroundColor theme.palette.background.paper
+		@ rounded
+			{
+				@ borderRadius 2
+		@ ...shadows
+
+	$append propTypes
+		@ classes PropTypes.object.isRequired
+		@ className PropTypes.string
+		@ component
+			_ PropTypes.oneOfType
+				[
+					@ PropTypes.string
+					@ PropTypes.func
+		@ elevation PropTypes.number
+		@ square PropTypes.bool
+
+	$append defaultTypes
+		@ component 'div'
+		@ elevation 2
+		@ square false
+
+	const {
+		\b classes,
+		\b className: classNameProp,
+		\b component: ComponentProp,
+		\b square,
+		\b elevation,
+		\b ...other
+		\b } = props
+
+	_ warning
+		@ elevation >= 0 && elevation < 25
+		@ `Material-UI: this elevation \`${elevation}\` is not implemented.`
+
+	const classNameElevation = `dp${elevation >= 0 ? elevation : 0}`
+	const className
+		_ classNames
+			@ classes.paper
+			@ classes[classNameElevation]
+			{
+				@ [classes.rounded] !square
+			@ classNameProp
+
+	return
+		< ComponentProp
+			@ className {className}
+			@ {...other}

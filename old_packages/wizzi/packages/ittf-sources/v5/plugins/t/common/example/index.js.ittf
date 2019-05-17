@@ -1,0 +1,83 @@
+﻿module
+	$params name|@@null, folderLevel:integer|1
+	kind jsfile
+
+	#
+		# Examples: ${name}
+		#
+	var path = require('path')
+	var fs = require('fs')
+	var stringify = require('json-stringify-safe')
+	var wizziUtils = require('wizzi-utils')
+	var mocks = wizziUtils.mocks
+	var mtree = require('wizzi-mtree')
+	#
+		$if folderLevel == 2
+			var mocks = require('../../tests/mocks')
+		$else
+			var mocks = require('../tests/mocks')
+	var basicLoader = mocks.basicLoader
+	var genContext = mocks.genContext
+	var file = wizziUtils.file
+	var verify = wizziUtils.verify
+
+	$hook imports
+
+	function executeExample
+
+		$hook
+
+	function getFiles
+		param srcpath
+		param schema
+		return
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith
+									@ file
+									iif schema === 'ittf'
+										then '.ittf'
+										else '.' + schema + '.ittf'
+
+
+	function getContext
+		param obj
+		return
+			_ Object.assign
+				{
+				{
+					@ __productionManager
+						{
+							@ globalContext
+								function
+									return {}
+				@ obj
+
+	function getWizziObject
+		return 
+			{
+				@ loadMTree 
+					_ mtree.createLoadMTree
+						@ mocks.repo.getCreateFilesystemStore()
+						{
+							@ useCache false
+				@ file wizziUtils.file
+				@ verify wizziUtils.verify
+				@ errors mocks.errors
+
+	function getLoadModelContext
+		param mTreeBuildUpContext
+		return 
+			_ mocks.getLoadModelContext
+				@ mTreeBuildUpContext
+
+	set module.exports = executeExample
+
+	if require.main === module
+		_ executeExample()

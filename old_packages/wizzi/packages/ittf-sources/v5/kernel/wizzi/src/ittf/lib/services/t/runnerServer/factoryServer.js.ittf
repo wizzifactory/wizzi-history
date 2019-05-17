@@ -1,0 +1,108 @@
+﻿$group
+
+	m registerFsNoAclFactory
+		string name
+		{ options
+			{ plugins
+				[ items
+		if this.prepared
+			throw new Error('wizzi/runnerServer/registerFsNoAclFactory error: Cannot register a factory. The RunnerServer has been already prepared.')
+		set options.user = 'stefi'
+		set options.role = 'admin'
+		set options.repo
+			{
+				@ storeKind 'filesystem'
+		_ this.registerFactory
+			@ name
+			@ options
+
+	m registerFactory
+		string name
+		{ options
+		if this.prepared
+			throw new Error('wizzi/runnerServer/registerFactory error: Cannot register a factory. The RunnerServer has been already prepared.')
+		_ this.wizziFactoryDatas.push
+			{
+				@ name name
+				@ options options
+		log chalk.yellow('WIZZI RunnerServer. Registered factory: ' + name)
+
+	m getWizziFactory
+		param name
+		foreach wfData in this.wizziFactoryDatas
+			if wfData.name === name
+				return wfData.instance
+		return null
+
+	m callOnPrepare
+		param wizzifile
+		param wizziConfig
+		param callback
+		var that = this
+		_ async.map
+			@ this.wizziFactoryDatas
+			function
+				param item
+				param callback
+				_ wizziFactory.createFactory
+					@ item.options
+					f_cb( wf )
+						set item.instance = wf
+						_ wizzifile.onPrepare
+							@ item.name
+							@ that
+							@ wizziConfig
+							f_cb( notUsed )
+								r_cb( null )
+			f_cb( notUsed )
+				r_cb( null )
+
+	m loadModel
+		string factoryName
+		string modelTicket
+		string schemaName
+        string ittfDocumentUri
+        { loadContext
+        callback
+
+		var wf
+			_ this.getWizziFactory
+				@ factoryName
+        
+		var that = this
+		_ wf.loadModel
+			@ schemaName
+			@ ittfDocumentUri
+			@ loadContext
+			f_cb( wizziModel )
+				set that.models[modelTicket] = wizziModel
+				log chalk.yellow('WIZZI RunnerServer. Loaded model: ' + modelTicket)
+				r_cb( wizziModel )
+    
+	m transformModel
+		string factoryName
+		string modelTicket
+        string transformerName
+		{ model
+        { context
+			optional
+        callback
+        
+		var wf
+			_ this.getWizziFactory
+				@ factoryName
+
+		var that = this
+		_ wf.transformModel
+			@ transformerName
+			@ model
+			@ context
+			f_cb( transformedModel )
+				set that.models[modelTicket] = transformedModel
+				log chalk.yellow('WIZZI RunnerServer. Loaded transformed model: ' + modelTicket)
+				r_cb( wizziModel )
+
+	m getModel
+		param modelTicket
+		return this.models[modelTicket]
+

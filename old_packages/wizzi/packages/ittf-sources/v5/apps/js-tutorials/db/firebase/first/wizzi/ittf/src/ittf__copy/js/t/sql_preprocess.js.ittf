@@ -1,0 +1,90 @@
+﻿$group
+
+    $
+
+        var tHash = {};
+        var i, i_items=data.tables, i_len=data.tables.length, t;
+        for (i=0; i<i_len; i++) {
+            t = data.tables[i];
+            if (!t.indexes) {
+                t.indexes = [];
+            }
+            if (!t.foreigns) {
+                t.foreigns = [];
+            }
+            if (!t.primaryKey) {
+                t.primaryKey = {
+                    columns: [
+                        
+                    ]
+                };
+            }
+            t.foreignColumns = [];
+            t.cHash = {};
+            var j, j_items=t.primaryKey.columns, j_len=t.primaryKey.columns.length, c;
+            for (j=0; j<j_len; j++) {
+                c = t.primaryKey.columns[j];
+                t.cHash[c.name] = c;
+            }
+            var j, j_items=t.columns, j_len=t.columns.length, c;
+            for (j=0; j<j_len; j++) {
+                c = t.columns[j];
+                t.cHash[c.name] = c;
+            }
+            tHash[t.name] = t;
+        }
+        var i, i_items=data.tables, i_len=data.tables.length, t;
+        for (i=0; i<i_len; i++) {
+            t = data.tables[i];
+            var j, j_items=t.foreigns, j_len=t.foreigns.length, f;
+            for (j=0; j<j_len; j++) {
+                f = t.foreigns[j];
+                var fTable = tHash[f.name];
+                var k, k_items=f.columns, k_len=f.columns.length, fc;
+                for (k=0; k<k_len; k++) {
+                    fc = f.columns[k];
+                    var fColumn = fTable.cHash[fc.ref];
+                    t.foreignColumns.push({
+                        name: fc.name, 
+                        type: fColumn.type
+                    });
+                }
+            }
+        }
+        var i, i_items=data.tables, i_len=data.tables.length, t;
+        for (i=0; i<i_len; i++) {
+            t = data.tables[i];
+            var j, j_items=t.columns, j_len=t.columns.length, c;
+            for (j=0; j<j_len; j++) {
+                c = t.columns[j];
+                if (c.type === 'boolean') {
+                    c.sqlType = 'tinyint(1)';
+                }
+                else if (c.type === 'int') {
+                    c.sqlType = 'int';
+                }
+                else {
+                    c.sqlType = 'varchar(255)';
+                }
+                if (!c.nullable) {
+                    c.sqlType += ' not null';
+                }
+            }
+            var j, j_items=t.foreignColumns, j_len=t.foreignColumns.length, c;
+            for (j=0; j<j_len; j++) {
+                c = t.foreignColumns[j];
+                if (c.type === 'boolean') {
+                    c.sqlType = 'tinyint(1)';
+                }
+                else if (c.type === 'int') {
+                    c.sqlType = 'int';
+                }
+                else {
+                    c.sqlType = 'varchar(255)';
+                }
+                if (!c.nullable) {
+                    c.sqlType += ' not null';
+                }
+            }
+        }
+

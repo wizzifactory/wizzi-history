@@ -1,0 +1,95 @@
+module
+	kind jsfile
+
+	var gRegEditor
+
+	ready
+
+		set gRegEditor = new regEditor(examplesData)
+		
+		_ $('#examples-container').html
+			_ toHtmlExamples
+				{
+					@ items examplesData
+
+		_ $('#btnTest').click
+			function
+				_ gRegEditor.execute('test')
+		
+		_ $('#btnExec').click
+			function
+				_ gRegEditor.execute('exec')
+
+		_ $('#examples-container').click
+			function
+				param ev
+				_ gRegEditor.setExample
+					_ ev.target.id.substring (2)
+
+	function execute
+		param reText, reFlags, str, oper
+
+		set reFlags = reFlags || ""
+
+		var re
+			new RegExp
+				@ reText
+				@ reFlags
+
+		log re
+
+		if oper === 'exec'
+			return re.exec(str)
+		else
+			return re.test(str)
+
+	function executeFromEditor
+		param oper
+
+		var reText = document.querySelector('#retext').value
+		var $reTextEscaped = $('#retextEscaped')
+		var reFlags = document.querySelector('#reflags').value
+		var reSrc = document.querySelector('#resrc').value
+
+		var reTextEscaped = escapeSpecials(reText)
+		_ $reTextEscaped.val(reTextEscaped)
+
+		var match
+			_ execute
+				@ reTextEscaped
+				@ reFlags
+				@ reSrc
+				@ oper
+
+		log match 
+
+	function escapeSpecials
+		param text
+		var ret = []
+		for var i=0; i<text.length; i++
+			var ch = text[i]
+			if ("\ ^ $ . * + ? ( ) [ ] { } | ".indexOf(ch + ' ') > -1) && 
+				\b i > 0 && i < text.length - 1
+				_ ret.push('\\' + ch)
+			else
+				_ ret.push(ch)
+		return ret.join('')
+
+
+	var examplesData
+		[
+			$include examples
+
+	html_f toHtmlExamples
+		var tableClass = 'table table-condensed';
+		< table
+			@ class {{ tableClass }}
+			< tbody
+				foreach item in ctx.items
+					< tr
+						< td {{ item.desc[0] }}
+							@ id ex{{ item.name }}
+							@ style cursor:pointer;
+
+	$include regEditor
+

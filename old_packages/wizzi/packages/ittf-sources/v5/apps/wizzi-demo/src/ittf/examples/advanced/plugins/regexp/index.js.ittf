@@ -1,0 +1,38 @@
+﻿module
+	kind jsfile
+
+	var build = require('./source/generate')
+	var examples = require('./examples')
+	
+	function exec
+		param request
+		param callback
+		
+		if request === 'build'
+			return
+				_ build
+					@ callback
+		elif request === 'examples'
+			return
+				_ examples
+					@ callback
+		else
+			var msg = 'Invalid request: ' + request + ', should be `build` or `examples`'
+			log msg
+			if callback
+				_ callback
+					@ msg
+
+	set module.exports
+		function
+			param request
+			param callback
+			if typeof callback === 'undefined'
+				set callback = request
+				set request = 'build'
+			_ exec(request, callback)
+
+	if require.main === module
+		var request = process.argv.length > 2 ? process.argv[2] : 'build'
+		_ exec
+			@ request

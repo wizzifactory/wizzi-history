@@ -1,0 +1,28 @@
+﻿$group
+
+	div
+		class wz-ui-tabs-container
+
+		ul
+			class wz-ui-tabs
+			li
+				a primary ittf ${sample.primaryIttf.name}
+					class wz-ui-tab
+					data-tab-page sample-${sample.id}-tab-${sample.primaryIttf.id}
+		
+			$foreach mixin in sample.mixins
+				li
+					a mixin ${mixin.name}
+						class wz-ui-tab
+						data-tab-page sample-${sample.id}-tab-${mixin.id}
+
+			$foreach include in sample.includes
+				li
+					a include ${include.name}
+						class wz-ui-tab
+						data-tab-page sample-${sample.id}-tab-${include.id}
+
+			li
+				a schema ${sample.schema.name}
+					class wz-ui-tab
+					data-tab-page sample-${sample.id}-tab-${sample.schema.id}

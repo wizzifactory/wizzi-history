@@ -1,0 +1,15 @@
+﻿module
+	kind jsfile
+	var cr = require('../../lib/util/jsCodeReplacer')
+
+	var code 
+		[
+			@ 'var x = 1;'
+			@ '{{alfa}}'
+			@ 'var y = 2;'
+			._ join('\n')
+
+	log 'code', code
+	var r = cr.clean(code)
+	log 'cr.clean', r
+	log 'cr.restore', cr.restore(r.codeCleaned, r.replaceds)

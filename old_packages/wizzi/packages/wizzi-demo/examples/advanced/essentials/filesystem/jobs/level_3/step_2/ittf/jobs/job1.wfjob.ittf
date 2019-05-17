@@ -1,0 +1,18 @@
+wfjob job1
+
+	$
+		var ittf_folder  = path.join(__dirname, 'ittf1');
+		var dest_folder  = path.join(__dirname, 'outputs');
+
+	line one
+		cwd-folder ${ittf_folder}
+
+		artifact set of javascript modules
+			src ./**/*.js.ittf
+			schema js
+			generator js/module
+			extension js
+
+	production
+		dest-folder ${dest_folder}
+		line-ref one

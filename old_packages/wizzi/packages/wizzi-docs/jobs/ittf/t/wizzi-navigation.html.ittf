@@ -1,0 +1,108 @@
+$group
+
+	- top navigation markup
+
+	input
+		type checkbox
+		id tn-input-toggle
+
+	nav 
+		class tn-bar
+		nav 
+			class tn-main
+			a
+				href index.html.ittf
+				. logo
+					img
+						$$ width 100
+						$$ height 45px
+						src ${gLinkPrefix}images/logo.svg${ittfSuffix}
+			label
+				for tn-input-toggle
+				class tn-label-toggle
+			label &times;
+				for tn-input-toggle
+				class tn-label-toggle-close
+			ul 
+				$foreach item in nav_menu
+					li 
+						$if item.title === currentPage
+							class tn-pageSelected
+						a ${item.label}
+							href ${gLinkPrefix}${item.href}
+							title ${item.title}
+						$if item.title === currentPage && typeof(item.sub) !== 'undefined' && item.sub.length > 0
+							nav
+								class tn-subPages_mobile
+								ul
+									$foreach sub_item in item.sub
+										li 
+											a ${sub_item.label}
+												href ${gLinkPrefix}${sub_item.href}
+												title ${sub_item.title}
+
+		$foreach item in nav_menu
+			$if item.title === currentPage && typeof(item.sub) !== 'undefined' && item.sub.length > 0
+				nav
+					class tn-subPages
+					ul
+						$foreach sub_item in item.sub
+							li 
+								$if sub_item.title === currentSubPage
+									class tn-subPageSelected
+								a ${sub_item.label}
+									href ${gLinkPrefix}${sub_item.href}
+									title ${sub_item.title}
+		
+
+	$*
+	input
+		type checkbox
+		id menu-toggle
+
+	nav 
+		class navBar
+		nav 
+			class navMain
+			a
+				href index.html.ittf
+				. logo
+					img
+						width 100
+						height 45px
+						src ${gLinkPrefix}images/logo.svg
+			label
+				for menu-toggle
+				class label-toggle
+			label &times;
+				for menu-toggle
+				class label-toggle-close
+			ul 
+				$foreach item in nav_menu
+					li 
+						$if item.title === currentPage
+							class nav1selected
+						a ${item.title}
+							href ${gLinkPrefix}${item.href}
+						$if item.title === currentPage && typeof(item.sub) !== 'undefined' && item.sub.length > 0
+							nav
+								class navSub1_mobile
+								ul
+									$foreach sub_item in item.sub
+										li 
+											a ${sub_item.title}
+												href ${gLinkPrefix}${sub_item.href}
+
+		$foreach item in nav_menu
+			$if item.title === currentPage && typeof(item.sub) !== 'undefined' && item.sub.length > 0
+				nav
+					class navSub1
+					ul
+						$foreach sub_item in item.sub
+							li 
+								$if sub_item.title === currentSubPage
+									class subPageSelected
+								a ${sub_item.title}
+									href ${gLinkPrefix}${sub_item.href}
+		
+	*$

@@ -1,0 +1,60 @@
+﻿module wizzi-repo.fileSystemStore
+    kind jsfile
+
+	$if isWebpackTarget	
+		
+		class FileSystemStore
+	
+	$else
+	
+		var file = require('wizzi-utils').file
+		var errors = require('./errors')
+
+		class FileSystemStore
+			ctor
+				set this.storeKind = 'filesystem'
+
+			m documentExists
+				string filepath
+				callback
+				var documentExists
+				try 
+					set documentExists = file.isFile(filepath)
+				catch ex
+					r_cb_wz_err( RepoIOError, documentExists, ex )
+						@ 'Checking the existence of document: ' + filepath + '. Message: ' + ex.message
+				_ callback(null, documentExists)
+
+			m folderExistsSync
+				string folderpath
+				var folderExists
+				try 
+					set folderExists = file.isDirectory(folderpath)
+				catch ex
+					r_wz_err( RepoIOError, folderExistsSync, ex )
+						@ 'Checking the existence of folder: ' + folderpath + '. Message: ' + ex.message
+				return folderExists
+
+			m getFoldersSync
+				string parentFolderPath
+				{ options
+				var folders
+				try 
+					set folders = file.getFolders(parentFolderPath, options)
+				catch ex
+					r_wz_err( RepoIOError, getFoldersSync, ex )
+						@ 'Getting folder: ' + parentFolderPath + '. Message: ' + ex.message
+				return folders
+
+			m getModelContent
+				string filepath
+				callback
+				var content
+				try 
+					set content = file.read(filepath)
+				catch ex
+					r_cb_wz_err( RepoIOError, getModelContent, ex )
+						@ 'Reading filepath: ' + filepath + '. Message: ' + ex.message
+				return callback(null, content)
+
+	set module.exports = FileSystemStore

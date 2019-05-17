@@ -1,0 +1,77 @@
+﻿$group
+
+	function makeClonesApi
+		param config
+
+		var paths = makePaths(config)
+
+		return
+			{
+				@ getClone
+					function
+						param options
+						param callback
+
+						var userId = options.userId
+						var url = options.url
+						var name = options.name
+						_ gitapi.clone
+							{
+								@ filepath
+									_ paths.clonesFolderPath
+										@ userId
+								@ url url
+								@ name name
+							._ then
+								=> 
+									param ret
+									if ret == null
+										r_cb_success_quoted( repository cloned )
+											@ name name
+									else
+										r_cb_error( ret )
+							._ catch
+								=> 
+									param err
+									r_cb_error( err )
+
+				@ wizzifyClone
+					function
+						param options
+						param callback
+
+						var userId = options.userId
+						var name = options.name
+						var folder = options.folder
+						var source
+						if folder
+							set source
+								_ path.join
+									_ paths.clonesFolderPath
+										@ userId
+									@ name
+									@ 'origin'
+									@ folder
+						else
+							set source
+								_ path.join
+									_ paths.clonesFolderPath
+										@ userId
+									@ name
+									@ 'origin'
+						var dest
+							_ path.join
+								_ paths.clonesFolderPath
+									@ userId
+								@ name
+								@ 'wizzi'
+								@ 'src'
+						
+						log 'wizzifyClone.source,dest', source, dest
+
+						_ wizziTools.importFolder
+							@ source
+							@ dest
+							f_cb_api( result )
+								log 'wizzifyClone', result
+								r_cb_success_quoted( Cloned repository wizzified )

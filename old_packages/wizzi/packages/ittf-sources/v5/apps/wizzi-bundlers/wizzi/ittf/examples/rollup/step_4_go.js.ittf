@@ -1,0 +1,20 @@
+﻿demo_module( rollup_wizzi_build, 1, 4 )
+
+	$append imports
+		var rollupBundler = require('../../lib/rollupBundler')
+
+	_ rollupBundler.makeBundle
+		_ path.join
+			@ __dirname
+			@ 'step_4'
+			@ 'src'
+			@ 'main.js'
+		{
+		f_cb( generated )
+			_ printValue
+				@ 'rollupBundler'
+				@ generated
+			return
+				_ step_callback
+					@ null
+

@@ -1,0 +1,26 @@
+﻿demo_module( webpack_build, 1, 1 )
+
+	$append imports
+		var webpackBundler = require('../../lib/webpackBundler')
+
+	_ webpackBundler.makeBundle
+		_ path.join
+			@ __dirname
+			@ 'step_1'
+			@ 'src'
+			@ 'main.js'
+		{
+		f_cb_no_err( generated )
+			if err
+				if err.compilation && err.compilation.errors
+					log 'err', err.compilation.errors
+				else
+					log 'err', err
+				return
+			_ printValue
+				@ 'webpackBundler'
+				@ generated
+			return
+				_ step_callback
+					@ null
+

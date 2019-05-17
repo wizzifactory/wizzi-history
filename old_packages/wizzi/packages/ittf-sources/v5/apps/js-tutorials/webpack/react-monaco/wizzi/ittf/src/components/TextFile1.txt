@@ -1,0 +1,607 @@
+﻿module
+    kind react
+    #
+        # @flow
+    import 
+        as React
+        from 'react'
+    import Helmet from 'react-helmet'
+    import 
+        @ StyleSheet
+        @ css
+        from 'aphrodite'
+    import classnames from 'classnames'
+    import debounce from 'lodash/debounce'
+    import mapValues from 'lodash/mapValues'
+    import 
+        @ preloadedModules
+        from 'snack-sdk'
+    import 
+        @ initVimMode
+        from 'monaco-vim'
+    import 
+        as monaco
+        from 'monaco-editor/esm/vs/editor/editor.main'
+    import 
+        @ SimpleEditorModelResolverService
+        from 'monaco-editor/esm/vs/editor/standalone/browser/simpleServices'
+    import 
+        @ StaticServices
+        from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices'
+    import 
+        @ light
+        @ dark
+        from './themes/monaco'
+    import overrides from './themes/monaco-overrides'
+    import withThemeName
+        @ ThemeName
+        from '../Preferences/withThemeName'
+    import ResizeDetector from '../shared/ResizeDetector'
+    import prettierCode from '../../utils/prettierCode'
+    import getRelativePath from '../../utils/getRelativePath'
+    import constants from '../../configs/constants'
+    import 
+        @ SDKVersion
+        from '../../configs/sdk'
+    import 
+        @ FileSystemEntry
+        from '../../types'
+    import 
+        @ Annotation
+        from '../../utils/convertErrorToAnnotation'
+    #
+        # *
+        # * Monkeypatch to make 'Find All References' work across multiple files
+        # * https://github.com/Microsoft/monaco-editor/issues/779#issuecomment-374258435
+        # 
+    set SimpleEditorModelResolverService.prototype.findModel =
+        function 
+            param editor
+            param resource
+            return 
+                _ monaco.editor.getModels().find
+                    => 
+                        param model
+                        set model.uri.toString() === resource.toString()
+    set global.MonacoEnvironment =
+        { 
+            m getWorker
+                param moduleId
+                param label
+                switch label
+                    case 'json'
+                        #
+                            # $FlowFixMe
+                        return 
+                            new Worker
+                                @ 'monaco-editor/esm/vs/language/json/json.worker'
+                                { 
+                                    @ type 'module'
+                    case 'typescript'
+                    case 'javascript'
+                        #
+                            # $FlowFixMe
+                        return 
+                            new Worker
+                                @ 'monaco-editor/esm/vs/language/typescript/ts.worker'
+                                { 
+                                    @ type 'module'
+                    default 
+                        #
+                            # $FlowFixMe
+                        return 
+                            new Worker
+                                @ 'monaco-editor/esm/vs/editor/editor.worker'
+                                { 
+                                    @ type 'module'
+    _ monaco.editor.defineTheme('light', light)
+    _ monaco.editor.defineTheme('dark', dark)
+    #
+        # *
+        # * Disable typescript's diagnostics for JavaScript files.
+        # * This suppresses errors when using Flow syntax.
+        # * It's also unnecessary since we use ESLint for error checking.
+        # 
+    _ monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions
+        { 
+            @ noSemanticValidation true
+            @ noSyntaxValidation true
+    #
+        # *
+        # * Use prettier to format JavaScript code.
+        # * This will replace the default formatter.
+        # 
+    _ monaco.languages.registerDocumentFormattingEditProvider
+        @ 'javascript'
+        { 
+            async-m provideDocumentFormattingEdits
+                param model
+                param options
+                param token
+                const text
+                    await 
+                        _ prettierCode(model.getValue())
+                return 
+                    [ 
+                        { 
+                            @ range model.getFullModelRange()
+                            @ text text
+    #
+        # *
+        # * Sync all the models to the worker eagerly.
+        # * This enables intelliSense for all files without needing an `addExtraLib` call.
+        # 
+    _ monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
+    _ monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true)
+    #
+        # *
+        # * Configure the typescript compiler to detect JSX and load type definitions
+        # 
+    const compilerOptions
+        { 
+            @ allowJs true
+            @ allowSyntheticDefaultImports true
+            @ alwaysStrict true
+            @ jsx 'React'
+            @ jsxFactory 'React.createElement'
+    _ monaco.languages.typescript.typescriptDefaults.setCompilerOptions(compilerOptions)
+    _ monaco.languages.typescript.javascriptDefaults.setCompilerOptions(compilerOptions)
+    type-alias 
+    type-alias 
+    # Store editor states such as cursor position, selection and scroll position for each model
+    const editorStates = new Map()
+    # Store details about typings we have requested and loaded
+    const requestedTypings = new Map()
+    const extraLibs = new Map()
+    const codeEditorService = StaticServices.codeEditorService.get()
+    class MonacoEditor
+        super React.Component
+        p defaultProps
+            { 
+                @ lineNumbers 'on'
+                @ wordWrap 'on'
+                @ scrollBeyondLastLine false
+                { minimap
+                    @ enabled false
+                @ fontFamily 'var(--font-monospace)'
+                @ fontLigatures true
+            static
+        m removePath
+            static
+            param path
+            # Remove editor states
+            _ editorStates.delete(path)
+            # Remove associated models
+            const model
+                _ monaco.editor.getModels().find
+                    => 
+                        param model
+                        set model.uri.path === path
+            set model && model.dispose()
+        m renamePath
+            static
+            param oldPath
+            param newPath
+            const selection = editorStates.get(oldPath)
+            _ editorStates.delete(oldPath)
+            _ editorStates.set(newPath, selection)
+            _ this.removePath(oldPath)
+        m componentDidMount
+            # Spawn a worker to fetch type definitions for dependencies
+            #
+                # $FlowFixMe
+            set this._typingsWorker =
+                new Worker
+                    @ '../../workers/typings.worker'
+                    { 
+                        @ type 'module'
+            _ this._typingsWorker.addEventListener
+                @ 'message'
+                => 
+                    { 
+                        @ data data
+                    _ this._addTypings(data)
+            const {path: path, value: value, annotations: annotations, autoFocus: autoFocus, ...rest} = this.props
+            # The methods provided by the service are on it's prototype
+            # So spreading this object doesn't work, we must mutate it
+            set codeEditorService.openCodeEditor =
+                async=> 
+                    { 
+                        @ resource resource
+                        @ options options
+                    param editor
+                    await 
+                        _ this.props.onOpenPath(resource.path)
+                    _ editor.setSelection(options.selection)
+                    _ editor.revealLine(options.selection.startLineNumber)
+                    return 
+                        { 
+                            @ getControl
+                                => 
+                                    + editor
+            set this._editor = monaco.editor.create(this._node, rest, codeEditorService)
+            set this._subscription =
+                _ this._editor.onDidChangeModelContent
+                    => 
+                        const value = this._editor.getModel().getValue()
+                        if value !== this.props.value
+                            _ this.props.onValueChange(value)
+            _ this._toggleMode(this.props.mode)
+            _ this._openFile(path, value, autoFocus)
+            _ this._updateMarkers(annotations)
+            _ this._fetchTypings(this.props.dependencies, this.props.sdkVersion)
+            # Load all the files so the editor can provide proper intellisense
+            _ this.props.entries.forEach
+                => 
+                    { 
+                        @ item item
+                    if item.type === 'file' && item.path !== path && typeof item.content === 'string'
+                        _ this._initializeFile(item.path, item.content)
+            # Add custom hover provider to show version for imported modules
+            set this._hoverProvider =
+                _ monaco.languages.registerHoverProvider
+                    @ 'javascript'
+                    { 
+                        @ provideHover
+                            => 
+                                param model
+                                param position
+                                # Get the current line
+                                const line = model.getLineContent(position.lineNumber)
+                                # Tokenize the line
+                                const tokens = monaco.editor.tokenize(line, this._getLanguage(this.props.path))[0]
+                                for let i = 0, l = tokens.length; i < l; i++
+                                    const current = tokens[i]
+                                    const next = tokens[i + 1]
+                                    const end
+                                        iif next
+                                            then next.offset
+                                            else line.length
+                                    if current.type === 'string.js' && position.column > current.offset && position.column < end
+                                        # Get the string for the token and strip quotes
+                                        const string = line.slice(current.offset + 1, end - 1)
+                                        const deps = this._getAllDependencies(this.props.dependencies, this.props.sdkVersion)
+                                        if deps[string]
+                                            # If the string refers to a dependency show the version
+                                            return 
+                                                { 
+                                                    @ range new monaco.Range(position.lineNumber, current.offset + 1, position.lineNumber, end)
+                                                    [ contents
+                                                        { 
+                                                            @ value
+                                                                `lit 
+                                                                    + version\b"
+                                                                    @ deps[string].version
+                                                                    + "
+            # Add custom completion provider to provide autocomplete for files and dependencies
+            set this._completionProvider =
+                _ monaco.languages.registerCompletionItemProvider
+                    @ 'javascript'
+                    { 
+                        [ triggerCharacters
+                            @ "'"
+                            @ '"'
+                            @ '.'
+                            @ '/'
+                        @ provideCompletionItems
+                            => 
+                                param model
+                                param position
+                                # Get editor content before the pointer
+                                const textUntilPosition
+                                    _ model.getValueInRange
+                                        { 
+                                            @ startLineNumber 1
+                                            @ startColumn 1
+                                            @ endLineNumber position.lineNumber
+                                            @ endColumn position.column
+                                if /(([\s|\n]+from\s+)|(\brequire\b\s*\())["|'][^'^"]*$/.test(textUntilPosition)
+                                    # It's probably a `import` statement or `require` call
+                                    if textUntilPosition.endsWith('.') || textUntilPosition.endsWith('/')
+                                        # User is trying to import a file
+                                        # Get the text after the quotes
+                                        const typed = textUntilPosition.match(/[^'"]+$/)[0]
+                                        # Map '.' to './' and '..' to '../' for better autocomplete
+                                        const prefix
+                                            iif typed === '.'
+                                                then './'
+                                                else
+                                                    iif typed === '..'
+                                                        then '../'
+                                                        else typed
+                                        return 
+                                            _ this.props.entries.filter
+                                                # $FlowIgnore  only TextFileEntries have the virtual property
+                                                => 
+                                                    { 
+                                                        @ item item
+                                                    + item.path !== this.props.path && !item.virtual
+                                                ._ map
+                                                    => 
+                                                        { 
+                                                            @ item item
+                                                        let file = getRelativePath(this.props.path, item.path)
+                                                        if 
+                                                            test
+                                                                # Only show files that match the prefix typed by user
+                                                                && 
+                                                                    + file.startsWith(prefix)
+                                                                    undefined
+                                                                        # Only show files in the same directory as the prefix
+                                                                        set file.split('/').length <= prefix.split('/').length
+                                                            # Remove typed text from the path so that don't insert it twice
+                                                            set file = file.slice(typed.length)
+                                                            return 
+                                                                { 
+                                                                    # Show only the file name for label
+                                                                    @ label file.split('/').pop()
+                                                                    # Don't keep extension for JS files
+                                                                    @ insertText
+                                                                        iif item.type === 'file'
+                                                                            then file.replace(/\.js$/, '')
+                                                                            else file
+                                                                    @ kind
+                                                                        iif item.type === 'folder'
+                                                                            then monaco.languages.CompletionItemKind.Folder
+                                                                            else monaco.languages.CompletionItemKind.File
+                                                        return null
+                                                ._ filter
+                                                    @ Boolean
+                                    else
+                                        const deps = this._getAllDependencies(this.props.dependencies, this.props.sdkVersion)
+                                        # User is trying to import a dependency
+                                        return 
+                                            _ Object.keys(deps).map
+                                                => 
+                                                    param name
+                                                    (
+                                                        { 
+                                                            @ label name
+                                                            @ detail deps[name].version
+                                                            @ kind monaco.languages.CompletionItemKind.Module
+        m componentDidUpdate
+            param prevProps
+            const {path: path, value: value, mode: mode, annotations: annotations, dependencies: dependencies, sdkVersion: sdkVersion, autoFocus: autoFocus, theme: theme, ...rest} = this.props
+            _ this._editor.updateOptions(rest)
+            if path !== prevProps.path
+                # Save the editor state for the previous file so we can restore it when it's re-opened
+                _ editorStates.set(prevProps.path, this._editor.saveViewState())
+                _ this._openFile(path, value, autoFocus)
+            else
+                if value !== this._editor.getModel().getValue()
+                    _ this._editor.executeEdits
+                        @ null
+                        [ 
+                            { 
+                                @ range this._editor.getModel().getFullModelRange()
+                                @ text value
+            if annotations !== prevProps.annotations
+                _ this._updateMarkers(annotations)
+            if dependencies !== prevProps.dependencies || sdkVersion !== prevProps.sdkVersion
+                _ this._fetchTypings(dependencies, sdkVersion)
+            if mode !== prevProps.mode
+                _ this._toggleMode(mode)
+            if theme !== prevProps.theme
+                # Update the global editor theme
+                # Monaco doesn't have a way to change theme locally
+                _ monaco.editor.setTheme(theme)
+            if this.props.entries !== prevProps.entries
+                # Update all changed entries for updated intellisense
+                _ this.props.entries.forEach
+                    => 
+                        { 
+                            @ item item
+                        if item.type === 'file' && !item.asset && item.path !== path
+                            const previous
+                                _ prevProps.entries.find
+                                    => 
+                                        param e
+                                        set e.item.path === item.path
+                            if previous && previous.item.content === item.content
+                                return 
+                            _ this._initializeFile(item.path, item.content)
+        m componentWillUnmount
+            set this._subscription && this._subscription.dispose()
+            set this._editor && this._editor.dispose()
+            set this._hoverProvider && this._hoverProvider.dispose()
+            set this._completionProvider && this._completionProvider.dispose()
+            set this._typingsWorker && this._typingsWorker.terminate()
+        => _getLanguage
+            param path
+            if path.includes('.')
+                switch path.split('.').pop()
+                    case 'js'
+                        return 'javascript'
+                    case 'ts'
+                        return 'typescript'
+                    case 'json'
+                        return 'json'
+                    case 'css'
+                        return 'css'
+                    case 'html'
+                        return 'html'
+                    case 'md'
+                        return 'markdown'
+                    default 
+                        return undefined
+        => _initializeFile
+            param path
+            param value
+            let model
+                _ monaco.editor.getModels().find
+                    => 
+                        param model
+                        set model.uri.path === path
+            if model && !model.isDisposed()
+                # If a model exists, we need to update it's value
+                # This is needed because the content for the file might have been modified externally
+                # Use `pushEditOperations` instead of `setValue` or `applyEdits` to preserve undo stack
+                _ model.pushEditOperations
+                    [ []
+                    [ 
+                        { 
+                            @ range model.getFullModelRange()
+                            @ text value
+            else
+                const language = this._getLanguage(path)
+                set model =
+                    _ monaco.editor.createModel
+                        @ value
+                        @ language
+                        _ new monaco.Uri().with
+                            { 
+                                @ path path
+                _ model.updateOptions
+                    { 
+                        @ tabSize 2
+                        @ insertSpaces true
+        => _openFile
+            param path
+            param value
+            param focus
+            _ this._initializeFile(path, value)
+            const model
+                _ monaco.editor.getModels().find
+                    => 
+                        param model
+                        set model.uri.path === path
+            _ this._editor.setModel(model)
+            # Restore the editor state for the file
+            const editorState = editorStates.get(path)
+            if editorState
+                _ this._editor.restoreViewState(editorState)
+            if focus
+                _ this._editor.focus
+        => _getAllDependencies
+            param dependencies
+            param sdkVersion
+            (
+                { 
+                    @ 
+                    @ ...dependencies
+        => _fetchTypings
+            param dependencies
+            param sdkVersion
+            const deps = this._getAllDependencies(dependencies, sdkVersion)
+            _ Object.keys(deps).forEach
+                => 
+                    param qualifier
+                    const {version: version} = deps[qualifier]
+                    # Parse the qualifier to get the package name
+                    # This will handle qualifiers with deep imports
+                    const match = /^(?:@([^/?]+)\/)?([^@/?]+)(?:\/([^@]+))?/.exec(qualifier)
+                    if !match
+                        return 
+                    const name
+                        op+ 
+                            iif match[1]
+                                then
+                                    `lit 
+                                        + @
+                                        @ match[1]
+                                        + /
+                                else ''
+                            + match[2]
+                    if requestedTypings.get(name) === version
+                        # Typing already loaded
+                        return 
+                    _ requestedTypings.set(name, version)
+                    _ this._typingsWorker.postMessage
+                        { 
+                            @ name name
+                            @ version version
+        => _addTypings
+            { 
+                @ name name
+                @ version version
+                @ typings typings
+            _ Object.keys(typings).forEach
+                => 
+                    param path
+                    let extraLib = extraLibs.get(path)
+                    set extraLib && extraLib.dispose()
+                    set extraLib = monaco.languages.typescript.javascriptDefaults.addExtraLib(typings[path], path)
+                    _ extraLibs.set(path, extraLib)
+        => _updateMarkers
+            param annotations
+            _ monaco.editor.setModelMarkers(this._editor.getModel(), null, annotations)
+        => _toggleMode
+            param mode
+            if mode === 'vim'
+                set this._vim = initVimMode(this._editor, this._statusbar)
+            else
+                set this._vim && this._vim.dispose()
+        p _handleResize
+            _ debounce
+                => 
+                    _ this._editor.layout
+                @ 50
+                { 
+                    @ leading true
+                    @ trailing true
+        p _typingsWorker
+            undefined
+        p _hoverProvider
+            undefined
+        p _completionProvider
+            undefined
+        p _subscription
+            undefined
+        p _editor
+            undefined
+        p _vim
+            undefined
+        p _node
+            undefined
+        p _statusbar
+            undefined
+        m render
+            return 
+                div 
+                    @ className {css(styles.container)}
+                    < Helmet 
+                        @ style
+                            { 
+                                [ 
+                                    { 
+                                        @ cssText overrides
+                    < ResizeDetector 
+                        @ onResize {this._handleResize}
+                        div 
+                            @ ref
+                                { 
+                                    => 
+                                        param c
+                                        set this._node = c
+                            @ className
+                                { 
+                                    _ classnames
+                                        _ css(styles.editor)
+                                        @ 'snack-monaco-editor'
+                                        `lit 
+                                            + theme-
+                                            @ this.props.theme
+                    { 
+                        iif this.props.mode === 'vim'
+                            then
+                                div 
+                                    @ className "snack-monaco-vim-statusbar"
+                                    @ ref
+                                        { 
+                                            => 
+                                                param c
+                                                set this._statusbar = c
+                            else null
+    export-default withThemeName(MonacoEditor)
+    const styles
+        _ StyleSheet.create
+            { 
+                { container
+                    @ display 'flex'
+                    @ flex 1
+                    @ flexDirection 'column'
+                    @ minWidth 0
+                    @ minHeight 0
+                { editor
+                    @ height '100%'
+                    @ width '100%'

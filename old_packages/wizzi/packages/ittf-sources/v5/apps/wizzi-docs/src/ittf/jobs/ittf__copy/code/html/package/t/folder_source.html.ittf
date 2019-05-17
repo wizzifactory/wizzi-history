@@ -1,0 +1,40 @@
+﻿$group
+
+	$function buildup_folder_source
+		$param folder
+		$param level
+
+		$foreach f in folder.folders
+			$_ buildup_folder_source
+				$@ f
+				$@ level + 1
+		
+		$foreach d in folder.documents
+			$global
+				dcount++;
+			. mc-pane mc-pane-code-${d.id}
+				. code-panel
+					@ id ${d.id}
+					. modal-view-container
+						h4 ${d.relUri}
+							class d-h2
+						$*
+						$if d.ittf.fragments.length > 0
+							h4 Fragments
+								class frag-h4
+							ul
+								$foreach f in d.ittf.fragments
+									li
+										class frag-to-link-li
+										a ${f.wzName}
+											href #${f.relUri}
+											data-frag-id ${f.documentId}
+											class frag-to-link-a
+						*$
+						pre
+							class prettyprint
+							+ ${'\n'}${_.deinline(d.ittf.wzName)}
+					
+				
+
+

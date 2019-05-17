@@ -1,0 +1,69 @@
+﻿$group
+
+	describe insert a filesystem item
+
+		it-async should insert a root folder
+
+			_ fsJson.insertItem
+				{
+					@ parentId null
+					@ basename 'c:'
+					@ dirname null
+					@ kind 0
+				f_cb_test( r )
+					log 'insertItem.r', err, r
+					tobe_number( r.insertedCount, 1 )
+					tobe_string( r.code, FSITEM_INSERTED )
+					tobe_object( r.item )
+					tobe_string( r.item.path, c: )
+					tobe_typeof( r.item._id, object)
+					_ done
+
+		it-async should get an existing item
+			_ fsJson.getItem
+				{
+					@ parentId null
+					@ basename 'c:'
+				f_cb_test( r )
+					log 'getItem.r', err, r
+					tobe_object( r )
+					tobe_null( r.parentId )
+					tobe_string( r.basename, c: )
+					_ done
+
+		it-async should say the item already exists
+
+			_ fsJson.insertItem
+				{
+					@ parentId null
+					@ basename 'c:'
+					@ dirname null
+					@ kind 0
+				f_cb_test( r )
+					log 'insertItem.r', err, r
+					tobe_string( r.code, FSITEM_EXISTS )
+					tobe_object( r.item )
+					tobe_string( r.item.path, c: )
+					_ done
+
+		it-async should insert a root child
+			_ fsJson.getItem
+				{
+					@ parentId null
+					@ basename 'c:'
+				f_cb_test( r )
+					_ fsJson.insertItem
+						{
+							@ parentId r.parentId
+							@ basename 'hello.txt'
+							@ dirname r.basename
+							@ kind 1
+						f_cb_test( r )
+							log 'insertItem.r', err, r
+							tobe_number( r.insertedCount, 1 )
+							tobe_string( r.code, FSITEM_INSERTED )
+							tobe_object( r.item )
+							tobe_string( r.item.path, c:/hello.txt )
+							set hellotxt_item = r.item 
+							_ done
+

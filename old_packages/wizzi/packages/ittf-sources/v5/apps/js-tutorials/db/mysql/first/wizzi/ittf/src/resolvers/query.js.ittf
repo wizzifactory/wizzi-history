@@ -1,0 +1,64 @@
+﻿module
+	kind es6
+
+	set module.exports
+		{
+
+			{ Query
+				
+				@ info
+					=>
+						param parent, args, ctx, info
+						log 'ctx.db', ctx.db
+						return 'This is the API of a Hackernews Clone'
+				
+				@ categories
+					=> 
+						param parent, args, ctx, info
+						return
+							_ ctx.db.query.categories
+
+				@ options
+					=> 
+						param parent, args, ctx, info
+						return
+							_ ctx.db.query.options
+
+			{ Category
+				
+				@ id
+					=> 
+						param parent
+						return parent.id
+
+				@ name
+					=> 
+						param parent
+						return parent.name
+
+			{ Option
+				
+				@ id
+					=> 
+						param parent
+						return parent.id
+
+				@ name
+					=> 
+						param parent
+						return parent.name
+
+				@ type
+					=> 
+						param parent
+						return parent.type
+
+				@ format
+					=> 
+						param parent
+						return parent.format
+
+				@ categoryId
+					=> 
+						param parent
+						return parent.categoryId

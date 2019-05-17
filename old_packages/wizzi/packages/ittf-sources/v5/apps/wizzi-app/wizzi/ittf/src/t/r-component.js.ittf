@@ -1,0 +1,21 @@
+﻿module
+	$params name, kind|@@null, withContext|@@null
+	kind react
+
+	$include app-options
+
+	$
+		var md = {};
+		md.name = name;
+		md.connect = kind === 'connect';
+		if (withContext != null) {
+			var ss = withContext.split(';')
+			md.withContext = {
+				name: ss[0],
+				path: ss[1]
+			};
+		}
+	
+	react/component(&md, &app)
+
+		$hook

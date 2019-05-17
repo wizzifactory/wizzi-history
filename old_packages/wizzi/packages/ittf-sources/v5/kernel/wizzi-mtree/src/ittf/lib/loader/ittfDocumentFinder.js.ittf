@@ -1,0 +1,164 @@
+﻿module wizzi-mtree.ittfDocumentFinder
+    kind jsfile
+
+	import path
+
+	#
+		# TODO IttfBrickFinder would be a best name.
+		#
+		# Implements the path resolution strategy
+		# of the wizzi factory:
+		# . first try the absolute path
+		# . if not found search in 't' folders.
+		#
+		# The wizzi-repo.ittfDocumentStore instance used 
+		# for locating documents is ctor iniected.
+		#
+
+	class IttfDocumentFinder
+        ctor
+			{ store
+			string schema
+			
+			set this.store = store
+			set this.schema = schema
+
+		#
+			# param options {
+			#    ittfDocumentUri:String
+			#    |
+			#    basedir:String
+			#    relpath:String
+			# }
+		m resolvePath
+			{ options
+			callback
+        
+			var 
+				decl ittfDocumentUri = options.ittfDocumentUri
+				decl relpath = options.relpath
+        
+			if verify.isNotEmpty(ittfDocumentUri) === false
+				var basedir = options.basedir
+				if verify.isNotEmpty (basedir) === false || verify.isAbsolutePath(basedir) === false
+					r_cb_wz_err( InvalidArgument, resolvePath )
+						@ 'An "options.ittfDocumentUri" parameter or an "options.basedir" parameter with an absolute path is required to load an ITTF document. Received: ' +
+							\b 'ittfDocumentUri: ' + options.ittfDocumentUri +
+							\b ', basedir: ' + options.basedir +
+							\b ', relpath: ' + options.relpath
+				if (verify.isNotEmpty(relpath) === false) || (relpath[0] === '/')
+					r_cb_wz_err( InvalidArgument, resolvePath )
+						@ 'An "options.ittfDocumentUri" parameter or an "options.relpath" parameter with a relative path is required to load an ITTF document. Received: ' +
+							\b 'ittfDocumentUri: ' + options.ittfDocumentUri +
+							\b ', basedir: ' + options.basedir +
+							\b ', relpath: ' + options.relpath
+				set ittfDocumentUri = path.join(basedir, relpath)
+        
+			var that = this
+			_ this.tryExists
+				@ ittfDocumentUri
+				@ this.schema
+				f_cb( result )
+					if result.found
+						return 
+							_ callback
+								@ null
+								@ result.ittfDocumentUri
+					else 
+						if verify.isNotEmpty(relpath) === false
+							r_cb_wz_err( IttfNotFound, resolvePath )
+								{
+									@ parameter 'ittfDocumentUri'
+									@ message 'Cannot resolve ittf document uri: ' + ittfDocumentUri
+						_ that.resolvePathInTFolders
+							_ path.dirname(ittfDocumentUri)
+							@ relpath
+							f_cb( tresult )
+								if tresult.found
+									return 
+										_ callback
+											@ null
+											@ tresult.ittfDocumentUri
+								else 
+									log 'IttfDocumentFinder.resolvePath options', options, that.schema
+									r_cb_wz_err( IttfNotFound, resolvePath )
+										@ 'Cannot find ittf document: ' + ittfDocumentUri
+    
+		m resolvePathInTFolders
+			string basePath
+			string relPath
+			callback
+
+			var that = this
+			
+			$include ittfDocumentFinder/recurserTFolder
+			
+			_ recurserTFolder
+				@ basePath
+				@ relPath
+				._ then
+					function
+						param result
+						return
+							_ callback(null, result)
+
+		m tryExists
+			string test
+			string schema
+			callback
+			
+			var that = this
+			_ this.store.documentExists
+				@ test
+				f_cb( result )
+					if result
+						return 
+							_ callback
+								@ null
+								{ 
+									@ found true
+									@ ittfDocumentUri test
+					else 
+						if test.toLowerCase().substr(-5, 5) !== '.ittf'
+							if schema
+								_ that.store.documentExists
+									@ test + '.' + schema + '.ittf'
+									f_cb( result )
+										if result
+											return 
+												_ callback
+													@ null
+													{ 
+														@ found true
+														@ ittfDocumentUri test + '.' + schema + '.ittf'
+										else 
+											_ that.store.documentExists
+												@ test + '.ittf'
+												f_cb( result )
+													if result
+														return 
+															_ callback
+																@ null
+																{ 
+																	@ found true
+																	@ ittfDocumentUri test + '.ittf'
+													else 
+														return 
+															_ callback
+																@ null
+																{ 
+																	@ found false
+							else 
+								return 
+									_ callback
+										@ null
+										{ 
+											@ found false
+						else 
+							return 
+								_ callback
+									@ null
+									{ 
+										@ found false
+    
+	set module.exports = IttfDocumentFinder

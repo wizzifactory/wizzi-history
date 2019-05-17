@@ -1,0 +1,28 @@
+﻿module
+	kind es6
+
+	const alpha
+		{
+			@ a 10
+			@ b 20
+			@ c
+				=>
+					param demo
+					log 'demo', demo
+					return ' hello ' + demo
+
+	const beta
+		{
+			$$ @ ...alpha
+			@ d alpha.c('stefi')
+
+	class Hello
+
+		m say
+			param name
+			log 'hello ' + name
+
+	log 'beta', beta
+
+	const h = new Hello()
+	log h.say('stefi')

@@ -1,0 +1,14 @@
+﻿base_example( wizzi-repo.examples.jsonFsimpl )
+	
+	$append imports
+		var JsonFsImpl = require('../lib/json/index')
+
+	_ heading1('start')
+
+	var jsonDirectoryTree
+		_ JsonFsImpl.directoryTree
+			@ 'C:/My/wizzi/v5/kernel/wizzi-repo/src/ittf/examples'
+
+	_ printValue
+		@ 'json DirectoryTree'
+		@ jsonDirectoryTree

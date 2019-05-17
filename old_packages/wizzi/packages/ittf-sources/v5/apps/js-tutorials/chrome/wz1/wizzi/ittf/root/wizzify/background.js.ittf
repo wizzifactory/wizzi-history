@@ -1,0 +1,29 @@
+module
+    kind react
+    
+	# Declare extension default properties
+    let snippetArray = []
+    let initialState
+        { 
+            @ 'savedSnippets' snippetArray
+            @ 'saveSnippets' true
+    
+	# Set extension setting on installation
+    _ chrome.runtime.onInstalled.addListener
+        function 
+            _ chrome.declarativeContent.onPageChanged.removeRules
+                @ undefined
+                function 
+                    _ chrome.declarativeContent.onPageChanged.addRules
+                        [ 
+                            { 
+                                [ conditions
+                                    new chrome.declarativeContent.PageStateMatcher
+                                        { 
+                                            @ css ['code']
+                                    new chrome.declarativeContent.PageStateMatcher
+                                        { 
+                                            @ css ['svg']
+                                [ actions
+                                    @ new chrome.declarativeContent.ShowPageAction()
+            _ chrome.storage.local.set(initialState)

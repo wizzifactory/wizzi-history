@@ -1,0 +1,194 @@
+$group
+
+	#
+		# Retrieve an artifact generator
+		# Artifact generators are searched in the PluginsManager
+		# They are cached
+	m getArtifactGenerator
+		string artifactName
+		{ globalContext
+			optional
+		+
+		var generator = this.artifactGenerators[artifactName] || null
+		if generator == null
+			checked_call_r_set( generator )
+				_ this.pluginsManager.getArtifactGenerator(artifactName)
+			if verify.isFunction(generator.setGlobalContext) && globalContext
+				_ generator.setGlobalContext
+					@ globalContext
+			set this.artifactGenerators[artifactName] = generator
+		return generator
+
+	#
+		# Async generate an artifact
+		#
+		# params
+		#   { artifactModel
+		#     # A wizzi model or POJO, the main context of the generation
+		#     # May be null for artifacts of type 'code write'
+		#   string ittfDocumentUri
+		#     # For trace and documentation purposes
+		#   string artifactName
+		#     # The name for retrieving the artifact generation module
+		#   { artifactRequestContext
+		#     # context data for the artifact generator
+		#   callback
+		#     string generated artifact
+
+	m generateArtifact
+		[{ artifactModel
+			optional
+		string ittfDocumentUri
+		string artifactName
+		param artifactRequestContext
+		param callback
+		+
+		# log 'generateArtifact.artifactModel', artifactModel
+		+
+		if typeof(callback) === 'undefined'
+			set callback = artifactRequestContext
+			set artifactRequestContext = {}
+		if !artifactRequestContext
+			set artifactRequestContext = {}
+		+
+		check_wz_callback( generateArtifact )
+		+
+		# TODO (next wizzi factory versions)
+			# check_cb_object( artifactModel, generateArtifact ) cannot be done because
+			# artifactModel may be null for artifacts of type 'code write'.
+			# To check the match between artifact descriptors (wzjob/artifact) and 
+			# artifact modules (lib/artifatcs/schema/artifactName/main.js) could be helpfull.
+		+
+		var generator = this.getArtifactGenerator(artifactName)
+        if generator.__is_error
+			set generator.ittfDocumentUri = ittfDocumentUri
+            return callback(generator)
+		+
+		## TODO productionOptions should come from production manager
+		# The `data` property of the productionOptions will be merged
+		# to the `values` property of the GenContext.
+		var genContext
+			new GenContext
+				{
+					@ options
+						_ productionOptions
+							@ artifactRequestContext
+							{
+								@ data artifactRequestContext
+					@ pman this.createProductionManager()
+		log 'wizzi.wizziFactory.generateArtifact', artifactName, ittfDocumentUri
+		_ generator.gen
+			@ artifactModel
+			@ genContext
+			function
+				param err
+				param result
+				if err
+					#
+						set err.artifactName = artifactName
+						set err.artifactIttfDocumentUri = ittfDocumentUri
+						return
+							_ callback(err)
+					#
+					log 'wizzi.wizziFactory.generateArtifact', typeof(err), err, err.length, err.length && err.length > 0 && err[0]
+					r_cb_wz_err( WizziFactoryError, generateArtifact, err )
+						{
+							@ message 'See inner error'
+							{ parameter
+								@ artifactName artifactName
+								@ artifactIttfDocumentUri ittfDocumentUri
+				var sw = new StringWriter()
+				_ result.toStream(sw)
+				_ callback(null, sw.toString())
+
+	#
+		# Loads a wizzi model from an IttfDocument and use it as
+		# the artifactModel for the artifact generation.
+		# params
+		#   string ittfDocumentUri
+		#     # the uri of the IttfDocument
+		#    { requestContext
+		#      { modelRequestContext
+		#        # Context data for the wizzi model loading
+		#      { artifactRequestContext
+		#        # Context data for the artifact generation
+		#   string artifactName
+		#   function callback
+
+	m loadModelAndGenerateArtifact
+		string ittfDocumentUri
+		{ requestContext
+			{ modelRequestContext
+				optional
+			{ artifactRequestContext
+				optional
+		string artifactName
+		callback
+		+
+		# log 'wizzi.wizziFactory.loadModelAndGenerateArtifact.requestContext.modelRequestContext', requestContext.modelRequestContext, 
+			\b 'artifactRequestContext', requestContext.artifactRequestContext
+		+
+		var that = this
+		# load the wizzi model from an ittfDocument
+		_ this.loadModel
+			@ ittfDocumentUri
+			@ requestContext.modelRequestContext
+			f_cb( artifactModel )
+				log 'wizzi.wizziFactory.loadModelAndGenerateArtifact', 'model loaded', artifactModel
+				# the loaded wizzi model becomes the artifactModel of the artifact generation
+				_ that.generateArtifact
+					@ artifactModel
+					@ ittfDocumentUri
+					@ artifactName
+					@ requestContext.artifactRequestContext
+					@ callback
+
+	m loadModelAndGenerateArtifactFromText
+        string ittfContent
+		{ requestContext
+			{ modelRequestContext
+				optional
+			{ artifactRequestContext
+				optional
+		string artifactName
+		callback
+		+
+		# log 'wizzi.wizziFactory.loadModelAndGenerateArtifactFromText', ittfContent, requestContext, artifactName, callback
+		+
+		var ss = artifactName.split('/')
+		var schema = ss[0]
+
+		_ this.createSingleTextSourceFactory
+			@ ittfContent
+			@ schema
+			{
+			f_cb( result )
+				_ result.wizziFactory.loadModelAndGenerateArtifact
+					@ result.ittfDocumentUri
+					@ requestContext
+					@ artifactName
+					@ callback
+
+	#
+		# Executes loadModelAndGenerateArtifact for each ittf document of a folder
+		# params
+		#   string ittfFolderUri
+		#     # the uri of the ittf documents folder
+		#    { requestContext
+		#      { modelRequestContext
+		#        # Context data for the wizzi model loading
+		#      { artifactRequestContext
+		#        # Context data for the artifact generation
+		#   { options
+		#     boolean copyNonIttf
+		#   function callback
+
+	m generateFolderArtifacts
+		string ittfFolderUri
+		{ requestContext
+			{ modelRequestContext
+				optional
+			{ artifactRequestContext
+				optional
+		{ options
+		callback

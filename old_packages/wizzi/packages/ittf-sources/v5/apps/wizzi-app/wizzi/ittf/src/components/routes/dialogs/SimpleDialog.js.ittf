@@ -1,0 +1,71 @@
+﻿r-component( SimpleDialog
+
+	$append imports
+		import Dialog from '@material-ui/core/Dialog'
+		import DialogTitle from '@material-ui/core/DialogTitle'
+		import Avatar from '@material-ui/core/Avatar'
+		import List from '@material-ui/core/List'
+		import ListItem from '@material-ui/core/ListItem'
+		import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+		import ListItemText from '@material-ui/core/ListItemText'
+		import PersonIcon from '@material-ui/icons/Person'
+		import AddIcon from '@material-ui/icons/Add'
+		import blue from '@material-ui/core/colors/blue'
+		
+		const emails
+			[ 
+				@ 'username@gmail.com'
+				@ 'user02@gmail.com'
+
+	style
+		{ avatar
+			@ backgroundColor blue[100]
+			@ color blue[600]
+
+    
+	=> handleClose
+		_ this.props.onClose(this.props.selectedValue)
+
+	=> handleListItemClick
+		param value
+		_ this.props.onClose(value)
+    
+	render
+        const {classes: classes, onClose: onClose, selectedValue: selectedValue, ...other} = this.props
+        return 
+            < Dialog 
+                @ onClose {this.handleClose}
+                @ aria-labelledby "simple-dialog-title"
+                @ {...other}
+                < DialogTitle 
+                    @ id "simple-dialog-title"
+                    + Set backup account
+                div 
+                    < List 
+                        { 
+                            _ emails.map
+                                => 
+                                    param email
+									(
+										< ListItem 
+											@ button
+											@ onClick
+												=> 
+													_ this.handleListItemClick(email)
+											@ key {email}
+											< ListItemAvatar 
+												< Avatar 
+													@ className {classes.avatar}
+													< PersonIcon 
+											< ListItemText 
+												@ primary {email}
+                        < ListItem 
+                            @ button
+                            @ onClick
+                                => 
+                                    _ this.handleListItemClick('addAccount')
+                            < ListItemAvatar 
+                                < Avatar 
+                                    < AddIcon 
+                            < ListItemText 
+                                @ primary "add account"

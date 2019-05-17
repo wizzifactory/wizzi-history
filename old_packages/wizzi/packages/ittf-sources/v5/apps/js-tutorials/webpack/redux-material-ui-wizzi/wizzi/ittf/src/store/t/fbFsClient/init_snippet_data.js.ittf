@@ -1,0 +1,91 @@
+﻿$group
+	
+	m getSnippetsIndex
+		param callback
+		
+		const that = this
+		
+		_ this.retrieveSnippetIndex
+			f_cb_no_err( payload )
+				if err
+					log 'FbFsClient.getSnippetsIndex. Err: ', err
+					_ that.saveSnippetIndex
+						@ that.initialSnippetIndex()
+						f_cb_no_err(result)
+							log 'FbFsClient.getSnippetsIndex.initial.save. Err:', err, 'Result:', result
+							if err
+								throw new Error('Bad failure. Cannot save the initial snippet index to the cloud server.')
+					# optimistic return
+					return
+						_ callback
+							@ null
+							{
+								@ snippetIndex that.initialSnippetIndex()
+								@ message 'Server data not found. Got data from initial hardcoded snippet index.'
+				
+				log 'FbFsClient.getSnippetsIndex.payload', payload, 'data', payload.data
+				
+				if typeof payload.data['js'] === 'undefined'
+					_ that.saveSnippetIndex
+						@ that.initialSnippetIndex()
+						f_cb(result)
+							log 'FbFsClient.getSnippetsIndex.initial.save. Err:', err, 'Result:', result
+							if err
+								throw new Error('Bad failure. Server data corrupted and cannot save an initial snippet index to the cloud server.')
+					# optimistic return
+					return
+						_ callback
+							@ null
+							{
+								@ snippetIndex that.initialSnippetIndex()
+								@ message 'Server data corrupted. Got data from initial hardcoded snippet index.'
+				return
+					_ callback
+						@ null
+						{
+							@ snippetIndex payload.data
+							@ message 'Got snippetIndex data from firebase/firestore server'
+
+	m initialSnippetIndex
+		return 
+			{
+				@ js
+					{
+						[ snippets
+							{
+								@ name 'declarations'
+								[ code
+									@ 'var obj = {'
+									@ '  items: ['
+									@ '    "one"'
+									@ '    "two"'
+									@ '  ]'
+									@ '}'
+							{
+								@ name 'calls'
+								[ code
+									@ 'console.log("Hello");'
+									@ '        @ "Hello"'
+				@ html
+					{
+						[ snippets
+							{
+								@ name 'basic'
+								[ code
+									@ '<html>'
+									@ '    <head>'
+									@ '    <body>'
+									@ '        <h1>Hello world</h1>'
+									@ '    </body>'
+									@ '    </head>'
+									@ '</html>'
+
+				@ css
+					{
+						[ snippets
+							{
+								@ name 'basic'
+								[ code
+									@ '* < body {}'
+									@ '.main {}'
+									@ '#app {}'

@@ -1,0 +1,97 @@
+﻿$group
+
+	$function typed_name
+		$param p
+
+		$if p.type === 'object' 
+			span {
+				class api-property-type
+		$elif p.type === 'array' 
+			span [
+				class api-property-type
+		$elif p.type === 'callback-function' 
+			span function
+				class api-property-type
+		$elif p.type === 'exception' 
+			span error
+				class api-property-type
+		$else
+			span ${p.type} 
+				class api-property-type
+		$if p.type !== 'null'
+			span ${p.wzName}
+				class api-property-name
+
+	$function comments
+		$param p
+		$param smr
+		$param type
+
+		$if p.comments.length > 0
+			. gsf-smr-${smr} api-comment-${type}
+				$foreach c in p.comments
+					span ${c.wzName}&nbsp;
+
+	$function api_ref
+		$param p
+		$param smr
+
+		$if p.apiRef
+			. gsf-smr-${smr}
+				span api-ref
+					class api-label-api-ref
+				span
+					class api-ref
+					a ${p.apiRef}
+						href #${p.apiRef}
+
+	$function typed_value
+		$param v
+		$param smr
+
+		. gsf-smr-${smr}
+
+			$_ typed_name
+				$@ v
+				$@ 'property'
+
+			$_ typed_value_attrs
+				$@ v
+				$@ smr+1
+
+	$function typed_value_attrs
+		$param v
+		$param smr
+
+		$if v.comments.length > 0
+			. gsf-smr-${smr} api-comment-typed-value
+				$foreach c in v.comments
+					span ${c.wzName}&nbsp;
+		
+		$if v.isPOJO
+			. gsf-smr-${smr}
+				span POJO
+		$if v.defaultValue
+			. gsf-smr-${smr}
+				span default ${v.defaultValue}
+		$if v.isRequired
+			. gsf-smr-${smr} api-constraint
+				span required
+		$if v.iface
+			. gsf-smr-${smr} api-iface
+				span ${v.iface}
+											
+		$_ api_ref
+			$@ v
+			$@ smr
+					
+		$if v.type === 'object'
+			$_ buildup_object
+				$@ v
+				$@ smr
+								
+		$if v.type === 'array'
+			$_ buildup_array
+				$@ v
+				$@ smr
+

@@ -1,0 +1,32 @@
+﻿module
+	kind react
+	+
+	import_rsf_actions( UPDATE_SNIPPET_CLOUD )
+	+
+	const snippetCloudInitialState
+		{
+			@ isCloudUpdating false
+			@ updateError null
+			@ updatedMessage ''
+	+
+	r( snippetCloud, snippetCloudInitialState )
+
+		c( UPDATE_SNIPPET_CLOUD_REQUEST
+			{
+				@ ...state
+				@ isCloudUpdating true
+				@ updatedMessage ''
+				@ updateError null
+
+		c( UPDATE_SNIPPET_CLOUD_SUCCESS
+			{
+				@ ...state
+				@ isCloudUpdating false
+				@ updatedMessage action.message
+				@ updateError null
+
+		c( UPDATE_SNIPPET_CLOUD_FAILURE
+			{
+				@ ...state
+				@ isCloudUpdating false
+				@ updateError action.error

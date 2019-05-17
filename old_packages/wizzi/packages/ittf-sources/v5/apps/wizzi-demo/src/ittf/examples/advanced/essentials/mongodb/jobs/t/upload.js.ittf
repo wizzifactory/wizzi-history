@@ -1,0 +1,23 @@
+﻿$group
+	$params section, level, step
+
+	_ repo.mongoDbDocumentManager
+		@ testMongodbUri
+		f_cb_throw( docman )
+
+			_ heading2('uploadFolder section: ${section}, level ${level}, step ${step}')
+			_ docman.uploadFolder
+				_ path.join
+					@ __dirname
+					@ 'step_${step}'
+				_ path.join
+					@ demoUploadMongodbBaseFolder
+					@ '${section}'
+					@ 'level_${level}'
+					@ 'step_${step}'
+				f_cb_throw( result )
+					_ printValue
+						@ 'result'
+						@ result
+					_ docman.close
+					$hook				

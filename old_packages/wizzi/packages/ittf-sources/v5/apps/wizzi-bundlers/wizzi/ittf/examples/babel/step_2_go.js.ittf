@@ -1,0 +1,48 @@
+﻿demo_module( babel, 1, 2 )
+
+	$append imports
+		var babelLoader = require('../../lib/babelLoader')
+
+	var wizzi_file_1
+		_ path.join
+			@ __dirname
+			@ 'step_2'
+			@ 'file_1.js.ittf'
+
+	var wizzi_file_2
+		_ path.join
+			@ __dirname
+			@ 'step_2'
+			@ 'file_2.js.ittf'
+
+	_ babelLoader.babelTransformWizziFile
+		@ wizzi_file_1
+		._ then
+			=>
+				param result
+				_ printValue
+					@ 'babelTransform.wizzi_file_1'
+					@ result.code
+				_ babelLoader.babelTransformWizziFile
+					@ wizzi_file_2
+					._ then
+						=>
+							param result
+							_ printValue
+								@ 'babelTransform.wizzi_file_2'
+								@ result.code
+							_ step_callback
+								@ null
+					._ catch
+						=>
+							param err
+							log 'babelTransform.wizzi_file_2.err', err
+							_ step_callback
+								@ err
+
+		._ catch
+			=>
+				param err
+				log 'babelTransform.wizzi_file_1.err', err
+				_ step_callback
+					@ err

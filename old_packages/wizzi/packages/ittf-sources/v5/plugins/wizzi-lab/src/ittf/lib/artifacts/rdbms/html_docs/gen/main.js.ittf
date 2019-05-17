@@ -1,0 +1,37 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var wizzi = require('wizzi')
+
+	var md = module.exports = {}
+	var myname = 'rdbms.html.docs.main'
+
+	set md.gen
+		function
+			param model
+			param ctx
+			param callback
+
+			_ wizzi.fsnoaclFactory
+				{
+					{ plugins
+						[ items
+							@ 'wizzi-core'
+							@ 'wizzi-web'
+				f_cb( wf )
+					_ wf.loadModelAndGenerateArtifact
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ 'rdbms-docs.html.ittf'
+						{
+							{ modelRequestContext
+								{ mTreeBuildUpContext
+									@ rdbms model
+							@ artifactRequestContext {}
+						@ 'html/document'
+						f_cb( artifactText )
+							_ ctx.w(artifactText)
+							r_cb( ctx )

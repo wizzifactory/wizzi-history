@@ -1,0 +1,84 @@
+﻿module wizzi-repo.browserFSStore
+    kind jsfile
+
+	$if isWebpackTarget
+	
+		import util
+		var BrowserFS = require('browserfs')
+		var verify = require('wizzi-utils').verify
+		var vfile = require('wizzi-utils').vfile
+		var errors = require('./errors')
+
+		function isBrowserPath
+			param method
+			param documentPath
+			param callback
+			if verify.startsWith(documentPath, '/ixdb') ||
+				\b verify.startsWith(documentPath, '/tmp')
+				return true
+			else
+				_ callback
+					_ error
+						@ '999'
+						@ method
+						{
+							@ parameter 'documentPath'
+							@ message 'Not a BrowserFS documentPath. Should be oneOf /tmp, /ixdb'
+				return false
+
+		class BrowserFSStore
+			ctor
+				set this.storeKind = 'browser'
+				set this.file = null
+    
+			m init
+				{ options
+				callback
+				var that = this
+
+				_ vfile
+					f_cb( file)
+						set that.file = file
+						return
+							_ callback
+								@ null
+
+			m close
+				# TODO
+
+			m documentExists
+				string documentPath
+				callback
+				if isBrowserPath('documentExists', documentPath, callback)
+					_ this.file.isFile
+						@ documentPath
+						f_cb_no_err( result )
+							if err
+								r_cb_wz_err( RepoIOError, documentExists, err )
+									{
+										@ parameter 'documentPath'
+										@ message 'Checking existence of document: ' + documentPath
+							return callback(null, result)
+    
+			m getModelContent
+				string documentPath
+				callback
+				if isBrowserPath('documentExists', documentPath, callback)
+					_ this.file.read
+						@ documentPath
+						f_cb_no_err( result )
+							if err
+								r_cb_wz_err( RepoIOError, getModelContent, err )
+									{
+										@ parameter 'documentPath'
+										@ message 'Getting content of document: ' + documentPath
+							# log 'getModelContent.received', result
+							return callback(null, result)
+
+	$else
+
+		class BrowserFSStore
+			ctor
+				throw 'Not supported outside of browser'
+
+	set module.exports = BrowserFSStore

@@ -1,0 +1,21 @@
+module
+    kind react
+    import posts from './_posts.js'
+    const contents
+        _ JSON.stringify
+            _ posts.map
+                => 
+                    param post
+                    return 
+                        { 
+                            @ title post.title
+                            @ slug post.slug
+    export 
+        function get
+            param req
+            param res
+            _ res.writeHead
+                @ 200
+                { 
+                    @ 'Content-Type' 'application/json'
+            _ res.end(contents)

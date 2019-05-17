@@ -1,0 +1,51 @@
+﻿concept The gencontext object
+
+	summary
+
+		h4 The interface of the gencontext object
+		ittf
+			-
+				- #
+					- # Set line indentation to a given value
+    			- m forceIndent
+					- param value
+				- #
+					- # Increase line indentation
+				- m indent
+					- param value
+				- #
+					- # Decrease line indentation
+				- m deindent
+					- param value
+				- #
+					- # Add a named value to the interpolation context
+				- m a
+					- param name
+					- param value
+				- #
+					- # Add a named value from the interpolation context
+				- m g
+					- param name
+				- #
+					- # Remove a named value from the interpolation context
+				- m r
+					- param name
+				- #
+					- # Write a text with interpolation and line feed
+				- m w
+					- param text
+				- #
+					- # Write a text with interpolation without line feed
+				- m write
+					- param text
+				- #
+					- # throw a NodeError exception
+				- m error
+					- param message
+					- param node
+				- #
+					- # throw an ArtifactGenerationError exception
+				- m artifactGenerationError
+					- param message
+					- param location
+					- param node

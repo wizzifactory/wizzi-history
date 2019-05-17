@@ -1,0 +1,57 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var wizzi = require('wizzi')
+
+	var md = module.exports = {}
+	var myname = 'rdbms.jsonmodel.main'
+
+	set md.gen
+		function
+			param model
+			param ctx
+			param callback
+
+			$*
+			var ittfDocumentPath = path.join(__dirname, 'ittf', 'jsonmodel.js.ittf')
+			_ wizzi.wizzi.ittf.loadModel
+				@ ittfDocumentPath
+				{
+					@ table model.table
+					@ request
+						{
+				function
+					param err
+					param result
+					if err
+						throw new Error(err)
+					_ ctx.w(result.toIttf())
+					_ callback(null, ctx)
+			*$
+
+			_ wizzi.fsnoaclFactory
+				{
+					{ plugins
+						[ items
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+				f_cb( wf )
+					_ wf.loadModelAndGenerateArtifact
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ 'jsonmodel.js.ittf'
+						{
+							{ modelRequestContext
+								{ mTreeBuildUpContext
+									@ table model.table
+							@ artifactRequestContext {}
+						@ 'js/module'
+						f_cb( artifactText )
+							log 'jsoncrud.artifactText', artifactText
+							_ ctx.w(artifactText)
+							r_cb( ctx )
+
+

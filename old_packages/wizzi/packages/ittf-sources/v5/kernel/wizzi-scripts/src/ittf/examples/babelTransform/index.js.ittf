@@ -1,0 +1,54 @@
+﻿base_example()
+
+	$append imports
+		import path
+
+		var codecampPath = 'c:/my/wizzi/v5/codecamps'
+		# var fileBasename = 'index.js'
+		var fileBasename = 'compile.js'
+
+	var options1
+		{
+			@ codePath
+				_ path.join
+					@ codecampPath
+					@ 'react'
+					@ 'src'
+					@ fileBasename
+
+	_ babel
+		f_cb_test(result)
+			log 'babel.result', result
+			_ file.write
+				_ path.join
+					@ codecampPath
+					@ 'react'
+					@ 'dist'
+					@ fileBasename
+				@ result.code
+			#
+				_ babel
+					f_cb_test(result)
+						log 'babelToEventStream.result', result
+	
+	function babel
+		param callback
+
+		_ manager.babelTransformExec
+			@ options1
+			@ callback
+    
+	function babelTransformToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.babelTransformExec
+			@ options1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

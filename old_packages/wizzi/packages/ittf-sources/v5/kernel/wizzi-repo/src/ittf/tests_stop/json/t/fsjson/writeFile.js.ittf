@@ -1,0 +1,17 @@
+﻿$group
+
+	describe update a filesystem item
+
+		it-async should write a document content
+
+			set hellotxt_item.basename = 'hello2.txt'
+			_ fsJson.writeFile
+				@ hellotxt_item._id
+				@ 'hello world'
+				f_cb_test( r )
+					log 'writeFile.r', err, r
+					# tobe_number( r.n, 1 )
+					tobe_string( r.code, DOCUMENT_WRITTEN )
+					_ done
+
+

@@ -1,0 +1,7 @@
+﻿$group
+	$params name
+
+	# log 't/tag.node.${name}, value: ', node.${name}, '
+	if typeof node.${name} !== 'undefined'
+		set ret.tag = node.${name}.toString()
+	# log 't/tag ittf.ret', ret

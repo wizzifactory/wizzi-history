@@ -1,0 +1,18 @@
+﻿module
+	kind jsfile
+
+	var build = require('./source/generate')
+	
+	function exec
+		param callback
+		
+		_ build
+			@ callback
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require.main === module
+		_ exec

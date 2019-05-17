@@ -1,0 +1,41 @@
+﻿$group
+
+	#
+		# Create a json directory tree from a filesystem folder
+	set md.jsonDirectoryTreeFromFilesystem = JsonFsImpl.directoryTree
+	+
+	#
+		# json virtual file service
+		# params
+		#   { options
+		#     { jsonFsData
+	set md.jsonfile
+		function jsonfile
+			{ options
+				{ jsonFsData
+					optional
+				{ fsJson
+					optional
+			callback
+			if options.fsJson
+				var fsimpl
+					new JsonFsImpl
+						{
+				_ fsimpl.open
+					{
+						@ fsJson options.fsJson
+					f_cb( notUsed )
+						_ vfile
+							@ fsimpl
+							f_cb( _jsonfile )
+								r_cb( _jsonfile )
+			else
+				var fsimpl
+					new JsonFsImpl
+						@ options.jsonFsData
+				_ fsimpl.open
+					f_cb( notUsed )
+						_ vfile
+							@ fsimpl
+							f_cb( _jsonfile )
+								r_cb( _jsonfile )

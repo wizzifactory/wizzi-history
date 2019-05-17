@@ -1,0 +1,22 @@
+﻿$group
+	
+	m toMTreePiece
+		param parent
+		if !parent
+			set parent 
+				{
+					@ parent null
+					@ name this.name
+					@ value this.value
+					@ children []
+		foreach item in this.children
+			var child 
+				{
+					@ parent parent
+					@ name item.name
+					@ value item.value
+					@ children []
+			_ item.toMTreePiece(child)
+			_ parent.children.push(child)
+		return parent
+

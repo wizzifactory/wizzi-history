@@ -1,0 +1,46 @@
+﻿demo_module( rollup_build, 1, 1 )
+
+	$append imports
+		var rollup = require('rollup')
+
+	var inputOptions
+		{
+			@ input 'step_1/src/main.js'
+
+	var outputOptions
+		{
+			@ format 'umd'
+			@ name 'MyHello'
+			@ file 'step_1/output/bundle.js'
+
+	function build
+
+		log 'build started', rollup
+		
+		_ rollup.rollup
+			@ inputOptions
+			._ then
+				=>
+					param bundle
+					log 'rollup.imports', bundle.imports
+					log 'rollup.exports', bundle.exports
+					log 'rollup.modules', bundle.modules
+
+					_ bundle.generate
+						@ outputOptions
+						._ then
+							=>
+								param result
+						
+								log 'generate', result
+								_ bundle.write
+									@ outputOptions
+									._ then
+										=>
+											param written
+											log 'write', written
+											return
+												_ step_callback
+													@ null
+
+	_ build

@@ -1,0 +1,87 @@
+﻿$group
+
+	get( /api/wizzi/ittf )
+
+		check-params( )
+			not-empty( query , hash )
+		
+		_ wizziApi.getIttfDocument
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	put( /api/wizzi/ittf )
+
+		log 'req.body', req.body
+		log 'req.query', req.query
+		check-params( )
+			not-empty( body , hash )
+			not-empty( body , content )
+			optional( body , prettify )
+		
+		_ wizziApi.putIttfDocument
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ content content
+				@ prettify prettify
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/wizzi/ittf/defaultartifact )
+
+		check-params( )
+			not-empty( query , hash )
+		
+		_ wizziApi.generateDefaultArtifact
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/wizzi/ittf/mtreedebug )
+
+		check-params( )
+			not-empty( query , hash )
+		
+		_ wizziApi.getMTreeDebugInfo
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/wizzi/ittf/wizzifactory )
+
+		check-params( )
+			not-empty( query , storeKind )
+			optional( query , plugins )
+			optional( query , globalContext )
+		
+		_ wizziApi.getWizziFactoryInfo
+			{
+				@ userId req.user.id
+				@ storeKind storeKind
+				@ plugins plugins
+				@ globalContext globalContext
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+

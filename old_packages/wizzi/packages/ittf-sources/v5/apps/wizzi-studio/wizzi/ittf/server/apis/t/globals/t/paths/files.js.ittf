@@ -1,0 +1,60 @@
+﻿$group
+
+	@ getIttfFilesOfSchema
+		function
+			param folderPath
+			param schemaName
+
+			var glob = this.normalize(folderPath) + '/*.' + schemaName + '.ittf'
+			
+			var files
+				_ file.getGlobbedFiles
+					@ glob
+			
+			log 'getFolderIttfFiles', glob, schemaName, files
+			var ret = []
+			foreach item in files
+				var dirName = path.dirname(item)
+				_ ret.push
+					{
+						@ baseName path.basename(item)
+						@ dirName dirName
+						@ fullPath
+							_ this.normalize
+								_ path.join
+									@ dirName
+									@ path.basename(item)
+			return ret
+
+	@ getIttfFiles
+		function
+			param folderPath
+			var files
+				_ file.getGlobbedFiles
+					@ folderPath + "/**/*.ittf"
+			var ret = []
+			foreach item in files
+				_ ret.push
+					{
+						@ baseName path.basename(item)
+						@ dirName path.dirname(item)
+						@ fullPath item
+			return ret
+
+	@ getFolders
+		function 
+			param folderPath
+			var ret = []
+			var dir = fs.readdirSync(folderPath)
+			foreach name in dir
+				var target = folderPath + '/' + name
+				var stats = fs.statSync(target)
+				if stats.isDirectory()
+					_ ret.push
+						{
+							@ name name
+							@ fullPath target
+			return ret
+
+
+

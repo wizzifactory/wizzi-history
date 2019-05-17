@@ -1,0 +1,66 @@
+﻿$group
+
+	decl_rsf( ittf, get )
+	decl_rsf( artifact, gen_default )
+	decl_rsf( mtree_debuginfo, get )
+	+
+	export
+		const getIttfDocument
+			=>
+				param hash
+				return
+					{
+						@ type GET_ITTF
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_ITTF_REQUEST
+										@ GET_ITTF_SUCCESS
+										@ GET_ITTF_FAILURE
+								@ url '/api/wizzi/ittf'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+	+
+	export
+		const generateDefaultArtifact
+			=>
+				param hash
+				return
+					{
+						@ type GEN_DEFAULT_ARTIFACT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GEN_DEFAULT_ARTIFACT_REQUEST
+										@ GEN_DEFAULT_ARTIFACT_SUCCESS
+										@ GEN_DEFAULT_ARTIFACT_FAILURE
+								@ url '/api/wizzi/ittf/defaultartifact'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+	+
+	export
+		const getMTreeDebugInfo
+			=>
+				param hash
+				return
+					{
+						@ type GET_MTREE_DEBUGINFO
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_MTREE_DEBUGINFO_REQUEST
+										@ GET_MTREE_DEBUGINFO_SUCCESS
+										@ GET_MTREE_DEBUGINFO_FAILURE
+								@ url '/api/wizzi/ittf/mtreedebug'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+	+

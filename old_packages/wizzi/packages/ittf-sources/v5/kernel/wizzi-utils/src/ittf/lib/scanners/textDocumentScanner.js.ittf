@@ -1,0 +1,78 @@
+﻿module wizzi-utils.lib.scanners.textDocumentScanner
+    kind jsfile
+    
+	var path = require('path')
+	var encdec = require('../crypto/encdec')
+	var vfile = require('../fs/vfile')
+	var verify = require('../verify')
+
+	# TODO repository store agnostic (defaults to filesystems)
+
+	var md
+        set module.exports =
+            { 
+
+	set md.scan
+        function
+            string documentPath
+			param options
+			callback
+
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+
+			if options.file
+				_ md.scanExec
+					@ options.file
+					@ documentPath
+					@ options
+					@ callback
+			else
+				_ vfile
+					f_cb( file )
+						_ md.scanExec
+							@ file
+							@ documentPath
+							@ options
+							@ callback
+
+	set md.scanExec
+        function
+			param file
+            param documentPath
+			param options
+			param callback
+
+			_ file.isFile
+				@ documentPath
+				f_cb( result )
+					if result == false
+						return
+							_ callback
+								_ error
+									@ '999'
+									@ 'scan'
+									@ 'Parameter documentPath must be an existing file. Received: ' + documentPath
+
+			set documentPath = verify.unixifyPath(documentPath)
+
+			breadcrumbs(documentPath, documentUri)
+
+			_ file.read
+				@ documentPath
+				f_cb( content )
+					return
+						_ callback
+							@ null
+							{ 
+								@ id "p_1_1"
+								@ primaryPath documentPath
+								@ primaryUri documentUri
+								@ primaryHash encdec.encrypt(documentPath)
+								@ breadCrumbs breadCrumbs
+								{ primaryIttf
+									@ content content
+									@ pretty '<span class="pp-pln">' + content + '</span>'
+								[ fragments
+								[ ittfReferences

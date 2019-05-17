@@ -1,0 +1,29 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m stat
+		string filePath
+        callback
+
+		_ this.fsCommon.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				# log 'wizzi-repo.${source}.document.stat.filePath', filePath, 'fsitem', fsitem
+				if fsitem == null
+					r_cb()
+						{
+							@ isDirectory
+								function
+									return false
+							@ isFile
+								function
+									return false
+				else
+					r_cb()
+						{
+							@ isDirectory
+								function
+									return fsitem.kind == 0
+							@ isFile
+								function
+									return fsitem.kind == 1

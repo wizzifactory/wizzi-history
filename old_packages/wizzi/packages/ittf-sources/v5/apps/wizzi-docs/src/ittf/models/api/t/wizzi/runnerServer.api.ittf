@@ -1,0 +1,101 @@
+﻿$group
+
+	api wizzi.runnerServerModule
+		kernel api
+		module
+			path wizzi/lib/services/runnerServer.js
+
+		# The wizzi.runnerServer is an advanced service of the wizzi factory
+		# that can be used by applications that execute complex generations 
+		# based on wizzi factory services.
+		# It allows to jswizzi statements coded in ittf documents to access models
+		# and api functions, registered at start up, as they where passed in the
+		# mTreeBuildUpContext for each mTree loading.
+		# To use the wizzi.runnerServer an applications must implement the wizzi-app.wizzifile
+		# interface.
+
+		{
+			{ instance
+				api-ref wizzi.runnerServer
+				# A singleton instance of the wizzi.runnerServer class.
+				# Can be created by applications calling the wizzi.startRunnerServer function. 
+			
+			m init
+				called-by wizzi.startRunnerServer function
+				# Creates the singleton wizzi.runnerServerModule.instance object.
+				# If called more than once an error is thrown.
+				string cwd
+				string user
+				string role
+
+				info
+					api-create wizzi.runnerServer
+
+	api wizzi.runnerServer
+		kernel
+		class-instance
+			path wizzi/lib/services/runnerServer.js
+
+		{
+
+			m registerApi
+				string apiName
+				function apiFunction
+				# Register a function that can be called from jswizzi statements.
+				# Must be called handling the onStart event of a wizzifile.
+    
+			m callApi
+				string apiName
+				return
+					any result
+						# The result of calling: getApiFunction(apiName).apply(this, Array.prototype.slice.call(arguments, 1))
+				# Can be called from a jswizzi statement, in a ittf document, using the method: 
+				# $.api('apiName', ...args);
+
+			m registerFactory
+				string factoryName
+					# The name of the factory that will be passed to the onPrepare method of
+					# the wizzifile.
+				{ createOptions
+					api-ref wizzi.factory.createOptions
+				# Must be called handling the onStart event of the wizzi file
+
+			m loadModel
+				string modelTicket
+					# A model identifier that will be used by the wizzi.runnerServer.getModel method
+					# to retrieved the model.
+				string schemaName
+					# The name of a wizzi schema provided by the wizzi plugin of a registered factory.
+				string ittfDocumentUri
+					# The uri of the primary ittf document 
+				{ loadContext
+				cb()
+					{ wizziModel
+						api-ref wizzi.wizziModel
+				# Must be called handling the onPrepare event of a wizzifile.
+    
+			m transformModel
+				string modelTicket
+					# A model identifier that will be used by the wizzi.runnerServer.getModel method
+					# to retrieved the model.
+				string transformerName
+					# The name of a model transformer provided by the wizzi plugin of a registered factory.
+				{ model
+					# The model to be transformed.
+				{ context
+					# An optional context object.
+				cb()
+					{ transformedModel
+				# Must be called handling the onPrepare event of a wizzifile.
+
+			m getModel
+				string modelTicket
+					# The model identifier created calling the wizzi.runnerServer.loadModel method.
+				return
+					{ model
+						# The previously loaded or prepared model.
+				# Can be called from a jswizzi statement, in a ittf document, using the method: 
+				# $.model('modelTicket', ...args);
+
+
+				

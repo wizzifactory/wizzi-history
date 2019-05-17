@@ -1,0 +1,49 @@
+  module  ids: 1 50
+    kind jsfile ids: 2 51
+    import util ids: 3 52
+    import wizzi ids: 4 53
+    var md = module.exports = {} ids: 5 54
+    class paramsCheck ids: 6 55
+      ctor  ids: 7 56
+        param req ids: 8 57
+        set this.req = req ids: 9 58
+        set this.errors = null ids: 10 59
+      m notEmpty ids: 11 60
+        param qb ids: 12 61
+        param name ids: 13 62
+        var value = this.optional(qb, name) ids: 14 63
+        if wizzi.verify.isEmpty(value) ids: 15 64
+          _ this.error ids: 16 65
+            @ 'String parameter: "' + name + '" must have a value.' ids: 17 66
+        return value ids: 18 67
+      m notEmptyBody ids: 19 68
+        var value = this.optionalBody() ids: 20 69
+        if wizzi.verify.isEmpty(value) ids: 21 70
+          _ this.error ids: 22 71
+            @ 'The body must be not empty.' ids: 23 72
+        return value ids: 24 73
+      m optional ids: 25 74
+        param qb ids: 26 75
+        param name ids: 27 76
+        var value ids: 28 77
+        if qb === 'query' ids: 29 78
+          set value = this.req.query[name] ids: 30 79
+        elif qb === 'params' ids: 31 80
+          set value = this.req.params[name] ids: 32 81
+        else  ids: 33 82
+          set value = this.req.body[name] ids: 34 83
+        return value ids: 35 84
+      m optionalBody ids: 36 85
+        return this.req.body ids: 37 86
+      m error ids: 38 87
+        param message ids: 39 88
+        if !this.errors ids: 40 89
+          set this.errors = [] ids: 41 90
+        _ this.errors.push(message) ids: 42 91
+      m sendErrors ids: 43 92
+        param res ids: 44 93
+        _ res.send ids: 45 94
+          {  ids: 46 95
+            @ code 999 ids: 47 96
+            @ error this.errors ids: 48 97
+    set md.paramsCheck = paramsCheck ids: 49 98

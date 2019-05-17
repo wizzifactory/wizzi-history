@@ -1,0 +1,81 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import util ids: undefined undefined
+    var wizzi = require('wizzi') ids: undefined undefined
+    var restParamsCheck = require('./restparamscheck') ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    set md.paramsCheck ids: undefined undefined
+      function  ids: undefined undefined
+        param req ids: undefined undefined
+        return new restParamsCheck.paramsCheck(req) ids: undefined undefined
+    set md.sendError ids: undefined undefined
+      function  ids: undefined undefined
+        param res ids: undefined undefined
+        param err ids: undefined undefined
+        param options ids: undefined undefined
+        set options = options || {} ids: undefined undefined
+        set code = options.code || 999 ids: undefined undefined
+        var errEmit = err ids: undefined undefined
+        delete errEmit.__is_error ids: undefined undefined
+        if options.format === 'string' ids: undefined undefined
+          if typeof err !== 'string' ids: undefined undefined
+            set err = util.inspect(err, { depth: null }) ids: undefined undefined
+          set errEmit ids: undefined undefined
+            _ wizzi.verify.replaceAll ids: undefined undefined
+              @ err ids: undefined undefined
+              @ '\n' ids: undefined undefined
+              @ '<br>' ids: undefined undefined
+        _ res.setHeader('Content-Type', 'application/json') ids: undefined undefined
+        _ res.send ids: undefined undefined
+          _ JSON.stringify ids: undefined undefined
+            {  ids: undefined undefined
+              @ code code ids: undefined undefined
+              @ error errEmit ids: undefined undefined
+            @ null ids: undefined undefined
+            @ 4 ids: undefined undefined
+    set md.sendSuccess ids: undefined undefined
+      function  ids: undefined undefined
+        param res ids: undefined undefined
+        param status ids: undefined undefined
+        param data ids: undefined undefined
+        param options ids: undefined undefined
+        set options = options || {} ids: undefined undefined
+        set code = options.code || 0 ids: undefined undefined
+        var resultEmit = data ids: undefined undefined
+        delete status.__is_success ids: undefined undefined
+        if options.format === 'string' ids: undefined undefined
+          if result ids: undefined undefined
+            if typeof result !== 'string' ids: undefined undefined
+              set result = util.inspect(result, { depth: null }) ids: undefined undefined
+            set resultEmit ids: undefined undefined
+              _ wizzi.verify.replaceAll ids: undefined undefined
+                @ result ids: undefined undefined
+                @ '\n' ids: undefined undefined
+                @ '<br>' ids: undefined undefined
+        _ res.setHeader('Content-Type', 'application/json') ids: undefined undefined
+        _ res.send ids: undefined undefined
+          _ JSON.stringify ids: undefined undefined
+            {  ids: undefined undefined
+              @ code code ids: undefined undefined
+              @ status status ids: undefined undefined
+              @ data resultEmit ids: undefined undefined
+            @ null ids: undefined undefined
+            @ 4 ids: undefined undefined
+    set md.sendResult ids: undefined undefined
+      function  ids: undefined undefined
+        param res ids: undefined undefined
+        param err ids: undefined undefined
+        param result ids: undefined undefined
+        param options ids: undefined undefined
+        if err ids: undefined undefined
+          return  ids: undefined undefined
+            _ sendError ids: undefined undefined
+              @ res ids: undefined undefined
+              @ err ids: undefined undefined
+              @ options ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ sendSuccess ids: undefined undefined
+              @ res ids: undefined undefined
+              @ result ids: undefined undefined
+              @ options ids: undefined undefined

@@ -1,0 +1,36 @@
+﻿$group
+
+	$include wizzi-site-meta
+
+	$global
+		var gLinkPrefix = currentSubPage == null ? '' : '../';
+		var gcurrentPage = currentPage;
+		var gcurrentSubPage = currentSubPage;
+		if (currentPage === 'Documentation' || currentPage === 'Code') {
+			l_hasSubPages = true;
+		}
+
+	head
+		css https://fonts.googleapis.com/css?family=Roboto
+		css sanitize.css
+		css ${gLinkPrefix}styles/main.css
+		$if currentSubPage == null
+			css ${gLinkPrefix}styles/${currentPage.toLowerCase()}.css
+		$else
+			css ${gLinkPrefix}styles/${currentPage.toLowerCase()}-${currentSubPage.toLowerCase()}.css
+		$hook styles
+	
+	body
+		$if currentSubPage == null
+			class ${currentPage}
+		$else
+			class ${currentPage}-${currentSubPage}
+		
+		$include wizzi-navigation
+		
+		$hook
+		
+		$*
+		js ${gLinkPrefix}jquery-3.2.1.js
+		*$
+		js ${gLinkPrefix}wizzifactory.js

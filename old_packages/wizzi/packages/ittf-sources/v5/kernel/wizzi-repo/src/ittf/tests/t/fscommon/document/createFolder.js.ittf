@@ -1,0 +1,44 @@
+﻿$group
+
+	describe folder creation
+
+		it-async should create a folder
+			_ doc.createFolder
+				@ 'c:/my/starters/darvin'
+				f_cb_done( f )
+					log 'should create a folder', err, f
+					tobe_number( f.insertedCount, 1 )
+
+		$*
+		it-async should verify that folder exists
+			_ doc.isFolder
+				@ 'c:/my/starters/darvin'
+				f_cb_done( f )
+					log 'should verify that folder exists', err, f
+					tobe_true( f )
+
+		it-async should retrieve a folder
+			_ doc.getFolder
+				@ 'c:/my/starters'
+				f_cb_done( f )
+					log 'should retrieve a folder', f
+					tobe_number( f.kind, 0 )
+					tobe_string( f.path, c:/my/starters )
+
+		it-async should delete a folder
+			_ doc.deleteFolder
+				@ 'c:/my/starters/darvin'
+				f_cb_done( f )
+					log 'should delete a folder', err, f
+					tobe_true( f.deleted )
+					tobe_number( f.n, 1 )
+					tobe_number( f.ok, 1 )
+
+		it-async should verify that folder does not exists
+			_ doc.isFolder
+				@ 'c:/my/starters/darvin'
+				f_cb_done( f )
+					log 'should verify that folder does not exists', f
+					tobe_false( f )
+		*$
+

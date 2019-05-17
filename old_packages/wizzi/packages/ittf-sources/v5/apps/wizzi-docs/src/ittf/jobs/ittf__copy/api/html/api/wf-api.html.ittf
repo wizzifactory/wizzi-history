@@ -1,0 +1,213 @@
+﻿html
+
+	$
+		var currentPage = 'Api'
+		var currentSubPage = null;
+		var type = {};
+
+	wizzi-site-layout-compile()
+
+		$append styles
+			css api-styles.css
+
+		$include misc
+		$include alternative
+		$include cb
+		$include info
+		$include object
+		$include array
+		$include type
+
+		- main content markup
+
+		main
+			id mc-wrapper
+			$if l_hasSubPages
+				class mc-wrapper-layout-sub
+			$else
+				class mc-wrapper-layout
+
+			input
+				type checkbox
+				id mc-toggle-toc
+
+			input
+				type checkbox
+				id mc-toggle-toc-close
+				onchange mc_toggle_toc_Close()
+
+			. mc-frame
+
+				. mc-frame-bar
+					h1 Api
+						class mc-sidebar-left-title
+					h1
+						label &times;
+							for mc-toggle-toc-close
+							class mc-label-toggle-close
+				nav
+					class mc-sidebar-left
+			
+					ul
+						$foreach api in wfsystem.apis
+							li
+								a ${api.wzName}
+									href #${api.id}
+									class mc-item-link
+								label &nbsp; ${api.wzName}
+									for mc-toggle-api-${api.id}
+									class mc-label-toggle
+
+				. mc-content
+
+					div
+				
+						$foreach api in wfsystem.apis
+							input
+								type checkbox
+								id mc-toggle-api-${api.id}
+								onchange m_toggleChanged()
+
+						$foreach api in wfsystem.apis
+							. mc-pane mc-pane-api-${api.id}
+
+								h1 ${api.wzName}
+									@ name ${api.wzName}
+									@ id ${api.id}
+
+								$if api.extends
+									div
+										class api-sub-1
+										span extends&nbsp;
+										span
+											a ${api.extends}
+												href #${api.extends}
+								div
+									class api-sub-1
+									span ${api.kind} API
+									$if api.implementation
+										span , ${api.implementation.type}
+										$if api.implementation.path
+											span , source path: ${api.implementation.path}
+										$if api.implementation.standardPath
+											span , source standard path: ${api.implementation.standardPath}
+
+								$_ comments
+									$@ api
+									$@ 0
+									$@ 'api'
+			
+								$if api.interface
+									$ var type = api.interface;
+									$_ buildup_type
+										$@ 'Interface'
+										$@ api
+										$@ type
+									hr
+								$if api.type
+									$ var type = api.type;
+									$_ buildup_type
+										$@ 'Type'
+										$@ api
+										$@ type
+
+
+		script
+			module
+				kind jsfile
+
+				function m_toggleChanged
+					var el_toc = document.querySelector("input[id='mc-toggle-toc']")
+					var el_contents = document.querySelectorAll("input[id^='mc-toggle-api-']")
+					var seenTrue = false
+					foreach el in el_contents
+						if el.checked
+							set seenTrue = true
+					set el_toc.checked = seenTrue
+
+				function mc_toggle_toc_Close
+					var el_toc = document.querySelector("input[id='mc-toggle-toc']")
+					var el_contents = document.querySelectorAll("input[id^='mc-toggle-api-']")
+					foreach el in el_contents
+						set el.checked = false
+					set el_toc.checked = false
+
+$*
+html
+
+	$
+		var currentPage = 'Api'
+		var currentSubPage = null;
+		var type = {};
+
+	wizzi-site-layout-compile()
+
+		$append styles
+			css api-styles.css
+
+		$include misc
+		$include alternative
+		$include cb
+		$include info
+		$include object
+		$include array
+		$include type
+
+		html/nav_sidebar()
+			section
+				id main-toc
+				class toc
+
+				h3 Contents:
+				ol
+					$foreach api in wfsystem.apis
+						li 
+							a ${api.wzName}
+								href #${api.id}
+
+		div
+			class main-content
+			$foreach api in wfsystem.apis
+
+				h1 ${api.wzName}
+					@ name ${api.wzName}
+					@ id ${api.id}
+				
+				$if api.extends
+					div
+						class api-sub-1
+						span extends&nbsp;
+						span
+							a ${api.extends}
+								href #${api.extends}
+				div
+					class api-sub-1
+					span ${api.kind} API
+					$if api.implementation
+						span , ${api.implementation.type}
+						$if api.implementation.path
+							span , source path: ${api.implementation.path}
+						$if api.implementation.standardPath
+							span , source standard path: ${api.implementation.standardPath}
+
+				$_ comments
+					$@ api
+					$@ 0
+					$@ 'api'
+			
+				$if api.interface
+					$ var type = api.interface;
+					$_ buildup_type
+						$@ 'Interface'
+						$@ api
+						$@ type
+					hr
+				$if api.type
+					$ var type = api.type;
+					$_ buildup_type
+						$@ 'Type'
+						$@ api
+						$@ type
+
+
+*$

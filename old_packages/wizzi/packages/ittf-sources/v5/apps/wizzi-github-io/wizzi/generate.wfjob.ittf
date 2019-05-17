@@ -1,0 +1,250 @@
+﻿wfjob wizzifactory-github-io
+	
+	$include app-options
+	
+	$
+		var ittf_root_folder   = path.join(__dirname, 'ittf', 'root');
+		var ittf_src           = path.join(__dirname, 'ittf', 'src');
+		var ittf_images        = path.join(__dirname, 'ittf', 'images');
+		var ide_folder         = 'C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/ttech/javascript/controls/treeview/step_1';
+		var repl_1_folder      = 'C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/ttech/wizzi/play/repl_1';
+		var cheatsheets_folder = 'C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/docs/cheatsheets';
+		var cs_meta_folder     = 'C:/My/wizzi/v5/apps/wizzi-studio/dist/server/data/models/cheatsheets';
+		var js_plugin_folder   = 'C:/My/wizzi/v5/plugins/wizzi-js/dist';
+		var core_plugin_folder = 'C:/My/wizzi/v5/plugins/wizzi-core/dist';
+		var meta_plugin_folder = 'C:/My/wizzi/v5/plugins/wizzi-meta/dist';
+		var web_plugin_folder  = 'C:/My/wizzi/v6/plugins/wizzi-web/dist';
+		var dest_folder        = path.resolve(__dirname, '..', 'dist');
+		var sheets = [
+			'css',
+			'html',
+			'ittf',
+			'js',
+			'json',
+			'jswizzi',
+			'md',
+			'scss',
+			'svg',
+			'ts',
+			'vtt',
+			'vue',
+			'xml'
+		];
+
+	$foreach sheet in sheets
+		model cs-${sheet}
+			schema ittf
+			src ${cs_meta_folder}/${sheet}/index.meta.ittf
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+		$include wfjob/any_json
+		$include wfjob/any_text
+		$include wfjob/any_html
+		$include wfjob/any_md
+
+		$include wfjob/.gitignore
+		$include wfjob/.babelrc
+
+	line src
+		cwd-folder ${ittf_src}
+		dest-folder ${dest_folder}/src
+
+		$include wfjob/any_js
+		$include wfjob/any_json
+		$include wfjob/any_css
+		
+		$include wfjob/any_svg
+		$include wfjob/any_plain_scss
+
+	line ide
+		cwd-folder ${ide_folder}
+		dest-folder ${dest_folder}/ide
+
+		artifact index_js
+			src index.js.ittf
+			schema js
+			generator js/module
+			extension js
+
+		artifact index_css
+			src index.css.ittf
+			schema css
+			generator css/document
+			extension css
+
+		artifact index_html
+			src index.html.ittf
+			schema html
+			generator html/document
+			extension html
+
+		wfjob/any_plain( js
+		wfjob/any_plain( map
+
+	line repl_1
+		cwd-folder ${repl_1_folder}
+		dest-folder ${dest_folder}/repl_1
+
+		artifact index_js
+			src index.js.ittf
+			schema js
+			generator js/module
+			extension js
+
+		artifact index_css
+			src index.css.ittf
+			schema css
+			generator css/document
+			extension css
+
+		artifact index_html
+			src index.html.ittf
+			schema html
+			generator html/document
+			extension html
+
+	line cheatsheets
+		cwd-folder ${cheatsheets_folder}
+		dest-folder ${dest_folder}/cheatsheets
+
+		artifact index.github.io.html
+			src index.github.io.html.ittf
+			$$ src index.html.ittf
+			schema html
+			dest-path index.html
+			generator html/document
+			extension html
+		
+		artifact index_css
+			src style.css.ittf
+			schema css
+			generator css/document
+			extension css
+
+		$foreach sheet in sheets
+			artifact wizzischema_${sheet}_html
+				src wizzischema.html.ittf
+				schema html
+				generator html/document
+				extension html
+				dest-path ${sheet}.html
+				model-ref cs-${sheet}
+					export-name cs
+					transformer cheatsheet/preprint
+			artifact wizzischema_${sheet}_json
+				src wizzischema.json.ittf
+				schema json
+				generator json/document
+				extension json
+				dest-path ${sheet}.json
+				model-ref cs-${sheet}
+					export-name cs
+					transformer cheatsheet/preprint
+
+	line jsschemas
+		cwd-folder ${js_plugin_folder}/lib/wizzi/models
+		dest-folder ${dest_folder}/schemas
+
+		artifact js-schema.g.json
+			src js-schema.g.json
+			extension json
+
+	line webschemas
+		cwd-folder ${web_plugin_folder}/lib/wizzi/models
+		dest-folder ${dest_folder}/schemas
+
+		artifact css-schema.g.json
+			src css-schema.g.json
+			extension json
+
+		artifact html-schema.g.json
+			src html-schema.g.json
+			extension json
+
+		artifact graphql-schema.g.json
+			src graphql-schema.g.json
+			extension json
+
+		artifact md-schema.g.json
+			src md-schema.g.json
+			extension json
+
+		artifact scss-schema.g.json
+			src scss-schema.g.json
+			extension json
+
+		artifact vtt-schema.g.json
+			src vtt-schema.g.json
+			extension json
+
+		artifact vue-schema.g.json
+			src vue-schema.g.json
+			extension json
+
+	line coreschemas
+		cwd-folder ${core_plugin_folder}/lib/wizzi/models
+		dest-folder ${dest_folder}/schemas
+
+		artifact wfschema-schema.g.json
+			src wfschema-schema.g.json
+			extension json
+
+		artifact wfjob-schema.g.json
+			src wfjob-schema.g.json
+			extension json
+
+	line metaschemas
+		cwd-folder ${meta_plugin_folder}/lib/wizzi/models
+		dest-folder ${dest_folder}/schemas
+
+		artifact docs-schema.g.json
+			src docs-schema.g.json
+			extension json
+
+		artifact wfsystem-schema.g.json
+			src wfsystem-schema.g.json
+			extension json
+
+		artifact wfpackage-schema.g.json
+			src wfpackage-schema.g.json
+			extension json
+
+		artifact wfstudio-schema.g.json
+			src wfstudio-schema.g.json
+			extension json
+
+	line images
+		cwd-folder ${ittf_images}
+		dest-folder ${dest_folder}/images
+		
+		$include wfjob/any_svg
+		wfjob/any_plain( gif
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref src
+		line-ref ide
+		line-ref repl_1
+		line-ref cheatsheets
+		line-ref jsschemas
+		line-ref webschemas
+		line-ref coreschemas
+		line-ref metaschemas
+		line-ref images
+		$*
+		line-ref root
+		line-ref src
+		line-ref ide
+		line-ref repl_1
+		line-ref cheatsheets
+		line-ref jsschemas
+		line-ref webschemas
+		line-ref coreschemas
+		line-ref metaschemas
+		line-ref images
+		*$

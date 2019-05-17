@@ -1,0 +1,17 @@
+﻿$group
+	
+	h3 Conditional operator
+	
+	$
+		var ctests = [];
+		function ct(label, result) {
+			ctests.push({ label: label, result: result });
+		}
+		ct( '3 == 3 ? 1 : 0', 3 == 3 ? 1 : 0 );
+		ct( 'true ? 5 : 2', true ? 5 : 2 );
+
+	$foreach test in ctests
+		p ${test.label} = ${test.result}
+	br
+	br
+

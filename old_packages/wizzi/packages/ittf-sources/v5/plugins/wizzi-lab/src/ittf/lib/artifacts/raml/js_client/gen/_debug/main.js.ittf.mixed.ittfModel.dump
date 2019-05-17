@@ -1,0 +1,28 @@
+  module  ids: 1 29
+    kind jsfile ids: 2 30
+    var util = require('util') ids: 3 31
+    var path = require('path') ids: 4 32
+    var wizzi = require('wizzi') ids: 5 33
+    var md = module.exports = {} ids: 6 34
+    var myname = 'raml.js.client.main' ids: 7 35
+    set md.gen ids: 8 36
+      function  ids: 9 37
+        param model ids: 10 38
+        param ctx ids: 11 39
+        param callback ids: 12 40
+        var ittfDocumentPath = path.join(__dirname, 'ittf', 'js-client.js.ittf') ids: 13 41
+        var jsContext ids: 14 42
+          {  ids: 15 43
+            @ raml model ids: 16 44
+            @ request ids: 17 45
+              {  ids: 18 46
+        _ wizzi.jsModule ids: 19 47
+          @ ittfDocumentPath ids: 20 48
+          @ jsContext ids: 21 49
+          function  ids: 22 50
+            param err ids: 23 51
+            param result ids: 24 52
+            if err ids: 25 53
+              throw new Error(err) ids: 26 54
+            _ ctx.w(result) ids: 27 55
+            _ callback(null, ctx) ids: 28 56

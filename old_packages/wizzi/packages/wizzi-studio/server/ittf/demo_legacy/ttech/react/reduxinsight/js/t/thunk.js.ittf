@@ -1,0 +1,17 @@
+﻿$group
+	
+	function thunkMiddleware
+		param options
+		var dispatch = options.dispatch
+		var getState = options.getState
+		return
+			function
+				param next
+				return
+					function
+						param action
+						iif typeof action === 'function'
+							then
+								_ action(dispatch, getState)
+							else
+								_ next(action)

@@ -1,0 +1,30 @@
+﻿$group
+
+	it-async should get an mTreeBrick param values
+		_ MTreeBrickProvider.createFromUri
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'params_1.tests.ittf'
+			{
+				@ productionContext mocks.ProductionContext
+				@ mTreeBuildUpContext
+					{
+				@ __ittfDocumentStore store
+			f_cb_test( provider )
+				tobe_object( provider )
+				var mTree = provider.getPrimaryMTreeBrick()
+				tobe_object( mTree )
+				var expected = 'alfa, num:integer|9, ok:boolean|true, when:date|2015-8-23, cost:float|9.99'
+				tobe_string_value( mTree.$params, expected )
+				var prms
+					_ mTree.calcParamValues('pluto')
+				tobe_array(prms, 5)
+				tobe_string(prms[0].value, pluto)
+				tobe_number(prms[1].value, 9)
+				tobe_true(prms[2].value)
+				set expected = new Date(2015, 7, 23)
+				tobe_eql(prms[3].value, expected)
+				tobe_number(prms[4].value, 9.99)
+				_ done

@@ -1,0 +1,73 @@
+﻿module ${name}
+	$params name
+	kind jsfile
+	+
+	#
+		# EXAMPLE: ${name}
+	+
+	var myname = '${name}'
+	+
+	import util
+	import path
+	var stringify = require('json-stringify-safe')
+	var vfile = require('wizzi-utils').vfile
+	# defaults to filesystem
+	var fsfile = vfile()
+	var verify = require('wizzi-utils').verify
+	$hook imports
+	+
+	$hook
+
+	function heading1
+		param text
+		log ''
+		log '********************************************************************************'
+		log '** Example ${name} - ' + text
+		log '********************************************************************************'
+		log ''
+	
+	function heading2
+		param text
+		log ''
+		log '--------------------------------------------------------------------------------'
+		log '-- Example ${name} - ' + text
+		log '--------------------------------------------------------------------------------'
+		log ''
+
+	function printArray
+		param name
+		param arr
+		param fields
+		log '* array ' + name + ' : '
+		foreach item in arr
+			log '  {', i
+			var keys = fields || Object.keys(item)
+			foreach k in keys
+				_ printValue
+					@ k
+					@ item[k]
+
+	function printValue
+		param k
+		param v
+		if verify.isNotEmpty(v)
+			var lines
+				_ verify.splitLines
+					@ v
+					{
+						@ numbered true
+			if lines.length === 1
+				log '   ', k, ':', lines[0].text
+			else
+				for var i=0; i<lines.length; i++
+					if i === 0
+						log '   ', k, ':', lines[0].numFmt, lines[0].text
+					else
+						log '   ', spaces(k.length+1), ' ', lines[i].numFmt, lines[i].text
+		else
+			log '   ', k, ':', v
+
+	function spaces
+		param len
+		return new Array(len).join(' ')
+

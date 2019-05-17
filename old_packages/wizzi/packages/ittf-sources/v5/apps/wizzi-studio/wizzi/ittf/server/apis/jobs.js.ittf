@@ -1,0 +1,43 @@
+﻿api_async( Jobs )
+	+
+	$include filefy
+	$include makeWizziFactoryCreator
+	$include jobs/index
+	+
+	$append imports
+		import assert
+		import chalk
+		import fs
+		import temp
+		$include hashImports
+		$include hashFunctions
+		var wizziTools = require("wizzi-tools")
+		var wizziScripts = require("wizzi-scripts")
+		var scriptManager = new wizziScripts.Manager()
+
+	$append methods
+
+		var consoleApi = makeConsoleApi(config)
+		var batchesApi = makeBatchesApi(config)
+		var gistsApi = makeGistsApi(config)
+		var snippetsApi = makeSnippetsApi(config)
+		set api.jobs
+			{
+				@ getConsoleScriptList consoleApi.getConsoleScriptList
+				@ getConsoleScript consoleApi.getConsoleScript
+				@ saveConsoleScript consoleApi.saveConsoleScript
+				@ runConsoleScript consoleApi.runConsoleScript
+				@ getBatchList batchesApi.getBatchList
+				@ getBatch batchesApi.getBatch
+				@ getGistList gistsApi.getGistList
+				@ getGist gistsApi.getGist
+				@ createGist gistsApi.createGist
+				@ updateGist gistsApi.updateGist
+				@ deleteGist gistsApi.deleteGist
+				@ duplicateGist gistsApi.duplicateGist
+				@ renameGist gistsApi.renameGist
+				@ executeGist gistsApi.executeGist
+				@ executeNodeJsGist gistsApi.executeNodeJsGist
+				@ wizzifySnippet snippetsApi.wizzifySnippet
+
+		return callback(null, api)

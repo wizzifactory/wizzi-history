@@ -1,0 +1,127 @@
+﻿module wizzi-repo.json.jsonFsimpl
+	kind jsfile
+
+	#
+		# Implements the `fsimpl` interface for a json backed file system.
+
+	var
+		decl FsJson = require('./fs/fsjson')
+		decl Document = require('./fs/document')
+		decl jsonUriParser = require('wizzi-utils').uriParser
+
+	class JsonFsImpl
+
+		ctor
+			param jsonFsData
+			set this.classType = 'wizzi-repo.json.JsonFsImpl'
+			set this.jsonFsData = jsonFsData
+			set this.fsJson = null
+			set this.jsonDb = null
+		
+		m db
+			callback
+			if this.jsonDb == null
+				r_cb_wz_err( InvalidOperation, db )
+					@ 'Connection not opened. The method `open` must be called before calling `db`.'
+			else
+				return
+					_ callback
+						@ null
+						@ this.jsonDb
+		
+		m open
+			options-callback
+			var that = this
+			if this.jsonDb
+				return
+					_ callback
+						@ null
+						@ this.jsonDb
+			set this.fsJson
+				iif options.fsJson
+					then options.fsJson
+					else
+						iif options.jsonFsData
+							then
+								new FsJson(options.jsonFsData)
+							else
+								new FsJson(this.jsonFsData)
+			set that.jsonDb = new Document(this.fsJson)
+			# log '***** json connected'
+			return
+				_ callback
+					@ null
+					@ that.jsonDb
+
+		m close
+			if this.jsonDb
+				# log '***** json start closing'
+				set this.jsonDb = null
+				# log '***** json closed'
+
+		jsonFsimpl/m( stat )
+			_ jsonDb.stat
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		jsonFsimpl/m( lstat )
+			_ jsonDb.stat
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		jsonFsimpl/m( readFile, options )
+			_ jsonDb.readFile
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+		
+		jsonFsimpl/m( writeFile, content, options )
+			_ jsonDb.writeFile
+				@ parsedUri.internalPath
+				@ content
+				f_cb( result )
+					_ callback(null, result)
+
+		jsonFsimpl/m( readdir, options )
+			_ jsonDb.getDir
+				@ parsedUri.internalPath
+				@ options
+				f_cb( result )
+					var dir = []
+					foreach item in result
+						# log 'wizzi-repo.json.jsonFsimpl.readdir.parsedUri.internalPath, item', parsedUri.internalPath, item
+						_ dir.push(item.basename)
+					_ callback(null, dir)
+		
+		jsonFsimpl/m( mkdir, options )
+			_ jsonDb.createFolder
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		jsonFsimpl/m( unlink )
+			_ jsonDb.deleteFile
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		m createWriteStream
+			string documentUri
+			checked_call_return( parsedUri )
+				_ jsonUriParser
+					@ documentUri
+					@ this.jsonBaseFolder
+			return
+				_ this.jsonDb.createWriteStream
+					@ parsedUri.internalPath
+
+		m toJson
+			param callback
+			_ this.fsJson.toJson
+				f_cb_test( json )
+					return
+						_ callback(null, json)
+
+	set module.exports = JsonFsImpl

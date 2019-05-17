@@ -1,0 +1,48 @@
+﻿$group
+
+	m writeDocument
+		{ id
+		string content
+			optional
+		callback
+			
+		var that = this
+
+		_ this.readDocument
+			@ id
+			f_cb_no_err( f )
+				log 'wizzi-repo.mongodb.FsMongo.writeDocument.readDocument.f', id, f, content === f
+				if err && err.code == 'MongoRepoError'
+				else
+					if f === content
+						log 'wizzi-repo.mongodb.FsMongo.writeDocument not modified', f
+						r_cb()
+							{
+								@ code 'DOCUMENT_NOT_MODIFIED'
+						
+				log 'wizzi-repo.mongodb.FsMongo.writeDocument.readDocument.upsert', id, content, lastModified
+				var lastModified = new Date()
+				_ that.db.collection(DOCUMENTS).replaceOne
+					{
+						@ _id id
+					{
+						@ _id id
+						@ content content
+						@ lastModified lastModified
+					{
+						@ upsert true
+					f_cb( r )
+						delete r.connection
+						delete r.message
+						log 'wizzi-repo.mongodb.FsMongo.writeDocument.r', r
+						var modified = r.modifiedCount + r.upsertedCount
+						_ assert.equal(1, modified)
+						_ that.updateItemLastModified
+							@ id
+							@ lastModified
+							f_cb( rUpd )
+								# log 'wizzi-repo.mongodb.FsMongo.writeDocument upd', rUpd
+								r_cb()
+									{
+										@ code 'DOCUMENT_WRITTEN'
+										@ item r.ops[0]

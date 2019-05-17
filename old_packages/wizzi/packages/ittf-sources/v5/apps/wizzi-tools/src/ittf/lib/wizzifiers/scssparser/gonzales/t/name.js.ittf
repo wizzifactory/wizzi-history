@@ -1,0 +1,9 @@
+﻿$group
+	$params name, type|none
+
+	# log 't/name.node.${name}, value: ', node.${name}, ', type: string'
+	if typeof node.${name} !== 'undefined'
+		set ret.name = node.${name}.toString()
+		set ret.textified = ret.name
+	# log 't/name ittf.ret', ret
+	

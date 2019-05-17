@@ -1,0 +1,59 @@
+﻿r-component( Editor )
+
+	$include app-options
+
+	$append imports
+		import MonacoEditor from 'react-monaco-editor'
+
+		let jBeautify = require('js-beautify').js
+		let hBeautify = require('js-beautify').html
+
+		let exampleJS = 'function StringStream(string) {  this.pos = 0;  this.string = string; }  StringStream.prototype = {  done: function() {return this.pos >= this.string.length;},  peek: function() {return this.string.charAt(this.pos);},  next: function() {  if (this.pos < this.string.length)  return this.string.charAt(this.pos++);  },  eat: function(match) {  var ch = this.string.charAt(this.pos);  if (typeof match == "string") var ok = ch == match;  else var ok = ch && match.test ? match.test(ch) : match(ch);  if (ok) {this.pos++; return ch;}  },  eatWhile: function(match) {  var start = this.pos;  while (this.eat(match));  if (this.pos > start) return this.string.slice(start, this.pos);  },  backUp: function(n) {this.pos -= n;},  column: function() {return this.pos;},  eatSpace: function() {  var start = this.pos;  while (/s/.test(this.string.charAt(this.pos))) this.pos++;  return this.pos - start;  },  match: function(pattern, consume, caseInsensitive) {  if (typeof pattern == "string") {  function cased(str) {return caseInsensitive ? str.toLowerCase() : str;}  if (cased(this.string).indexOf(cased(pattern), this.pos) == this.pos) {  if (consume !== false) this.pos += str.length;  return true;  }  }  else {  var match = this.string.slice(this.pos).match(pattern);  if (match && consume !== false) this.pos += match[0].length;  return match;  }  } };'
+		let exampleHTML = '<header class="site-header"><div class="container"><h1>Example #2</h1><nav role="navigation" class="site-navigation"><ul><li><a href="#">Link</a></li><li><a href="#">Link</a></li><li><a href="#">Link</a></li></ul></nav></div></header><section role="main" class="container"><img src="http://placehold.it/1400x400/ff694d/f6f2eb" class="banner-image"/><div class="grid-row col-3"><div class="grid-unit"><img src="http://placehold.it/650x300/ff694d/f6f2eb"/><p>Nullam quis risus eget urna mollis ornare vel eu leo. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor.</p></div><div class="grid-unit"><img src="http://placehold.it/650x300/ff694d/f6f2eb"/><p>Nullam quis risus eget urna mollis ornare vel eu leo. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor.</p></div><div class="grid-unit"><img src="http://placehold.it/650x300/ff694d/f6f2eb"/><p>Nullam quis risus eget urna mollis ornare vel eu leo. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor.</p></div></div></section>'
+		let exampleCustomModeStrings = 'only "double quotes" will be tokenized\n\nsee http://marijnhaverbeke.nl/blog/codemirror-mode-system.html'
+		
+		var sampleValues
+			{
+				@ 'javascript'
+					{
+						@ value jBeautify(exampleJS, {indent_size: 2})
+				@ 'xml'
+					{
+						@ value hBeautify(exampleHTML, {indent_size: 2})
+				@ 'strings'
+					{
+						@ value exampleCustomModeStrings
+
+	state
+		@ value sampleValues['xml'].value
+
+	did-update
+		prop mode
+
+		log 'Editor.did-update mode', mode
+		
+		_ this.setState
+			{
+				@ value sampleValues[mode].value
+
+	render
+
+		$foreach p in app.Editor.stateProps
+			prop ${p.name}
+
+		log 'Editor.render mode', mode
+
+		return
+			< MonacoEditor
+				value {this.state.value}
+				@ width 800
+				@ height 600
+				@ theme vs-dark
+				@ language {mode}
+				@ options
+					{
+						@ selectOnLineNumbers true
+				@ onChange
+					=>
+						param newValue, e
+						log 'value', {value}

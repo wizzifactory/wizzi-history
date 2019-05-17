@@ -1,0 +1,172 @@
+﻿module
+	kind es6
+
+	_ require("@babel/register")
+
+	# _ sql
+	_ graphqlStarter
+
+	# _ dataWz1Seed
+	
+	function sql
+		var mysql = require('mysql')
+
+		var connection
+			_ mysql.createConnection
+				{
+					@ host 'localhost'
+					@ user 'root'
+					@ password 'my++++01'
+					@ database 'todoapp'
+
+		_ connection.connect
+			f_cb_no_err( result )
+				if err
+					return console.error('error connecting: ' + err.message)
+
+				log 'Connected to the MySQL server.'
+
+				_ connection.end
+					f_cb_no_err( result )
+						if err
+							return console.error('error closing connection: ' + err.message)
+
+						log 'Connection to the MySQL server closed.'
+
+						_ pools
+
+	function pools
+		var pool
+			_ mysql.createPool
+				{
+					@ connectionLimit 5
+					@ host 'localhost'
+					@ user 'root'
+					@ password 'my++++01'
+					@ database 'todoapp'
+
+		_ pool.getConnection
+			f_cb( connection
+				# execute query
+
+				# To close a connection and remove it from the pool
+				_ connection.release()
+
+				_ pool.end
+					f_cb_no_err( result )
+						if err
+							return console.error('error closing connection pool: ' + err.message)
+
+						log 'Connection pool to the MySQL server closed.'
+
+						_ createTable
+
+	function createTable
+
+		_ exec
+			[
+				@ 'create table if not exists todos('
+				@ '  id int primary key auto_increment,'
+				@ '  title varchar(255)not null,'
+				@ '  completed tinyint(1) not null default 0'
+				@ ')'
+				._ join('\n')
+			f_cb_no_err()
+
+		_ exec
+			[
+				@ "INSERT INTO todos(title,completed)"
+				@ "  VALUES('Learn how to insert a new row',true)"
+				._ join('\n')
+			f_cb_no_err()
+
+	function exec
+		param sql
+		param callback
+		_ getConnection
+			f_cb( conn )
+				_ conn.query
+					@ sql
+					function
+						param err
+						param results
+						param fields
+						if err
+							return console.log(err.message)
+						log 'sql', sql
+						log 'results', results
+						log 'fields', fields
+						_ conn.end
+							f_cb_no_err()
+								if err
+									log err
+								r_cb()
+
+	function getConnection
+		param db
+		param callback
+		if typeof callback === 'undefined'
+			set callback = db
+			set db = undefined
+		set db = db || 'todoapp'
+		var conn
+			_ mysql.createConnection
+				{
+					@ host 'localhost'
+					@ user 'root'
+					@ password 'my++++01'
+					@ database db
+
+		_ conn.connect
+			f_cb( result )
+				r_cb( conn )
+
+
+
+	function dataWz1
+		const MySqlDb = require('./database/mysqldb')
+		const DataWz1 = require('./database/dataWz1')
+		var mySqlDb = new MySqlDb('wz1')
+		var dataWz1 = DataWz1(mySqlDb)
+		_ dataWz1.dba.createTableCategory
+			f_cb_no_err(result)
+				log 'createTableCategory', err, result
+				_ dataWz1.dba.createTableOption
+					f_cb_no_err(result)
+						log 'createTableOption', err, result
+
+	function dataWz1Seed
+		const MySqlDb = require('./database/mysqldb')
+		const DataWz1 = require('./database/dataWz1')
+		var mySqlDb = new MySqlDb('wz1')
+		var dataWz1 = DataWz1(mySqlDb)
+		_ dataWz1.dba.seedCategory
+			f_cb_no_err(result)
+				log 'seedCategory', err, result
+				_ dataWz1.dba.seedOption
+					f_cb_no_err(result)
+						log 'seedOption', err, result
+
+	function graphqlStarter
+		const { GraphQLServer } = require('graphql-yoga')
+		const { typeDefs, resolvers, db } = require('./myGraphql')
+		
+		log 'resolvers', resolvers
+		const server
+			new GraphQLServer
+				{
+					@ typeDefs
+					@ resolvers
+					@ context
+						=>
+							param req
+							# log 'new GraphQLServer', db
+							return
+								{
+									@ ...req
+									@ db
+		
+		_ server.start
+			=>
+				param { port }
+				log `Server is running on http://localhost:${port}`

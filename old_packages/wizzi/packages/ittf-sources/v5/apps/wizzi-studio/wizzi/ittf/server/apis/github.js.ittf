@@ -1,0 +1,24 @@
+﻿api_async( Github )
+	
+	$append imports
+		import assert
+		import chalk
+		$include hashImports
+		$include hashFunctions
+		var wizziTools = require("wizzi-tools")
+		var gitapi = require("../lib/gitapi")
+
+	+
+	$include makeWizziFactoryCreator
+	$include github/index
+	+
+	
+	$append methods
+
+		var clonesApi = makeClonesApi(config)
+		set api.github
+			{
+				@ getClone clonesApi.getClone
+				@ wizzifyClone clonesApi.wizzifyClone
+
+		return callback(null, api)

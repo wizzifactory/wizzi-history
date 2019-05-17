@@ -1,0 +1,139 @@
+module
+    kind react
+    
+	# Selects saveSnippetsOption checkbox element
+    let saveSnippetsOption = document.getElementById('save_snippets')
+    
+    function setCheckbox
+        param data
+        param checkbox
+        set checkbox.checked = data
+     
+    # Gets saveSnippets value from storage
+    _ chrome.storage.local.get
+        [ 
+            @ 'saveSnippets'
+        function 
+            param data
+            _ setCheckbox(data.saveSnippets, saveSnippetsOption)
+            set saveSnippetsOption.checked = data.saveSnippets === true
+    
+	# Saves users prefrences
+    function storeOption
+        param optionName
+        param optionValue
+        let data = {}
+        set data[optionName] = optionValue
+        _ chrome.storage.local.set(data)
+     
+    set saveSnippetsOption.onchange =
+        function 
+            _ storeOption('saveSnippets', saveSnippetsOption.checked)
+    
+	let savedSnippets = document.getElementById('savedSnippets')
+    let deleteButton = document.getElementById('delete_button')
+    set deleteButton.onclick =
+        function 
+            let blankArray = []
+            _ chrome.storage.local.set
+                { 
+                    @ 'savedSnippets' blankArray
+            _ location.reload
+    
+	# Gets saved downloaded snippets from storage
+    _ chrome.storage.local.get
+        @ 'savedSnippets'
+        function 
+            param element
+            let pageSnippets = element.savedSnippets
+            _ pageSnippets.forEach
+                function 
+                    param snippet
+                    let newSnippet = document.createElement('div')
+					set newSnippet.className = 'snippet-pane'
+					
+					let leftPane = document.createElement('div')
+					set leftPane.className = 'snippet-left-pane'
+					let buttonUpload = document.createElement('button')
+					set buttonUpload.textContent = 'Upload'
+					let buttonWizzify = document.createElement('button')
+					set buttonWizzify.textContent = 'Wizzify'
+					
+					let rightPane = document.createElement('div')
+					set rightPane.className = 'snippet-right-pane'
+					let snippetPre = document.createElement('pre')
+                    let snippetCode = document.createElement('code')
+					set snippetCode.textContent = snippet.code
+					
+					let ittfPane = document.createElement('div')
+					set ittfPane.className = 'snippet-ittf-pane'
+					let ittfPre = document.createElement('pre')
+                    let ittfCode = document.createElement('code')
+					set ittfCode.textContent = snippet.ittf
+
+					# Add an onclick event listener
+                    _ buttonUpload.addEventListener
+                        @ 'click'
+                        function
+							_ upload_snippet
+								@ snippet
+								@ ittfPane
+                    
+					_ buttonWizzify.addEventListener
+                        @ 'click'
+                        function
+
+                    # Append all elements to options page
+					_ savedSnippets.appendChild(newSnippet)
+                    _ newSnippet.appendChild(leftPane)
+					_ newSnippet.appendChild(rightPane)
+					_ newSnippet.appendChild(ittfPane)
+					_ leftPane.appendChild(buttonUpload)
+					_ leftPane.appendChild(buttonWizzify)
+					_ rightPane.appendChild(snippetPre)
+					_ snippetPre.appendChild(snippetCode)
+					_ ittfPane.appendChild(ittfPre)
+					_ ittfPre.appendChild(ittfCode)
+
+	async-function upload_snippet
+		param snippet
+		param ittfPane
+
+		let name = prompt("Snippet name")
+		let tags = prompt("Snippet tags")
+		
+		if name
+			var payload
+				{
+					@ name snippet.url + '_' + name
+					@ tags tags
+					@ code snippet.code
+					@ ittf snippet.ittf
+					@ mime 'js'
+			_ fetch
+				@ 'http://localhost:3014/api/crawl/snippet'
+				{
+					@ method 'put'
+					{ headers
+						@ 'Accept' 'application/json'
+						@ 'Content-Type' 'application/json'
+					@ body JSON.stringify(payload)
+				._ then
+					=>
+						param response
+						return response.json()
+				._ then
+					=>
+						param json
+						log 'exec_with_payload.response.json', json
+						if json.error
+							set ittfPane.style.color = '#f00'
+						else
+							set ittfPane.style.color = '#0f0'
+				._ catch
+					function 
+						param err
+						log err.message || JSON.stringify({ err: err.error }, null, 2)
+						set ittfPane.style.color = '#f00'
+
+

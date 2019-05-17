@@ -1,0 +1,95 @@
+﻿$group
+	+
+	decl_rsf( snippet_cloud, update )
+	+
+	# thunk.withExtraArgument
+	wz-const updateSnippet
+		=>
+			param schemaName
+			param snippetName
+			param snippetCode
+			param options
+			
+			# defaults
+			set options = options || { cloudUpdate: true }
+			
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					const archive
+						_ extraArgument.WizziArchive.getPooledSnippetArchive
+							@ schemaName
+							@ snippetName
+					
+					_ archive.setSnippetCode
+						@ snippetName
+						@ snippetCode
+					
+					if options.cloudUpdate
+						_ dispatch
+							_ cloudUpdateSnippet
+								@ schemaName
+								@ snippetName
+								@ snippetCode
+
+	+
+	# thunk.withExtraArgument
+	wz-const cloudUpdateSnippet
+		=>
+			param schemaName
+			param snippetName
+			param snippetCode
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					const archive
+						_ extraArgument.WizziArchive.getPooledSnippetArchive
+							@ schemaName
+							@ snippetName
+					
+					_ dispatch
+						_ requestCloudUpdateSnippet
+					
+					_ archive.scheduleServerUpload
+						@ schemaName + '-' + snippetName
+						f_cb_no_err( message )
+							if err
+								return
+									_ dispatch
+										_ failCloudUpdateSnippet
+											@ err
+							_ dispatch
+								_ completeCloudUpdateSnippet
+									@ message
+
+	
+	wz-const requestCloudUpdateSnippet
+		=>
+			log 'store.actions.requestCloudUpdateSnippet.request'
+			return
+				{
+					@ type UPDATE_SNIPPET_CLOUD_REQUEST
+	
+	wz-const failCloudUpdateSnippet
+		=>
+			param error
+			log 'store.actions.failCloudUpdateSnippet', error
+			return
+				{
+					@ type UPDATE_SNIPPET_CLOUD_FAILURE
+					@ error error
+	
+	wz-const completeCloudUpdateSnippet
+		=>
+			param message
+			log 'store.actions.completeCloudUpdateSnippet', message
+			return
+				{
+					@ type UPDATE_SNIPPET_CLOUD_SUCCESS
+					@ message message

@@ -1,0 +1,22 @@
+﻿$group
+
+	+
+	var store
+	+
+	before-async
+		$*
+		_ del.sync
+			_ path.join
+				@ __dirname
+				@ 'dummy'
+				@ '**'
+			{
+				@ force true
+		*$
+		set store = new mocks.IttfDocumentStore()
+		_ store.init
+			{
+				@ storeKind 'filesystem'
+			f_cb_no_err( notUsed )
+				_ done
+

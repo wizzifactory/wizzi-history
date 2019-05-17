@@ -1,0 +1,399 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source https://github.com/isaacs/node-glob/blob/master/sync.js
+	# license (ISC) 
+
+    set module.exports = globSync
+
+    set globSync.GlobSync = GlobSync
+    var rp = require('./fs.realpath')
+    var minimatch = require('./minimatch')
+    var Minimatch = minimatch.Minimatch
+    var util = require('util')
+    var path = require('path')
+    var assert = require('assert')
+    var isAbsolute = require('./path-is-absolute')
+    var common = require('./common.js')
+    var alphasort = common.alphasort
+    var alphasorti = common.alphasorti
+    var setopts = common.setopts
+    var ownProp = common.ownProp
+    var childrenIgnored = common.childrenIgnored
+    var isIgnored = common.isIgnored
+    
+	function globSync
+        param pattern
+		param virtFS
+        param options
+        
+		# log 'typeof (options), arguments.length', typeof (options), arguments.length
+		if (typeof (options) === 'function') || (arguments.length === 4)
+            throw 
+                new TypeError(('callback provided to sync glob\n' + 'See: https://github.com/isaacs/node-glob/issues/167'))
+        return 
+            new GlobSync(pattern, virtFS, options)
+                . found
+    
+	class GlobSync
+		ctor
+			param pattern
+			param virtFS
+			param options
+			if !pattern
+				throw 
+					new Error('must provide pattern')
+			if (typeof (options) === 'function') || (arguments.length === 4)
+				throw 
+					new TypeError('callback provided to sync glob\n' + 'See: https://github.com/isaacs/node-glob/issues/167')
+			if !this instanceof GlobSync
+				return 
+					new GlobSync(pattern, virtFS, options)
+			set this.virtFS = virtFS
+			_ setopts(this, pattern, options)
+			if this.noprocess
+				return this
+			var n = this.minimatch.set.length
+			# log 'pattern,this.minimatch.set', pattern, this.minimatch.set
+			set this.matches = new Array(n)
+			for var i = 0; i < n; i++
+				_ this._process
+					@ this.minimatch.set[i]
+					@ i
+					@ false
+			_ this._finish()
+    
+		m _finish
+			_ assert(this instanceof GlobSync)
+			if this.realpath
+				var self = this
+				_ this.matches.forEach
+					function 
+						param matchset
+						param index
+						var set = self.matches[index] = Object.create(null)
+						for var p in matchset
+							try 
+								set p = self._makeAbs(p)
+								var real
+									_ rp.realpathSync
+										@ p
+										@ self.realpathCache
+								set set[real] = true
+							catch er
+								if er.syscall === 'stat'
+									set set[self._makeAbs(p)] = true
+								else 
+									throw er
+			_ common.finish(this)
+    
+		m _process
+			param pattern
+			param index
+			param inGlobStar
+			_ assert(this instanceof GlobSync)
+			var n = 0
+			while typeof (pattern[n]) === 'string'
+				set n++
+			var prefix
+			switch n
+				case pattern.length
+					_ this._processSimple
+						_ pattern.join('/')
+						@ index
+					return 
+				case 0
+					set prefix = null
+					break 
+				default 
+					set prefix = pattern.slice(0, n).join('/')
+					break 
+			var remain = pattern.slice(n)
+			# log 'pattern, remain', pattern, '-- / --', remain
+			var read
+			if prefix === null
+				set read = '.'
+			elif (isAbsolute(prefix) || isAbsolute(pattern.join('/')))
+				if (! (prefix) || ! (isAbsolute(prefix)))
+					set prefix = ('/' + prefix)
+				set read = prefix
+			else 
+				set read = prefix
+			var abs = this._makeAbs(read)
+			if childrenIgnored(this, read)
+				return 
+			var isGlobStar = remain[0] === minimatch.GLOBSTAR
+			# log 'read, abs, remain, isGlobStar', read, abs, remain, isGlobStar
+			if isGlobStar
+				_ this._processGlobStar(prefix, read, abs, remain, index, inGlobStar)
+			else 
+				_ this._processReaddir(prefix, read, abs, remain, index, inGlobStar)
+    
+		m _processReaddir
+			param prefix
+			param read
+			param abs
+			param remain
+			param index
+			param inGlobStar
+			var entries = this._readdir(abs, inGlobStar)
+			if ! (entries)
+				return 
+			var pn = remain[0]
+			var negate = !!this.minimatch.negate
+			var rawGlob = pn._glob
+			var dotOk = (this.dot || (rawGlob.charAt(0) === '.'))
+			var matchedEntries
+				[ 
+			for var i = 0; i < entries.length; i++
+				var e = entries[i]
+				if ((e.charAt(0) !== '.') || dotOk)
+					var m
+					if negate && ! (prefix)
+						set m = ! (e.match(pn))
+					else 
+						set m = e.match(pn)
+					if m
+						_ matchedEntries.push(e)
+			var len = matchedEntries.length
+			if len === 0
+				return 
+			if ((((remain.length === 1) && ! (this.mark))) && ! (this.stat))
+				if ! (this.matches[index])
+					set this.matches[index] = Object.create(null)
+				for var i = 0; i < len; i++
+					var e = matchedEntries[i]
+					if prefix
+						if prefix.slice(- (1)) !== '/'
+							set e = (((prefix + '/')) + e)
+						else 
+							set e = (prefix + e)
+					if ((e.charAt(0) === '/') && ! (this.nomount))
+						set e = path.join(this.root, e)
+					_ this._emitMatch(index, e)
+				return 
+			_ remain.shift()
+			for var i = 0; i < len; i++
+				var e = matchedEntries[i]
+				var newPattern
+				if prefix
+					set newPattern = [prefix, e]
+				else 
+					set newPattern = [e]
+				_ this._process
+					_ newPattern.concat(remain)
+					@ index
+					@ inGlobStar
+    
+		m _emitMatch
+			param index
+			param e
+			if isIgnored(this, e)
+				return 
+			var abs = this._makeAbs(e)
+			if this.mark
+				set e = this._mark(e)
+			if this.absolute
+				set e = abs
+			if this.matches[index][e]
+				return 
+			if this.nodir
+				var c = this.cache[abs]
+				if ((c === 'DIR') || Array.isArray(c))
+					return 
+			set this.matches[index][e] = true
+			if this.stat
+				_ this._stat(e)
+    
+		m _readdirInGlobStar
+			param abs
+			if this.follow
+				return this._readdir(abs, false)
+			var entries
+			var lstat
+			var stat
+			try 
+				set lstat = this.virtFS.lstatSync(abs)
+			catch er
+				if er.code === 'ENOENT'
+					return null
+			var isSym = lstat && lstat.isSymbolicLink()
+			set this.symlinks[abs] = isSym
+			if ((! (isSym) && lstat) && ! (lstat.isDirectory()))
+				set this.cache[abs] = 'FILE'
+			else 
+				set entries = this._readdir(abs, false)
+			return entries
+    
+		m _readdir
+			param abs
+			param inGlobStar
+			var entries
+			if inGlobStar && ! (ownProp(this.symlinks, abs))
+				return this._readdirInGlobStar(abs)
+			if ownProp(this.cache, abs)
+				var c = this.cache[abs]
+				if (! (c) || (c === 'FILE'))
+					return null
+				if Array.isArray(c)
+					return c
+			try 
+				return 
+					_ this._readdirEntries
+						@ abs
+						_ this.virtFS.readdirSync(abs)
+			catch er
+				_ this._readdirError(abs, er)
+				return null
+    
+		m _readdirEntries
+			param abs
+			param entries
+			if ! (this.mark) && ! (this.stat)
+				for var i = 0; i < entries.length; i++
+					var e = entries[i]
+					if abs === '/'
+						set e = (abs + e)
+					else 
+						set e = (((abs + '/')) + e)
+					set this.cache[e] = true
+			set this.cache[abs] = entries
+			return entries
+    
+		m _readdirError
+			param f
+			param er
+			switch er.code
+				case 'ENOTSUP'
+				case 'ENOTDIR'
+					var abs = this._makeAbs(f)
+					set this.cache[abs] = 'FILE'
+					if abs === this.cwdAbs
+						var error
+							new Error((((er.code + ' invalid cwd ')) + this.cwd))
+						set error.path = this.cwd
+						set error.code = er.code
+						throw error
+					break 
+				case 'ENOENT'
+				case 'ELOOP'
+				case 'ENAMETOOLONG'
+				case 'UNKNOWN'
+					set this.cache[this._makeAbs(f)] = false
+					break 
+				default 
+					set this.cache[this._makeAbs(f)] = false
+					if this.strict
+						throw er
+					if ! (this.silent)
+						_ console.error('glob error', er)
+					break 
+    
+		m _processGlobStar
+			param prefix
+			param read
+			param abs
+			param remain
+			param index
+			param inGlobStar
+			var entries = this._readdir(abs, inGlobStar)
+			if ! (entries)
+				return 
+			var remainWithoutGlobStar = remain.slice(1)
+			var gspref
+				iif prefix
+					then 
+						[ 
+							@ prefix
+					else 
+						[ 
+			var noGlobStar = gspref.concat(remainWithoutGlobStar)
+			_ this._process(noGlobStar, index, false)
+			var len = entries.length
+			var isSym = this.symlinks[abs]
+			if isSym && inGlobStar
+				return 
+			for var i = 0; i < len; i++
+				var e = entries[i]
+				if ((e.charAt(0) === '.') && ! (this.dot))
+					continue 
+				var instead
+					_ gspref.concat
+						@ entries[i]
+						@ remainWithoutGlobStar
+				_ this._process(instead, index, true)
+				var below
+					_ gspref.concat
+						@ entries[i]
+						@ remain
+				_ this._process(below, index, true)
+    
+		m _processSimple
+			param prefix
+			param index
+			var exists = this._stat(prefix)
+			if ! (this.matches[index])
+				set this.matches[index] = Object.create(null)
+			if ! (exists)
+				return 
+			if ((prefix && isAbsolute(prefix)) && ! (this.nomount))
+				var trail = /[\/\\]$/.test(prefix)
+				if prefix.charAt(0) === '/'
+					set prefix = path.join(this.root, prefix)
+				else 
+					set prefix = path.resolve(this.root, prefix)
+					if trail
+						set prefix += '/'
+			if process.platform === 'win32'
+				set prefix = prefix.replace(/\\/g, '/')
+			_ this._emitMatch(index, prefix)
+    
+		m _stat
+			param f
+			var abs = this._makeAbs(f)
+			var needDir = f.slice(- (1)) === '/'
+			if f.length > this.maxLength
+				return false
+			if ! (this.stat) && ownProp(this.cache, abs)
+				var c = this.cache[abs]
+				if Array.isArray(c)
+					set c = 'DIR'
+				if (! (needDir) || (c === 'DIR'))
+					return c
+				if (needDir && (c === 'FILE'))
+					return false
+			var exists
+			var stat = this.statCache[abs]
+			if ! (stat)
+				var lstat
+				try 
+					set lstat = this.virtFS.lstatSync(abs)
+				catch er
+					if (er && (((er.code === 'ENOENT') || (er.code === 'ENOTDIR'))))
+						set this.statCache[abs] = false
+						return false
+				if lstat && lstat.isSymbolicLink()
+					try 
+						set stat = this.virtFS.statSync(abs)
+					catch er
+						set stat = lstat
+				else 
+					set stat = lstat
+			set this.statCache[abs] = stat
+			var c = true
+			if stat
+				set c = stat.isDirectory() ? 'DIR' : 'FILE'
+			set this.cache[abs] = (this.cache[abs] || c)
+			if (needDir && (c === 'FILE'))
+				return false
+			return c
+    
+		m _mark
+			param p
+			return common.mark(this, p)
+    
+		m _makeAbs
+			param f
+			return common.makeAbs(this, f)

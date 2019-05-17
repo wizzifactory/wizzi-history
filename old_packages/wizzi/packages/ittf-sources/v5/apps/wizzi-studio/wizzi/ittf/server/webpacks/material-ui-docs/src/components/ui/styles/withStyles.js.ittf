@@ -1,0 +1,74 @@
+﻿module
+	kind react
+
+	import { Component } from 'react'
+	import PropTypes from 'prop-types'
+	import warning from 'warning'
+	import hoistNonReactStatics from 'hoist-non-react-statics'
+	import wrapDisplayName from 'recompose/wrapDisplayName'
+	import createEagerFactory from 'recompose/createEagerFactory'
+	import customPropTypes from '../utils/customPropTypes'
+
+	# Link a style sheet with a component.
+		# It does not modify the component passed to it;
+		# instead, it returns a new, with a `classes` property.
+		# This classes object contains the name of the class names injected in the DOM.
+	
+	const withStyles
+		=>
+			param styleSheet
+			return
+				=>
+					param BaseComponent
+					const factory = createEagerFactory(BaseComponent)
+
+					class Style
+						super Component
+					
+						p Naked = BaseComponent
+							static
+
+						m render
+							const { classes: classesProp, innerRef, ...other } = this.props;
+							let classes;
+							const renderedClasses = this.context.styleManager.render(styleSheet)
+							if classesProp
+								set classes
+									{
+										@ ...renderedClasses
+										_ ...Object.keys(classesProp).reduce
+											=>
+												param acc, key
+												_ warning
+													@ renderedClasses[key]
+													@ `Material-UI: the key \`${key}\` provided to the classes property object is not implemented.`
+												set acc[key] = `${renderedClasses[key]} ${classesProp[key]}`
+												return acc
+											{
+							else
+								set classes = renderedClasses
+
+							return
+								_ factory
+									{
+										@ classes
+										@ ref innerRef
+										@ ...other
+
+					set Style.propTypes
+						{
+							@ classes PropTypes.object
+							@ innerRef PropTypes.func
+
+					set Style.contextTypes
+						{
+							@ styleManager customPropTypes.muiRequired
+				
+					_ hoistNonReactStatics(Style, BaseComponent)
+
+					if process && process.env && process.env.NODE_ENV !== 'production'
+						set Style.displayName = wrapDisplayName(BaseComponent, 'withStyles')
+
+					return Style
+
+	export default withStyles

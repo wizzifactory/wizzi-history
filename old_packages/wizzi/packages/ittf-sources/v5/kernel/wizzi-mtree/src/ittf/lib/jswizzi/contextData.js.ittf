@@ -1,0 +1,192 @@
+﻿module wizzi-mtree.jswizzi.ContextData
+	kind jsfile
+
+	import util
+	var errors = require('./errors')
+	var f_verify = require('./functions/verify')
+
+	class ContextData
+
+		ctor
+			param kind
+			param brickKey
+			set this.kind = kind
+			set this.brickKey = brickKey
+			_ this.clear
+		
+		m clear
+			set this.$freezed = false
+            set this.functions
+                { 
+            set this.values
+                { 
+            set this.declares
+                { 
+            set this.functionsStack
+                [ 
+            set this.valuesStack
+                [ 
+            set this.declaresStack
+                [ 
+            set this.builtInFunctions
+                { 
+            set this.builtInObjects
+                { 
+
+		m $freeze
+			set this.$freezed = true
+
+		m declare
+			param name
+			param init
+			if name == '$' && this.$freezed
+				throw new errors.InvalidVariableNameError('The variable "$" cannot be declared on the global context after it has been freezed.')
+			set this.declares[name] = true
+			$* VIA 22/10/18 see this issue http://localhost:3014/ittf/repo/stefi/studio/wizzi/issues/jswizzimissingvalues/index.html.ittf
+			if typeof (init) !== 'undefined'
+				set this.values[name] = init
+			*$
+			set this.values[name] = init
+			
+			# TODO debug only
+			if f_verify.isObject(init) == false
+				# log 'ContextData declare', name, init, 'kind', this.kind, this.brickKey
+		
+		m undeclare
+			param name
+			if this.declares[name] == true
+				delete this.declares[name]
+			if this.values[name] == true
+				delete this.values[name]
+
+		m isDeclared
+			param name
+			# log 'wizzi-mtree.contextData.isDeclared', name, this.declares[name]
+			if this.declares[name] == true
+				return true
+			elif this.declaresStack.length > 0
+				backeach item in this.declaresStack 
+					# log 'wizzi-mtree.contextData.isDeclared for', name, this.declaresStack.length, item[name]
+					if item[name] == true
+						return true
+				return false
+			else
+				return false
+
+		m setValue
+			param name
+			param value
+			if name == '$' && this.$freezed
+				throw new errors.InvalidVariableNameError('The variable "$" cannot be set on the global context after it has been freezed.')
+			_ this.declare(name, value)
+
+			# TODO debug only
+			if f_verify.isObject(value) == false
+				# log 'ContextData setValue', name, value, 'kind', this.kind, this.brickKey
+
+		m setValues
+			param values
+			set values = (values || {})
+			for var k in values
+				_ this.declare
+					@ k
+					@ values[k]
+		
+		# Set value only if name is declared
+		m put
+			param name
+			param value
+			if this.declares[name] === true
+				set this.values[name] = value
+				return true
+			else
+				return false
+
+		m getValue
+			param name
+			if this.declares[name] == true
+				# log 'wizzi-mtree.contextData.getValue found for', name, this.values[name], this.declaresStack.length
+				return this.values[name]
+			elif this.declaresStack.length > 0
+				backeach item in this.declaresStack 
+					if item[name] == true
+						# log 'wizzi-mtree.contextData.getValue found for', name, this.declaresStack.length
+						return this.valuesStack[i][name]
+			else
+				# log 'wizzi-mtree.contextData.getValue not found for', name, this.kind, this.brickKey
+				return undefined
+		
+		m getValues
+			# TODO what if the stack has items ???
+			return this.values
+
+		m getSettableValues
+			# TODO what if the stack has items ???
+			var ret = {}
+			for var k in this.values
+				if k != '$'
+					set ret[k] = this.values[k]
+			return ret
+
+		m declareFunction
+			param name
+			param fn
+			set this.functions[name] = fn
+		
+		m getFunction
+			param name
+			if this.functions[name]
+				return this.functions[name]
+			elif this.functionsStack.length > 0
+				backeach item in this.functionsStack 
+					if item[name]
+						return item[name]
+			else
+				# undefined
+				return this.functions[name]
+
+		m setBuiltInFunction
+			param name
+			param value
+			set this.builtInFunctions[name] = value
+
+		m getBuiltInFunction
+			param name
+			return this.builtInFunctions[name]
+
+		m push
+            _ this.functionsStack.push(this.functions)
+            _ this.valuesStack.push(this.values)
+            _ this.declaresStack.push(this.declares)
+			set this.functions = {}
+			set this.values = {}
+			set this.declares = {}
+
+		m pop
+			if this.functionsStack.length > 0
+				set this.functions = this.functionsStack.pop()
+				set this.values = this.valuesStack.pop()
+				set this.declares = this.declaresStack.pop()
+
+		m dumpValues
+			log 'Dump context value for debug', this.kind
+			for var k in this.declares
+				if f_verify.isObject(this.values[k]) == false
+					log k, this.values[k]
+
+		m getDeclareddumpValues
+			log 'Dump context value for debug', this.kind
+			for var k in this.declares
+				if f_verify.isObject(this.values[k]) == false
+					log k, this.values[k]
+
+		m getDeclaredInfo
+			var ret = []
+			for var k in this.declares
+				if f_verify.isObject(this.values[k]) == false
+					_ ret.push(k + '=' + this.values[k])
+				else
+					_ ret.push(k + '= [object]')
+			return ret.join(', ')
+
+	set module.exports = ContextData

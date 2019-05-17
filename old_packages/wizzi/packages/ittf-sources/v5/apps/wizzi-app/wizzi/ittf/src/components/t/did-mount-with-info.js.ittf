@@ -1,0 +1,9 @@
+﻿$group
+	$params titleVar|title
+
+	did-mount
+		prop pageInfo
+		if pageInfo && pageInfo.title !== (${titleVar})
+			_ pageInfo.setTitle
+				@ ${titleVar}
+		$hook

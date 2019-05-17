@@ -1,0 +1,42 @@
+﻿module
+	kind es6
+
+	const resolvers = require('./resolvers')
+	const MySqlDb = require('./database/mysqldb')
+	const DataWz1 = require('./database/dataWz1')
+
+	var mySqlDb = new MySqlDb('wz1')
+	var dataWz1 = DataWz1(mySqlDb)
+
+	log 'resolvers 3', resolvers
+
+	var typeDefs
+		[
+			@ 'type Query {'
+			@ '    categories: [Category!]!'
+			@ '    options: [Option!]!'
+			@ '    info: String'
+			@ '}'
+			@ 'type Mutation {'
+			@ '    createOption(name : String, type : String, format : String, value : String) : Option'
+			@ '}'
+			@ 'type Category {'
+			@ '    id: Int'
+			@ '    name: String'
+			@ '}'
+			@ 'type Option {'
+			@ '    id: Int'
+			@ '    name: String'
+			@ '    type: String'
+			@ '    format: String'
+			@ '    value: String'
+			@ '}'
+			._ join('\n')
+
+	const MyGraphql
+		{
+			@ typeDefs typeDefs
+			@ resolvers resolvers
+			@ db dataWz1
+	
+	set module.exports = MyGraphql

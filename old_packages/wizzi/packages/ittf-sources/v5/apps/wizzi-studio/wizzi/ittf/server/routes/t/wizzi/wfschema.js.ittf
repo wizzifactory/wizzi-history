@@ -1,0 +1,22 @@
+﻿$group
+
+	get( /api/wizzi/wfschema )
+		
+		check-params( )
+			not-empty( query , hash )
+			optional( query , packageName )
+			optional( query , version )
+			
+
+		_ wizziApi.generateWfSchema
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ packageName packageName
+				@ version version
+
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

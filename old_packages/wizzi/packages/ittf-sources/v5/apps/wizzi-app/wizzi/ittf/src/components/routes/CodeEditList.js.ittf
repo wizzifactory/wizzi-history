@@ -1,0 +1,126 @@
+﻿r-component( CodeEditList
+
+	$
+		var opt = {};
+		opt.headerHeight = 65;
+		opt.footerHeight = 60;
+		opt.footerCommandsHeight = 40;
+		opt.splitterResizerSize = 25;
+		opt.splitterResizerDiff = opt.headerHeight + opt.footerHeight + 4;
+		opt.gray_1_tb = '#020302';
+		opt.gray_2_aside = '#0d0a10';
+		opt.gray_3_ehead = '#0a0a0a';
+		opt.gray_4_page = '#1d1f20';
+
+	$append imports
+		import Splitter from '../mui/Splitter'
+		import CodeBeautify from '../mui/CodeBeautify'
+		import CodeEditor from '../mui/CodeEditor'
+		const jsSnippet
+			[
+				@ "import Lowlight from 'react-lowlight'"
+				@ ""
+				@ "// Load any languages you want to use"
+				@ "// (see https://github.com/isagalaev/highlight.js/tree/master/src/languages)"
+				@ "import js from 'highlight.js/lib/languages/javascript"
+				@ ""
+				@ "// Then register them with lowlight"
+				@ "Lowlight.registerLanguage('js', js)"
+				@ ""
+				@ "ReactDOM.render(<Lowlight language='js' value='/* Code to highlight */' />,"
+				@ "  document.getElementById('target')"
+				@ ")"
+				._ join('\n')
+
+	style
+		
+		@ pageWrapper
+			{
+				@ width '100%'
+				@ height '100vh'
+				@ backgroundColor '${opt.gray_4_page}'
+				@ display 'flex'
+				@ flexDirection 'column'
+
+		@ workarea
+			{
+				@ flex '1 auto'
+				@ display 'flex'
+
+		@ editaside
+			{
+				@ width '30px'
+				@ backgroundColor '${opt.gray_2_aside}'
+				@ flex '0 1 auto'
+				@ height 'calc(100vh - 118px)'
+
+		@ editorbox
+			{
+				@ margin '.5vw .5vw'
+				@ flex '1 auto'
+				@ display 'flex'
+				@ flexDirection 'column'
+
+		@ editorHead
+			{
+				@ margin '4px'
+				@ backgroundColor '${opt.gray_3_ehead}'
+				@ height '40px'
+				@ width '100%'
+				@ display 'flex'
+				@ justifyContent 'flex-end'
+
+	state
+		@ codeSnippet jsSnippet
+		@ splitter1Sizes
+			{
+				@ primary 500
+				@ secondary 500
+
+	=> handleCodeChange
+		param value
+		_ this.setState
+			{
+				@ codeSnippet value
+
+	=> handleSplitter1Resize
+		param sizes
+		log 'handleSplitter1Resize', sizes
+		_ this.setState
+			{
+				@ splitter1Sizes sizes
+
+	render
+
+		prop classes
+
+		const { codeSnippet, splitter1Sizes } = this.state
+
+		const editOptions 
+			{
+
+		return
+
+			. {classes.pageWrapper}
+				. {classes.workarea}
+					< Splitter
+						@ split vertical
+						@ secondaryInitialSize { 500 }
+						@ primaryMinSize {100}
+						@ secondaryMinSize {100}
+						@ totalSize { splitter1Sizes.secondary } 
+						@ onResize { this.handleSplitter1Resize }
+						. {classes.editorbox}
+							. {classes.editorHead}
+							< CodeEditor 
+								@ theme 'vs-dark'
+								@ width { splitter1Sizes.primary }
+								@ height { splitter1Sizes.third }
+								@ value { codeSnippet }
+								@ options { editOptions }
+								@ onChange { this.handleCodeChange }
+						. {classes.editorbox}
+							. {classes.editorHead}
+							< CodeBeautify
+								@ language { 'js' }
+								@ codeSnippet { codeSnippet }

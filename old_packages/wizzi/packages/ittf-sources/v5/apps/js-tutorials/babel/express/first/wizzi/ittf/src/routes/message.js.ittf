@@ -1,0 +1,58 @@
+﻿module
+    kind es6
+
+    import 
+        @ Router
+        from 'express'
+    
+	const router = Router()
+    
+	_ router.get
+        @ '/'
+        async=> 
+            param req
+            param res
+            const messages
+                await 
+                    _ req.context.models.Message.find
+            return res.send(messages)
+    
+	_ router.get
+        @ '/:messageId'
+        async=> 
+            param req
+            param res
+            const message
+                await 
+                    _ req.context.models.Message.findById(req.params.messageId)
+            return res.send(message)
+    
+	_ router.post
+        @ '/'
+        async=> 
+            param req
+            param res
+            const message
+                await 
+                    _ req.context.models.Message.create
+                        { 
+                            @ text req.body.text
+                            @ user req.context.me.id
+            return res.send(message)
+    
+	_ router.delete
+        @ '/:messageId'
+        async=> 
+            param req
+            param res
+            const message
+                await 
+                    _ req.context.models.Message.findById(req.params.messageId)
+            let result = null
+            if message
+                set result =
+                    await 
+                        _ message.remove
+            return res.send(result)
+    
+	export-default router

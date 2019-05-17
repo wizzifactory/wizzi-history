@@ -1,0 +1,59 @@
+﻿$group
+	$params artifactName, contentType|@@null
+
+	if req.query.meta && req.query.meta === 'json'
+		_ ittfDocumentScanner.scan
+			@ filePath
+			{
+				@ rootFolder path.dirname(root)
+			f_cb_send_err( documentState, json )
+				return sendJSONStringified(res, documentState)
+						
+	elif req.query.meta && req.query.meta === 'html'
+		_ ittfDocumentScanner.scan
+			@ filePath
+			{
+				@ rootFolder path.dirname(root)
+			f_cb_send_err( documentState, json )
+				_ createWizziFactory
+					@ 'stefi'
+					@ 'admin'
+					{
+					f_cb_send_err( wf, json )
+						_ wf.loadModelAndGenerateArtifact
+							@ wizzi.config.get('meta-html-ittf-path')
+							{
+								{ modelRequestContext
+									{ mTreeBuildUpContext
+										@ wizzischema 'html'
+										@ path filePath
+										@ req req
+										@ ds documentState
+							@ 'html/document'
+							f_cb_send_err( rendered, json )
+								return res.send(rendered)
+	else
+		# log 'wizzi-studio/middleware/ittf creating wizzi factory for ' + filePath
+		_ contextLoader
+			@ filePath
+			@ req
+			f_cb_send_err( modelContext )
+				set modelContext.req = req
+				_ createWizziFactory
+					@ 'stefi'
+					@ 'admin'
+					{
+					f_cb_send_err( wf, json )
+						# log 'wizzi-studio/middleware/ittf created wizzi factory for ' + filePath
+						_ wf.loadModelAndGenerateArtifact
+							@ filePath
+							{
+								{ modelRequestContext
+									@ mTreeBuildUpContext modelContext
+								@ artifactRequestContext
+									{
+							@ '${artifactName}'
+							f_cb_send_err( rendered, json )
+								$if contentType != null
+									_ res.setHeader('content-type', '${contentType}')
+								return res.send(rendered)

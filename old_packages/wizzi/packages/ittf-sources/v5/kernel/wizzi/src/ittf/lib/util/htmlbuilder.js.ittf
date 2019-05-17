@@ -1,0 +1,129 @@
+﻿module
+	kind jsfile
+
+	var md = module.exports = {}
+
+	var WAIT_ATTR = 1
+	var WAIT_TEXT = 2
+
+	class HtmlBuilder
+		ctor
+			set this.stm = []
+			set this.indentValue = 0
+			set this.length = 0
+			set this.line = ''
+			set this.state = WAIT_TEXT
+			set this.lfPending = false
+			set this.noLF = false
+
+		m setNoLF
+			param value
+			set this.noLF = value
+
+		m openTag
+			param tag
+			param options
+			set options = options || {}
+			if this.state === WAIT_ATTR
+				_ this.write('>')
+			if options.inline
+				_ this.write('<' + tag)
+			else
+				if this.lfPending
+					_ this.w()
+				_ this.write('<' + tag)
+				_ this.indent()
+			set this.state = WAIT_ATTR
+
+		m writeAttribute
+			param name
+			param value
+			if value === null || typeof value === 'undefined'
+				_ this.write(' ' + name)
+			else
+				_ this.write(' ' + name + '="' + value + '"')
+
+		m writeText
+			param text
+			if (text || '').length > 0
+				if this.state === WAIT_ATTR
+					_ this.write('>')
+					set this.state = WAIT_TEXT
+				_ this.write(text)
+
+		m writePrettySpaces
+			param num
+			_ this.openTag('span', { inline: true })
+			_ this.writeAttribute('class', 'pnl')
+			_ this.writeSpaces(num)
+			_ this.closeTag('span', { inline: true })
+
+		m writePrettySpan
+			param text
+			param clazz
+			_ this.openTag('span', { inline: true })
+			_ this.writeAttribute('class', clazz)
+			_ this.writeText(text)
+			_ this.closeTag('span', { inline: true })
+
+		m writeSpaces
+			param num
+			_ this.writeText(spaces(num))
+
+		m closeTag
+			param tag
+			param options
+			set options = options || {}
+			if options.inline
+				if this.state === WAIT_ATTR
+					_ this.write(' />')
+				else
+					_ this.write('</' + tag + '>')
+			else
+				if this.state === WAIT_ATTR
+					_ this.write(' />')
+					set this.lfPending = true
+				else
+					_ this.w()
+					_ this.deindent()
+					_ this.w('</' + tag + '>')
+			set this.state = WAIT_TEXT
+	
+		m w
+			param text
+			if this.noLF
+				_ this.write(text)
+				return
+			var ind = spaces(this.indentValue * 4)
+			_ this.stm.push(ind + this.line + (text || ''))
+			set this.line = ''
+			set this.length++;
+
+		m write
+			param text
+			set this.line += text || ''
+
+		m indent
+			set this.indentValue++
+
+		m deindent
+			set this.indentValue = Math.max(0, this.indentValue -1)
+
+		m toLines
+			if this.line.length > 0
+				var save = this.noLF
+				set this.noLF = false
+				_ this.w()
+				set this.noLF = save
+			return this.stm
+
+		m toText
+			if this.line.length > 0
+				_ this.w()
+			return this.stm.join('\n');
+	
+	function spaces
+		param num
+		return Array(num + 1).join(" ")
+
+	set md.HtmlBuilder = HtmlBuilder

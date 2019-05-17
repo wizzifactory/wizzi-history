@@ -1,0 +1,37 @@
+﻿$group
+
+	function sendError
+		param res
+		param err
+		param options
+
+		set options = options || {}
+		var code = options.code || 999
+
+		var errEmit = err
+		delete errEmit.__is_error
+
+		if errEmit.stack && errEmit.stack.split
+			var stackArray = []
+			foreach line in errEmit.stack.split('\n')
+				_ stackArray.push('    ' + line)
+			set errEmit.stack = stackArray
+
+		if options.format === 'string'
+
+			if typeof err !== 'string'
+				set err = util.inspect(err, { depth: null })
+			set errEmit
+				_ wizzi.verify.replaceAll
+					@ err
+					@ '\n'
+					@ '<br>'
+
+		_ res.setHeader('Content-Type', 'application/json')
+		_ res.send
+			_ stringify
+				{
+					@ code code
+					@ error errEmit
+				@ null
+				@ 4

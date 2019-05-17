@@ -1,0 +1,66 @@
+﻿module
+	kind es6
+
+	import path from 'path'
+	import FbFsClient from './fbFsClient'
+	import UpdatesQueue from './updatesQueue'
+	import PathNames from './pathNames'
+	import { normalizeFile, normalizeFolder, encodeDocName, decodeDocName } from './pathNames'
+	import wizzi from 'wizzi'
+	import wizziUtils from 'wizzi-utils'
+	import LRU from 'lru-cache'
+
+	const examplesCache
+		_ LRU
+			{
+				@ max 100
+				@ length function (n, key) { return n.length }
+
+	const fragmentsCache
+		_ LRU
+			{
+				@ max 300
+				@ length function (n, key) { return Object.keys(n).length }
+
+	class WizziStore
+		ctor
+			param vfile
+			set this.vfile = vfile
+			set this.schemas = null
+			set this.examplesUpload = {}
+			set this.fragmentsUpload = {}
+			set this.fragmentsBatch = null
+			set this.fb = new FbFsClient()
+			set this.updatesQueue = new UpdatesQueue()
+			set this.pathNames = new PathNames()
+			set this.uploadDelay = 3 * 1000
+
+		$include ws/schemas
+		$include ws/examples
+		$include ws/batch_examples
+		$include ws/fragments
+		$include ws/batch_fragments
+		$include ws/wizzi
+
+		m scheduleCloudUpdate
+			if this.uploadTimer
+				_ clearTimeout(this.uploadTimer)
+				log 'WizziStore.scheduleCloudUpdate. Cleared previous schedule.', new Date()
+			const that = this
+			set this.uploadTimer
+				_ setTimeout
+					function
+						set this.uploadTimer = null
+						_ that.fb.batchFromUpdatesQueue
+							@ that.updatesQueue
+							f_cb()
+								log 'WizziStore.scheduleCloudUpdate. batchFromUpdatesQueue executed.', new Date()
+					@ that.uploadDelay
+
+	set WizziStore.createForFilesystem
+		function
+			# vfile() defaults to local filesystem
+			const vfile = wizziUtils.vfile() 
+			return new WizziStore(vfile)
+
+	export default WizziStore

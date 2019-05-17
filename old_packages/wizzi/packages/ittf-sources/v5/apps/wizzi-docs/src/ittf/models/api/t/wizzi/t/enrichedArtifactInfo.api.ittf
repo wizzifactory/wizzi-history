@@ -1,0 +1,14 @@
+﻿$group
+	$params oneOrManyArtifacts
+
+	{ enrichedArtifactInfo
+		# artifactInfo with genContext/s containing generated artifacts
+		api-ref wizzi.artifact.artifactInfo
+		[ genContexts
+			$if oneOrManyArtifacts === 'one'
+				# The array contains one single genContext.
+			$else
+				# The array contains one or many genContext.
+			{ genContext
+				api-ref wizzi.artifact.genContext
+				# Its in-memory buffer contains the artifact text.

@@ -1,0 +1,74 @@
+module
+	kind jsfile
+	var _ = require('lodash')
+	var codegen = require('wizzi-codegen')
+	var statement = codegen.jsStatement
+	var md = module.exports = {}
+	var myname = 'js.wziife.function'
+
+	set md.gen
+		function
+			param model
+			param ctx
+
+			var parameters
+				_ _.concat
+					[
+						@ '__'
+					@ model.paramNames
+
+			_ ctx.w('var ' + model.wzName + ' = (function(' + parameters.join(',') + ') {')
+
+			# constraints
+			_ ctx.indent()
+			_ generateParamConstraints
+				@ iife ? 'iife' : aster + name
+				@ model.constrainedParams
+				@ model.hasCallbackParam
+				@ model.hasOptionsCallbackParam
+				@ ctx
+				f_cb()
+			
+					foreach item in model.statements
+						_ statement.gen(item, ctx)
+			
+					var seen = false
+					_ ctx.w('return {')
+					foreach item in model.__wzItems.vars
+						if seen
+							_ ctx.w(',')
+						var ss = item.wzName.split(' ')
+						_ ctx.write('    ' + ss[0] + ': ' + ss[0])
+						set seen = true;
+					foreach item in model.__wzItems.consts
+						if seen
+							_ ctx.w(',')
+						var ss = item.wzName.split(' ')
+						_ ctx.write('    ' + ss[0] + ': ' + ss[0])
+						set seen = true;
+					foreach item in model.__wzItems.functions
+						if seen
+							_ ctx.w(',')
+						_ ctx.write('    ' + item.wzName + ': ' + item.wzName)
+						set seen = true;
+
+					foreach item in model.__wzItems.classes
+						if seen
+							_ ctx.w(',')
+						_ ctx.write('    ' + item.wzName + ': ' + item.wzName)
+						set seen = true;
+
+					if seen
+						_ ctx.w('')
+
+					_ ctx.w('};');
+			
+					_ ctx.deindent()
+
+					var args
+						_ _.concat
+							[
+								@ '__wz'
+							_ model.getArgs()
+			
+					_ ctx.w('})(' + args.join(',') + ');');

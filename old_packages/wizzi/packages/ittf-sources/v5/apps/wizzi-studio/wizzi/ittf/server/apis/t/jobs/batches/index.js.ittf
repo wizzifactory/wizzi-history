@@ -1,0 +1,11 @@
+﻿$group
+
+	function makeBatchesApi
+		param config
+
+		var paths = makePaths(config)
+
+		return
+			{
+				$include ./getBatch
+				$include ./getBatchList

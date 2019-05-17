@@ -1,0 +1,51 @@
+﻿$group
+	$params &obj2
+	
+	$
+		var obj3 = {};
+
+	$if obj2.properties.length > 0
+		table
+			$foreach prop in obj2.properties
+				$
+					obj3 = prop;
+				tr
+					td ${prop.wzName}
+						@ valign top
+					td 
+						@ valign top
+						span ${prop.type} 
+						$if prop.type === 'object' 
+							span {
+						$if prop.type === 'array' 
+							span [
+						table
+							$if prop.isPOJO
+								tr
+									td POJO
+							$if prop.defaultValue
+								tr
+									td default
+									td ${prop.defaultValue}
+							$if prop.isRequired
+								tr
+									td required
+							$if prop.iface
+								tr
+									td interface
+									td ${prop.iface}
+							$if prop.apiRef
+								tr
+									td api ref
+									td
+										a ${prop.apiRef}
+											href #${prop.apiRef}
+					
+							$if prop.type === 'object'
+								tr
+									td
+										./object3(&obj3)
+							$if prop.type === 'array'
+								tr
+									td
+										./array3(&obj3)

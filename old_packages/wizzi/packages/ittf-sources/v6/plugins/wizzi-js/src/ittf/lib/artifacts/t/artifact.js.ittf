@@ -1,0 +1,103 @@
+﻿module 
+	$params plugin, schema, artifactName, commands|@@null
+    kind jsfile
+
+	$
+		var cmds = commands ? commands.split(';') : [];
+		var noschemacheck = false;
+		var rootElement = schema;
+		for (var i=0; i<cmds.length; i++ ) {
+			var cmdParts = cmds[i].split('=');
+			if (cmdParts[0] == 'noschemacheck') {
+				noschemacheck = true;
+			}
+			else if (cmdParts[0] == 'rootElement') {
+				rootElement = cmdParts[1];
+			}
+		}
+    
+	var util = require('util')
+	var verify = require('wizzi-utils').verify
+	
+	$hook imports
+
+    +
+	var md
+        set module.exports =
+            { 
+	+
+    var myname = '${plugin}.artifacts.${schema}.${artifactName}.main'
+    +
+	set md.gen
+		function 
+			param model
+			param ctx
+			param callback
+			if typeof(callback) !== 'function'
+				throw
+					new Error
+						_ error 
+							@ 'InvalidArgument'
+							@ 'gen'
+							@ 'The callback parameter must be a function. Received: ' + callback
+			if verify.isObject(model) == false
+				return
+					_ callback
+						_ error 
+							@ 'InvalidArgument'
+							@ 'gen'
+							@ 'The model parameter must be an object. Received: ' + model
+			$if noschemacheck == false
+				if model.wzElement !== '${rootElement}'
+					log '${plugin}', 'artifact', 'model', model
+					return
+						_ callback
+							_ error
+								@ 'InvalidArgument'
+								@ 'gen'
+								@ 'Invalid model schema. Expected root element "${rootElement}". Received: ' + model.wzElement
+			#
+				return
+					_ callback
+						_ ctx.error('test', model)
+			try
+				$hook main
+			catch ex
+				return
+					_ callback(ex)
+			
+			function terminate_artifact
+				if ctx.artifactGenerationErrors.length > 0
+					return
+						_ callback(ctx.artifactGenerationErrors)
+				else
+					return
+						_ callback(null, ctx)
+
+	$hook
+
+	
+	#
+		# params
+		#   string code 
+		#     # the error name or number
+		#   string method
+		#   string message
+		#     # optional
+		#   { innerError
+		#     # optional
+	function error
+		param code
+		param method
+		param message
+		param innerError
+		return
+			_ verify.error
+				@ innerError
+				{
+					@ name ( verify.isNumber(code) ? 'Err-' + code : code )
+					@ method myname + '.' + method
+					@ sourcePath __filename
+				@ message || 'Error message unavailable'
+
+

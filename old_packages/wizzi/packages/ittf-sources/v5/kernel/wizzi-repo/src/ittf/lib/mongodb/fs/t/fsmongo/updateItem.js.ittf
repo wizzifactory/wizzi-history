@@ -1,0 +1,59 @@
+﻿$group
+
+	m updateItem
+		{ fsitem
+			string basename
+			number kind
+		callback
+
+		_ this.db.collection(FSITEMS).replaceOne
+			{
+				@ _id fsitem._id
+			@ fsitem
+			f_cb( r_upd )
+				delete r_upd.connection
+				delete r_upd.message
+				log 'wizzi-repo.mongodb.FsMongo.updateItem', r_upd
+				if r_upd.result.nModified == 1
+					r_cb()
+						{
+							@ code 'FSITEM_UPDATED'
+							@ updatedCount r_upd.result.nModified
+							@ item r_upd.ops[0]
+				else
+					r_cb_wz_err( MongoRepoError, updateItem )
+						@ util.inspect( r_upd.result )
+
+	m updateItemLastModified
+		{ id
+		param lastModified
+		callback
+
+		var that = this
+
+		_ this.getItemById
+			@ id
+			f_cb( r )
+				log 'wizzi-repo.mongodb.FsMongo.updateItemLastModified, getItemById', id, r
+				if r != null
+					set r.lastModified = lastModified
+					_ that.db.collection(FSITEMS).replaceOne
+						{
+							@ _id id
+						@ r
+						f_cb( r_upd )
+							delete r_upd.connection
+							delete r_upd.message
+							log 'wizzi-repo.mongodb.FsMongo.updateItemLastModified', r_upd
+							if r_upd.result.nModified == 1
+								r_cb()
+									{
+										@ code 'FSITEM_LASTMODIFIED_UPDATED'
+										@ updatedCount r_upd.result.nModified
+										@ item r_upd.ops[0]
+							else
+								r_cb_wz_err( MongoRepoError, updateItemLastModified )
+									@ util.inspect( r_upd.result )
+				else
+					r_cb_wz_err( MongoRepoError, updateItemLastModified )
+						@ 'FsMongo item not found, id: ' + id

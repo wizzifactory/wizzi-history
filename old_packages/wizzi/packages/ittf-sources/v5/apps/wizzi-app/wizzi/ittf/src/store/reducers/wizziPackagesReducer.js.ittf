@@ -1,0 +1,122 @@
+﻿module 
+    kind react
+	+
+	import_rsf_actions( GET_KERNEL_PACKAGES )
+	import_rsf_actions( GET_KERNEL_PACKAGE )
+	import_rsf_actions( GET_PLUGINS_PACKAGES )
+	import_rsf_actions( GET_PLUGIN_PACKAGE )
+	import_rsf_actions( GET_PLUGIN_SCHEMAS )
+	import_rsf_actions( GET_PLUGIN_ARTIFACTS )
+	+
+	const wizziPackagesInitialState
+		{
+			@ kernelPackages []
+			@ pluginsPackages []
+			@ pluginSchemas {}
+			@ schemasTIttfDocuments []
+			@ libTIttfDocuments []
+			@ packageTIttfDocuments []
+			@ pluginArtifacts {}
+			@ selectedPackage null
+			@ rootIttfDocuments []
+			@ libIttfDocuments []
+			@ metaIttfDocuments []
+			@ tIttfDocuments []
+			@ loadingError null
+	+
+	r( wizziPackages, wizziPackagesInitialState )
+	
+		c( GET_KERNEL_PACKAGES_SUCCESS
+			{
+				@ ...state
+				@ kernelPackages action.payload.packages
+				@ loadingError null
+
+		c( GET_KERNEL_PACKAGES_FAILURE
+			{
+				@ ...state
+				@ kernelPackages []
+				@ loadingError action.payload.error
+
+		c( GET_KERNEL_PACKAGE_SUCCESS
+			{
+				@ ...state
+				@ generatePath action.payload.generatePath
+				@ generateWfJobPath action.payload.generateWfJobPath
+				@ rootIttfDocuments action.payload.rootIttfDocuments
+				@ libIttfDocuments action.payload.libIttfDocuments
+				@ metaIttfDocuments action.payload.metaIttfDocuments
+				@ tIttfDocuments action.payload.tIttfDocuments
+				@ selectedPackage action.packageName
+				@ loadingError null
+
+		c( GET_KERNEL_PACKAGE_FAILURE
+			{
+				@ ...state
+				@ kernelPackages []
+				@ loadingError action.payload.error
+
+		c( GET_PLUGINS_PACKAGES_SUCCESS
+			{
+				@ ...state
+				@ pluginsPackages action.payload.packages
+				@ loadingError null
+
+		c( GET_PLUGINS_PACKAGES_FAILURE
+			{
+				@ ...state
+				@ pluginsPackages []
+				@ loadingError action.payload.error
+
+		c( GET_PLUGIN_PACKAGE_SUCCESS
+			{
+				@ ...state
+				@ generatePath action.payload.generatePath
+				@ generateWfJobPath action.payload.generateWfJobPath
+				@ rootIttfDocuments action.payload.rootIttfDocuments
+				@ libIttfDocuments action.payload.libIttfDocuments
+				@ metaIttfDocuments action.payload.metaIttfDocuments
+				@ tIttfDocuments action.payload.tIttfDocuments
+				@ selectedPackage action.packageName
+				@ loadingError null
+
+		c( GET_PLUGIN_PACKAGE_FAILURE
+			{
+				@ ...state
+				@ kernelPackages []
+				@ loadingError action.payload.error
+
+
+		c( GET_PLUGIN_SCHEMAS_SUCCESS
+			{
+				@ ...state
+				@ pluginSchemas action.payload.schemas
+				@ schemasTIttfDocuments action.payload.schemasTIttfDocuments
+				@ packageTIttfDocuments action.payload.packageTIttfDocuments
+				@ libIttfDocuments action.payload.libIttfDocuments
+				@ libTIttfDocuments action.payload.libTIttfDocuments
+				@ selectedPackage action.packageName
+				@ loadingError null
+
+		c( GET_PLUGIN_SCHEMAS_FAILURE
+			{
+				@ ...state
+				@ pluginSchemas {}
+				@ loadingError action.payload.error
+
+		c( GET_PLUGIN_ARTIFACTS_SUCCESS
+			{
+				@ ...state
+				@ pluginArtifacts action.payload.artifacts
+				@ artifactsTIttfDocuments action.payload.artifactsTIttfDocuments
+				@ packageTIttfDocuments action.payload.packageTIttfDocuments
+				@ selectedPackage action.packageName
+				@ loadingError null
+
+		c( GET_PLUGIN_ARTIFACTS_FAILURE
+			{
+				@ ...state
+				@ pluginArtifacts {}
+				@ loadingError action.payload.error
+
+	export default wizziPackagesReducer

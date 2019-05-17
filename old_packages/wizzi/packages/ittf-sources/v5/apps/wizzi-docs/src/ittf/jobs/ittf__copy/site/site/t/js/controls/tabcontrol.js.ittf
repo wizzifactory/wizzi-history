@@ -1,0 +1,59 @@
+﻿$group
+
+	class wzuiTabControl
+		ctor
+			param element
+			set this.element = wzui.element(element)
+			set this.tabs = []
+			set this.defaultTab = null
+		
+		m initialize
+			if this.tabs.length === 0
+				return
+			set this.defaultTab = this.defaultTab || this.tabs[0].element
+			foreach tab in this.tabs
+				if tab.element === this.defaultTab
+					set tab.page.style.display = 'block'
+					_ wzui.addClass(tab.element, 'wz-ui-selected')
+					_ wzui.removeClass(tab.element, 'wz-ui-unselected')
+				else
+					set tab.page.style.display = 'none'
+					_ wzui.removeClass(tab.element, 'wz-ui-selected')
+					_ wzui.addClass(tab.element, 'wz-ui-unselected')
+
+		m setDefaultTab
+			param element
+			set this.defaultTab = wzui.element(element)
+		
+		m addTab
+			param element
+
+			set element = wzui.element(element)
+			var pageId = element.getAttribute("data-tab-page")
+			log 'pageId', pageId
+			var pageElement = document.getElementById(pageId)
+			log 'pageElement', pageElement
+			
+			_ wzui.click
+				@ element
+				@ wzuiTabControl.createClickHandler(this)
+			
+			_ this.tabs.push
+				{
+					@ element element
+					@ page pageElement
+
+	set wzuiTabControl.createClickHandler
+		function
+			param tabControl
+			return
+				function
+					foreach tab in tabControl.tabs
+						if tab.element === this
+							set tab.page.style.display = 'block'
+							_ wzui.addClass(tab.element, 'wz-ui-selected')
+							_ wzui.removeClass(tab.element, 'wz-ui-unselected')
+						else
+							set tab.page.style.display = 'none'
+							_ wzui.removeClass(tab.element, 'wz-ui-selected')
+							_ wzui.addClass(tab.element, 'wz-ui-unselected')

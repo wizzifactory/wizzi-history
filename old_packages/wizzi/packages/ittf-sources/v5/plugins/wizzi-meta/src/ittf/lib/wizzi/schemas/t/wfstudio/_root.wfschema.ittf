@@ -1,0 +1,25 @@
+﻿wfschema ${schema}
+	$params schema
+	
+	e ${schema}item
+		r propert-y/ies
+		r comment/s
+
+		m propertyOfCategory
+			param categoryName
+			var ret = []
+			foreach item in this.properties
+				if item.category === categoryName
+					_ ret.push(item)
+			return ret
+
+	e comment : ${schema}item
+		tag #
+
+	e property : ${schema}item
+		a category
+		a name
+		a value
+
+		m wzInitialize
+			set this.name = this.wzName

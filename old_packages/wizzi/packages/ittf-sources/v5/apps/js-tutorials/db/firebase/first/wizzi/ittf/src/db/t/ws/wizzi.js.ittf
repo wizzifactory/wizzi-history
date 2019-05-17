@@ -1,0 +1,199 @@
+﻿$group
+
+	$if appEnvironment === 'browser'
+
+		m toIttfTreeEx
+			param ittfContent
+			return
+				_ wizzi.IttfMTreeEx.createFrom
+					@ ittfContent
+					{
+						@ fromString true
+						@ clean true
+
+		m getSchemaElementDoc
+			param mTreeNode
+			if false
+				foreach e in jsSchema.elements
+					if e.tags.indexOf(mTreeNode.name) > -1
+						return e
+				foreach e in jsSchema.elements
+					foreach attr in e.attributes
+						if attr.tags.indexOf(mTreeNode.name) > -1
+							return e
+			return null
+
+	m getExampleJsonFsData
+		param schema
+		param name
+		param callback
+		const that = this
+		_ this.getExample
+			@ schema
+			@ name
+			f_cb( exampleObject )
+				log 'WizziStore.getExampleJsonFsData', exampleObject
+				_ that.getFragments
+					@ schema
+					f_cb( fragments )
+						const documents = []
+						# FIXME the folder 'schema' is superflous but a bug in wizzi-repo.json.fs.documents
+						#       requires that a document path will return a not empty string both from path.basename(pathname) and path.dirname(pathname)
+						_ documents.push
+							{
+								@ path 'w:/' + schema + '/' + exampleObject.data.name
+								@ content exampleObject.data.content
+						foreach item in Object.keys(fragments)
+							_ documents.push
+								{
+									@ path 'w:/' + schema + '/t/' + item
+									@ content fragments[item]
+						_ that.createJsonFsData
+							@ documents
+							@ callback
+
+	m createJsonFsData
+		param documents
+		param callback
+		# [ documents
+		#   {
+		#     string path
+		#     string content
+		_ wizzi.JsonComponents.createJsonFsData
+			@ documents
+			@ callback
+
+	m createFactory
+		param jsonFsData
+		param callback
+		const that = this
+		_ wizzi.jsonnoaclFactory
+			{
+				{ plugins
+					[ items
+						$if appEnvironment === 'browser'
+							@ wizziCore
+							@ wizziJs
+							@ wizziWeb
+						$else
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+							@ 'wizzi-web'
+				@ jsonFsData jsonFsData
+			@ callback
+
+	m generateExample
+		param schema
+		param name
+		param artifactName
+		param modelContext
+		param callback
+		if typeof callback === 'undefined'
+			set callback = modelContext
+			set modelContext = {}
+		# log 'WizziClient.generate.modelContext', modelContext
+		const that = this
+		_ this.getExampleJsonFsData
+			@ schema
+			@ name
+			f_cb( jsonFsData )
+				_ that.createFactory
+					@ jsonFsData
+					f_cb( wf )
+						const itemPath = 'w:/' + schema + '/' + name
+						_ wf.loadModelAndGenerateArtifact
+							@ itemPath
+							{
+								{ modelRequestContext
+									@ mTreeBuildUpContext modelContext
+								@ artifactRequestContext {}
+							@ artifactName
+							f_cb( artifactText )
+								# log 'generated artifactText', artifactText
+								r_cb( artifactText )
+
+	
+	m getExampleArtifact
+		param schemaName
+		param documentName
+		param callback
+
+		const wizziArchive
+			_ WizziArchive.getPooledArchive
+				@ schemaName
+				@ documentName
+
+		_ wizziArchive.retrieveFromServer
+			f_cb( )
+				_ wizziArchive.generate
+					@ callback
+
+	m getJsonExampleObject
+		param documentName
+		param callback
+		_ this.getExampleArtifact
+			@ 'json'
+			@ documentName
+			f_cb_no_err( jsonText )
+				if err
+					r_cb( {} )
+				else
+					r_cb( JSON.parse(jsonText) )
+	
+	m generateArtifactAction
+		param schema
+		param name
+		param callback
+		const artifactName = this.getArtifactForSchema(schema)
+		if schema != 'json'
+			const that = this
+			_ this.getExample
+				@ 'json'
+				@ name
+				f_cb( result )
+					if result == null
+						_ that.generateExample
+							@ schema
+							@ name
+							@ artifactName
+							@ callback
+					else
+						_ that.generateExample
+							@ 'json'
+							@ name
+							@ 'json/document'
+							f_cb( jsonArtifact )
+								_ that.generateExample
+									@ schema
+									@ name
+									@ artifactName
+									@ JSON.parse(jsonArtifact)
+									@ callback
+		else
+			_ this.generateExample
+				@ schema
+				@ name
+				@ artifactName
+				@ callback
+
+	m getArtifactForSchema
+		param schema
+		if schema == 'js'
+			return 'js/module'
+		elif schema == 'html'
+			return 'html/document'
+		elif schema == 'css'
+			return 'css/document'
+		elif schema == 'svg'
+			return 'svg/document'
+		elif schema == 'json'
+			return 'json/document'
+		elif schema == 'text'
+			return 'text/document'
+		elif schema == 'xml'
+			return 'xml/document'
+		elif schema == 'ittf'
+			return 'ittf/document'
+		else
+			throw new Error('WizziStore.getArtifactForSchema. Schema not managed: ' + schema)
+

@@ -1,0 +1,90 @@
+﻿base_example( ittfTree )
+
+	var IttfFinder = require('../../lib/ittfTree/ittfFinder')
+	var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+
+	log 'wizzi-utils.examples.ittfTree'
+	
+	_ step_4
+	# _ ittfFinder_step_1
+
+	function step_1
+		_ ittfMTreeEx.createFrom
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'basic.sample.ittf'
+			{
+			f_cb_test( result )
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'basic.sample.json'
+					_ stringify
+						@ result
+						@ null
+						@ 2
+				_ step_2
+
+	function step_2
+		
+		_ ittfMTreeEx.createFrom
+			[
+				@ 'module'
+				@ '    kind react'
+				@ '    react Hello'
+				@ '        state'
+				@ '            @ name "stefi"'
+				._ join
+					@ '\n'
+			{
+				@ fromString true
+				@ clean true
+			f_cb_test( result )
+				log 'result.findByRow(3). should be react node.', result.findByRow(3)
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'basic.sample.fromstring.json'
+					_ stringify
+						@ result
+						@ null
+						@ 2
+				_ step_3
+
+	function step_3
+		
+		_ ittfMTreeEx.createFrom
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'complex.sample.ittf'
+			{
+			f_cb_test( result )
+				_ result.analize
+				var msg
+					_ stringify
+						@ result
+						@ null
+						@ 2
+				log 'step_3', msg
+
+	function step_4
+		
+		_ ittfMTreeEx.createFrom
+			_ path.join
+				@ "C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/repo/stefi/studio/wizzi/r_long_page"
+				@ 'index.html.ittf'
+			{
+			f_cb_test( result )
+				_ result.analize
+				var msg
+					_ stringify
+						@ result
+						@ null
+						@ 2
+				log 'step_4', msg
+
+	$include ittfFinder

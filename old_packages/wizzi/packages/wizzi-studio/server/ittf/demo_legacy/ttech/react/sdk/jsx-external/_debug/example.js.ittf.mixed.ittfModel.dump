@@ -1,0 +1,20 @@
+  module  ids: 1 21
+    kind react ids: 2 22
+    var ExampleApplication ids: 3 23
+      _ React.createClass ids: 4 24
+        {  ids: 5 25
+          @ render ids: 6 26
+            function  ids: 7 27
+              var elapsed = Math.round(this.props.elapsed  / 100) ids: 8 28
+              var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' ) ids: 9 29
+              var message = 'React has been successfully running for ' + seconds + ' seconds.' ids: 10 30
+              return  ids: 11 31
+                p {message} ids: 12 32
+    var start = new Date().getTime() ids: 13 33
+    _ setInterval ids: 14 34
+      function  ids: 15 35
+        _ ReactDOM.render ids: 16 36
+          < ExampleApplication ids: 17 37
+            @ elapsed {new Date().getTime() - start} ids: 18 38
+          @ document.getElementById('container') ids: 19 39
+      @ 50 ids: 20 40

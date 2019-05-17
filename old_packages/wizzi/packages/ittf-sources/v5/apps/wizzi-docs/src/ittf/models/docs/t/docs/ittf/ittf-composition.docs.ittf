@@ -1,0 +1,34 @@
+﻿concept Ittf documents composition
+
+	summary
+
+		p An ittf document, when loaded, becomes a javascript object called `mTreeBrick`.
+		
+		p mTreeBricks are composition units. They can mix, or include, other bricks and can
+			+ be mixed, or included. 
+			+ The mix or include operation is declared on a node of the mixer or includer brick,
+			+ that will be replaced from the nodes of the mixed or included one. 
+
+		p An mTree loading begins loading a primary ittf document, that become the primary
+			+ mTreeBrick, the starting point of the composition. Included and mixed
+			+ ittf documents become composed
+			+ mTreeBricks.
+
+		p A single mTreeBrick can be composed many times in different positions of
+			+ the builded mTree. It is loaded once, and cloned for composition.
+			
+		p Include and mix operations have a different behaviour. When included, cloned mTreeBricks,
+			+ become part of the includer brick and their nodes acquire its brick key and
+			+ its brick evaluation context. Instead, mixed mTreeBricks, are inserted in the 
+			+ node structure of the mixer, but each of them mantains its original brick key
+			+ and brick evaluation context. When coding an ittf document, that will become a 
+			+ mixed mTreeBrick, created variables will have a scope limited to the nodes declared 
+			+ in the document, even if they will be merged in the mixer brick.
+
+		p Summarizing: primary and fragment mTreeBricks have their own evaluation context, included
+			+ mTreeBricks use the evaluation context of their includer.
+
+		p In case of a mixed mTreeBrick the mixer node can have children nodes that in turn
+			+ can replace 'hook' nodes of the mixed brick. See the '$hook' and '$append'
+			+ ittf command nodes for the composition rules of a mix operation.
+

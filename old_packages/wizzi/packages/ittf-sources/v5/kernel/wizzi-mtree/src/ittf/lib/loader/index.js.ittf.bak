@@ -1,0 +1,138 @@
+﻿module wizzi-mtree.loader
+    kind jsfile
+    
+	var util = require('util')
+    var path = require('path')
+	var verify = require('wizzi-utils').verify
+    var errors = require('../errors')
+	var node = require('../util/node')
+	var MTreeBrickProvider = require('./mTreeBrickProvider')
+    var includer = require('./includer')
+	var mixer = null
+    var appender = require('./appender')
+    var evaluator = require('./evaluator')
+    
+	var md
+        set module.exports =
+            { 
+    
+	#
+		# The Big JOB of an mTree loading
+		# manages
+		#    normalization of loadContext objects
+		#    instantiation of the modelProvider
+		#    liner
+		#    nodifier
+		#    includer
+		#    mixer
+		#    appender
+		#    evaluator
+		# params
+		#   Are checked in /lib/index.js. See there for doc.
+		#   There should be no direct access to this method except for testing.
+
+	set md.loadMTree
+        function loadMTree
+            param primaryIttfDocumentUri
+            param loadContext
+            param callback
+            
+			var originalloadContext = loadContext
+			set loadContext = normalizeRequestContext(loadContext)
+			if loadContext.__is_error
+				set loadContext.ittfDocumentUri = primaryIttfDocumentUri
+				set loadContext.instance = originalloadContext
+				return
+					_ callback(loadContext)
+            
+			_ MTreeBrickProvider.createFromUri
+                @ primaryIttfDocumentUri
+                @ loadContext
+                f_cb( createdProvider )
+					var primaryMTreeBrick = createdProvider.getPrimaryMTreeBrick()
+                    if !primaryMTreeBrick.nodes || primaryMTreeBrick.nodes.length == 0
+                        return callback(null, primaryMTreeBrick)
+					# log 'wizzi-mtree.loader.index.primaryMTreeBrick', primaryMTreeBrick.dump()
+					# resolve $include commands
+                    _ includer
+                        @ primaryMTreeBrick
+                        @ createdProvider
+						f_cb( includedMTreePiece )
+                            if mixer == null
+                                set mixer = require('./mixer')
+                            # mix primary mTreeBrick and mixins
+							_ mixer
+                                @ includedMTreePiece
+                                @ createdProvider
+                                f_cb( mixedMTreePiece )
+                                    _ loadContext.productionContext.addMixedMTree(primaryIttfDocumentUri, mixedMTreePiece)
+									# resolve $group, $hook and $append commands
+                                    _ appender
+                                        @ mixedMTreePiece
+										f_cb( appendedMTreePiece
+											# evaluate
+                                            _ evaluator
+                                                @ appendedMTreePiece
+                                                @ loadContext
+                                                function 
+                                                    param err
+                                                    param finalMTree
+                                                    if err
+                                                        set err.ittfDocumentUri = primaryIttfDocumentUri
+                                                        return callback(err)
+													# log 'wizzi-mTree.loader.index.createdProvider.loadHistory', createdProvider.loadHistory
+                                                    set finalMTree.loadHistory = createdProvider.loadHistory
+                                                    _ loadContext.productionContext.addEvaluatedMTree(primaryIttfDocumentUri, finalMTree)
+                                                    _ callback(null, finalMTree)
+    
+	
+	#
+		# Load the raw primaryIttfDocumentUri only.
+		# This is mainly for debug or documentation purposes.
+	set md.loadMTreeRaw
+        function loadMTreeRaw
+            string primaryIttfDocumentUri
+            { loadContext
+				{ __productionManager
+					{ productionContext
+						{ aclstat
+				{ __ittfDocumentStore
+            callback
+            
+			var originalloadContext = loadContext
+			set loadContext = normalizeRequestContext(loadContext)
+			if loadContext.__is_error
+				set loadContext.ittfDocumentUri = primaryIttfDocumentUri
+				set loadContext.instance = originalloadContext
+				return
+					_ callback(loadContext)
+            
+			_ MTreeBrickProvider.createFromUri
+                @ primaryIttfDocumentUri
+                @ loadContext
+                f_cb( createdProvider )
+					var primaryMTreeBrick = createdProvider.getPrimaryMTreeBrick()
+					return
+						_ callback(null, primaryMTreeBrick)
+
+	function normalizeRequestContext
+        param loadContext
+		# log 'wizzi-mtree.loader.index.normalizeRequestContext.loadContext', loadContext
+
+		# for var k in loadContext
+			# log 'normalizeRequestContext.k', k
+        
+		set loadContext.productionContext = loadContext.__productionManager.productionContext
+
+		if verify.isObject(loadContext.mTreeBuildUpContext) == false
+			set loadContext.mTreeBuildUpContext = {}
+		
+		# TODO this seems out of place, remove
+		# if verify.isObject(loadContext.artifactContext) == false
+		#	set loadContext.artifactContext = {}
+
+		if verify.isObject(loadContext.options) == false
+			set loadContext.options = {}
+
+		return loadContext
+

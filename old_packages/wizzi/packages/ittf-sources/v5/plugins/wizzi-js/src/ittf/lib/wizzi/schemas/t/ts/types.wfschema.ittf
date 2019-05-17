@@ -1,0 +1,63 @@
+﻿$group
+
+	e_tag( typeModule, :module, statement
+
+	e_tag( typeTypeAlias, :type, statement
+		
+		r typeParameter/s
+
+	e_tag( typeFunctionDeclare, :function, statement
+		
+		r typeParameter/s
+		
+		r param/s
+		
+		r typeReturn
+			one-to-one
+
+	e_tag( typeInterface, :interface, statement
+		
+		r typeParameter/s
+		
+		m wzinitialize
+			set this.extends = []
+			var temp = []
+			# log 'typeInterface.statements', this.statements
+			foreach s in this.statements
+				# log 'typeInterface.s.wzElement', s.wzElement
+				if s.wzElement === 'typeExtends'
+					_ this.extends.push
+						@ s
+				else
+					_ temp.push
+						@ s
+			set this.statements = temp
+
+	e_tag( typeExtends, :extends, statement
+	
+	e_tag( typeProperty, :p, statement
+		a_flag( optional, :optional )
+	
+	e_tag( typeMethod, :m, statement
+		a_flag( abstract, :abstract )
+		a_flag( private, :private )
+		a_flag( public, :public )
+		a_flag( protected, :protected )
+
+		r typeParameter/s
+
+		m wzinitialize
+			set this.params = []
+			var temp = []
+			foreach s in this.statements
+				if s.wzElement === 'param'
+					_ this.params.push
+						@ s
+				else
+					_ temp.push
+						@ s
+			set this.statements = temp
+
+	e_tag( typeMapped, :mapped, statement
+		a_flag( optional, :optional )
+	

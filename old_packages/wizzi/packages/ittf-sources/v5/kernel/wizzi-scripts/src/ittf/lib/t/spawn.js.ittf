@@ -1,0 +1,108 @@
+﻿$group
+
+	m spawnExec
+		param options
+		param callback
+
+		var res = options.__res
+
+        if res
+			_ res.writeHead
+				@ 200
+				{ 
+					@ "Content-Type" "text/event-stream"
+					@ "Cache-control" "no-cache"
+
+		var
+			decl temp
+			decl str = ""
+			decl stdout = []
+			decl resEnded = false
+			decl sentCallback = false
+		
+		var spw
+            _ cp.spawn
+                @ options.command
+				@ options.args
+				{
+					@ cwd options.cwd
+					{ env
+					@ argv0 undefined
+					@ stdio undefined
+					@ detached false
+					@ shell options.shell || true
+					@ windowsVerbatimArguments false
+					@ windowsHide false
+
+		_ spw.stdout.on
+            @ 'data'
+            function 
+                param data
+				set temp = data.toString()
+				log temp
+				_ stdout.push(temp)
+				if res && !resEnded
+					set str += temp
+					var lines = str.split("\n")
+					for var i in lines
+						if i == lines.length - 1
+							set str = lines[i]
+						else
+							# Note: The double-newline is *required*
+							_ res.write('data: ' + lines[i] + "\n\n")
+		_ spw.on
+            @ 'close'
+            function 
+                param code
+				log "close", code
+				if res && !resEnded
+					_ res.write('data: ***___CLOSE___***\n\n')
+					_ res.end(str)
+					set resEnded = true
+				if callback && sentCallback == false
+					set sentCallback = true
+					return 
+						_ callback
+							@ null
+							{
+								@ error false
+								@ stdout stdout
+
+		_ spw.stderr.on
+            @ 'data'
+            function 
+                param data
+				set temp = data.toString()
+				log "stderr:", temp
+				if res && !resEnded
+					
+					set str += temp
+					var lines = str.split("\n")
+					for var i in lines
+						if i == lines.length - 1
+							set str = lines[i]
+						else
+							# Note: The double-newline is *required*
+							# TODO _ res.end('stderr: ' + temp)
+							_ res.write('data: ' + lines[i] + "\n\n")
+					_ res.write('data: ***___CLOSE___***\n\n')
+					_ res.end(str)
+					set resEnded = true
+				if callback && sentCallback == false
+					set sentCallback = true
+					return 
+						_ callback
+							@ null
+							{
+								@ error true
+								@ stderr temp
+
+	m spawnExecToEventStream
+		param options
+		param res
+		param callback
+
+		set options.__res = res
+		_ this.spawnExec
+			@ options
+			@ callback

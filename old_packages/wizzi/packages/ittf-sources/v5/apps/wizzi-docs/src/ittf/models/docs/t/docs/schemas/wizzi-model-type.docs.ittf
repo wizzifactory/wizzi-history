@@ -1,0 +1,40 @@
+﻿concept Wizzi model type
+
+	summary
+
+		p A WizziModelType is the javascript representation of a WizziSchema.
+		
+		p Mapping of a WizziSchema to a WizziModelType
+		table
+			tr
+				td Require element
+				td javascript/jsnode require statement
+			tr
+				td Element element
+				td javascript pseudo-class
+			tr
+				td Super attribute
+				td javascript pseudo-inehritance.
+			tr
+				td Attribute element
+				td Property of a primitive type of the element pseudo-class
+			tr
+				td Restrict element
+				td Validation statements in the wzVerify method of the element pseudo-class
+			tr
+				td One-to-many Relation element
+				td javascript array of Right elements as a property of Left element pseudo-class
+			tr
+				td One-to-one Relation element
+				td javascript object of Right element as a property of Left element pseudo-class
+			tr
+				td Method element
+				td javascript function in the prototype of the element pseudo-class
+			tr
+				td ExportTo element
+				td javascript function in the prototype of the element pseudo-class
+					+ that implements the export of the model instance
+
+		p WizziModelType pseudo-classes are instantiated by the WizziModelFactory during
+			+ a WizziModelLoading.
+

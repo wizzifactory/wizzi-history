@@ -1,0 +1,51 @@
+html
+	
+	body
+
+	$
+		function buildNode(parent, childCount, deep) {
+			parent.childs = [];
+			if (deep > 3) { return; }
+			parent.childs = [];
+			for (var i = 0; i < childCount; i++) {
+				var child = { id: parent.id + '-' + i};
+				buildNode(child, childCount, deep + 1);
+				parent.childs.push(child);
+			}
+		}
+		var tree = { id: 0 };
+		buildNode(tree, 2, 0);
+
+	div Let us inspect the 'tree' variable we built.
+	pre
+		+ tree: ${ _.inspect(tree) }
+
+
+	# a brute force tree view rendering
+	# working until 3 levels deep.
+	ul
+		$foreach node in tree.childs
+			lia( node${node.id}, /node${node.id} )
+				$if node.childs.length > 0
+					ul
+						$foreach node2 in node.childs
+							lia( node${node2.id}, /node${node2.id} )
+								$if node2.childs.length > 0
+									ul
+										$foreach node3 in node2.childs
+											lia( node${node3.id}, /node${node3.id} )
+
+	# beautiful tree view rendering
+	# without depth limits
+	
+	$function nodeView
+		$param parent
+		div node${parent.id}
+			$foreach nodeChild in parent.childs
+				$_ nodeView
+					$@ nodeChild
+
+	$_ nodeView
+		$@ tree
+
+

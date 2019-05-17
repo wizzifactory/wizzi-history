@@ -1,0 +1,17 @@
+﻿$group
+	$params method
+	it-async ${method}
+		_ co
+			function*
+				$hook
+			._ then
+				function 
+					_ done()
+			._ catch
+				function 
+					param err
+					_ done()
+					_ console.log
+						@ 'catched in ${method}.co'
+						@ err.message
+					throw err

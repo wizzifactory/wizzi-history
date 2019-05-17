@@ -1,0 +1,109 @@
+﻿concept Ittf documents
+
+	summary
+
+		p Ittf Documents are the source documents of the Wizzi Factory.
+		
+		p ITTF, that stands for Indented Text Tree Format, is a human-friendly serialization text format for representing 
+			+ and composing a tree data structure of nodes made of a name/value pair. 
+			
+		p ITTF Documents can include or merge other ITTF Documents.
+
+		p An ITTF Document is also a template and when processed can be merged and interpolated with context data. 
+			+ The ITTF Processor has a scripting engine and an ITTF document can contain scripts for manipulating its nodes.
+ 
+		p A document may have semantic and template nodes. Semantic nodes, that can contain interpolation variables,
+			+ are the document data. Template nodes drive the document composition and its merging with context data
+			+ and disappear in the final tree structure.
+			+ The ITTF Processor is agnostic about the content of semantic nodes. It processes template command nodes and interpolates semantic node names and values.
+			+ The result of an ITTF process is a tree data structure of semantic nodes that must have a single root node.
+	
+		h4 Example of ITTF Document (without template nodes)
+		ittf
+			- html
+				- body
+					- ul
+						- li
+							- a The Wizzi Factory
+								- href https://wizzifactory.github.io
+		
+		p Child nodes are indented to their parent.
+
+		p Every line is a node consisting of a name value pair.
+			+ The name is the first string of chars of the line and is separated
+			+ from the value by a space or a tab.
+
+		p Even the root node
+			+ can be a command node that invokes the merge
+			+ of its container.
+
+		h4 Example of a root node that merges its container (with template nodes).
+		ittf
+			- layout( Welcome to my site )
+				- $append appbar
+					- ul
+						- $foreach item in menulist
+							- li 
+								- a ${dollar}{item.name}
+									- href ${dollar}{item.path}
+				- . wrapper
+					- . content
+		
+		h4 Example of a container (with template nodes)
+		ittf
+			- html
+				- $params title
+				- head
+					- title ${dollar}{title}
+				- body
+					- header
+						- h1 ${dollar}{title}
+						- $hook appbar
+					- section
+						- $hook
+		
+		ul ITTF Documents are of three kinds
+			li primary
+			li merge
+			li include
+
+		p A primary ITTF Document is the entry point of an ITTF Processing.
+		
+		p A merge document can receive parameters and my have hook nodes where to append child nodes of the merger document.
+		
+		p An include document is inserted as is and may not receive parameters. 
+
+		h4 Example of a merge ITTF Document.
+		ittf
+			- li
+				- $params text, href
+				- a ${dollar}{text}
+					- href ${dollar}{href}
+		
+		h4 Example of an include ITTF Document.
+		ittf
+			- div License MIT
+				- span copy Stefano Bassoli.
+
+		h4 mTrees
+		p The tree data structure resulting from an ITTF Processing is a javascript object that internally is
+			+ named `mTree` and in the documentation is sometimes referred to as `model tree` or even `magical tree`.
+
+		h4 JsWizzi
+		p The template engine of the wizzi factory uses a customized
+			+ subset of the ECMA-262 javascript standard, sandboxed, and tailored
+			+ for ITTF Processing.
+			+ JsWizzi is built on the quite efficent <a href="http://esprima.org/">esprima</a> parser
+			+ and is run by a custom javascript engine (JsWizziRunner).
+		
+		h4 Document types
+		p ITTF Documents become usefull as context data when they target a specific domain.
+			+ Domain specific schematas can be applied to the result of an ITTF Processing, see <a href="#concept-4">Wizzi Schemas</a> below.
+			+ The name of the Wizzi Schema that is applyed to an ITTF Document is said to be the type of the document.
+			+ An ITTF Document of type `js` is a document designed to be processed and then validated and loaded by the `js` Wizzi Schema.
+		p Each development team may create its own document types or use those already availables, see <a href="#concept-9">Wizzi Plugins</a> below.
+
+		h4 Document file name and extension
+		p An ITTF Document must have extension '.ittf' and the extension must be preceded by '.' + the name of
+			+ the Wizzi Schema that describes the document or by '.ittf' again if the document is not typed.
+

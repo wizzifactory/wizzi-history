@@ -1,0 +1,42 @@
+﻿$group
+
+	@ generateWfSchema
+		function
+			param options
+			param callback
+
+			var packageName = options.packageName || null
+			var ittfDocumentHash = options.hash
+			var mTreeBuildUpContext = options.context || {}
+			var sessionData = {}
+			var globalContext = {}
+
+			var ittfDocumentUri
+				_ paths.getIttfFilePathByHash
+					@ ittfDocumentHash
+
+			var schemaName
+				_ paths.getSchemaByIttfDocumentUri
+					@ ittfDocumentUri
+
+			var schemaOutputPath
+				_ paths.schemaOutputPath
+					@ packageName
+					@ schemaName
+
+			_ globalApi.wf.generateSchema
+				@ sessionData
+				@ ittfDocumentUri
+				@ schemaName
+				@ schemaOutputPath
+				@ mTreeBuildUpContext
+				f_cb_api( result )
+					return
+						_ callback
+							@ null
+							{
+								@ data result
+								@ status
+									_ success
+										@ 'WfSchema ' + schemaName + ' on uri ' + ittfDocumentUri + ' generated'
+

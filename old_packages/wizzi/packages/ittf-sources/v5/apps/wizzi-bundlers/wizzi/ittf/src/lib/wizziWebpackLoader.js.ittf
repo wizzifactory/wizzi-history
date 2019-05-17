@@ -1,0 +1,37 @@
+﻿module
+	kind jsfile
+
+	# see also https://github.com/babel/babel-loader
+	# for customizing babel-loader
+
+	var wizziLoader = require("./wizziLoader")
+
+	set module.exports
+		function wizziWebpackLoader
+			param source
+			param map
+			
+			# log 'this', this
+			log 'this.resourcePath', this.resourcePath
+
+			_ this.async()
+			
+			var filePath = this.resourcePath
+
+			_ wizziLoader.readWizziJsModuleAsync
+				{
+					@ filePath filePath
+				=>
+					param err
+					param result
+					if err
+						return
+							_ this.callback
+								@ err
+								@ null
+								@ null
+					else
+						_ this.callback
+							@ null
+							@ result.code
+							@ null

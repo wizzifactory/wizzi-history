@@ -1,0 +1,38 @@
+﻿$group
+
+	react Button
+
+		state
+			@ pressed false
+
+		prop caption
+			string
+			required
+
+		will-mount
+
+		did-mount
+
+		will-unmount
+
+		should-update
+		
+		did-update
+
+		will-update
+
+		will-receive-props
+
+		=> handleClick
+			_ this.setState
+				{
+					@ ...this.state
+					@ pressed !this.state.pressed
+
+		render
+			prop caption
+			return
+				div
+					button {caption}
+						@ onClick { this.handleClick }
+

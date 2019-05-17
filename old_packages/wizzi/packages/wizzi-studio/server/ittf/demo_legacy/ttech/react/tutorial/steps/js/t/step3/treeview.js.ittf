@@ -1,0 +1,80 @@
+$group
+
+	c(TreeView)
+
+		f(setNodeId)
+			param node
+			if !(node.nodes)
+				return 
+			foreach n in node.nodes
+				set n.nodeId = this.props.nodes.length
+				_ this.props.nodes.push(n)
+				_ this.setNodeId(n)
+
+		f(render)
+			var data = this.props.data
+			_ this.setNodeId
+				{ 
+					@ nodes data
+			var children
+				[ 
+			if data
+				foreach node in data
+					_ children.push
+						e(TreeNode)
+							{ 
+								@ node node
+								@ level 1
+								@ visible true
+								@ options this.props
+			return 
+				div()
+					{ 
+						@ id "treeview"
+						@ className "treeview"
+					ul()
+						{ 
+							@ className "list-group"
+						@ children
+
+	set TreeView.propTypes
+		{ 
+			@ levels React.PropTypes.number
+			@ expandIcon React.PropTypes.string
+			@ collapseIcon React.PropTypes.string
+			@ emptyIcon React.PropTypes.string
+			@ nodeIcon React.PropTypes.string
+			@ color React.PropTypes.string
+			@ backColor React.PropTypes.string
+			@ borderColor React.PropTypes.string
+			@ onhoverColor React.PropTypes.string
+			@ selectedColor React.PropTypes.string
+			@ selectedBackColor React.PropTypes.string
+			@ enableLinks React.PropTypes.bool
+			@ highlightSelected React.PropTypes.bool
+			@ showBorder React.PropTypes.bool
+			@ showTags React.PropTypes.bool
+			@ nodes
+				_ React.PropTypes.arrayOf
+					@ React.PropTypes.number
+
+	set TreeView.defaultProps
+		{ 
+			@ levels 2
+			@ expandIcon 'glyphicon glyphicon-plus'
+			@ collapseIcon 'glyphicon glyphicon-minus'
+			@ emptyIcon 'glyphicon'
+			@ nodeIcon 'glyphicon glyphicon-stop'
+			@ color undefined
+			@ backColor undefined
+			@ borderColor undefined
+			@ onhoverColor '#F5F5F5'
+			@ selectedColor '#FFFFFF'
+			@ selectedBackColor '#428bca'
+			@ enableLinks false
+			@ highlightSelected true
+			@ showBorder true
+			@ showTags false
+			@ nodes
+				[ 
+

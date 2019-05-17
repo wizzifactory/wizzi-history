@@ -1,0 +1,13 @@
+﻿$group
+
+	get( /api/wizzi/system/packages )
+
+		_ wizziApi.getSystemPackages
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+

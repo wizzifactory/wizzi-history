@@ -1,0 +1,127 @@
+module
+	kind jsfile
+	+
+	#
+		# Test ${graphdb.name}
+	+
+	import util
+	import path
+	import fs
+	var repoStore = require('../../../../server/api/repo/lib/filesystemIO')
+	var apiRepoDir
+		_ path.resolve
+			@ __dirname
+			@ '../../../../server/api/repo'
+	+
+	var del = require('del')
+	var expect = require('expect.js')
+	var mocks = require('./mocks')
+
+	var repoApi = mocks.repoApi()
+
+	var baseUri
+		_ path.join
+			@ __dirname
+			@ 'db'
+			@ 'persister'
+
+	
+	$foreach node in graphdb.nodes
+		+
+		#
+			# ${node.name}
+		var ${node.name}PersisterType
+			_ require
+				_ path.join 
+					@ apiRepoDir
+					@ 'persisters'
+					@ '${node.camelName}'
+
+		var ${node.name}NodeType
+			_ require
+				_ path.join 
+					@ apiRepoDir
+					@ 'nodes'
+					@ '${node.camelName}'
+		
+		var ${node.name}Persister
+			new ${node.name}PersisterType
+				@ repoStore
+				{
+					@ baseUri baseUri
+		var ${node.name}Node
+			new ${node.name}NodeType
+				@ ${node.name}Persister
+	+
+	describe initialize crud repoApi tests
+		+
+		before-async
+			_ del.sync
+				@ [__dirname + '/db/**']
+				{
+					@ force true
+			_ done
+
+		it-async "should have deleted the db: " + baseUri
+			_ expect(fs.existsSync(baseUri)).to.be(false);
+			_ done
+				
+
+	$foreach node in graphdb.nodes
+		+
+		describe crud insert - get ${node.name}
+
+			$foreach item in node.pathKeys
+				var _${item.end} = mocks.getRandom('${item.end}')
+			$foreach item in node.keys
+				var _${item} = mocks.getRandom('${item}')
+
+			it-async should insert a ${node.name}
+
+				_ ${node.name}Node.insert${node.name}
+					$foreach item in node.pathKeys
+						@ _${item.end}
+					$foreach item in node.keys
+						@ _${item}
+					function
+						param err
+						param result
+						_ expect(err).to.be(null)
+						_ ${node.name}Node.get${node.name}
+							$foreach item in node.pathKeys
+								@ _${item.end}
+							$foreach item in node.keys
+								@ _${item}
+							function
+								param err
+								param result
+								_ expect(err).to.be(null)
+								_ expect(result).to.be.an('object')
+								$foreach item in node.pathKeys
+									_ expect(result.${item.end}).to.be(_${item.end})
+								$foreach item in node.keys
+									_ expect(result.${item}).to.be(_${item})
+								_ done
+
+	$backeach node in graphdb.nodes
+		+
+		describe crud delete ${node.name} 
+
+			$foreach item in node.pathKeys
+				var _${item.end} = mocks.getRandom('${item.end}')
+			$foreach item in node.keys
+				var _${item} = mocks.getRandom('${item}')
+
+			it-async should delete a ${node.name}
+
+				_ ${node.name}Node.delete${node.name}
+					$foreach item in node.pathKeys
+						@ _${item.end}
+					$foreach item in node.keys
+						@ _${item}
+					function
+						param err
+						param result
+						_ expect(err).to.be(null)
+						_ done
+

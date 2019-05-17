@@ -1,0 +1,66 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var basicLoader = require('../../tests/mocks').basicLoader
+	var jsNode = require('../../tests/mocks').jsNode
+	var genContext = require('../../tests/mocks').genContext
+	var file = require('../../tests/mocks').file
+	var verify = require('../../tests/mocks').verify
+	var index = require('../../index')
+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath)
+		set item = item.substring(0, item.length - '.js.ittf'.length)
+		log 'item', item
+		_ execute(item)
+
+	function execute
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.js.ittf'
+		var jsOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.js'
+		_ basicLoader.loadMTree
+			@ ittfSource
+			{
+			f_cb( mTree )
+				# log 'mTree', mTree
+				var js = new jsNode(mTree.n, mTree.v)
+				_ js.loadFromMTree(mTree)
+				# log 'jsNode', js
+				var ctx
+					new genContext
+						{
+							@ options
+								{
+									@ CRLF '\n'
+									@ indentSpaces 4
+				_ index.jsStatement.gen(js, ctx)
+				log name, 'ctx', ctx.getContent()
+				_ file.write
+					@ jsOutput
+					@ ctx.getContent()
+
+	function getFiles
+		param srcpath
+		return
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith(file, '.js.ittf')

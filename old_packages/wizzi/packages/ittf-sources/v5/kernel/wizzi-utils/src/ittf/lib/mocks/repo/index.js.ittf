@@ -1,0 +1,18 @@
+﻿module
+    kind jsfile
+
+	var FileSystemStore = require('./fileSystemStore')
+
+	var md = module.exports = {}
+
+	set md.getCreateFilesystemStore
+		function getCreateFilesystemStore
+			return
+				function createStore
+					param callback
+					var store
+						new FileSystemStore()
+					return
+						_ callback
+							@ null
+							@ store

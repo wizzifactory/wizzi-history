@@ -1,0 +1,61 @@
+﻿$group
+
+	@ duplicateGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var hash = options.hash
+			var newname = options.newname
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			
+			var that = this
+			_ paths.duplicateFsItem
+				@ filePath
+				_ path.join
+					_ path.dirname(filePath)
+					@ newname
+				f_cb_api( result )
+					_ that.getGistList
+						{
+							@ userId userId
+							@ kind kind
+						f_cb_api( result )
+							if isGistKind(kind)
+								r_cb_success( kind + ' duplicated' )
+									@ gists result.data.gists
+							else
+								r_cb_success_quoted( Snippet duplicated )
+									@ snippets result.data.snippets
+
+	@ renameGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var hash = options.hash
+			var newname = options.newname
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			
+			var that = this
+			_ paths.renameFsItem
+				@ filePath
+				_ path.join
+					_ path.dirname(filePath)
+					@ newname
+				f_cb_api( result )
+					_ that.getGistList
+						{
+							@ userId userId
+							@ kind kind
+						f_cb_api( result )
+							if isGistKind(kind)
+								r_cb_success( kind + ' renamed' )
+									@ gists result.data.gists
+							else
+								r_cb_success_quoted( Snippet renamed )
+									@ snippets result.data.snippets

@@ -1,0 +1,28 @@
+﻿$group
+
+	sample Scope
+		summary
+	
+		ittf mypage.html.ittf
+			kind primary
+			- layout ( )
+				- h2 Hello
+
+		ittf t/layout.html.ittf
+			kind mixin
+			- html
+				- head
+				- body
+					- $hook default
+
+		ittf t/nav.html.ittf
+			kind mixin
+			- nav
+				- a Home
+					- href /
+				- a Services
+					- href /services
+				- a Contact
+					- href /contact
+
+		$include wfschema.rdbms.sample

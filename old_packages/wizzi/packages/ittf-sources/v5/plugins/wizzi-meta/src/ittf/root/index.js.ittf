@@ -1,0 +1,31 @@
+common/index/v3-package-index( wizzi-meta )
+
+	$append model-transform-artifacts
+		# window(s) vars must be declared even if empty
+		var window_modelFactories
+			{
+				@ 'wfstudio' require('./lib/wizzi/models/wfstudio-factory.g')
+				@ 'wfpackage' require('./lib/wizzi/models/wfpackage-factory.g')
+				@ 'docs' require('./lib/wizzi/models/docs-factory.g')
+		var window_artifactGenerators
+			{
+				$$ @ 'wfstudio/document' require('./lib/artifacts/wfstudio/document/gen/main')
+				$$ @ 'wfpackage/document' require('./lib/artifacts/wfpackage/document/gen/main')
+		var window_transformers
+			{
+				@ 'docs/preprint' require('./lib/artifacts/docs/preprint/trans/main')
+		var window_schemaDefinitions
+			{
+
+	@ provides
+		{
+			@ schemas
+				[
+					@ 'wfstudio'
+					@ 'wfpackage'
+					@ 'docs'
+			@ modelTransformers
+				[
+			@ artifactGenerators
+				[
+

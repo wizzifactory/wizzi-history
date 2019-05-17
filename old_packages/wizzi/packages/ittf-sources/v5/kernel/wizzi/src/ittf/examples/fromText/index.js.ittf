@@ -1,0 +1,40 @@
+﻿module
+	kind jsfile
+
+	var index = require('../../index')
+
+	_ index.createFactory
+		@ 'stefi'
+		@ 'admin'
+		{
+			@ repo
+				{
+					@ storeKind 'filesystem'
+			@ plugins
+				{
+					@ items
+						[
+							@ 'wizzi-web'
+		f_cb_test( wf )
+			_ wf.loadModelFromText
+				[
+					@ 'html'
+					@ '    head'
+					@ '    body'
+					._ join('\n')
+				@ 'html'
+				f_cb_throw( result )
+					log 'loadModelFromText\n', result
+					_ wf.loadModelAndGenerateArtifactFromText
+						[
+							@ 'html'
+							@ '    head'
+							@ '    body'
+							._ join('\n')
+						{
+						@ 'html/document'
+						f_cb_throw( result )
+							log 'loadModelAndGenerateArtifactFromText\n', result
+
+
+	

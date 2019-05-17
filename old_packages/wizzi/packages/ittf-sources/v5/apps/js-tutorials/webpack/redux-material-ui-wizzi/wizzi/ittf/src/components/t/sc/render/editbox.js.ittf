@@ -1,0 +1,89 @@
+﻿$group
+
+	< Splitter
+		@ split vertical
+		@ secondaryInitialSize { 1000 }
+		@ primaryMinSize {100}
+		@ secondaryMinSize {100}
+		@ onResize { this.handleSplitter1Resize }
+		. {classes.editorbox}
+			. {classes.editorHead}
+				button
+					class { classnames(classes.button, classes.buttonMedium, classes.miniButton)}  
+					@ onClick { this.handleSettingsClick }
+					< GearIcon
+						class {classes.iconSvg} 
+				span {ittfHeadText}
+					class {classes.editorHeadText}
+				$include ittf_head
+			{
+				&&
+					+ (isLoadingSnippetCode || isUpdatingSnippets)
+					< Avatar
+						src images/loading_animation.gif
+						class {classes.avatar}
+			{
+				&&
+					+ !(isLoadingSnippetCode || isUpdatingSnippets)
+					< MonacoEditor 
+						class {classes.editor}
+						@ value {snippetCode}
+						@ width { splitter1Sizes.primary }
+						@ height { splitter1Sizes.third }
+						@ theme 'vs-dark'
+						@ onChange { this.handleSnippetCodeChanged }
+						@ options {optionsSnippetCode}
+
+		< Splitter
+			@ split vertical
+			@ secondaryInitialSize { 500 }
+			@ primaryMinSize {100}
+			@ secondaryMinSize {100}
+			@ totalSize { splitter1Sizes.secondary } 
+			@ onResize { this.handleSplitter2Resize }
+			. {classes.editorbox}
+				. {classes.editorHead}
+					button
+						class { classnames(classes.button, classes.buttonMedium, classes.miniButton)}  
+						< GearIcon
+							class {classes.iconSvg} 
+					span {generatedHeadText}
+						class {classes.editorHeadText}
+				{
+					&&
+						+ (isGenerating || isUpdatingSnippets)
+						< Avatar
+							src images/loading_animation.gif
+							class {classes.avatar}
+				{
+					&&
+						+ !(isGenerating || isUpdatingSnippets)
+						< MonacoEditor 
+							class {classes.editor}
+							@ theme 'vs-dark'
+							@ width { splitter2Sizes.primary }
+							@ height { splitter2Sizes.third }
+							@ value {generationError || generatedArtifactText}
+							@ options {optionsGenerated}
+
+			. {classes.editorbox}
+				. {classes.editorHead}
+					button
+						class { classnames(classes.button, classes.buttonMedium, classes.miniButton)}  
+						< GearIcon
+							class {classes.iconSvg} 
+					span Help board
+						class {classes.editorHeadText}
+					. {classes.editorHeadControls}
+						button
+							class { classnames(classes.editorButton) }
+							@ onClick { this.handlePreviewClick }
+							+ Preview
+				{
+					&&
+						+ (showAst && selectedSchema == 'js')
+						. {classes.editorPane}
+							< AstPanel
+								@ codeAst { snippetAst }
+
+

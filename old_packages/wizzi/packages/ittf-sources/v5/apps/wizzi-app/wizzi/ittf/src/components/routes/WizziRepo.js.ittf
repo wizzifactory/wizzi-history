@@ -1,0 +1,441 @@
+﻿r-container( WizziRepo, false, true, withPageInfo;../../utils/withPageInfo
+
+	$append imports
+		common/page_imports()
+		import
+			@ getRepoUser
+			@ getRepoProject
+			@ getRepoFolder
+			@ getRepoDocument
+			editor/importActions()
+			repo/optionsImportActions()
+			from '../../store/actions'
+		import CreateIcon from '@material-ui/icons/Create'
+		import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder'
+		import { CreateFileIcon } from '../mui/Icons'
+		import MyLink from '../mui/FileSystemNavItem'
+		import CodeHighLight from '../mui/CodeHighLight'
+		import OptionsDialog from './dialogs/OptionsDialog'
+		import ConfirmDialog from './dialogs/ConfirmDialog'
+		import ContextMenu from './dialogs/ContextMenu'
+		editor/imports()
+
+		const title = 'Wizzi repo'
+
+		$include wfactions/constants
+
+		$include repo/optionsData
+		$include repo/menusData
+
+	style
+		{ root
+			@ flexGrow 1
+		editor/style()
+		{ fsitems
+			@ padding '30px'
+			@ overflow 'auto'
+		{ button
+			@ margin theme.spacing.unit
+        { buttonPaper
+            @ padding theme.spacing.unit
+            @ textAlign 'center'
+            @ color theme.palette.text.secondary
+
+	state
+		@ selectProjectId null
+		@ selectFolderId null
+		@ selectDocumentName null
+		@ mTreeDebugInfoOpen false
+		@ lastDebugInfoAction null
+		@ checkeds {}
+		$include repo/optionsState
+		$include repo/menusState
+
+
+	did-mount-with-info( title )
+		prop match
+		const userId = match.params.userId
+		prop dispatchGetRepoUser
+		_ dispatchGetRepoUser
+			@ userId
+
+	did-update-with-info( title )
+		prop copyCutPending
+		if this.getPath(this.props) != this.getPath(prevProps) && copyCutPending == false
+			_ this.setState
+				{
+					{ checkeds 
+			_ this.props.dispatchCancelCopyCutFsItems
+
+	=> getPath
+		param propsObject
+		const { match, projectId, folderPath } = propsObject
+		const userId = match.params.userId
+		if verify.isNotEmpty(folderPath)
+			return userId + '/' + projectId + '/' + folderPath
+		elif verify.isNotEmpty(projectId)
+			return userId + '/' + projectId
+		else
+			return userId
+
+	=> getCurrentPath
+		return
+			_ this.getPath
+				@ this.props
+
+	=> handleSelectUser
+		prop match
+		const userId = match.params.userId
+		prop dispatchGetRepoUser
+		_ dispatchGetRepoUser
+			@ userId
+
+	=> handleSelectProject
+		param projectId
+		prop match
+		const userId = match.params.userId
+		_ this.setState
+			{
+				@ selectProjectId projectId
+		prop dispatchGetRepoProject
+		_ dispatchGetRepoProject
+			@ userId
+			@ projectId
+
+
+	=> handleSelectFolderOrDocument
+		param folderPath
+		param kind
+		
+		prop match
+		const userId = match.params.userId
+		const { selectProjectId } = this.state
+
+		editor/renderPropsAndState()
+		
+		prop dispatchGetRepoFolder
+		prop dispatchGetRepoDocument
+		if kind == 0
+			_ dispatchGetRepoFolder
+				@ userId
+				@ selectProjectId
+				@ folderPath
+		else
+			_ dispatchGetRepoDocument
+				@ userId
+				@ selectProjectId
+				@ folderPath
+
+	=> handleDocumentChange
+		param value
+		
+		prop match
+		const userId = match.params.userId
+		const { selectProjectId } = this.state
+		prop document
+		prop dispatchUpdateRepoDocument
+		_ dispatchUpdateRepoDocument
+			@ userId
+			@ selectProjectId
+			@ document.folderPath
+			@ value
+
+	$include repo/optionsHandlers
+	$include repo/menusHandlers
+	editor/handlers()
+
+	=> handleCheckFolderOrDocument
+		param folderPath
+		param kind
+		var {checkeds} = this.state
+		# if a copy/cut is active on a different path cancel the copy/cut and reset checkeds
+		prop copyCutPending
+		prop copyCutSourcePath
+		if copyCutPending && copyCutSourcePath != this.getCurrentPath()
+			set checkeds = {}
+			_ this.props.dispatchCancelCopyCutFsItems
+		var checked = checkeds[folderPath]
+		if !checked
+			set checked
+				{
+					@ kind kind
+					@ checked true
+		else
+			set checked.checked = !checked.checked
+		set checkeds[folderPath] = checked
+		_ this.setState
+			{
+				@ checkeds checkeds
+
+	render
+		prop classes
+		prop match
+		const userId = match.params.userId
+		prop projectId
+		prop folderPath
+		prop items
+		prop document
+
+		const {checkeds} = this.state
+
+		editor/renderPropsAndState()
+		repo/optionsRenderPropsAndState()
+
+		var BreadCrumbUser
+			=>
+				(
+					< Button
+						@ onClick {this.handleSelectUser}
+						+ { userId }
+
+		var BreadCrumbProject
+			=>
+				return
+					iif projectId
+						then
+							< React.Fragment
+								span /
+								< Button
+									@ onClick
+										=>
+											_ this.handleSelectProject
+												@ projectId
+									+ { projectId }
+						else
+							span
+
+		var BreadCrumbFolder
+			=>
+				if folderPath
+					var 
+						decl ss = folderPath.split('/')
+						decl partFolderPath = []
+					const folderParts = []
+					foreach s in ss
+						_ partFolderPath.push(s)
+						_ folderParts.push
+							{
+								@ name s
+								@ path partFolderPath.join('/')
+					return
+						< React.Fragment
+							{
+								_ folderParts.map
+									=>
+										param p
+										param i
+										if i < folderParts.length - 1
+											return
+												span
+													@ key {i}
+													span /
+													< Button
+														@ onClick
+															=>
+																_ this.handleSelectFolderOrDocument(p.path, 0)
+														+ {p.name}
+										else
+											return
+												span
+													@ key {i}
+													span /
+													< Button
+														+ {p.name}
+				else
+					return
+						span
+
+		var BreadCrumbs
+			=>
+				(
+					div
+						< BreadCrumbUser
+						< BreadCrumbProject
+						< BreadCrumbFolder
+
+		var MainContent
+			=>
+				if document
+					return
+						. {classes.fsitems}
+							< BreadCrumbs
+							editor/renderInfoDialog()
+							repo/tlb()
+								repo/tlb-btn( Edit, this.handleEditDocument
+								{
+									&&
+										+ document.isIttfDocument && document.isFragment == false
+										< React.Fragment
+											repo/tlb-btn( mTree script, this.handleMTreeDebugInfo
+											repo/tlb-btn( Generate artifact, this.handleGenerateDefaultArtifact
+								{
+									&&
+										+ document.isIttfDocument && document.schema === 'wfschema'
+										repo/tlb-btn( Generate schema, this.handleGenerateWfSchema
+								{
+									&&
+										+ document.isIttfDocument && document.schema === 'wfjob'
+										repo/tlb-btn( Execute job, this.handleExecuteWfJob
+							< CodeEditor
+								@ language { 'js' }
+								@ value { document.content }
+								@ onChange { this.handleDocumentChange }
+							pre
+								+ { JSON.stringify(document, null, 2) }
+
+				elif projectId && items
+					return
+						. {classes.fsitems}
+							< BreadCrumbs
+							{
+								&&
+									+ copyCutPending
+									< Typography 
+										@ variant "title"
+										@ color "inherit"
+										+ { copyCutType + ' from ' + copyCutSourcePath }
+							repo/tlb()
+								repo/tlb-btn( Create folder, this.handleCreateFolder, CreateNewFolderIcon
+								repo/tlb-btn( Create document, this.handleCreateDocument, CreateFileIcon
+								{
+									&&
+										+ hasCheckeds(this)
+										< React.Fragment
+											repo/tlb-btn( Copy, this.handleCopyFsItems
+											repo/tlb-btn( Cut, this.handleCutFsItems
+								{
+									&&
+										+ copyCutPending
+										repo/tlb-btn( Paste, this.handlePasteFsItems
+								{
+									&&
+										+ hasCheckeds(this)
+										repo/tlb-btn( Delete, this.handleDeleteFsItems
+							< React.Fragment
+								repo/menusRender(fsItem)
+								< List
+									{
+										_ items.map
+											=>
+												param p
+												param i
+												return
+													< MyLink
+														@ key {i}
+														@ title {p.basename}
+														@ kind {p.kind} 
+														@ value {p.folderPath}
+														@ onClick
+															=>
+																_ this.handleSelectFolderOrDocument(p.folderPath, p.kind)
+														@ checked { checkeds[p.folderPath] && checkeds[p.folderPath].checked }
+														@ onCheck
+															=>
+																_ this.handleCheckFolderOrDocument(p.folderPath, p.kind)
+														@ onDuplicate
+															=> 
+																_ this.handleDuplicateFsItem(p.kind, p.fullPath, p.basename)
+														@ onRename
+															=> 
+																_ this.handleRenameFsItem(p.kind, p.fullPath, p.basename)
+														repo/menusActivationProps(fsItem)
+
+								pre
+									+ { JSON.stringify(items, null, 2) }
+
+				elif userId && items
+					return
+						. {classes.fsitems}
+							< BreadCrumbs
+							repo/tlb()
+								repo/tlb-btn( Create project, this.handleCreateProject
+							< React.Fragment
+								< List
+									{
+										_ items.map
+											=>
+												param p
+												param i
+												return
+													< MyLink
+														@ key {i}
+														@ title {p.basename}
+														@ kind { 0 } 
+														@ onClick
+															=>
+																_ this.handleSelectProject(p.basename)
+								pre
+									+ { JSON.stringify(items, null, 2) }
+
+				else
+					return
+						. {classes.fsitems}
+							h1 {userId}
+
+		return
+			. {classes.root}
+				repo/optionsRender()
+				< MainContent
+				pre
+					+ { JSON.stringify(this.state, null, 2) }
+
+	
+	$append state-to-props
+		@ projectId state.repo.projectId
+		@ folderPath state.repo.folderPath
+		@ items state.repo.items
+		@ document state.repo.document
+		@ selectedDocumentHash state.repo.document ? state.repo.document.hash : null
+		@ loadError state.repo.loadError
+		@ isLoading state.repo.isLoading
+		$include editor/stateToProps
+		$include repo/optionsStateToProps
+
+	$append dispatch-to-props
+
+		@ dispatchGetRepoUser
+			=>
+				param userId
+				log 'dispatchGetRepoUser'
+				_ dispatch
+					_ getRepoUser
+						@ userId
+
+		@ dispatchGetRepoProject
+			=>
+				param userId
+				param projectId
+				log 'dispatchGetRepoProject'
+				_ dispatch
+					_ getRepoProject
+						@ userId
+						@ projectId
+
+		@ dispatchGetRepoFolder
+			=>
+				param userId
+				param projectId
+				param folderPath
+				log 'dispatchGetRepoFolder'
+				_ dispatch
+					_ getRepoFolder
+						@ userId
+						@ projectId
+						@ folderPath
+
+		@ dispatchGetRepoDocument
+			=>
+				param userId
+				param projectId
+				param documentPath
+				log 'dispatchGetRepoDocument'
+				_ dispatch
+					_ getRepoDocument
+						@ userId
+						@ projectId
+						@ documentPath
+
+		common/dispatch( updateRepoDocument, userId, projectId, documentPath, content
+
+		repo/optionsDispatchToProps()
+		editor/dispatchToProps()

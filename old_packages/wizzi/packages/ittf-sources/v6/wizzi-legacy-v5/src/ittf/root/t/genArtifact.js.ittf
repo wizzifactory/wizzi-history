@@ -1,0 +1,46 @@
+﻿$group
+	$params schema, artifact
+
+	set md.${schema}${artifact}
+		function
+			string ittfDocumentUri
+			{ mtreeBrickBuildUpContext
+			callback
+
+			log '${schema}${artifact} created by legacy package in ', __dirname
+
+			var loadModel
+				_ ${schema}Factory.createLoadModel
+					{
+						@ loadMTree
+							_ createLoadMTree
+								_ getCreateStore
+						@ file file
+						@ verify verify
+						@ errors errors
+
+			_ loadModel
+				@ ittfDocumentUri
+				_ createRequestContext
+					@ mtreeBrickBuildUpContext
+				f_cb( artifactModel )
+					var genContext
+						new GenContext
+							{
+								@ options getProductionOptions()
+								@ pman createProductionManager()
+					_ ${schema}${artifact}Artifact.gen
+						@ artifactModel
+						@ genContext
+						function
+							param err
+							param result
+							if err
+								log 'wizzi.legacy.${schema}${artifact}', typeof(err), err.length, err.length && err.length > 0 && err[0]
+								r_cb_wz_err( ArtifactGenerationError, generateArtifact, err )
+									@ 'Error in generation: ${schema}/${artifact}. For artifactModel: ' + ittfDocumentUri +
+										\b '. See inner error.'
+							var sw = new StringWriter()
+							_ result.toStream(sw)
+							_ callback(null, sw.toString())
+

@@ -1,0 +1,93 @@
+﻿$group
+	$params name, level|0, step|1
+
+	function heading1
+		param text
+		log ''
+		log '*'.repeat(120)
+		log '** level ${level} - step ${step} - ${name} - ' + text
+		log '*'.repeat(120)
+		log ''
+	
+	function heading2
+		param text
+		log ''
+		log '   ', '-'.repeat(100)
+		log '   ','-- ${name} - ' + text
+		log '   ', '-'.repeat(100)
+		log ''
+
+	function printArray
+		param name
+		param arr
+		param fields
+		param format
+		if format === 'dashes'
+			log '   ', '-'.repeat(100)
+		log '   ', '* array ' + name + ' : '
+		foreach item in arr
+			log '    {', i
+			var keys = fields || Object.keys(item)
+			foreach k in keys
+				_ printValue
+					@ k
+					@ item[k]
+
+	function printValue
+		param key
+		param value
+		param format
+		param p1
+		if format === 'dashes' || format === 'meter'
+			log '   ', '-'.repeat(100)
+		if format === 'json'
+			set value
+				_ stringify
+					@ value
+					@ null
+					@ 4
+		if verify.isNotEmpty(value)
+			var lines
+				_ verify.splitLines
+					@ value
+					{
+						@ numbered true
+			if lines.length === 1
+				log '   ', key, ':', lines[0].text
+			else
+				for var i=0; i<lines.length; i++
+					if i === 0
+						log '   ', key, ':', lines[0].numFmt, lines[0].text
+					else
+						log '   ', spaces(key.length+1), ' ', lines[i].numFmt, lines[i].text
+		elif verify.isObject(value)
+			log '   ', key, ':', inspect(value)
+		else
+			log '   ', key, ':', value
+		if format === 'meter'
+			_ meterLine(p1, '     ' + new Array(1 + key.length).join(' '))
+
+	function spaces
+		param len
+		return new Array(len).join(' ')
+
+	function meterLine
+		param len
+		param indent
+		var sb = []
+		var numW = len < 10 ? 1 : ( len < 100 ? 2 : 3 )
+		var x
+		for var i=0; i<numW; i++
+			for var j=0; j<len; j++
+				set x = formatNum(j, numW)
+				_ sb.push(x.substr(i,1))
+			log indent, sb.join('')
+			set sb = []
+
+	function formatNum
+		param num
+		param len
+		var x = num.toString()
+		return new Array(1 + len-x.length).join(' ') + x
+				
+

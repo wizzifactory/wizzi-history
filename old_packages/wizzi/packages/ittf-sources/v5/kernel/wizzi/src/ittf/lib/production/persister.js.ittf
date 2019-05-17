@@ -1,0 +1,107 @@
+﻿module 
+    kind jsfile
+
+    var path = require('path')
+    var util = require('util')
+    var async = require('async')
+    # TODO VIA var file = require('wizzi-utils').file
+    var log
+        _ require('../util/log')
+            ( 
+                @ module
+    +
+	function logme
+        if false
+            _ console.log.apply(console, arguments)
+    +
+	wz-class ArtifactPersister
+        ctor 
+            param artifactInfo
+            set this.artifactInfo = artifactInfo
+            _ log.setLevel
+                @ artifactInfo.productionManager.options.verbose
+    
+		m toFile
+            param callback
+			
+			var that = this
+			if this.artifactInfo.isWizziModelTypesArtifact()
+				# TODO 
+				# Write here model type artifacts ?
+				# The wizzi model artifacts could be generated in memory and retrieved
+				# by the this.artifactInfo.getItemsToPersistToFile() method
+				# TODO Add more info to result info ?
+				return
+					_ callback
+						@ null
+						[
+							{
+								@ oper 'generate-schema'
+								@ status 'success'
+								{ item
+									@ filepath 'Unavailable'
+			else
+				_ this.artifactInfo.getItemsToPersistToFile
+					f_cb( items )
+						_ async.mapSeries
+							@ items
+							@ asyncArtifactFilePersister_hof(that.artifactInfo)
+							@ callback
+    
+		m toTest
+            var ret
+                [ 
+			_ this.artifactInfo.getItemsToPersistToFile
+				f_cb( items )
+					foreach item in items
+						_ ret.push
+							{ 
+								@ filepath item.filepath
+								@ content item.genContext.getContent()
+            return ret
+    
+	function asyncArtifactFilePersister_hof
+		param artifactInfo
+		var fileService = artifactInfo.getFileService()
+        return 
+            function 
+                param genInfo
+                param callback
+
+				_ logme
+                    @ 'AsyncArtifactFilePersister.persist'
+                    @ genInfo.filepath
+                    _ genInfo.genContext.getContent()
+                    
+				$if isWebpackTarget
+					# Browser-FS does not implement fs.createWriteStream
+					# In browsers simply use write
+					_ fileService.write
+						@ genInfo.filepath
+						_ genInfo.genContext.getContent
+						f_cb( result )
+							_ log.success('Written to file: ' + genInfo.filepath)
+							_ callback
+								@ null
+								{
+									@ oper 'persist-to-file'
+									@ item
+										{
+											@ filepath genInfo.filepath
+									@ status 'success'
+				$else
+					_ fileService.openWrite
+						@ genInfo.filepath
+						a_cb( stream )
+							_ genInfo.genContext.toStream(stream)
+							_ stream.end
+								a_cb()
+									_ log.success('Written to file: ' + genInfo.filepath)
+									_ callback
+										@ null
+										{
+											@ oper 'persist-to-file'
+											@ item
+												{
+													@ filepath genInfo.filepath
+											@ status 'success'

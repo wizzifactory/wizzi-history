@@ -1,0 +1,31 @@
+﻿concept Wizzi jobs
+
+	summary
+
+		p The execution of a Wizzi Job is the main operation of the Wizzi Factory. 
+		
+		p A Wizzi Job is an ITTF Document that declares how to load context models, execute model transformations, generate artifacts 
+			+ and persist them in their destination paths. 
+			
+		p A core Wizzi Schema of the Wizzi Factory (wfJob) describes the types of a Wizzi Job declaration. 
+
+		h4 Example of the Wizzi Job that produces this documentation html page.
+		ittf
+			- wfjob wizzi-docs-concepts
+				- $
+					- var models_folder     = path.join(__dirname, 'models');
+					- var html_folder       = path.join(__dirname, 'html');
+					- var dest_folder       = "c:/my/wizzi/v5/github/wizzifactory.github.io";
+				- models-base-folder ${dollar}{models_folder}
+				- model concepts
+					- src concepts.docs.ittf
+					- schema docs
+
+				- line html
+					- cwd-folder ${dollar}{html_folder}
+					- wfjob/artifact-html( concepts.html.ittf )
+						- model-ref concepts
+							- transformer docs/preprint
+				- production
+					- dest-folder ${dollar}{dest_folder}
+					- line-ref html

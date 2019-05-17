@@ -1,0 +1,96 @@
+﻿$group
+
+	@ clonesFolderPath
+		function
+			param userId
+			if userId
+				return
+					_ path.join
+						@ config.githubBasePath
+						@ userId
+						@ 'clones'
+			else
+				return
+					_ path.join
+						@ config.githubBasePath
+						@ 'clones'
+
+	@ cloneFilePath
+		function
+			param userId
+			param name
+			return
+				_ path.join
+					_ this.clonesFolderPath
+						@ userId
+					@ name
+
+	@ cloneInfoByPath
+		function
+			param filePath
+			return
+				_ this.fileInfoByPath
+					@ filePath
+					_ this.clonesFolderPath
+
+	@ getCloneFiles
+		function
+			param userId
+			param callback
+			return
+				_ this.getFolderFiles
+					_ this.clonesFolderPath
+						@ kind
+						@ userId
+					_ this.clonesFolderPath
+						@ kind
+					@ '/wizzi/' + kind + 's'
+					@ callback
+
+	@ cloneFileExists
+		function
+			param userId
+			param name
+			param callback
+			return
+				_ this.fsItemExists
+					_ this.cloneFilePath
+						@ userId
+						@ name
+					@ callback
+
+	@ getCloneFile
+		function
+			param userId
+			param name
+			param callback
+			return
+				_ this.getFile
+					_ this.cloneFilePath
+						@ userId
+						@ name
+					@ callback
+
+	@ putCloneFile
+		function
+			param userId
+			param name
+			param content
+			param callback
+			
+			var filePath 
+				_ this.cloneFilePath
+					@ userId
+					@ name
+			
+			_ this.putFile
+				@ filePath
+				@ content
+				a_cb()
+					var clone
+						_ this.cloneInfoByPath
+							@ filePath
+					set clone.content = content
+					r_cb_success_quoted( Clone created )
+						@ clone clone
+

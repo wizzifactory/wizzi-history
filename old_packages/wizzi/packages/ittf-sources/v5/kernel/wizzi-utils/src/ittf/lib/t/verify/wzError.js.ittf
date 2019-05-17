@@ -1,0 +1,69 @@
+﻿$group
+
+	class wzError
+		super Error
+
+		ctor
+			param name
+			param inner
+			param shortmessage
+			param message
+			param info
+			param stack
+			set this.name = name
+			set this.inner = inner
+			set this.shortmessage = shortmessage
+			set this.message = message
+			set this.info = info
+			set this.stack = stack
+			set this.__is_error = true
+			if md.isNotEmpty(stack)
+				set this.stack = []
+				foreach line in stack.split('\n')
+					_ this.stack.push('    ' + line)
+		
+		m toString
+			var ret 
+				[
+					@ (this.hasOwnProperty('name') && this.name ||
+						\b this.constructor.name || 
+						\b this.constructor.prototype.name)
+						\b + ': ' + ( this.message || 'message unavailable')
+			if this.info
+				for var k in this.info
+					if md.isPrimitive(this.info[k])
+						_ ret.push( '-> ' + k + ': ' + this.info[k] )
+			if this.errorLines
+				_ ret.push('-> error lines')
+				foreach l in this.errorLines
+					_ ret.push(l)
+			if this.inner
+				# log 'wizzi-utils.verify.wzError.toString.this.inner', this.inner
+				var inner = this.inner
+				while inner
+					var stack = inner.stack
+					if md.isNotEmpty(stack)
+						_ ret.push( '-> inner.stack :')
+						foreach line in stack.split('\n')
+							_ ret.push('    ' + line)
+						set inner = null
+					else
+						set inner = inner.inner
+			return ret.join('\n')
+
+		m toInfo
+			var ret
+				[
+					@ '\n'
+					@ '== error =================='
+			for var k in this.info
+				if md.isPrimitive(this.info[k])
+					_ ret.push( '-> ' + k + ': ' + this.info[k] )
+			_ ret.push('---------------------------')
+			if this.errorLines
+				_ ret.push('-- error lines')
+				foreach l in this.errorLines
+					_ ret.push(l)
+			return ret.join('\n')
+
+	set wzError.prototype.name = 'wzError'

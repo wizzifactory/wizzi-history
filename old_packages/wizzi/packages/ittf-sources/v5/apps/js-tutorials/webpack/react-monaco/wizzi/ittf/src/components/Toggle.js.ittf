@@ -1,0 +1,48 @@
+﻿r-component( Toggle )
+
+	state
+		@ checked this.props.checked
+
+	did-update
+		prop checked
+		if checked !== prevProps.checked
+			_ this.setState
+				{
+					@ checked checked
+
+	=> onChange
+		prop disabled
+		prop onChange
+		prop right
+		prop left
+
+		if disabled
+			return
+
+		_ this.setState
+			{
+				@ checked !this.state.checked
+			=>
+				_ onChange
+					@ this.state.checked ? right : left
+
+	render
+
+		return
+
+			. {`toggle-container ${this.props.className}`}
+				
+				. can-toggle
+					@ onClick {this.onChange.bind(this)}
+				
+					input
+						id a
+						type "checkbox"
+						checked { this.state.checked || false }
+						disabled {this.props.disabled}
+					
+					label
+						. can-toggle__switch
+							@ htmlFor a
+							@ data-checked {this.props.right}
+							@ data-unchecked {this.props.left}

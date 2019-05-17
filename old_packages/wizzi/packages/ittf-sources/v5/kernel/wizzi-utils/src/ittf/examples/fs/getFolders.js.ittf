@@ -1,0 +1,38 @@
+﻿base_example( getFolders )
+	
+	$append imports
+		var file = vfile()
+
+	_ file.getFolders
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'samples'
+		{ 
+			@ deep false
+			@ tFoldersOnly false
+			@ documentNames false
+		f_cb_test( folders )
+			log 'utils.getFolders.folders', folders
+			_ file.getFolders
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'samples'
+				{ 
+					@ deep false
+					@ tFoldersOnly false
+					@ documentNames false
+				f_cb_test( folders )
+					log 'utils.getFoldersWithContent.folders', folders
+					_ file.getFolders
+						_ path.join
+							@ __dirname 
+							@ 'ittf'
+							@ 'samples'
+						{ 
+							@ deep true
+							@ tFoldersOnly false
+							@ documentNames true
+						f_cb_test( folders )
+							log 'utils.getFoldersWithDocumentNames.folders', folders

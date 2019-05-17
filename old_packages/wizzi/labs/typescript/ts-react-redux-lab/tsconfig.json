@@ -1,0 +1,41 @@
+{
+	"compilerOptions": {
+		// "allowJs": true, // include js files
+		"allowSyntheticDefaultImports": true,
+		"alwaysStrict": true,
+		"baseUrl": "./", // relative paths base
+		// "checkJs": true, // typecheck js files
+		"declaration": false, // don't emit declarations
+		"esModuleInterop": true, // enable to do "import React ..." instead of "import * as React ..."
+		"forceConsistentCasingInFileNames": true,
+		"importHelpers": true, // importing transpilation helpers from tslib
+		"jsx": "react",
+		"lib": ["dom", "es2017", "esnext.asynciterable"], // you will need to include polyfills for es2017 manually
+		"module": "es2015", // "es2015" for tree-shaking
+		"moduleResolution": "node",
+		"noEmitHelpers": true, // disable inline transpilation helpers in each file		
+		"noEmitOnError": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		// "outDir": "dist/", // target for compiled files
+		"paths": {
+			// "@src/*": ["src/*"] // will enable import aliases -> import { ... } from '@src/components'
+			// WARNING: Require to add this to your webpack config -> resolve: { alias: { '@src': PATH_TO_SRC } }
+			// "redux": ["typings/redux"], // override library types with your alternative type-definitions in typings folder
+		  },		
+		"pretty": true,
+		"removeComments": true,		
+		"sourceMap": true,
+		// "strict": true,
+		"strictNullChecks": true,
+		"target": "es5", // "es2015" for ES6+ engines
+		// "types": ["jest"], // which global types to use
+	},
+	"exclude": [
+		"node_modules",
+		"dist"
+	],
+	"include": ["src", "typings"]
+}

@@ -1,0 +1,23 @@
+﻿$group
+
+	@ getProjects
+		function
+			param options
+			param callback
+
+			log 'getProjects', options
+
+			var projects
+				_ paths.projectList
+					@ options
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ projects projects
+					@ status
+						_ success
+							@ 'Projects fetched'
+

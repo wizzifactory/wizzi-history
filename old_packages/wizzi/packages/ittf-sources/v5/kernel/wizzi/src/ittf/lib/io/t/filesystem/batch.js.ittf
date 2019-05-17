@@ -1,0 +1,31 @@
+﻿$group
+
+	set md.batch
+		function
+			param userId
+			param actions
+			param callback
+
+			_ async.mapSeries
+				@ actions
+				function
+					param action
+					param callback
+					if action.actionType === 'copy'
+						_ md.copyFsItem
+							@ userId
+							@ action
+							@ callback
+					elif action.actionType === 'move'
+						_ md.moveFsItem
+							@ userId
+							@ action
+							@ callback
+					elif action.actionType === 'delete'
+						_ md.deleteFsItem
+							@ userId
+							@ action
+							@ callback
+					else
+						_ callback('Filesystem.batch. Invalid parameter "action.actionType":' + action.actionType)
+				@ callback

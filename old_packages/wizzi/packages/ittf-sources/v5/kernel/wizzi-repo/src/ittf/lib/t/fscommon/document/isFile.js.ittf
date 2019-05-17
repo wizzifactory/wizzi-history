@@ -1,0 +1,15 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m isFile
+		string filePath
+		callback
+
+		set filePath = normalize(filePath)
+		_ this.fsCommon.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem && fsitem.kind == 1
+					r_cb( true )
+				else
+					r_cb( false )

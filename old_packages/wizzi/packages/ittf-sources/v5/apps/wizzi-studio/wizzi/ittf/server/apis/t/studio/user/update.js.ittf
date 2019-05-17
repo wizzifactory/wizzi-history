@@ -1,0 +1,45 @@
+﻿$group
+
+	@ updateUser
+		function
+			param options
+			param callback
+
+			# options.userId required
+			# options.project required
+
+			var metaPath
+				_ paths.userMeta
+					@ options
+
+			_ this.getUser
+				@ options
+				f_cb_no_err( result )
+					if err
+						return
+							_ this.createtUser
+								@ options
+								@ callback
+			
+					delete options.userId
+
+					var userMeta
+						_ Object.assign
+							{
+							@ result.data
+							@ options
+
+					_ file.writeJSON
+						@ metaPath
+						@ userMeta
+
+					_ callback
+						@ null
+						{
+							@ data
+								{
+									@ name userMeta.name
+									@ currentProject userMeta.currentProject
+							@ status
+								_ success
+									@ 'User updated: "' + options.userId + '"'

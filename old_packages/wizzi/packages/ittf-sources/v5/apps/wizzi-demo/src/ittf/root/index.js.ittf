@@ -1,0 +1,19 @@
+﻿module
+	kind jsfile
+
+	var starter_essentials = require('./examples/starter/essentials')
+	var starter_apps = require('./examples/starter/apps')
+	var advanced_essentials = require('./examples/advanced/essentials')
+	var advanced_plugins = require('./examples/advanced/plugins')
+
+	var request = process.argv.length > 2 ? process.argv[2] : 'all'
+	var p1 = process.argv.length > 3 ? process.argv[3] : null
+
+	if request == 'se' || request == 'all'
+		_ starter_essentials(p1)
+	if request == 'sa' || request == 'all'
+		_ starter_apps(p1)
+	if request == 'ae' || request == 'all'
+		_ advanced_essentials(p1)
+	if request == 'ap' || request == 'all'
+		_ advanced_plugins(p1)

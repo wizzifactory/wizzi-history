@@ -1,0 +1,27 @@
+﻿module 
+    kind jsfile
+
+	#
+		# TODO eliminate this
+		#
+
+    var data
+        { 
+    
+	var option
+        set module.exports =
+            function 
+                param key
+                param value
+                var no = key.match(/^no-(.+)$/)
+                if arguments.length === 2
+                    return data[key] = value
+                elif no
+                    return data[no[1]] === false
+                else
+                    return data[key]
+    
+	set option.init
+        function 
+            param obj
+            return data = (obj || {})

@@ -1,0 +1,26 @@
+﻿example-essentials(jswizzi)
+
+	var sourcePath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'level_0'
+			@ 'step_1'
+			@ 'sample.html.ittf'
+
+	_ heading1
+		@ 'sample.html.ittf'
+
+	# Load a magical tree from an ittf document and a context object.
+	_ wizzi.mtree
+		@ sourcePath
+		{
+		f_cb_test(mTreeModel)
+			_ printValue
+				@ 'sample.html.ittf - mTree'
+				@ mTreeModel.toIttf()
+				@ 'dashes'
+			return
+				_ step_callback
+					@ null
+					@ 'jswizzi example executed'

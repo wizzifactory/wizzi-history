@@ -1,0 +1,147 @@
+  module  ids: 1 120
+    kind jsfile ids: 2 121
+    +  ids: 3 122
+    import path ids: 4 123
+    import del ids: 5 124
+    +  ids: 6 125
+    var expect = require('expect.js') ids: 7 126
+    var FragmentsFinder = require('../../../lib/ittf/repo/fragmentsFinder') ids: 8 127
+    var errors = require('../../../lib/ittf/repo/errors') ids: 9 128
+    +  ids: 10 129
+    var finder ids: 11 130
+      _ FragmentsFinder.createFileSystemFragmentFinder() ids: 12 131
+    +  ids: 13 132
+    describe using the IttfDocumentFinder to locate documents and load the text content ids: 14 133
+      before-async  ids: 15 134
+        _ del.sync ids: 16 135
+          [  ids: 17 136
+            _ path.join ids: 18 137
+              @ __dirname ids: 19 138
+              @ '/dummyfragfinder/**' ids: 20 139
+          {  ids: 21 140
+            @ force true ids: 22 141
+          _ done() ids: 23 142
+      it-async should get an invalid path error ids: 24 143
+        _ finder.resolvePath ids: 25 144
+          {  ids: 26 145
+            @ ittfDocumentUri null ids: 27 146
+            @ include false ids: 28 147
+            @ includerModelKey null ids: 29 148
+            @ basedir null ids: 30 149
+            @ relpath null ids: 31 150
+          $group  ids: 239 245
+            $args: foundUri  $params: result
+            function  ids: 241 246
+              param err ids: 242 247
+              param ${result} ids: 243 248
+              _ expect(err.name).to.be('InvalidRequestError') ids: 33 152
+              _ expect(err.code).to.be('InvalidPath') ids: 34 153
+              _ done() ids: 35 154
+      it-async should get an invalid path error ids: 36 155
+        _ finder.resolvePath ids: 37 156
+          {  ids: 38 157
+            @ ittfDocumentUri null ids: 39 158
+            @ include false ids: 40 159
+            @ includerModelKey null ids: 41 160
+            @ basedir null ids: 42 161
+            @ relpath '/ass.fidanken.ittf' ids: 43 162
+          $group  ids: 239 250
+            $args: foundUri  $params: result
+            function  ids: 241 251
+              param err ids: 242 252
+              param ${result} ids: 243 253
+              _ expect(err.name).to.be('InvalidRequestError') ids: 45 164
+              _ expect(err.code).to.be('InvalidPath') ids: 46 165
+              _ done() ids: 47 166
+      it-async should get an invalid path error ids: 48 167
+        _ finder.resolvePath ids: 49 168
+          {  ids: 50 169
+            @ ittfDocumentUri null ids: 51 170
+            @ include false ids: 52 171
+            @ includerModelKey null ids: 53 172
+            @ basedir null ids: 54 173
+            @ relpath 'ass.fidanken.ittf' ids: 55 174
+          $group  ids: 239 255
+            $args: foundUri  $params: result
+            function  ids: 241 256
+              param err ids: 242 257
+              param ${result} ids: 243 258
+              _ expect(err.name).to.be('InvalidRequestError') ids: 57 176
+              _ expect(err.code).to.be('InvalidPath') ids: 58 177
+              _ done() ids: 59 178
+      it-async should get an invalid path error ids: 60 179
+        _ finder.resolvePath ids: 61 180
+          {  ids: 62 181
+            @ ittfDocumentUri null ids: 63 182
+            @ include false ids: 64 183
+            @ includerModelKey null ids: 65 184
+            @ basedir '/hello' ids: 66 185
+            @ relpath null ids: 67 186
+          $group  ids: 239 260
+            $args: foundUri  $params: result
+            function  ids: 241 261
+              param err ids: 242 262
+              param ${result} ids: 243 263
+              _ expect(err.name).to.be('InvalidRequestError') ids: 69 188
+              _ expect(err.code).to.be('InvalidPath') ids: 70 189
+              _ done() ids: 71 190
+      it-async should get a valid uri ids: 72 191
+        _ finder.resolvePath ids: 73 192
+          {  ids: 74 193
+            @ ittfDocumentUri ids: 75 194
+              _ path.join ids: 76 195
+                @ __dirname ids: 77 196
+                @ 'data' ids: 78 197
+                @ 'doc1.tests.ittf' ids: 79 198
+            @ include false ids: 80 199
+            @ includerModelKey null ids: 81 200
+            @ basedir null ids: 82 201
+            @ relpath null ids: 83 202
+          $group  ids: 239 265
+            $args: foundUri  $params: result
+            function  ids: 241 266
+              param err ids: 242 267
+              param ${result} ids: 243 268
+              _ expect(err).to.be(null) ids: 85 204
+              _ expect(foundUri).to.be.a('string') ids: 86 205
+              _ done() ids: 87 206
+      it-async should get a valid uri for a call to a down t fragment ids: 88 207
+        _ finder.resolvePath ids: 89 208
+          {  ids: 90 209
+            @ ittfDocumentUri null ids: 91 210
+            @ include false ids: 92 211
+            @ includerModelKey null ids: 93 212
+            @ basedir ids: 94 213
+              _ path.join ids: 95 214
+                @ __dirname ids: 96 215
+                @ 'data' ids: 97 216
+            @ relpath 'frag1.tests.ittf' ids: 98 217
+          $group  ids: 239 270
+            $args: foundUri  $params: result
+            function  ids: 241 271
+              param err ids: 242 272
+              param ${result} ids: 243 273
+              _ expect(err).to.be(null) ids: 100 219
+              _ expect(foundUri).to.be.a('string') ids: 101 220
+              _ done() ids: 102 221
+      it-async should get a valid uri for a call to an up t fragment ids: 103 222
+        _ finder.resolvePath ids: 104 223
+          {  ids: 105 224
+            @ ittfDocumentUri null ids: 106 225
+            @ include false ids: 107 226
+            @ includerModelKey null ids: 108 227
+            @ basedir ids: 109 228
+              _ path.join ids: 110 229
+                @ __dirname ids: 111 230
+                @ 'data' ids: 112 231
+                @ 'sub' ids: 113 232
+                @ 'sub' ids: 114 233
+            @ relpath 'frag2.tests.ittf' ids: 115 234
+          $group  ids: 239 275
+            $args: foundUri  $params: result
+            function  ids: 241 276
+              param err ids: 242 277
+              param ${result} ids: 243 278
+              _ expect(err).to.be(null) ids: 117 236
+              _ expect(foundUri).to.be.a('string') ids: 118 237
+              _ done() ids: 119 238

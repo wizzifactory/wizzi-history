@@ -1,0 +1,85 @@
+﻿$group
+
+	{ root
+		@ flexGrow 1
+		@ height '100%' $$ TODO is necessary for fixed sizes???
+
+	{ appFrame
+		@ height 'calc(100% - 64px)' $$ TODO 64 paramater???
+		@ zIndex 1
+		@ overflow 'hidden'
+		@ position 'relative'
+		@ display 'flex'
+		@ width '100%'
+
+	{ appBar
+		@ position 'absolute'
+		@ transition
+			_ theme.transitions.create
+				[ 
+					@ 'margin'
+					@ 'width'
+				{ 
+					@ easing theme.transitions.easing.sharp
+					@ duration theme.transitions.duration.leavingScreen
+
+	{ appBarShift
+		@ width
+			`lit 
+				+ calc(100% -\b
+				@ drawerWidth
+				+ px)
+		@ transition
+			_ theme.transitions.create
+				[ 
+					@ 'margin'
+					@ 'width'
+				{ 
+					@ easing theme.transitions.easing.easeOut
+					@ duration theme.transitions.duration.enteringScreen
+
+	{ 'appBarShift-left'
+		@ marginLeft drawerWidth
+	
+	{ menuButton
+		@ marginLeft 12
+		@ marginRight 20
+	
+	{ hide
+		@ display 'none'
+	
+	{ drawerPaper
+		@ position 'relative'
+		@ width drawerWidth
+	
+	{ drawerHeader
+		@ display 'flex'
+		@ alignItems 'center'
+		@ justifyContent 'flex-end'
+		@ padding '0 8px'
+		@ ...theme.mixins.toolbar
+
+	{ content
+		@ flexGrow 1
+		@ backgroundColor theme.palette.background.default
+		@ padding theme.spacing.unit * 3
+		@ transition
+			_ theme.transitions.create
+				@ 'margin'
+				{ 
+					@ easing theme.transitions.easing.sharp
+					@ duration theme.transitions.duration.leavingScreen
+	
+	{ 'content-left'
+		@ marginLeft -drawerWidth
+	
+	{ contentShift
+		@ transition
+			_ theme.transitions.create
+				@ 'margin'
+				{ 
+					@ easing theme.transitions.easing.easeOut
+					@ duration theme.transitions.duration.enteringScreen
+	
+	{ 'contentShift-left'
+		@ marginLeft 0	

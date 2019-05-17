@@ -1,0 +1,56 @@
+﻿module
+	kind es6
+
+	var mysql = require('mysql')
+
+	class MySqlDb
+
+		ctor
+			param dbname
+			set this.dbname = dbname
+
+		m query
+			param request
+			param callback
+			const that = this
+			_ this.openConnection
+				f_cb( conn )
+					_ conn.query
+						@ request
+						function
+							param err
+							param results
+							param fields
+							if err
+								return callback(err)
+							log 'MySqlDb.query.sql', request.sql
+							log 'MySqlDb.query.results', results
+							log 'MySqlDb.query.fields', fields
+							_ that.closeConnection
+								@ conn
+							r_cb( results )
+
+		m openConnection
+			param callback
+			var conn
+				_ mysql.createConnection
+					{
+						@ host 'localhost'
+						@ user 'root'
+						@ password 'my++++01'
+						@ database this.dbname
+
+			_ conn.connect
+				f_cb( result )
+					r_cb( conn )
+
+		m closeConnection
+			param conn
+			_ conn.end
+				f_cb_no_err()
+					if err
+						log 'MySqlDb.closeConnection.Error', err
+
+	set module.exports = MySqlDb
+
+	

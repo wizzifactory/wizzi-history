@@ -1,0 +1,40 @@
+wfjob wizzi-docs-code-intro
+	
+	$
+		var models_folder     = "c:/my/wizzi/v5/apps/wizzi-docs/src/ittf/models/docs";
+		var html_folder       = path.join(__dirname, 'html');
+		var css_folder        = path.join(__dirname, 'css');
+		var js_folder         = path.join(__dirname, 'js');
+		var images_folder     = path.join(__dirname, 'images');
+
+		var dest_folder       = "c:/my/wizzi/v5/github/wizzifactory.github.io/code";
+		var dest_folder_styles  = "c:/my/wizzi/v5/github/wizzifactory.github.io/styles";
+
+	models-base-folder ${models_folder}
+
+	model code_intro
+		src code_intro.docs.ittf
+		schema docs
+
+	line html
+		cwd-folder ${html_folder}
+
+		wfjob/art-wo-html( code_intro.html.ittf )
+			dest-path intro.html
+			model-ref code_intro
+				transformer docs/preprint
+				
+	line css
+		cwd-folder ${html_folder}
+		dest-folder ${dest_folder_styles}
+
+		wfjob/art-wo-css( code_intro.css.ittf )
+			dest-path code-intro.css
+			model-ref code_intro
+				transformer docs/preprint
+
+	production
+		dest-folder ${dest_folder}
+		line-ref html
+		line-ref css
+

@@ -1,0 +1,163 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var gRegEditor ids: undefined undefined
+    ready  ids: undefined undefined
+      set gRegEditor = new regEditor(examplesData) ids: undefined undefined
+      _ $('#examples-container').html ids: undefined undefined
+        _ toHtmlExamples ids: undefined undefined
+          {  ids: undefined undefined
+            @ items examplesData ids: undefined undefined
+      _ $('#btnTest').click ids: undefined undefined
+        function  ids: undefined undefined
+          _ gRegEditor.execute('test') ids: undefined undefined
+      _ $('#btnExec').click ids: undefined undefined
+        function  ids: undefined undefined
+          _ gRegEditor.execute('exec') ids: undefined undefined
+      _ $('#examples-container').click ids: undefined undefined
+        function  ids: undefined undefined
+          param ev ids: undefined undefined
+          _ gRegEditor.setExample ids: undefined undefined
+            _ ev.target.id.substring (2) ids: undefined undefined
+    function execute ids: undefined undefined
+      param reText, reFlags, str, oper ids: undefined undefined
+      set reFlags = reFlags || "" ids: undefined undefined
+      var re ids: undefined undefined
+        new RegExp ids: undefined undefined
+          @ reText ids: undefined undefined
+          @ reFlags ids: undefined undefined
+      log re ids: undefined undefined
+      if oper === 'exec' ids: undefined undefined
+        return re.exec(str) ids: undefined undefined
+      else  ids: undefined undefined
+        return re.test(str) ids: undefined undefined
+    function executeFromEditor ids: undefined undefined
+      param oper ids: undefined undefined
+      var reText = document.querySelector('#retext').value ids: undefined undefined
+      var $reTextEscaped = $('#retextEscaped') ids: undefined undefined
+      var reFlags = document.querySelector('#reflags').value ids: undefined undefined
+      var reSrc = document.querySelector('#resrc').value ids: undefined undefined
+      var reTextEscaped = escapeSpecials(reText) ids: undefined undefined
+      _ $reTextEscaped.val(reTextEscaped) ids: undefined undefined
+      var match ids: undefined undefined
+        _ execute ids: undefined undefined
+          @ reTextEscaped ids: undefined undefined
+          @ reFlags ids: undefined undefined
+          @ reSrc ids: undefined undefined
+          @ oper ids: undefined undefined
+      log match ids: undefined undefined
+    function escapeSpecials ids: undefined undefined
+      param text ids: undefined undefined
+      var ret = [] ids: undefined undefined
+      for var i=0; i<text.length; i++ ids: undefined undefined
+        var ch = text[i] ids: undefined undefined
+        if ("\ ^ $ . * + ? ( ) [ ] { } | ".indexOf(ch + ' ') > -1) && i > 0 && i < text.length - 1 ids: undefined undefined
+          _ ret.push('\\' + ch) ids: undefined undefined
+        else  ids: undefined undefined
+          _ ret.push(ch) ids: undefined undefined
+      return ret.join('') ids: undefined undefined
+    var examplesData ids: undefined undefined
+      [  ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'dot' ids: undefined undefined
+          @ re '.' ids: undefined undefined
+          @ flags '' ids: undefined undefined
+          @ src '\\n' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ '. (dot) Matches any JavaScript character (UTF-16 code unit)' ids: undefined undefined
+              @ 'except line terminators (newline, carriage return, etc.)' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'sS' ids: undefined undefined
+          @ re '\\s\\S' ids: undefined undefined
+          @ flags '' ids: undefined undefined
+          @ src '\\n' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'To really match any character, use [\\s\\S]' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'meta_cap' ids: undefined undefined
+          @ re '^Cat' ids: undefined undefined
+          @ src 'Cat go fast' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'must start with Cat' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'meta_dollar' ids: undefined undefined
+          @ re 'slow$' ids: undefined undefined
+          @ src 'Dogs are slow' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'must end with slow' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'meta_aster' ids: undefined undefined
+          @ re 'bo*' ids: undefined undefined
+          @ src 'boom and boat and bug' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'matches when the preceding o occurs 0 or more times' ids: undefined undefined
+              @ 'is a quantifier' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'meta_plus' ids: undefined undefined
+          @ re 'bo+' ids: undefined undefined
+          @ src 'boom and boat and bug' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'matches when the preceding o occurs 1 or more times' ids: undefined undefined
+              @ 'is a quantifier' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'meta_question_mark' ids: undefined undefined
+          @ re 'bo?' ids: undefined undefined
+          @ src 'boom and boat and bug' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'matches when the preceding o occurs 0 or one time' ids: undefined undefined
+              @ 'is a quantifier' ids: undefined undefined
+        {  ids: undefined undefined
+          @ name 'meta_dot' ids: undefined undefined
+          @ re '.a' ids: undefined undefined
+          @ src 'Cats fats rats' ids: undefined undefined
+          @ desc ids: undefined undefined
+            [  ids: undefined undefined
+              @ 'any character followed by an a' ids: undefined undefined
+              @ 'is a character class' ids: undefined undefined
+    html_f toHtmlExamples ids: undefined undefined
+      var tableClass = 'table table-condensed'; ids: undefined undefined
+      < table ids: undefined undefined
+        @ class {{ tableClass }} ids: undefined undefined
+        < tbody ids: undefined undefined
+          foreach item in ctx.items ids: undefined undefined
+            < tr ids: undefined undefined
+              < td {{ item.desc[0] }} ids: undefined undefined
+                @ id ex{{ item.name }} ids: undefined undefined
+                @ style cursor:pointer; ids: undefined undefined
+    class regEditor ids: undefined undefined
+      ctor  ids: undefined undefined
+        param examples ids: undefined undefined
+        set this.examples = examples ids: undefined undefined
+        set this.$reText = $('#retext') ids: undefined undefined
+        set this.$reTextEscaped = $('#retextEscaped') ids: undefined undefined
+        set this.$reFlags = $('#reflags') ids: undefined undefined
+        set this.$reSrc = $('#resrc') ids: undefined undefined
+        set this.$results = $('#results') ids: undefined undefined
+      m setExample ids: undefined undefined
+        param itemName ids: undefined undefined
+        log itemName ids: undefined undefined
+        foreach item in this.examples ids: undefined undefined
+          if item.name === itemName ids: undefined undefined
+            _ this.$reText.val(item.re) ids: undefined undefined
+            _ this.$reTextEscaped.val(escapeSpecials(item.re)) ids: undefined undefined
+            _ this.$reFlags.val(item.flags) ids: undefined undefined
+            _ this.$reSrc.val(item.src) ids: undefined undefined
+      m execute ids: undefined undefined
+        param oper ids: undefined undefined
+        var reText = this.$reText.val() ids: undefined undefined
+        var reTextEscaped = escapeSpecials(reText) ids: undefined undefined
+        var reFlags = this.$reFlags.val() ids: undefined undefined
+        var reSrc = this.$reSrc.val() ids: undefined undefined
+        var match ids: undefined undefined
+          _ execute ids: undefined undefined
+            @ reTextEscaped ids: undefined undefined
+            @ reFlags ids: undefined undefined
+            @ reSrc ids: undefined undefined
+            @ oper ids: undefined undefined
+        log match ids: undefined undefined

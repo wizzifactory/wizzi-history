@@ -1,0 +1,19 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m getContentsByIds
+		[ ids
+		callback
+		+
+		var fsCommon = this.fsCommon
+		+
+		_ async.map
+			@ ids
+			function
+				param id
+				param callback
+				log 'wizzi-repo.${source}.document.getContentsByIds', id
+				_ fsCommon.readDocument
+					@ id
+					@ callback
+			@ callback

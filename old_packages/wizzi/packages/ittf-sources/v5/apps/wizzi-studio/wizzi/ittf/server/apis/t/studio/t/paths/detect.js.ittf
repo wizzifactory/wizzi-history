@@ -1,0 +1,22 @@
+﻿$group
+
+	@ detectLevel
+		function
+			param options
+			if verify.isEmpty(options.folder)
+				if verify.isEmpty(options.projectName)
+					return 'user'
+				else
+					return 'project'
+			else
+				return 'folder'
+
+	@ detectOptions
+		function
+			param options
+			if options.kind === 'genexplorer'
+				set options.userId = 'demo'
+				set options.projectName = 'genexplorer'
+			set options.level = this.detectLevel(options)
+			return options
+

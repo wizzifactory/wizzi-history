@@ -1,0 +1,77 @@
+module
+    kind react
+    
+	const path = require('path')
+    const JSAsset = require('parcel-bundler/src/assets/JSAsset')
+	const wizziLoader = require('./wizziLoader')
+    
+    const jsIttfRegex = /\.js\.ittf$/
+	const htmlIttfRegex = /\.html\.ittf$/
+    
+	class WizziJsAsset
+        super JSAsset
+
+		ctor
+			param name
+			param pkg
+			param options
+			base name
+			base pkg
+			base options
+
+			log 'WizziJsAsset.ctor.name', name
+			# log 'pkg', pkg
+			# log 'WizziJsAsset.ctor.options', options
+			
+			set this.type = 'js'
+        
+		m load
+			async
+			log 'WizziJsAsset.load.name', this.name
+			log 'is html ittf', htmlIttfRegex.test(this.name)
+			log 'is js ittf', jsIttfRegex.test(this.name)
+			
+			if jsIttfRegex.test(this.name)
+				const result
+					await
+						_ wizziLoader.readWizziJsModulePromise
+							{
+								@ filePath this.name
+				# log 'WizziJsAsset.load.result', result.code
+				return result.code
+			else
+				return super.load()
+
+		$*
+
+		m parse
+			async
+            param code
+			log 'WizziJsAsset.parse.code', code
+            
+			const result
+                await 
+                    _ super.parse(code)
+			# log 'WizziJsAsset.parse.result', result
+			return result
+    
+		m generate
+			async
+            param code
+			log 'WizziJsAsset.generate.code', code
+			const result
+                await 
+                    _ super.generate(this.contents)
+			# log 'WizziJsAsset.generate.result', result
+			return result
+
+
+		
+		m pretransform
+			async
+            param code
+			log 'WizziJsAsset.pretransform.this', this.options.rootDir, this.relativeName, this.name
+
+		*$
+
+	set module.exports = WizziJsAsset

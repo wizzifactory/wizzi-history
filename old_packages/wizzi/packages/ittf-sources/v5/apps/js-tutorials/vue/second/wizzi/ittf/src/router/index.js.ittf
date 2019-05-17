@@ -1,0 +1,79 @@
+﻿module
+    kind es6
+    
+	import Vue from 'vue'
+    import Router from 'vue-router'
+    import Home from '@/views/Home'
+    import store from '@/store'
+    
+	_ Vue.use(Router)
+    
+	const router
+        new Router
+            { 
+                @ mode 'history'
+                @ base process.env.BASE_URL
+                [ routes
+                    { 
+                        @ path '/'
+                        @ name 'home'
+                        @ component Home
+                    { 
+                        @ path '/about'
+                        @ name 'about'
+                        @ component
+                            => 
+                                _ import
+                                    @ '@/views/About.vue'
+                        { meta
+                            @ authRequired true
+                    { 
+                        @ path '/menu'
+                        @ name 'menu'
+                        @ component
+                            => 
+                                _ import
+                                    @ '@/views/Menu.vue'
+                    { 
+                        @ path '/sign-in'
+                        @ name 'signin'
+                        @ component
+                            => 
+                                _ import
+                                    @ '@/views/Signin.vue'
+                    { 
+                        @ path '/join'
+                        @ name 'join'
+                        @ component
+                            => 
+                                _ import
+                                    @ '@/views/Join.vue'
+                    { 
+                        @ path '/blog'
+                        @ name 'blog'
+                        @ component
+                            => 
+                                _ import
+                                    @ '@/views/Blog.vue'
+
+    _ router.beforeEach
+        => 
+            param to
+            param from
+            param next
+            if 
+                test
+                    _ to.matched.some
+                        => 
+                            param record
+                            + record.meta.authRequired
+                if !store.state.isAuthenticated
+                    _ next
+                        { 
+                            @ path '/sign-in'
+                else
+                    _ next
+            else
+                _ next
+    
+	export-default router

@@ -1,0 +1,36 @@
+﻿// @for
+@for $i from 1 through 3 {
+    .item-#{$i} {
+        width: 2em * $i;
+    }
+}
+
+// The @each directive usually has the form @each $var in <list or map > . $var can be any variable name, like $length or $name, and <list or map > is a SassScript expression that returns a list or a map.
+// The @each rule sets $var to each item in the list or map, then outputs the styles it contains using that value of $var.
+// @each For example:
+@each $animal in puma, sea-slug, egret, salamander {
+    .#{$animal}-icon {
+        background-image: url('/images/#{$animal}.png');
+    }
+}
+
+// Multiple Assignment The @each directive can also use multiple variables, as in @each $var1, $var2, ... in <list > .
+// If <list > is a list of lists, each element of the sub-lists is assigned to the respective variable. For example:
+@each $animal, $color, $cursor in (puma, black, default), (sea-slug, blue, pointer), (egret, white, move) {
+    .#{$animal}-icon {
+        background-image: url('/images/#{$animal}.png');
+        border: 2px solid $color;
+        cursor: $cursor;
+    }
+}
+
+// @while The @while directive takes a SassScript expression and repeatedly outputs the nested styles until the statement evaluates to false.
+// This can be used to achieve more complex looping than the @for statement is capable of, although this is rarely necessary.
+// For example:
+$i: 6;
+@while $i > 0 {
+    .item-#{$i} {
+        width: 2em * $i;
+    }
+    $i: $i - 2;
+}

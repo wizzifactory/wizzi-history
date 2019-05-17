@@ -1,0 +1,38 @@
+﻿$group
+
+	@ runExecFile
+		function
+			param options
+			param callback
+
+			_ this.getExecFile
+				@ options
+				f_cb_api( result )
+					const file = result.data
+					const { execFile } = require('child_process')
+					const child
+						_ execFile
+							@ 'node'
+							@ file.__args
+							@ file.__options
+							=>
+								param err
+								param stdout
+								param stderr
+								if err
+									return
+										_ callback
+											_ error(err)
+								return							
+									_ callback
+										@ null
+										{
+											@ data
+												{
+													@ stdout stdout
+													@ stderr stderr
+											@ status
+												_ success
+													@ 'execFile run'
+
+

@@ -1,0 +1,313 @@
+﻿jsonld
+
+	# Examples taken from [https://www.w3.org/TR/json-ld]
+
+	ld-doc
+		# EXAMPLE 2: Sample JSON-LD document using full IRIs instead of terms
+		# This document is a node object, without @id. Property keys are full URIs.
+		@ http://schema.org/name Manu Sporny
+		@ http://schema.org/url
+			# The 'id' keyword means 'This value is an identifier that is an IRI'
+			id http://manu.sporny.org/
+		@ http://schema.org/image
+			id http://manu.sporny.org/images/manu.png
+
+	ld-doc
+		# [https://www.w3.org/TR/json-ld/#the-context] Example 5
+		context
+			@ name http://schema.org/name
+				# This means that 'name' is shorthand for 'http://schema.org/name' 
+			@ image http://schema.org/image
+				# 'image' is shorthand for 'http://schema.org/image' 
+				type @id
+				# This means that a string value associated with 'image' should be interpreted as an identifier that is an IRI 
+			@ homepage http://schema.org/url
+				type @id
+		@ name Manu Sporny
+		@ homepage http://manu.sporny.org/
+		@ image http://manu.sporny.org/images/manu.png
+
+	ld-doc http://me.markus-lanthaler.com/
+		# EXAMPLE 11: Identifying a node
+		#
+		# The `wzName` = http://me.markus-lanthaler.com/ is the JSON-LD node `@id` keyword.
+		#
+		# To be able to externally reference nodes in a graph, 
+		# it is important that nodes have an identifier. 
+		# IRIs are a fundamental concept of Linked Data, 
+		# for nodes to be truly linked, dereferencing the identifier should result 
+		# in a representation of that node. 
+		# This may allow an application to retrieve further information about a node.
+		context
+			@ name http://schema.org/name
+		@ name Markus Lanthaler
+
+	ld-doc http://example.org/places#BrewEats
+		# [https://www.w3.org/TR/json-ld/#specifying-the-type] Example 12
+		# The type of a particular node can be specified using the `type` attribute.
+		# In Linked Data, types are uniquely identified with an IRI.
+		type http://schema.org/Restaurant
+
+	ld-doc http://example.org/places#BrewEats
+		# [https://www.w3.org/TR/json-ld/#specifying-the-type] Example 13
+		# A node can be assigned more than one type by using an array
+		type
+			[
+				@ http://schema.org/Restaurant
+				@ http://schema.org/Brewery
+
+	ld-doc http://example.org/places#BrewEats
+		# [https://www.w3.org/TR/json-ld/#specifying-the-type] Example 14
+		context
+			@ Restaurant http://schema.org/Restaurant
+			@ Brewery http://schema.org/Brewery
+		type
+			[
+				@ Restaurant
+				@ Brewery
+
+	ld-doc 
+		# Setting the document base in a document
+		# [https://www.w3.org/TR/json-ld/#base-iri] Example 16
+		# An empty `id` resolves to the document base IRI
+		context
+			base http://example.com/document.jsonld
+		@ label Just a simple document
+
+	ld-doc http://example.org/places#BrewEats
+		# Using a common vocabulary prefix
+		context
+			vocab http://schema.org/
+		type Restaurant
+		@ name Brew Eats
+
+	ld-doc http://example.org/places#BrewEats
+		# EXAMPLE 18: Using the null keyword to ignore data
+		context
+			vocab http://schema.org/
+			@ databaseId null
+		type Restaurant
+		@ name Brew Eats
+		@ databaseId 23987520
+
+	ld-doc
+		@ EXAMPLE 19: Prefix expansion
+		context
+			@ foaf http://xmlns.com/foaf/0.1/
+		type foaf:Person
+		@ foaf:name Dave Longley
+
+	ld-doc http://me.markus-lanthaler.com/
+		# EXAMPLE 20: Using vocabularies
+		context
+			@ xsd http://www.w3.org/2001/XMLSchema#
+			@ foaf http://xmlns.com/foaf/0.1/
+			@ foaf:homepage
+				type @id
+			@ picture foaf:depiction
+				type @id
+		type foaf:Person
+		@ foaf:name Markus Lanthaler
+		@ foaf:homepage http://www.markus-lanthaler.com/
+		@ picture http://twitter.com/account/profile_image/markuslanthaler
+
+
+	ld-doc http://example.org/posts#TripToWestVirginia
+		# EXAMPLE 23: Example demonstrating the context-sensitivity for @type
+		# NOTE
+		# In this wizzi model there is no context-sensitivity because
+		# element are differents. `+` is a node element 
+		# `@` is a property element (a value).
+		type http://schema.org/BlogPosting
+			# This is a node type
+		@ modified
+			value 2010-05-29T14:17:39+02:00
+			type http://www.w3.org/2001/XMLSchema#dateTime
+				# This is a value type
+
+	ld-doc
+		# EXAMPLE 25: Term definitions using compact and absolute IRIs
+		context
+			@ foaf http://xmlns.com/foaf/0.1/
+			@ foaf:age
+				id http://xmlns.com/foaf/0.1/age
+				type xsd:integer
+			@ http://xmlns.com/foaf/0.1/homepage
+				type @id
+		@ foaf:name John Smith
+		@ foaf:age 41
+		@ http://xmlns.com/foaf/0.1/homepage
+			[
+				@ http://personal.example.org/
+				@ http://work.example.com/jsmith/
+	
+	ld-doc
+		# EXAMPLE 26: Embedding a node object as property value of another node object
+		@ name Manu Sporny
+		@ knows
+			+
+				type Person
+				@ name Gregg Kellogg
+
+	ld-doc
+		# EXAMPLE 31: Setting the default language of a JSON-LD document
+		context
+			language ja
+		@ name 花澄
+		@ occupation 科学者
+
+	ld-doc
+		# EXAMPLE 32: Clearing default language
+		context
+			language ja
+		@ name 花澄
+		@ details
+			context
+				language null
+			@ occupation Ninja
+
+	ld-doc
+		# EXAMPLE 33: Expanded term definition with language
+		context
+			@ ex http://example.com/vocab/
+			language ja
+			@ name ex:name
+				language null
+			@ occupation ex:occupation
+			@ occupation_en ex:occupation
+				language en
+			@ occupation_cs ex:occupation
+				language cs
+		@ name Yagyū Muneyoshi
+		@ occupation 忍者
+		@ occupation_en Ninja
+		@ occupation_cs Nindža
+
+	ld-doc
+		# Language map expressing a property in three languages
+		context
+			@ ex http://example.com/vocab/
+			@ occupation ex:occupation
+				container @language
+		@ name Yagyū Muneyoshi
+		@ occupation
+			@ ja 忍者
+			@ en Ninja
+			@ cs Nindža
+  
+	ld-doc
+		# EXAMPLE 35: Overriding default language using an expanded value
+		context
+			language ja
+		@ name 花澄
+		@ occupation
+			value Scientist
+			language en
+  
+	ld-doc
+		# EXAMPLE 36: Removing language information using an expanded value
+		context
+			language ja
+		@ name
+			value Frank
+		@ occupation
+			value Ninja
+			language en
+		@ speciality 手裏剣
+
+
+	ld-doc http://example.org/people#joebob
+		# EXAMPLE 42: Multiple values with no inherent order
+		@ nick
+			[ set
+				@ joe
+				@ bob
+				@ jaybee
+
+
+	ld-doc http://example.org/people#joebob
+		# EXAMPLE 44: An ordered collection of values in JSON-LD
+		context
+			@ nick http://xmlns.com/foaf/0.1/nick
+		@ nick
+			list
+				@ joe
+				@ bob
+				@ jaybee
+
+	ld-doc http://example.org/people#joebob
+		# EXAMPLE 45: Specifying that a collection is ordered in the context
+		context
+			@ nick http://xmlns.com/foaf/0.1/nick
+				container @list
+		@ nick
+			[
+				@ "joe"
+				@ "bob"
+				@ "jaybee"
+
+	ld-doc
+		# EXAMPLE 49: Identifying and making statements about a graph
+		context
+			@ generatedAt http://www.w3.org/ns/prov#generatedAtTime
+				type http://www.w3.org/2001/XMLSchema#date
+			@ Person http://xmlns.com/foaf/0.1/Person
+			@ name http://xmlns.com/foaf/0.1/name
+			@ knows http://xmlns.com/foaf/0.1/knows
+		@ generatedAt 2012-04-09
+		graph http://example.org/graphs/73
+			+  http://manu.sporny.org/about#manu
+				type Person
+				@ name Manu Sporny
+				@ knows http://greggkellogg.net/foaf#me
+			+  http://greggkellogg.net/foaf#me
+				type Person
+				@ name Gregg Kellogg
+				@ knows http://manu.sporny.org/about#manu
+
+	ld-doc _:n1
+		# EXAMPLE 52: Specifying a local blank node identifier
+		@ name Secret Agent 1
+		@ knows
+			+ 
+				@ name Secret Agent 2
+				@ knows
+					+ _:n1
+	
+	ld-doc http://example.com/
+		# EXAMPLE 54: Indexing data in JSON-LD
+		context
+			@ schema http://schema.org/
+			@ name schema:name
+			@ body schema:articleBody
+			@ words schema:wordCount
+			@ post schema:blogPost
+				container @index
+		type schema:Blog
+		@ name World Financial News
+		@ post
+			@ en
+				+ http://example.com/posts/1/en
+					@ body World commodities were up today with heavy trading of crude oil...
+					@ words 1539
+			@ de
+				+ http://example.com/posts/1/de
+					@ body Die Werte an Warenbörsen stiegen im Sog eines starken Handels von Rohöl..."
+					@ words 1204
+
+	ld-doc
+		# EXAMPLE 61: Flattened and compacted form for the previous example
+		context
+			@ name http://xmlns.com/foaf/0.1/name
+			@ knows http://xmlns.com/foaf/0.1/knows
+		graph
+			+ _:b0
+				@ name Dave Longley
+			+ http://manu.sporny.org/about#manu
+				@ name Manu Sporny
+			+ http://me.markus-lanthaler.com/
+				@ name Markus Lanthaler
+				@ knows
+					[
+						@ http://manu.sporny.org/about#manu
+						@ _:b0

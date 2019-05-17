@@ -1,0 +1,43 @@
+﻿concept Plugin management
+
+	summary
+
+		p The wizzi factory uses a class instance that implements the 
+			+ wizzi.pluginsManager api to resolve and load plugin packages or files.
+		
+		p Wizzi plugins can be nodejs packages installed locally or globally or can be
+			+ folders in packages that make a private use of them.
+		
+		p Plugins used by an instance of the wizzi.WizziFactory must be 
+			+ requested at initialization time and cannot be changed later. 
+			+ A new instance of the factory must be created to use a different
+			+ plugin set.
+
+		h3 The api of the wizzi.WizziFactory.initialize method.
+		ittf
+			- ...
+				- m initialize
+					- { options
+						- { repo
+							- ...
+						- { plugins
+							- [ items
+								- string pluginNameOrFile
+							- string pluginsBaseFolder
+								- default process.cwd()
+						- { test
+							- ...
+		p The 'items' property of the 'options.plugins' object is an array of:
+			ul
+				li Package names, when plugins are contained in npm installed nodejs packages
+				li Relative paths to plugins index module, when plugins are contained
+					+ in private folders.
+		span In the case of relative paths the property 'pluginsBaseFolder'
+			+ of the 'options.plugins' object must contains the base folder of
+			+ plugins index modules.
+
+		h4 View the code
+		p Have look how the wizzi.pluginsManager is implemented in the \b
+			a `wizzi` package
+				href https://github.com/wizzifactory/wizzi/blob/master/packages/wizzi/lib/services/pluginsManager.js
+

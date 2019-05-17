@@ -1,0 +1,31 @@
+﻿$group
+	+
+	decl_rsf( artifact, generate )
+	+
+	export
+		const generateArtifact
+			=>
+				param documentUri
+				param artifactName
+				if artifactName == null
+					return null
+				else
+					return
+						{
+							@ type GENERATE_ARTIFACT
+							@ uri documentUri
+							@ artifact artifactName
+							@ [HTTP_REQUEST]
+								{
+									@ types
+										[
+											@ GENERATE_ARTIFACT_REQUEST
+											@ GENERATE_ARTIFACT_SUCCESS
+											@ GENERATE_ARTIFACT_FAILURE
+									@ url '/api/studio/artifact'
+									@ method 'get'
+									@ queryParams
+										{
+											@ uri documentUri
+											@ artifact artifactName
+	+

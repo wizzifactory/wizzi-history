@@ -1,0 +1,73 @@
+$group
+
+	#
+		# startRunnerServer is async.
+		# Can be used at startup to load wizzi models, that is an async process,
+		# implementing the onStart and onPrepare callbacks in the wizzifile.
+		# During an mTree evaluation the calls to runnerServer
+		# must be sync. Both $.api(name, query) and $.model(name, query)
+		# are sync methods that operate on wizzi models or POJO
+		# previously loaded and/or prepared.
+	set md.startRunnerServer
+        function 
+            { options
+				string user
+					optional
+				string role
+					optional
+            callback
+            var runnerServerCWD = (options.cwd || process.cwd())
+			_ md.loadWizzifile
+				@ options
+				f_cb( wizzifile )
+					if !wizzifile
+						r_cb()
+					else
+						set md.wizzifile = wizzifile
+						if md.wizzifile.onConfig
+							_ md.wizzifile.onConfig
+								@ md.config
+								f_cb( notUsed )
+									var RunnerServer = require('./lib/services/runnerServer')
+									_ RunnerServer.init
+										@ runnerServerCWD
+										@ options.user
+										@ options.role
+									if md.wizzifile.onStart
+										_ md.wizzifile.onStart
+											@ RunnerServer.instance
+											@ md.config
+											f_cb( notUsed )
+												if md.wizzifile.onPrepare
+													_ RunnerServer.instance.callOnPrepare
+														@ md.wizzifile
+														@ md.config
+														f_cb( notUsed )
+															log chalk.yellow('WIZZI RUNNER SERVER STARTED ON FOLDER ' + runnerServerCWD)
+															return callback(null)
+												else
+													log chalk.yellow('WIZZI RUNNER SERVER STARTED ON FOLDER ' + runnerServerCWD)
+													return callback(null)
+									else
+										log chalk.yellow('WIZZI RUNNER SERVER STARTED ON FOLDER ' + runnerServerCWD)
+										return callback(null)
+						else
+							log chalk.yellow('Method wizzifile.onConfig NOT FOUND. RUNNER SERVER NOT STARTED.')
+							return callback(null)
+
+	set md.loadWizzifile
+        function 
+            { options
+            callback
+			if options.wizzifile
+				r_cb( options.wizzifile )
+			else
+				var runnerServerCWD = (options.cwd || process.cwd())
+				var wizziFilePath = path.join(runnerServerCWD, 'wizzifile.js')
+				if md.file.isFile(wizziFilePath)
+					set md.wizzifile = require(wizziFilePath)
+					log chalk.yellow('WIZZI FILE FOUND on path: ' + wizziFilePath)
+					r_cb( md.wizzifile )
+				else
+					log chalk.yellow('WIZZI FILE NOT FOUND. RUNNER SERVER NOT STARTED.')
+					return callback(null)

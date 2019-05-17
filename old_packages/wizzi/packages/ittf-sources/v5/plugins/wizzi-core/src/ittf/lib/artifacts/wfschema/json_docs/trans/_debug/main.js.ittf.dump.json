@@ -1,0 +1,810 @@
+{
+  "WmtTag": "module",
+  "WmtName": "",
+  "no_iife": false,
+  "use_strict": false,
+  "kind": "jsfile",
+  "exportKind": "var",
+  "includes": [],
+  "statements": [
+    {
+      "WmtTag": "var",
+      "WmtName": "util = require('util')",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "_ = require('lodash')",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "log = require('wizzi-core').log(module)",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "error = require('wizzi-core').error",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "verify = require('wizzi-core').verify",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "jsModelType = require('wizzi-legacy').jsModelType",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "md = module.exports = {}",
+      "statements": []
+    },
+    {
+      "WmtTag": "var",
+      "WmtName": "myname = 'model.transformation.wizzischema.html.docs.main'",
+      "statements": []
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.trans",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "if",
+              "WmtName": "model.wzElement != 'wizzischema'",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "errors.NodeError(myname + '.trans. Model wzElement must be wizzischema. Found: ' + model.wzElement, model);",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "ctx.result",
+              "statements": [
+                {
+                  "WmtTag": "{",
+                  "WmtName": "",
+                  "statements": [
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "name model.wzName",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "preserveTags model.preserveTags",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "md.wizzischema(model, ctx)",
+              "statements": []
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "callback(null, ctx.result)",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "callback"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.wizzischema",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "set",
+              "WmtName": "ctx.result.requires = []",
+              "statements": []
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "ctx.result.exportTos = []",
+              "statements": []
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "ctx.result.elements = []",
+              "statements": []
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "exportTo in model.exportTos",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "md.exportTo(exportTo, ctx, ctx.result)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "element in model.elements",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "md.element(element, ctx, ctx.result)",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "parent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.exportTo",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "parent.exportTos.push(model.wzName)",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "parent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "set",
+      "WmtName": "md.element",
+      "statements": [
+        {
+          "WmtTag": "function",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "var",
+              "WmtName": "flags = ''",
+              "statements": []
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "flags += model.isAbstract ? 'is-abstract ' : ''",
+              "statements": []
+            },
+            {
+              "WmtTag": "set",
+              "WmtName": "flags += model.addToChildren ? 'add-to-children ' : ''",
+              "statements": []
+            },
+            {
+              "WmtTag": "var",
+              "WmtName": "node",
+              "statements": [
+                {
+                  "WmtTag": "{",
+                  "WmtName": "",
+                  "statements": [
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "name model.wzId",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "super model.superId",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "tags model.tagName.split('|')",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "flags flags",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "attributes",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "relations",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "derived",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "restricts",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "methods",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "comments",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "WmtTag": "var",
+              "WmtName": "flatAttributes = model.getFlatAttributes()",
+              "statements": []
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "attr in flatAttributes",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.attributes.push(attr)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "var",
+              "WmtName": "flatRelations = model.getFlatRelations()",
+              "statements": []
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "r in flatRelations",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.relations.push(r)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "d in model.derived",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.derived.push",
+                  "statements": [
+                    {
+                      "WmtTag": "{",
+                      "WmtName": "",
+                      "statements": [
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "name d.wzId",
+                          "statements": []
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "tags d.tagName.split('|')",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "m in model.methods",
+              "statements": [
+                {
+                  "WmtTag": "var",
+                  "WmtName": "methodNode",
+                  "statements": [
+                    {
+                      "WmtTag": "{",
+                      "WmtName": "",
+                      "statements": [
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "name m.wzName",
+                          "statements": []
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "emitKey m.emitKey",
+                          "statements": []
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "isStatic m.isStatic",
+                          "statements": []
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "isKnownMethod m.isKnownMethod",
+                          "statements": []
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "params",
+                          "statements": [
+                            {
+                              "WmtTag": "[",
+                              "WmtName": "",
+                              "statements": []
+                            }
+                          ]
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "statements",
+                          "statements": [
+                            {
+                              "WmtTag": "[",
+                              "WmtName": "",
+                              "statements": []
+                            }
+                          ]
+                        },
+                        {
+                          "WmtTag": "@",
+                          "WmtName": "comments",
+                          "statements": [
+                            {
+                              "WmtTag": "[",
+                              "WmtName": "",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "WmtTag": "foreach",
+                  "WmtName": "param in m.params",
+                  "statements": [
+                    {
+                      "WmtTag": "_",
+                      "WmtName": "methodNode.params.push(param.wzName)",
+                      "statements": []
+                    }
+                  ]
+                },
+                {
+                  "WmtTag": "foreach",
+                  "WmtName": "stm in m.statements",
+                  "statements": [
+                    {
+                      "WmtTag": "foreach",
+                      "WmtName": "item in normalizeJST(stm.wzName)",
+                      "statements": [
+                        {
+                          "WmtTag": "_",
+                          "WmtName": "methodNode.statements.push(item)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "WmtTag": "foreach",
+                  "WmtName": "comment in m.comments",
+                  "statements": [
+                    {
+                      "WmtTag": "_",
+                      "WmtName": "methodNode.comments.push(comment.wzName)",
+                      "statements": []
+                    }
+                  ]
+                },
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.methods.push(methodNode)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "restrict in model.restricts",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.restricts.push(getRestrictFill(restrict))",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "comment in model.comments",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.comments.push(comment.wzName)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "parent.elements.push(node)",
+              "statements": []
+            }
+          ],
+          "args": [
+            {
+              "WmtTag": "arg",
+              "WmtName": "model"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "ctx"
+            },
+            {
+              "WmtTag": "arg",
+              "WmtName": "parent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "WmtTag": "function",
+      "WmtName": "getRestrictFill",
+      "statements": [
+        {
+          "WmtTag": "var",
+          "WmtName": "restrictCloned",
+          "statements": [
+            {
+              "WmtTag": "{",
+              "WmtName": "",
+              "statements": [
+                {
+                  "WmtTag": "@",
+                  "WmtName": "facets",
+                  "statements": [
+                    {
+                      "WmtTag": "[",
+                      "WmtName": "",
+                      "statements": []
+                    }
+                  ]
+                },
+                {
+                  "WmtTag": "@",
+                  "WmtName": "comments",
+                  "statements": [
+                    {
+                      "WmtTag": "[",
+                      "WmtName": "",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "WmtTag": "foreach",
+          "WmtName": "facet in model.facets",
+          "statements": [
+            {
+              "WmtTag": "var",
+              "WmtName": "facetCloned",
+              "statements": [
+                {
+                  "WmtTag": "{",
+                  "WmtName": "",
+                  "statements": [
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "type facet.wzElement",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "value facet.wzName",
+                      "statements": []
+                    },
+                    {
+                      "WmtTag": "@",
+                      "WmtName": "comments",
+                      "statements": [
+                        {
+                          "WmtTag": "[",
+                          "WmtName": "",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "WmtTag": "foreach",
+              "WmtName": "comment in facet.comments",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "facetCloned.comments.push(comment.wzName)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "WmtTag": "_",
+              "WmtName": "restrictCloned.facets.push(facetCloned)",
+              "statements": []
+            }
+          ]
+        },
+        {
+          "WmtTag": "foreach",
+          "WmtName": "comment in model.comments",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "restrictCloned.comments.push(comment.wzName)",
+              "statements": []
+            }
+          ]
+        },
+        {
+          "WmtTag": "return",
+          "WmtName": "restrictCloned",
+          "statements": []
+        }
+      ],
+      "args": [
+        {
+          "WmtTag": "arg",
+          "WmtName": "model"
+        }
+      ]
+    },
+    {
+      "WmtTag": "function",
+      "WmtName": "normalizeJST",
+      "statements": [
+        {
+          "WmtTag": "var",
+          "WmtName": "json = JSON.parse(stm)",
+          "statements": []
+        },
+        {
+          "WmtTag": "var",
+          "WmtName": "ret = []",
+          "statements": []
+        },
+        {
+          "WmtTag": "if",
+          "WmtName": "verify.isArray(json)",
+          "statements": [
+            {
+              "WmtTag": "foreach",
+              "WmtName": "item in json",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "ret.push(normalizeJSTNode(item))",
+                  "statements": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "WmtTag": "else",
+          "WmtName": "",
+          "statements": [
+            {
+              "WmtTag": "_",
+              "WmtName": "ret.push(normalizeJSTNode(json))",
+              "statements": []
+            }
+          ]
+        },
+        {
+          "WmtTag": "return",
+          "WmtName": "ret",
+          "statements": []
+        }
+      ],
+      "args": [
+        {
+          "WmtTag": "arg",
+          "WmtName": "stm"
+        }
+      ]
+    },
+    {
+      "WmtTag": "function",
+      "WmtName": "normalizeJSTNode",
+      "statements": [
+        {
+          "WmtTag": "var",
+          "WmtName": "node",
+          "statements": [
+            {
+              "WmtTag": "{",
+              "WmtName": "",
+              "statements": [
+                {
+                  "WmtTag": "@",
+                  "WmtName": "tag jstnode.n",
+                  "statements": []
+                },
+                {
+                  "WmtTag": "@",
+                  "WmtName": "name jstnode.n",
+                  "statements": []
+                },
+                {
+                  "WmtTag": "@",
+                  "WmtName": "value jstnode.v",
+                  "statements": []
+                },
+                {
+                  "WmtTag": "@",
+                  "WmtName": "statements",
+                  "statements": [
+                    {
+                      "WmtTag": "[",
+                      "WmtName": "",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "WmtTag": "if",
+          "WmtName": "jsModelType.__tagEntityMapping[jstnode.n]",
+          "statements": [
+            {
+              "WmtTag": "set",
+              "WmtName": "node.name = jsModelType.__tagEntityMapping[jstnode.n]",
+              "statements": []
+            }
+          ]
+        },
+        {
+          "WmtTag": "if",
+          "WmtName": "jstnode.childs",
+          "statements": [
+            {
+              "WmtTag": "foreach",
+              "WmtName": "item in jstnode.childs",
+              "statements": [
+                {
+                  "WmtTag": "_",
+                  "WmtName": "node.statements.push(normalizeJSTNode(item))",
+                  "statements": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "WmtTag": "return",
+          "WmtName": "node",
+          "statements": []
+        }
+      ],
+      "args": [
+        {
+          "WmtTag": "arg",
+          "WmtName": "jstnode"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+﻿$group
+
+	# 
+		# Retrieve a model factory searching the factoryPlugins
+		# registered to this repository
+		# returns
+		#  | api-ref wizzi-plugin.modelFactory
+		#  | wzError NotFound
+		
+	m getModelFactory
+		string schemaName
+		param textOnlyMockBaseDir
+
+		# log 'wizzi.services.PluginsManager.getModelFactory: schemaName, textOnlyMockBaseDir ' + schemaName, textOnlyMockBaseDir
+		var
+			decl found = null
+			decl foundInPlugin = null
+			decl result = null
+			
+		# all factoryPlugins are searched, last matching encountered wins.
+
+		foreach item in this.factoryPlugins
+			# log 'searching model loader', schemaName, ' in plugin ', item.getName()
+			checked_call_r_set( found )
+				_ item.getModelFactory
+					@ schemaName
+					@ textOnlyMockBaseDir
+			# log 'found', found, found && verify.isFunction(found.createLoadModel)
+			if found && verify.isFunction(found.createLoadModel)
+				set result = found
+				set foundInPlugin = item.getFilename()
+		if !result
+			_ log.error('getModelFactory. Cannot find model loader: ' + schemaName + '\n' + 'availables schemas: ' + this.availableSchemas().join(', '))
+			r_wz_err( NotFound, getModelFactory )
+				@ 'Cannot find model loader: ' + schemaName + '\navailables schemas: ' + this.availableSchemas().join(', ')
+		else
+			_ log.success('getModelFactory. Found model loader: ' + schemaName + ' in plugin ' + foundInPlugin)
+			
+		return result
+

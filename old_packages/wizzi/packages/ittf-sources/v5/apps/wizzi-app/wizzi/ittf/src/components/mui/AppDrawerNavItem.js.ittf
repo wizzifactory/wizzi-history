@@ -1,0 +1,85 @@
+﻿r-component( AppDrawerNavItem )
+
+	$append imports
+		import { Link } from 'react-router-dom'
+		import ListItem from '@material-ui/core/ListItem'
+		import Button from '@material-ui/core/Button'
+		import Collapse from '@material-ui/core/Collapse'
+
+	prop children
+		node
+	prop classes
+		{
+		required
+	prop onClick
+		func
+	prop openImmediately
+		boolean
+		default false
+	prop title
+		string
+		required
+	prop to
+		string
+
+	style
+		nav_buttons_styles()
+
+	state
+		@ open false
+
+	will-mount
+		if this.props.openImmediately
+			_ this.setState
+				{
+					@ open true
+    
+	=> handleClick
+		_ this.setState
+			{
+				@ open !this.state.open
+
+	render
+		
+		prop classes
+		prop children
+		prop title
+		prop to
+		prop onClick
+
+		if to || onClick
+			return
+				< ListItem
+					@ className {classes.navLink}
+					@ disableGutters
+					{
+						&&
+							+ to
+							< Button
+								@ component {Link}
+								@ to {to}
+								@ className {classNames(classes.button, classes.navLinkButton)}
+								$$ TODO @ activeClassName {classes.activeButton}
+								+ {title}
+					{
+						&&
+							+ onClick
+							< Button
+								@ className {classNames(classes.button, classes.navLinkButton)}
+								$$ TODO @ activeClassName {classes.activeButton}
+								@ onClick {onClick}
+								+ {title}
+		return
+			< ListItem
+				@ className {classes.navItem} 
+				@ disableGutters
+				@ dense {true}
+				< Button
+					@ className {classes.button}
+					@ onClick {this.handleClick}
+					+ {title}
+				< Collapse
+					@ in {this.state.open}
+					@ transitionDuration auto
+					@ unmountOnExit
+					+ {children}

@@ -1,0 +1,279 @@
+﻿loader(function)
+
+	$append requires
+		var lineParser = require('../util/lineParser')
+            
+	stm( exportfunction
+        var xdefault = model.__default ? 'default ' : ''
+        var name = (model.__name || '')
+        _ ctx.w('export ' + xdefault + 'function ' + name + '(' + model.paramNames.join(', ') + ') {')
+		_ ctx.indent()
+		_ generateParamConstraints
+			@ name
+			@ model.constrainedParams
+			@ model.hasCallbackParam
+			@ model.hasOptionsCallbackParam
+			@ ctx
+			f_cb()
+				_ cnt.genItems
+					@ model.statements
+					@ ctx
+					{ 
+						@ indent false
+					f_cb()
+						_ ctx.deindent()
+						_ ctx.write('}')
+						r_cb()
+    
+	stm( xfunction
+        var 
+            decl name = ''
+			decl aster = ctx.__aster || ''
+			decl xasync = model.xasync ? 'async ' : ''
+        if model.paramNames.length > 0
+            set name = model.wzName.trim()
+        else 
+            var p
+                _ lineParser.parse
+                    @ model.wzName
+                    @ model
+            if p.tokens.length > 0
+                var state = 0
+                for var i = 0; i < p.tokens.length; i++
+                    var text = p.tokens[i].text
+                    if text === '('
+                        set state = 1
+                    elif text === ')'
+                        + ;
+                    elif i == 0 && state == 0
+                        set name = text
+                        set state = 1
+                    else 
+                        _ model.paramNames.push(text)
+        var 
+            decl f
+            decl iifeInvoke
+            decl iife = model.statements.length > 0 && model.statements[(model.statements.length - 1)].wzElement === 'memberCall'
+        if iife
+            set f = '(' + (name.length > 0 ? (xasync + 'function' + aster + ' ' + name) : (xasync + 'function'))
+            set iifeInvoke = model.statements[(model.statements.length - 1)]
+            set iifeInvoke.wzParent =
+                { 
+                    @ wzElement 'call'
+            _ model.statements.splice((model.statements.length - 1), 1)
+        else 
+            set f = name.length > 0 ? (xasync + 'function' + aster + ' ' + name) : (xasync + 'function' + aster)
+        _ ctx.w(f + '(' + model.paramNames.join(', ') + ') {')
+
+		# constraints
+		_ ctx.indent()
+		_ generateParamConstraints
+			@ iife ? 'iife' : aster + name
+			@ model.constrainedParams
+			@ model.hasCallbackParam
+			@ model.hasOptionsCallbackParam
+			@ ctx
+			f_cb()
+				_ cnt.genItems
+					@ model.statements
+					@ ctx
+					{ 
+						@ indent false
+					f_cb()
+						_ ctx.deindent()
+						_ ctx.write('}')
+						if iife
+							return
+								_ cnt.genItems
+									[ 
+										@ iifeInvoke
+									@ ctx
+									{ 
+										@ indent false
+									f_cb()
+										_ ctx.write(')')
+										if u.isTopStatement(model, ctx)
+											_ ctx.w('')
+										r_cb()
+						if u.isTopStatement(model, ctx)
+							_ ctx.w('')
+						r_cb()
+
+    stm( iife
+		var invokeCall = null
+		if model.statements.length > 0 && model.statements[(model.statements.length - 1)].wzElement === 'callOnValue'
+			set invokeCall = model.statements[model.statements.length - 1]
+			_ model.statements.splice(model.statements.length - 1, 1)
+
+        if model.unary_prefix
+            _ ctx.write
+                @ model.unary_prefix
+        
+		_ ctx.w('(function(' + model.paramNames.join(', ') + ') {')
+		# constraints
+		_ ctx.indent()
+		_ generateParamConstraints
+			@ 'iife'
+			@ model.constrainedParams
+			@ model.hasCallbackParam
+			@ model.hasOptionsCallbackParam
+			@ ctx
+			f_cb()
+				_ cnt.genItems
+					@ model.statements
+					@ ctx
+					{ 
+						@ indent false
+					f_cb()
+						_ ctx.deindent()
+						_ ctx.write('})')
+						if invokeCall
+							_ cnt.genItem
+								@ invokeCall
+								@ ctx
+								f_cb()
+									_ ctx.w(';')
+									r_cb()
+						else
+							_ ctx.w('();')
+							r_cb()
+
+	stm( generatorfunction
+		set ctx.__aster = '*'
+		_ cnt.stm.xfunction
+			@ model
+			@ ctx
+			f_cb()
+				set ctx.__aster = null
+				r_cb()
+
+	stm( asyncfunction
+		set model.xasync = true
+		_ cnt.stm.xfunction
+			@ model
+			@ ctx
+			f_cb()
+				set ctx.__aster = null
+				r_cb()
+
+	stm( xyield
+		var name = model.wzName.trim()
+		if hasStatements(model) == false
+			_ ctx.w('yield ' + name + u.semicolon(name))
+			r_cb()
+
+		_ ctx.write('yield ')
+		_ cnt.genItems
+			@ model.statements
+			@ ctx
+			@ callback
+
+	stm( xawait
+		var name = model.wzName.trim()
+		_ ctx.write('await ')
+		if hasStatements(model) == false
+			_ ctx.write(name)
+			if u.isTopStatement(model, ctx)
+				_ ctx.w(u.semicolon(name))
+			r_cb()
+		else
+			_ cnt.genItems
+				@ model.statements
+				@ ctx
+				f_cb()
+					if u.isTopStatement(model, ctx)
+						_ ctx.w(u.semicolon(name))
+					r_cb()
+
+	stm( asyncarrowfunction
+		set model.xasync = true
+		_ cnt.stm.arrowfunction
+			@ model
+			@ ctx
+			@ callback
+	
+	stm( arrowfunction
+		var async_str = model.xasync ? 'async ' : ''
+		log '++++ arrowfunction', model.wzName, async_str, model.xasync
+        if ctx.__is_react_class && model.wzParent.wzElement == 'reactComponent'
+			var save1 = ctx.arrowFunctionNoGraphs
+			set ctx.arrowFunctionNoGraphs = !u.arrowFunctionRequiresGraphs(model)
+			var openGraph
+				iif ctx.arrowFunctionNoGraphs
+					then '' 
+					else ' {'
+            _ ctx.w(model.wzName + ' = ' + async_str + '(' + model.paramNames.join(', ') + ') =>' + openGraph)
+			_ ctx.indent()
+			_ generateParamConstraints
+				@ name
+				@ model.constrainedParams
+				@ model.hasCallbackParam
+				@ model.hasOptionsCallbackParam
+				@ ctx
+				f_cb()
+					_ cnt.genItems
+						@ model.statements
+						@ ctx
+						{ 
+							@ indent false
+						f_cb()
+							_ ctx.deindent()
+							if ctx.arrowFunctionNoGraphs == false
+								_ ctx.w('}')
+							set ctx.arrowFunctionNoGraphs = save1
+							r_cb()
+		elif u.onlyChildIs(model, 'callOnValue') || u.onlyChildIsHtmlElement(model)
+            _ ctx.write(async_str + '(' + model.paramNames.join(', ') + ') => ')
+			# TODO what if it needs generateParamConstraints ?
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent true
+				@ callback
+		elif u.onlyChildIs(model, 'arrowfunction')
+            _ ctx.write(async_str + '(' + model.paramNames.join(', ') + ') => ')
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent true
+				@ callback
+		else 
+			var save1 = ctx.arrowFunctionNoGraphs
+			set ctx.arrowFunctionNoGraphs = !u.arrowFunctionRequiresGraphs(model)
+			var openGraph
+				iif ctx.arrowFunctionNoGraphs
+					then '' 
+					else ' {'
+            _ ctx.w(async_str + '(' + model.paramNames.join(', ') + ') =>' + openGraph)
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent true
+				f_cb()
+					if ctx.arrowFunctionNoGraphs == false
+						_ ctx.write('}')
+						if u.isTopStatement(model, ctx)
+							_ ctx.w()
+					set ctx.arrowFunctionNoGraphs = save1
+					r_cb()
+    
+	stm( xreturn
+		if hasStatements(model) == false
+			_ ctx.w('return ' + (model.wzName || '') + u.semicolon(model.wzName))
+			r_cb()
+
+        _ ctx.write('return ')
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent true
+			f_cb()
+				if model.statements.length == 1
+					_ ctx.w(';')
+				r_cb()
+	
+	$include generateParamConstraints

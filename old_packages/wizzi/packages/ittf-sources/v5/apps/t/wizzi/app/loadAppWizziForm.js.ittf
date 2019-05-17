@@ -1,0 +1,41 @@
+﻿$group
+
+	function loadAppWizziForm
+		param formRelativePath
+		param context
+		param formatOptions
+		param callback
+
+		set context = context || {}
+
+		var formsFolder = path.resolve(__dirname, '../ittf/forms')
+		log 'formsFolder', formsFolder
+		var formPath = path.join(formsFolder, formRelativePath)
+		log 'formPath', formPath
+		
+		_ wizzi.runnerServer.loadWizziModel
+			@ 'form'
+			@ formPath 
+			@ context 
+			function
+				param err
+				param wizziModelInstance
+				
+				if err
+					return callback(err)
+				
+				if formatOptions && formatOptions.json
+					_ wizzi.runnerServer.transformModel
+						@ 'form/jsonizer'
+						@ wizziModelInstance
+						@ context 
+						function
+							param err
+							param modelTransformed
+				
+							if err
+								return callback(err)
+
+							return callback(null, modelTransformed)
+				else
+					return callback(null, wizziModelInstance)

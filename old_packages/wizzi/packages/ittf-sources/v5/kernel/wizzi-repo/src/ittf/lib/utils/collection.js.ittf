@@ -1,0 +1,212 @@
+﻿module
+	kind jsfile
+
+	const errors = require('./errors')
+	const ObjectID = require('./objectId')
+
+	function match
+		param key
+		param item
+		# log 'wizzi-repo.utils.collection.match', key, item
+		if !key
+			# log 'wizzi-repo.utils.collection.match: true'
+			return true
+		elif key.hasOwnProperty('_id')
+			if item._id == null && key._id == null
+				return true
+			if item._id && item._id.equals(key._id)
+				# log 'wizzi-repo.utils.collection.match: true'
+				return true
+		elif key.hasOwnProperty('path')
+			if item.path == normalize(key.path)
+				# log 'wizzi-repo.utils.collection.match: true'
+				return true
+		elif key.hasOwnProperty('basename') && key.hasOwnProperty('parentId')
+			if item.basename === key.basename
+				if item.parentId == null && key.parentId == null
+					# log 'wizzi-repo.utils.collection.match: true'
+					return true
+				if item.parentId && item.parentId.equals(key.parentId)
+					# log 'wizzi-repo.utils.collection.match: true'
+					return true
+		elif key.hasOwnProperty('parentId')
+			if item.parentId == null && key.parentId == null
+				return true
+			if item.parentId && item.parentId.equals(key.parentId)
+				# log 'wizzi-repo.utils.collection.match: true'
+				return true
+		# log 'wizzi-repo.utils.collection.match: false'
+		return false
+
+	class Collection
+		ctor
+			param items
+			set items = items || []
+			if items.classType === 'wizzi-repo.utils.Collection'
+				set this.items = items.items
+			else
+				set this.items = items
+				_ this.restoreIds
+			set this.classType = 'wizzi-repo.utils.Collection'
+
+		m restoreIds
+			foreach item in this.items
+				if item._id && item._id.length
+					# log 'restoreIds._id', item._id, item._id.length
+					set item._id = ObjectID.createFromHexString(item._id)
+				if item.parentId && item.parentId.length
+					# log 'restoreIds.parentId', item.parentId, item.parentId.length
+					set item.parentId = ObjectID.createFromHexString(item.parentId)
+
+		m count
+			param key
+			return this.items.length
+
+		m find
+			param key
+			# log 'wizzi-repo.utils.collection.find', key
+			var result = []
+			foreach item in this.items
+				if match(key, item)
+					_ result.push(item)
+			return new Collection(result)
+
+		m insertOne
+			param doc
+			param options
+			param callback
+			if typeof(callback) == 'undefined'
+				set callback = options
+				set options = null
+			# log 'insertOne.doc', doc
+			if !doc._id
+				set doc._id = new ObjectID()
+			else
+				var items
+					_ this.find
+						{
+							@ _id doc._id 
+				if items.count() > 0
+					_ callback
+						new errors.RepoCollectionError('Duplicated key')
+			_ this.items.push
+				@ doc
+			return
+				_ callback
+					@ null
+					{
+						@ insertedCount 1
+						@ insertedId doc._id
+						[ ops
+							@ doc
+						{ result
+							@ ok 1
+							@ n 1
+
+		m replaceOne
+			param key
+			param doc
+			param options
+			param callback
+			if typeof(callback) == 'undefined'
+				set callback = options
+				set options = {}
+			var temp = []
+			var scannedCount = 0
+			var modifiedCount = 0
+			var upsertedCount = 0
+			var ops = []
+			foreach item in this.items
+				set scannedCount++
+				if match(key, item)
+					if modifiedCount == 0
+						_ temp.push(doc)
+						set modifiedCount++
+						_ ops.push(doc)
+					else
+						return
+							_ callback
+								new errors.RepoCollectionError('More than one item key match replaceOne')
+				else
+					_ temp.push(item)
+			if modifiedCount == 0
+				if options.upsert
+					if !doc._id
+						set doc._id = new ObjectID()
+					_ temp.push(doc)
+					set upsertedCount++
+					_ ops.push(doc)
+				else
+					return
+						_ callback
+							new errors.RepoCollectionError('Key not found')
+			set this.items = temp
+			return
+				_ callback
+					@ null
+					{
+						@ modifiedCount modifiedCount
+						@ upsertedCount upsertedCount
+						{ upsertedId
+							@ _id (upsertedCount > 0 ? doc._id : null )
+						@ ops ops
+						{ result
+							@ ok 1
+							@ n scannedCount
+							@ nModified (modifiedCount + upsertedCount)
+
+		m deleteOne
+			param key
+			param callback
+			var temp = []
+			var deletedCount = 0
+			foreach item in this.items
+				if match(key, item)
+					if deletedCount == 0
+						set deletedCount++
+					else
+						return
+							_ callback
+								new errors.RepoCollectionError('More than one item key match deleteOne')
+				else
+					_ temp.push(item)
+			set this.items = temp
+			return
+				_ callback
+					@ null
+					{
+						@ deletedCount deletedCount
+						{ result
+							@ ok 1
+							@ n deletedCount
+
+		m deleteMany
+			param key
+			param callback
+			var temp = []
+			var deletedCount = 0
+			foreach item in this.items
+				if match(key, item)
+					set deletedCount++
+				else
+					_ temp.push(item)
+			set this.items = temp
+			return
+				_ callback
+					@ null
+					{
+						@ deletedCount deletedCount
+						{ result
+							@ ok 1
+							@ n deletedCount
+
+		m toArray
+			callback
+			# log 'wizzi-repo.utils.collection.toArray'
+			_ callback(null, this.items)
+
+	function normalize
+		param path
+		return path.trim().replace(/\\/g,'/').toLowerCase()
+
+	set module.exports = Collection

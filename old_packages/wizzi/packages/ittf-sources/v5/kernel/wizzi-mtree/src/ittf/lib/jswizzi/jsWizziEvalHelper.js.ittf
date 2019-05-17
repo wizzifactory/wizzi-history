@@ -1,0 +1,202 @@
+﻿module wizzi-mtree.jsWizziEvalHelper
+    kind jsfile
+
+	import util
+	import path
+	import assert
+	var verify = require('wizzi-utils').verify
+	var ContextData = require('./contextData')
+    var interpolate = require('../loader/ittfInterpolate')
+    var types = require('../util/types')
+	var JsWizziContext = null
+    
+	var work
+        { 
+    set work.lineSep = "__LS__"
+    set work.textSep = "__TS__"
+    
+	#
+		# This helper instance is declared in the global context 
+		# of the JsWizziContext and is in the global scope of the
+		# JsWizziRunner when it runs the mTreeBrickBuildupScript.
+		#
+		# The mTreeBuildupScript may call the methods of 
+		# this instance for
+		# . Setting the evalContext: global, mTreeBuildup or mTreeBrick.
+		# . Adding nodes to the mTree that is been building.
+		# . Executing interpolation of expressions.
+		# . Calling api functions (declared in the wizzifile.js) on the runner server 
+		# . Retrieving wizzi models (loaded in wizzifile.js) from the runner server 
+		# 
+		# The evalContext(s) of mTreeBrick(s) are stored in the
+		# the mTreeBrickDatas map of the wizzi.loader.loadHistory.
+		# There are retrieved by the getMTreeBrickEvalContext method
+		# every time the active mTreeBrick context changes.
+	
+	class JsWizziEvalHelper
+		ctor
+			{ jsWizziContext
+			{ primaryModel
+				{ loadHistory
+			{ productionContext
+			
+			set this.jsWizziContext = jsWizziContext
+			set this.primaryModel = primaryModel
+			set this.loadHistory = primaryModel.loadHistory
+			set this.productionContext = productionContext
+			set this.textSep = work.textSep
+			if productionContext.runnerServer
+				set this.callApi = productionContext.runnerServer.callApi
+				set this.getModel = productionContext.runnerServer.getModel
+		#
+			# mTree buildup method
+			# supershort method name
+			# Set the JsWizziContext state to MTreeBrickEvalContext
+		m s
+			param brickKey
+			# log 'JsWizziEvalHelper called $.s(' + brickKey +')'
+			checked_call_return( notUsed
+				_ this.jsWizziContext.set_MTreeBrickEvalContext(brickKey)
+    
+		#
+			# mTree buildup method
+			# supershort method name
+			# Set the JsWizziContext state to NodeContext
+		m n
+			# log 'JsWizziEvalHelper called $.n()'
+			_ this.jsWizziContext.set_NodeContext()
+    
+		#
+			# mTree buildup method
+			# supershort method name
+			# Set the JsWizziContext state to GlobalContext
+		m g
+			param brickKey
+			# log 'JsWizziEvalHelper called $.g("brickKey")'
+			_ this.jsWizziContext.set_GlobalContext(brickKey)
+    
+		#
+			# mTree buildup method
+			# supershort method name
+			# Append a child node to a parent node
+		m a
+			param parent
+			param node
+			param line
+			# log 'JsWizziEvalHelper called $.a(' + node.n + ',' + node.v + ')'
+			_ assert(parent, "wizzi-mtree.JsWizziEvalHelper error. Parent undefined in add. At line " + line)
+			set node.parent = parent
+			if typeof (parent.children) === 'undefined'
+				set parent.children = []
+			set node.children = []
+			_ parent.children.push(node)
+    
+		#
+			# Interpolate a templated node value
+		m ip
+			param brickKey
+			param templatedValue
+			param type
+			param line
+			param hasMacro
+			var ret
+			try
+				var save = this.jsWizziContext.get_currentMTreeBrickKey()
+
+				checked_call_return( notUsed
+					_ this.jsWizziContext.set_MTreeBrickEvalContext(brickKey, line)
+				
+				# log ' *** JsWizziEvalHelper.ip templatedValue', templatedValue, 'brickKey', brickKey
+				
+				checked_call_return( ret, JsWizziEvalHelper.ip )
+					_ interpolate(templatedValue, this.jsWizziContext, {delimiter: '${}'})
+				
+				# log 'interpolated result', ret
+				
+				# Stop 7/7/17 if hasMacro
+				set ret = remacro(ret)
+				
+				if save === null
+					_ this.jsWizziContext.set_NodeContext(brickKey)
+				else 
+					checked_call_return( notUsed
+						_ this.jsWizziContext.set_MTreeBrickEvalContext(save)
+			
+			catch ex
+				
+				var mTreeBrickData = this.loadHistory.getMTreeBrickData(brickKey)
+				var mixerMTreeBrickData = this.loadHistory.getMTreeBrickData(mTreeBrickData.mTreeBrick.$mixerBrickKey)
+				var mixerUri = mixerMTreeBrickData ? mixerMTreeBrickData.ittfDocumentUri : 'root model';
+				# log 'saved ip.currentMTreeBrickKey', save, 'mTreeBrickData.evalContext', mTreeBrickData.evalContext
+
+				# 'values.' + util.inspect(this.jsWizziContext.getValues(), {depth: 2}))
+
+				return 
+					_ error
+						@ 'InterpolationError'
+						@ 'ip'
+						{
+							@ message (ex ? ex.message : 'not available')
+							{ parameter
+								@ 'interpolating: ' + templatedValue
+								@ line line
+								@ type type
+								@ brickKey brickKey
+								@ mTreeBrickUri mTreeBrickData.ittfDocumentUri
+								@ mixerMTreeBrickUri mixerUri
+						@ ex
+			
+			var retObject
+				_ types.objectify
+					@ ret
+					@ type
+					{ 
+						@ row line
+			
+			if retObject && retObject.__is_error
+				var mTreeBrickData = this.loadHistory.getMTreeBrickData(brickKey)
+				return
+					_ error
+						@ 'InterpolationError'
+						@ 'ip'
+						@ 'Error interpolating: ' + templatedValue + ', line:' + line +
+							\b  ', mTreeBrick uri: ' + mTreeBrickData.ittfDocumentUri +
+							\b ', mixerMTreeBrick uri: ' + mixerUri 
+						@ retObject
+			else
+				return retObject
+    
+		m api
+			if this.callApi
+				return 
+					_ this.callApi.apply
+						@ this.productionContext.runnerServer
+						@ arguments
+			else 
+				return
+					_ error
+						@ 'InvalidOperation'
+						@ 'api'
+						@ 'A RunnerServer has not been started. You must create a wizzifile.js.'
+    
+		m model
+			if this.getModel
+				return 
+					_ this.getModel.apply
+						@ this.productionContext.runnerServer
+						@ arguments
+			else 
+				return
+					_ error
+						@ 'InvalidOperation'
+						@ 'model'
+						@ 'A wizzi.RunnerServer has not been started. You must create a wizzifile.js.'
+    
+		$include jsWizziEvalHelper/getMTreeBrickEvalContext
+
+	function remacro
+		param value
+		# Alt+146 = Æ
+		return verify.replaceAll(value, "Æ{", "${") 
+
+	set module.exports = JsWizziEvalHelper

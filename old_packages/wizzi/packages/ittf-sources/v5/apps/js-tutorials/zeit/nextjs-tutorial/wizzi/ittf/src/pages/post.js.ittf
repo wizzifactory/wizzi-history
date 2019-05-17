@@ -1,0 +1,35 @@
+﻿module
+    kind react
+    import Layout from '../components/MyLayout.js'
+    import fetch from 'isomorphic-unfetch'
+    const Post
+        => 
+            param props
+            < Layout 
+                h1 
+                    + {props.show.name}
+                p 
+                    + {props.show.summary.replace(/<[/]?p>/g, '')}
+                img 
+                    @ src {props.show.image.medium}
+    set Post.getInitialProps =
+        async-function 
+            param context
+            const {id: id} = context.query
+            const res
+                await 
+                    _ fetch
+                        `lit 
+                            + https://api.tvmaze.com/shows/
+                            @ id
+            const show
+                await 
+                    _ res.json
+            _ console.log
+                `lit 
+                    + Fetched\bshow:\b
+                    @ show.name
+            return 
+                { 
+                    @ show show
+    export-default Post

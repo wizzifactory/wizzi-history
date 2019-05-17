@@ -1,0 +1,48 @@
+﻿concept The Wizzi Model factory javascript module
+
+	summary
+
+		p The javascript module `schema-name`-factory.g.js exports the method
+			+ 'createLoadModel', that is an HOF that returns the 'loadModel' function.
+			+ It must be called passing the 'wizzi' object.
+
+		h4 The `schema-name`-factory.g.js API
+		p We have seen already this api in the 'plugin' documentation. 
+		ittf
+			- {
+				- func createLoadModel
+					- # HOF : returns the loadModel function for the given factory
+					- { wizziObject
+						- func loadMTree
+							- api-ref wizzi-mtree.loader.loadMTree
+							- # This function is prepared by the wizzi.wizziFactory instance class
+							- # and has repository access functions and load options in its closure.
+						- { file
+							- api-ref wizzi.util.file
+						- { errors
+							- api-ref wizzi.errors
+					- ...
+					- return
+						- func loadModel
+							- # This returned function require a complex 'loadContext' 
+							- # parameter with a lot of interfaces passed.
+							- # It will be called by the wizzi.wizziFactory instance and
+							- # not directly from client code.
+							- string ittfDocumentUri
+								- # The path to the primary ittf document from which
+								- # the mTree will be loaded
+							- { loadContext
+								- { __productionManager
+									- api-ref wizzi.production.productionManager
+									- { productionContext
+										- api-ref wizzi.production.productionContext
+										- { aclstat
+											- api-ref wizzi.production.aclstat
+								- { __ittfDocumentStore
+									- api-ref wizzi-repo.ittfDocumentStore
+								- { mTreeBuildUpContext
+									- optional
+									- | api-ref wizzi-plugin.wizziModel
+									- | POJO
+							- callback
+

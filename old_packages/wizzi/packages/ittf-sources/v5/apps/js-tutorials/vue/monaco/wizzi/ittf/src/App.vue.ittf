@@ -1,0 +1,65 @@
+﻿vue App
+    template 
+		div
+			button update
+				@click updateCode
+			< monaco-editor 
+				class editor
+				v-model code
+				language javascript
+    
+	script 
+        import MonacoEditor from 'vue-monaco'
+		set window.MonacoEnvironment =
+			{ 
+				@ getWorkerUrl
+					function 
+						param moduleId
+						param label
+						if label === 'json'
+							return './json.worker.js'
+						if label === 'css'
+							return './css.worker.js'
+						if label === 'html'
+							return './html.worker.js'
+						if label === 'typescript' || label === 'javascript'
+							return './typescript.worker.js'
+						return './editor.worker.js'
+		const code
+			`lit 
+				+ function foo() {\n
+				+ \b return 'foo'\n
+				+ }
+		
+		const markdownCode
+			`lit 
+				+ <p>Hello</p>\n
+
+        export-default 
+            { 
+                { components
+                    @ MonacoEditor
+                m data
+                    return 
+                        { 
+                            @ code code
+							@ language 'javascript'
+							@ theme 'vs'
+							{ options
+								@ lineNumbers true
+				{ methods
+					m updateCode
+						set this.language = 'html'
+						set this.code = markdownCode
+						set this.options.tabSize = 8
+						set this.options.lineNumbers = false
+						set this.theme = 'vs-dark'
+    
+	style 
+		< html, body, #app
+			height 100%
+		< body
+			margin 0
+        . editor
+            width 600px
+            height 600px

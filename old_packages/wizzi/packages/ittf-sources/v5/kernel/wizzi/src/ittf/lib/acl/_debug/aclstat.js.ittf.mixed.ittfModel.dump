@@ -1,0 +1,43 @@
+  module  ids: 1 44
+    kind jsfile ids: 2 45
+    var Acl = require('./acl') ids: 3 46
+    var Statistics = require('./statistics') ids: 4 47
+    var config = null ids: 5 48
+    class AclStat ids: 6 49
+      ctor  ids: 7 50
+        param userId ids: 8 51
+        param subscriptionType ids: 9 52
+        param aclConfig ids: 10 53
+        param statisticsConfig ids: 11 54
+        set this.userId = userId ids: 12 55
+        set this.subscriptionType = subscriptionType ids: 13 56
+        set this.aclConfig = aclConfig ids: 14 57
+        set this.statisticsConfig = statisticsConfig ids: 15 58
+        _ this._init() ids: 16 59
+      m _init ids: 17 60
+        if config == null ids: 18 61
+          set config = require('../../index').config ids: 19 62
+        log 'AclStat.init.config', config ids: 20 63
+        set this.acl = new Acl(this.aclConfig, config) ids: 21 64
+        set this.statistics = new Statistics(this.statisticsConfig, config) ids: 22 65
+      m checkAuth ids: 23 66
+        param operId ids: 24 67
+        param resourceType ids: 25 68
+        param resourceName ids: 26 69
+        return  ids: 27 70
+          _ this.acl.checkAuth ids: 28 71
+            @ this.userId ids: 29 72
+            @ this.subscriptionType ids: 30 73
+            @ operId ids: 31 74
+            @ resourceType ids: 32 75
+            @ resourceName ids: 33 76
+      m stat ids: 34 77
+        param operId ids: 35 78
+        param options ids: 36 79
+        return  ids: 37 80
+          _ this.statistics.stat ids: 38 81
+            @ this.userId ids: 39 82
+            @ this.subscriptionType ids: 40 83
+            @ operId ids: 41 84
+            @ options ids: 42 85
+    set module.exports = AclStat ids: 43 86

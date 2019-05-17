@@ -1,0 +1,28 @@
+﻿$group
+
+	get( /repo/:user/:project/* )
+
+		_ repoApi.getFolderOrFile
+			@ req.params.user
+			@ req.params.project
+			@ req.params['0']
+			f_cb_rest( result )
+				
+				var payload
+					{
+						@ userId req.params.user
+						@ projectId req.params.project
+						@ folderId req.params['0']
+						@ folderOrFile result.data
+				
+				send-formats( html-json )
+
+				html_f view
+					layout-file()
+						. middle-container
+							breadcrumb-file()
+							table-file()
+
+				function jsondata
+					param ctx
+					return ctx

@@ -1,0 +1,53 @@
+﻿api wizzi-plugin.modelFactory
+	# Implemented by Wizzi Model factories contained in plugins.
+	module
+		standard-path {wizzi-plugin}/lib/wizzi/models/{schema}-factory.g.js
+
+	iface
+		m loadModel
+			# Executes the loading of a Wizzi Model using the 
+			# wizzi-mtree.loader.loadMTree passed to
+			# wizzi-plugin.createLoadModel(...).
+			# It is returned by wizzi-plugin.createLoadModel(...)
+			# and can be stored and reused.
+			string ittfDocumentUri
+				# The uri of the primary ittf document to be loaded.
+			{ loadContext
+				{ __productionManager
+					required
+					api-ref wizzi.production.productionManager
+				{ __ittfDocumentStore
+					required
+					api-ref wizzi-repo.ittfDocumentStore
+				{ mTreeBuildUpContext
+					# (Optional) wizzi-plugin.wizziModel or POJO
+				{ __request
+					# This is a legacy that should disappear.
+					# See the wizzi.production.productionContext class
+					# for the new implementation of debug dumps.
+					boolean dumpAll
+					boolean dumpIttfModel
+					boolean dumpModel
+					boolean dumpModelAfterInitializeAsync
+			cb()
+				{ wizziModel
+					api-ref wizzi-plugin.wizziModel
+
+	{
+		hof createLoadModel
+			{ wizziObject
+				function loadMTree
+					api-ref wizzi-mtree.loader.loadMTree
+				{ file
+					api-ref wizzi-utils.file
+				{ verify
+					api-ref wizzi-utils.verify
+				{ errors
+					{ WizziModelLoadError
+						# object derived from Error object
+			{ globalContext
+				# Will be iniected in the evaluation context of
+				# every loaded model.
+			return
+				function loadModel
+					api-ref wizzi-plugin.modelFactory.loadModel

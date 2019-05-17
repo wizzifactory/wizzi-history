@@ -1,0 +1,81 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var fs = require('fs') ids: undefined undefined
+    var glob = require('glob') ids: undefined undefined
+    +  ids: undefined undefined
+    set module.exports ids: undefined undefined
+      {  ids: undefined undefined
+        @ replaceAll ids: undefined undefined
+          function  ids: undefined undefined
+            param s ids: undefined undefined
+            param find ids: undefined undefined
+            param replace ids: undefined undefined
+            if typeof s === 'undefined' || s == null ids: undefined undefined
+              return s ids: undefined undefined
+            return s.replace(new RegExp(escapeRegExp(find), 'g'), replace) ids: undefined undefined
+        @ getGlobbedFiles ids: undefined undefined
+          function  ids: undefined undefined
+            param globPatterns ids: undefined undefined
+            param options ids: undefined undefined
+            set options = options || {} ids: undefined undefined
+            var exclude = options.exclude ids: undefined undefined
+            +  ids: undefined undefined
+            # For context switching ids: undefined undefined
+            var _this = this ids: undefined undefined
+            +  ids: undefined undefined
+            # URL paths regex ids: undefined undefined
+            var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i') ids: undefined undefined
+            +  ids: undefined undefined
+            # The output array ids: undefined undefined
+            var output = [] ids: undefined undefined
+            +  ids: undefined undefined
+            # If glob pattern is array so we use each pattern in a recursive way, otherwise we use glob ids: undefined undefined
+            if _.isArray(globPatterns) ids: undefined undefined
+              _ globPatterns.forEach ids: undefined undefined
+                function  ids: undefined undefined
+                  param globPattern ids: undefined undefined
+                  set output = _.union(output, _this.getGlobbedFiles(globPattern, exclude)) ids: undefined undefined
+            elif _.isString(globPatterns) ids: undefined undefined
+              if urlRegex.test(globPatterns) ids: undefined undefined
+                _ output.push(globPatterns) ids: undefined undefined
+              else  ids: undefined undefined
+                var files = glob.sync(globPatterns) ids: undefined undefined
+                if exclude ids: undefined undefined
+                  set files ids: undefined undefined
+                    _ files.map ids: undefined undefined
+                      function  ids: undefined undefined
+                        param file ids: undefined undefined
+                        if _.isArray(exclude) ids: undefined undefined
+                          foreach exclude in exclude ids: undefined undefined
+                            set file = file.replace(exclude, '') ids: undefined undefined
+                        else  ids: undefined undefined
+                          set file = file.replace(exclude, '') ids: undefined undefined
+                        return file ids: undefined undefined
+                set output = _.union(output, files) ids: undefined undefined
+                set output = _.filter(output, function (item) { return item.indexOf('/_debug') < 0; }) ids: undefined undefined
+            return output ids: undefined undefined
+        @ walkDirectory ids: undefined undefined
+          function  ids: undefined undefined
+            param path ids: undefined undefined
+            var filetree = {} ids: undefined undefined
+            _ _walkDirectory(path, filetree) ids: undefined undefined
+            return filetree ids: undefined undefined
+        @ htmlEncode ids: undefined undefined
+          function  ids: undefined undefined
+            param string ids: undefined undefined
+            var ret = this.replaceAll(string, '<', '&lt;') ids: undefined undefined
+            set ret = this.replaceAll(ret, '>', '&gt;') ids: undefined undefined
+            return this.replaceAll(ret, '&', '&amp;') ids: undefined undefined
+        @ now_GMYHMS ids: undefined undefined
+          function  ids: undefined undefined
+            var date = new Date() ids: undefined undefined
+            + return date.getDate() + '/' + ids: undefined undefined
+              + (date.getMonth() + 1) + '/' + ids: undefined undefined
+              + date.getFullYear() + ':' + ids: undefined undefined
+              + date.getHours() + ':' + ids: undefined undefined
+              + date.getMinutes() + ':' + ids: undefined undefined
+              + date.getSeconds(); ids: undefined undefined
+    +  ids: undefined undefined
+    function escapeRegExp ids: undefined undefined
+      param s ids: undefined undefined
+      return s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") ids: undefined undefined

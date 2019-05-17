@@ -1,0 +1,44 @@
+﻿wfjob wizzi-ui
+	
+	$include app-options
+	
+	$
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var ittf_src          = path.join(__dirname, 'ittf', 'src');
+		var ittf_images       = path.join(__dirname, 'ittf', 'images');
+		var dest_folder       = path.resolve(__dirname, '..', 'app');
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+		$include wfjob/any_json
+		$include wfjob/any_text
+
+		$include wfjob/.gitignore
+		$include wfjob/.babelrc
+
+	line src
+		cwd-folder ${ittf_src}
+		dest-folder ${dest_folder}/src
+
+		$include wfjob/any_js
+		$include wfjob/any_json
+		$include wfjob/any_css
+		$include wfjob/any_html
+		$include wfjob/any_svg
+		$include wfjob/any_plain_scss
+
+	line images
+		cwd-folder ${ittf_images}
+		dest-folder ${dest_folder}/dist/images
+		
+		$include wfjob/any_svg
+		wfjob/any_plain( gif
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref src
+		line-ref images

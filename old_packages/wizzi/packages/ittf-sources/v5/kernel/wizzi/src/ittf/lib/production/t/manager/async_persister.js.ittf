@@ -1,0 +1,26 @@
+﻿$group
+
+	# async persist one or more artifact productions 
+		# from an artifactInfo object.
+		# uses an ArtifactPersister instance
+	var AsyncPersisterToFile
+		{
+			@ run
+				function
+					{ artifactInfo
+						{ productionManager
+					callback
+
+					log 'Started async persist to file artifact: ', artifactInfo.name
+					var persister = new ArtifactPersister(artifactInfo)
+					_ persister.toFile
+						f_cb( operResult )
+							
+							foreach oper in operResult
+								_ log.info
+									@ oper.oper + ', ' + 
+										\b oper.status + ', ' + 
+										\b oper.item.filepath
+							
+							log 'Ended async persist to file artifact: ', artifactInfo.name
+							_ callback(null, operResult)

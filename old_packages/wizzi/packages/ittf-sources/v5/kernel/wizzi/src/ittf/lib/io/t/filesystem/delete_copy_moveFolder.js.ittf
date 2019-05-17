@@ -1,0 +1,102 @@
+﻿$group
+
+	set md.deleteFolder
+		function
+			param userId
+			param projectId
+			param path_string
+            param callback
+			
+			$include check_mounted
+
+			var fsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ path_string
+				
+			# log 'wizzi-io.filesystem.deleteFolder.fsPath', fsPath
+
+			_ file.deleteFolder
+				@ fsPath
+				f_cb( result )
+					# log 'wizzi-io.filesystem.deleteFolder.fsPath', fsPath, 'result', result
+					return 
+						_ callback(null, result)
+
+	set md.copyFolder
+		function
+			param userId
+			param source_projectId
+			param source_itemPath
+			param dest_projectId
+			param dest_itemPath
+            param callback
+			
+			$include check_mounted
+
+			var sourceFsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ source_projectId
+						@ source_itemPath
+				
+			var destFsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ dest_projectId
+						@ dest_itemPath
+
+			# log 'wizzi-io.filesystem.copyFolder.sourceFsPath', sourceFsPath, 'destFsPath', destFsPath
+
+			_ file.copyFolder
+				@ sourceFsPath
+				@ destFsPath
+				f_cb()
+					# log 'wizzi-io.filesystem.copyFolder.sourceFsPath', sourceFsPath, 'destFsPath', destFsPath
+					return 
+						_ callback(null)
+
+
+	set md.moveFolder
+		function
+			param userId
+			param source_projectId
+			param source_itemPath
+			param dest_projectId
+			param dest_itemPath
+            param callback
+			
+			$include check_mounted
+
+			var sourceFsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ source_projectId
+						@ source_itemPath
+				
+			var destFsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ dest_projectId
+						@ dest_itemPath
+
+			# log 'wizzi-io.filesystem.moveFolder.sourceFsPath', sourceFsPath, 'destFsPath', destFsPath
+
+			_ file.moveFolder
+				@ sourceFsPath
+				@ destFsPath
+				f_cb()
+					# log 'wizzi-io.filesystem.moveFolder.sourceFsPath', sourceFsPath, 'destFsPath', destFsPath
+					return 
+						_ callback(null)

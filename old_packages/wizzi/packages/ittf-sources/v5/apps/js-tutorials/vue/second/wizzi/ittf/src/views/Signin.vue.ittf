@@ -1,0 +1,79 @@
+﻿vue 
+    template 
+        v-container 
+            fill-height 
+            v-layout 
+                align-center 
+                justify-center 
+                v-flex 
+                    xs12 
+                    sm8 
+                    md4 
+                    v-card 
+                        class elevation-12
+                        v-toolbar 
+                            dark 
+                            color primary
+                            v-toolbar-title Login Form
+                        v-card-text 
+                            v-form 
+                                ref form
+                                v-model valid
+                                lazy-validation 
+                                v-text-field 
+                                    prepend-icon person
+                                    name email
+                                    label Email
+                                    type email
+                                    v-model email
+                                    :rules emailRules
+                                    required 
+                                v-text-field 
+                                    prepend-icon lock
+                                    name password
+                                    label Password
+                                    id password
+                                    type password
+                                    required 
+                                    v-model password
+                                    :rules passwordRules
+                        v-card-actions 
+                            v-spacer 
+                            v-btn Login
+                                color primary
+                                :disabled !valid
+                                @click submit
+    script 
+        export-default 
+            { 
+                @ name 'Signin'
+                m data
+                    return 
+                        { 
+                            @ valid false
+                            @ email ''
+                            @ password ''
+                            [ emailRules
+                                => 
+                                    param v
+                                    + !!v || 'E-mail is required'
+                                => 
+                                    param v
+                                    + /.+@.+/.test(v) || 'E-mail must be valid'
+                            [ passwordRules
+                                => 
+                                    param v
+                                    + !!v || 'Password is required'
+                                => 
+                                    param v
+                                    + v.length >= 6 || 'Password must be greater than 6 characters'
+                { methods
+                    m submit
+                        if this.$refs.form.validate()
+                            _ this.$store.dispatch
+                                @ 'userLogin'
+                                { 
+                                    @ email this.email
+                                    @ password this.password
+    style 
+        scoped 

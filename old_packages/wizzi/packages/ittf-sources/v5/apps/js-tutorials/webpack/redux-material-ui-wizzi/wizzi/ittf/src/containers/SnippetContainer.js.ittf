@@ -1,0 +1,182 @@
+﻿r-container( Snippet )
+
+	$append imports
+		import { 
+			\b selectSnippetSchema,
+			\b selectSnippet,
+			\b changeSnippetCode,
+			\b addSnippet,
+			\b renameSnippet,
+			\b removeSnippet
+			\b } from '../store/actions'
+		import SnippetComponent from '../components/SnippetComponent'
+
+	did-mount
+		prop selectedSchema
+		prop dispatchSelectSnippetSchema
+		log 'snippetContainer.DidMount.selectedSchema', selectedSchema
+		if selectedSchema && selectedSchema.length > 0
+			_ dispatchSelectSnippetSchema
+				@ selectedSchema
+
+	=> handleSelectSnippetSchema
+		param event
+		prop dispatchSelectSnippetSchema
+		log 'handleSelectSnippetSchema', event.target.value
+		_ dispatchSelectSnippetSchema
+			@ event.target.value
+
+	=> handleSelectSnippet
+		param event
+		prop dispatchSelectSnippet
+		log 'handleSelectSnippet', event.target.value
+		_ dispatchSelectSnippet
+			@ event.target.value
+
+	=> handleSnippetCodeChanged
+		param value
+		prop selectedSchema
+		prop selectedSnippet
+		prop dispatchChangeSnippetCode
+
+		_ dispatchChangeSnippetCode
+			@ selectedSchema
+			@ selectedSnippet
+			@ value
+
+	=> handleAddSnippet
+		param snippetName
+		prop selectedSchema
+		prop dispatchAddSnippet
+		_ dispatchAddSnippet
+			@ selectedSchema
+			@ snippetName
+
+	=> handleRenameSnippet
+		param oldSnippet
+		param newSnippet
+		prop selectedSchema
+		prop dispatchRenameSnippet
+		_ dispatchRenameSnippet
+			@ selectedSchema
+			@ oldSnippet
+			@ newSnippet
+
+	=> handleRemoveSnippet
+		param snippetName
+		prop selectedSchema
+		prop dispatchRemoveSnippet
+		_ dispatchRemoveSnippet
+			@ selectedSchema
+			@ snippetName
+
+	render
+		prop snippetIndex
+		prop selectedSchema
+		prop filteredSnippets
+		prop selectedSnippet
+		prop snippetCode
+		prop wizzifiedSnippet
+		prop snippetAst
+		prop wizzifyError
+		prop isLoadingSnippetCode
+		prop isWizzifing
+		prop isUpdatingSnippets
+
+		return
+			< SnippetComponent
+				@ snippetIndex {snippetIndex}
+				@ selectedSchema {selectedSchema}
+				@ filteredSnippets {filteredSnippets}
+				@ selectedSnippet {selectedSnippet}
+				@ snippetCode {snippetCode}
+				@ wizzifiedSnippet {wizzifiedSnippet}
+				@ snippetAst {snippetAst}
+				@ wizzifyError {wizzifyError}
+				@ isLoadingSnippetCode {isLoadingSnippetCode}
+				@ isWizzifing {isWizzifing}
+				@ isUpdatingSnippets {isUpdatingSnippets}
+				@ onSelectSnippetSchema {this.handleSelectSnippetSchema}
+				@ onSelectSnippet {this.handleSelectSnippet}
+				@ onSnippetCodeChanged {this.handleSnippetCodeChanged}
+				@ onAddSnippet {this.handleAddSnippet}
+				@ onRenameSnippet {this.handleRenameSnippet}
+				@ onRemoveSnippet {this.handleRemoveSnippet}
+
+	$append state-to-props
+		@ snippetIndex state.snippet.index || []
+		@ selectedSchema state.snippet.selectedSchema || ''
+		@ filteredSnippets state.snippet.filteredSnippets || []
+		@ selectedSnippet state.snippet.selectedSnippet || ''
+		@ snippetCode state.snippet.snippetCode || ''
+		@ isLoadingSnippetCode state.snippet.isLoadingSnippetCode
+		@ isUpdatingSnippets state.snippet.isUpdating
+		@ isWizzifing state.wizzify.isWizzifing
+		@ wizzifiedSnippet state.wizzify.wizzified || ''
+		@ wizzifyError ( state.wizzify.wizzifyError ? JSON.stringify(state.wizzify.wizzifyError, null, 2) : null )
+		@ snippetAst state.helpBoard.snippetAst
+
+	$append dispatch-to-props
+
+		@ dispatchSelectSnippetSchema
+			=>
+				param schema
+				log 'dispatchSelectSnippetSchema', schema
+				_ dispatch
+					_ selectSnippetSchema
+						@ schema
+		
+		@ dispatchSelectSnippet
+			=>
+				param snippet
+				log 'dispatchSelectSnippet', snippet
+				_ dispatch
+					_ selectSnippet
+						@ snippet
+
+		@ dispatchChangeSnippetCode
+			=>
+				param schemaName
+				param snippetName
+				param snippetCode
+				log 'dispatchChangeSnippetCode', snippetName
+				_ dispatch
+					_ changeSnippetCode
+						@ schemaName
+						@ snippetName
+						@ snippetCode
+
+		@ dispatchAddSnippet
+			=>
+				param schemaName
+				param snippetName
+				log 'dispatchAddSnippet', schemaName, snippetName
+				_ dispatch
+					_ addSnippet
+						@ schemaName
+						@ snippetName
+
+		@ dispatchRenameSnippet
+			=>
+				param schemaName
+				param oldSnippet
+				param newSnippet
+				log 'dispatchRenameSnippet', oldSnippet, newSnippet
+				_ dispatch
+					_ renameSnippet
+						@ schemaName
+						@ oldSnippet
+						@ newSnippet
+
+		@ dispatchRemoveSnippet
+			=>
+				param schemaName
+				param snippetName
+				log 'dispatchRemoveSnippet', schemaName, snippetName
+				_ dispatch
+					_ removeSnippet
+						@ schemaName
+						@ snippetName
+
+
+

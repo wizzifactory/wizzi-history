@@ -1,0 +1,53 @@
+﻿$group
+
+	@ getWizziFactoryInfo
+		function
+			param options
+			param callback
+
+			var storeKind = options.storeKind
+			var pluginsBaseFolder = options.pluginsBaseFolder
+			
+			var pluginItems
+				[
+					@ 'wizzi-core'
+					@ 'wizzi-js'
+					@ 'wizzi-web'
+			var pluginsString = options.plugins
+			if verify.isEmpty(pluginsString) == false
+				var ss = pluginsString.split(';')
+				foreach s in ss
+					if pluginItems.indexOf(s) < 0
+						_ pluginItems.push(s)
+
+			var globalContext = {}
+			var globalContextString = options.globalContext
+			if verify.isEmpty(globalContextString) == false
+				var ss = globalContextString.split(';')
+				foreach s in ss
+					var ss2 = s.split('=')
+					if ss2.length == 2
+						set globalContext[ss2[0]] = ss2[1]
+			
+			_ wizzi.createFactory
+				@ 'stefi'
+				@ 'admin'
+				{
+					@ repo
+						{
+							@ storeKind storeKind
+					@ plugins
+						{
+							@ items pluginItems
+							@ pluginsBaseFolder pluginsBaseFolder
+					@ globalContext globalContext
+				f_cb_api( wf )
+					return
+						_ callback
+							@ null
+							{
+								@ data wf.getInfo()
+								@ status
+									_ success
+										@ 'Wizzi factory info fetched'
+

@@ -1,0 +1,41 @@
+﻿$group
+
+	div
+		id sample-${sample.id}-tabcontrol
+		div
+			class wz-ui-page wz-ui-default-page
+			id sample-${sample.id}-tab-${sample.primaryIttf.id}
+			. summary
+				$foreach line in sample.primaryIttf.summaryLines
+					+ ${line}
+			$foreach line in sample.primaryIttf.nodeLines
+				+ ${line}
+
+		$foreach mixin in sample.mixins
+			div
+				class wz-ui-page
+				id sample-${sample.id}-tab-${mixin.id}
+				. summary
+					$foreach line in mixin.summaryLines
+						+ ${line}
+				$foreach line in mixin.nodeLines
+					+ ${line}
+
+		$foreach include in sample.includes
+			div
+				class wz-ui-page
+				id sample-${sample.id}-tab-${include.id}
+				. summary
+					$foreach line in include.summaryLines
+						+ ${line}
+				$foreach line in include.nodeLines
+					+ ${line}
+
+		div
+			class wz-ui-page
+			id sample-${sample.id}-tab-${sample.schema.id}
+			. summary
+				$foreach line in sample.schema.summaryLines
+					+ ${line}
+			$foreach line in sample.schema.nodeLines
+				+ ${line}

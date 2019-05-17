@@ -1,0 +1,132 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m renameFolder
+		string oldPath
+		string newPath
+		callback
+
+		set oldPath = normalize(path.resolve(oldPath))
+		set newPath = normalize(path.resolve(newPath))
+		if oldPath === newPath
+			return
+				_ callback
+					@ null
+					{
+		var oldDirname = normalize(path.dirname(oldPath))
+		var newDirname = normalize(path.dirname(newPath))
+		var oldName = path.basename(oldPath)
+		var newName = path.basename(newPath)
+
+		if oldDirname !== newDirname
+			r_cb_wz_err( InvalidArgument, renameFile )
+				@ 'Document rename folder error. Old and new path must have the same base folder: ' + oldDirname + ' !== ' + newDirname
+
+		if oldName === newName
+			r_cb()
+				{
+					@ renamed false
+					@ message 'oldPath and newPath are the same'
+		
+		var that = this
+		
+		_ this.fsCommon.getItemByPath
+			@ oldPath
+			f_cb( fsitem )
+				if fsitem == null
+					r_cb_wz_err( ${fsname}RepoError, renameFolder )
+						@ 'Document rename folder error. Old path not found: ' + oldPath
+
+				if fsitem.kind == 1
+					r_cb_wz_err( ${fsname}RepoError, renameFolder )
+						@ 'Document rename folder error. Is a file path, not a folder path: ' + oldPath
+
+				log 'wizzi-repo.${source}.document.renameFolder.fsitem', fsitem
+
+				_ that.exists
+					@ newPath
+					f_cb( r )
+						if r === true
+							r_cb_wz_err( ${fsname}RepoError, renameFile )
+								@ 'Document rename folder error. The new path already exists: ' + newPath
+						else
+							set fsitem.basename = newName
+							set fsitem.path = normalize(path.join(fsitem.dirname, fsitem.basename))
+							_ that._changeParentFolder
+								@ fsitem
+								f_cb( changes )
+									log 'wizzi-repo.${source}.document.renameFolder.changes', changes
+									_ that.fsCommon.updateItem
+										@ fsitem
+										f_cb( r )
+											r_cb( r )
+
+	m _changeParentFolder
+		param fsitemParent
+		param callback
+
+		var that = this
+
+		function change_dirnames_Async
+			param fsitems
+			param newDirname
+			param callback
+			+
+			foreach item in fsitems
+				log 'wizzi-repo.${source}.document.renameFolder.change_dirnames_Async', item
+				set item.dirname = newDirname
+				set item.path = normalize(path.join(item.dirname, item.basename))
+			_ async.mapSeries
+				@ fsitems
+				function
+					param fsitem
+					param callback
+					_ that.fsCommon.updateItem
+						@ fsitem
+						f_cb( r )
+							return
+								_ callback(null, r.item)
+				f_cb( newfsitems )
+					return
+						_ callback(null, newfsitems)
+
+		function recurser
+			param fsitemParent
+			param changes
+
+			return
+				new Promise
+					function
+						param resolve
+						_ that.fsCommon.getItemChildren
+							@ fsitemParent._id
+							f_cb( fsitems )
+								# log 'wizzi-repo.${source}.document.renameFolder.children of ', fsitemParent._id, fsitemParent.path, fsitems.length
+								if fsitems.length > 0
+									_ change_dirnames_Async
+										@ fsitems
+										@ fsitemParent.path
+										f_cb( updfsitems )
+											foreach upd in updfsitems
+												log 'wizzi-repo.${source}.document.renameFolder.upd', upd
+												_ changes.push(upd.path)
+												_ recurser
+													@ upd
+													@ changes
+													._ then
+														function
+															log 'wizzi-repo.${source}.document.renameFolder.resolve'
+															_ resolve()
+								else
+									log 'wizzi-repo.${source}.document.renameFolder.last resolve'
+									_ resolve()
+
+		var changes = []
+		_ recurser
+			@ fsitemParent
+			@ changes
+			._ then
+				function
+					log 'wizzi-repo.${source}.document.renameFolder._changeParentFolder ended', changes
+					return
+						_ callback(null, changes)

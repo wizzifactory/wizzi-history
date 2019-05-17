@@ -1,0 +1,58 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var wizzi = require('wizzi')
+
+	var md = module.exports = {}
+	var myname = 'raml.js.client.main'
+
+	set md.gen
+		function
+			param model
+			param ctx
+			param callback
+
+			$*
+			var ittfDocumentPath = path.join(__dirname, 'ittf', 'js-client.js.ittf')
+			var jsContext
+				{
+					@ raml model
+					@ request
+						{
+			_ wizzi.jsModule
+				@ ittfDocumentPath
+				@ jsContext
+				function
+					param err
+					param result
+					if err
+						throw new Error(err)
+					_ ctx.w(result)
+					_ callback(null, ctx)
+			*$
+
+			_ wizzi.fsnoaclFactory
+				{
+					{ plugins
+						[ items
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+				f_cb( wf )
+					_ wf.loadModelAndGenerateArtifact
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ 'js-client.js.ittf'
+						{
+							{ modelRequestContext
+								{ mTreeBuildUpContext
+									@ raml model
+							@ artifactRequestContext {}
+						@ 'js/module'
+						f_cb( artifactText )
+							log 'raml.js-client.artifactText', artifactText
+							_ ctx.w(artifactText)
+							r_cb( ctx )
+

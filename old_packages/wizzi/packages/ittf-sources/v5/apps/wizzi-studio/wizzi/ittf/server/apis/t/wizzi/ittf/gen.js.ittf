@@ -1,0 +1,78 @@
+﻿$group
+
+	@ generateDefaultArtifact
+		function
+			param options
+			param callback
+
+			var ittfDocumentHash = options.hash
+			var mTreeBuildUpContext = options.context || {}
+			var sessionData = {}
+			var modelContext = {}
+			var artifactContext = {}
+
+			var ittfDocumentUri
+				_ paths.getIttfFilePathByHash
+					@ ittfDocumentHash
+
+			var schema
+				_ paths.getSchemaByIttfDocumentUri
+					@ ittfDocumentUri
+
+			_ globalApi.studio.getDefaultArtifacts
+				@ options
+				f_cb_api( result )
+					var artifactName = result.data.defaultArtifacts[schema]
+					_ globalApi.wf.loadModelAndGenerateArtifact
+						@ sessionData
+						@ ittfDocumentUri
+						@ modelContext
+						@ artifactName
+						@ artifactContext
+						f_cb_api( result )
+							return
+								_ callback
+									@ null
+									{
+										@ data result
+										@ status
+											_ success
+												@ 'Artifact generation ' + artifactName + ' on uri ' + ittfDocumentUri + ' executed'
+
+	@ getMTreeDebugInfo
+		function
+			param options
+			param callback
+
+			var ittfDocumentHash = options.hash
+			var mTreeBuildUpContext = options.context || {}
+
+			var ittfDocumentUri
+				_ paths.getIttfFilePathByHash
+					@ ittfDocumentHash
+
+			_ createWizziFactory
+				@ null
+				_ loadMTreeDebugInfo_cb
+					@ ittfDocumentUri 
+					@ mTreeBuildUpContext
+					@ callback
+
+			function loadMTreeDebugInfo_cb
+				param ittfDocumentUri
+				param mTreeBuildUpContext
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.loadMTreeDebugInfo
+							@ ittfDocumentUri 
+							@ mTreeBuildUpContext
+							f_cb_api( result )
+								return
+									_ callback
+										@ null
+										{
+											@ data result
+											@ status
+												_ success
+													@ 'mTree debug info on uri ' + ittfDocumentUri + ' fetched'

@@ -1,0 +1,78 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var lineParser = require('../../../../util/lineParser') ids: undefined undefined
+    var md ids: undefined undefined
+      set module.exports = ids: undefined undefined
+        {  ids: undefined undefined
+    var myname = 'json.document.main' ids: undefined undefined
+    set md.gen ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param callback ids: undefined undefined
+        _ md.genItem(model, ctx) ids: undefined undefined
+        _ callback(null, ctx) ids: undefined undefined
+    set md.genItem ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        var n = model.n.trim() ids: undefined undefined
+        if n === '#' ids: undefined undefined
+          return false ids: undefined undefined
+        if model.childs.length > 0 ids: undefined undefined
+          if n === '{' || n === '[' ids: undefined undefined
+            _ ctx.w(n) ids: undefined undefined
+            _ md.genItems(model.childs, ctx, { parent: n }) ids: undefined undefined
+          else  ids: undefined undefined
+            _ ctx.w('"' + model.n + '":') ids: undefined undefined
+            _ md.genItems(model.childs, ctx, { parent: null }) ids: undefined undefined
+          if n === '{' ids: undefined undefined
+            _ ctx.write('}') ids: undefined undefined
+          elif n === '[' ids: undefined undefined
+            _ ctx.write(']') ids: undefined undefined
+        else  ids: undefined undefined
+          if n === '{' ids: undefined undefined
+            _ ctx.w('{}') ids: undefined undefined
+          elif n === '[' ids: undefined undefined
+            _ ctx.w('[]') ids: undefined undefined
+          else  ids: undefined undefined
+            if model.parent === '{' ids: undefined undefined
+              if model.n === '@' ids: undefined undefined
+                var nv ids: undefined undefined
+                  _ lineParser.parseNameValueRaw ids: undefined undefined
+                    @ model.v ids: undefined undefined
+                _ ctx.write('"' + nv.name() + '": ' + nv.value()) ids: undefined undefined
+              else  ids: undefined undefined
+                _ ctx.write('"' + model.n + '": ' + model.v) ids: undefined undefined
+            elif model.parent === '[' ids: undefined undefined
+              if model.n === '@' ids: undefined undefined
+                var nv ids: undefined undefined
+                  _ lineParser.parseNameValueRaw ids: undefined undefined
+                    @ model.v ids: undefined undefined
+                _ ctx.write ids: undefined undefined
+                  @ model.v ids: undefined undefined
+              else  ids: undefined undefined
+                _ ctx.write ids: undefined undefined
+                  @ model.n ids: undefined undefined
+            else  ids: undefined undefined
+              _ ctx.write ids: undefined undefined
+                @ model.n ids: undefined undefined
+        return true ids: undefined undefined
+    set md.genItems ids: undefined undefined
+      function  ids: undefined undefined
+        param items ids: undefined undefined
+        param ctx ids: undefined undefined
+        param options ids: undefined undefined
+        _ ctx.indent() ids: undefined undefined
+        var first = true ids: undefined undefined
+        var written = false ids: undefined undefined
+        foreach item in items ids: undefined undefined
+          if !first && written ids: undefined undefined
+            _ ctx.w(',') ids: undefined undefined
+          set first = false ids: undefined undefined
+          if options.parent ids: undefined undefined
+            set item.parent = options.parent ids: undefined undefined
+          set written = md.genItem(item, ctx) ids: undefined undefined
+        _ ctx.w('') ids: undefined undefined
+        _ ctx.deindent() ids: undefined undefined

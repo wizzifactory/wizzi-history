@@ -1,0 +1,86 @@
+﻿base_example( asIsLoader )
+
+	var vfile = require('../../lib/fs/vfile')
+	var asIsLoader = require('../../lib/ittfTree/asIsLoader')
+
+	_ vfile
+		f_cb_test( file )
+			log 'example.asIsLoader file', file
+			_ step_1
+				@ file
+		
+	function step_1
+		param file
+		_ asIsLoader.createFromString
+			[
+				@ 'module'
+				@ '    kind react'
+				@ '    react Hello'
+				@ '        state'
+				@ '            @ name "stefi"'
+				._ join
+					@ '\n'
+			{
+				@ clean true
+			f_cb_test( tree )
+				log 'step_1.tree', tree
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'result'
+						@ 'basic.sample.clean.json'
+					_ stringify
+						@ tree
+						@ null
+						@ 2
+				_ step_2
+					@ file
+
+	function step_2
+		param file
+		_ asIsLoader.createFromString
+			[
+				@ 'module'
+				@ '    kind react'
+				@ '    react Hello'
+				@ '        state'
+				@ '            @ name "stefi"'
+				._ join
+					@ '\n'
+			{
+				@ clean_remove true
+			f_cb_test( tree )
+				log 'step_2.tree', tree
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'result'
+						@ 'basic.sample.clean_remove.json'
+					_ stringify
+						@ tree
+						@ null
+						@ 2
+				_ step_3
+					@ file
+
+	function step_3
+		param file
+		_ asIsLoader
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'root.sample.ittf'
+			{
+				@ clean_remove true
+				@ file file
+			f_cb_test( tree )
+				log 'step_3.tree', tree
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'result'
+						@ 'basic.sample.clean_remove.json'
+					_ stringify
+						@ tree
+						@ null
+						@ 2

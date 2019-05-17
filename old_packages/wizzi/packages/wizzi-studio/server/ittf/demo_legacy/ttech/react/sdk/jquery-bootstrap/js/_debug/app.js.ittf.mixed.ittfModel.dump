@@ -1,0 +1,113 @@
+  module  ids: 1 105
+    kind react ids: 2 106
+    # Simple pure-React component so we don't have to remember ids: 3 107
+    # Bootstrap's classes ids: 4 108
+    var ${name} ids: 209 214
+      $args: BootstrapButton  $params: name
+      _ React.createClass ids: 211 215
+        {  ids: 212 216
+          @ render ids: 6 110
+            function  ids: 7 111
+              return  ids: 8 112
+                a  ids: 9 113
+                  @ {...this.props} ids: 10 114
+                  @ href "javascript:;" ids: 11 115
+                  @ role "button" ids: 12 116
+                  @ className {(this.props.className || '') + ' btn'} ids: 13 117
+    var ${name} ids: 209 218
+      $args: BootstrapModal  $params: name
+      _ React.createClass ids: 211 219
+        {  ids: 212 220
+          # The following two methods are the only places we need to ids: 15 119
+          # integrate Bootstrap or jQuery with the components lifecycle methods. ids: 16 120
+          @ componentDidMount ids: 17 121
+            function  ids: 18 122
+              # When the component is added, turn it into a modal ids: 19 123
+              _ $(this.refs.root).modal({backdrop: 'static', keyboard: false, show: false}) ids: 20 124
+          @ componentWillUnmount ids: 21 125
+            function  ids: 22 126
+              _ $(this.refs.root).off('hidden', this.handleHidden) ids: 23 127
+          @ close ids: 24 128
+            function  ids: 25 129
+              _ $(this.refs.root).modal('hide') ids: 26 130
+          @ open ids: 27 131
+            function  ids: 28 132
+              _ $(this.refs.root).modal('show') ids: 29 133
+          @ render ids: 30 134
+            function  ids: 31 135
+              var confirmButton = null ids: 32 136
+              var cancelButton = null ids: 33 137
+              if this.props.confirm ids: 34 138
+                set confirmButton ids: 35 139
+                  < BootstrapButton {this.props.confirm} ids: 36 140
+                    @ onClick {this.handleConfirm} ids: 37 141
+                    @ className "btn-primary" ids: 38 142
+              if this.props.cancel ids: 39 143
+                set cancelButton ids: 40 144
+                  < BootstrapButton {this.props.cancel} ids: 41 145
+                    @ onClick {this.handleCancel} ids: 42 146
+                    @ className "btn-default" ids: 43 147
+              return  ids: 44 148
+                div  ids: 45 149
+                  @ className "modal fade" ids: 46 150
+                  @ ref "root" ids: 47 151
+                  div  ids: 48 152
+                    @ className "modal-dialog" ids: 49 153
+                    div  ids: 50 154
+                      @ className "modal-content" ids: 51 155
+                      div  ids: 52 156
+                        @ className "modal-header" ids: 53 157
+                        button &times; ids: 54 158
+                          @ type "button" ids: 55 159
+                          @ className "close" ids: 56 160
+                          @ onClick {this.handleCancel} ids: 57 161
+                        h3 {this.props.title} ids: 58 162
+                      div {this.props.children} ids: 59 163
+                        @ className "modal-body" ids: 60 164
+                      div {cancelButton} {confirmButton} ids: 61 165
+                        @ className "modal-footer" ids: 62 166
+          @ handleCancel ids: 63 167
+            function  ids: 64 168
+              if this.props.onCancel ids: 65 169
+                _ this.props.onCancel() ids: 66 170
+          @ handleConfirm ids: 67 171
+            function  ids: 68 172
+              if this.props.onConfirm ids: 69 173
+                _ this.props.onConfirm() ids: 70 174
+    var ${name} ids: 209 222
+      $args: Example  $params: name
+      _ React.createClass ids: 211 223
+        {  ids: 212 224
+          @ handleCancel ids: 72 176
+            function  ids: 73 177
+              if confirm('Are you sure you want to cancel?') ids: 74 178
+                _ this.refs.modal.close(); ids: 75 179
+          @ openModal ids: 76 180
+            function  ids: 77 181
+              _ this.refs.modal.open() ids: 78 182
+          @ closeModal ids: 79 183
+            function  ids: 80 184
+              _ this.refs.modal.close() ids: 81 185
+          @ render ids: 82 186
+            function  ids: 83 187
+              var modal = null ids: 84 188
+              set modal ids: 85 189
+                < BootstrapModal This is a React component powered by jQuery and Bootstrap! ids: 86 190
+                  @ ref "modal" ids: 87 191
+                  @ confirm "OK" ids: 88 192
+                  @ cancel "Cancel" ids: 89 193
+                  @ onCancel {this.handleCancel} ids: 90 194
+                  @ onConfirm {this.closeModal} ids: 91 195
+                  @ title "Hello, Bootstrap!" ids: 92 196
+              return  ids: 93 197
+                div {modal} ids: 94 198
+                  @ className "example" ids: 95 199
+                  < BootstrapButton Open modal ids: 96 200
+                    @ onClick {this.openModal} ids: 97 201
+                    @ className "btn-default" ids: 98 202
+    _ setInterval ids: 99 203
+      function  ids: 100 204
+        _ ReactDOM.render ids: 101 205
+          < Example ids: 102 206
+          @ document.getElementById('container') ids: 103 207
+      @ 50 ids: 104 208

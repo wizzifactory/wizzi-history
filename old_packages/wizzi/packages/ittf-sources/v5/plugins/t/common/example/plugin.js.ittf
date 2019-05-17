@@ -1,0 +1,123 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var wizzi = null
+	var wizziUtils = require('wizzi-utils')
+	var verify = wizziUtils.verify
+	var file = wizziUtils.file
+	var mocks = wizziUtils.mocks
+	var mtree = require('wizzi-mtree')
+	var errors = wizziUtils.exampleErrors
+	var stringify = require('json-stringify-safe')
+	$hook imports
+
+	function executeExample
+		$hook
+
+	function getFiles
+		param srcpath
+		param schema
+		return
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith
+									@ file
+									iif schema === 'ittf'
+										then '.ittf'
+										else '.' + schema + '.ittf'
+
+	function getFilesData
+		param srcpath
+		param schema
+		var files
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith(file, '.' + schema + '.ittf')
+		var ret = []
+		foreach file in files
+			_ ret.push
+				{
+					@ path file
+					@ name file.substring(0, file.length - ('.' + schema + '.ittf').length)
+					@ fullPath
+						_ path.join
+							@ srcpath
+							@ file
+		return ret
+
+	function getWizziObject
+		return 
+			{
+				@ loadMTree 
+					_ mtree.createLoadMTree
+						@ mocks.repo.getCreateFilesystemStore()
+						{
+							@ useCache false
+				@ file wizziUtils.file
+				@ verify wizziUtils.verify
+				@ errors errors
+
+	function getLoadModelContext
+		param mtreeBuilUpContext
+		return 
+			_ mocks.getLoadModelContext
+				@ mtreeBuilUpContext
+
+	function executeWizziJob
+		param wfjobDocumentUri
+		param options
+		set options = options || {}
+		set options.plugins = options.plugins || []
+		set options.globalContext = options.globalContext || {}
+		var jobPlugins
+			[
+				@ 'wizzi-core'
+				@ 'wizzi-meta'
+				@ 'wizzi-js'
+				@ 'wizzi-web'
+		foreach item in options.plugins
+			_ jobPlugins.push(item)
+
+		if wizzi == null
+			set wizzi = require('wizzi')
+		_ wizzi.executeWizziJob
+			{ 
+				@ user 'stefi'
+				@ role 'admin'
+				@ storeKind 'filesystem'
+				{ config
+					@ wfBaseFolder 'c:/my/wizzi/v5'
+					@ plugins jobPlugins
+				{ job
+					@ name 'example ' + wfjobDocumentUri
+					@ ittfDocumentUri wfjobDocumentUri
+					@ productionOptions
+						_ wizzi.productionOptions
+							{ 
+								@ indentSpaces 4
+								@ basedir __dirname
+								@ verbose 2
+					@ globalContext options.globalContext
+			function 
+				param err
+				if err
+					_ wizzi.printWizziJobError($name, err)
+
+	set module.exports = executeExample
+
+	if require.main === module
+		_ executeExample()

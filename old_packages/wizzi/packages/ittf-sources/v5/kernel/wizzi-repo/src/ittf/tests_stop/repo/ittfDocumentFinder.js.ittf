@@ -1,0 +1,122 @@
+﻿test_base_kernel( ittfDocumentFinder )
+
+	$append imports
+		var IttfDocumentStore = require('../../lib/repo/ittfDocumentStore')
+		var IttfDocumentFinder = require('../../lib/repo/ittfDocumentFinder')
+		var errors = require('../../lib/repo/errors')
+	+
+	var store
+		new IttfDocumentStore
+	var finder
+	+
+	before-async
+		_ del.sync
+			@ [__dirname + '/dummydocfinder/**']
+			{
+				@ force true
+		_ store.init
+			{
+				@ storeKind 'filesystem'
+			cb_no_err( result )
+				log 'err, result', err, result
+				set finder = new IttfDocumentFinder(store, 'js')
+				_ done()
+
+	it-async should get an invalid path error
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri null
+				@ include false
+				@ includerModelKey null
+				@ basedir null
+				@ relpath null
+			cb_no_err( foundUri )
+				_ expect(err.name).to.be('InvalidArgument')
+				_ done()
+
+	it-async should get an invalid path error
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri null
+				@ include false
+				@ includerModelKey null
+				@ basedir null
+				@ relpath '/ass.fidanken.ittf'
+			cb_no_err( foundUri )
+				_ expect(err.name).to.be('InvalidArgument')
+				_ done()
+
+	it-async should get an invalid path error
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri null
+				@ include false
+				@ includerModelKey null
+				@ basedir null
+				@ relpath 'ass.fidanken.ittf'
+			cb_no_err( foundUri )
+				_ expect(err.name).to.be('InvalidArgument')
+				_ done()
+
+	it-async should get an invalid path error
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri null
+				@ include false
+				@ includerModelKey null
+				@ basedir '/hello'
+				@ relpath null
+			cb_no_err( foundUri )
+				_ expect(err.name).to.be('InvalidArgument')
+				_ done()
+
+	it-async should get a valid uri
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri
+					_ path.join
+						@ __dirname
+						@ 'data'
+						@ 'doc1.tests.ittf'
+				@ include false
+				@ includerModelKey null
+				@ basedir null
+				@ relpath null
+			cb_no_err( foundUri )
+				_ expect(err).to.be(null)
+				_ expect(foundUri).to.be.a('string')
+				_ done()
+
+	it-async should get a valid uri for a call to a down t fragment
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri null
+				@ include false
+				@ includerModelKey null
+				@ basedir
+					_ path.join
+						@ __dirname
+						@ 'data'
+				@ relpath 'frag1.tests.ittf'
+			f_cb_no_err( foundUri )
+				_ expect(err).to.be(null)
+				_ expect(foundUri).to.be.a('string')
+				_ done()
+
+	it-async should get a valid uri for a call to an up t fragment
+		_ finder.resolvePath
+			{
+				@ ittfDocumentUri null
+				@ include false
+				@ includerModelKey null
+				@ basedir
+					_ path.join
+						@ __dirname
+						@ 'data'
+						@ 'sub'
+						@ 'sub'
+				@ relpath 'frag2.tests.ittf'
+			f_cb_no_err( foundUri )
+				_ expect(err).to.be(null)
+				_ expect(foundUri).to.be.a('string')
+				_ done()

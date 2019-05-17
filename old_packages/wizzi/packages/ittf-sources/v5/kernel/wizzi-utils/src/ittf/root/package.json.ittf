@@ -1,0 +1,17 @@
+common/kernel_utils_package( ${ isBrowserTarget ? 'wizzi-browser' : 'wizzi-utils'}, ${wfpackage.version}, ${wfpackage.title}., ${wfpackage.license}  )
+
+	extsprintf "^1.2.0"
+	$if isWebpackTarget
+		browserfs "latest"
+	$else
+		fs-extra "latest"
+	glob "^7.1.2"
+	$if isWebpackTarget == false
+		graceful-fs "^4.1.11"
+	hashids "latest"
+	i "^0.3.5"
+	isomorphic-git "latest"
+	promise "^7.1.1"
+	randomstring "latest"
+
+	$append devDependencies

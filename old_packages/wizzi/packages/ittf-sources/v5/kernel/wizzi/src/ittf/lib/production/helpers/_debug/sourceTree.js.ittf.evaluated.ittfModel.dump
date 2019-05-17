@@ -1,0 +1,50 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var verify = require('../../util/verify') ids: undefined undefined
+    set module.exports = ids: undefined undefined
+      function  ids: undefined undefined
+        param wzmodel ids: undefined undefined
+        param filepath ids: undefined undefined
+        param wzrepoRootPath ids: undefined undefined
+        var filepath_norm ids: undefined undefined
+          iif verify.isString(filepath) ids: undefined undefined
+            then  ids: undefined undefined
+              _ verify.replaceAll ids: undefined undefined
+                _ path.dirname(filepath) ids: undefined undefined
+                @ '\\' ids: undefined undefined
+                @ '/' ids: undefined undefined
+            else null ids: undefined undefined
+        var wzrepoRootPath_norm ids: undefined undefined
+          iif verify.isString(wzrepoRootPath) ids: undefined undefined
+            then  ids: undefined undefined
+              _ verify.replaceAll(wzrepoRootPath, '\\', '/') ids: undefined undefined
+            else null ids: undefined undefined
+        var  ids: undefined undefined
+          decl source ids: undefined undefined
+          decl fullpath ids: undefined undefined
+          decl relpath ids: undefined undefined
+          decl wzpath ids: undefined undefined
+          decl ret ids: undefined undefined
+            {  ids: undefined undefined
+              @ kind '$sourcetree' ids: undefined undefined
+              @ filepath filepath ids: undefined undefined
+              @ sources ids: undefined undefined
+                [  ids: undefined undefined
+        var sources = wzmodel.loadContext.sources ids: undefined undefined
+        for var k in sources ids: undefined undefined
+          set fullpath = sources[k].filepath ids: undefined undefined
+          if filepath_norm ids: undefined undefined
+            set fullpath_norm = verify.replaceAll(fullpath, '\\', '/') ids: undefined undefined
+            set relpath = fullpath_norm.substr(filepath_norm.length + 1) ids: undefined undefined
+            set wzpath = fullpath_norm.substr(wzrepoRootPath_norm.length + 1) ids: undefined undefined
+          set source = ids: undefined undefined
+            {  ids: undefined undefined
+              @ kind '$source' ids: undefined undefined
+              @ key k ids: undefined undefined
+              @ filepath fullpath ids: undefined undefined
+              @ relpath relpath ids: undefined undefined
+              @ wzpath wzpath ids: undefined undefined
+          _ ret.sources.push(source) ids: undefined undefined
+        return ret ids: undefined undefined

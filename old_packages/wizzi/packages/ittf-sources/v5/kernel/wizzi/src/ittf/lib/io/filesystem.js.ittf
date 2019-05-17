@@ -1,0 +1,111 @@
+﻿module 
+    kind jsfile
+
+    import util
+	import path
+	import glob
+	import async
+	var file = require('wizzi-utils').file
+	+
+    var
+		decl isMounted = false
+		decl fsBaseFolderPath = null
+
+	$include filesystem/fsstat
+
+	var md
+        set module.exports =
+            { 
+
+	set md.isMounted
+		function
+			return isMounted
+
+	set md.mount
+		function
+			param baseFolderPath
+			param callback
+			set fsBaseFolderPath = baseFolderPath
+			set isMounted = true
+			# log 'wizzi-io.filesystem mounted. BaseFolderPath: ' + baseFolderPath
+			return 
+				_ callback(null)
+
+	set md.unmount
+		function
+			param callback
+			set isMounted = false
+			set fsBaseFolderPath = null
+			_ callback(null)
+
+	set md.fullPathForHash
+		function
+			param userId
+			param projectId
+			param path_string
+
+			if isMounted == false
+				throw
+					new Error
+						@ 'IO wizzi repository not mounted. Review your start procedure.'
+
+			return
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ path_string
+				
+	$include filesystem/exists
+	$include filesystem/isFile
+	$include filesystem/isFolder
+	$include filesystem/readFile
+	$include filesystem/writeFile
+	$include filesystem/mkdir
+	$include filesystem/readdir
+	$include filesystem/stat
+	$include filesystem/glob
+	$include filesystem/delete_copy_moveFile
+	$include filesystem/delete_copy_moveFolder
+	$include filesystem/duplicate_renameFile
+	$include filesystem/duplicate_renameFolder
+	$include filesystem/fsitem
+	$include filesystem/batch
+
+	function normalize
+		param path
+		return path.trim().replace(/\\/g,'/').toLowerCase()
+
+	function filesToFsitems
+		param files
+		var ret = []
+		foreach f in files
+			_ ret.push
+				_ fileToFsItem
+					@ f
+		return ret
+	
+	function fileToFsItem
+		param filePath
+		return
+			{
+				@ _id filePath
+				@ basename path.basename(filePath)
+				@ parentId path.dirname(filePath)
+				@ dirname path.dirname(filePath)
+				@ path filePath
+				@ kind ( file.isDirectory(filePath) ? 0 : 1 )
+	
+	function fileToDocument
+		param filePath
+		return
+			{
+				@ _id filePath
+				@ content file.read(filePath)
+				@ lastModified file.lastModified(filePath)
+
+	function parentPath
+		param itemPath
+		set itemPath = normalize(itemPath)
+		return itemPath.substr(0, itemPath.lastIndexOf('/'))

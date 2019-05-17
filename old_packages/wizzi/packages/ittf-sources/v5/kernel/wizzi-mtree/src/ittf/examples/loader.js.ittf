@@ -1,0 +1,63 @@
+﻿module 
+    kind jsfile
+
+	import path
+	var vfile = require('wizzi-utils').vfile
+	var file = vfile()
+	var mocks = require('wizzi-utils').mocks
+	var repo = mocks.repo
+	var packageIndex = require('../index')
+	
+	_ vfile
+		f_cb_throw( file )
+			_ step_1
+				@ file
+
+	function step_1
+		param file
+		var loadMTree
+			_ packageIndex.createLoadMTree
+				_ repo.getCreateFilesystemStore
+
+		_ loadMTree
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'load_compile.html.ittf'
+			{
+				@ __productionManager
+					_ mocks.getProductionManager
+				@ mTreeBuildUpContext
+					{
+						@ tree
+							{
+								@ id 1
+								@ title 'a'
+								[ children
+									{
+										@ id 11
+										@ title 'aa'
+										[ children
+				@ options
+					{
+						@ isCompile true
+			f_cb_throw( mTree )
+				log "mTree.loadHistory", mTree.loadHistory
+				var el
+					_ mTree.loadHistory.getIttfDocumentErrorLines
+						@ 'f1'
+						{
+							@ row 7
+							@ col 19
+							@ description 'could be better'
+						@ true
+				log "mTree.loadHistory.getIttfDocumentErrorLines", el
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'outputs'
+						@ 'load_compile.html.ittf'
+					_ mTree.toIttf
+
+
+	

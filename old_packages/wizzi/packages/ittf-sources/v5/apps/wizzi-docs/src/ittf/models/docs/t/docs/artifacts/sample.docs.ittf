@@ -1,0 +1,62 @@
+﻿concept Sample artifact generators
+
+	summary
+
+		h4 Code write artifact generator sample
+		ittf
+			- module
+				- kind jsfile
+				-
+				- var md = module.exports = {}
+				- var myname = 'artifact rdbms.sqltables.main';
+				-
+				- set md.gen
+					- function
+						- param model
+						- param ctx
+						- param callback
+						- if model.wzElement !== 'rdbms'
+							- return
+								- callback
+									- _ctx.error
+										- @ myname + " error: the model paramater should be an 'rdbms' Wizzi Model"
+										- @ model
+						-
+						- $foreach table in model.tables
+							- _ ctx.a('TABLE', table.wzName)
+							- _ ctx.w('declare table TABLE')
+							- ...
+						- _ callback(null, ctx)
+
+		h4 Ittf document artifact generator sample
+		ittf
+			- module
+				- kind jsfile
+				-
+				- var path = require('path')
+				- var wizzi = require('wizzi')
+				- var md = module.exports = {}
+				- var myname = 'artifact rdbms.sqltables.main';
+				-
+				- set md.gen
+					- function
+						- param model
+						- param ctx
+						- param callback
+						- if model.wzElement !== 'rdbms'
+							- return
+								- callback
+									- _ctx.error
+										- @ myname + " error: the model paramater should be an 'rdbms' Wizzi Model"
+										- @ model
+						-
+						- var ittfTemplatePath
+							- _ path.join
+								- @ __dirname
+								- @ 'ittf'
+								- @ 'sqltables.sql.ittf'
+						- _ wizzi.fsnoaclFactory
+							- # TODO
+						- _ callback(null, ctx)
+
+		

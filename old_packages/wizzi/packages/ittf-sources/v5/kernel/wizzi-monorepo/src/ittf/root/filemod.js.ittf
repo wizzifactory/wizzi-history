@@ -1,0 +1,75 @@
+﻿module
+	kind jsfile
+
+	var fs = require('fs')
+    var path = require('path')    
+
+	var filePath
+	var strReg
+	var strRepl
+	var regMod = 'i'
+	var viewOnly = false
+
+	function escapeRegExp
+		param text
+		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+
+	var args = process.argv.slice(2)
+	_ args.forEach
+		=>
+			param val, index
+			if val[0] === 'f' && val[1] === '-'
+				set filePath = val.substr(2)
+			if val[0] === 'r' && val[1] === '-'
+				set strRepl = val.substr(2)
+			if val[0] === 'r' && val[1] === 'e' && val[2] === '-'
+				set strReg = val.substr(3)
+			if val[0] === '-' && val[1] === 'g'
+				set regMod = 'g'
+			if val[0] === '-' && val[1] === 'v'
+				set viewOnly = true
+
+	log 'strReg', strReg
+
+	# Not necessary VIA
+		set strReg
+			_ escapeRegExp
+				@ strReg
+
+	log 'strReg escaped', strReg
+	log 'strRepl', strRepl
+	log 'filePath', filePath
+	var re = new RegExp(strReg, regMod)
+	log 're', re
+
+	_ fs.readFile
+		@ filePath
+		{
+			@ encoding 'utf-8'
+		=>
+			param err,data
+			if err
+				log err
+				return
+			log 'Old content:\n', data
+
+			var newContent
+				_ data.replace
+					@ re
+					@ strRepl
+			log 'New content:\n', newContent
+
+			if viewOnly
+				return
+
+			_ fs.writeFile
+				@ filePath
+				@ newContent
+				{
+					@ encoding 'utf-8'
+				=>
+					param err,data
+					if err
+						log err
+						return
+					log 'file save'

@@ -1,0 +1,23 @@
+﻿module
+    kind es6
+    
+	import '@babel/polyfill';
+	import Vue from 'vue'
+	import './plugins/vuetify'
+	import App from './App.vue'
+    import store from './store'
+	import router from './router'
+	import '@/firebase/';
+
+	_ require('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons')
+	_ require('../node_modules/vuetify/dist/vuetify.min.css')
+
+	new Vue
+        { 
+            @ el '#app'
+			@ store
+			@ router
+            @ render
+                => 
+                    param h
+                    _ h(App)

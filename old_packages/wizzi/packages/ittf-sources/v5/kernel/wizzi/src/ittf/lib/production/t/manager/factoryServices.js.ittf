@@ -1,0 +1,54 @@
+﻿$group
+
+	m getLoadModel
+		string schemaName
+		# log 'wizzi.productionManager.getLoadModel.globalContextObject', this.globalContextObject
+		return 
+			_ this.wizziFactory.getLoadModel
+				@ schemaName
+				@ this.globalContextObject
+
+	m getSchemaDefinition
+		string schemaName
+		return 
+			_ this.wizziFactory.getSchemaDefinition
+				@ schemaName
+				@ this.globalContextObject
+
+	m getModelTransformer
+		string transformerName
+		return 
+			_ this.wizziFactory.getModelTransformer
+				@ transformerName
+				@ this.globalContextObject
+
+	m getArtifactGenerator
+		string artifactName
+		return 
+			_ this.wizziFactory.getArtifactGenerator
+				@ artifactName
+				@ this.globalContextObject
+
+	m loadWfjob
+        string ittfDocumentUri
+		{ context
+		callback
+
+		# called by WfjobLoader
+		
+		# log 'wizzi.production.productionManager.loadWfjob.ittfDocumentUri', ittfDocumentUri
+		if !this.wfjobLoadModel
+			checked_call_set( this.wfjobLoadModel )
+				_ this.getLoadModel
+					@ 'wfjob'
+		
+		var ctx
+			_ this.wizziFactory.createLoadContext
+				@ context
+		# log 'wizzi.production.productionManager.loadWfjob.ctx', ctx, this.wizziFactory.globalContext
+
+		_ this.wfjobLoadModel
+			@ ittfDocumentUri
+			_ this.wizziFactory.createLoadContext
+				@ context
+			@ callback

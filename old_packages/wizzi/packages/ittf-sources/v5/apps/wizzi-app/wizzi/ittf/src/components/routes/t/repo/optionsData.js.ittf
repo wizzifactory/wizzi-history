@@ -1,0 +1,258 @@
+﻿$group
+
+	const hasCheckeds
+		=>
+			param owner
+			const {checkeds} = owner.state
+			for var k in checkeds
+				if checkeds[k].checked
+					return true
+			return false
+
+	const getCurrentPath
+		=>
+			param props
+			if props.folderPath
+				return props.match.params.userId + '/' + props.projectId + '/' + props.folderPath
+			elif props.projectId
+				return props.match.params.userId + '/' + props.projectId
+			else
+				return props.match.params.userId
+
+	const createProjectData
+		=>
+			param owner
+			param props
+			return
+				{
+					@ title 'Create a new project'
+					@ options
+						[
+							{
+								@ name 'projectId'
+								@ label 'project name'
+								@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							log props.dispatchCreateRepoProject
+							if values
+								_ props.dispatchCreateRepoProject
+									@ props.match.params.userId
+									@ values.projectId
+
+	const createFolderData
+		=>
+			param owner
+			param props
+			return
+				{
+					@ title 'Create a new folder in ' + getCurrentPath(props)
+					@ options
+						[
+							{
+								@ name 'folderName'
+								@ label 'folder name'
+								@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchCreateRepoFolder
+									@ props.match.params.userId
+									@ props.projectId
+									@ props.folderPath
+									@ values.folderName
+
+	const createDocumentData
+		=>
+			param owner
+			param props
+			return
+				{
+					@ title 'Create a new document in ' + getCurrentPath(props)
+					@ options
+						[
+							{
+								@ name 'documentName'
+								@ label 'document name'
+								@ notEmpty true
+							{
+								@ name 'schemaName'
+								@ label 'schema'
+								@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchCreateRepoDocument
+									@ props.match.params.userId
+									@ props.projectId
+									@ props.folderPath
+									@ values.documentName + '.' + values.schemaName + '.ittf' 
+
+	const duplicateFsItemData
+		=>
+			param owner
+			param props
+			param kind
+			param fullPath
+			param basename
+			const df = kind == 0 ? 'folder' : 'document'
+			return
+				{
+					@ title 'Duplicate ' + df  + ' ' + fullPath
+					@ options
+						[
+							{
+								@ name 'itemName'
+								@ label 'Name of duplicated ' + df
+								@ value basename
+								@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchDuplicateFsItem
+									@ kind
+									@ fullPath
+									@ values.itemName
+
+	const renameFsItemData
+		=>
+			param owner
+			param props
+			param kind
+			param fullPath
+			param basename
+			const df = kind == 0 ? 'folder' : 'document'
+			return
+				{
+					@ title 'Rename ' + df  + ' ' + fullPath
+					@ options
+						[
+							{
+								@ name 'itemName'
+								@ label 'New ' + df + ' name'
+								@ value basename
+								@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchRenameFsItem
+									@ kind
+									@ fullPath
+									@ values.itemName
+
+	const getSelectedFsItemsData
+		=>
+			param owner
+			param props
+			const ret
+				{
+					[ selectedItems
+					[ confirmItems
+			const { selectProjectId, checkeds } = owner.state
+			const { match } = props
+			const userId = match.params.userId
+			for var k in checkeds
+				if checkeds[k].checked
+					_ ret.selectedItems.push
+						{
+							@ userId userId
+							@ projectId selectProjectId
+							@ itemPath k
+							@ fullPath userId + '/' + selectProjectId + '/' + k
+							@ kind checkeds[k].kind
+					_ ret.confirmItems.push
+						@ userId + '/' + selectProjectId + '/' + k
+			return ret
+
+	const confirmDeleteFsItemsData
+		=>
+			param owner
+			param props
+			const fsitems = getSelectedFsItemsData(owner, props)
+			
+			if fsitems.selectedItems.length == 0
+				return null
+			else
+				var confirmItems = []
+				foreach item in fsitems.selectedItems
+					_ confirmItems.push
+						{
+							@ type (item.kind == 0 ? 'folder' : 'document')
+							@ name item.fullPath
+				return
+					{
+						@ title 'Confirm deletion'
+						@ items confirmItems
+						@ handler
+							=>
+								param ok
+								_ owner.setState
+									{
+										@ confirmDialogOpen false
+								if ok
+									const { match, projectId, folderPath, copyCutType } = props
+									const userId = match.params.userId
+									_ props.dispatchDeleteBatch
+										@ userId
+										@ projectId
+										@ folderPath
+										@ fsitems.selectedItems
+
+	const confirmPasteFsItemsData
+		=>
+			param owner
+			param props
+			const selectedItems = props.copyCutSelectedItems
+			if selectedItems.length == 0
+				return null
+			else
+				var confirmItems = []
+				foreach item in selectedItems
+					_ confirmItems.push
+						{
+							@ type (item.kind == 0 ? 'folder' : 'document')
+							@ name item.fullPath
+				return
+					{
+						@ title 'Confirm paste'
+						@ items confirmItems
+						@ handler
+							=>
+								param ok
+								_ owner.setState
+									{
+										@ confirmDialogOpen false
+								if ok
+									const { match, projectId, folderPath, copyCutType } = props
+									const userId = match.params.userId
+									_ props.dispatchPasteFsItems
+										@ copyCutType
+										@ userId
+										@ projectId
+										@ folderPath
+										@ selectedItems

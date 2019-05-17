@@ -1,0 +1,83 @@
+﻿module wizzi-git.fsGit
+	kind jsfile
+
+	var git = require('isomorphic-git')	
+	var u = require('wizzi-utils')
+	var verify = u.verify
+	
+	$if isWebpackTarget
+		var BrowserFS = u.BrowserFS
+		var fs = null
+		var storeName = "wizziRepo"
+	$else
+		var fs = require('fs')
+
+	function initialize
+		param options
+		param callback
+
+		$if isWebpackTarget
+			if fs != null
+				if verify.isNotEmpty(options.storeName && options.storeName !== storeName)
+					return
+						_ callback
+							{
+								@ __is_error true
+								@ message 'In the same process more than one storeNames cannot be used: ' + storeName + ' and ' + options.storeName
+								@ method 'initialize'
+								@ source 'wizzi-utils.fs.browserRepo'
+				r_cb()
+
+			if verify.isNotEmpty(options.storeName)
+				set storeName = options.storeName
+
+			_ BrowserFS.install(window)
+			_ BrowserFS.configure
+				{ 
+					@ fs "MountableFileSystem"
+					{ options
+						{ '/tmp'
+							@ fs "InMemory"
+						{ '/ixdb'
+							@ fs "IndexedDB"
+							{ options
+								@ storeName storeName
+				f_cb()
+					set window.fs = fs = BrowserFS.BFSRequire('fs')
+					_ git.plugins.set('fs', window.fs)
+					return
+						_ callback
+							@ null
+		$else
+			_ git.plugins.set('fs', fs)
+			if callback
+				r_cb()
+			else
+				return
+
+	# 
+	set module.exports
+		function
+			param options
+			param callback
+			
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+			set options = options || {}
+
+			if callback
+				_ initialize
+					@ options
+					f_cb()
+						r_cb()
+							{
+								@ fs fs
+								@ git git
+			else
+				_ initialize
+					@ options
+				return
+					{
+						@ fs fs
+						@ git git

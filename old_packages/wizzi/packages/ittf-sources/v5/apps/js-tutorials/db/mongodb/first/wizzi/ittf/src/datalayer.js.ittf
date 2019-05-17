@@ -1,0 +1,55 @@
+﻿module
+	kind es6
+
+	$include model_preprocess
+
+    var mongoose = require('mongoose')
+    $foreach t in data.tables
+        var ${t.objectName} = require('./models').${t.objectName};
+
+	var impl
+		function
+			param mongoDBUrl
+			_ mongoose.connect(mongoDBUrl)
+			set mongoose.Promise = global.Promise
+			var db = mongoose.connection
+			_ mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'))
+			_ db.once
+				@ 'open'
+				function 
+					log 'MongoDB is connected'
+
+			return
+				{
+					$foreach t in data.tables
+						{ ${t.objectName}
+							@ create
+								function ${t.name}Create
+									$foreach p in t.fParams
+										param ${p.name}
+									param cb
+						
+									set ${t.name}Data =
+										{ 
+											$foreach p in t.fParams
+												$if p.required == true
+													@ ${p.name} ${p.name}
+						
+									$foreach p in t.fParams
+										$if p.required == false
+											if ${p.name} != false
+												set ${t.name}Data.${p.name} = ${p.name}
+						
+									var ${t.name} = new ${t.objectName}(${t.name}Data)
+									_ ${t.name}.save
+										function 
+											param err
+											if err
+												_ console.log('ERROR CREATING ${t.objectName}: ' + ${t.name})
+												_ cb(err, null)
+												return 
+											_ console.log('New ${t.objectName}: ' + ${t.name})
+											_ bookinstances.push(bookinstance)
+											_ cb(null, book)
+
+	set module.exports = impl

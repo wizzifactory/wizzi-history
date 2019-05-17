@@ -1,0 +1,107 @@
+﻿$group
+
+	decl_rsf( snippet, transpile )
+	decl_rsf( snippet_ast, get )
+	decl_rsf( snippet, flow )
+	decl_rsf( snippet, lint )
+	decl_rsf( snippet, prettier )
+
+	export
+		const transpileSnippet
+			=>
+				param hash
+				return
+					{
+						@ type TRANSPILE_SNIPPET
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ TRANSPILE_SNIPPET_REQUEST
+										@ TRANSPILE_SNIPPET_SUCCESS
+										@ TRANSPILE_SNIPPET_FAILURE
+								@ url '/api/build/transpile'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+
+	export
+		const getSnippetAst
+			=>
+				param hash
+				return
+					{
+						@ type GET_SNIPPET_AST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_SNIPPET_AST_REQUEST
+										@ GET_SNIPPET_AST_SUCCESS
+										@ GET_SNIPPET_AST_FAILURE
+								@ url '/api/build/ast'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+
+	export
+		const flowSnippet
+			=>
+				param hash
+				return
+					{
+						@ type FLOW_SNIPPET
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ FLOW_SNIPPET_REQUEST
+										@ FLOW_SNIPPET_SUCCESS
+										@ FLOW_SNIPPET_FAILURE
+								@ url '/api/build/flow'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+
+	export
+		const lintSnippet
+			=>
+				param hash
+				return
+					{
+						@ type LINT_SNIPPET
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ LINT_SNIPPET_REQUEST
+										@ LINT_SNIPPET_SUCCESS
+										@ LINT_SNIPPET_FAILURE
+								@ url '/api/build/lint'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+
+	export
+		const prettierSnippet
+			=>
+				param hash
+				return
+					{
+						@ type PRETTIER_SNIPPET
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ PRETTIER_SNIPPET_REQUEST
+										@ PRETTIER_SNIPPET_SUCCESS
+										@ PRETTIER_SNIPPET_FAILURE
+								@ url '/api/build/prettier'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'

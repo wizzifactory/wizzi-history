@@ -1,0 +1,196 @@
+﻿module wizzi-utils.ittfFinder
+    kind jsfile
+
+	import path
+	var verify = require('../verify')
+	var errors = require('../errors')
+
+	class ittfFinder
+        ctor
+			{ file
+			param schema
+			set this.file = file
+			set this.schema = schema
+
+		#
+			# params
+			#   { options
+			#     string ittfDocumentUri
+			#     |
+			#     string basedir
+			#     string fragmentName
+			#     |
+			#     string callerFullPath
+			#     string fragmentName
+			#
+		m resolvePath
+			param options
+			param callback
+        
+			var 
+				decl ittfDocumentUri = options.ittfDocumentUri
+				decl fragmentName = options.fragmentName
+				decl basedir = options.basedir
+				decl callerFullPath = options.callerFullPath
+				decl schema = this.schema
+
+			if verify.isNotEmpty(callerFullPath)
+				set basedir = path.dirname(callerFullPath)
+				var ss = path.basename(callerFullPath).split('.')
+				var schema = ss[ss.length-2]
+        
+			if verify.isNotEmpty(ittfDocumentUri) === false
+				if verify.isNotEmpty (basedir) === false || verify.isAbsolutePath(basedir) === false
+					r_cb_wz_err( InvalidArgument, resolvePath )
+						@ 'An "options.ittfDocumentUri" parameter or an "options.basedir" parameter with an absolute path is required to load an ITTF document. Received: ' +
+							\b 'ittfDocumentUri: ' + options.ittfDocumentUri +
+							\b ', basedir: ' + options.basedir +
+							\b ', fragmentName: ' + options.fragmentName
+				if (verify.isNotEmpty(fragmentName) === false) || (fragmentName[0] === '/')
+					r_cb_wz_err( InvalidArgument, resolvePath )
+						@ 'An "options.ittfDocumentUri" parameter or an "options.fragmentName" parameter with a relative path is required to load an ITTF document. Received: ' +
+							\b 'ittfDocumentUri: ' + options.ittfDocumentUri +
+							\b ', basedir: ' + options.basedir +
+							\b ', fragmentName: ' + options.fragmentName
+				set ittfDocumentUri = path.join(basedir, fragmentName)
+        
+			var that = this
+			_ this.tryExists
+				@ ittfDocumentUri
+				@ schema
+				f_cb( result )
+					if result.found
+						return 
+							_ callback
+								@ null
+								@ result.ittfDocumentUri
+					else 
+						if verify.isNotEmpty(fragmentName) === false
+							r_cb_wz_err( IttfNotFound, resolvePath )
+								{
+									@ parameter ittfDocumentUri
+									@ message 'Cannot resolve ittf document: ' + ittfDocumentUri
+						_ that.resolvePathInTFolders
+							_ path.dirname(ittfDocumentUri)
+							@ fragmentName
+							@ schema
+							f_cb( tresult )
+								if tresult.found
+									return 
+										_ callback
+											@ null
+											@ tresult.ittfDocumentUri
+								else 
+									# log 'ittfFinder.resolvePath options', options, schema
+									r_cb_wz_err( IttfNotFound, resolvePath )
+										@ 'Cannot find ittf document: ' + ittfDocumentUri
+    
+		m resolvePathInTFolders
+			param basePath
+			param relPath
+			param schema
+			param callback
+
+			var that = this
+			
+			$include ittfFinder/recurserTFolder
+			
+			_ recurserTFolder
+				@ basePath
+				@ relPath
+				@ schema
+				._ then
+					function
+						param result
+						return
+							_ callback(null, result)
+				._ catch
+					function
+						param err
+						return
+							_ callback(err)
+
+		m tryExists
+			param test
+			param schema
+			param callback
+			var that = this
+			_ this.file.isFile
+				@ test
+				f_cb( result )
+					if result
+						return 
+							_ callback
+								@ null
+								{ 
+									@ found true
+									@ ittfDocumentUri test
+					else 
+						if test.toLowerCase().substr(-5, 5) !== '.ittf'
+							if schema
+								_ that.file.isFile
+									@ test + '.' + schema + '.ittf'
+									f_cb( result )
+										if result
+											return 
+												_ callback
+													@ null
+													{ 
+														@ found true
+														@ ittfDocumentUri test + '.' + schema + '.ittf'
+										else 
+											_ that.file.isFile
+												@ test + '.ittf'
+												f_cb( result )
+													if result
+														return 
+															_ callback
+																@ null
+																{ 
+																	@ found true
+																	@ ittfDocumentUri test + '.ittf'
+													else 
+														return 
+															_ callback
+																@ null
+																{ 
+																	@ found false
+							else 
+								return 
+									_ callback
+										@ null
+										{ 
+											@ found false
+						else 
+							return 
+								_ callback
+									@ null
+									{ 
+										@ found false
+
+		m getReferencePath
+			param baseFullPath
+			param referenceName
+			param callback
+			var dirname = path.dirname(baseFullPath)
+			var referencePath
+				_ path.resolve
+					@ dirname
+					@ referenceName
+			_ file.isFile
+				@ referencePath
+				f_cb( isFile )
+					if isFile
+						return
+							_ callback
+								@ null
+								@ referencePath
+					else
+						return
+							_ callback
+								@ null
+								{
+									@ __is_error true
+									@ message 'Cannot resolve ittf reference ' + referenceName + ' from base path ' + baseFullPath
+    
+	set module.exports = ittfFinder

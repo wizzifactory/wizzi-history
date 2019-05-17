@@ -1,0 +1,38 @@
+﻿$group
+
+	vfile/m( copyFolder, writeFileSync, dest, options )
+
+		set options = options || {}
+
+		$append async
+
+			var src = path_string
+			var that = this
+			_ this.isDirectory
+				@ src
+				f_cb(result)
+					if result == false
+						r_cb()
+							new Error
+								@ `Source '${src}' is not a directory`
+					_ that.isDirectory
+						@ dest
+						f_cb(result)
+							if result == false
+								if isSrcSubdir(src, dest)
+									r_cb()
+										new Error
+											@ `Cannot copy source '${src}' to subdir destination '${dest}'.`
+								else
+									# no need to ensure parent dir
+									# write method always ensures
+									return that.exec_copyFolder(src, dest, options, callback)
+							else
+								# do not allow folder overwrite
+								r_cb()
+									new Error(`Destination '${dest}' already exists.`)
+
+		
+		$append sync
+			
+			throw new Error('Not implemented')

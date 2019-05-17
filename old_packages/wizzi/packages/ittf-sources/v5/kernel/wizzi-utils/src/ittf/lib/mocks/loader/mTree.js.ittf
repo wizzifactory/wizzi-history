@@ -1,0 +1,39 @@
+﻿module
+    kind jsfile
+
+    var liner = require('./liner')
+    var nodifier = require('./nodifier')
+
+    wz-class LoadHistory
+		ctor
+			set this.nodeCount = 0
+		m getNewNodeId
+            return ++this.nodeCount
+
+	wz-class MTree
+		ctor
+			param uri
+			set this.uri = uri
+			set this.nodes = null
+			set this.loadHistory = new LoadHistory()
+
+		m load
+            param ittfSourceTextContent
+            param ittfDocumentData
+            if typeof(ittfSourceTextContent) !== 'string'
+                throw 
+                    new TypeError('ittfSourceTextContent must be a string')
+            if !ittfDocumentData || typeof(ittfDocumentData.sourceKey) !== 'string'
+                throw 
+                    new TypeError('ittfDocumentData.sourceKey must be a string')
+            
+			checked_call_return( lines
+				_ liner(ittfSourceTextContent, ittfDocumentData)
+            
+			checked_call_return( nodes
+				_ nodifier(lines, this)
+			
+			set this.nodes = nodes
+
+
+

@@ -1,0 +1,59 @@
+﻿$group
+
+	set md.readDir
+		function
+			param userId
+			param projectId
+			param dirPath
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+
+			var fsPath
+				_ path.join
+					@ fsBaseFolderPath
+					@ userId
+			if projectId != null
+				set fsPath = path.join(fsPath, projectId)
+			if dirPath != null
+				set fsPath = path.join(fsPath, dirPath)
+			set fsPath = normalize(fsPath)
+				
+			# log 'wizzi-io.filesystem.readDir.fsPath', fsPath
+
+			_ file.getDir
+				@ fsPath
+				f_cb( files )
+					var fsitems = filesToFsitems(files)
+					# log 'wizzi-io.filesystem.readDir.fsPath', fsPath, 'fsitems', fsitems
+					return 
+						_ callback(null, fsitems)
+
+	set md._readDir
+		function
+			param dirPath
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+
+			var fsPath
+				_ normalize
+					@ dirPath
+				
+			# log 'wizzi-io.filesystem.readDir.fsPath', fsPath
+
+			_ file.getDir
+				@ fsPath
+				f_cb( files )
+					var fsitems = filesToFsitems(files)
+					# log 'wizzi-io.filesystem.readDir.fsPath', fsPath, 'fsitems', fsitems
+					return 
+						_ callback(null, fsitems)

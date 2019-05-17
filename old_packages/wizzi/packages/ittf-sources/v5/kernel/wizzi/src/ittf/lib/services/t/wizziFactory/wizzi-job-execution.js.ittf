@@ -1,0 +1,78 @@
+$group
+
+	#
+		# Execute a wizzi job
+		# 
+		# params
+		#   { jobRequest type 1
+		#     string name
+		#     string path
+		#       # path to the 'wfjob' ittf document that the wizzi.production.programManager will load.
+		#     { productionOptions
+		#     { globalContext
+		#   { jobRequest type 2
+		#     { wfjobModel
+		#       # 'wfjob' wizzi model, built programmatically or previously loaded
+		#     { productionOptions
+		#     { globalContext
+		#
+	m executeJob
+		{ jobRequest
+			{ productionOptions
+		callback
+		+
+		log 'wizzi.wizziFactory.executeJob.jobRequest', jobRequest
+		+
+		if verify.isNotEmpty(jobRequest.path)
+			# jobRequest type 1
+			_ this._executeJob_by_path
+				@ jobRequest
+				@ callback
+		else
+			# jobRequest type 2
+			_ this._executeJob_by_wfjobModel
+				@ jobRequest
+				@ callback
+
+	m _executeJob_by_path
+		param jobRequest
+		param callback
+
+		var that = this
+		_ this.storePool.get
+			f_cb( store )
+				_ store.documentExists
+					@ jobRequest.path
+					f_cb( exists )
+						if !exists
+							r_cb_error( NotFound, _executeJob_by_path )
+								@ 'Cannot find wfjob ittf document: ' + jobRequest.path
+						else
+							log 'wizzi.wizziFactory._executeJob_by_path,jobRequest.globalContext', jobRequest.globalContext
+							checked_call( pman
+								_ that.createProductionManager
+									@ jobRequest.productionOptions
+									@ jobRequest.globalContext
+							+
+							checked_call( notUsed
+								_ pman.addJobRequest
+									{ 
+										{ wfjob
+											@ ittfDocumentUri jobRequest.path
+							+
+							log 'wizzi.wizziFactory._executeJob_by_path,pman.globalContext()', pman.globalContext()
+							+
+							_ pman.run
+								f_cb( result )
+									_ log.success('wizzi.wizziFactory.executeJob.' + jobRequest.name + ' run completed')
+									_ pman.persistToFile
+										f_cb( result )
+											_ log.success('wizzi.wizziFactory.executeJob.' + jobRequest.name + ' persistToFile completed')
+											_ pman.terminate
+											return
+												_ callback(null, result)
+
+	m _executeJob_by_wfjobModel
+		param jobRequest
+		param callback
+		throw new Error('wizzi.wizziFactory._executeJob_by_wfjobModel not implemented.')

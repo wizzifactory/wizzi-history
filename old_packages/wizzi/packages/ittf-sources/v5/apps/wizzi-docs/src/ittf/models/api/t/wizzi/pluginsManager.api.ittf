@@ -1,0 +1,124 @@
+﻿$group
+
+	api wizzi.pluginsManagerModule
+		kernel
+		module
+			path wizzi/lib/services/pluginsManager.js
+
+		# This module exposes a single function that must be called
+		# to create a new wizzi.pluginsManager and manages
+		# initialization and registration of plugins.
+		# A plugin manager, once created, cannot be changed. 
+
+		{
+			m createManager
+				called-by wizzi.wizziFactory.initialize
+				# Creates a new wizzi.pluginsManager instance.
+				# loads and registers plugins.
+				{ mTreeLoad
+					api-ref wizzi-mtree.loader.loadMTree
+				{ options
+					[ items
+						string pluginName
+					string pluginsBaseFolder
+						default process.cwd()
+				cb()
+					{ pluginsManagerInstance
+						api-ref wizzi.pluginsManager
+				info
+					api-create wizzi.pluginsManager
+					api-call wizzi.pluginsManager.initialize
+	
+	api wizzi.pluginsManager
+		kernel
+		class-instance
+			path wizzi/lib/services/pluginsManager.js
+
+		# At initialize time loads and registers plugins.
+		# Then searches registered plugins for model loaders,
+		# model transformers and artifact generators.
+
+		{
+			m initialize
+				# Loads and registers plugins.
+				{ options
+					[ items
+						string pluginName
+					string pluginsBaseFolder
+						default process.cwd()
+				cb()
+					api-ref wizzi.pluginsManager
+				
+				info
+					api-call wizzi.pluginsManager.loadPlugins
+					api-call wizzi.pluginsManager.registerFactoryPlugin
+
+			m loadPlugins
+				{ options
+					[ items
+						string pluginName
+					string pluginsBaseFolder
+						default process.cwd()
+				cb()
+					[ itemsOptions
+						{
+							string pluginName
+							string packagePath
+							merge plugin
+								api-ref wizzi-plugin
+			
+			m registerFactoryPlugin
+				# Validates the created wizzi factory plugin.
+				# Add it to the plugins collection.
+				# Updates the collections of schemas, model transformers and artifact generators
+				# provided by this plugin manager.
+				{ pluginModule
+					api-ref wizzi-plugin
+				cb()
+					null
+
+				info
+					api-call wizzi-plugin.createFactoryPlugin
+
+			m getModelFactory
+				# Searches all registered plugins and
+				# retrieves a model factory by schema name.
+				string schemaName
+				return
+					alt result
+						{ modelFactory
+							api-ref wizzi-plugin.modelFactory
+						null
+			
+			m getModelTransformer
+				# Searches all registered plugins and
+				# retrieves a model transformer by name.
+				# The name has the format {schema}/{transformerName}.
+				string transformerName
+				return
+					alt result
+						{ modelTransformer
+							api-ref wizzi-plugin.modelTransformer
+						null
+			
+			m getArtifactGenerator
+				# Searches all registered plugins and
+				# retrieves an artifact generator by name.
+				# The name has the format {schema}/{generatorName}.
+				string generationName
+				return
+					alt result
+						{ artifactGenerator
+							api-ref wizzi-plugin.artifactGenerator
+						null
+			
+			m getSchemaDefinition
+				# Searches all registered plugins and
+				# retrieves a json representation of a wizzi schema
+				# by the name of the schema.
+				string schemaName
+				return
+					alt result
+						json schemaDefinition
+						null
+							# When not found.

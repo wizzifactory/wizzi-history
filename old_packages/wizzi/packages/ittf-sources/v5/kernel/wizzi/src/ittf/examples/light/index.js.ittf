@@ -1,0 +1,159 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	var wizzi = require('../../index')
+
+	var htmlFriendsPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'mtree'
+			@ 'friends.html.ittf'
+
+	var friendsArray
+		[ 
+			@ 'arthur'
+			@ 'mary'
+
+	var schemaFriendsPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'schemas'
+			@ 'friends.wfschema.ittf'
+
+	var schemaFriendsOutputPath
+		_ path.join 
+			@ __dirname
+			@ 'friendsplugin'
+
+	var jobsPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'jobs'
+
+	var genFolderPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'genfolder'
+			@ 'index.js.ittf'
+
+	var genFolderDest
+		_ path.join 
+			@ __dirname
+			@ 'genfolder_out'
+
+	var modelsComplexPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'models'
+			@ 'complex'
+
+	$*
+	# generate the source magical tree
+	_ wizzi.mtree
+		@ htmlFriendsPath
+		{
+			@ friends friendsArray
+		f_cb_test(mTreeModel)
+			var dump
+				_ JSON.stringify
+					_ mTreeModel.toIttf
+					@ null
+					@ 2
+			log 'mTree friends\n', dump
+
+			# Generate the html model.
+				# The html schema is detected from the path.
+			_ wizzi.model
+				@ htmlFriendsPath
+				{
+					@ friends friendsArray
+				f_cb_test(wizziModel)
+					var dump
+						_ stringify
+							@ wizziModel.elements
+							@ null
+							@ 2
+					log 'wizziModel friends\n', dump
+
+					# Generate the html document artifact.
+						# No options, the default artifact generator
+						# for the html schema will be used.
+					_ wizzi.gen
+						@ htmlFriendsPath
+						{
+							@ friends friendsArray
+						f_cb_test(artifactText)
+							log 'artifactText friends\n', artifactText
+
+							# Generate the javascript modules for the wizzi schema
+							# of a new wizzi plugin.
+							_ wizzi.schema
+								@ schemaFriendsPath
+								{
+									@ comments true
+								{
+									@ outputPackagePath schemaFriendsOutputPath
+								f_cb_test(schemaPaths)
+									log 'schemaPaths of generated schema friends\n', schemaPaths
+
+									# Generate the javascript modules for the wizzi schema
+									# of a new wizzi plugin.
+									_ wizzi.job
+										_ path.join 
+											@ jobsPath
+											@ 'step_1.wfjob.ittf'
+										{
+											@ friends friendsArray
+										{
+											@ name 'step_1'
+											{ jobContext
+												{ options
+													@ destFolder 'output'
+											{ globalContext
+												{ options
+													@ destFolder 'output'
+										f_cb_test(jobResults)
+											log 'results of job step_1\n', JSON.stringify(jobResults, null, 2)
+
+											# Generate all the artifacts in a folder 
+											_ wizzi.genFolder
+												@ genFolderPath
+												{
+													@ friends friendsArray
+												{
+													@ destFolder genFolderDest
+													@ copyInclude ['*']
+													@ copyExclude []
+												f_cb_test(schemaPaths)
+													log 'genFolder wrote generated and copied files to dest folder\n', schemaPaths		*$
+
+		# Load a complex wizzi model passing a model description to the loader
+		# of a new wizzi plugin.
+		_ wizzi.model
+			{
+				@ src
+					_ path.join
+						@ modelsComplexPath
+						@ 'forms.html.ittf'
+				@ schema 'html'
+				[ contexts
+					{
+						@ src
+							_ path.join
+								@ modelsComplexPath
+								@ 'formsData.json.ittf'
+						@ schema 'json'
+						@ exportName 'data'
+			f_cb_test(wizziModel)
+				log 'wizziModel.wzElement', wizziModel.wzElement
+				_ wizzi.gen
+					@ wizziModel
+					f_cb_test(artifactText)
+						log 'artifactText complex forms\n', artifactText

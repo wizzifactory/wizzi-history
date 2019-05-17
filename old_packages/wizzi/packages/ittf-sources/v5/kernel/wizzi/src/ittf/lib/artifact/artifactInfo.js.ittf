@@ -1,0 +1,357 @@
+﻿module 
+    kind jsfile
+	+
+    var assert = require('assert')
+    var path = require('path')
+    var util = require('util')
+	var _ = require('lodash')
+	var verify = require('wizzi-utils').verify
+    var interpolate = require('../util/interpolate')
+    var ModelInfo = require("../model/modelInfo").ModelInfo
+    +
+	#
+		# ArtifactInfo is a wrapper around an 'artifact' element
+		# of a 'wfjob' wizzi model.
+		# The 'artifact' element has been preprocessed 
+		# by the lib/production/wfjob module giving the artifactConfig parameter.
+		# param 
+		#    { artifactConfig
+		# 		name:String,
+		# 		options:Object {
+		# 			basedir:String // Uri
+		# 			dotgExtensionPrefix:Boolean
+		# 		},
+		# 		model:Object {  // ModelInfo config object
+		#           see lib/production/wfjob.js for creation
+		#           see lib/model/modelInfo.js for use
+		# 		},
+		# 		isWfJob:Boolean,
+		# 		isWfSchema:Boolean,
+		# 		transformers:Array {
+		# 			name:String
+		# 			dumpFile:String    // Uri
+		# 		},
+		# 		gen:Object {
+		# 			generator:String // generator name
+		# 		},
+		# 		dest:Object {
+		# 			fullpath:String    // Uri
+		# 			folder:String      // a basepath Uri, may be relative
+		# 			baseFolder:String  // a basepath Uri (required when folder is relative)
+		# 			path:String        // relative path
+		# 			extension:String
+		# 		}
+		# 	  }
+	+
+	function logme
+        if false
+            _ console.log.apply(console, arguments)
+    +
+	wz-class ArtifactInfo
+        ctor 
+            param artifactConfig
+
+            set this.name = artifactConfig.name
+            set this.options = artifactConfig.options
+            if verify.isObject(artifactConfig.model)
+                set this.modelInfo = new ModelInfo(artifactConfig.model)
+                set this.contextInfos = null
+            else 
+                set this.contextInfos = []
+                foreach item in artifactConfig.contexts
+                    _ this.contextInfos.push
+                        new ModelInfo(item)
+                set this.modelInfo = null
+            set this.isWfJob = artifactConfig.isWfJob
+			set this.isWfModelType = artifactConfig.isWfModelType
+            set this.transformers = artifactConfig.transformers
+            set this.gen = artifactConfig.gen
+            set this.dest = artifactConfig.dest
+            set this.wfjob = artifactConfig.wfjob
+            set this.genContexts = []
+    
+		m initialize
+            param productionManager
+
+            set this.productionManager = productionManager
+            if this.modelInfo
+                _ this.modelInfo.productionManager
+                    @ productionManager
+            else
+				foreach item in this.contextInfos 
+                    _ item.productionManager
+                        @ productionManager
+            set this.options
+				_ _.merge
+					{
+					@ productionManager.options || {}
+					@ this.options || {}
+    
+		m addGenContext
+            param genContext
+            _ this.genContexts.push(genContext)
+
+		m isWizziModelTypesArtifact
+            return this.modelInfo != null && this.modelInfo.getModelCollectionInfo() == null && this.isWfModelType
+
+		m isWizziFactoryJob
+            return this.modelInfo != null && this.modelInfo.getModelCollectionInfo() == null && this.isWfJob
+    
+		m isWizziModelArtifact
+            return this.modelInfo != null && this.modelInfo.getModelCollectionInfo() == null && 
+				\b verify.isObject(this.gen) && 
+				\b verify.isNotEmpty(this.gen.generator)
+
+		m isModelCollectionArtifact
+            return this.modelInfo != null && 
+				\b verify.isObject(this.modelInfo.getModelCollectionInfo()) &&
+				\b verify.isObject(this.gen)
+
+		m isCodeWriteArtifact
+            return this.modelInfo == null && verify.isObject(this.gen) && verify.isNotEmpty(this.gen.generator)
+    
+		m isFinalArtifact
+            return this.modelInfo != null && 
+				\b (verify.isObject(this.gen) === false || verify.isEmpty(this.gen.generator))
+    
+		m getFileService
+			_ assert.ok
+				_ verify.isObject
+					@ this.productionManager
+				@ 'productionManager not set.'
+			_ assert.ok
+				_ verify.isObject
+					@ this.productionManager.wizziFactory.fileService
+				@ 'fileService must be set on wizziFactory'
+			return this.productionManager.wizziFactory.fileService
+
+		m getItemsToPersistToFile
+			param callback
+
+            var check
+                { 
+            var items
+                [ 
+            
+			foreach genContext in this.genContexts
+                var srcPath = genContext.srcPath
+                
+				if this.isModelCollectionArtifact()
+                    var collectionItem = genContext.model
+                    _ assert.strictEqual
+                        _ verify.isObject(collectionItem)
+                        @ true
+                        @ 'genContext.model must contain an object.'
+
+					checked_call( ipcontext )
+						_ this.getInterpolatePathNameContext(collectionItem)
+					
+					checked_call( destUri )
+						_ this.getDestinationUri(srcPath)
+                    
+					var filepath
+                        _ interpolate
+                            @ destUri
+                            @ ipcontext
+                            { 
+                                @ delimiter '{}'
+                    
+					_ logme('ArtifactInfo.getItemsToPersistToFile.ipcontext', ipcontext, 'filepath', filepath)
+                    
+					if check[filepath]
+                        return
+							_ callback
+								_ this.error
+									@ "Duplicated destination filepath: " + filepath
+									@ "getItemsToPersistToFile"
+                    
+					set check[filepath] = true
+                    var persisteable
+                        { 
+                            @ artifactInfo this
+                            @ genContext genContext
+                            @ filepath filepath
+                    _ items.push(persisteable)
+                
+				else 
+					checked_call( destUri )
+						_ this.getDestinationUri(srcPath)
+                    var persisteable
+                        { 
+                            @ artifactInfo this
+                            @ genContext genContext
+                            @ filepath destUri
+                    _ items.push(persisteable)
+            _ callback(null, items)
+    
+		m getInterpolatePathNameContext
+            param collectionItem
+            
+			if this.isModelCollectionArtifact()
+                var result
+                    { 
+                var info = this.modelInfo.getModelCollectionInfo()
+                
+				foreach templValue in info.pathTemplateValues
+                
+				    if templValue.function
+                        set result[templValue.token] = collectionItem[templValue.function]()
+                        if verify.isEmpty(result[templValue.token])
+                            return
+								_ this.error
+									@ 'the path template value function must return a not empty string for token: "' + templValue.token + '"'
+									@ 'getInterpolatePathNameContext'
+                
+				    elif templValue.attribute
+                        set result[templValue.token] = collectionItem[templValue.attribute]
+                        _ logme
+                            @ 'result[templValue.token]'
+                            @ result[templValue.token]
+                            _ verify.isEmpty
+                                @ result[templValue.token]
+                        if verify.isEmpty(result[templValue.token])
+                            return
+								_ this.error
+									@ 'the path template value attribute "' + templValue.attribute + '" must return a not empty string for token: "' + templValue.token + '"'
+									@ 'getInterpolatePathNameContext'
+                
+				    else 
+                        return
+							_ this.error
+								@ 'path template value must contain an attribute or a function value for token: "' + templValue.token + '"'
+								@ 'getInterpolatePathNameContext'
+                return result
+            else 
+                return
+					_ this.error
+						@ "Method called on an artifact that is not a wizzi collection artifact."
+						@ 'getInterpolatePathNameContext'
+    
+		m getDestinationUri
+            param srcPath
+            
+			var dest = this.dest
+            
+			var msg
+                [ 
+                    @ 'ArtifactInfo.getDestinationUri'
+                    @ 'config.dest'
+            
+			if verify.isNotEmpty(dest.fullpath)
+                return dest.fullpath
+            
+			if verify.isEmpty(dest.folder)
+                return
+					_ this.error
+						@ 'A not empty dest.folder is required'
+						@ 'getDestinationUri'
+            
+			var destpath
+            if dest.path && verify.isAbsolutePath(dest.path)
+                set destpath = path.join(dest.path, srcPath)
+            else
+				if dest.path
+					set destpath = path.join(dest.folder, dest.path)
+				else
+					if verify.isEmpty(srcPath)
+						return
+							_ this.error
+								@ 'A not empty srcPath is required'
+								@ 'getDestinationUri'
+					set destpath = path.join(dest.folder, srcPath)
+					if this.isFinalArtifact() === false && dest.extension !== '@@null'
+						var ext = (dest.extension || 'js')
+						set ext = verify.startsWith(ext, '.') ? ext.substr(1) : ext
+						if this.options.dotgExtensionPrefix
+							set ext = 'g.' + ext
+						set destpath = verify.stripIttfExtension(destpath)
+						set destpath = verify.replaceExtension(destpath, ext)
+            
+			if this.isFinalArtifact() === true
+				set destpath = verify.replaceAll(destpath, '__copy', '')
+            
+			if verify.isAbsolutePath(destpath)
+                return destpath
+            
+			if verify.isEmpty(dest.baseFolder)
+                return
+					_ this.error
+						@ 'When dest.folder is a relative path, a not empty dest.baseFolder value is required. Received destpath : ' + destpath
+						@ 'getDestinationUri'
+            return 
+                _ path.join
+                    @ dest.baseFolder
+                    @ destpath
+    
+		m error
+            param message
+            param method
+			var err
+				{
+					@ __is_error true
+					@ message message
+					@ source "wizzi/lib/production/artifactInfo.js/" + method
+					@ modelInfo this.modelInfo
+			_ logme(err)
+			return err
+    
+		m dump
+            throw 
+                new Error('Not implemented')
+    
+		m _relPath
+            if this.modelInfo
+                return 
+					iif this.options.basedir
+						then
+							_ this.modelInfo.srcFullPath()
+								._ substr(this.options.basedir.length + 1)
+						else this.modelInfo.srcFullPath()
+            else 
+                return 'null'
+    
+		m toString
+            return 
+                [ 
+					@ '\n'
+					@ 'ArtifactInfo '
+					@ 'name: ' + this.name
+                    @ 'model.src: ' + this._relPath()
+                    @ ', gen.generator:'
+                    iif this.gen
+                        then 
+                            set this.gen.generator
+                        else 'none'
+					@ '\n'
+                    ._ join(' ')
+    
+		m terminate
+            if this.modelInfo
+                _ this.modelInfo.terminate()
+            if this.contextInfos
+                foreach item in this.contextInfos
+					_ item.terminate()
+            if this.genContexts
+				foreach item in this.genContexts
+					_ item.terminate()
+    
+		m isArtifactConfig
+			static
+            param test
+            if !test
+                return false
+            if !verify.isObject(test.options)
+                return false
+            if !verify.isObject(test.model) && !verify.isObject(test.contexts)
+                return false
+            if !verify.isObject(test.dest)
+                return false
+            if !verify.isObject(test.gen)
+                return false
+            return true
+		
+		m isArtifactInstance
+			static
+            param test
+            throw 
+                new Error('Not implemented')

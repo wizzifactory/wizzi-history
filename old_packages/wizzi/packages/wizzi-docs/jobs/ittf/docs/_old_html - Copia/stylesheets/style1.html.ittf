@@ -1,0 +1,65 @@
+html
+
+	$include defs
+
+	head
+
+		@title Style sheets lab - styles 1
+		link
+			href https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600|Source+Sans+Pro:200,400,400i,500
+		css css/styles1.css.ittf
+
+	body
+
+		h2 a (anchor)
+
+		a link to
+			href #
+			class icon-link
+
+		h2 Icons
+
+		$foreach icon in iconDefs
+			a 
+				href #
+				i
+					class ${icon.name}
+			br
+
+		h2 Navigation search
+		. navigation__search
+			span
+				class algolia-autocomplete
+				style position: relative; display: inline-block; direction: ltr;
+				input
+					type text
+					class navigation__search-input ds-input
+					placeholder Search documentation…
+					autocomplete off
+					spellcheck false
+					role combobox
+					aria-autocomplete list
+					aria-expanded false
+					aria-owns algolia-autocomplete-listbox-0
+					dir auto
+					style position: relative; vertical-align: top;
+				pre
+					aria-hidden true
+					style position: absolute; visibility: hidden; white-space: pre; font-family: Arial; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; word-spacing: 0px; letter-spacing: normal; text-indent: 7px; text-rendering: auto; text-transform: none;
+				span
+					class ds-dropdown-menu
+					role listbox
+					id algolia-autocomplete-listbox-0
+					style position: absolute; top: 100%; z-index: 100; left: 0px; right: auto; display: none;
+					. ds-dataset-1
+			button
+				class navigation__search-icon icon-magnifying-glass
+			button
+				class navigation__search-icon icon-cross
+
+		h2 Navigation
+		$include style1/navigation
+
+		h3 Logo
+		$include style1/logo
+

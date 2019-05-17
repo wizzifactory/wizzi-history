@@ -1,0 +1,134 @@
+html
+
+	head
+
+		@style
+			css
+				< body
+					margin 0
+					padding 0
+					font-family verdana, arial
+					font-size 15px
+
+		::style
+			css
+				< body
+					margin 0
+					padding 0
+					font-family verdana, arial
+					font-size 15px
+
+		style
+			< html
+				margin 0
+				padding 0
+				font-family verdana, arial
+				font-size 15px
+
+	body
+
+		# root
+
+		::media
+			svg
+				rect
+					x 10
+					y 10
+					width 100
+					height 50
+					fill red
+
+		svg
+			rect
+				x 10
+				y 10
+				width 100
+				height 50
+				fill red
+
+		::ready
+			module
+				kind es6
+				var author
+					_ JSON.parse
+						_ document.getElementById
+							@ "author"
+							. innerHTML
+				log 'author', author
+				var friends
+					_ JSON.parse
+						_ document.getElementById
+							@ "friends"
+							. innerHTML
+				log 'friends', friends
+				var v = new MyView('root')
+				_ v.render
+
+		ready
+			var author
+				_ JSON.parse
+					_ document.getElementById
+						@ "author"
+						. innerHTML
+			log 'author', author
+			var friends
+				_ JSON.parse
+					_ document.getElementById
+						@ "friends"
+						. innerHTML
+			log 'friends', friends
+			var v = new MyView('root')
+			_ v.render
+
+		script
+			module
+				kind es6
+				class MyView
+					ctor
+						param rootId
+						set this.rootEl
+							_ document.getElementById
+								@ rootId
+					m render
+
+		::script
+			module
+				kind es6
+				class MyView
+					ctor
+						param rootId
+						set this.rootEl
+							_ document.getElementById
+								@ rootId
+					m render
+		script
+			class MyView
+				ctor
+					param rootId
+					set this.rootEl
+						_ document.getElementById
+							@ rootId
+				m render
+
+		::data-object author
+			id author
+			{
+				name 'mary'
+
+		json author
+			id author
+			{
+				name 'mary'
+
+		::data-array friends
+			[
+				{
+					name 'linda'
+				{
+					name 'bill'
+		json friends
+			[
+				{
+					name 'linda'
+				{
+					name 'bill'

@@ -1,0 +1,235 @@
+$group
+	$params &api, &type
+
+	$ 
+		var obj1 = {};
+
+	$if type.properties.length > 0
+		table
+			$foreach p in type.properties
+				tr
+					td property
+						@ valign top
+					td ${p.wzName}
+						@ valign top
+					td 
+						@ valign top
+						span ${p.type} 
+						$if p.type === 'object' 
+							span {
+						$if p.type === 'array' 
+							span [
+						table
+							$if p.comments.length > 0
+								tr
+									td
+										$foreach c in p.comments
+											span ${c.wzName}
+											br
+							$if p.apiRef
+								tr
+									td api ref
+										@ valign top
+									td
+										@ valign top
+										a ${p.apiRef}
+											href #${p.apiRef}
+							$if p.type === 'object'
+								$
+									obj1 = p;
+								tr
+									td
+										@ valign top
+										./object1(&obj1)
+							$if p.type === 'array'
+								$
+									obj1 = p;
+								tr
+									td
+										@ valign top
+										./array1(&obj1)
+	
+	$if type.methods.length > 0
+		table
+			$foreach m in type.methods
+				tr
+					style border-top: 1px solid gray;
+					td method
+						@ valign top
+					td ${api.wzName}.${m.wzName}
+						@ valign top
+						table
+							tr
+								td type
+								td  
+									$if m.isAsync
+										span async &nbsp;
+									span ${m.type}
+							$if m.isInternal
+								tr
+									td internal method
+							$if m.implementedBy
+								tr
+									td implemented by 
+									td
+										a ${m.implementedBy}
+											href #${m.implementedBy}
+							$if m.calledBy
+								tr
+									td called by 
+									td
+										a ${m.calledBy}
+											href #${m.calledBy}
+							$if m.throwIf
+								tr
+									td throw if
+									td ${m.throwIf}
+
+							$if m.params.length > 0
+								$foreach p in m.params
+									$
+										obj1 = p;
+									tr
+										td param
+											@ valign top
+										td ${p.wzName}
+											@ valign top
+										td 
+											@ valign top
+											span ${p.type} 
+											$if p.type === 'object' 
+												span {
+											$if p.type === 'array' 
+												span [
+											$if p.comments.length > 0
+												tr
+													td
+														$foreach c in p.comments
+															span ${c.wzName}
+															br
+
+											table
+												$if p.apiRef
+													tr
+														td api ref:&nbsp;
+														td
+															a ${p.apiRef}
+																href #${p.apiRef}
+												$if p.isPOJO
+													tr
+														td POJO
+						
+												$if p.defaultValue
+													tr
+														td default
+														td ${p.defaultValue}
+						
+												$if p.isRequired
+													tr
+														td required
+						
+												$if p.iface
+													tr
+														td interface
+														td ${p.iface}
+			
+												$if p.type === 'object'
+													tr
+														td 
+															./object1(&obj1)
+					
+												$if p.type === 'array'
+													tr
+														td 
+															./array1(&obj1)
+
+												$if p.type === 'callback-function'
+													tr
+														td
+															./cb1(&obj1)
+
+							$if m.info
+								tr
+									td info
+										@ valign top
+									td
+										@ valign top
+										@ colspan 2
+										table
+											$foreach c in m.info.comments
+												tr
+													td ${c.wzName}
+														@ colspan 2
+											$foreach it in m.info.infoItems
+												tr
+													td ${it.wzTag}
+													td ${it.wzName}
+												$foreach it2 in it.infoItems
+													tr
+														td ${it2.wzTag}
+															style padding-left: 15px;
+														td ${it2.wzName}
+															style padding-left: 15px;
+													$foreach it3 in it2.infoItems
+														tr
+															td ${it3.wzTag}
+																style padding-left: 30px;
+															td ${it3.wzName}
+																style padding-left: 30px;
+														$if it3.infoItems.length > 0
+															h1 Sorry to deep info items
+
+							$if m.return
+								tr
+									td return
+										@ valign top
+									td
+										@ valign top
+										table
+											$foreach v in m.return.values
+												$
+													obj1 = v;
+												tr
+													td ${v.wzName}
+														@ valign top
+													td ${v.type} 
+														@ valign top
+														table
+															$if v.apiRef
+																tr
+																	td api ref:&nbsp;
+																	td
+																		a ${v.apiRef}
+																			href #${v.apiRef}
+															$if v.isPOJO
+																tr
+																	td POJO
+						
+															$if v.defaultValue
+																tr
+																	td default
+																	td ${v.defaultValue}
+						
+															$if v.isRequired
+																tr
+																	td required
+						
+															$if v.iface
+																tr
+																	td interface
+																	td ${v.iface}
+			
+															$if v.type === 'object'
+																tr
+																	td 
+																		./object1(&obj1)
+					
+															$if v.type === 'array'
+																tr
+																	td 
+																		./array1(&obj1)
+
+															$if v.type === 'callback-function'
+																tr
+																	td
+																		./cb1(&obj1)

@@ -1,0 +1,34 @@
+﻿module 
+    kind react
+	+
+	import_rsf_actions( GET_WIZZI_SYSTEM_PACKAGES )
+	+
+	# TODO Managed schemas should a data list on the server config object
+	+
+	const wizziSystemInitialState
+		{
+			@ isLoading false
+			@ loadingError null
+			@ versions []
+			@ packages {}
+					
+	+
+	r( wizziSystem, wizziSystemInitialState )
+	
+		cx( GET_WIZZI_SYSTEM_PACKAGES_REQUEST
+			@ isLoading true
+			@ loadingError null
+
+		cx( GET_WIZZI_SYSTEM_PACKAGES_FAILURE
+			@ versions []
+			@ packages {}
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( GET_WIZZI_SYSTEM_PACKAGES_SUCCESS
+			@ versions action.payload.versions
+			@ packages action.payload.packages
+			@ isLoading false
+			@ loadingError null
+
+	export default wizziSystemReducer

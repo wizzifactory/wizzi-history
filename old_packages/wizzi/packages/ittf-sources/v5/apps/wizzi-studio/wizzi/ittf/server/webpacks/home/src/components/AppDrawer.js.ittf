@@ -1,0 +1,115 @@
+module
+	kind react
+
+	import React from 'react'
+	import PropTypes from 'prop-types'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+	import List from 'material-ui/List'
+	import Toolbar from 'material-ui/Toolbar'
+	import Drawer from 'material-ui/Drawer'
+	import Typography from 'material-ui/Typography'
+	import Divider from 'material-ui/Divider'
+	import AppDrawerNavItem from './AppDrawerNavItem'
+	import Link from './Link'
+
+	const styleSheet
+        _ createStyleSheet
+            @ 'AppDrawer'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/AppDrawer
+
+	function renderNavItems
+		param props
+		param navRoot
+		log 'renderNavItems.props.navRoot', props, navRoot
+		let navItems = null
+		if navRoot.childRoutes && navRoot.childRoutes.length
+			# eslint-disable-next-line no-use-before-define
+			set navItems
+				_ navRoot.childRoutes.reduce
+					_ reduceChildRoutes.bind(null, props)
+					[
+		return
+			< List
+				+ {navItems}
+
+	function reduceChildRoutes
+		param props
+		param items
+		param childRoute
+		param index
+		log 'reduceChildRoutes.childRoute' , childRoute , index, props
+		if childRoute.nav
+			if childRoute.childRoutes && childRoute.childRoutes.length
+				const openImmediately = props.routes.indexOf(childRoute) !== -1 || false
+				_ items.push
+					< AppDrawerNavItem
+						@ key {index}
+						@ openImmediately {openImmediately}
+						@ title {childRoute.title}
+						+ {renderNavItems(props, childRoute)}
+			else
+				_ items.push
+					< AppDrawerNavItem
+						@ key {index}
+						@ title {childRoute.title}
+						@ to {childRoute.path}
+						@ onClick {props.onRequestClose}
+						
+		return items
+	
+	function AppDrawer
+		param props
+
+		const classes = props.classes
+		const GITHUB_RELEASE_BASE_URL = 'https://github.com/callemall/./ui/releases/tag/';
+
+		return
+			< Drawer
+				@ className {props.className}
+				@ classes
+					{
+						@ paper classes.paper
+				@ open {props.open}
+				@ onRequestClose {props.onRequestClose}
+				@ docked {props.docked}
+				div
+					@ className {classes.nav}
+					< Toolbar
+						@ className {classes.toolbar}
+						< Link
+							@ className {classes.title}
+							@ to "/"
+							@ onClick {props.onRequestClose}
+							< Typography
+								@ type "title"
+								@ gutterBottom colorInherit
+								+ Wizzi Factory
+						{
+							iif process.env.MATERIAL_UI_VERSION
+								then
+									< Link
+										@ className {classes.anchor}
+										@ href {`${GITHUB_RELEASE_BASE_URL}v${process.env.MATERIAL_UI_VERSION}`}
+										< Typography
+											@ type "caption"
+											+ {`v${process.env.MATERIAL_UI_VERSION}`}
+								else
+									+ null
+						< Divider
+							@ absolute
+					+ {renderNavItems(props, props.routes[0])}
+
+	set AppDrawer.propTypes
+		{
+			@ classes PropTypes.object.isRequired
+			@ className PropTypes.string
+			@ docked PropTypes.bool.isRequired
+			@ onRequestClose PropTypes.func.isRequired
+			@ open PropTypes.bool.isRequired
+			@ routes PropTypes.array.isRequired
+			
+	export default withStyles(styleSheet)(AppDrawer)

@@ -1,0 +1,20 @@
+﻿$group
+	$params label
+
+	if itemPath && itemPath.length > 0
+		_ that.getFolderOrFile
+			@ userId
+			@ projectId
+			@ itemPath
+			f_cb( getResult )
+				r_cb_success( '${label}: ' + userId + '/'  + projectId + '/'  + itemPath 
+					@ folderRefresh getResult.data
+					@ result actions
+	else
+		_ that.getProjectRoot
+			@ userId
+			@ projectId
+			f_cb( getResult )
+				r_cb_success( '${label}: ' + userId + '/'  + projectId + '/'  + itemPath 
+					@ folderRefresh getResult.data
+					@ result actions

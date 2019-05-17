@@ -1,0 +1,37 @@
+﻿module
+	kind react
+
+	$include app-options
+	
+	react/store/reducers/index( &app )
+
+		$append imports
+			import commonsReducer from './commonsReducer'
+			import schemaReducer from './schemaReducer'
+			import documentReducer from './documentReducer'
+			import fragmentReducer from './fragmentReducer'
+			import editorReducer from './editorReducer'
+			import artifactReducer from './artifactReducer'
+			import wizziPackagesReducer from './wizziPackagesReducer'
+			import wizziIttfReducer from './wizziIttfReducer'
+			import jobReducer from './jobReducer'
+			import repoReducer from './repoReducer'
+			import wizziSystemReducer from './wizziSystemReducer'
+			$*
+			import themeReducer from './themeReducer'
+			*$
+
+		@ commons commonsReducer
+		@ schema schemaReducer
+		@ document documentReducer
+		@ fragment fragmentReducer
+		@ editor editorReducer
+		@ artifact artifactReducer
+		@ wizziPackages wizziPackagesReducer
+		@ wizziIttf wizziIttfReducer
+		@ job jobReducer
+		@ repo repoReducer
+		@ wizziSystem wizziSystemReducer
+		$*
+		@ theme themeReducer
+		*$

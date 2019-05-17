@@ -1,0 +1,15 @@
+$group
+
+	$function buildup_cb
+		$param obj
+		$param smr
+
+		. gsf-smr-${smr} api-submethod-section-title
+			+ Arguments
+		
+		$foreach arg in obj.xarguments 
+			$$ . gsf-smr-${smr}
+
+			$_ typed_value
+				$@ arg
+				$@ smr

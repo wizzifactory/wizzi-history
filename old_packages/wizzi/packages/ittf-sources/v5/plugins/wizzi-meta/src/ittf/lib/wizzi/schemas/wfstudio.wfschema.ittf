@@ -1,0 +1,100 @@
+﻿wfstudio/_root( wfstudio )
+	
+	# A schema modeling a Wizzi Studio meta file
+
+	export-to json
+
+	e wfstudio : wfstudioitem
+		# The root element
+
+		is-root
+
+		r project/s
+		r package/s
+
+		m wzinitialize
+
+			set this.packagesEx
+				[
+
+			set this.projectsEx
+				[
+
+			set this.schemas
+				[
+			
+			set this.artifacts
+				[
+			
+			var packageEx, folder
+			foreach p in this.packages
+				set packageEx
+					{
+						@ name p.wzName
+						@ description p.description
+						@ baseFolderUri p.baseFolderUri
+						@ srcFolder p.srcFolder
+						@ destFolder p.destFolder
+						@ folders []
+				foreach f in p.folders
+					set folder
+						{
+							@ name f.wzName
+							@ fullPath path.join(p.baseFolderUri, f.wzName)
+							@ aspects [] 
+					foreach a in f.aspects
+						_ folder.aspects.push(a.wzName)
+					_ packageEx.folders.push
+						@ folder
+				_ this.packagesEx.push
+					@ packageEx
+				
+				var schema, artifact
+				foreach s in p.schemas
+					set schema
+						{
+							@ package p.wzName
+							@ name s.wzName
+							@ uri p.wzName + '/' + s.wzName
+							@ srcPath s.srcPath
+							@ modelPath s.modelPath
+							@ factoryPath s.factoryPath
+							@ jsonDocPath s.jsonDocPath
+							@ defaultArtifact s.defaultArtifact
+							@ isPseudo s.isPseudo
+							@ artifacts
+								[
+					_ this.schemas.push
+						@ schema
+					foreach a in s.artifacts
+						set artifact
+							{
+								@ name s.wzName + '/' + a.wzName
+								@ package p.wzName
+								@ schema s.wzName
+								@ srcPath a.srcPath
+								@ modulePath a.modulePath
+								@ isDefault a.isDefault
+						_ this.artifacts.push
+							@ artifact
+						_ schema.artifacts.push
+							@ artifact
+
+			foreach p in this.projects
+				_ this.projectsEx.push
+					{
+						@ name p.wzName
+						@ description p.description
+						@ srcFolder p.srcFolder
+						@ destFolder p.destFolder
+
+			set this.__jsonProps
+				{
+					@ packagesEx this.packagesEx 
+					@ projectEx this.projectEx 
+					@ schemas this.schemas 
+					@ artifacts this.artifacts 
+
+	$include wfstudio/common
+	$include wfstudio/project
+	$include wfstudio/package

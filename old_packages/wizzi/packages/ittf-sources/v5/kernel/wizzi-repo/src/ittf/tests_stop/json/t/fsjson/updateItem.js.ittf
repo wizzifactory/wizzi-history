@@ -1,0 +1,16 @@
+﻿$group
+
+	describe update a filesystem item
+
+		it-async should update a root child
+
+			set hellotxt_item.basename = 'hello2.txt'
+			_ fsJson.updateItem
+				@ hellotxt_item
+				f_cb_test( r )
+					log 'updateItem.r', err, r
+					# tobe_number( r.n, 1 )
+					tobe_string( r.code, FSITEM_UPDATED )
+					_ done
+
+

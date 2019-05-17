@@ -1,0 +1,47 @@
+﻿$group
+
+    @ clone
+		async=>
+			{ 
+				@ filepath
+				@ url
+				@ name
+				@ ref
+				@ depth
+            
+			let dir
+				_ path.join
+					@ filepath
+					@ name || path.basename(url)
+					@ 'origin'
+
+			let proxyurl = url.replace(/^https?:\/\//, '')
+            
+			try 
+				log 'cloning', proxyurl
+				await 
+					_ git.clone
+						{ 
+							@ fs
+							@ dir
+							@ depth depth || 10
+							@ ref ref || 'master'
+							@ singleBranch true
+							@ url
+								`lit 
+									+ https://cors-buster-jfpactjnem.now.sh/
+									@ proxyurl
+									+ 
+
+				log 'setting config', new URL('https://' + proxyurl).hostname 
+				await 
+					_ git.config
+						{ 
+							@ fs
+							@ dir
+							@ path 'remote.origin.host'
+							@ value new URL('https://' + proxyurl).hostname 
+				return null
+			
+			catch ex
+				return ex

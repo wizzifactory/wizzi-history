@@ -1,0 +1,48 @@
+module wizzi.ts.artifacts.module.gen.codegen.es6.handler
+	kind jsfile
+	var u = require('../../../../../js/module/gen/codegen/util/stm')
+	var statement = require('../statement')
+
+	var md = module.exports = {}
+	var myname = 'wizzi.js.artifacts.module.gen.codegen.es6.handler'
+
+	md-gen-class( gen )
+		var
+			decl method = model.wzName
+
+		if model.static
+			_ ctx.write('static ')
+
+		if model.async
+			_ ctx.write('async ')
+
+		_ u.genAccessorsAndExtra
+			@ model
+			@ ctx
+
+		_ ctx.write(method)
+
+		_ u.genTSTypeParameters
+			@ model
+			@ ctx
+			@ statement
+			a_cb()
+				_ ctx.write(' = (')
+				_ u.genTSParams
+					@ model
+					@ ctx
+					@ statement
+					a_cb()
+						_ ctx.write(')')
+						if model.typeReturn
+							_ ctx.write(': ')
+							_ statement.stm.typeReturn(model.typeReturn, ctx, () => {})
+						_ ctx.w(' => {')
+						_ ctx.indent();
+						_ statement.genMany
+							@ model.statements
+							@ ctx
+							a_cb()
+								_ ctx.deindent();
+								_ ctx.w('}');
+								r_cb()

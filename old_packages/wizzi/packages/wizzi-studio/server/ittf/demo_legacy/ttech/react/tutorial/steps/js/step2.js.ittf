@@ -1,0 +1,72 @@
+module
+	kind react
+
+	$
+		var xnode = {
+			text: 'brands',
+			xnodes : [
+				{
+					text: 'fiat',
+					xnodes: []
+				},
+				{
+					text: 'ford',
+					xnodes: []
+				},
+				{
+					text: 'peugeot',
+					xnodes: []
+				},
+				{
+					text: 'opel',
+					xnodes: []
+				}
+			]
+		};
+
+
+	crr(TreeNode)
+		li()
+			{
+				@ className 'list-group-item'
+			@ this.props.node.text
+			@ children
+		$append render
+			var children = []
+			foreach node in this.props.node.nodes
+				_ children.push
+					e(TreeNode)
+						{
+							@ node node
+
+	crr(TreeView)
+		div()
+			{
+				@ id 'treeview'
+				@ className 'treeview'
+			ul()
+				{
+					@ className 'list-group'
+				@ this.props.node
+
+	var node 
+		{
+			@ text '${xnode.text}'
+			@ nodes []
+	$foreach xn1 in xnode.xnodes
+		_ node.nodes.push
+			{
+				@ text '${xn1.text}'
+				@ nodes []
+
+	var treeNode
+			e(TreeNode)
+				{
+					@ node node
+	
+	_ ReactDOM.render
+		e(TreeView)
+			{
+				@ node treeNode
+			@ null
+		_ document.getElementById('container')

@@ -1,0 +1,218 @@
+﻿$group
+
+	m exec_copyFile
+		param src
+		param dest
+		param options
+		param callback
+
+        if typeof options === 'function' && !callback
+            set callback = options
+            set options = {}
+
+		var that = this
+		_ this.read
+			@ src
+			f_cb( content )
+				_ that.write
+					@ dest
+					@ content
+					@ callback
+
+	m exec_copyFolder
+		param src
+		param dest
+		param options
+		param callback
+		var that = this
+		_ this.fsimpl.readdir
+			@ src
+			f_cb( items
+				return that.copyFolderItems(items, src, dest, options, callback)
+    
+	m copyFolderItems
+		param items
+		param src
+		param dest
+		param options
+		param callback
+		const item = items.pop()
+		if !item
+			return callback()
+		return this.copyFolderItem(items, item, src, dest, options, callback)
+    
+	m copyFolderItem
+		param items
+		param item
+		param src
+		param dest
+		param options
+		param callback
+		const srcItem = path.join(src, item)
+		const destItem = path.join(dest, item)
+		var that = this
+		_ this.isFile
+			@ srcItem
+			f_cb( result )
+				if result == true
+					_ that.exec_copyFile
+						@ srcItem
+						@ destItem
+						@ options
+						f_cb()
+							return that.copyFolderItems(items, src, dest, options, callback)
+				else
+					_ that.exec_copyFolder
+						@ srcItem
+						@ destItem
+						@ options
+						f_cb()
+							return that.copyFolderItems(items, src, dest, options, callback)
+
+	m rimraf
+		param path_string
+		param options
+		param callback
+
+        if typeof options === 'function'
+            set callback = options
+            set options = {}
+        
+		var that = this
+		var busyTries = 0
+
+		_ this.rimraf_try
+            @ path_string
+            @ options
+			function tryCallback
+				param err
+                if err
+                    if err.code === 'EBUSY' || err.code === 'ENOTEMPTY' || err.code === 'EPERM' && busyTries < options.maxBusyTries
+                        set busyTries++
+                        const time = busyTries * 100
+                        # try again, with the same exact callback as this one.
+                        return 
+                            _ setTimeout
+                                => 
+                                    _ that.rimraf_try(path_string, options, tryCallback)
+                                @ time
+                    # already gone
+                    if err.code === 'ENOENT'
+                        set err = null
+                _ callback(err)
+	
+	m rimraf_try
+		param path_string
+		param options
+		param callback
+
+		var that = this
+
+        _ this.fsimpl.lstat
+            @ path_string
+            f_cb_no_err( stat )
+                if err && err.code === 'ENOENT'
+                    return callback(null)
+                # Windows can EPERM on stat.  Life is suffering.
+                if err && err.code === 'EPERM' && isWindows
+                    return that.rimraf_fixWinEPERM(path_string, options, err, callback)
+                if stat && stat.isDirectory()
+                    return that.rimraf_rmdir(path_string, options, err, callback)
+                _ that.fsimpl.unlink
+                    @ path_string
+                    f_cb_no_err()
+                        if err
+                            if err.code === 'ENOENT'
+                                return callback(null)
+                            if err.code === 'EPERM'
+                                return 
+                                    iif isWindows
+                                        then that.rimraf_fixWinEPERM(path_string, options, err, callback)
+                                        else that.rimraf_rmdir(path_string, options, err, callback)
+                            if err.code === 'EISDIR'
+                                return that.rimraf_rmdir(path_string, options, err, callback)
+                        return callback(err)
+
+    m rimraf_rmdir
+        param path_string
+        param options
+        param originalEr
+        param callback
+        
+		# try to rmdir first, and only readdir on ENOTEMPTY or EEXIST (SunOS)
+        # if we guessed wrong, and it's not a directory, then
+        # raise the original error.
+        
+		_ this.fsimpl.rmdir
+            @ path_string
+            => 
+                param err
+                if err && (err.code === 'ENOTEMPTY' || err.code === 'EEXIST' || err.code === 'EPERM')
+                    _ this.rimraf_rmchildren(path_string, options, callback)
+                else
+                    if err && err.code === 'ENOTDIR'
+                        _ callback(originalEr)
+                    else
+                        _ callback(err)
+	
+	m rimraf_rmchildren
+		param path_string
+		param options
+		param callback
+		
+		var that = this
+		
+		_ this.fsimpl.readdir
+			@ path_string
+			f_cb( files )
+				var n = files.length
+				var errState
+				if n === 0
+					return that.fsimpl.rmdir(path_string, callback)
+				_ files.forEach
+					=> 
+						param file
+						_ that.rimraf
+							_ path.join(path_string, file)
+							@ options
+							f_cb_no_err()
+								if errState
+									return 
+								if err
+									return 
+										_ callback
+											set errState = err
+								if --n === 0
+									_ that.fsimpl.rmdir(path_string, callback)
+
+	m rimraf_fixWinEPERM
+		param path_string
+		param options
+		param tofixErr
+		param callback
+		
+		var that = this
+		
+		_ this.fsimpl.chmod
+			@ path_string
+			@ 438
+			f_cb_no_err()
+				if err
+					_ callback
+						iif err.code === 'ENOENT'
+							then null
+							else tofixErr
+				else
+					_ that.fsimpl.stat
+						@ path_string
+						f_cb_no_err( stats )
+							if err
+								_ callback
+									iif err.code === 'ENOENT'
+										then null
+										else tofixErr
+							else
+								if stats.isDirectory()
+									_ that.rimraf_rmdir(path_string, options, tofixErr, callback)
+								else
+									_ that.fsimpl.unlink(path_string, callback)

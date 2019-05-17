@@ -1,0 +1,76 @@
+module
+	$params pkgname
+	kind jsfile
+	+
+	var util = require('util')
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	+
+	var md = module.exports = {}
+	set md.name = '${pkgname}'
+	+
+	$hook model-transform-artifacts
+	+
+	#
+		# FactoryPlugin class
+	class FactoryPlugin
+		ctor
+			param wizziPackage
+			param provides
+			set this.file = wizziPackage.file
+			set this.provides = provides
+			set this.modelFactories = {}
+			set this.modelTransformers = {}
+			set this.artifactGenerators = {}
+			set this.schemaDefinitions = {}
+		m initialize
+			param options
+			param callback
+			# TODO
+			return
+				_ callback(null)
+		m getName
+			return '${pkgname}'
+		
+		m getFilename
+			return __filename
+		
+		m getProvides
+			return this.provides
+
+		$include ./v3-model-factory
+		$include ./v3-model-transformation
+		$include ./v3-artifact-generation
+		$include ./v3-schema-definition
+	+
+	function error
+		param code
+		param message
+		return
+			{
+				@ __is_error true
+				@ source '${pkgname}/FactoryPlugin'
+				@ code code
+				@ message message
+	+
+	set module.exports
+		{
+			$hook
+			@ createFactoryPlugin
+				function
+					param wizziPackage
+					param options
+					param callback
+					var plugin
+						new FactoryPlugin
+							@ wizziPackage
+							@ this.provides
+					_ plugin.initialize
+						@ options
+						f_cb( notUsed )
+							return
+								_ callback
+									@ null
+									@ plugin
+	+
+

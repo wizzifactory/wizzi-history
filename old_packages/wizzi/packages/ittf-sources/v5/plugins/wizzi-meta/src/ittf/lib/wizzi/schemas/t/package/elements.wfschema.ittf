@@ -1,0 +1,59 @@
+﻿$group
+
+	e schema : commentable
+		# A wizzi schema defined by this wizzi package of kind plugin
+		a title
+
+		r transformer/s
+		r artifact/s
+		r example/s
+
+	e transformer : commentable
+		# A model transformer
+		a title
+
+	e artifact : commentable
+		# An artifact generator
+		a title
+		a kind
+			restrict
+				enum ittf
+				enum codewrite
+			default ittf
+
+	e_tag( generatedPackage, generated-package, commentable )
+		# When the package kind is 'ittfsource' the element 'generatedPackage'
+			# main contain the description of generated packages.
+		a kind
+			restrict
+				enum kernel
+				enum plugin
+				enum demo
+			default kernel
+		a version
+		a title
+		a_tag( sourceFolder, source-folder)
+			# The full path is: (parent ittfsource package) package-base-uri / (this) sourceFolder  
+		a_tag( gitBaseUri, git-base-uri )
+		
+		r buildCwd/s
+
+	e example : commentable
+		# The base node for examples
+		a title
+		r node/s
+
+	e_tag( ittfExample, ittf-example, commentable )
+		# An IttfDocument example
+		super example
+
+	e_tag( artifactExample, artifact-example, commentable )
+		# An artifact generation example
+		super example
+
+	e node : commentable
+
+	e_tag( buildCwd, build-cwd, commentable )
+		a title
+
+

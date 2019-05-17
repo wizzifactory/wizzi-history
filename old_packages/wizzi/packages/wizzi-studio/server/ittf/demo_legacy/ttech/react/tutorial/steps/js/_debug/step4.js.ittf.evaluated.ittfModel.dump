@@ -1,0 +1,146 @@
+  module  ids: undefined undefined
+    kind react ids: undefined undefined
+    var App ids: undefined undefined
+      _ React.createClass ids: undefined undefined
+        {  ids: undefined undefined
+          @ getInitialState ids: undefined undefined
+            function  ids: undefined undefined
+              return  ids: undefined undefined
+                {  ids: undefined undefined
+                  @ isModalOpen false ids: undefined undefined
+          @ openModal ids: undefined undefined
+            function  ids: undefined undefined
+              _ this.setState ids: undefined undefined
+                {  ids: undefined undefined
+                  @ isModalOpen true ids: undefined undefined
+          @ closeModal ids: undefined undefined
+            function  ids: undefined undefined
+              _ this.setState ids: undefined undefined
+                {  ids: undefined undefined
+                  @ isModalOpen false ids: undefined undefined
+          @ render ids: undefined undefined
+            function  ids: undefined undefined
+              var self = this ids: undefined undefined
+              return  ids: undefined undefined
+                _ React.createElement ids: undefined undefined
+                  @ 'div' ids: undefined undefined
+                  {  ids: undefined undefined
+                  _ React.createElement ids: undefined undefined
+                    @ 'button' ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ onClick ids: undefined undefined
+                        function  ids: undefined undefined
+                          param evt ids: undefined undefined
+                          _ evt.preventDefault() ids: undefined undefined
+                          _ self.openModal() ids: undefined undefined
+                    @ 'Open modal' ids: undefined undefined
+                  _ React.createElement ids: undefined undefined
+                    @ Modal ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ isOpen this.state.isModalOpen ids: undefined undefined
+                      @ onClose ids: undefined undefined
+                        function  ids: undefined undefined
+                          param evt ids: undefined undefined
+                          _ evt.preventDefault() ids: undefined undefined
+                          _ self.closeModal() ids: undefined undefined
+                    _ React.createElement ids: undefined undefined
+                      @ 'h1' ids: undefined undefined
+                      {  ids: undefined undefined
+                      @ 'Modal title' ids: undefined undefined
+                    _ React.createElement ids: undefined undefined
+                      @ 'p' ids: undefined undefined
+                      {  ids: undefined undefined
+                      @ 'hello' ids: undefined undefined
+                    _ React.createElement ids: undefined undefined
+                      @ 'p' ids: undefined undefined
+                      {  ids: undefined undefined
+                      _ React.createElement ids: undefined undefined
+                        @ 'button' ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ onClick ids: undefined undefined
+                            function  ids: undefined undefined
+                              param evt ids: undefined undefined
+                              _ evt.preventDefault() ids: undefined undefined
+                              _ self.closeModal() ids: undefined undefined
+                        @ 'Close' ids: undefined undefined
+    set App.propTypes ids: undefined undefined
+      {  ids: undefined undefined
+    set App.defaultProps ids: undefined undefined
+      {  ids: undefined undefined
+    var Modal ids: undefined undefined
+      _ React.createClass ids: undefined undefined
+        {  ids: undefined undefined
+          @ close ids: undefined undefined
+            function  ids: undefined undefined
+              param evt ids: undefined undefined
+              _ evt.preventDefault() ids: undefined undefined
+              if this.props.onClose ids: undefined undefined
+                _ this.props.onClose() ids: undefined undefined
+          @ render ids: undefined undefined
+            function  ids: undefined undefined
+              if this.props.isOpen === false ids: undefined undefined
+                return null ids: undefined undefined
+              var modalStyle ids: undefined undefined
+                {  ids: undefined undefined
+                  @ position 'absolute' ids: undefined undefined
+                  @ top '50%' ids: undefined undefined
+                  @ left '50%' ids: undefined undefined
+                  @ transform 'translate(-50%, -50%)' ids: undefined undefined
+                  @ zIndex '9999' ids: undefined undefined
+                  @ background '#fff' ids: undefined undefined
+              if this.props.width && this.props.height ids: undefined undefined
+                set modalStyle.width = this.props.width + 'px' ids: undefined undefined
+                set modalStyle.height = this.props.height + 'px' ids: undefined undefined
+                set modalStyle.marginLeft = '-' + (this.props.width/2) + 'px' ids: undefined undefined
+                set modalStyle.marginTop = '-' + (this.props.height/2) + 'px' ids: undefined undefined
+                set modalStyle.transform = null ids: undefined undefined
+              if this.props.style ids: undefined undefined
+                for var key in this.props.style ids: undefined undefined
+                  set modalStyle[key] = this.props.style[key] ids: undefined undefined
+              var backdropStyle ids: undefined undefined
+                {  ids: undefined undefined
+                  @ position 'absolute' ids: undefined undefined
+                  @ width '100%' ids: undefined undefined
+                  @ height '100%' ids: undefined undefined
+                  @ top '0px' ids: undefined undefined
+                  @ left '0px' ids: undefined undefined
+                  @ zIndex '9998' ids: undefined undefined
+                  @ background 'rgba(0, 0, 0, 0.3)' ids: undefined undefined
+              if this.props.backdropStyle ids: undefined undefined
+                for var key in this.props.backdropStyle ids: undefined undefined
+                  set backdropStyle[key] = this.props.backdropStyle[key] ids: undefined undefined
+              return  ids: undefined undefined
+                _ React.createElement ids: undefined undefined
+                  @ 'div' ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ className this.props.containerClassName ids: undefined undefined
+                  _ React.createElement ids: undefined undefined
+                    @ 'div' ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ className this.props.className ids: undefined undefined
+                      @ style modalStyle ids: undefined undefined
+                    @ this.props.children ids: undefined undefined
+                  iif !this.props.noBackdrop ids: undefined undefined
+                    then  ids: undefined undefined
+                      _ React.createElement ids: undefined undefined
+                        @ 'div' ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ className this.props.backdropClassName ids: undefined undefined
+                          @ style backdropStyle ids: undefined undefined
+                          @ onClick ids: undefined undefined
+                            function  ids: undefined undefined
+                              param evt ids: undefined undefined
+                                _ this.close(evt) ids: undefined undefined
+                    else  ids: undefined undefined
+                      _ React.createElement ids: undefined undefined
+                        @ 'div' ids: undefined undefined
+    set Modal.propTypes ids: undefined undefined
+      {  ids: undefined undefined
+    set Modal.defaultProps ids: undefined undefined
+      {  ids: undefined undefined
+    _ ReactDOM.render ids: undefined undefined
+      _ React.createElement ids: undefined undefined
+        @ App ids: undefined undefined
+        {  ids: undefined undefined
+        @ null ids: undefined undefined
+      _ document.getElementById('container') ids: undefined undefined

@@ -1,0 +1,27 @@
+﻿demo_module( wizzimodel, 0, 3 )
+
+	# 
+		# Wizzi model
+		# How to load a wizzi model passing an mTree build up context object 
+		# to the loader and passing values to the factory globalContext.
+	+
+	set globalContext
+		{
+			@ copy 'The wizzi team'
+	+
+	set mTreeBuildupContext
+		{
+			[ packages
+				{
+					@ name 'wizzi-utils'
+					@ description ''
+					@ uri ''
+				{
+					@ name 'wizzi-mtree'
+					@ description ''
+					@ uri ''
+
+	loadModel(3, basic.html.ittf, print:model dashes)
+		if step_callback
+			return
+				_ step_callback(null)

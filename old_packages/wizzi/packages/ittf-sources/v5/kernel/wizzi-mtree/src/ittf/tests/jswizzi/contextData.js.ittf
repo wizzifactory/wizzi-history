@@ -1,0 +1,120 @@
+﻿base_test( contextData )
+
+	$append imports
+		var contextData = require('../../lib/jswizzi/contextData')
+
+	var cd
+	var values
+	var alfa, beta, gamma, sigma
+	var alfa_d, beta_d, gamma_d, sigma_d
+
+	before
+			
+		set cd = new contextData('evalContext', 'f1')
+        
+	it should set and get values
+			
+		_ cd.setValue('alfa', 10)
+		_ cd.setValue('beta', 'annie')
+			
+		set alfa_d = cd.isDeclared('alfa')
+		tobe_true( alfa_d )
+		set alfa = cd.getValue('alfa')
+		tobe_number( alfa, 10 )
+			
+		set beta_d = cd.isDeclared('beta')
+		tobe_true( beta_d )
+		set beta = cd.getValue('beta')
+		tobe_string( beta, annie )
+
+		var asterix_d = cd.isDeclared('asterix')
+		tobe_false( asterix_d )
+
+		set values = cd.getValues()
+		tobe_object_len( values, 2 )
+
+
+	it should push a first time and set and get values
+
+		_ cd.push()
+
+		set values = cd.getValues()
+		tobe_object_len( values, 0 )
+
+		set alfa = cd.getValue('alfa')
+		tobe_number( alfa, 10 )
+		set beta = cd.getValue('beta')
+		tobe_string( beta, annie )
+
+		_ cd.setValue('gamma', 30)
+		set values = cd.getValues()
+		tobe_object_len( values, 1 )
+
+		set gamma = cd.getValue('gamma')
+		tobe_number( gamma, 30 )
+
+	it should push a second time and set and get values
+
+		_ cd.push()
+
+		set values = cd.getValues()
+		tobe_object_len( values, 0 )
+
+		_ cd.setValue('sigma', 40)
+		set values = cd.getValues()
+		tobe_object_len( values, 1 )
+
+		set alfa = cd.getValue('alfa')
+		tobe_number( alfa, 10 )
+		set beta = cd.getValue('beta')
+		tobe_string( beta, annie )
+		set gamma = cd.getValue('gamma')
+		tobe_number( gamma, 30 )
+		set sigma = cd.getValue('sigma')
+		tobe_number( sigma, 40 )
+
+	it should pop a first time and set and get values			
+			
+		_ cd.pop()
+			
+		set alfa = cd.getValue('alfa')
+		tobe_number( alfa, 10 )
+		set beta = cd.getValue('beta')
+		tobe_string( beta, annie )
+		set gamma = cd.getValue('gamma')
+		tobe_number( gamma, 30 )
+
+		set sigma_d = cd.isDeclared('sigma')
+		tobe_false( sigma_d )
+
+	it should pop a second time and set and get values					
+			
+		_ cd.pop()
+		set alfa = cd.getValue('alfa')
+		tobe_number( alfa, 10 )
+		set beta = cd.getValue('beta')
+		tobe_string( beta, annie )
+
+		set sigma_d = cd.isDeclared('sigma')
+		tobe_false( sigma_d )
+		set gamma_d = cd.isDeclared('gamma')
+		tobe_false( gamma_d )
+
+	it should pop a third time and set and get values					
+			
+		_ cd.pop()
+		set alfa = cd.getValue('alfa')
+		tobe_number( alfa, 10 )
+		set beta = cd.getValue('beta')
+		tobe_string( beta, annie )
+
+
+
+
+
+
+
+
+
+
+

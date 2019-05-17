@@ -1,0 +1,325 @@
+  module  ids: 1 42
+    kind react ids: 2 43
+    $  ids: 3 44
+      var xnode = { ids: 4 45
+        text: 'brands', ids: 5 46
+        xnodes : [ ids: 6 47
+          {  ids: 7 48
+            text: 'fiat', ids: 8 49
+            xnodes: [] ids: 9 50
+          },  ids: 10 51
+          {  ids: 11 52
+            text: 'ford', ids: 12 53
+            xnodes: [] ids: 13 54
+          },  ids: 14 55
+          {  ids: 15 56
+            text: 'peugeot', ids: 16 57
+            xnodes: [] ids: 17 58
+          },  ids: 18 59
+          {  ids: 19 60
+            text: 'opel', ids: 20 61
+            xnodes: [] ids: 21 62
+          }  ids: 22 63
+        ]  ids: 23 64
+      };  ids: 24 65
+    var node ids: 25 66
+      {  ids: 26 67
+        @ text '${xnode.text}' ids: 27 68
+        @ nodes [] ids: 28 69
+    $foreach xn1 in xnode.xnodes ids: 29 70
+      _ node.nodes.push ids: 30 71
+        {  ids: 31 72
+          @ text '${xn1.text}' ids: 32 73
+          @ nodes [] ids: 33 74
+    $group  ids: 83 157
+      $group  ids: 441 453
+        $args: TreeView $params: name
+        var ${name} ids: 443 454
+          _ React.createClass ids: 444 455
+            {  ids: 445 456
+              @ ${name} ids: 464 468
+                $args: setNodeId $params: name
+                function  ids: 466 469
+                  param node ids: 86 160
+                  if !(node.nodes) ids: 87 161
+                    return  ids: 88 162
+                  foreach n in node.nodes ids: 89 163
+                    set n.nodeId = this.props.nodes.length ids: 90 164
+                    _ this.props.nodes.push(n) ids: 91 165
+                    _ this.setNodeId(n) ids: 92 166
+              @ ${name} ids: 464 471
+                $args: render $params: name
+                function  ids: 466 472
+                  var data = this.props.data ids: 94 168
+                  _ this.setNodeId ids: 95 169
+                    {  ids: 96 170
+                      @ nodes data ids: 97 171
+                  var children ids: 98 172
+                    [  ids: 99 173
+                  if data ids: 100 174
+                    foreach node in data ids: 101 175
+                      _ children.push ids: 102 176
+                        _ React.createElement ids: 474 483
+                          $args: TreeNode $params: p1|@@null, p2|@@null, p3|@@null
+                          $if p1 != null ids: 476 484
+                            @ ${p1} ids: 477 485
+                          $if p2 != null ids: 478 486
+                            @ ${p2} ids: 479 487
+                          $if p3 != null ids: 480 488
+                            @ ${p3} ids: 481 489
+                          {  ids: 104 178
+                            @ node node ids: 105 179
+                            @ level 1 ids: 106 180
+                            @ visible true ids: 107 181
+                            @ options this.props ids: 108 182
+                  return  ids: 109 183
+                    _ React.createElement ids: 491 499
+                      $args:  $params: p2|@@null, p3|@@null
+                      @ 'div' ids: 493 500
+                      $if p2 != null ids: 494 501
+                        @ ${p2} ids: 495 502
+                      $if p3 != null ids: 496 503
+                        @ ${p3} ids: 497 504
+                      {  ids: 111 185
+                        @ id "treeview" ids: 112 186
+                        @ className "treeview" ids: 113 187
+                      _ React.createElement ids: 506 514
+                        $args:  $params: p2|@@null, p3|@@null
+                        @ 'ul' ids: 508 515
+                        $if p2 != null ids: 509 516
+                          @ ${p2} ids: 510 517
+                        $if p3 != null ids: 511 518
+                          @ ${p3} ids: 512 519
+                        {  ids: 115 189
+                          @ className "list-group" ids: 116 190
+                        @ children ids: 117 191
+        set ${name}.propTypes ids: 447 458
+          {  ids: 448 459
+            $hook propTypes ids: 449 460
+        set ${name}.defaultProps ids: 450 461
+          {  ids: 451 462
+            $hook defaultProps ids: 452 463
+      set TreeView.propTypes ids: 118 192
+        {  ids: 119 193
+          @ levels React.PropTypes.number ids: 120 194
+          @ expandIcon React.PropTypes.string ids: 121 195
+          @ collapseIcon React.PropTypes.string ids: 122 196
+          @ emptyIcon React.PropTypes.string ids: 123 197
+          @ nodeIcon React.PropTypes.string ids: 124 198
+          @ color React.PropTypes.string ids: 125 199
+          @ backColor React.PropTypes.string ids: 126 200
+          @ borderColor React.PropTypes.string ids: 127 201
+          @ onhoverColor React.PropTypes.string ids: 128 202
+          @ selectedColor React.PropTypes.string ids: 129 203
+          @ selectedBackColor React.PropTypes.string ids: 130 204
+          @ enableLinks React.PropTypes.bool ids: 131 205
+          @ highlightSelected React.PropTypes.bool ids: 132 206
+          @ showBorder React.PropTypes.bool ids: 133 207
+          @ showTags React.PropTypes.bool ids: 134 208
+          @ nodes ids: 135 209
+            _ React.PropTypes.arrayOf ids: 136 210
+              @ React.PropTypes.number ids: 137 211
+      set TreeView.defaultProps ids: 138 212
+        {  ids: 139 213
+          @ levels 2 ids: 140 214
+          @ expandIcon 'glyphicon glyphicon-plus' ids: 141 215
+          @ collapseIcon 'glyphicon glyphicon-minus' ids: 142 216
+          @ emptyIcon 'glyphicon' ids: 143 217
+          @ nodeIcon 'glyphicon glyphicon-stop' ids: 144 218
+          @ color undefined ids: 145 219
+          @ backColor undefined ids: 146 220
+          @ borderColor undefined ids: 147 221
+          @ onhoverColor '#F5F5F5' ids: 148 222
+          @ selectedColor '#FFFFFF' ids: 149 223
+          @ selectedBackColor '#428bca' ids: 150 224
+          @ enableLinks false ids: 151 225
+          @ highlightSelected true ids: 152 226
+          @ showBorder true ids: 153 227
+          @ showTags false ids: 154 228
+          @ nodes ids: 155 229
+            [  ids: 156 230
+    $group  ids: 441 521
+      $args: TreeNode $params: name
+      var ${name} ids: 443 522
+        _ React.createClass ids: 444 523
+          {  ids: 445 524
+            @ ${name} ids: 464 532
+              $args: getInitialState $params: name
+              function  ids: 466 533
+                var node = this.props.node ids: 233 338
+                return  ids: 234 339
+                  {  ids: 235 340
+                    @ expanded ids: 236 341
+                      iif (node.state && node.state.hasOwnProperty('expanded')) ids: 237 342
+                        then node.state.expanded ids: 238 343
+                        else  ids: 239 344
+                          iif (this.props.level < this.props.options.levels) ids: 240 345
+                            then true ids: 241 346
+                            else false ids: 242 347
+                    @ selected ids: 243 348
+                      iif node.state && node.state.hasOwnProperty('selected') ids: 244 349
+                        then node.state.selected ids: 245 350
+                        else false ids: 246 351
+            @ ${name} ids: 464 535
+              $args: toggleExpanded $params: name
+              function  ids: 466 536
+                param id ids: 248 353
+                param event ids: 249 354
+                _ this.setState ids: 250 355
+                  {  ids: 251 356
+                    @ expanded !this.state.expanded ids: 252 357
+                _ event.stopPropagation() ids: 253 358
+            @ ${name} ids: 464 538
+              $args: toggleSelected $params: name
+              function  ids: 466 539
+                param id ids: 255 360
+                param event ids: 256 361
+                _ this.setState ids: 257 362
+                  {  ids: 258 363
+                    @ selected !this.state.selected ids: 259 364
+                _ event.stopPropagation() ids: 260 365
+            @ ${name} ids: 464 541
+              $args: render $params: name
+              function  ids: 466 542
+                var node = this.props.node ids: 262 367
+                var options = this.props.options ids: 263 368
+                var style ids: 264 369
+                if !this.props.visible ids: 265 370
+                  set style ids: 266 371
+                    {  ids: 267 372
+                      @ display 'none' ids: 268 373
+                else  ids: 269 374
+                  if options.highlightSelected && this.state.selected ids: 270 375
+                    set style ids: 271 376
+                      {  ids: 272 377
+                        @ color options.selectedColor ids: 273 378
+                        @ backgroundColor options.selectedBackColor ids: 274 379
+                  else  ids: 275 380
+                    set style ids: 276 381
+                      {  ids: 277 382
+                        @ color node.color || options.color ids: 278 383
+                        @ backgroundColor node.backColor || options.backColor ids: 279 384
+                if !options.showBorder ids: 280 385
+                  set style.border = 'none' ids: 281 386
+                elif options.borderColor ids: 282 387
+                  set style.border = '1px solid ' + options.borderColor ids: 283 388
+                var indents = [] ids: 284 389
+                for var i = 0; i < this.props.level-1; i++ ids: 285 390
+                  _ indents.push ids: 286 391
+                    _ React.createElement ids: 544 552
+                      $args:  $params: p2|@@null, p3|@@null
+                      @ 'span' ids: 546 553
+                      $if p2 != null ids: 547 554
+                        @ ${p2} ids: 548 555
+                      $if p3 != null ids: 549 556
+                        @ ${p3} ids: 550 557
+                      {  ids: 288 393
+                        @ className 'indent' ids: 289 394
+                var expandCollapseIcon ids: 290 395
+                if node.nodes ids: 291 396
+                  if !this.state.expanded ids: 292 397
+                    set expandCollapseIcon ids: 293 398
+                      _ React.createElement ids: 544 559
+                        $args:  $params: p2|@@null, p3|@@null
+                        @ 'span' ids: 546 560
+                        $if p2 != null ids: 547 561
+                          @ ${p2} ids: 548 562
+                        $if p3 != null ids: 549 563
+                          @ ${p3} ids: 550 564
+                        {  ids: 295 400
+                          @ className options.expandIcon ids: 296 401
+                          @ onClick this.toggleExpanded.bind(this, node.nodeId) ids: 297 402
+                  else  ids: 298 403
+                    set expandCollapseIcon ids: 299 404
+                      _ React.createElement ids: 544 566
+                        $args:  $params: p2|@@null, p3|@@null
+                        @ 'span' ids: 546 567
+                        $if p2 != null ids: 547 568
+                          @ ${p2} ids: 548 569
+                        $if p3 != null ids: 549 570
+                          @ ${p3} ids: 550 571
+                        {  ids: 301 406
+                          @ className options.collapseIcon ids: 302 407
+                          @ onClick this.toggleExpanded.bind(this, node.nodeId) ids: 303 408
+                else  ids: 304 409
+                  set expandCollapseIcon ids: 305 410
+                    _ React.createElement ids: 544 573
+                      $args:  $params: p2|@@null, p3|@@null
+                      @ 'span' ids: 546 574
+                      $if p2 != null ids: 547 575
+                        @ ${p2} ids: 548 576
+                      $if p3 != null ids: 549 577
+                        @ ${p3} ids: 550 578
+                      {  ids: 307 412
+                        @ className options.emptyIcon ids: 308 413
+                var nodeIcon ids: 309 414
+                  _ React.createElement ids: 544 580
+                    $args:  $params: p2|@@null, p3|@@null
+                    @ 'span' ids: 546 581
+                    $if p2 != null ids: 547 582
+                      @ ${p2} ids: 548 583
+                    $if p3 != null ids: 549 584
+                      @ ${p3} ids: 550 585
+                    {  ids: 311 416
+                      @ className 'icon' ids: 312 417
+                    _ React.createElement ids: 587 595
+                      $args:  $params: p2|@@null, p3|@@null
+                      @ 'i' ids: 589 596
+                      $if p2 != null ids: 590 597
+                        @ ${p2} ids: 591 598
+                      $if p3 != null ids: 592 599
+                        @ ${p3} ids: 593 600
+                      {  ids: 314 419
+                        @ className node.icon || options.nodeIcon ids: 315 420
+                var children = [] ids: 316 421
+                foreach item in node.nodes ids: 317 422
+                  _ children.push ids: 318 423
+                    _ React.createElement ids: 474 602
+                      $args: TreeNode $params: p1|@@null, p2|@@null, p3|@@null
+                      $if p1 != null ids: 476 603
+                        @ ${p1} ids: 477 604
+                      $if p2 != null ids: 478 605
+                        @ ${p2} ids: 479 606
+                      $if p3 != null ids: 480 607
+                        @ ${p3} ids: 481 608
+                      {  ids: 320 425
+                        @ node item ids: 321 426
+                        @ level this.props.level+1 ids: 322 427
+                        @ visible this.state.expanded && this.props.visible ids: 323 428
+                        @ options options ids: 324 429
+                return  ids: 325 430
+                  _ React.createElement ids: 610 618
+                    $args:  $params: p2|@@null, p3|@@null
+                    @ 'li' ids: 612 619
+                    $if p2 != null ids: 613 620
+                      @ ${p2} ids: 614 621
+                    $if p3 != null ids: 615 622
+                      @ ${p3} ids: 616 623
+                    {  ids: 327 432
+                      @ className 'list-group-item' ids: 328 433
+                      @ style style ids: 329 434
+                      @ key node.nodeId ids: 330 435
+                    @ indents ids: 331 436
+                    @ expandCollapseIcon ids: 332 437
+                    @ nodeIcon ids: 333 438
+                    @ this.props.node.text ids: 334 439
+                    @ children ids: 335 440
+      set ${name}.propTypes ids: 447 526
+        {  ids: 448 527
+          $hook propTypes ids: 449 528
+      set ${name}.defaultProps ids: 450 529
+        {  ids: 451 530
+          $hook defaultProps ids: 452 531
+    _ ReactDOM.render ids: 36 77
+      _ React.createElement ids: 474 625
+        $args: TreeView $params: p1|@@null, p2|@@null, p3|@@null
+        $if p1 != null ids: 476 626
+          @ ${p1} ids: 477 627
+        $if p2 != null ids: 478 628
+          @ ${p2} ids: 479 629
+        $if p3 != null ids: 480 630
+          @ ${p3} ids: 481 631
+        {  ids: 38 79
+          @ data [node] ids: 39 80
+        @ null ids: 40 81
+      _ document.getElementById('container') ids: 41 82

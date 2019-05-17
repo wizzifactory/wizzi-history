@@ -1,0 +1,19 @@
+﻿base_test( jsWizziContext )
+
+	$append imports
+		var JsWizziContext = require('../../lib/jswizzi/jsWizziContext')
+		var ctx = new JsWizziContext()
+
+	it should declare a function
+		_ ctx.declareFunction('f1', {})
+		var f = ctx.getFunction('f1')
+		tobe_true( f.__is_function )
+
+	it should set a function to a var
+		_ ctx.declareFunction('f1', {})
+		_ ctx.setValue
+			@ 'pointF1'
+			_ ctx.getValue('f1')
+		var f = ctx.getFunction('pointF1')
+		tobe_true( f.__is_function )
+

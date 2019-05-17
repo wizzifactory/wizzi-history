@@ -1,0 +1,67 @@
+﻿vue App
+    
+    template
+		div
+			div 
+				id app
+				input 
+					v-model message
+					type text
+				h2 {{ message }}
+					class message
+				h3 Some Other Message Plus
+				img 
+				h1 {{ msg }}
+				< counter 
+			div
+				id router
+				< router-link
+					+ About
+					@ to /about
+				< router-link
+					+ Ethereum
+					@ to /coins/ethereum
+				< router-link
+					+ Bitcoin
+					@ to /coins/bitcoin
+				< router-view 
+
+    script 
+		import counter from './components/counter.vue'
+        export-default 
+            { 
+                { components
+                    @ counter
+                m data
+                    return 
+                        { 
+                            @ message 'Hello world!'
+                            @ msg 'Counter'
+
+    style 
+        . message
+            font-size 18px
+            font-family 'Roboto', sans-serif
+            color blue
+        # app
+            font-family 'Avenir', Helvetica, Arial, sans-serif
+            -webkit-font-smoothing antialiased
+            -moz-osx-font-smoothing grayscale
+            text-align center
+            color #2c3e50
+            margin-top 60px
+        < a
+            color #42b983
+        < h1
+            font-weight normal
+        < h1>a
+            color inherit
+            text-decoration none
+        < ul
+            list-style-type none
+            padding 0
+        < li>div
+            margin-top 10px
+		# router
+			padding 20px
+

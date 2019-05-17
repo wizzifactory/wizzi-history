@@ -1,0 +1,85 @@
+﻿base_example( wizzi-repo.examples.jsonComponents )
+	
+	$append imports
+		var json = require('../lib/json/index')
+
+	_ heading1('start')
+
+	var documents = []
+	_ documents.push
+		{
+			@ path 'c:/root/folder1/index.html.ittf'
+			@ content
+				[
+					@ 'html'
+					@ '    body'
+					@ '        ul'
+					@ '            lia( stefi )'
+					@ '            lia_img( annie, photo.jpg )'
+					._ join('\n')
+
+	_ documents.push
+		{
+			@ path 'c:/root/folder1/t/lia.html.ittf'
+			@ content
+				[
+					@ 'li'
+					@ '    a'
+					@ '        href'
+					._ join('\n')
+
+	_ documents.push
+		{
+			@ path 'c:/root/folder1/t/lia_img.html.ittf'
+			@ content
+				[
+					@ 'li'
+					@ '    a'
+					@ '        href'
+					@ '        img'
+					._ join('\n')
+
+	_ json.createJsonFsData
+		@ documents
+		f_cb_throw( jsonFsData)
+			_ printValue
+				@ jsonFsData
+			_ addDocuments
+				@ jsonFsData
+
+	function addDocuments
+		param jsonFsData
+		_ heading2('addDocuments')
+
+		var documents = []
+		_ documents.push
+			{
+				@ path 'c:/root/folder2/index.html.ittf'
+				@ content
+					[
+						@ 'module'
+						@ '    kind react'
+						._ join('\n')
+		_ json.addToJsonFsData
+			@ jsonFsData
+			@ documents
+			f_cb_throw( jsonFsData)
+				_ printValue
+					@ jsonFsData
+				_ extractDocuments
+					@ jsonFsData
+
+	function extractDocuments
+		param jsonFsData
+		_ heading2('extractDocuments')
+		var doc
+			_ json.createDocumentManager
+				@ jsonFsData
+		_ doc.getFiles
+			@ 'c:/'
+			{
+				@ deep true
+				@ documentContent true
+			f_cb_throw( files )
+				_ printValue
+					@ files

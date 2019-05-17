@@ -1,0 +1,43 @@
+  module  ids: 1 31
+    kind jsfile ids: 2 32
+    var util = require('util') ids: 3 33
+    var path = require('path') ids: 4 34
+    var legacy = require('../../../../../legacy') ids: 5 35
+    var md = module.exports = {} ids: 6 36
+    var myname = 'wizzischema.factory_darvin.main' ids: 7 37
+    set md.gen ids: 8 38
+      function  ids: 9 39
+        param model ids: 10 40
+        param ctx ids: 11 41
+        param callback ids: 12 42
+        var wizzischemaIttfPath = path.join(__dirname, 'ittf', 'wizzischema-factory.js.ittf') ids: 13 43
+        _ legacy.jsModule ids: 14 44
+          @ wizzischemaIttfPath ids: 15 45
+          {  ids: 16 46
+            @ schema model ids: 17 47
+            @ request ids: 18 48
+              {  ids: 19 49
+                @ emitKey ctx.emitKey || 'node-js' ids: 20 50
+                @ toJson ctx.toJson || false ids: 21 51
+                @ isWizziPackageSchema isWizziPackageSchema(model.wzName) ids: 22 52
+          function  ids: 23 53
+            param err ids: 24 54
+            param result ids: 25 55
+            if err ids: 26 56
+              throw new Error(err) ids: 27 57
+            _ ctx.w(result) ids: 28 58
+            _ callback(null, ctx) ids: 29 59
+    $group  ids: 61 75
+      function isWizziPackageSchema ids: 62 76
+        param name ids: 63 77
+        var ndx ids: 64 78
+          [  ids: 65 79
+            @ 'nools' ids: 66 80
+            @ 'npmpackage' ids: 67 81
+            @ 'wftest' ids: 68 82
+            @ 'wfjob' ids: 69 83
+            @ 'wfpackage' ids: 70 84
+            @ 'wizzischema' ids: 71 85
+          ._ indexOf(name) ids: 72 86
+        # @ 'js' ids: 73 87
+        return ndx > -1 ids: 74 88

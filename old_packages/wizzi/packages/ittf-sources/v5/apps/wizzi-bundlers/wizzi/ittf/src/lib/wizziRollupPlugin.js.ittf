@@ -1,0 +1,100 @@
+﻿module
+	kind jsfile
+
+	import path
+	var createFilter = require('rollup-pluginutils').createFilter
+	var wizziLoader = require("./wizziLoader")
+	var babelLoader = require("./babelLoader")
+	
+	set module.exports
+		function wizzi
+			param options
+
+			set options = options || {}
+
+			if !options.include
+				set options.include = '**/*.js.ittf'
+			
+			var filter
+				_ createFilter
+					@ options.include
+					@ options.exclude
+
+			return
+				{
+					
+					$*
+					@ resolveId
+						function
+							param importee
+							param importer
+							log 'wizziPlugin.resolveId.importee, importer', importee, importer
+							
+							if importer && importer.slice(-8) === '.js.ittf'
+								if importee.slice(-3) === '.js'
+									return
+										_ path.resolve
+											@ path.dirname(importer)
+											@ importee + '.ittf'
+								else
+									return
+										_ path.resolve
+											@ path.dirname(importer)
+											@ importee + '.js.ittf'
+					@ load
+						function
+							param filePath
+						
+							log 'wizziPlugin.load.filePath', filePath
+                        
+							if filter(filePath) == false
+								return null
+
+							return
+								_ wizziLoader
+									{
+										@ filePath filePath
+										@ saveTemp true
+					*$
+					
+					@ transform
+						function
+							param code
+							param filePath
+
+							if filter(filePath) == false
+								log 'wizziPlugin.transform.filePath excluded', filePath
+								return null
+
+							log 'wizziPlugin.transform.filePath included', filePath
+
+							return
+								new Promise
+									=>
+										param resolve
+										param reject
+										_ wizziLoader.readWizziJsModuleAsync
+											{
+												@ filePath filePath
+											=>
+												param err
+												param result
+												if err
+													return
+														_ reject(err)
+												else
+													log 'wizziPlugin.transform.filePath artifactText', result.code
+													_ babelLoader.babelTransform
+														@ result.code
+														._ then
+															=>
+																param result
+																log 'wizziPlugin.transform.filePath babelTransform', result.code
+																return
+																	_ resolve(result)
+														._ catch
+															=>
+																param err
+																return
+																	_ reject(err)
+							

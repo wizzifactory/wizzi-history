@@ -1,0 +1,44 @@
+$group
+	
+	$function buildup_object
+		$param obj
+		$param smr
+
+		$foreach p in obj.properties
+			. gsf-smr-${smr} api-param-panel
+
+				$_ typed_name
+					$@ p
+					$@ 'property'
+
+				$_ comments
+					$@ p
+					$@ smr+1
+					$@ 'object-property'
+				
+				$if p.isPOJO
+					. gsf-smr-${(smr+1)}
+						span POJO
+				$if p.defaultValue
+					. gsf-smr-${(smr+1)}
+						span default ${p.defaultValue}
+				$if p.isRequired
+					. gsf-smr-${(smr+1)} api-constraint
+						span required
+				$if p.iface
+					. gsf-smr-${(smr+1)} api-iface
+						span ${p.iface}
+											
+				$_ api_ref
+					$@ p
+					$@ smr+1
+					
+				$if p.type === 'object'
+					$_ buildup_object
+						$@ p
+						$@ smr+1
+								
+				$if p.type === 'array'
+					$_ buildup_array
+						$@ p
+						$@ smr+1

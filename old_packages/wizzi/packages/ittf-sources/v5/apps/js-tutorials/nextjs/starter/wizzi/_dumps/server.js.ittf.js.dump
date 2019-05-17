@@ -1,0 +1,165 @@
+// 15/6/2018:11:5:34  by C:\my\wizzi\v5\apps\node_modules\wizzi-mtree\lib\loader\evaluator.js
+$.n(); // set the context state to NodeContext
+var $0 = {}; // the root node of the MTree buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //5
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "es6", r: 2, c: 5, s: "f1", u: "f1",  }; //6
+$.a($1, $2, 7);
+$.s("f1");
+var app = {}; //64
+app.name = 'nextjs-starter'; //65
+app.description = 'Next-js starter example app'; //66
+app.useNextjs = true; //67
+app.useServer = true; //68
+if (app.useNextjs) { //69
+app.useReact = true; //70
+}  //71
+if (app.useRedux) { //72
+app.useReact = true; //73
+}  //74
+if (app.useMaterialUi) { //75
+app.useReact = true; //76
+if (!app.rootContainer) { //77
+app.rootContainer = 'MuiThemeContainer'; //78
+}  //79
+if (!app.primaryColor) { //80
+app.primaryColor = 'orange'; //81
+app.secondaryColor = 'green'; //82
+app.accentColor = 'red'; //83
+}  //84
+if (!app.useCssBaseline) { //85
+app.useCssBaseline = false; //86
+}  //87
+}  //88
+if (app.useReact && !app.useNextjs) { //89
+app.useWebpack = true; //90
+app.useBabel = true; //91
+app.webpack = {}; //92
+app.webpack.loadCss = true; //93
+if (!app.rootContainer) { //94
+app.rootContainer = 'AppContainer'; //95
+}  //96
+if (!app.rootElementId) { //97
+app.rootElementId = 'app'; //98
+}  //99
+}  //100
+if (app.useMaterialUi) { //101
+if (!app.primaryColor) { //102
+app.primaryColor = 'orange'; //103
+app.secondaryColor = 'green'; //104
+app.accentColor = 'red'; //105
+}  //106
+}  //107
+if (!app.version) { //108
+app.version = '0.0.1'; //109
+}  //110
+if (!app.author) { //111
+app.author = 'Stefano Bassoli'; //112
+}  //113
+if (!app.license) { //114
+app.license = 'MIT'; //115
+}  //116
+$.s("f2");
+if (app.useServer) { //133
+    if (app.useNextjs) { //134
+        $.n();
+        var $6 = { n: "const", v: "{ createServer } = require(\"http\")", r: 4, c: 5, s: "f3", u: "f4",  }; //187
+        $.a($1, $6, 67);
+        var $7 = { n: "const", v: "{ parse } = require(\"url\")", r: 5, c: 5, s: "f3", u: "f4",  }; //188
+        $.a($1, $7, 69);
+        var $8 = { n: "const", v: "next = require(\"next\")", r: 6, c: 5, s: "f3", u: "f4",  }; //189
+        $.a($1, $8, 71);
+        var $9 = { n: "const", v: "pathMatch = require(\"path-match\")", r: 7, c: 5, s: "f3", u: "f4",  }; //190
+        $.a($1, $9, 73);
+        var $10 = { n: "const", v: "port = parseInt(process.env.PORT, 10) || 3000", r: 9, c: 5, s: "f3", u: "f4",  }; //191
+        $.a($1, $10, 75);
+        var $11 = { n: "const", v: "dev = process.env.NODE_ENV !== \"production\"", r: 10, c: 5, s: "f3", u: "f4",  }; //192
+        $.a($1, $11, 77);
+        var $12 = { n: "const", v: "app = next({ dev });", r: 11, c: 5, s: "f3", u: "f4",  }; //193
+        $.a($1, $12, 79);
+        var $13 = { n: "const", v: "handle = app.getRequestHandler()", r: 12, c: 5, s: "f3", u: "f4",  }; //194
+        $.a($1, $13, 81);
+        var $14 = { n: "const", v: "route = pathMatch()", r: 13, c: 5, s: "f3", u: "f4",  }; //195
+        $.a($1, $14, 83);
+        var $15 = { n: "const", v: "match = route(\"/activity/:id\")", r: 15, c: 5, s: "f3", u: "f4",  }; //196
+        $.a($1, $15, 85);
+        var $16 = { n: "_", v: "app.prepare", r: 17, c: 5, s: "f3", u: "f4",  }; //197
+        $.a($1, $16, 87);
+        var $17 = { n: "._", v: "then", r: 18, c: 9, s: "f3", u: "f4",  }; //198
+        $.a($16, $17, 89);
+        var $18 = { n: "=>", v: "", r: 19, c: 13, s: "f3", u: "f4",  }; //199
+        $.a($17, $18, 91);
+        var $19 = { n: "_", v: "createServer", r: 20, c: 17, s: "f3", u: "f4",  }; //200
+        $.a($18, $19, 93);
+        var $20 = { n: "=>", v: "", r: 21, c: 21, s: "f3", u: "f4",  }; //201
+        $.a($19, $20, 95);
+        var $21 = { n: "param", v: "req", r: 22, c: 25, s: "f3", u: "f4",  }; //202
+        $.a($20, $21, 97);
+        var $22 = { n: "param", v: "res", r: 23, c: 25, s: "f3", u: "f4",  }; //203
+        $.a($20, $22, 99);
+        var $23 = { n: "const", v: "{ pathname, query } = parse(req.url, true)", r: 24, c: 25, s: "f3", u: "f4",  }; //204
+        $.a($20, $23, 101);
+        var $24 = { n: "log", v: "'pathname, query', pathname, query", r: 25, c: 25, s: "f3", u: "f4",  }; //205
+        $.a($20, $24, 103);
+        var $25 = { n: "const", v: "params = match(pathname)", r: 26, c: 25, s: "f3", u: "f4",  }; //206
+        $.a($20, $25, 105);
+        var $26 = { n: "if", v: "params === false", r: 27, c: 25, s: "f3", u: "f4",  }; //207
+        $.a($20, $26, 107);
+        var $27 = { n: "_", v: "handle(req, res)", r: 28, c: 29, s: "f3", u: "f4",  }; //208
+        $.a($26, $27, 109);
+        var $28 = { n: "return", v: "", r: 29, c: 29, s: "f3", u: "f4",  }; //209
+        $.a($26, $28, 111);
+        var $29 = { n: "log", v: "'ok - app.render - params', params", r: 30, c: 25, s: "f3", u: "f4",  }; //210
+        $.a($20, $29, 113);
+        var $30 = { n: "_", v: "app.render", r: 31, c: 25, s: "f3", u: "f4",  }; //211
+        $.a($20, $30, 115);
+        var $31 = { n: "@", v: "req", r: 32, c: 29, s: "f3", u: "f4",  }; //212
+        $.a($30, $31, 117);
+        var $32 = { n: "@", v: "res", r: 33, c: 29, s: "f3", u: "f4",  }; //213
+        $.a($30, $32, 119);
+        var $33 = { n: "@", v: "\"/activity\"", r: 34, c: 29, s: "f3", u: "f4",  }; //214
+        $.a($30, $33, 121);
+        var $34 = { n: "_", v: "Object.assign", r: 35, c: 29, s: "f3", u: "f4",  }; //215
+        $.a($30, $34, 123);
+        var $35 = { n: "@", v: "params", r: 36, c: 33, s: "f3", u: "f4",  }; //216
+        $.a($34, $35, 125);
+        var $36 = { n: "@", v: "query", r: 37, c: 33, s: "f3", u: "f4",  }; //217
+        $.a($34, $36, 127);
+        var $37 = { n: "._", v: "listen", r: 38, c: 21, s: "f3", u: "f4",  }; //218
+        $.a($19, $37, 129);
+        var $38 = { n: "@", v: "port", r: 39, c: 25, s: "f3", u: "f4",  }; //219
+        $.a($37, $38, 131);
+        var $39 = { n: "=>", v: "", r: 40, c: 25, s: "f3", u: "f4",  }; //220
+        $.a($37, $39, 133);
+        var $40 = { n: "param", v: "err", r: 41, c: 29, s: "f3", u: "f4",  }; //221
+        $.a($39, $40, 135);
+        var $41 = { n: "if", v: "err", r: 42, c: 29, s: "f3", u: "f4",  }; //222
+        $.a($39, $41, 137);
+        var $42 = { n: "throw", v: "err", r: 43, c: 33, s: "f3", u: "f4",  }; //223
+        $.a($41, $42, 139);
+        var $43 = { n: "log", v: "`> Ready on http://localhost:${port}`", r: 44, c: 29, s: "f3", u: "f4",  }; //224
+        $.a($39, $43, 141);
+    }
+    else {
+        $.n();
+        var $45 = { n: "#", v: "No known server app detected", r: 10, c: 13, s: "f2", u: "f3",  }; //137
+        $.a($1, $45, 146);
+        var $46 = { n: "#", v: "example", r: 11, c: 13, s: "f2", u: "f3",  }; //138
+        $.a($1, $46, 148);
+        var $47 = { n: "#", v: "app.useNextjs = true;", r: 12, c: 13, s: "f2", u: "f3",  }; //139
+        $.a($1, $47, 150);
+    }
+}
+else {
+    $.n();
+    var $49 = { n: "#", v: "The app do not require a server", r: 15, c: 9, s: "f2", u: "f3",  }; //141
+    $.a($1, $49, 156);
+    var $50 = { n: "#", v: "see", r: 16, c: 9, s: "f2", u: "f3",  }; //142
+    $.a($1, $50, 158);
+    var $51 = { n: "#", v: "app.useServer = true;", r: 17, c: 13, s: "f2", u: "f3",  }; //143
+    $.a($50, $51, 160);
+    var $52 = { n: "#", v: "app.useNextjs = true;", r: 18, c: 13, s: "f2", u: "f3",  }; //144
+    $.a($50, $52, 162);
+    var $53 = { n: "#", v: "etc...", r: 19, c: 13, s: "f2", u: "f3",  }; //145
+    $.a($50, $53, 164);
+}

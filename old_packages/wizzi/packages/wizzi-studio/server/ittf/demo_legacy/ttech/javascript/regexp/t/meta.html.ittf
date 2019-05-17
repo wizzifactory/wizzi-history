@@ -1,0 +1,317 @@
+﻿$group
+  div 
+      p Below you will find a table covering a majority of the (
+          a for a complete table checkout Mozilla's reference
+              href https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Regular_Expressions#special-backslash
+          + ) meta characters and shorthand characters used in JavaScript regular expressions.  I am showing this table, not so that you might learn how these characters specifically work in an expression from the table, but so that you are aware of the characters themselves and briefly what they do.  We will be examining many of theses characters in the "Working With Meta &amp; Shorthands Characters" section.  For now, just acquaint yourself with the fact that these characters have a special meaning in regular expression and that the characters can be combined into powerful patterns such as what I demonstrated with the email pattern.  If it helps, you can click on the jsfiddle link to run and edit the pattern example.
+
+  table 
+      class table table-bordered
+      tr 
+          th character(s)
+          th Pattern Ex.
+              @ width 150
+          th String Ex. (Pattern matches in red)
+          th Example Description &amp; Jsfiddle
+          th Type
+      tr 
+          td 
+              colspan 5
+              @ align center
+              strong Meta Characters
+      tr 
+          td ^
+          td 
+              code /^Cat/
+          td Cat go fast
+          td string must start with
+              em Cat
+              a jsfiddle
+                  href http://jsfiddle.net/codylindley/N7mkV/embedded/result/
+          td anchor
+      tr 
+          td $
+          td 
+              code /slow$/
+          td Dogs are slow
+          td string must end with
+              em slow
+              a jsfiddle
+                  href http://jsfiddle.net/codylindley/QCGJ3/embedded/result/
+          td anchor
+      tr 
+          td *
+          td 
+              code /bo*/
+          td boom and boat and bug
+          td matches when the preceding
+              em o
+              + occurs 0 or more times
+              a jsfiddle
+                  href http://jsfiddle.net/codylindley/KcaFD/embedded/result/
+          td quantifier
+      tr 
+          td +
+          td 
+              code /bo+/
+          td boom and boat and bug
+          td matches when the preceding
+              em o
+              + occurs 1 or more times
+              a jsfiddle
+                  href http://jsfiddle.net/codylindley/Eua42/embedded/result/
+          td quantifier
+      tr 
+          td ?
+          td 
+              code /bo?/
+          td boom and boat and bug
+          td matches when the preceding
+              em o
+              + occurs  0 or one time
+              a jsfiddle
+                  href http://jsfiddle.net/codylindley/5bmm2/embedded/result/
+          td quantifier
+      tr 
+          td .
+          td 
+              code /.a/
+          td Cats fats rats
+          td any character followed by an
+              em a
+              a jsfiddle
+                  href http://jsfiddle.net/codylindley/5Yd2y/embedded/result/
+          td character class
+      tr 
+          tr 
+              td \
+              td 
+                  code /4\.0/
+              td I have a 4.0.
+              td escape the next charater
+                  em 
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/5Yd2y/embedded/result/
+              td escape
+          tr 
+              td (...)
+              td 
+                  code /(bug) \1's/
+              td bug bug's and bug bugs
+              td match
+                  em bug
+                  + and store it in a variable called \1 which you can use later in the express to reference back to the first capture parentheses
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/cW9XW/embedded/result/
+              td group
+          tr 
+              td (?:...)
+              td 
+                  code /(?:bug) \1's/
+              td bug bug's and bug bugs
+              td don't capture (
+                  em bug
+                  + ) into a variable. So no matches because \1 has no value
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/2DwnZ/embedded/result/
+              td Groups
+          tr 
+              td (?=...)
+              td 
+                  code /bug(?='s)/
+              td bug bug's and bug bugs
+              td matches
+                  em bug
+                  + only if
+                  em bug
+                  + is followed by
+                  em 's
+                  + . called a lookahead
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/zeBpK/embedded/result/
+              td lookaround
+          tr 
+              td (?!...)
+              td 
+                  code /bug(?!'s)/
+              td bug bug's and bug bugs
+              td matches
+                  em bug
+                  + only if
+                  em bug
+                  + is not followed by
+                  em 's
+                  + called a negated lookahead
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/TkePa/embedded/result/
+              td lookaround
+          tr 
+              td ...|...
+              td 
+                  code /foo|bar/
+              td foo and bar is foobar
+              td matches either
+                  em foo
+                  + or
+                  em bar
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/Amj5e/embedded/result/
+              td alternation
+          tr 
+              td {...}
+              td 
+                  code /fo{2}/
+              td fooÂ andÂ foooÂ andÂ foooooo and fo
+              td matches the previous character exactlyÂ 2Â times
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/Ay5Ks/embedded/result/
+              td quantifier
+          tr 
+              td {...,}
+              td 
+                  code /fo{2,}/
+              td fooÂ andÂ foooÂ andÂ foooooo and fo
+              td matches the previous character at leastÂ 2Â times
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/2eDPH/embedded/result/
+              td quantifier
+          tr 
+              td {...,...}
+              td 
+                  code /fo{2,4}/
+              td fooÂ andÂ foooÂ andÂ foooooo and fo
+              td matches the previous character at least 2 times, but no more thanÂ 4Â times
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/Zn3Ef/embedded/result/
+              td quantifier
+          tr 
+              td [...]
+              td 
+                  code /[cde]|[456]/
+              td abcdefghijklmnopqrstuvwxyz 0123456789
+              td matches any
+                  em c
+                  + ,
+                  em d
+                  + ,
+                  em e
+                  + character or
+                  em 4
+                  + ,
+                  em 5
+                  + ,
+                  em 6
+                  + character
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/SAcj8/embedded/result/
+              td character set
+          tr 
+              td [...-...]
+              td 
+                  code /[c-u]|[4-9]/
+              td abcdefghijklmnopqrstuvwxyz 0123456789
+              td matches any  character in the rangeÂ
+                  em c
+                  + to
+                  em u
+                  + Â or
+                  em 4
+                  + to
+                  em 9
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/aUSww/embedded/result/
+              td character set
+          tr 
+              td [^...]
+              td 
+                  code /[^c-u]/
+              td abcdefghijklmnopqrstuvwxyz 0123456789
+              td matches any single character not in the range of
+                  em c
+                  + to
+                  em u
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/DRg23/embedded/result/
+              td character set
+          tr 
+              td 
+                  colspan 5
+                  @ align center
+                  p 
+                      strong Character Shorthands
+          tr 
+              td \b
+              td 
+                  code /\bton\b/
+              td tone wantons ton toon
+              td match ton if its a word character (ie. [A-Za-z0-9_]) between and start and end boundary
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/qEYrC/embedded/result/
+              td anchors
+          tr 
+              td \B
+              td 
+                  code /ton\B/
+              td tone wantons ton toon
+              td match ton if its NOT a word word character (ie. [A-Za-z0-9_]) between and start and end boundary
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/FH8zt/embedded/result/
+              td anchors
+          tr 
+              td \d
+              td 
+                  code /\d/
+              td Match digits 0123456789
+              td matches a digit character. Equivalent toÂ [0-9]
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/8WuSV/embedded/result/
+              td character class
+          tr 
+              td \D
+              td 
+                  code /\D/
+              td Match non-digits 0123456789
+              td matches any non-digit character. Equivalent toÂ [^0-9]
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/7jQGR/embedded/result/
+              td character class
+          tr 
+              td \s
+              td 
+                  code /\s/
+              td 
+                  ++ spaces&nbsp;inbetween&nbsp;
+                  ++ these&nbsp;words&nbsp;and&nbsp;line&nbsp;breaks
+              td matches a single white space character, including space, tab, form feed, line feed
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/xnEk4/embedded/result/
+              td character class
+          tr 
+              td \S
+              td 
+                  code /\S/
+              td anything
+                  br 
+                  + but white space
+              td matches a single character other than white space, including space, tab, form feed, line feed
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/5e9sC/embedded/result/
+              td character class
+          tr 
+              td \w
+              td 
+                  code /w/
+              td abc or 123 even _ but not much else
+              td matches any alphanumeric character including the underscore. Equivalent toÂ [A-Za-z0-9_]
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/3rjtu/embedded/result/
+              td character class
+          tr 
+              td \W
+              td 
+                  code /\W/
+              td abc&nbsp;or&nbsp;123&nbsp;even&nbsp;_&nbsp;but&nbsp;not&nbsp;much&nbsp;else
+              td matches any non-word character. Equivalent toÂ [^A-Za-z0-9_]
+                  a jsfiddle
+                      href http://jsfiddle.net/codylindley/PReRK/embedded/result/
+              td character class

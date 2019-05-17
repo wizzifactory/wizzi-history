@@ -1,0 +1,100 @@
+module
+    kind react
+    #
+        # *
+        # * Original implement copied from https://github.com/reasonml-community/bs-loader/blob/master/packages/bs-loader/index.js
+        # 
+    const path = require('path')
+    const JSAsset = require('parcel-bundler/src/assets/JSAsset')
+    const 
+        @ readBsConfig
+        _ require('read-bsconfig')
+    const 
+        @ compileFile
+        _ require('bsb-js')
+    const outputDir = 'lib'
+    const fileNameRegex = /\.(ml|re)$/
+    async-function getBsConfigModuleOptions
+        param buildDir
+        return 
+            await 
+                _ readBsConfig(buildDir).then
+                    => 
+                        param bsconfig
+                        if !bsconfig
+                            throw 
+                                new Error
+                                    `lit 
+                                        + bsconfig not found in\b
+                                        @ buildDir
+                                        + 
+                        const bsSuffix = bsconfig.suffix
+                        const suffix
+                            iif typeof bsSuffix === 'string'
+                                then bsSuffix
+                                else '.js'
+                        if !bsconfig['package-specs'] || !bsconfig['package-specs'].length
+                            const options
+                                { 
+                                    @ moduleDir 'js'
+                                    @ inSource false
+                                    @ suffix
+                            return options
+                        const moduleSpec = bsconfig['package-specs'][0]
+                        const moduleDir
+                            iif typeof moduleSpec === 'string'
+                                then moduleSpec
+                                else moduleSpec.module
+                        const inSource
+                            iif typeof moduleSpec === 'string'
+                                then false
+                                else moduleSpec['in-source']
+                        const options
+                            { 
+                                @ moduleDir
+                                @ inSource
+                                @ suffix
+                        return options
+    function jsFilePath
+        param buildDir
+        param moduleDir
+        param resourcePath
+        param inSource
+        param bsSuffix
+        const mlFileName = resourcePath.replace(buildDir, '')
+        const jsFileName = mlFileName.replace(fileNameRegex, '.js')
+        if inSource
+            return path.join(buildDir, jsFileName)
+        return path.join(buildDir, outputDir, moduleDir, jsFileName)
+    class BuckleScriptAsset
+        super JSAsset
+        async-m parse
+            param code
+            const buildDir = process.cwd()
+            const bsconfig
+                await 
+                    _ getBsConfigModuleOptions(buildDir)
+            const 
+                @ moduleDir
+                @ suffix
+                @ inSource
+                    = false
+                = bsconfig
+            const compiledFilePath = jsFilePath(buildDir, moduleDir, this.name, inSource, suffix)
+            const compiled
+                await 
+                    _ compileFile(buildDir, moduleDir, compiledFilePath)
+            const 
+                @ src
+                @ warnings
+                @ errors
+                = compiled
+            if warnings.length
+                _ console.warn('warnings', warnings.join('\n'))
+            if errors.length
+                throw new Error(errors.join('\n'))
+            set this.contents = src
+            return 
+                await 
+                    _ super.parse(this.contents)
+    set module.exports = BuckleScriptAsset

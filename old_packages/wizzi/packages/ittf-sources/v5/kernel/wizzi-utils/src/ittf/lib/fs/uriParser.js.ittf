@@ -1,0 +1,197 @@
+﻿module wizzi-utils.fs.uriParser
+	kind jsfile
+
+	import path
+	import url
+	# var verify = require('../verify')
+
+	#
+		# params
+		#   string uri
+		# returns
+		#   {
+		#     string originalUri
+		#     string protocol
+		#        one-of 'db', 'ls', drive letter
+		#     string storeKind
+		#        one-of 'mongodb', 'localstorage', 'filesystem', 'memory', 'json', 'indexeddb'
+		#     string userId
+		#        # if storeKind === 'mongodb'
+		#     string projectId
+		#        # if storeKind === 'mongodb'
+		#     string path
+		#     boolean isIttfDocument
+		#     string basename
+		#     string schema
+		#        # if isIttfDocument === true
+		#     string extension
+		#        # if isIttfDocument === false
+		#
+
+	set module.exports
+		function parse
+			string uri
+			param callback
+
+			# set uri = uri.toLowerCase()
+			var ret
+				{
+					@ originalUri uri
+					@ browser false
+
+            var parsedUri = url.parse(uri)
+			# log 'wizzi-utils.uriParser.parsedUri', '\n', JSON.stringify(parsedUri, null, 2)
+			set ret._protocol = parsedUri.protocol
+			set ret._hostname = parsedUri.hostname
+			set ret._pathname = parsedUri.pathname
+
+			# uniform protocol:xxx protocol:/xxx protocol://xxx and protocol:\xxx
+			var pathname
+				iif parsedUri.pathname && parsedUri.pathname[0] === '/'
+					then parsedUri.pathname.substr(1)
+					else parsedUri.pathname
+			# log 'pathname', parsedUri.pathname, pathname
+
+			# hostname is part of path
+			set ret.pathname
+				iif parsedUri.hostname && parsedUri.hostname.length > 0
+					then
+						iif pathname && pathname.length > 0
+							then parsedUri.hostname + '/' + pathname
+							else parsedUri.hostname
+					else pathname || ''
+			# log 'ret.pathname', parsedUri.hostname, pathname, ret.pathname
+
+			if typeof(parsedUri.protocol) !== 'string'
+
+				$if isWebpackTarget
+
+					set ret.browser = true
+					set ret.storeKind = null
+					if verify.startsWith(parsedUri.path, '/tmp')
+						set ret.protocol = 'tmp'
+						set ret.storeKind = 'browser'
+					elif verify.startsWith(parsedUri.path, '/ixdb')
+						set ret.protocol = 'ixdb'
+						set ret.storeKind = 'browser'
+					else
+						r_or_cb_wz_err( InvalidArgument, parse )
+							@ 'Uri must have a protocol (must be an absolute url). Received: ' + uri
+
+					_ setParsed
+						@ ret
+						@ parsedUri
+					
+					# log 'wizzi-utils.uriParser.parsed', '\n', JSON.stringify(ret, null, 2)
+
+					return
+						_ returnOrCb
+							@ ret
+							@ callback
+
+				$else
+				
+					r_or_cb_wz_err( InvalidArgument, parse )
+						@ 'Uri must have a protocol (must be an absolute url). Received: ' + uri
+
+			var protocol
+				iif parsedUri.protocol.substr(-1, 1) === ':'
+					then 
+						_ parsedUri.protocol.substr(0, (parsedUri.protocol.length - 1))
+					else 
+						set parsedUri.protocol
+
+			# log 'parsed.protocol', protocol
+			set ret.protocol = protocol
+			set ret.storeKind = 'filesystem'
+			if protocol === 'db'
+				set ret.storeKind = 'mongodb'
+			if protocol === 'json'
+				set ret.storeKind = 'json'
+
+			_ setParsed
+				@ ret
+				@ parsedUri
+			
+			# log 'parsed.result', ret
+
+			return
+				_ returnOrCb
+					@ ret
+					@ callback
+
+	function setParsed
+		param parsed
+		param parsedUri
+		var
+			decl name
+			decl parts = parsed.pathname ? parsed.pathname.split('/') : []
+
+		set parsed._parts = parts
+
+		# log 'wizzi-utils.fs.uriParser.parsedUri.parts', parts
+
+		if parts.length > 0
+			set name = parts[parts.length-1]
+			set parsed.basename = name
+			var nameparts = name.split('.')
+			if nameparts.length > 2 && nameparts[nameparts.length -1] === 'ittf'
+				set parsed.isIttfDocument = true
+				set parsed.schema = nameparts[nameparts.length -2]
+			else
+				set parsed.isIttfDocument = false
+				if nameparts.length > 1
+					set parsed.extension = nameparts[nameparts.length -1]
+				else
+					set parsed.extension = ''
+			_ parts.pop()
+		else
+			set parsed.basename = ''
+			set parsed.isIttfDocument = false
+			set parsed.extension = ''
+
+		set parsed.userId = ''
+		set parsed.projectId = ''
+		
+		if parsed.browser
+				
+			_ parts.shift()
+			if parts.length > 2
+				set parsed.userId = parts[0]
+				_ parts.shift()
+				set parsed.projectId = parts[0]
+				_ parts.shift()
+			set parsed.path = parts.join('/')
+			
+		else
+			if parts.length > 0
+				set parsed.userId = parts[0]
+				_ parts.shift();
+				if parts.length > 0
+					set parsed.projectId = parts[0]
+					_ parts.shift();
+			set parsed.path = parts.join('/')
+
+		set parsed.parts = []
+		if parsed.protocol === 'db'
+		else
+			if parsed.userId.length > 0
+				_ parsed.parts.push(parsed.userId)
+			if parsed.projectId.length > 0
+				_ parsed.parts.push(parsed.projectId)
+		foreach part in parts
+			_ parsed.parts.push(part)
+		if parsed.basename.length > 0
+			_ parsed.parts.push(parsed.basename)
+		set parsed.internalPath = [parsed.protocol + ':'].concat(parsed.parts).join('/')
+
+	function returnOrCb
+		param ret
+		param callback
+		if callback
+			return
+				_ callback
+					@ null
+					@ ret
+		else
+			return ret

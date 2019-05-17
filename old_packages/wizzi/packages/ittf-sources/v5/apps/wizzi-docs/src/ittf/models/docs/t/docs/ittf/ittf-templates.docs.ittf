@@ -1,0 +1,52 @@
+﻿concept Ittf templates
+
+	summary
+
+		p Ittf main documents and fragments are composable templates, and their nodes can contain template node commands
+			+ and jswizzi expressions, that will be processed in the evaluation step
+			+ of the mTree loading.
+
+		p The buildup of the resulting mTree can create new nodes using repeat node commands
+			+ like '$foreach', '$backeach' and '$while' and can include or exclude node branches
+			+ using '$if', '$elif' and '$else' conditional node commands.
+
+		p jswizzi statements and expression are executed in the fragment evaluation context
+			+ and may access global context variables.
+
+		h3 $foreach repeat node command
+		ittf
+			- ...
+				- $foreach item-name in collection-name
+					- ... node branch ...
+		p Descendant nodes of this node command are a repeat template; item-name
+			+ is user defined and collection-name is a jswizzi expression that evaluates
+			+ to an iterable javascript object, in scope in the local or global
+			+ jsWizziContext.
+		p The var statement that declares item-name is auto-generated.
+		p Descendant nodes are repeated having item-name as a value in scope.
+
+		h3 $while repeat node command
+		p This is a repeat template statement where descendant nodes are repeated 
+			+ until the jswizzi-expression evaluates to false.
+		p $ or $global node commands must be used to modify the context values of the exit condition.
+			+ There is a limit of 10000 iterations to guard against accidental loops, after that an exception is raised.
+		p TODO make the limit of 10000 iterations configurable and an optional parameter of the loadMTree function.
+		ittf
+			- ...
+				- $while jswizzi-expression
+					- ... node branch ...
+					- $ jswizzi-exit-condition-change
+
+		h3 $break, $continue repeat node commands
+		p This statements have the same meaning than in javascript but operate
+			+ breaking or continuing the template repetition.
+		p A label for continuation is not implemented.
+		ittf
+			- ...
+				- $foreach ... | $while ...
+					- $break empty-value
+					- ...
+					- $continue empty-value
+
+
+

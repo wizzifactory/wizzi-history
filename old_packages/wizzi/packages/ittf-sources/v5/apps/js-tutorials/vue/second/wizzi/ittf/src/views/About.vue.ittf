@@ -1,0 +1,30 @@
+﻿vue 
+    template 
+        v-container 
+            v-layout 
+                column 
+                h1 My Recipes
+                    class title my-3
+                div {{item}}
+                    v-for (item, idx) in userRecipes
+                    class subheading mb-2
+                    :key idx
+                v-flex 
+                    mt-4 
+                    v-btn Go To Menu
+                        color primary
+                        to /menu
+    script 
+        export-default 
+            { 
+                @ name 'About'
+                { computed
+                    m userRecipes
+                        return this.$store.state.userRecipes
+                m mounted
+                    _ this.getRecipes
+                { methods
+                    m getRecipes
+                        _ this.$store.dispatch('getUserRecipes')
+    style 
+        scoped 

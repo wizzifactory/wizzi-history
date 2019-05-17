@@ -1,0 +1,79 @@
+﻿$group
+
+	summary
+
+		p The wizzi factory is a generation framework
+			+ implemented by plugins. 
+				
+		p Kernel modules themself have a 
+			+ pluggable architecture. The wizzi-mtree package is a plugin
+			+ that implements an api for building tree structures from documents.
+			+ Repositories of source ittf documents are plugins that implement
+			+ an api for locating and retrieving documents.
+			
+		p A wizzi plugin exposes its resources to the wizzi factory:
+		ul 
+			li schema definitions;
+			li Wizzi Models and their factories;
+			li model transformers;
+			li artifact generators.
+
+		h4 A plugin package must export the method 'createFactoryPlugin'
+		ittf
+			- set module.exports
+				- {
+					- ...
+					- @ createFactoryPlugin
+						- function
+							- { wizziPackage
+							- { options
+								- [ items
+									- string pluginNameOrFile
+								- string pluginsBaseFolder
+									- default process.cwd()
+							- callback
+							- ...
+							- return
+								- _ callback
+									- @ null
+									- { factoryPlugin
+										- api-ref wizzi-plugin.factoryPlugin
+
+		p The FactoryPlugin class instance returned to the caller
+			+ must implement the wizzi-plugin.factoryPlugin API (see below).
+
+		p A wizzi plugin must have a standard folder structure like this one:
+		ittf
+			- ...
+				- `package-name`
+					- lib
+						- artifacts
+							- `schema-name`
+								- `artifact-name`
+									- gen
+										- main.js
+								- ...
+								- `transformer-name`
+									- trans
+										- main.js
+								- ...
+							- ...
+						- utils
+							- ...
+						- wizzi
+							- models
+								- `schema-name`-model.g.js
+								- `schema-name`-factory.g.js
+								- `schema-name`-schema.g.html
+								- `schema-name`-schema.g.json
+								- ...
+							- schemas
+								- `schema-name`.wfschema.ittf
+								- ...
+					- index.js
+		p In this way modules can be located given the short public name of
+			+ the required objects.
+
+	$include ./architect
+	$include ./api
+	$include ./default

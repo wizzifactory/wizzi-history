@@ -1,0 +1,131 @@
+﻿module
+    kind es6
+    
+	import Vue from 'vue'
+    import Vuex from 'vuex'
+    import axios from 'axios'
+    import firebase from 'firebase'
+    import router from '@/router'
+    
+	_ Vue.use(Vuex)
+    
+	export-default 
+        new Vuex.Store
+            { 
+                { state
+                    @ recipes []
+                    @ apiUrl 'https://api.edamam.com/search'
+                    @ user null
+                    @ isAuthenticated false
+                    @ userRecipes []
+                { mutations
+                    m setRecipes
+                        param state
+                        param payload
+                        set state.recipes = payload
+                    m setUser
+                        param state
+                        param payload
+                        set state.user = payload
+                    m setIsAuthenticated
+                        param state
+                        param payload
+                        set state.isAuthenticated = payload
+                    m setUserRecipes
+                        param state
+                        param payload
+                        set state.userRecipes = payload
+                { actions
+                    async-m getRecipes
+                        { 
+                            @ state
+                            @ commit
+                        param plan
+                        try 
+                            let response
+                                await 
+                                    _ axios.get
+                                        `lit 
+                                            + 
+                                            @ state.apiUrl
+                                            + 
+                                        { 
+                                            { params
+                                                @ q plan
+                                                @ app_id '5b6623d5'
+                                                @ app_key '46674aa2193dbb7b88ffd897331e661a'
+                                                @ from 0
+                                                @ to 9
+                            _ commit('setRecipes', response.data.hits)
+                        catch error
+                            _ commit('setRecipes', [])
+                    
+					m userLogin
+                        { 
+                            @ commit
+                        { 
+                            @ email
+                            @ password
+                        _ firebase.auth().signInWithEmailAndPassword(email, password).then
+                            => 
+                                param user
+                                _ commit('setUser', user)
+                                _ commit('setIsAuthenticated', true)
+                                _ router.push('/about')
+                            ._ catch
+                                => 
+                                    _ commit('setUser', null)
+                                    _ commit('setIsAuthenticated', false)
+                                    _ router.push('/')
+                    
+					m userJoin
+                        { 
+                            @ commit
+                        { 
+                            @ email
+                            @ password
+                        _ firebase.auth().createUserWithEmailAndPassword(email, password).then
+                            => 
+                                param user
+                                _ commit('setUser', user)
+                                _ commit('setIsAuthenticated', true)
+                                _ router.push('/about')
+                            ._ catch
+                                => 
+                                    _ commit('setUser', null)
+                                    _ commit('setIsAuthenticated', false)
+                                    _ router.push('/')
+                    
+					m userSignOut
+                        { 
+                            @ commit
+                        _ firebase.auth().signOut().then
+                            => 
+                                _ commit('setUser', null)
+                                _ commit('setIsAuthenticated', false)
+                                _ router.push('/')
+                            ._ catch
+                                => 
+                                    _ commit('setUser', null)
+                                    _ commit('setIsAuthenticated', false)
+                                    _ router.push('/')
+                    m addRecipe
+                        { 
+                            @ state
+                        param payload
+                        _ firebase.database().ref('users').child(state.user.user.uid).push(payload.label)
+                    
+					m getUserRecipes
+                        { 
+                            @ state
+                            @ commit
+                        return 
+                            _ firebase.database().ref('users/' + state.user.user.uid).once
+                                @ 'value'
+                                => 
+                                    param snapshot
+                                    _ commit('setUserRecipes', snapshot.val())
+                { getters
+                    m isAuthenticated
+                        param state
+                        return state.user !== null && state.user !== undefined

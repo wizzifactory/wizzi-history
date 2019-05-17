@@ -1,0 +1,36 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    +  ids: undefined undefined
+    var myname = 'html.document.css_rule' ids: undefined undefined
+    +  ids: undefined undefined
+    var rule = require('../../../css/document/gen/rule') ids: undefined undefined
+    +  ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    set md.stm = {} ids: undefined undefined
+    +  ids: undefined undefined
+    _ rule.load(md) ids: undefined undefined
+    +  ids: undefined undefined
+    set md.genItem ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        var stm = md.stm[model.wzElement] ids: undefined undefined
+        if stm ids: undefined undefined
+          _ stm(model, ctx) ids: undefined undefined
+        else  ids: undefined undefined
+          throw ctx.error(myname + '. Unknown tag/element: ' + model.wzTag + '/' + model.wzElement, model) ids: undefined undefined
+    set md.genItems ids: undefined undefined
+      function  ids: undefined undefined
+        param items ids: undefined undefined
+        param ctx ids: undefined undefined
+        param options ids: undefined undefined
+        var  ids: undefined undefined
+          decl opt = options || {} ids: undefined undefined
+          decl from = opt.from || 0 ids: undefined undefined
+          decl indent = typeof opt.indent === 'undefined' ? true : opt.indent ids: undefined undefined
+        if indent ids: undefined undefined
+          _ ctx.indent() ids: undefined undefined
+        foreach item in items ids: undefined undefined
+          _ md.genItem(item, ctx) ids: undefined undefined
+        if indent ids: undefined undefined
+          _ ctx.deindent() ids: undefined undefined

@@ -1,0 +1,127 @@
+﻿vue 
+    template 
+        v-app 
+            light 
+            v-content 
+                v-container 
+                    v-layout 
+                        row 
+                        wrap 
+                        align-center 
+                        v-flex 
+                            xs12 
+                            md4 
+                            . text-xs-center
+                                v-avatar 
+                                    size 125px
+                                    img 
+                                        class img-circle elevation-7 mb-1
+                                        src https://raw.githubusercontent.com/vuetifyjs/docs/dev/static/doc-images/lists/1.jpg
+                                div John
+                                    class headline
+                                    span Carter
+                                        style font-weight:bold
+                                div Lorem ipsum dolor sit amet
+                                    class subheading text-xs-center grey--text pt-1 pb-3
+                                v-layout 
+                                    justify-space-between 
+                                    a Home
+                                        href javascript:;
+                                        class body-2
+                                    a About
+                                        href javascript:;
+                                        class body-2
+                                    a Github
+                                        href javascript:;
+                                        class body-2
+                                    a Other
+                                        href javascript:;
+                                        class body-2
+                        v-flex 
+                            xs12 
+                            md5 
+                            offset-md2 
+                            div 
+                                v-for post in posts
+                                :key post.title
+                                v-card 
+                                    class my-3
+                                    hover 
+                                    v-card-media 
+                                        class white--text
+                                        height 170px
+                                        :src post.imgUrl
+                                        v-container 
+                                            fill-height 
+                                            fluid 
+                                            v-layout 
+                                                v-flex 
+                                                    xs12 
+                                                    align-end 
+                                                    d-flex 
+                                                    span {{ post.title }}
+                                                        class headline
+                                    v-card-text {{ post.content }}
+                                    v-card-actions 
+                                        v-btn 
+                                            icon 
+                                            class red--text
+                                            v-icon fa-reddit
+                                                medium 
+                                        v-btn 
+                                            icon 
+                                            class light-blue--text
+                                            v-icon fa-twitter
+                                                medium 
+                                        v-btn 
+                                            icon 
+                                            class blue--text text--darken-4
+                                            v-icon fa-facebook
+                                                medium 
+                                        v-spacer 
+                                        v-btn Read More
+                                            flat 
+                                            class blue--text
+            v-footer 
+                class secondary
+                app 
+                v-layout 
+                    row 
+                    wrap 
+                    align-center 
+                    v-flex 
+                        xs12 
+                        div Made with
+                            class white--text ml-3
+                            v-icon favorite
+                                class red--text
+                            + by
+                            a Vuetify
+                                class white--text
+                                href https://vuetifyjs.com
+                                target _blank
+                            + and
+                            a Costa Huang
+                                class white--text
+                                href https://github.com/vwxyzjn
+                                target _blank
+    script 
+        export-default 
+            { 
+                m data
+                    return 
+                        { 
+                            @ title 'Your Logo'
+                            [ posts
+                                { 
+                                    @ title 'Fusce ullamcorper tellus'
+                                    @ content 'Fusce ullamcorper tellus sed maximus rutrum. Donec imperdiet ultrices maximus. Donec non tellus non neque pellentesque fermentum. Aenean in pellentesque urna.'
+                                    @ imgUrl 'https://raw.githubusercontent.com/vuetifyjs/docs/dev/static/doc-images/cards/drop.jpg'
+                                { 
+                                    @ title 'Donec vitae suscipit lectus, a luctus diam.'
+                                    @ content 'Donec vitae suscipit lectus, a luctus diam. Proin vitae felis gravida, lobortis massa sit amet, efficitur erat. Morbi vel ultrices nisi.'
+                                    @ imgUrl 'https://raw.githubusercontent.com/vuetifyjs/docs/dev/static/doc-images/cards/docks.jpg'
+                                { 
+                                    @ title 'Vestibulum condimentum quam'
+                                    @ content 'At sagittis sapien vulputate. Vivamus laoreet lacus id magna rutrum dapibus. Donec vel pellentesque arcu. Maecenas mollis odio tempus felis elementum commodo.'
+                                    @ imgUrl 'https://raw.githubusercontent.com/vuetifyjs/docs/dev/static/doc-images/cards/plane.jpg'

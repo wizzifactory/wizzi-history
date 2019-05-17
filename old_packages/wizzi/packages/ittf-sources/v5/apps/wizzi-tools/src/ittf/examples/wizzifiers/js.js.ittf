@@ -1,0 +1,55 @@
+﻿module
+    kind jsfile
+	+
+	import async
+	import path
+	import util
+	+
+	var thisPackage = require('../../index')
+	var file = require('wizzi-utils').file
+	+
+	_ async.map
+		[
+			@ 'cloner'
+			@ 'wizzifier'
+			@ 'globSync'
+			@ 'old'
+		@ wizzify
+		f_cb_no_err( result )
+			log 'Terminated. result: ', result
+
+	function wizzify
+		param name
+		param callback
+		+
+		var source
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ 'js'
+				@ name + '.tests.js'
+		+
+		_ thisPackage.jsWizzify
+			@ source
+			{
+				@ dumpfile
+					_ path.join
+						@ __dirname
+						@ 'data'
+						@ 'output'
+						@ name + '.js.dump'
+			f_cb_no_err( ittf )
+				if err
+					log 'error wizzifying: ' + source
+					log 'err', err
+					return callback(null, 'error ' + source)
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'data'
+						@ 'output'
+						@ name + '.js.ittf'
+					@ ittf
+				return callback(null, 'success ' + source)
+
+

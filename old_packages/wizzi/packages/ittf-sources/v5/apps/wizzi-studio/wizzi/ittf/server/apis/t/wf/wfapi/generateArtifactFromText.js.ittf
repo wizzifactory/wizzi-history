@@ -1,0 +1,76 @@
+﻿$group
+
+	@ generateArtifactFromText
+		function
+			param sessionData
+			param ittfContent
+			param modelContext
+			param schemaName
+			param artifactName
+			param artifactContext
+			param callback
+
+			if typeof(callback) != 'function'
+				set callback = artifactContext
+				set artifactContext = {}
+
+			set modelContext = modelContext || {}
+			set artifactContext = artifactContext || {}
+			
+			var requestContext
+				{
+					@ modelRequestContext modelContext
+					@ artifactRequestContext artifactContext
+			
+			# Global context on a single generateArtifact not implemented
+			var globalContext = {}
+
+			# A basefolder is required
+			var tempIttfUri = "c:/basefolder/temp." + schemaName + '.ittf'
+			var documents
+				[
+					{
+						@ path tempIttfUri
+						@ content ittfContent
+
+			if userAuthRequired
+				_ createJsonWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ documents
+					@ globalContext
+					_ loadModelAndGenerateArtifact_cb
+						@ tempIttfUri
+						@ requestContext
+						@ schemaName + '/' + artifactName
+						@ callback
+			else
+				_ createJsonWizziFactory
+					@ documents
+					@ globalContext
+					_ loadModelAndGenerateArtifact_cb
+						@ tempIttfUri
+						@ requestContext
+						@ schemaName + '/' + artifactName
+						@ callback
+
+			function loadModelAndGenerateArtifact_cb
+				param ittfDocumentUri
+				param requestContext
+				param artifactName
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.loadModelAndGenerateArtifact
+							@ ittfDocumentUri 
+							@ requestContext
+							@ artifactName
+							f_cb_api( artifactText )
+								return
+									_ callback
+										@ null
+										{
+											@ data artifactText
+											@ status
+												_ success
+													@ 'Artifact generation ' + artifactName + ' on uri ' + ittfDocumentUri + ' executed'

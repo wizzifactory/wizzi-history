@@ -1,0 +1,174 @@
+﻿$group
+
+	m getExamples
+		param options
+		param callback
+		const getOptions = {}
+		if options.schema
+			var examples = examplesCache.get(options.schema)
+			if examples
+				r_cb( examples )
+			set getOptions.where
+				{
+					@ field 'schema'
+					@ op '=='
+					@ value options.schema
+			_ this.fb.getCollection
+				_ this.pathNames.examplesCollPath
+				@ getOptions
+				f_cb( examples )
+					_ examplesCache.set(options.schema, examples)
+					r_cb( examples )
+		else
+			r_cb_error( Error )
+				@ 'getExamples requires a schema property in the options parameters'
+
+	m getExample
+		param schemaName
+		param name
+		param callback
+		_ this.getExamples
+			{
+				@ schema schemaName
+			f_cb( examples )
+				log 'WizziStore.getExample', schemaName, name, examples
+				foreach item in examples
+					if item.data.name === name
+						log 'WizziStore.getExample', 'got', item
+						r_cb( item )
+				log 'WizziStore.getExample', 'not found'
+				r_cb( null )
+
+	m setExample
+		param schemaName
+		param name
+		param content
+		param callback
+		const that = this
+		_ this.getExamples
+			{
+				@ schema schemaName
+			f_cb( examples )
+				var inserted = 0
+				var updated = 0
+				var exampleData = null
+				foreach item in examples
+					if item.name === name
+						set item.content = content
+						set exampleData = item
+				if exampleData == null
+					# TODO this changes cache content. Is it OK?
+					set exampleData
+						{
+							@ path
+								_ that.pathNames.exampleRelPath
+									@ name
+									@ schemaName
+							{ data
+								@ schema schemaName
+								@ name name
+								@ content content
+					_ examples.push(exampleData)
+					set inserted++
+				else
+					set updated++
+				_ that.updatesQueue.set
+					_ that.pathNames.examplePath
+						@ name
+						@ schemaName
+					@ exampleData
+				_ that.setSchemaExample
+					@ schemaName
+					@ name
+				_ that.scheduleCloudUpdate
+				const result
+					{
+						@ inserted inserted
+						@ updated updated
+						@ item exampleData
+						@ schemas that.schemas
+						@ message 'WizziStore.setExample successfull ' + schemaName + '/' + name
+				r_cb( result)
+
+	m deleteExample
+		param schemaName
+		param name
+		param callback
+		const that = this
+		_ this.getExamples
+			{
+				@ schema schemaName
+			f_cb( examples )
+				var copy = [], exampleData
+				foreach item in examples
+					if item.name !== name
+						_ copy.push(item)
+					else
+						set exampleData = item
+				if examples.length == copy.length
+					r_cb_error( Error
+						@ 'Delete error. Example does not exists: ' + schemaName + '/' + name
+				_ examplesCache.set(schemaName, copy)
+				_ that.updatesQueue.delete
+					_ that.pathNames.examplePath
+						@ name
+						@ schemaName
+				_ that.removeSchemaExample
+					@ schemaName
+					@ name
+				_ that.scheduleCloudUpdate
+				const message = 'WizziStore.deleteExample successfull ' + schemaName + '/' + name
+				log message
+				const result
+					{
+						@ deleted 1
+						@ item exampleData
+						@ schemas that.schemas
+						@ message message 
+				r_cb( result)
+
+	m renameExample
+		param schemaName
+		param oldName
+		param newName
+		param callback
+		const that = this
+		_ this.getExamples
+			{
+				@ schema schemaName
+			f_cb( examples )
+				var oldItem = null
+				foreach item in examples
+					if item.name === newName
+						r_cb_error( Error
+							@ 'Rename error. Example new name already exists: ' + schemaName + '/' + newName
+					if item.name === oldName
+						set item.name = newName
+						set oldItem = item
+				if oldItem == null
+					r_cb_error( Error
+						@ 'Rename error. Example new name already exists: ' + schemaName + '/' + newName
+				_ examplesCache.set(schemaName, examples)
+				_ that.updatesQueue.delete
+					_ that.pathNames.examplePath
+						@ oldName
+						@ schemaName
+				_ that.renameSchemaExample
+					@ schemaName
+					@ oldName
+					@ newName
+				_ that.updatesQueue.set
+					_ that.pathNames.examplePath
+						@ newName
+						@ schemaName
+					@ oldItem
+				_ that.scheduleCloudUpdate
+				const message = 'renameExample successfull ' + schemaName + '/' + oldName + '/' + newName
+				log message
+				const result
+					{
+						@ schemas that.schemas
+						@ message message 
+				r_cb( result)
+
+

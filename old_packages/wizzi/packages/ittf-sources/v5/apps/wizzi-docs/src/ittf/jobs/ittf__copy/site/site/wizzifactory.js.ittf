@@ -1,0 +1,59 @@
+﻿module
+	kind jsfile
+
+	js/wzui-events()
+	js/wzui()
+	js/controls/tabcontrol()
+	js/controls/tvdocuments()
+	$include js/clickHandler
+	$include js/modal
+
+	_ wzui.contentLoaded
+		function
+			log '*** content loaded'
+			var ctx 
+				{
+					@ tabControls []
+					@ currentTabControl null
+					@ documentControls []
+					@ currentDocumentControl null
+			_ setup (document.documentElement, ctx)
+			foreach tabControl in ctx.tabControls
+				_ tabControl.initialize()
+			foreach documentControl in ctx.documentControls
+				_ documentControl.initialize()
+			set ctx.modalManager = new ModalManager()
+			_ ctx.modalManager.setup()
+			_ setupClickHandler(ctx)
+
+	function setup
+		param node
+		param ctx
+		
+		if node.nodeType != 1
+			return
+		
+		if wzui.hasClass(node, 'wz-ui-tabs')
+			var tabControl = new wzuiTabControl(node)
+			_ ctx.tabControls.push(tabControl)
+			set ctx.currentTabControl = tabControl
+
+		elif wzui.hasClass(node, 'wz-ui-tab')
+			_ ctx.currentTabControl.addTab(node)
+		
+		elif wzui.hasClass(node, 'wz-ui-tv-documents')
+			var documentControl = new wzuiTvDocumentsControl(node)
+			var active_document_title_id = node.getAttribute('data-active-document-title-id')
+			log 'active_document_title_id', active_document_title_id
+			_ documentControl.setActiveDocumentTitleElement(active_document_title_id)
+			_ ctx.documentControls.push(documentControl)
+			set ctx.currentDocumentControl = documentControl
+
+		elif wzui.hasClass(node, 'wz-ui-tv-document')
+			_ ctx.currentDocumentControl.addDocument(node)
+			if wzui.hasClass(node, 'wz-ui-tv-document-selected')
+				_ ctx.currentDocumentControl.setDefaultDocument(node)
+
+		foreach child in node.childNodes
+			_ setup(child, ctx)
+

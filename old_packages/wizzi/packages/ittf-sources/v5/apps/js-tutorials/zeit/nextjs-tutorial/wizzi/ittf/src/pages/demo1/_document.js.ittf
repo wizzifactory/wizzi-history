@@ -1,0 +1,24 @@
+module
+    kind react
+    import Document
+        @ Head
+        @ Main
+        @ NextScript
+        from 'next/document'
+    export-default 
+        class MyDocument
+            super Document
+            m getInitialProps
+                static
+                param ctx
+                return Document.getInitialProps(ctx)
+            m render
+                return 
+                    html 
+                        < Head 
+                            link 
+                                @ href "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atom-one-light.min.css"
+                                @ rel "stylesheet"
+                        body 
+                            < Main 
+                            < NextScript 

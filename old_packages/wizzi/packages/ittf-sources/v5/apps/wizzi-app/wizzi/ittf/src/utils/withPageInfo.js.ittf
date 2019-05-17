@@ -1,0 +1,27 @@
+﻿module
+    kind react
+	import React from 'react'
+
+    export
+		const PageInfoContext
+			_ React.createContext
+				{
+					@ title 'Wizzi'
+					@ setTitle
+						=>
+    
+	export 
+        function withPageInfo
+            param Component
+            return 
+                function PageInfoComponent
+                    param props
+                    return 
+                        < PageInfoContext.Consumer
+							{ 
+								=> 
+									param pageInfo
+									return
+										< Component 
+											@ {...props}
+											@ pageInfo {pageInfo}

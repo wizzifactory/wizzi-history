@@ -1,0 +1,33 @@
+﻿module
+	$params name, level|1, step|1
+	kind jsfile
+
+	import path
+	import util
+	import async
+	var stringify = require('json-stringify-safe')
+	var inspect = require('object-inspect')
+	var wzutils = require('wizzi-utils')
+	var verify = require('wizzi-utils').verify
+	var vfile = require('wizzi-utils').vfile
+	var fsfile = vfile()
+
+	$$ Let the mixer append other imports
+	$hook imports
+
+	var ${name}
+		function
+			param step_callback
+			_ heading1
+				@ 'Example ${name} starting'
+			
+			$hook
+
+	set ${name}.__name = 'Level ${level} - ${name}'
+	
+	demo_prints( ${name}, ${level}, ${step} )
+
+	set module.exports = ${name}
+
+	if typeof require != 'undefined' && require.main === module
+		_ ${name}

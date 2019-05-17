@@ -1,0 +1,240 @@
+﻿wfschema sample_0_3
+
+	# Wizzi schema: sample_0_3
+	#
+	# In the third sample we try to implement a schema
+	# with some usefullness.
+	# A schema that can be used for describing API schema objects in
+	# requests, responses, operation parameters.
+	#
+	# This schema is inspired by
+	# the OpenAPI Specification Version 3.0.0 [https://swagger.io/specification/]
+	# a spec licensed under The Apache License, Version 2.0.
+	#
+
+	export-to json
+
+	e comment
+		# The comment `element`.
+		# The `wzName` will contain a comment line.
+		tag #
+
+		r comment/s
+			# Allow nesting of comment lines.
+
+	e commentable
+		# An abstract element that accepts children comment elements
+		# and is the base element of any element of this schema.
+		is-abstract
+
+		r comment/s
+
+	e sample_0_3 : commentable
+		# The `root node`.
+		# Contains a collection of named schema objects.
+		
+		is-root
+		
+		r schemaObject/s
+			# List of named schema object.
+
+	e schemaObject : commentable
+		# From Swagger definition
+		#   `The Schema Object allows the definition of input and output data types. 
+		#    These types can be objects, but also primitives and arrays.`
+		#
+		# The `wzName` contains the name of the schemaObject.
+
+		tag schema
+		
+		r datatype
+			# A schemaObject is composed by one datatype, typically
+			# an object or an array.
+			
+			one-to-one
+		
+		r discriminator
+			# When the schema datatype is a combinator 
+			# element (oneOf, allOf, anyOf )
+			# The discriminator points to the property that specifies 
+			# the data type name.
+			
+			one-to-one
+
+	e datatype : commentable
+		# An abstract element from which all datatypes are derived.
+		# Derived elements, when their parent element is an object 
+		# datatype, are object properties, and the `wzName` contains
+		# the property name.
+		# When a property is part of an enum element
+		# the `wzName` contains a blank separated name value pair and
+		# the value string must be converteable to the type.
+		
+		is-abstract
+
+		a_flag( nullable )
+		a_flag( required )
+		a_flag( readOnly )
+		a_flag( writeOnly )
+		
+		r enum
+			# A single container element of a list of possible values of the 
+			# parameter or property. See the enum `element` declaration.
+			one-to-one
+
+		r example/s
+			# A list of examples
+
+	dtype( any )
+		# The generic datatype. Allows any type.
+	
+	dtype( object )
+		# The object datatype.
+		# Children datatypes are properties.
+		# If has no datatype children is shorthand syntax for an arbitrary-type.
+		tag {
+		
+		r datatype/s
+			# Object properties.
+		
+		r additionalProperties
+			# Free form objects and dictionary objects.
+			one-to-one
+		
+		r discriminator
+			# Derived datatype discrimanator used to implement 
+			# object type inheritance.
+			one-to-one
+
+	dtype( array )
+		# The array datatype.
+		tag [
+		r items
+			# The container for the specification of the array items possible types.
+			# See the items element declaration.
+			one-to-one
+
+	dtype( string )
+	dtype( string, date )
+	dtype( string, date-time )
+	dtype( string, password )
+	dtype( string, byte )
+	dtype( string, binary )
+	dtype( string, email )
+	dtype( string, uuid )
+	dtype( string, uri )
+	dtype( string, hostname )
+	dtype( string, ipv4 )
+	dtype( string, ipv6 )
+	dtype( boolean  )
+	dtype( integer )
+	dtype( integer, int32 )
+	dtype( integer, int64 )
+	dtype( number )
+	dtype( number, float )
+	dtype( number, double )
+
+	e value : datatype
+		# A generic value element used in examples
+		tag @
+	
+	e_tag( oneOf, one-of, datatype )
+		# A datatype combinator element.
+		# Validates the value against exactly one of the subdatatypes.
+		
+		r datatype/s
+			# A collection of valid datatypes.
+
+	e_tag( anyOf, any-of, datatype )
+		# A datatype combinator element.
+		# Validates the value against any (one or more) of the subdatatypes.
+		
+		r datatype/s
+			# A collection of valid datatypes.
+
+	e_tag( allOf, all-of, datatype )
+		# A datatype combinator element.
+		# Validates the value against all the subdatatypes.
+		
+		r datatype/s
+			# A collection of valid datatypes.
+
+	e_tag( typeRef, type-ref, datatype )
+		# A datatype reference element.
+		# The `wzName` must contain the name of the referenced type.
+
+	e items : commentable
+		# An element to describe the type of array items.
+		# Its parent must be an array `element`.
+		
+		r datatype
+			# A single datatype for all items can be declared.
+			# For mixed type arrays the oneOf datataype element can be used
+			# to specify many possible datatypes.
+			one-to-one
+
+	e enum : commentable
+		# The enum `element` to specify possible values of a parameter or property.
+		# Its `parent element` must be derived from datatype.
+		
+		r datatype/s
+			# A collection of possible values.
+
+	e additionalProperties : commentable
+		# Specifies the type of values in the dictionary. 
+		# Datatypes can be primitives (strings, numbers or boolean values), 
+		# arrays or objects. 
+		
+		r datatype/s
+			# A collection of possible values.
+
+		# Example of string-to-object dictionary
+		#	{
+		#		additionalProperties
+		#			{
+		#				integer code
+		#				string text
+		#   example
+		#       {
+		#           { italy
+		#               @ code 039
+		#               @ text international phone prefix
+		#           { france
+		#               @ code 033
+		#               @ text international phone prefix
+		
+	e discriminator : commentable
+		
+		# An object type discriminator element.
+		# From Swagger API spec:
+		#   `To help API consumers detect the object type, you can add the 
+		#    discriminator/propertyName keyword to model definitions. 
+		#    This keyword points to the property that specifies the data type name.`
+
+		a_tag( propertyName, property-name )
+			# The property that specifies the data type name.
+		
+		r map/s
+			# The [optionals] discriminator mapping elements. 
+
+	e map : commentable
+
+		# From Swagger API spec:
+		#   `It is implied, that the property to which discriminator refers, 
+		#    contains the name of the target schema. In the example above, 
+		#    the objectType property should contain either simpleObject, 
+		#    or complexObject string.
+		#    If the property values do not match the schema names, you can map 
+		#    the values to the names. To do this, use the discriminator/mapping 
+		#    keyword`
+		#
+		# A discriminator type name mapping element.
+		# The `wzName` will contain a blank separated name value pair:
+		#   - the name must be the value expected in the disciminator propertyName
+		#   - the value is the name of the schema object that must be selected
+		#     for that value.
+
+	e example : commentable
+
+		r datatype
+			one-to-one

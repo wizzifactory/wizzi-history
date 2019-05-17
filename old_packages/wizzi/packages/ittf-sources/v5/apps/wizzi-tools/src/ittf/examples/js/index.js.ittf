@@ -1,0 +1,77 @@
+﻿module
+	kind jsfile
+
+	import util
+	import path
+	var file = require('wizzi-utils').file
+	var jswizzifier = require('../../lib/wizzifiers/jsparser/babel/wizzifier')
+
+	_ go('quick')
+	# _ go('vars')
+	# _ go('loops')
+	# _ go('functions')
+	# _ go('flow')
+	# _ go('jsx')
+	# _ go('statements')
+	# _ go('classes')
+	# _ go('impexp')
+	# _ go('calls')
+
+	function go
+		param name
+		
+		var src 
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.js'
+		
+		var out_babel
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.babel.json'
+
+		var out_ittf 
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.js.ittf'
+
+		var out_ittf_js
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.js.ittf.js'
+
+        _ jswizzifier.getWizziIttf
+			_ file.read
+				@ src
+			{
+				@ kind 'react'
+				@ babel
+					{
+						@ sourceType 'module'
+				@ syntaxOutFile out_babel
+				@ verbose false
+            function 
+                param err
+                param result
+				if err
+					log 'err', err
+					_ file.write
+						@ out_ittf
+						_ JSON.stringify
+							@ err
+							@ null
+							@ 4
+				else
+					var r1 = result.substring(0, 24)
+					var r2 = result.substring(24)
+					log 'r1', r1
+					set r1 = r1.replace('jsfile', 'react ')
+					log 'r1 after', r1
+					_ file.write
+						@ out_ittf
+						@ r1+r2
+

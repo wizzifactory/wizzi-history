@@ -1,0 +1,35 @@
+module
+    kind react
+    import posts from './_posts.js'
+    const lookup = new Map()
+    _ posts.forEach
+        => 
+            param post
+            _ lookup.set(post.slug, JSON.stringify(post))
+    export 
+        function get
+            param req
+            param res
+            param next
+            # the `slug` parameter is available because
+            # this file is called [slug].json.js
+            const 
+                @ slug
+                = req.params
+            if lookup.has(slug)
+                _ res.writeHead
+                    @ 200
+                    { 
+                        @ 'Content-Type' 'application/json'
+                _ res.end(lookup.get(slug))
+            else
+                _ res.writeHead
+                    @ 404
+                    { 
+                        @ 'Content-Type' 'application/json'
+                _ res.end
+                    _ JSON.stringify
+                        { 
+                            @ message
+                                `lit 
+                                    + Not found

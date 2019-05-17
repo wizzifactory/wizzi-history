@@ -1,0 +1,293 @@
+﻿$group
+	
+	api wizzi.wizziFactoryModule
+		kernel
+		module
+			path wizzi/lib/services/wizziFactory.js
+
+		# This module exports a single function, for creating a new instance of
+		# the wizzi.wizziFactory class.
+		# 
+		# The plugins of a wizzi.wizziFactory instance are registered once, 
+		# when calling the `initialize` method, and cannot be changed dinamycally. 
+		# To use many different plugin configurations, many wizzi.wizziFactory instances
+		# must be created.
+		
+		{
+			m createFactory
+				called-by wizzi.createFactory
+				string userid
+				string role
+				{ options
+					api-ref wizzi.wizziFactory.createOptions
+				cb()
+					api-ref wizzi.wizziFactory
+
+	api wizzi.wizziFactory
+		kernel
+		class-instance
+			path wizzi/lib/services/wizziFactory.js
+
+		# The wizzi.wizziFactory class exposes the main services of the wizzi factory:
+		# . mTree loading
+		# . Wizzi Model loading
+		# . model transformation
+		# . artifact generation
+		# . wizzi job execution
+		# . Wizzi Model types generation
+		
+		iface
+			{ createOptions
+				# The configuration object of a wizzi.wizziFactory instance.
+				# Cannot be changed after instance creation. For a new configuration
+				# a new instance must be created.
+				{ repo
+					# The configuration parameters of the ittf document repository where
+					# this instance searches documents.
+					string storeKind
+						restrict
+							enum mongodb
+							enum filesystem
+							enum localstorage
+								# not implemented yet
+						default filesystem
+					string storeUri
+						# When storeKind == 'mongodb'.
+						# The uri of the running instance of the MongoDB database
+						# containing the repository. The database must be started before
+						# creating the wizzi.wizziFactory instance.
+					string storeBaseFolder
+						# The path of the root folder of the repository.
+						# Write operations are not permitted outside of the root folder.
+				{ plugins
+					# Contains the plugins that must be registered for this instance.
+					# These services are exposed by plugins:
+					# . Wizzi Model loading
+					# . model transformation
+					# . artifact generation
+					[ items
+						string name
+							# The name of the wizzi plugin module.
+							# Can be a relative path for a local plugin.
+					string pluginsBaseFolder
+						# To be used only when the plugin collection contains local plugins.
+						# It is the path to the local plugins folder relative (TODO check) to the
+						# process.cwd() folder.
+				{ globalContext
+				{ test
+					string testOnlyMockBaseDir
+					{ dumps
+						string dumpsBaseFolder
+						{ mTreeBuildupJsWizziScript
+							boolean dump
+		
+		{
+			m initialize
+				internal
+				{ options
+					api-ref wizzi.wizziFactory.createOptions
+				cb()
+					{ wizziFactory
+						api-ref wizzi.wizziFactory
+				info 
+					api-call wizzi-repo.createStoreFactory
+					api-call wizzi-mtree.createLoadMTree
+						api-receive wizzi.mtree.loadMTree
+							store-on-this
+					api-call wizzi.pluginsManager.createManager
+						api-receive wizzi.pluginsManager.instance
+							store-on-this
+
+			m loadMTree
+				string ittfDocumentUri
+					# The path of the source ittf document.
+				{ mTreeBuildUpContext
+					# An object context which properties are loaded in the 
+					# wizzi-mtree.jsWizziContext used in the evaluation step
+					# on the mTree loading.
+					# Properties, or the object itself, can be a wizzi-plugin.wizziModel
+					# or a POJO.
+				cb()
+					{ mTree
+						api-ref wizzi.mTree.instance
+				# mTreeLoad service
+
+				info
+					internal-call createLoadContext
+						send mTreeBuildUpContext
+						receive
+							{ loadContext
+								{ mTreeBuildUpContext
+								{ __productionManager
+									api-ref wizzi.production.productionManager
+					api-call wizzi-mtree.loadMTree
+						# This interface is stored in this.object
+						# at initialize time.
+						# See wizzi.wizziFactory.initialize
+
+			m getLoadModel
+				#
+					# Retrieve a loadModel function by the model schema name.
+					# Model factories are searched by the wizzi.pluginsManager
+					# and are cached.
+				string schemaName
+					# The name of the Wizzi Model type to be loaded.
+				return
+					function loadModel
+						api-ref wizzi-plugin.modelFactory.loadModel
+
+				info 
+					api-call wizzi.pluginsManager.getModelFactory
+						api-receive wizzi-plugin.modelFactory
+						
+					api-call wizzi-plugin.modelFactory.createLoadModel
+						api-send wizzi.mtree.loadMTree
+						api-receive wizzi-plugin.modelFactory.loadModel
+
+			m loadModel
+				
+				# Loads a wizzi.modelType from a source ittf document.
+				
+				string schemaName
+					# By default the schema of an ittf document is detected
+					# from the uri. A standard uri is: `directoryPath/fileName.{schema}.ittf`.
+					# The schemaName parameter allows the loading of documents which schema cannot 
+					# be detected because its uri is not in a standard format.
+					# TODO why allow this?
+					# This parameter can be null.
+				string ittfDocumentUri
+					required
+				{ loadContext
+					{ mTreeBuildUpContext
+						# An object context which properties are loaded in the 
+						# wizzi-mtree.jsWizziContext used in the evaluation step
+						# on the mTree loading.
+						# Properties, or the object itself, can be a wizzi-plugin.wizziModel
+						# or a POJO.
+					{ globalContext
+						# Being the loadModel function called once this usually is not used.
+						# Its properties are added to the `mTreeBuildUpContext` parameter object.
+					{ formatOptions
+						boolean ittfSources
+							# if true returns not the model but its ittf source documents.
+				cb()
+					{ wizziModel
+						api-ref wizzi.modelType.rootElement
+
+			m loadModelFromConfig
+				
+				# Loads a wizzi.modelType described by a wizzi.model.modelInfoConfig object.
+				# The `modelConfig` parameter can describe a deep nidification of
+				# context models that must be loaded and passed as mTreeBuildUpContext
+				# properties to the load context of their parents.
+				# TODO links to a demo example.
+				
+				{ modelConfig
+					api-ref wizzi.model.modelInfoConfig
+				{ globalContext
+					# Its properties are added to the `mTreeBuildUpContext` parameter object.
+				{ formatOptions
+					boolean ittfSources
+						# if true returns not the model but its ittf source documents.
+				cb()
+					{ wizziModel
+						api-ref wizzi.modelType.rootElement
+
+			m transformModel
+
+				# Executes a model transformation.
+
+				{ model
+					# The model to be transformed.
+				string transformerName
+					# The name of the transformation, that
+					# must be provided by a registered plugin.
+					# It is composed by `schemaName`/`transformerName`.
+				{ context
+					# An optional context object for the transformation.
+				cb()
+					{ transformedModel
+
+				info
+					api-call wizzi.pluginsManagerInstance.getModelTransformer
+						api-receive wizzi-plugin.modelTransformer
+					api-call wizzi-plugin.modelTransformer.trans
+
+			m generateArtifact
+
+				# Executes an artifact generation.
+
+				{ artifactModel
+					# A Wizzi Model or POJO. Is the main context of the generation.
+					# Can be null.
+				string ittfDocumentUri
+					# The path to the source ittf document of the `artifactModel`.
+					# It is for documentation and error messages.
+					# Can be null.
+				string artifactName
+					# The name of the artifact to be generated.
+					# It is composed by `schemaName`/`artifactName`.
+				{ artifactRequestContext
+					# An optional context object for the generation.
+				cb()
+					string artifactTextContent
+					# The generated artifact is a string of text.
+				
+				info
+					api-call wizzi.pluginsManager.getArtifactGenerator
+						api-receive wizzi-plugin.artifactGenerator
+					api-create wizzi.artifact.genContext
+					api-call wizzi-plugin.artifactGenerator.gen
+
+			m loadModelAndGenerateArtifact
+
+				# Executes an artifact generation after having loaded the
+				# artifact template model from a source ittf document.
+				
+				string ittfDocumentUri
+					# The path to the artifact template model ittf document.
+					required
+				{ requestContext
+					required
+					{ modelRequestContext
+						{ mTreeBuildUpContext
+							# An object context which properties are loaded in the 
+							# wizzi-mtree.jsWizziContext used in the evaluation step
+							# on the mTree loading.
+							# Properties, or the object itself, can be a wizzi-plugin.wizziModel
+							# or a POJO.
+					{ artifactRequestContext
+						# A context object which properties will be set in
+						# the `values` property of the wizzi.artifact.genContext.
+				string artifactName
+					# The name of the artifact generator.
+				cb()
+					string artifactTextContent
+					# The generated artifact is a string of text.
+
+			m generateModelTypes
+				#
+					# From an ittf document of type "wfschema"
+					# generates: 
+					#   - a Wizzi Model
+					#   - a Wizzi Model factory
+					#   - a Wizzi Model test module
+					#   - a Wizzi Model json documentation
+					#   - a Wizzi Model html documentation
+				string wfschemaIttfDocumentUri
+					# The path to the `wfschema` ittf document describing the Wizzi Model type.
+				string outputPackagePath
+					# The destination base path of the generated artifacts.
+					# The names of the artifacts will be
+					# &outputPackageFolder/lib/wizzi/models/&name-model.g.js
+					# &outputPackageFolder/lib/wizzi/models/&name-factory.g.js
+					# &outputPackageFolder/lib/wizzi/models/&name-schema.g.json
+					# &outputPackageFolder/lib/wizzi/models/&name-schema.g.html
+					# &outputPackageFolder/lib/wizzi/schemas/&name-test.g.js
+				string wfschemaName
+					# The name of the Wizzi Model type (schema) to be generated.
+				{ evaluationContext
+				cb()
+					null
+
+

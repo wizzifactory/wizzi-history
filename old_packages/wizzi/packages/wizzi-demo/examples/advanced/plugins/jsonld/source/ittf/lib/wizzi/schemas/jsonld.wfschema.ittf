@@ -1,0 +1,516 @@
+wfschema jsonld
+
+	# Example wizzi schema used by this package demos.
+	# It is an experimental implementation of a
+	# vocabulary, taxonomy, onthology and direct graph schema.
+	# Is inspired by
+	# . RDF11 [https://www.w3.org/TR/rdf11-concepts/]
+	# . OWL2 [https://www.w3.org/TR/owl2-primer/]
+	# . JSON-LD [https://www.w3.org/TR/json-ld-syntax/]
+
+	export-to json
+
+	e comment
+		tag #
+	
+	e jsonlditem
+		is-abstract
+		r comment/s
+		r jsonlditem/s
+
+	e nodeObject : jsonlditem
+		tag +
+		# A node object.
+		# The `wzName` is the `JSON-LD @id` property.
+		a language
+			# The `JSON-LD @language` property.
+		a container
+			# The `JSON-LD @container` property.
+		a reverse
+			# The `JSON-LD @reverse` property.
+
+		m wzInitialize
+			set this.__jsonld
+				{
+			set this.__wizzi
+				{
+			foreach item in this.jsonlditems
+				_ item.wzInitialize(ctx)
+				if item.wzElement === 'context'
+					set this.__jsonld['@context'] = item.__jsonld
+				if item.wzElement === 'graph'
+					set this.graph = item
+					set this.__jsonld['@graph'] = item.__jsonld
+			if verify.isNotEmpty(this.wzName)
+				set this.__jsonld['@id'] = this.wzName
+				set this.__wizzi.__id = this.wzName
+			foreach item in this.jsonlditems
+				if item.wzElement === 'term'
+					if !item.__key
+						_ ctx.addError('The `term` element has no key', item)
+					else
+						set this.__jsonld[item.__key] = item.__jsonld
+						var ss = item.__key.split(':')
+						if ss.length > 1
+							set this.__wizzi[ss[1]] = item.__jsonld
+							set this.__wizzi[ss[1] + '_ns'] = ss[0]
+						else
+							set this.__wizzi[item.__key] = item.__jsonld
+				elif item.wzElement === 'type'
+					set this.type = item
+					set this.__jsonld['@type'] = item.__jsonld
+					set this.__wizzi.__type = item.__localName
+					set this.__wizzi.__type_ns = item.__prefix
+					# TODO
+					# set this.__wizzi.__type_ns = item.__ns
+				elif item.wzElement === 'context' || item.wzElement === 'graph'
+					# done already
+				else
+					_ ctx.addError('Unknow child of `nodeObject` element : ' + item.wzElement, item)
+			# log 'this.__jsonld', this.__jsonld
+			set this.__jsonProps
+				{
+					@ __jsonld this.__jsonld
+					@ __wizzi this.__wizzi
+
+		m isType
+			param type
+			return this.type ? this.type.isType(type) : false
+
+		m nodesOfType
+			param type
+			param gotten
+			if this.graph
+				if !gotten
+					set gotten = []
+					_ this.graph.nodesOfType(type, gotten)
+					return gotten
+				else
+					_ this.graph.nodesOfType(type, gotten)
+			elif this.isType(type)
+				if !gotten
+					return [this]
+				else
+					_ gotten.push(this.__wizzi)
+			else
+				if !gotten
+					return []
+
+	e jsonld : nodeObject
+		is-root
+		# Can be a `document` or a container of many `documents`.
+		# As a `document` can be a top `node` element or the container of 
+		# an array of top `node` elements.
+
+		m wzInitialize
+			var isArrayOfDocuments = true
+			foreach item in this.jsonlditems
+				if item.wzElement !== 'document'
+					set isArrayOfDocuments = false
+			if isArrayOfDocuments
+				set this.__jsonld
+					[
+				foreach item in this.jsonlditems
+					_ item.wzInitialize(ctx)
+					_ this.__jsonld.push(item.__jsonld)
+				set this.__jsonProps
+					{
+						@ __jsonld this.__jsonld
+			else
+				_ _md.nodeObject.prototype.wzInitialize.call(this, ctx);
+			return
+	
+	e document : nodeObject
+		tag ld-doc
+		# Can be a top `node` element or the container of 
+		# an array of top `node` elements.
+		# Must be child of the `jsonld` element.
+		# Allows multiple documents in a single ittf source document
+
+		m wzInitialize
+			var isArrayOfNodes = true
+			foreach item in this.jsonlditems
+				if item.wzElement !== 'nodeObject'
+					set isArrayOfNodes = false
+			if isArrayOfNodes
+				set this.__jsonld
+					[
+				foreach item in this.jsonlditems
+					_ item.wzInitialize(ctx)
+					_ this.__jsonld.push(item.__jsonld)
+				set this.__jsonProps
+					{
+						@ __jsonld this.__jsonld
+			else
+				_ _md.nodeObject.prototype.wzInitialize.call(this, ctx);
+			return
+
+	e term : jsonlditem
+		tag @
+		# The `@` tag has nothing to do with the JSON-LD reserved word prefix.
+		# Core wizzi schemas often use tha `@` tag symbol to indicate object properties (key-values).
+		# A `term` element is a key-value pair (property) in a `nodeObject` or `context` element.
+		# The key is a short-hand string that expands to an IRI or a blank node identifier.
+		# If the `term` element has children elements the `wzName` is the key and 
+		# the child or children are the value. If it has no children the `wzName` is
+		# splitted in a key and a value pair separated by the first blank char.
+		# In a `context` element keys define the term, 
+		# and values are the IRIs associated with the term. 
+		# In a `nodeObject` keys may expand to an absolute IRI using the active context,
+		# and values must be one of the following elements:
+		# `valueItem`, or
+		# `nodeObject`, or
+		# `valueObject`, or
+		# list or set `array`, or
+		# an array of zero or more of the possibilities above, or
+		# `languageMap`, or
+		# `indexMap`
+		
+		a id
+			# The `JSON-LD @id` property.
+			# When the parent is a `nodeObject` the 'id' attribute 
+			# means: 'This value is an identifier that is an IRI'
+		a reverse
+			# The `JSON-LD @reverse` property.
+		a language
+			# The `JSON-LD @language` property.
+		a container
+			# The `JSON-LD @container` property.
+
+		m wzInitialize
+			var nv = verify.parseNameValue(this.wzName)
+			# log 'nv.name(), nv.value()', nv.name(), '/', nv.value()
+			if this.jsonlditems.length === 0
+				set this.__key = nv.name()
+				if verify.isNotEmpty(this.id)
+					set this.__jsonld
+						{
+							@ ['@id'] this.id
+				else
+					set this.__jsonld = nv.value()
+				if verify.isNotEmpty(this.language)
+					if verify.isObject(this.__jsonld)
+						set this.__jsonld['@language'] = this.language
+					else
+						set this.__jsonld
+							{
+								@ ['@id'] this.__jsonld
+								@ ['@language'] this.language
+				if verify.isNotEmpty(this.reverse)
+					if verify.isObject(this.__jsonld)
+						set this.__jsonld['@reverse'] = this.reverse
+					else
+						set this.__jsonld
+							{
+								@ ['@id'] this.__jsonld
+								@ ['@reverse'] this.reverse
+				if verify.isNotEmpty(this.container)
+					if verify.isObject(this.__jsonld)
+						set this.__jsonld['@container'] = this.container
+					else
+						set this.__jsonld
+							{
+								@ ['@id'] this.__jsonld
+								@ ['@container'] this.container
+			else
+				set this.__key = nv.name()
+				set this.__jsonld = {}
+				if verify.isNotEmpty(nv.value())
+					set this.__jsonld['@id'] = nv.value()
+				else
+					set this.__jsonld['@id'] = this.id
+				if verify.isNotEmpty(this.language)
+					set this.__jsonld['@language'] = this.language
+				if verify.isNotEmpty(this.reverse)
+					set this.__jsonld['@reverse'] = this.reverse
+				if verify.isNotEmpty(this.container)
+					set this.__jsonld['@container'] = this.container
+				foreach item in this.jsonlditems
+					_ item.wzInitialize(ctx)
+					if item.wzElement === 'type'
+						set this.__jsonld['@type'] = item.__jsonld
+						set this.__type = item.__localName
+						set this.__type_ns = item.__prefix
+						# TODO
+						# set this.__type_ns = item.__ns
+					elif item.wzElement === 'valueObject'
+						set this.__jsonld['@value'] = item.__jsonld
+					elif item.wzElement === 'context'
+						set this.__jsonld['@context'] = item.__jsonld
+					elif item.wzElement === 'term'
+						if !item.__key
+							_ ctx.addError('The `term` element has no key', item)
+						else
+							set this.__jsonld[item.__key] = item.__jsonld
+					elif item.wzElement === 'array'
+						set this.__jsonld = item.__jsonld
+					elif item.wzElement === 'list'
+						set this.__jsonld = item.__jsonld
+					elif item.wzElement === 'set'
+						set this.__jsonld = item.__jsonld
+					elif item.wzElement === 'nodeObject'
+						if verify.isArray(this.__jsonld)
+							_ this.__jsonld.push(item.__jsonld)
+						else
+							set this.__jsonld
+								[
+									@ item.__jsonld
+					else
+						_ ctx.addError('Unknow child of `term` element : ' + item.wzElement, item)
+
+			set this.__jsonProps
+				{
+					@ __key this.__key
+					@ __jsonld this.__jsonld
+
+	e context : jsonlditem
+		# Defines a local context in a node object.
+		# The `wzName` can be null, an absolute IRI or a relative IRI.
+		# If the `wzName` is null it contains a context definition.
+		# Its parent must either be a `nodeObject` or a `document` element or
+		# the `jsonld` element root.
+		# Its keys must either be terms, compact IRIs, absolute IRIs, 
+		# or the attributes `language`, `base`, and `vocab`.
+		# `nodeObject` elements contained in a `context` element must be
+		# either an expanded term node with allowed attributes: id (the wzName), reverse, type, language, container
+		a language
+			# must have the lexical form described in [https://tools.ietf.org/html/bcp47] or be null
+		a base
+			# must be an absolute IRI, a relative IRI, or null
+		a vocab
+			# must be a absolute IRI, a compact IRI, a blank node identifier, a term, or null
+
+		m wzInitialize
+			set this.__jsonld
+				{
+			if verify.isNotEmpty(this.language)
+				set this.__jsonld['@language'] = this.language
+			if verify.isNotEmpty(this.base)
+				set this.__jsonld['@base'] = this.base
+			if verify.isNotEmpty(this.vocab)
+				set this.__jsonld['@vocab'] = this.vocab
+			foreach item in this.jsonlditems
+				_ item.wzInitialize(ctx)
+				if item.wzElement === 'term'
+					if !item.__key
+						_ ctx.addError('The `term` element has no key', item)
+					else
+						set this.__jsonld[item.__key] = item.__jsonld
+				else
+					_ ctx.addError('Unknow child of `context` element : ' + item.wzElement, item)
+			# log 'this.__jsonld', this.__jsonld
+			set this.__jsonProps
+				{
+					@ __jsonld this.__jsonld
+
+	e graph : nodeObject
+		# Must be either a node object or an array of zero or more node objects.
+
+		m wzInitialize
+			var isArrayOfNodes = true
+			foreach item in this.jsonlditems
+				# log 'graph.item.wzElement', item.wzElement
+				if item.wzElement !== 'nodeObject'
+					set isArrayOfNodes = false
+			if isArrayOfNodes
+				set this.__jsonld
+					[
+				foreach item in this.jsonlditems
+					_ item.wzInitialize(ctx)
+					_ this.__jsonld.push(item.__jsonld)
+				set this.__jsonProps
+					{
+						@ __jsonld this.__jsonld
+			else
+				_ _md.nodeObject.prototype.wzInitialize.call(this, ctx);
+			return
+
+		m nodesOfType
+			param type
+			param gotten
+			if verify.isArray(this.__jsonld)
+				foreach item in this.jsonlditems
+					if item.wzElement === 'nodeObject'
+						_ item.nodesOfType(type, gotten)
+			elif this['@type'] === type
+				_ gotten.push(this.__jsonld)
+
+	e type : jsonlditem
+		# Must be either an absolute IRI, a relative IRI, a compact IRI (including blank node identifiers), 
+		# a term defined in the active context expanding into an absolute IRI, or an array of any of these
+		
+		m wzInitialize
+			if this.jsonlditems.length > 0
+				set this.__jsonld = []
+				foreach item in this.jsonlditems
+					_ item.wzInitialize(ctx)
+					if item.wzElement === 'array'
+						set this.__jsonld = item.__jsonld
+					else
+						_ ctx.addError('Unknow child of `type` element : ' + item.wzElement, item)
+			else
+				set this.__jsonld = this.wzName
+				var ss = this.wzName.split(':')
+				if ss.length > 1
+					set this.__prefix = ss[0]
+					set this.__localName = ss[1]
+					# TODO
+					# set this.__ns = ...
+				else
+					set this.__localName = this.wzName
+
+		m isType
+			param type
+			if verify.isArray(this.__jsonld)
+				foreach value in this.__jsonld
+					if value === type
+						return true
+			else
+				return this.__jsonld === type
+
+	e valueObject : jsonlditem
+		tag value
+		# Is used to explicitly associate a type or a language with a value
+		# to create a typed value or a language-tagged string.
+		# May contain a `type`, a `language` or an `index` attribute, or a `context` element 
+		# but must not contain both a `type` and a `language` key at the same time. 
+		# A value object must not contain any other keys that expand to an absolute IRI or keyword.
+		# The `wzName` contains the `@value` content. It must be either a string, a number, 
+		# true, false or null.
+		# The value associated with the `type` element/attribute must be a term, a compact IRI, 
+		# an absolute IRI, a relative IRI, or null.
+		# The value associated with the `language` attribute must have the lexical form 
+		# described in [https://tools.ietf.org/html/bcp47] or be null
+		
+		a language
+			# The `JSON-LD @language key`
+			# The value must have the lexical form described 
+			# in [https://tools.ietf.org/html/bcp47] or be null.
+		a index
+			# The `JSON-LD @index key`
+			# The value associated with the `index` attribute must be a string.
+
+		m wzInitialize
+			set this.__jsonld = this.wzName
+			if verify.isNotEmpty(this.language)
+				if verify.isObject(this.__jsonld)
+					set this.__jsonld['@language'] = this.language
+				else
+					set this.__jsonld
+						{
+							@ ['@value'] this.__jsonld
+							@ ['@language'] this.language
+			if verify.isNotEmpty(this.index)
+				if verify.isObject(this.__jsonld)
+					set this.__jsonld['@index'] = this.index
+				else
+					set this.__jsonld
+						{
+							@ ['@value'] this.__jsonld
+							@ ['@index'] this.index
+			foreach item in this.jsonlditems
+				_ item.wzInitialize(ctx)
+				if item.wzElement === 'context'
+					if verify.isObject(this.__jsonld)
+						set this.__jsonld['@context'] = item.__jsonld
+					else
+						set this.__jsonld
+							{
+								@ ['@value'] this.__jsonld
+								@ ['@context'] item.__jsonld
+				elif item.wzElement === 'type'
+					if verify.isObject(this.__jsonld)
+						set this.__jsonld['@type'] = item.__jsonld
+					else
+						set this.__jsonld
+							{
+								@ ['@value'] this.__jsonld
+								@ ['@type'] item.__jsonld
+				else
+					_ ctx.addError('Unknow child of `valueObject` element : ' + item.wzElement, item)
+
+			set this.__jsonProps
+				{
+					@ __jsonld this.__jsonld
+
+	e set : jsonlditem
+		# Can can contain the `context` element and an array of
+		# zero or more of `nodeObject`, `valueObject` and `valueItem` elements.
+		
+		m wzInitialize
+			set this.__jsonld = {}
+			var items = []
+			foreach item in this.jsonlditems
+				_ item.wzInitialize(ctx)
+				if item.wzElement === 'context'
+					set this.__jsonld['@context'] = item.__jsonld
+				elif item.wzElement === 'term'
+					_ items.push(item.__key)
+				else
+					_ ctx.addError('Unknow child of `set` element : ' + item.wzElement, item)
+			set this.__jsonld['@set'] = items
+	
+	e list : jsonlditem
+		# Can contain the `index` attribute, the `context` element and an array of
+		# zero or more of `nodeObject`, `valueObject` and `valueItem` elements.
+		
+		a index
+			# The `JSON-LD @index key`
+			# The value associated with the `index` attribute must be a string.
+
+		m wzInitialize
+			set this.__jsonld = {}
+			if verify.isNotEmpty(this.index)
+				set this.__jsonld['@index'] = this.index
+			var items = []
+			foreach item in this.jsonlditems
+				_ item.wzInitialize(ctx)
+				if item.wzElement === 'context'
+					set this.__jsonld['@context'] = item.__jsonld
+				elif item.wzElement === 'term'
+					_ items.push(item.__key)
+				else
+					_ ctx.addError('Unknow child of `list` element : ' + item.wzElement, item)
+			set this.__jsonld['@list'] = items
+
+	e array : jsonlditem
+		tag [
+		# Can contains an array of `property` values.
+
+		m wzInitialize
+			set this.__jsonld = []
+			foreach item in this.jsonlditems
+				_ item.wzInitialize(ctx)
+				if item.wzElement === 'term'
+					_ this.__jsonld.push(item.__key)
+				else
+					_ ctx.addError('Unknow child of `term` element : ' + item.wzElement, item)
+
+	e valueItem : jsonlditem
+		is-abstract
+	
+	e string : valueItem
+		# The `wzName` contains the string (unquoted).
+		m wzInitialize
+			set this.__jsonld = this.wzName
+	
+	e number : valueItem
+		# The `wzName` contains the number.
+		m wzInitialize
+			set this.__jsonld = Number(this.wzName)
+	
+	e true : valueItem
+		# No `wzName`.
+		m wzInitialize
+			set this.__jsonld = true
+	
+	e false : valueItem
+		# No `wzName`.
+		m wzInitialize
+			set this.__jsonld = false
+	
+	e null : valueItem
+		# No `wzName`.
+		m wzInitialize
+			set this.__jsonld = null
+

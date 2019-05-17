@@ -1,0 +1,57 @@
+﻿$group
+
+	-
+		- Grid
+
+	$function make_container
+		width 100%
+		padding-right ${ grid_gutter_width / 2 }px
+		padding-left ${ grid_gutter_width / 2 }px
+		margin-right auto
+		margin-left auto
+
+	$function make_container_max_widths
+		
+		$$ For each breakpoint, define the maximum width of the container in a media query
+		$foreach breakpoint in Object.keys(grid_breakpoints)
+			$if breakpoint_min(breakpoint)
+				media min-width: ${ breakpoint_min(breakpoint) }px
+					$$ TODO media can have parents
+					. container
+						max-width ${ container_max_widths[breakpoint] }px
+	
+	$function make_row
+		display flex
+		flex-wrap wrap
+		margin-right ${ grid_gutter_width / -2 }px
+		margin-left ${ grid_gutter_width / -2 }px
+
+	$function make_col_ready
+		position relative
+		$$ Prevent columns from becoming too narrow when at smaller grid tiers by
+		$$ always setting `width: 100%;`. This works because we use `flex` values
+		$$ later on to override this initial width.
+		width 100%
+		min-height 1px $$ Prevent collapsing
+		padding-right ${ grid_gutter_width / 2 }px
+		padding-left ${ grid_gutter_width / 2 }px
+
+	. container
+		$_ make_container
+		$_ make_container_max_widths
+
+	. container-fluid
+		$_ make_container
+	
+	. row
+		$_ make_row
+
+	$$ Remove the negative margin from default .row, then the horizontal padding
+	$$ from all immediate children columns (to prevent runaway style inheritance).
+	. no-gutters
+		margin-right 0
+		margin-left 0
+		> .col
+			+ > [class*="col-"] 
+			padding-right 0
+			padding-left 0

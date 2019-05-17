@@ -1,0 +1,10 @@
+﻿$group
+	$params varName, method|@@null, type|Parameter
+	if verify.isFunction(${varName}) == false
+		return
+			_ callback
+				_ error
+					@ 101
+					@ '${method}'
+					@ "${type} '${varName}' must be a function. Received: " + util.inspect(${varName}, { depth: null })
+		

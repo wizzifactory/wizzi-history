@@ -1,0 +1,47 @@
+﻿$group
+
+	@ createUser
+		function
+			param options
+			param callback
+
+			# options.userId required
+			# options.currentProject optional
+
+			var metaPath
+				_ paths.userMeta
+					@ options
+
+			_ this.getUser
+				@ options
+				f_cb_no_err( result )
+					if !err
+						# user already exists
+						_ callback
+							{
+								@ status
+									_ error
+										@ 'User "' + options.userId + '" already exists.'
+					
+					delete options.userId
+
+					var userMeta
+						_ Object.assign
+							{
+							@ result.data
+							@ options
+
+					_ file.writeJSON
+						@ metaPath
+						@ userMeta
+
+					_ callback
+						@ null
+						{
+							@ data
+								{
+									@ name userMeta.name
+									@ currentProject userMeta.currentProject
+							@ status
+								_ success
+									@ 'User created: "' + options.userId + '"'

@@ -1,0 +1,43 @@
+﻿$group
+
+	@ saveConsoleScript
+		function
+			param options
+			param callback
+
+			const fileName = options.name
+			const ittfContent = options.content
+
+			const ittfPath
+				_ paths.consoleIttfDocument
+					@ fileName
+			log 'saveConsoleScript.ittfPath', ittfPath
+
+			_ file.write
+				@ ittfPath
+				@ ittfContent
+
+			_ globalApi.wf.loadModelAndGenerateArtifact
+				@ null
+				@ ittfPath
+				{
+				@ 'js/module'
+				{
+				f_cb_api(result)
+					const jsPath
+						_ paths.consoleJsDocument
+							@ fileName
+					log 'saveConsoleScript.jsPath', jsPath
+					_ file.write
+						@ jsPath
+						@ result.data
+					return
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ generated result.data
+								@ status
+									_ success
+										@ 'Console script saved: ' + fileName

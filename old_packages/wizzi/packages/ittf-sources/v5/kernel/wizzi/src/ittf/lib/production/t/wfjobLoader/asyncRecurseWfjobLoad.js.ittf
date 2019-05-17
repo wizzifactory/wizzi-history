@@ -1,0 +1,60 @@
+﻿$group
+
+	#
+		# A 'wfjob' model may contain the request for the execution
+		# of another wfjob. The accumulation of all the requested artifacts
+		# must be a recursive action.
+		#
+		# The same wizzi.production.WfjobLoader instance is passed through 
+		# the recursive loadings. 
+		# It loads the `wfjob` requests and checks that wfjobs and 
+		# wfjobArtifactModels are processed once.
+		# (see methods _areWfjobRequestsEqual and _areArtifactInfoConfigsEqual for equality criteria)
+		# 
+		# At the end of the recursion the WfjobLoader instance contains
+		# the wizzi.artifact.artifactInfo instances that have to be
+		# executed by the wizzi.production.productionManager.
+		#
+	wz-function AsyncRecurseWfjobLoad
+		{ wfjobRequest
+			{ wfjobLoader
+		callback
+		log '='
+		log '= ========= wizzi.AsyncRecurseWfjobLoad. Start. wfjobRequest.model : ', wfjobRequest.model
+		log '='
+		var wfjobLoader = wfjobRequest.wfjobLoader
+		_ wfjobLoader.load
+			@ wfjobRequest
+			f_cb( result )
+				
+				log '='
+				log '= ========= wizzi.AsyncRecurseWfjobLoad. Results. ',
+					\b 'seenWfjobRequests: ', result.seenWfjobRequests.length,
+					\b ', artifactInfoConfigs: ', result.artifactInfoConfigs.length,
+					\b ', pendingWfjobRequests: ', result.pendingWfjobRequests 
+				log '='
+				
+				if result.pendingWfjobRequests.length > 0
+					
+					var jobRequests = result.pendingWfjobRequests
+					set result.pendingWfjobRequests = []
+					
+					# set the same wfjobLoader for any jobRequest
+					foreach item in jobRequests
+						set item.wfjobLoader = wfjobLoader
+					
+					# recurse
+					_ async.map
+						@ jobRequests
+						@ AsyncRecurseWfjobLoad
+						f_cb( result )
+							return 
+								_ callback
+									@ null
+									@ wfjobLoader
+				else
+					return 
+						_ callback
+							@ null
+							@ wfjobLoader
+						 

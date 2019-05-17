@@ -1,0 +1,74 @@
+﻿$group
+
+	function ittfFsNode_step_1
+		
+		log 'wizzi-utils.examples.ittfFsNode_step_1 START'
+		
+		var folderPath
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'first'
+
+		var options
+			{
+				@ name 'first'
+				@ gitPath 'c:/blabla'
+
+		var removeRoot = path.dirname(folderPath)
+		log 'folderPath, removeRoot', folderPath, removeRoot
+		
+		var baseFolder = path.basename(folderPath)
+
+		_ vfile
+			f_cb_test( file )
+		
+				_ file.getGlobbedFilesEx
+					_ path.join
+						@ folderPath
+						@ '**/*.ittf'
+					{
+						@ removeRoot removeRoot
+						@ dot true
+						@ ignore
+							_ path.join
+								@ folderPath
+								@ '**/node_modules/**/*.*'
+					f_cb_test( ittfs )
+						
+						log 'ittfs\n', JSON.stringify(ittfs, null, 2)
+						
+						var ittfMTreeEx = new IttfMTreeEx('wzpackage', options.name)
+						
+						var root
+							new IttfFsNode
+								@ baseFolder
+								@ null
+								{
+									@ isDirectory true
+									@ file file
+						
+						_ root.setSourcePaths
+							{
+								@ ittfBasePath removeRoot
+								@ jsCodeBasePath options.gitPath
+			
+						# create the IttfFsNode tree structure of the scanned folder
+						foreach ittf in ittfs
+				
+							_ root.addDocument
+								@ ( ittf[0] === '/' ? ittf.substr(1) : ittf )
+								{
+									@ basePath removeRoot
+									@ gitPath options.gitPath
+			
+						# analize all IttfFsNode(s) starting from root
+						# this also searches mixed or included ittf fragments that are 
+						# outside (up) of folderPath
+						_ root.analize2
+							f_cb_test()
+								# export folder infos to an mTree conformant to the
+								# 'wzpackage' schema.
+								_ root.toIttf2(ittfMTreeEx)
+			
+								log 'IttfFsNode.ittfMTreeEx\n', ittfMTreeEx.toString()

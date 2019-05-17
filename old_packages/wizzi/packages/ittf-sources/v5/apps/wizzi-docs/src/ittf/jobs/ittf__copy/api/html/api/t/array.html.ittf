@@ -1,0 +1,44 @@
+﻿$group
+
+	$function buildup_array
+		$param obj
+		$param smr
+
+		$ var item = obj.items && obj.items.length == 1 ? obj.items[0] : null;
+
+		$if item != null
+			. gsf-smr-${smr}
+				$if item.type === 'object' 
+					span {
+				$elif item.type === 'array' 
+					span [
+				$elif item.type === 'alternative' 
+				$else
+					span ${item.type} 
+				
+				span ${item.wzName}
+					class api-param-name
+
+				$_ comments
+					$@ item
+					$@ smr+1
+					$@ 'array-item'
+
+				$_ api_ref
+					$@ item
+					$@ smr+1
+
+				$if item.type === 'array'
+					$_ buildup_array
+						$@ item
+						$@ smr+1
+
+				$if item.type === 'object'
+					$_ buildup_object
+						$@ item
+						$@ smr+1
+
+				$if item.type === 'alternative'
+					$_ buildup_alternative
+						$@ item
+						$@ smr+1

@@ -1,0 +1,85 @@
+﻿wui-comp( SvgIcon )
+
+	$append styles
+		@ svgIcon
+			{
+				@ display 'inline-block'
+				@ fill theme.palette.text.secondary
+				@ height 24
+				@ width 24
+				@ userSelect 'none'
+				@ transition
+					_ theme.transitions.create
+						@ 'fill'
+						{
+							@ duration theme.transitions.duration.shorter
+				@ '&:hover'
+					{
+						@ fill theme.palette.accent.A200
+
+	$append propTypes
+		@ classes PropTypes.object.isRequired
+		@ className PropTypes.string
+		@ children PropTypes.node
+		@ onMouseEnter PropTypes.func
+		@ onMouseLeave PropTypes.func
+		@ viewBox PropTypes.string
+			# Allows you to redefine what the coordinates
+			# without units mean inside an svg element. For example,
+			# if the SVG element is 500 (width) by 200 (height), and you
+			# pass viewBox="0 0 50 20", this means that the coordinates inside
+			# the svg will go from the top left corner (0,0) to bottom right (50,20)
+			# and each unit will be worth 10px.
+
+	$append defaultTypes
+		@ onMouseEnter () => {}
+		@ onMouseLeave () => {}
+		@ viewBox '0 0 24 24'
+
+	ctor
+		param props
+		base props
+		set this.state
+			{
+				@ hovered false
+		set this.handleMouseLeave = this.handleMouseLeave.bind(this)
+		set this.handleMouseEnter = this.handleMouseEnter.bind(this)
+
+	m handleMouseLeave
+		param event
+		_ this.setState({hovered: false})
+		_ this.props.onMouseLeave(event)
+
+	m handleMouseEnter
+		param event
+		_ this.setState({hovered: true})
+		_ this.props.onMouseEnter(event)
+
+	m render
+		const {
+			\b children,
+			\b classes,
+			\b className: classNameProp,
+			\b onMouseEnter, 
+			\b onMouseLeave, 
+			\b viewBox,
+			\b titleAccess,
+			\b ...other
+			\b } = this.props;
+
+		const className
+			_ classNames
+				{
+					@ [classes.svgIcon] true
+				@ classNameProp
+
+		return
+			< svg
+				@ className {className}
+				@ viewBox {viewBox}
+				@ aria-hidden {titleAccess ? 'false' : 'true'}
+				@ onMouseEnter {this.handleMouseEnter}
+				@ onMouseLeave {this.handleMouseLeave}
+				@ {...other}
+				+ {titleAccess ? <title>{titleAccess}</title> : null}
+				+ {children}

@@ -1,0 +1,49 @@
+html
+
+	$
+		var currentPage = 'Code';
+		var currentSubPage = wfpackage.wzName;
+		var type = {};
+
+	wizzi-site-layout-compile()
+
+		$append styles
+			css styles.css
+
+		$include folder
+		$include folder_source
+
+		$global
+			var count = 0;
+			var dcount = 0;
+
+		html/nav_sidebar()
+			section
+				id main-toc
+				class toc
+
+				h3 ${wfpackage.wzName} ittf source code:
+				. treeview
+					$global
+						dcount = 0;
+					$foreach f in wfpackage.folders
+						$_ buildup_folder
+							$@ f
+							$@ 0
+
+		div
+			class main-content
+			$global
+				dcount = 0;
+
+			$foreach f in wfpackage.folders
+				$_ buildup_folder_source
+					$@ f
+					$@ 0
+
+			. modal
+				id frag-modal
+				. modal-content
+					id frag-modal-content
+					span &times;
+						class modal-close

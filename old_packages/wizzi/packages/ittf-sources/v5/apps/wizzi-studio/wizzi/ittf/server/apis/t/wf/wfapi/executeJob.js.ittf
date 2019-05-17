@@ -1,0 +1,60 @@
+﻿$group
+
+	@ executeJob
+		function
+			param sessionData
+			param ittfDocumentUri
+			param jobName
+			param globalContext
+			param callback
+
+			if typeof(callback) != 'function'
+				set callback = globalContext
+				set globalContext = {}
+
+			if userAuthRequired
+				_ createWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ null
+					_ executeJob_cb
+						@ jobName
+						@ ittfDocumentUri
+						@ globalContext
+						@ callback
+			else
+				_ createWizziFactory
+					@ null
+					_ executeJob_cb
+						@ jobName
+						@ ittfDocumentUri
+						@ globalContext
+						@ callback
+
+			function executeJob_cb
+				param jobName
+				param ittfDocumentUri
+				param globalContext
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.executeJob
+							{
+								@ name jobName
+								@ path ittfDocumentUri
+								@ productionOptions
+									_ wizzi.productionOptions
+										{
+											@ indentSpaces 4
+											@ basedir path.dirname(ittfDocumentUri)
+											@ verbose 2
+								@ globalContext globalContext
+							f_cb_api( result )
+								return
+									_ callback
+										@ null
+										{
+											@ result result
+											@ status
+												_ success
+													@ 'Wizzi job ' + jobName + ' executed'

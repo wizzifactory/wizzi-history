@@ -1,0 +1,37 @@
+﻿$group
+
+	#
+		# Create an instance of the mongoDb Document class
+		# for managing files and directory
+	set md.mongoDbDocumentManager
+		function mongoDbDocumentManager
+			string mongoUri
+			callback
+			_ MongoDocument.create
+				@ mongoUri
+				f_cb( docman )
+					r_cb( docman )
+	+
+	#
+		# mongoDb virtual file service
+		# params
+		#   { options
+		#     string mongoUri
+		#     string mongodbBaseFolder
+	set md.dbfile
+		function dbfile
+			{ options
+				string mongoUri
+				string mongodbBaseFolder
+			callback
+			var fsimpl
+				new MongoFsImpl
+					@ options.mongoUri
+					@ options.mongodbBaseFolder
+			_ fsimpl.open
+				f_cb( notUsed )
+					_ vfile
+						@ fsimpl
+						f_cb( dbfile )
+							r_cb( dbfile )
+

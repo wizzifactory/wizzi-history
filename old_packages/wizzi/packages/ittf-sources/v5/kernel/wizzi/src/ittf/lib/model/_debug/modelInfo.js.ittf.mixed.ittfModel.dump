@@ -1,0 +1,494 @@
+  module  ids: 1 196
+    kind jsfile ids: 2 197
+    var util = require("util") ids: 3 198
+    var assert = require("assert") ids: 4 199
+    var path = require("path") ids: 5 200
+    var async = require("async") ids: 6 201
+    var errors = require('../errors') ids: 7 202
+    var verify = require('../util/verify') ids: 8 203
+    var log ids: 9 204
+      _ require('../util/log') ids: 10 205
+        (  ids: 11 206
+          @ module ids: 12 207
+    var ittfs = require('../ittf/fs') ids: 13 208
+    +  ids: 14 209
+    #  ids: 15 210
+      # param config = { ids: 16 211
+      # cwd:String, ids: 17 212
+      # src:String, ids: 18 213
+      # ignore:String, ids: 19 214
+      # schema:String, ids: 20 215
+      # contexts:Object, // ModelInfo configs for context objects ids: 21 216
+      # coll:Object { ids: 22 217
+      # name:String ids: 23 218
+      # itemName:String ids: 24 219
+      # pathTemplateValues:Array of { ids: 25 220
+      # token:String ids: 26 221
+      # attribute:String ids: 27 222
+      # function:Function ids: 28 223
+      # } ids: 29 224
+      # } ids: 30 225
+      # modelRef:Object { ids: 31 226
+      # exportName:String ids: 32 227
+      # } ids: 33 228
+      # }; ids: 34 229
+    +  ids: 35 230
+    function logme ids: 36 231
+      if false ids: 37 232
+        _ console.log.apply(console, arguments) ids: 38 233
+    +  ids: 39 234
+    var modelInfoCount = 0 ids: 40 235
+    +  ids: 41 236
+    wz-class ModelInfo ids: 42 237
+      ctor  ids: 43 238
+        param config ids: 44 239
+        set config.id = ('mi_' + ++modelInfoCount) ids: 45 240
+        set this.id = config.id ids: 46 241
+        set this.config = config ids: 47 242
+        set this.schema = config.schema ids: 48 243
+        set this.contexts ids: 49 244
+          [  ids: 50 245
+        if verify.isArray(config.contexts) ids: 51 246
+          foreach item in config.contexts ids: 52 247
+            _ this.contexts.push ids: 53 248
+              new ModelInfo(item) ids: 54 249
+        set this.transformers = config.transformers ids: 55 250
+        set this.coll = config.coll ids: 56 251
+        set this.exportName = config.exportName ids: 57 252
+        +  ids: 58 253
+        if verify.isString(config.src) === false ids: 59 254
+          throw this.error("config.src must be a string") ids: 60 255
+        else  ids: 61 256
+          set this.generatorRequireContextOnly = false ids: 62 257
+          if config.src === 'context' ids: 63 258
+            set this.generatorRequireContextOnly = true ids: 64 259
+          else  ids: 65 260
+            set config.src = ittfs.unixifyPath(config.src) ids: 66 261
+            if verify.isString(config.cwd) ids: 67 262
+              set config.cwd = ittfs.unixifyPath(config.cwd) ids: 68 263
+            var ndx = config.src.indexOf('/*') ids: 69 264
+            if ndx > -1 ids: 70 265
+              set config.srcPattern = config.src.substr(ndx) ids: 71 266
+              set config.src = config.src.substr(0, ndx) ids: 72 267
+        if this.generatorRequireContextOnly == false ids: 73 268
+          if verify.isAbsolutePath(config.src) === false && verify.isEmpty(config.cwd) === true ids: 74 269
+            throw this.error("when config.src is not an absolute path, config.cwd must be a not empty string") ids: 75 270
+      m src ids: 76 271
+        param value ids: 77 272
+        if this.generatorRequireContextOnly == true ids: 78 273
+          return null ids: 79 274
+        if typeof (value) === 'undefined' ids: 80 275
+          return this.config.src ids: 81 276
+        else  ids: 82 277
+          set this.config.src = value ids: 83 278
+      m srcFullPath ids: 84 279
+        if this.generatorRequireContextOnly == true ids: 85 280
+          return null ids: 86 281
+        return  ids: 87 282
+          iif verify.isAbsolutePath(this.config.src) ids: 88 283
+            then  ids: 89 284
+              set this.config.src ids: 90 285
+            else  ids: 91 286
+              _ path.join ids: 92 287
+                @ this.config.cwd ids: 93 288
+                @ this.config.src ids: 94 289
+      m ignoreFullPath ids: 95 290
+        return  ids: 96 291
+          iif verify.isAbsolutePath(this.config.ignore) ids: 97 292
+            then  ids: 98 293
+              set this.config.ignore ids: 99 294
+            else  ids: 100 295
+              _ path.join ids: 101 296
+                @ this.config.cwd ids: 102 297
+                @ this.config.ignore ids: 103 298
+      m srcGlobPath ids: 104 299
+        var globPattern = this.config.srcPattern || '/**/*.*' ids: 105 300
+        if globPattern.substr(0, 1) !== '/' ids: 106 301
+          set globPattern = ('/' + globPattern) ids: 107 302
+        return this.srcFullPath() + globPattern ids: 108 303
+      m srcGlobOptions ids: 109 304
+        var ret ids: 110 305
+          {  ids: 111 306
+        if this.config.ignore ids: 112 307
+          set ret.ignore = [this.ignoreFullPath()] ids: 113 308
+        return ret ids: 114 309
+      m productionManager ids: 115 310
+        param value ids: 116 311
+        if typeof (value) === 'undefined' ids: 117 312
+          return this.productionManagerInstance ids: 118 313
+        else  ids: 119 314
+          if verify.isObject(value) === false ids: 120 315
+            throw  ids: 121 316
+              new Error("value parameter must be an object. Instead is: " + value) ids: 122 317
+          set this.productionManagerInstance = value ids: 123 318
+      m hasContext ids: 124 319
+        return verify.isArray(this.config.contexts) && this.config.contexts.length > 0 ids: 125 320
+      m getContextCollectionInfo ids: 126 321
+        if this.hasContext() ids: 127 322
+          foreach item in this.config.contexts ids: 128 323
+            if verify.isObject(item.coll) ids: 129 324
+              return item.coll ids: 130 325
+        return null ids: 131 326
+      m getModelInfos ids: 132 327
+        param options ids: 133 328
+        param callback ids: 134 329
+        var that = this ids: 135 330
+        _ this.isDirectory ids: 136 331
+          $group  ids: 777 787
+            $args: isDirectory  $params: result
+            function  ids: 779 788
+              param err ids: 780 789
+              param ${result} ids: 781 790
+              if err ids: 782 791
+                return  ids: 783 792
+                  _ callback ids: 784 793
+                    @ err ids: 785 794
+              if isDirectory ids: 138 333
+                var ret ids: 139 334
+                  [  ids: 140 335
+                _ that.getFiles ids: 141 336
+                  @ options ids: 142 337
+                  $group  ids: 777 796
+                    $args: files  $params: result
+                    function  ids: 779 797
+                      param err ids: 780 798
+                      param ${result} ids: 781 799
+                      if err ids: 782 800
+                        return  ids: 783 801
+                          _ callback ids: 784 802
+                            @ err ids: 785 803
+                      if files.__is_error ids: 144 339
+                        return  ids: 145 340
+                          _ callback(files) ids: 146 341
+                      for var i = 0; i < files.length; i++ ids: 147 342
+                        var fileInfo = files[i] ids: 148 343
+                        var mi = that.clone() ids: 149 344
+                        _ mi.src ids: 150 345
+                          @ fileInfo.relpath ids: 151 346
+                        _ mi.productionManager ids: 152 347
+                          @ that.productionManagerInstance ids: 153 348
+                        _ ret.push(mi) ids: 154 349
+                      return  ids: 155 350
+                        _ callback ids: 156 351
+                          @ null ids: 157 352
+                          @ ret ids: 158 353
+              else  ids: 159 354
+                return  ids: 160 355
+                  _ callback ids: 161 356
+                    @ null ids: 162 357
+                    [  ids: 163 358
+                      @ that ids: 164 359
+      m clone ids: 165 360
+        var newconfig ids: 166 361
+          {  ids: 167 362
+            @ cwd this.config.cwd ids: 168 363
+            @ src this.config.src ids: 169 364
+            @ schema this.config.schema ids: 170 365
+            @ contexts this.config.contexts ids: 171 366
+            @ transformers this.config.transformers ids: 172 367
+            @ coll this.config.coll ids: 173 368
+        var ret ids: 174 369
+          new ModelInfo(newconfig) ids: 175 370
+        return ret ids: 176 371
+      m error ids: 177 372
+        param message ids: 178 373
+        param method ids: 179 374
+        var err ids: 180 375
+          {  ids: 181 376
+            @ __is_error true ids: 182 377
+            @ message message ids: 183 378
+            @ source "wizzi/lib/model/modelInfo/" + method ids: 184 379
+        _ logme(err) ids: 185 380
+        return err ids: 186 381
+      m toString ids: 187 382
+        return 'modelInfo.config: ' + util.inspect(this.config, {depth: 2}) ids: 188 383
+      m terminate ids: 189 384
+      $group  ids: 391 523
+        m getSource ids: 392 524
+          param callback ids: 393 525
+          _ assert.equal("function", typeof(callback)) ids: 394 526
+          var that = this ids: 395 527
+          _ this.exists ids: 396 528
+            $group  ids: 777 805
+              $args: exists  $params: result
+              function  ids: 779 806
+                param err ids: 780 807
+                param ${result} ids: 781 808
+                if err ids: 782 809
+                  return  ids: 783 810
+                    _ callback ids: 784 811
+                      @ err ids: 785 812
+                if !exists ids: 398 530
+                  _ callback ids: 399 531
+                    _ that.error ids: 400 532
+                      @ "Cannot get source. File not found : " + that.srcFullPath() ids: 401 533
+                      @ 'getSource' ids: 402 534
+                _ that.isFile ids: 403 535
+                  $group  ids: 777 814
+                    $args: isFile  $params: result
+                    function  ids: 779 815
+                      param err ids: 780 816
+                      param ${result} ids: 781 817
+                      if err ids: 782 818
+                        return  ids: 783 819
+                          _ callback ids: 784 820
+                            @ err ids: 785 821
+                      if !isFile ids: 405 537
+                        _ callback ids: 406 538
+                          _ that.error ids: 407 539
+                            @ "Cannot get source. Is not a file : " + that.srcFullPath() ids: 408 540
+                            @ 'getSource' ids: 409 541
+                      _ ittfs.read ids: 410 542
+                        _ that.srcFullPath() ids: 411 543
+                        @ callback ids: 412 544
+        m getSources ids: 413 545
+          param callback ids: 414 546
+          _ assert.equal("function", typeof(callback)) ids: 415 547
+          var that = this ids: 416 548
+          _ this.exists ids: 417 549
+            $group  ids: 777 823
+              $args: exists  $params: result
+              function  ids: 779 824
+                param err ids: 780 825
+                param ${result} ids: 781 826
+                if err ids: 782 827
+                  return  ids: 783 828
+                    _ callback ids: 784 829
+                      @ err ids: 785 830
+                if !exists ids: 419 551
+                  _ callback ids: 420 552
+                    _ that.error ids: 421 553
+                      @ "Cannot get sources. Directory not found : " + that.srcFullPath() ids: 422 554
+                      @ 'getSources' ids: 423 555
+                _ that.isDirectory ids: 424 556
+                  $group  ids: 777 832
+                    $args: isDirectory  $params: result
+                    function  ids: 779 833
+                      param err ids: 780 834
+                      param ${result} ids: 781 835
+                      if err ids: 782 836
+                        return  ids: 783 837
+                          _ callback ids: 784 838
+                            @ err ids: 785 839
+                      if !isDirectory ids: 426 558
+                        _ callback ids: 427 559
+                          _ that.error ids: 428 560
+                            @ "Cannot get sources. Is not a directory : " + that.srcFullPath() ids: 429 561
+                            @ 'getSources' ids: 430 562
+                      _ that.getFiles ids: 431 563
+                        {  ids: 432 564
+                        $group  ids: 777 841
+                          $args: fileInfos  $params: result
+                          function  ids: 779 842
+                            param err ids: 780 843
+                            param ${result} ids: 781 844
+                            if err ids: 782 845
+                              return  ids: 783 846
+                                _ callback ids: 784 847
+                                  @ err ids: 785 848
+                            _ async.map ids: 434 566
+                              @ fileInfos ids: 435 567
+                              function  ids: 436 568
+                                param fileInfo ids: 437 569
+                                param callback ids: 438 570
+                                _ ittfs.read ids: 439 571
+                                  @ fileInfo.fullpath ids: 440 572
+                                  $group  ids: 777 850
+                                    $args: content  $params: result
+                                    function  ids: 779 851
+                                      param err ids: 780 852
+                                      param ${result} ids: 781 853
+                                      if err ids: 782 854
+                                        return  ids: 783 855
+                                          _ callback ids: 784 856
+                                            @ err ids: 785 857
+                                      _ callback ids: 442 574
+                                        @ null ids: 443 575
+                                        {  ids: 444 576
+                                          @ fullpath fileInfo.fullpath ids: 445 577
+                                          @ relpath fileInfo.relpath ids: 446 578
+                                          @ content content ids: 447 579
+                              $group  ids: 777 859
+                                $args: fileContents  $params: result
+                                function  ids: 779 860
+                                  param err ids: 780 861
+                                  param ${result} ids: 781 862
+                                  if err ids: 782 863
+                                    return  ids: 783 864
+                                      _ callback ids: 784 865
+                                        @ err ids: 785 866
+                                  _ callback ids: 449 581
+                                    @ null ids: 450 582
+                                    @ fileContents ids: 451 583
+        m getFiles ids: 452 584
+          param options ids: 453 585
+          param callback ids: 454 586
+          _ assert.equal("function", typeof(callback)) ids: 455 587
+          var that = this ids: 456 588
+          _ this.exists ids: 457 589
+            $group  ids: 777 868
+              $args: exists  $params: result
+              function  ids: 779 869
+                param err ids: 780 870
+                param ${result} ids: 781 871
+                if err ids: 782 872
+                  return  ids: 783 873
+                    _ callback ids: 784 874
+                      @ err ids: 785 875
+                if !exists ids: 459 591
+                  _ callback ids: 460 592
+                    _ that.error ids: 461 593
+                      @ "Cannot get files. Directory not found : " + that.srcFullPath() ids: 462 594
+                      @ 'getFiles' ids: 463 595
+                _ that.isDirectory ids: 464 596
+                  $group  ids: 777 877
+                    $args: isDirectory  $params: result
+                    function  ids: 779 878
+                      param err ids: 780 879
+                      param ${result} ids: 781 880
+                      if err ids: 782 881
+                        return  ids: 783 882
+                          _ callback ids: 784 883
+                            @ err ids: 785 884
+                      if !isDirectory ids: 466 598
+                        _ callback ids: 467 599
+                          _ that.error ids: 468 600
+                            @ "Cannot get files. Is not a directory : " + that.srcFullPath() ids: 469 601
+                            @ 'getFiles' ids: 470 602
+                      var  ids: 471 603
+                        decl ret ids: 472 604
+                          [  ids: 473 605
+                        decl srcFullPath = that.srcFullPath() ids: 474 606
+                        decl srcGlobPath = that.srcGlobPath() ids: 475 607
+                      _ ittfs.getGlobbedFiles ids: 476 608
+                        @ srcGlobPath ids: 477 609
+                        _ that.srcGlobOptions() ids: 478 610
+                        $group  ids: 777 886
+                          $args: files  $params: result
+                          function  ids: 779 887
+                            param err ids: 780 888
+                            param ${result} ids: 781 889
+                            if err ids: 782 890
+                              return  ids: 783 891
+                                _ callback ids: 784 892
+                                  @ err ids: 785 893
+                            for var i = 0; i < files.length; i++ ids: 480 612
+                              var fileInfo = files[i] ids: 481 613
+                              # skip "_debug" folder ids: 482 614
+                              if fileInfo.indexOf('/_debug/') > -1 ids: 483 615
+                                continue  ids: 484 616
+                              # skip "__copy" and "t" folders ids: 485 617
+                              if !options.final ids: 486 618
+                                if fileInfo.indexOf('__copy/') >= 0 || fileInfo.indexOf('/t/') >= 0 ids: 487 619
+                                  continue  ids: 488 620
+                              var fullpath = fileInfo ids: 489 621
+                              var relpath ids: 490 622
+                                iif that.config.cwd ids: 491 623
+                                  then  ids: 492 624
+                                    _ relPath ids: 493 625
+                                      @ fullpath ids: 494 626
+                                      @ that.config.cwd ids: 495 627
+                                  else  ids: 496 628
+                                    set null ids: 497 629
+                              _ ret.push ids: 498 630
+                                {  ids: 499 631
+                                  @ fullpath fullpath ids: 500 632
+                                  @ relpath relpath ids: 501 633
+                            _ callback ids: 502 634
+                              @ null ids: 503 635
+                              @ ret ids: 504 636
+        m exists ids: 505 637
+          param callback ids: 506 638
+          _ assert.equal("function", typeof(callback)) ids: 507 639
+          _ ittfs.exists ids: 508 640
+            _ this.srcFullPath() ids: 509 641
+            @ callback ids: 510 642
+        m isDirectory ids: 511 643
+          param callback ids: 512 644
+          _ assert.equal("function", typeof(callback)) ids: 513 645
+          _ ittfs.isDirectory ids: 514 646
+            _ this.srcFullPath() ids: 515 647
+            @ callback ids: 516 648
+        m isFile ids: 517 649
+          param callback ids: 518 650
+          _ assert.equal("function", typeof(callback)) ids: 519 651
+          _ ittfs.isFile ids: 520 652
+            _ this.srcFullPath() ids: 521 653
+            @ callback ids: 522 654
+      $group  ids: 655 716
+        m getWizziModelFactory ids: 656 717
+          param callback ids: 657 718
+          if !this.productionManager() ids: 658 719
+            $group  ids: 895 900
+              return  ids: 896 901
+                _ callback ids: 897 902
+                  _ this.error ids: 898 903
+                    @ "Method called without setting the 'productionManager' object" ids: 660 721
+                    @ "getWizziModelFactory" ids: 661 722
+          if !this.schema ids: 662 723
+            $group  ids: 895 905
+              return  ids: 896 906
+                _ callback ids: 897 907
+                  _ this.error ids: 898 908
+                    @ "Method called without setting the 'schema' name" ids: 664 725
+                    @ "getWizziModelFactory" ids: 665 726
+          var wizziModelFactory ids: 666 727
+            _ this.productionManager().getWizziModelFactory ids: 667 728
+              @ this.schema ids: 668 729
+          if wizziModelFactory == null ids: 669 730
+            return  ids: 670 731
+              _ callback ids: 671 732
+                new errors.NotFoundError ids: 672 733
+                  @ 'WizziModelFactory' ids: 673 734
+                  @ this.schema ids: 674 735
+                  @ this ids: 675 736
+          else  ids: 676 737
+            _ callback(null, wizziModelFactory) ids: 677 738
+        m getModelTransformer ids: 678 739
+          param trasformerName ids: 679 740
+          param callback ids: 680 741
+          if !this.productionManager() ids: 681 742
+            $group  ids: 895 910
+              return  ids: 896 911
+                _ callback ids: 897 912
+                  _ this.error ids: 898 913
+                    @ "Method called without setting the 'productionManager' object" ids: 683 744
+                    @ "getModelTransformer" ids: 684 745
+          var modelTransformer ids: 685 746
+            _ this.productionManager().getModelTransformer ids: 686 747
+              @ trasformerName ids: 687 748
+          if modelTransformer == null ids: 688 749
+            return  ids: 689 750
+              _ callback ids: 690 751
+                new errors.NotFoundError ids: 691 752
+                  @ 'modelTransformer' ids: 692 753
+                  @ trasformerName ids: 693 754
+                  @ this ids: 694 755
+          else  ids: 695 756
+            _ callback(null, modelTransformer) ids: 696 757
+        m getArtifactGenerator ids: 697 758
+          param generatorName ids: 698 759
+          param callback ids: 699 760
+          if !this.productionManager() ids: 700 761
+            $group  ids: 895 915
+              return  ids: 896 916
+                _ callback ids: 897 917
+                  _ this.error ids: 898 918
+                    @ "Method called without setting the 'productionManager' object" ids: 702 763
+                    @ "getArtifactGenerator" ids: 703 764
+          var generator ids: 704 765
+            _ this.productionManager().getArtifactGenerator ids: 705 766
+              @ generatorName ids: 706 767
+          if generator == null ids: 707 768
+            return  ids: 708 769
+              _ callback ids: 709 770
+                new errors.NotFoundError ids: 710 771
+                  @ 'generator' ids: 711 772
+                  @ generatorName ids: 712 773
+                  @ this ids: 713 774
+          else  ids: 714 775
+            _ callback(null, generator) ids: 715 776
+    function relPath ids: 192 387
+      param fullpath ids: 193 388
+      param basedir ids: 194 389
+      return fullpath.substr(basedir.length + 1) ids: 195 390

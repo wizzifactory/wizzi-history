@@ -1,0 +1,103 @@
+﻿module
+	kind jsfile
+
+	import path
+	import rollup
+	var resolve = require('rollup-plugin-node-resolve')
+	var commonjs = require('rollup-plugin-commonjs')
+	$$ var babel = require('rollup-plugin-babel')
+	var replace = require('rollup-plugin-replace')
+	var wizziPlugin = require('./wizziRollupPlugin')
+
+	var md
+		set module.exports
+			{
+
+	set md.makeBundle
+		function
+			param filePath
+			param options
+			param callback
+
+			var basename = path.basename(filePath)
+			var ss = basename.split('.')
+			var name = ss[0]
+
+			var inputOptions
+				{
+					@ input filePath
+					@ plugins
+						[
+							$*
+							_ babel
+								{
+									@ babelrc false
+									@ exclude 'node_modules/**'
+									[ presets
+										@ "@babel/env"
+										@ "@babel/react"
+							*$
+							_ commonjs
+								{
+									[ extensions
+										@ '.js'
+										@ '.js.ittf'
+									[ include
+										@ 'node_modules/**'
+									[ exclude
+										@ 'node_modules/process-es6/**'
+									{ namedExports
+										@ 'node_modules/react/index.js'
+											[
+												@ 'Children'
+												@ 'Component'
+												@ 'PropTypes'
+												@ 'createElement'
+										@ 'node_modules/react-dom/index.js'
+											[
+												@ 'render'
+							_ resolve
+								{
+									[ extensions
+										@ '.js'
+										@ '.js.ittf'
+									@ browser true
+							_ wizziPlugin
+							_ replace
+								{
+									@ 'process.env.NODE_ENV' JSON.stringify('production')
+
+			var outputOptions
+				{
+					@ format 'umd'
+					@ name name
+
+			_ rollup.rollup
+				@ inputOptions
+				._ then
+					=>
+						param bundle
+						return
+							_ bundle.generate
+								@ outputOptions
+				._ then
+					=>
+						param result
+						
+						log 'rollupBundler ok'
+						var code
+						foreach chunkOrAsset in result.output
+							if chunkOrAsset.isAsset
+							else
+								set code = chunkOrAsset.code
+								break
+						log 'rollupBundler code', code
+						_ callback
+							@ null
+							@ code
+				._ catch
+					=>
+						param err
+						log 'rollupBundler err', err
+						_ callback
+							@ err

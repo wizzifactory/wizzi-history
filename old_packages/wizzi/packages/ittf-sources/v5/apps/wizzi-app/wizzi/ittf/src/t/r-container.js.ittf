@@ -1,0 +1,22 @@
+﻿module
+	$params name, withRouter:boolean|false, withStyles:boolean|false, withContext|@@null
+	kind react
+
+	$include app-options
+
+	$
+		var md = {};
+		md.name = name;
+		md.withRouter = withRouter;
+		md.withStyles = withStyles;
+		if (withContext != null) {
+			var ss = withContext.split(';')
+			md.withContext = {
+				name: ss[0],
+				path: ss[1]
+			};
+		}
+	
+	react/container(&md, &app)
+
+		$hook

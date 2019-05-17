@@ -1,0 +1,79 @@
+html
+	head
+		@title GraphDb ${graphdb.name}
+		bs_css()
+	
+	body
+
+		. jumbotron
+			style text-align: center;
+			h1 GraphDb ${graphdb.name}
+
+		. container
+
+			. row
+				. col-md-2
+					bs/list_group()
+						$foreach node in graphdb.nodes
+							bs/li_a( ${node.name}, #table_${node.name} )
+
+				. col-md-8
+					$foreach node in graphdb.nodes
+						h2panel( Node ${node.name} )
+							small
+								table( 70 )
+									tr
+										td
+											h4 Description
+										td
+											$if node.comments.length > 0
+												div
+													$foreach comment in node.comments
+														span ${comment} &nbsp;
+
+									tr
+										td
+											h4 Properties
+										td
+											table( 100 )
+												tr_prop( is-root, ${node.isRoot} )
+												tr_prop( is-leaf, ${node.isLeaf} )
+												tr_prop( has-metadata, ${node.hasMetaData} )
+
+									$if !!node.metaDocument
+										tr
+											td
+												h4 Meta document
+											td
+												table( 100 )
+													tr_prop( name, ${node.metaDocument.name} )
+													tr_prop( Kind, ${node.metaDocument.kind} )
+													tr
+														td path segments
+														td
+															table( 100 )
+																$foreach pathSegment in node.metaDocument.pathSegments
+																	tr
+																		td ${pathSegment}
+								
+									$foreach document in node.otherDocuments
+										tr
+											td 
+												h4 Document
+											td
+												table( 100 )
+													tr_prop( name, ${document.name} )
+													tr_prop( Kind, ${document.kind} )
+													tr
+														td path segments
+														td
+															table( 100 )
+																$foreach pathSegment in document.pathSegments
+																	tr
+																		td ${pathSegment}
+
+
+									$include relations
+
+		bs_js()
+

@@ -1,0 +1,13 @@
+﻿html
+	body
+		$foreach form in data.forms
+			h2 ${form.name}
+			form
+				$foreach c in form.controls
+					label ${c.label}
+						for ${c.name}
+					$if c.type === 'text'
+						input
+							type text		
+					br
+				

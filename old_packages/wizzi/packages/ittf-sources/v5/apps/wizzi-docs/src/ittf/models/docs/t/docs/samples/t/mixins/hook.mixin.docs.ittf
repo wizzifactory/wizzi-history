@@ -1,0 +1,35 @@
+﻿$group
+
+	sample Hook 
+		summary
+
+			p When calling mixins, the child nodes of the calling node by default
+				+ are appendend to the root node of the mixin. If you need an
+				+ insertion point deeper into the mixin tree, you my declare
+				+ a mixin node with name $hook, that will be replaced with
+				+ the child nodes of the mixin call statement.
+	
+		ittf mypage.html.ittf
+			kind primary
+			- layout( home )
+				- h2 Hello
+
+		ittf t/layout.html.ittf
+			kind mixin
+			- html
+				- $params page
+				- head
+				- body
+					- nav
+						- a Home
+							- $if page = 'home'
+								- class active
+							- href /
+						- a Services
+							- $if page = 'services'
+								- class active
+							- href /services
+					- $hook default
+
+
+		$include wfschema.rdbms.sample

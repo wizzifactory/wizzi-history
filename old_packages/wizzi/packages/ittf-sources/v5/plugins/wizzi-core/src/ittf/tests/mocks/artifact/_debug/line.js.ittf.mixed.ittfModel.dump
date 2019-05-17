@@ -1,0 +1,102 @@
+  module  ids: 1 103
+    kind jsfile ids: 2 104
+    var file = require('../util/file') ids: 3 105
+    class Line ids: 4 106
+      ctor  ids: 5 107
+        param textOrPath ids: 6 108
+        param indentValue ids: 7 109
+        param options ids: 8 110
+        param isFilePath ids: 9 111
+        set this.containsFilePath = isFilePath ids: 10 112
+        set this.text = [] ids: 11 113
+        if isFilePath ids: 12 114
+          _ this.text.push ids: 13 115
+            {  ids: 14 116
+              @ k 0 ids: 15 117
+              @ t textOrPath ids: 16 118
+        else  ids: 17 119
+          _ this.text.push(textOrPath) ids: 18 120
+        set this.indentValue = indentValue ids: 19 121
+        set this.options = options ids: 20 122
+      m add ids: 21 123
+        param text ids: 22 124
+        if this.containsFilePath ids: 23 125
+          _ this.text.push ids: 24 126
+            {  ids: 25 127
+              @ k 1 ids: 26 128
+              @ t text ids: 27 129
+        else  ids: 28 130
+          _ this.text.push(text) ids: 29 131
+      m addFile ids: 30 132
+        param filePath ids: 31 133
+        if this.containsFilePath ids: 32 134
+          _ this.text.push ids: 33 135
+            {  ids: 34 136
+              @ k 0 ids: 35 137
+              @ t filePath ids: 36 138
+        else  ids: 37 139
+          for var i = 0; i < text.length; i++ ids: 38 140
+            set text[i] = ids: 39 141
+              {  ids: 40 142
+                @ k 1 ids: 41 143
+                @ t text[i] ids: 42 144
+          _ this.text.push ids: 43 145
+            {  ids: 44 146
+              @ k 0 ids: 45 147
+              @ t filePath ids: 46 148
+      m toStream ids: 47 149
+        param stream ids: 48 150
+        param ctx ids: 49 151
+        if this.options.isDebugLine && !ctx.isDebug ids: 50 152
+          return  ids: 51 153
+        if this.containsFilePath ids: 52 154
+          var  ids: 53 155
+            decl i ids: 54 156
+            decl t ids: 55 157
+            decl len = this.text.length ids: 56 158
+          for i = 0; i < len; i++ ids: 57 159
+            var t = this.text[i] ids: 58 160
+            if t.k === 1 ids: 59 161
+              _ stream.write ids: 60 162
+                @ t.t ids: 61 163
+            else  ids: 62 164
+              _ this._fileToStream ids: 63 165
+                @ stream ids: 64 166
+                @ t.t ids: 65 167
+                @ ctx ids: 66 168
+            if i == len - 1 ids: 67 169
+              _ stream.write ids: 68 170
+                @ this.options.CRLF ids: 69 171
+        else  ids: 70 172
+          _ stream.write ids: 71 173
+            @ spaces(this.indentValue * this.options.indentSpaces) + this.text.join('') + this.options.CRLF ids: 72 174
+      m _fileToStream ids: 73 175
+        param stream ids: 74 176
+        param filePath ids: 75 177
+        param ctx ids: 76 178
+        var lines = file.readLines(filePath) ids: 77 179
+        var indent = spaces(this.indentValue * this.options.indentSpaces) ids: 78 180
+        var  ids: 79 181
+          decl i ids: 80 182
+          decl t ids: 81 183
+          decl len = lines.length ids: 82 184
+        for i = 0; i < len; i++ ids: 83 185
+          if i > 0 ids: 84 186
+            _ stream.write(indent) ids: 85 187
+          _ stream.write ids: 86 188
+            @ lines[i] ids: 87 189
+          if i < len - 1 ids: 88 190
+            _ stream.write ids: 89 191
+              @ this.options.CRLF ids: 90 192
+      m terminate ids: 91 193
+        set delete (this.options) ids: 92 194
+      m hydrate ids: 93 195
+        param item ids: 94 196
+        set this.text = item.text ids: 95 197
+        set this.indentValue = item.indentValue ids: 96 198
+    function spaces ids: 97 199
+      param num ids: 98 200
+      return  ids: 99 201
+        _ Array((num + 1)) ids: 100 202
+          ._ join(" ") ids: 101 203
+    set module.exports = Line ids: 102 204

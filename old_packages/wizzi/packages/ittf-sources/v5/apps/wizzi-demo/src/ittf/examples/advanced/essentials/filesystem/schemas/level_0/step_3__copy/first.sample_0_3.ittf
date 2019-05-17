@@ -1,0 +1,169 @@
+﻿sample_0_3
+
+	schema User
+		{
+			integer id
+			string name
+			{ contact_info
+				# The value of this property is an object
+				email email
+				string phone
+
+	schema User
+		{
+			integer id
+			string name
+			type-ref ContactInfo
+
+	schema ContactInfo
+		{
+			# The value of this property is an object
+			email email
+			string phone
+
+	schema Color
+		string
+			enum
+				string black
+				string white
+				string red
+				string green
+				string blue
+
+	schema dictionary
+		{
+			additionalProperties
+				{
+					integer code
+					string text
+			example
+				{
+					{ italy
+						@ code 039
+						@ text 'international phone prefix'
+					{ france
+						@ code 033
+						@ text 'international phone prefix'
+
+	schema Pet
+		{
+			string pet_type
+				required
+			discriminator
+				property-name pet_type
+
+	schema Dog
+		# "Dog" is a value for the pet_type property (the discriminator value)
+		allOf
+			# Combines the main `Pet` schema with `Dog`-specific properties 
+			type-ref Pet
+			{
+				# all other properties specific to a `Dog`
+				boolean bark
+				string breed
+					enum
+						string Dingo
+						string Husky
+						string Retriever
+						string Shepherd
+
+	schema Cat
+		# "Cat" is a value for the pet_type property (the discriminator value)
+		allOf
+			# Combines the main `Pet` schema with `Cat`-specific properties 
+			type-ref Pet
+			{
+				boolean hunts
+				integer age
+
+	schema BasicErrorModel
+		{
+			string message
+				required
+			integer code
+				required
+				minimum 100
+				maximum 600
+
+	schema ExtendedErrorModel
+		# In this example above, the ExtendedErrorModel schema 
+		# includes its own properties and properties inherited
+		#  from BasicErrorModel.
+		allOf
+			# Combines the BasicErrorModel and the inline model
+			type-ref BasicErrorModel
+			{
+				string rootCause
+					required
+          
+	schema
+		one-of
+			type-ref simpleObject
+			type-ref complexObject
+	schema simpleObject
+	schema complexObject
+
+	# Discriminator
+	# To help API consumers detect the object type, 
+	# you can add the discriminator/property-name keyword to model definitions. 
+	# This keyword points to the property that specifies the data type name:
+
+	schema
+		one-of
+			type-ref simpleObject
+			type-ref components/schemas/complexObject
+		discriminator
+			property-name objectType
+
+	schema simpleObject
+		{
+			string objectType 
+				required
+
+	schema complexObject
+		{
+			string objectType 
+				required
+
+	# The discriminator is used with any-of or one-of keywords only.
+	# It is important that all the models mentioned below 
+	# any-of or one-of contain the property that the discriminator specifies. 
+	# This means, for example, that in our code above, 
+	# both simpleObject and complexObject must have the objectType property. 
+	# This property is required in these schemas
+
+	# The discriminator keyword can be used by various API consumers. 
+	# One possible example are code generation tools: they can use 
+	# discriminator to generate program statements that typecast 
+	# request data to appropriate object type based 
+	# on the discriminator property value.
+
+	# Mapping Type Names
+	# It is implied, that the property to which discriminator refers, 
+	# contains the name of the target schema. 
+	# In the example above, the objectType property should contain either 
+	# simpleObject, or complexObject string.
+
+	# If the property values do not match the schema names, 
+	# you can map the values to the names. 
+	# To do this, use the discriminator/mapping keyword:
+
+	schema
+		one-of
+			type-ref Object1
+			type-ref Object2
+			type-ref sysObject.json#/sysObject
+		discriminator
+			property-name objectType
+			map obj1 Object1
+			map obj2 Object2
+			map system sysObject.json#/sysObject
+
+	schema Object1
+		{
+			string objectType
+				required
+	schema Object2
+		{
+			string objectType
+				required

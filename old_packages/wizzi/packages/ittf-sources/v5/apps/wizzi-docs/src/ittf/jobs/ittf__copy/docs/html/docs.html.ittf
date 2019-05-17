@@ -1,0 +1,123 @@
+﻿wizzi-site-layout( Documentation, ${docs.name} )
+
+	- main content markup
+
+	main
+		id mc-wrapper
+		$if l_hasSubPages
+			class mc-wrapper-layout-sub
+		$else
+			class mc-wrapper-layout
+
+		input
+			type checkbox
+			id mc-toggle-toc
+
+		input
+			type checkbox
+			id mc-toggle-toc-close
+			onchange mc_toggle_toc_Close()
+
+		. mc-frame
+
+			. mc-frame-bar
+				h1 ${docs.name}
+					class mc-sidebar-left-title
+				h1
+					label &times;
+						for mc-toggle-toc-close
+						class mc-label-toggle-close
+			nav
+				class mc-sidebar-left
+			
+				ul
+					li
+						a Introduction
+							href #concept-intro
+							class mc-item-link
+						label Introduction
+							for mc-toggle-concept-intro
+							class mc-label-toggle
+					$foreach item in docs.concepts
+						li
+							a ${item.name}
+								href #${item.id}
+								class mc-item-link
+							label &nbsp; ${item.name}
+								for mc-toggle-${item.id}
+								class mc-label-toggle
+
+			. mc-content
+
+				div
+				
+					input
+						type checkbox
+						id mc-toggle-concept-intro
+						onchange m_toggleChanged()
+					$foreach item in docs.concepts
+						input
+							type checkbox
+							id mc-toggle-${item.id}
+							onchange m_toggleChanged()
+
+					h1 ${docs.name}
+						class mc-content-title
+						id concept-intro
+					
+					. mc-pane mc-pane-concept-intro
+						. summary
+							$foreach line in docs.summaryLines
+								+ ${line}
+					
+					$foreach item in docs.concepts
+						. mc-pane mc-pane-${item.id}
+							h2 ${item.name}
+								id ${item.id}
+							. summary
+								$foreach line in item.summaryLines
+									+ ${line}
+
+	script
+		module
+			kind jsfile
+
+			function m_toggleChanged
+				var el_toc = document.querySelector("input[id='mc-toggle-toc']")
+				var el_contents = document.querySelectorAll("input[id^='mc-toggle-concept-']")
+				var seenTrue = false
+				foreach el in el_contents
+					if el.checked
+						set seenTrue = true
+				set el_toc.checked = seenTrue
+
+			function mc_toggle_toc_Close
+				var el_toc = document.querySelector("input[id='mc-toggle-toc']")
+				var el_contents = document.querySelectorAll("input[id^='mc-toggle-concept-']")
+				foreach el in el_contents
+					set el.checked = false
+				set el_toc.checked = false
+
+	$*
+	html/nav_sidebar()
+		$include html/docs/toc
+	
+	div
+		class main-content
+		$foreach concept in docs.concepts
+			h2 ${concept.name}
+				id ${concept.id}
+				class concept
+			. summary
+				$foreach line in concept.summaryLines
+					+ ${line}
+		section
+			$foreach section in docs.sections
+				h2 Package ${section.name}
+				$foreach concept in section.concepts
+					h2 ${concept.name}
+						id ${concept.id}
+					. summary
+						$foreach line in concept.summaryLines
+							+ ${line}
+	*$

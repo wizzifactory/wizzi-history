@@ -1,0 +1,25 @@
+﻿base_example( wizzi-repo.examples.jsonDocument )
+	
+	$append imports
+		var json = require('../lib/json/index')
+
+	_ heading1('start')
+
+	var fsJson = new json.FsJson()
+	var doc = new json.Document(fsJson)
+
+	$include folder_data
+
+	$include document_operations
+
+	function terminate
+		_ dump
+
+	function dump
+		_ printValue
+			@ 'fsJson.items'
+			@ fsJson.items
+
+		_ printValue
+			@ 'fsJson.documents'
+			@ fsJson.documents

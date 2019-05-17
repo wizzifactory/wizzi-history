@@ -1,0 +1,41 @@
+﻿$group
+
+	get( /api/studio/user )
+		
+		_ studioApi.getUser
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/studio/user/create )
+		
+		check-params( )
+			not-empty( body, project )
+			_ studioApi.createUser
+				{
+					@ userId req.user.id
+					@ currentProject project
+				f_cb_rest( result )
+					_ sendSuccess
+						@ res
+						@ result.status
+						@ result.data
+
+	post( /api/studio/user )
+		
+		check-params( )
+			not-empty( body, project )
+			_ studioApi.updateUser
+				{
+					@ userId req.user.id
+					@ currentProject project
+				f_cb_rest( result )
+					_ sendSuccess
+						@ res
+						@ result.status
+						@ result.data
+

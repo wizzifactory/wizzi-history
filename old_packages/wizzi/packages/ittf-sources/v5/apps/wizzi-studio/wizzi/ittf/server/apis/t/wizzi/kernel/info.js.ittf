@@ -1,0 +1,32 @@
+﻿$group
+
+	@ getKernelInfo
+		function
+			param options
+			param callback
+
+			# no option yet
+
+			var metaPath
+				_ paths.kernelMeta
+					@ options
+
+			log 'getKernelInfo.metaPath', metaPath
+			if file.isFile(metaPath)
+				return
+					_ callback
+						@ null
+						{
+							@ data
+								_ file.readJSON
+									@ metaPath
+							@ status
+								_ success
+									@ 'Kernel info data fetched'
+			else
+				return
+					_ callback
+						{
+							@ status
+								_ error
+									@ 'Kernel info not yet available'

@@ -1,0 +1,96 @@
+﻿$group
+
+	@ snippetsFolderPath
+		function
+			param userId
+			if userId
+				return
+					_ path.join
+						@ config.crawlBasePath
+						@ userId
+						@ 'snippets'
+			else
+				return
+					_ path.join
+						@ config.crawlBasePath
+						@ 'snippets'
+
+	@ snippetFilePath
+		function
+			param userId
+			param name
+			return
+				_ path.join
+					_ this.snippetsFolderPath
+						@ userId
+					@ name
+
+	@ snippetInfoByPath
+		function
+			param filePath
+			return
+				_ this.fileInfoByPath
+					@ filePath
+					_ this.snippetsFolderPath
+
+	@ getSnippetFiles
+		function
+			param userId
+			param callback
+			return
+				_ this.getFolderFiles
+					_ this.snippetsFolderPath
+						@ kind
+						@ userId
+					_ this.snippetsFolderPath
+						@ kind
+					@ '/wizzi/' + kind + 's'
+					@ callback
+
+	@ snippetFileExists
+		function
+			param userId
+			param name
+			param callback
+			return
+				_ this.fsItemExists
+					_ this.snippetFilePath
+						@ userId
+						@ name
+					@ callback
+
+	@ getSnippetFile
+		function
+			param userId
+			param name
+			param callback
+			return
+				_ this.getFile
+					_ this.snippetFilePath
+						@ userId
+						@ name
+					@ callback
+
+	@ putSnippetFile
+		function
+			param userId
+			param name
+			param content
+			param callback
+			
+			var filePath 
+				_ this.snippetFilePath
+					@ userId
+					@ name
+			
+			_ this.putFile
+				@ filePath
+				@ content
+				a_cb()
+					var snippet
+						_ this.snippetInfoByPath
+							@ filePath
+					set snippet.content = content
+					r_cb_success_quoted( Snippet created )
+						@ snippet snippet
+

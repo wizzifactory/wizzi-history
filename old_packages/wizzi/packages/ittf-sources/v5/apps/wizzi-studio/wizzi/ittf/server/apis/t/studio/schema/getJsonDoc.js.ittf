@@ -1,0 +1,39 @@
+﻿$group
+
+	@ getSchemaJsonDoc
+		function
+			param options
+			param callback
+
+			_ this.getCommons
+				@ options
+				f_cb_api( commons )
+
+					var schemaUri = options.schemaUri
+
+					var result = null
+					foreach item in commons.data.schemas
+						if item.uri === schemaUri
+							set result
+								_ file.readJSON
+									@ item.jsonDocPath
+							break
+					
+					if result
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ schemaJsonDoc result
+										@ schemaUri schemaUri
+								@ status
+									_ success
+										@ 'Schemas json doc fetched: ' + schemaUri
+					else
+						_ callback
+							_ error
+								@ 'Schemas json doc not found for schema: "' + schemaUri + '" at path:"' + item.jsonDocPath + '"'
+
+
+

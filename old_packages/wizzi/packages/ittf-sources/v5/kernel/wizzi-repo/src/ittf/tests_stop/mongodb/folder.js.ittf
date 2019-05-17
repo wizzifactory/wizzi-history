@@ -1,0 +1,35 @@
+﻿base_test( mongodb.document.folder )
+	+
+	$append imports
+		var file = require('../../lib/mongodb/fs/file')
+		var 
+			decl MongoClient
+				_ require('mongodb')
+					. MongoClient
+			decl FsMongo = require('../../lib/mongodb/fs/fsmongo')
+			decl Document = require('../../lib/mongodb/fs/document')
+
+	var mounted_db
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsmongo, doc
+
+	$include mongo_before_async
+
+	$include folder/createFolder
+	$include folder/upload
+	$include folder/download
+	$include folder/getFiles
+	$include folder/copyFolder
+	$include folder/deleteFolder
+		
+	$include folder/renameFolder
+		
+	$*
+	$include document/getFolder
+	$include document/isFolder
+	*$
+
+
+
+	

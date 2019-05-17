@@ -1,0 +1,17 @@
+$group
+
+	var modelFactories = {}
+	#
+		# Retrieve a WizziModelFactory by its wfschema name
+		# Model factories are searched in the PluginsManager
+	set md.getLoadModel
+		function
+			param schemaName
+			var factory = modelFactories[schemaName]
+			if !factory
+				set factory = md.pluginsManager.getLoadModel(schemaName)
+			if factory != null
+				set modelFactories[schemaName] = factory
+				return factory
+			else
+				return null

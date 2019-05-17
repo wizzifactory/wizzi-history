@@ -1,0 +1,53 @@
+module
+	kind react
+
+	var CSSTransitionGroup = React.addons.CSSTransitionGroup
+    var INTERVAL = 2000
+
+	react-class( AnimateDemo )
+
+		@ getInitialState
+			function
+				return {current: 0}
+
+		@ componentDidMount
+			function
+				set this.interval = setInterval(this.tick, INTERVAL)
+
+		@ componentWillUnmount
+			function
+				_ clearInterval(this.interval)
+
+		@ tick
+			function
+				_ this.setState({current: this.state.current + 1})
+
+		@ render
+			function
+				var children = []
+				var pos = 0
+				var colors = ['red', 'gray', 'blue']
+				for var i = this.state.current; i < this.state.current + colors.length; i++
+					var style
+						{
+							@ left pos * 128
+							@ background colors[i % colors.length]
+					set pos++
+					_ children.push
+						div {i}
+							@ key {i}
+							@ className "animateItem"
+							@ style {style}
+				return
+					< CSSTransitionGroup {children}
+						@ className "animateExample"
+						@ transitionEnterTimeout {250}
+						@ transitionLeaveTimeout {250}
+						@ transitionName "example"
+
+	_ setInterval
+		function
+			_ ReactDOM.render
+				< AnimateDemo
+				@ document.getElementById('container')
+		@ 50

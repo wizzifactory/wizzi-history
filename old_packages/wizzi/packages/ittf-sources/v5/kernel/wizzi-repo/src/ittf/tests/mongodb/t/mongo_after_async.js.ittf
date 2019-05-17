@@ -1,0 +1,11 @@
+﻿after-async
+
+	if mounted_db
+		log '***** mongodb start closing'
+		_ mounted_db.close
+		set mounted_db = null
+		log '***** mongodb closed'
+		_ done
+	else
+		_ done
+

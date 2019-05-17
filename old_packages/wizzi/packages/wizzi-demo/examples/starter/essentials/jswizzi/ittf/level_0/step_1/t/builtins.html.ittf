@@ -1,0 +1,189 @@
+$group
+	
+	h3 Builtin functions
+	
+	$
+		var btests = [];
+		function bt(label, result) {
+			btests.push({ label: label, result: result });
+		}
+		bt( 'parseInt(\'43.5\')' , parseInt(43.5) );
+		bt( 'parseFloat(\'43.5\')' , parseFloat(43.5) );
+		bt( 'isFinite(Infinity)', isFinite(Infinity) );
+		bt( 'isFinite(NaN)', isFinite(NaN) );
+		bt( 'isFinite(null)', isFinite(null) );
+		bt( 'isFinite(0)', isFinite(0) );
+		bt( 'Number.isFinite(null)', Number.isFinite(null) );
+		bt( 'Number.isFinite(0)', Number.isFinite(0) );
+		bt( 'isNaN(NaN)', isNaN(NaN) );
+		bt( 'isNaN(undefined)', isNaN(undefined) );
+		bt( 'isNaN({})', isNaN({}));
+		bt( 'isNaN(true)', isNaN(true) );
+		bt( 'isNaN(null)', isNaN(null) );
+		bt( 'isNaN(37)', isNaN(37) );
+		bt( 'isNaN(\'37\')', isNaN('37') );
+		bt( 'isNaN(\'37.37\')', isNaN('37.37') );
+		bt( 'isNaN(\'123ABC\')', isNaN('123ABC') );
+		bt( 'parseInt(\'123ABC\')', parseInt('123ABC') );
+		bt( 'Number(\'123ABC\')', Number('123ABC') );
+		bt( 'isNaN(\'\')', isNaN('') );
+		bt( 'Number(\'\')', Number('') );
+		bt( 'isNaN(\' \')', isNaN(' ') );
+		bt( 'Number(\' \')', Number(' ') );
+		bt( 'isNaN(new Date())', isNaN(new Date()) );
+		bt( 'isNaN(new Date().toString())', isNaN(new Date().toString()) );
+		bt( 'isNaN(\'blabla\')', isNaN('blabla') ); 
+		bt( 'Number(\'blabla\')', Number('blabla') ); 
+		bt( 'parseFloat(3.14)', parseFloat(3.14) );
+		bt( 'parseFloat(\'3.14\')', parseFloat('3.14') );
+		bt( 'parseFloat(\'314e-2\')', parseFloat('314e-2') );
+		bt( 'parseFloat(\'0.0314E+2\')', parseFloat('0.0314E+2') );
+		bt( 'parseFloat(\'3.14more non-digit characters\')',parseFloat('3.14more non-digit characters') );
+		bt( 'parseInt(\' 0xF\', 16)', parseInt(' 0xF', 16) );
+		bt( 'parseInt(\' F\', 16)', parseInt(' F', 16) );
+		bt( 'parseInt(\'17\', 8)', parseInt('17', 8) );
+		// not allowed in strict mode bt( 'parseInt(021, 8)', parseInt(021, 8) );
+		bt( 'parseInt(\'015\', 10)', parseInt('015', 10) );
+		bt( 'parseInt(15.99, 10)', parseInt(15.99, 10) );
+		bt( 'parseInt(\'15,123\', 10)', parseInt('15,123', 10) );
+		bt( 'parseInt(\'FXX123\', 16)', parseInt('FXX123', 16) );
+		bt( 'parseInt(\'1111\', 2)', parseInt('1111', 2) );
+		bt( 'parseInt(\'15 * 3\', 10)', parseInt('15 * 3', 10) );
+		bt( 'parseInt(\'15e2\', 10)', parseInt('15e2', 10) );
+		bt( 'parseInt(\'15px\', 10)', parseInt('15px', 10) );
+		bt( 'parseInt(\'12\', 13)', parseInt('12', 13) );
+		var set1 = ";,/?:@&=+$";  
+		var set2 = "-_.!~*'()";   
+		var set3 = "#";           
+		var set4 = "ABC abc 123"; 
+		bt( 'set1 // Reserved Characters', set1 );
+		bt( 'set2 // Unescaped Characters', set2 );
+		bt( 'set3 // Number Sign', set3 );
+		bt( 'set4 // Alphanumeric Characters + Space', set4 );
+		bt( 'encodeURI(set1)', encodeURI(set1) );
+		bt( 'encodeURI(set2)', encodeURI(set2) );
+		bt( 'encodeURI(set3)', encodeURI(set3) );
+		bt( 'encodeURI(set4)', encodeURI(set4) );
+
+		bt( 'encodeURIComponent(set1)', encodeURIComponent(set1) );
+		bt( 'encodeURIComponent(set2)', encodeURIComponent(set2) );
+		bt( 'encodeURIComponent(set3)', encodeURIComponent(set3) );
+		bt( 'encodeURIComponent(set4)', encodeURIComponent(set4) );
+	
+	$foreach test in btests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+	h3 Builtin Date object
+	p
+		a
+			href https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+	
+	$
+		var otests = [];
+		function ot(label, result) {
+			otests.push({ label: label, result: result });
+		}
+		ot( 'new Date() (today)', new Date() );
+		ot( 'new Date(\'December 17, 1995 03:24:00\')', new Date('December 17, 1995 03:24:00') );
+		ot( 'new Date(\'1995-12-17T03:24:00\')', new Date('1995-12-17T03:24:00') );
+		ot( 'new Date(1995, 11, 17)', new Date(1995, 11, 17) );
+		ot( 'new Date(1995, 11, 17, 3, 24, 0)', new Date(1995, 11, 17, 3, 24, 0) );
+
+	$foreach test in otests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+	h3 Builtin Number object
+	p
+		a
+			href https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+	
+	$
+		var otests = [];
+		function ot(label, result) {
+			otests.push({ label: label, result: result });
+		}
+		ot( 'Number.MAX_VALUE', Number.MAX_VALUE );
+		ot( 'Number.MIN_VALUE', Number.MIN_VALUE );
+		ot( 'Number.POSITIVE_INFINITY', Number.POSITIVE_INFINITY );
+		ot( 'Number.NEGATIVE_INFINITY', Number.NEGATIVE_INFINITY );
+		ot( 'Number.NaN', Number.NaN );
+		ot( 'Number(\'123\')', Number('123') );
+		ot( 'Number(\'12.3\')', Number('12.3') );
+		ot( 'Number(\'\')', Number('') );
+		ot( 'Number(\'0x11\')', Number('0x11') );
+		ot( 'Number(\'0b11\')', Number('0b11') );
+		ot( 'Number(\'0o11\')', Number('0o11') );
+		ot( 'Number(\'foo\')', Number('foo') );
+		ot( 'Number(\'100a\')', Number('100a') );
+
+	$foreach test in otests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+	h3 Builtin RegExp object
+	p
+		a
+			href https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+	
+	$
+		var otests = [];
+		function ot(label, result) {
+			otests.push({ label: label, result: result });
+		}
+		ot( 'new RegExp(\'\\w+\')', new RegExp('\\w+') );
+		var str = 'John Smith';
+		var reValue = '(\\w+)\\s(\\w+)';
+		var re = new RegExp(reValue);
+		ot( '\'John Smith\'.replace(new RegExp(\'' + reValue + '\'), \'$2, $1\')', 
+			\b str.replace(re, '$2, $1') );
+
+
+	$foreach test in otests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+	h3 Builtin Array object
+	p
+		a
+			href https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+	
+	$
+		var otests = [];
+		function ot(label, result) {
+			otests.push({ label: label, result: result });
+		}
+		ot( 'new Array(4)', new Array(4) );
+	$foreach test in otests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+
+	h3 Builtin Object object
+	p
+		a
+			href https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+	
+	$
+		var otests = [];
+		function ot(label, result) {
+			otests.push({ label: label, result: result });
+		}
+		ot( 'new Object(true)', new Object(true).toString() );
+	
+	$foreach test in otests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+
+
+
+
+

@@ -1,0 +1,218 @@
+﻿basewizzifier()
+
+	$append imports
+		var css_parser = require('css')
+		function parseInternal
+			param css
+			param options
+			param callback
+			var syntax
+			try
+				set syntax = css_parser.parse(css)
+			catch ex
+				return
+					_ callback
+						@ ex
+			r_cb( cloner(syntax) )
+            
+    var format
+        function 
+            param ast
+            param options
+            var formatter = format[ast.type]
+            if verbose
+                log 'ast.type', ast.type
+            if formatter
+                return formatter(ast, options)
+            throw 
+                new Error('no formatter for type: ' + ast.type)
+    
+	f( stylesheet
+        # log 'stylesheet.ast', ast
+        var ret
+            { 
+                @ tag 'css'
+                @ children
+                    [ 
+        _ ast.stylesheet.rules.map
+            function 
+                param node
+                _ ret.children.push
+                    _ format(node)
+        return ret
+    
+	f( comment
+        var ret
+            { 
+                @ tag '#'
+                @ children
+                    [ 
+        var lines
+            _ file.splitLines
+                @ ast.comment
+        if lines.length == 1
+            set ret.name = lines[0]
+        else 
+			foreach l in lines
+                _ ret.children.push
+                    { 
+                        @ tag '#'
+                        @ name l
+                        @ children
+                            [ 
+        return ret
+    
+	f( rule
+        var ret
+            { 
+                @ tag '<'
+                @ children
+                    [ 
+        var ls = ast.selectors.length
+        for var i = 0; i < ls; i++
+            if i == 0
+                set ret.name = ast.selectors[i]
+                if ret.name.trim()[0] === '.'
+                    set ret.tag = '.'
+                    set ret.name = ret.name.trim().substr(1)
+                elif ret.name.trim()[0] === '#'
+                    set ret.tag = '#'
+                    set ret.name = ret.name.trim().substr(1)
+            else 
+                _ ret.children.push
+                    { 
+                        @ tag '+'
+                        @ name ast.selectors[i]
+                        @ children
+                            [ 
+        _ ast.declarations.map
+            function 
+                param node
+                _ ret.children.push
+                    _ format(node)
+        return ret
+    
+	f( declaration
+        var ret
+            { 
+                @ tag ast.property
+                @ name ast.value
+                @ children
+                    [ 
+        return ret
+    
+	f( media
+        var ret
+            { 
+                @ tag 'media'
+                @ name ast.media
+                @ children
+                    [ 
+        _ ast.rules.map
+            function 
+                param node
+                _ ret.children.push
+                    _ format(node)
+        return ret
+    
+	f( font-face
+        var ret
+            { 
+                @ tag 'font-face'
+                @ children
+                    [ 
+        _ ast.declarations.map
+            function 
+                param node
+                _ ret.children.push
+                    _ format(node)
+        return ret
+    
+	f( keyframes
+        var ret
+            { 
+                @ tag 'keyframes'
+                @ name ast.name
+                @ children
+                    [ 
+        _ ret.children.push
+            { 
+                @ tag 'vendor'
+                @ name ast.vendor
+                @ children
+                    [ 
+        _ ast.keyframes.map
+            function 
+                param node
+                _ ret.children.push
+                    _ format(node)
+        return ret
+    
+	f( keyframe
+        var ret
+            { 
+                @ tag 'keyframe'
+                @ children
+                    [ 
+        var ls = ast.values.length
+        for var i = 0; i < ls; i++
+            if i == 0
+                set ret.name = ast.values[i]
+            else 
+                _ ret.children.push
+                    { 
+                        @ tag 'value'
+                        @ name ast.values[i]
+                        @ children
+                            [ 
+        _ ast.declarations.map
+            function 
+                param node
+                _ ret.children.push
+                    _ format(node)
+        return ret
+    
+	f( import
+        _ console.log
+            @ 'import'
+            _ util.inspect
+                @ ast
+                { 
+                    @ depth null
+        var ret
+            { 
+                @ tag 'import'
+                @ name ast.import
+                @ children
+                    [ 
+        return ret
+    
+	f( charset
+        _ console.log
+            @ 'charset'
+            _ util.inspect
+                @ ast
+                { 
+                    @ depth null
+        var ret
+            { 
+                @ tag 'charset'
+                @ name ast.charset
+                @ children
+                    [ 
+        return ret
+    
+	function wizzify
+        param css
+        param options
+        param callback
+		_ parseInternal
+			@ css
+			{
+			f_cb( syntax )
+				var node = format(syntax)
+				# log "wizziTree", node
+				return
+					_ callback
+						@ null
+						@ node

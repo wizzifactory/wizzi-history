@@ -1,0 +1,142 @@
+﻿module wizzi
+    kind jsfile
+	import util
+	import path
+	import chalk
+	import async
+	+
+	var verify = require('wizzi-utils').verify
+	var log = require('./lib/util/log')(module)
+	var acl = require('./lib/acl')
+	var ProductionManager = require('./lib/production/manager')
+	var Filesystem = require('./lib/io/filesystem')
+	var wizziFactory = require('./lib/services/wizziFactory')
+	+
+	var md = module.exports = {}
+	set md.file = require('wizzi-utils').file
+	set md.verify = verify
+	set md.config = require('wizzi-utils').config
+	set md.genContext = require('./lib/artifact/genContext')
+	set md.acl = acl
+	set md.productionOptions = require('./lib/production/options')
+	set md.Filesystem = Filesystem
+	set md.JsonComponents = require('wizzi-repo').JsonComponents
+	+
+	#
+		# params
+		#   string userid
+		#   string role
+		#   { options
+		#     { repo
+		#       string storeKind
+		#         oneOf filesystem, mongodb, localstorage
+		#     { plugins
+		#       [ items
+		#         string pluginName
+		#       string 
+		#     { globalContext
+		#     { dumps
+		#       string dumpsBaseFolder
+		# 	    { mTreeBuildUpScript
+		#         boolean dump
+		#         string dumpsBaseFolder
+	set md.createFactory
+		function createFactory
+			string userid
+			string role
+			{ options
+			callback
+			+
+			# check_cb( callback, createFactory )
+			# check_cb_object( options, createFactory )
+			+
+			_ wizziFactory.createFactory
+				@ userid
+				@ role
+				@ options
+				@ callback
+	+
+	set md.fsnoaclFactory
+		function
+			param options
+			param callback
+			+
+			if typeof(callback) === 'undefined'
+				set callback = options
+				set options = {}
+			+
+			check_cb( callback, createFactory )
+			check_cb_object( options, createFactory )
+			+
+			set options.repo
+				{
+					@ storeKind 'filesystem'
+			_ md.createFactory
+				@ 'stefi'
+				@ 'admin'
+				@ options
+				@ callback
+	set md.fsFactory = md.fsnoaclFactory
+	+
+	set md.dbnoaclFactory
+		function
+			string storeUri
+			string storeBaseFolder
+			{ options
+			callback
+			+
+			# log 'wizzi.index.dbnoaclFactory.storeUri,storeBaseFolder', storeUri, storeBaseFolder
+			+
+			set options.repo
+				{
+					@ storeKind 'mongodb'
+					@ storeUri storeUri
+					@ storeBaseFolder storeBaseFolder
+			_ md.createFactory
+				@ 'stefi'
+				@ 'admin'
+				@ options
+				@ callback
+	set md.mongoFactory = md.dbnoaclFactory
+	+
+	set md.jsonnoaclFactory
+		function
+			{ options
+				{ fsJson
+			callback
+			+
+			# log 'wizzi.index.jsonnoaclFactory.fsJson', options.fsJson
+			+
+			set options.repo
+				{
+					@ storeKind 'json'
+					@ storeFsJson options.fsJson
+			_ md.createFactory
+				@ 'stefi'
+				@ 'admin'
+				@ options
+				@ callback
+	set md.jsonFactory = md.jsonnoaclFactory
+	+
+	set md.browsernoaclFactory
+		function
+			{ options
+			callback
+			+
+			# log 'wizzi.index.jsonnoaclFactory.jsonFsData', options.jsonFsData
+			+
+			set options.repo
+				{
+					@ storeKind 'browser'
+			_ md.createFactory
+				@ 'stefi'
+				@ 'admin'
+				@ options
+				@ callback
+	set md.browserFactory = md.browsernoaclFactory
+	+
+	$include index/start_runnerServer
+	$include index/wizzi_job
+	$include index/wizzi_modelTypes
+	+
+	$include index/defaultFactory

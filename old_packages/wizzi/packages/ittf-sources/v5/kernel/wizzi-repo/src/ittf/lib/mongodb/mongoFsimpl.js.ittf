@@ -1,0 +1,123 @@
+﻿module wizzi-repo.mongodb.mongoFsImpl
+	kind jsfile
+
+	#
+		# Implements the `fsimpl` interface for a mongodb backed file system.
+
+	var
+		decl MongoClient
+			_ require('mongodb')
+				. MongoClient
+		decl FsMongo = require('./fs/fsmongo')
+		decl Document = require('./fs/document')
+		decl mongoUriParser = require('./mongoUriParser')
+
+	class MongoFsImpl
+
+		ctor
+			param mongoUri
+			string mongodbBaseFolder
+			set this.mongoUri = mongoUri || 'mongodb://localhost:27017/test'
+			set this.mongodbBaseFolder = mongodbBaseFolder
+			set this.mongoDb = null
+			set this.connecting = false
+		
+		m db
+			callback
+			if this.mongoDb == null
+				r_cb_wz_err( InvalidOperation, db )
+					@ 'Connection not opened. The method `open` must be called before calling `db`.'
+			else
+				return
+					_ callback
+						@ null
+						@ this.mongoDb
+		
+		m open
+			callback
+			var that = this
+			if this.mongoDb
+				return
+					_ callback
+						@ null
+						@ this.mongoDb
+			
+			_ MongoClient.connect
+				@ this.mongoUri
+				f_cb( db )
+					set that.mounted_db = db
+					var fsmongo = new FsMongo(db)
+					set that.mongoDb = new Document(fsmongo)
+					# log '***** mongodb connected'
+					return
+						_ callback
+							@ null
+							@ that.mongoDb
+
+		m close
+			if this.mounted_db
+				# log '***** mongodb start closing'
+				_ this.mounted_db.close
+				set this.mounted_db = null
+				set this.mongoDb = null
+				# log '***** mongodb closed'
+
+		mongoFsimpl/m( stat )
+			_ mongoDb.stat
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		mongoFsimpl/m( lstat )
+			_ mongoDb.stat
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		mongoFsimpl/m( readFile, options )
+			_ mongoDb.readFile
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+		
+		mongoFsimpl/m( writeFile, content, options )
+			_ mongoDb.writeFile
+				@ parsedUri.internalPath
+				@ content
+				f_cb( result )
+					_ callback(null, result)
+
+		mongoFsimpl/m( readdir, options )
+			_ mongoDb.getDir
+				@ parsedUri.internalPath
+				@ options
+				f_cb( result )
+					var dir = []
+					foreach item in result
+						# log 'wizzi-repo.mongodb.mongoFsImpl.readdir.parsedUri.internalPath, item', parsedUri.internalPath, item
+						_ dir.push(item.basename)
+					_ callback(null, dir)
+		
+		mongoFsimpl/m( mkdir, options )
+			_ mongoDb.createFolder
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		mongoFsimpl/m( unlink )
+			_ mongoDb.deleteFile
+				@ parsedUri.internalPath
+				f_cb( result )
+					_ callback(null, result)
+
+		m createWriteStream
+			string documentUri
+			checked_call_return( parsedUri )
+				_ mongoUriParser
+					@ documentUri
+					@ this.mongodbBaseFolder
+			return
+				_ this.mongoDb.createWriteStream
+					@ parsedUri.internalPath
+
+	set module.exports = MongoFsImpl

@@ -1,0 +1,326 @@
+﻿$group
+
+	api wizzi.artifact.artifactInfoConfig
+		kernel
+		{
+			string name
+				# from wfjob.artifact.wzName
+			{ options
+			{ model
+				string cwd
+					# from wfjob.line.cwdFolder
+				string src
+					# from wfjob.artifact.src
+				string ignore
+					# form wfjob.artifact.ignore
+				string schema
+					# wfjob.artifact.schema
+				[ contexts
+					{ context
+				[ transformers
+					# from wfjob.artifact.transformers
+			[ contexts
+				{ context
+			boolean isWfJob
+				# from wfjob.artifact.isWfJob
+			{ gen
+				string generator
+					# from wfjob.artifact.generator
+			{ dest
+				string baseFolder
+					# from wfjobModel.destBaseFolder
+				string folder
+					# from wfjob.line.destFolder || wfjob.production.destFolder
+				string path
+					# from wfjob.artifact.destPath
+				string extension
+					# from wfjob.artifact.extension
+	
+	api wizzi.artifact.persisteable
+		{
+			{ artifactInfo
+				api-ref wizzi.artifact.artifactInfo
+			{ genContext
+				api-ref wizzi.artifact.genContext
+			string filepath
+
+	api wizzi.artifact.artifactInfo
+		kernel
+		{
+			string name
+			{ options
+			{ modelInfo
+				api-ref wizzi.model.modelInfo
+			[ contextInfos
+				{ contextInfo
+					api-ref wizzi.model.modelInfo
+            boolean isWfJob
+            [ transformers
+            { gen
+			{ dest
+			{ wfjob
+            [ genContexts
+				{ genContext
+					api-ref wizzi.artifact.genContext
+			ctor
+				{ artifactInfoConfig
+					api-ref wizzi.artifact.artifactInfoConfig
+			m initialize
+				{ productionManager
+					api-ref wizzi.production.productionManager
+			m addGenContext
+				{ genContext
+					api-ref wizzi.artifact.genContext
+			m isWizziFactoryJob
+				return
+					boolean isWizziFactoryJob
+			m isWizziModelArtifact
+				return
+					boolean isWizziModelArtifact
+			m isModelCollectionArtifact
+				return
+					boolean isModelCollectionArtifact
+			m isCodeWriteArtifact
+				return
+					boolean isCodeWriteArtifact
+			m isFinalArtifact
+				return
+					boolean isFinalArtifact
+			m getItemsToPersistToFile
+				cb()
+					{ persisteable
+						api-ref wizzi.artifact.persisteable
+
+	api wizzi.artifact.genConfig
+		kernel
+		pojo
+		{
+			{ options
+				{ data
+					# Interpolation context values
+				integer indentSpaces
+					default 4
+				string CRLF
+					default \n
+				boolean isDebugLine
+					default false
+					# TODO
+				integer indent
+					default 0
+					# starting indentation
+			{ model
+				api-ref wizzi.model.iface.modelCollectionConfig
+				# used for building the destination path of the generated artifact
+			{ srcPath
+				# main model document source path
+			{ pman
+				api-ref wizzi.production.programManager
+
+	api wizzi.artifact.genContext
+		kernel
+		class-instance
+			path wizzi/lib/artifact/genContext.js
+		{
+			{ model
+				api-ref wizzi.model.modelCollectionConfig
+				# Used for building the destination path of the generated artifact
+				# when the artifact type is "Model collection artifact".
+				# Is null for any other artifact type.
+			string srcPath
+				# main source model relative path
+				# is null for artifacts of type "Code write artifact"
+			string srcFullPath
+				# main source model full path
+				# is null for artifacts of type "Code write artifact"
+			{ options
+				# artifactInfo.options
+			{ pman
+				api-ref wizzi.production.programManager
+			{ wizziFactory
+				api-ref wizzi.wizziFactory
+			boolean isEmpty
+			
+			ctor
+				{ genconfig
+					api-ref wizzi.artifact.genConfig
+    
+			m forceIndent
+				integer value
+    
+			m indent
+				integer value
+					default 1
+    
+			m deindent
+				integer value
+					default 1
+			m a
+				# add a key, value pair to the interpolation context
+				string name
+				string value
+    
+			m g
+				string name
+				# get value from interpolation context
+    
+			m r
+				# remove key from interpolation context
+				string name
+    
+			m w
+				string text
+				# write a text with interpolation and line feed
+    
+			m write
+				# write a text with interpolation without line feed
+				string text
+    
+			m appendFile
+				# write a file as a chunk inserted between writes
+				string filePath
+    
+			m writeFile
+				# Write a file, no other writes are allowed.
+				# Is for copying final artifacts with the same interface
+				# used for writing generated ones.
+				string filePath
+
+			m toStream
+				{ stream
+					api-ref nodejs.fs.stream
+    
+			m getContent
+				return
+					string content
+    
+			m getContentInLine
+				# return the content with the carriage return
+				# replaced with the string '__1_2_3__'
+    
+			m error
+				string message
+				{ node
+					api-ref wizzi.wizziModel.node
+    
+			m artifactGenerationError
+				string message
+				string location
+				{ node
+					api-ref wizzi.wizziModel.node
+    
+			m terminate
+    
+			m hydrate
+				{ block
+					[ lines
+						{ (line)
+							string text
+							integer indentValue
+				{ options
+					integer indentSpaces
+						default 4
+					string CRLF
+						default \n
+    
+			m toStringFromJSON
+				{ block
+					[ lines
+						{ (line)
+							string text
+							integer indentValue
+				{ options
+					integer indentSpaces
+						default 4
+					string CRLF
+						default \n
+	
+	api wizzi.artifact.AsyncArtifactGenerator
+		kernel
+		module
+		{
+            m generate
+                { artifactInfo
+					api-ref wizzi.artifact.artifactInfo
+                { generator
+					api-ref wizzi-plugin.artifactGenerator
+                [ modelInfos
+					{ modelInfo
+						api-ref wizzi.model.modelInfo
+                [ mainSourceModels
+					{ mainSourceModel
+						# api-ref wizzi-plugin.wizziModel or POJO
+                cb()
+					{ generationInfo
+						# The meat, the genContexts, are added to the artifactInfo instance.
+						string oper
+							# AsyncArtifactGenerator.generate
+						string status
+							# success
+						string item
+							# genContexts count
+				info
+					# modelInfos and contextModels are collections of the same length.
+					# 
+					api-create wizzi.artifact.genContext
+					api-call wizzi.artifact.AsyncArtifactGenerator._gen_item
+
+			m generateModelCollection
+                { artifactInfo
+					api-ref wizzi.artifact.artifactInfo
+                { generator
+					api-ref wizzi-plugin.artifactGenerator
+                [ modelInfos
+					{ modelInfo
+						api-ref wizzi.model.modelInfo
+                [ mainSourceModelsOfModelCollection
+					[ mainSourceModels
+						{ mainSourceModel
+                cb()
+					{ generationInfo
+						# The meat, the created genContexts, are added to the artifactInfo instance.
+						string oper
+							# AsyncArtifactGenerator.generateFromCollectionContexts
+						string status
+							# success
+
+				info
+					api-create wizzi.artifact.genContext
+					api-call wizzi.artifact.AsyncArtifactGenerator._gen_item
+
+			m generateCodeWrite
+				{ artifactInfo
+					api-ref wizzi.artifact.artifactInfo
+				{ generator
+					api-ref wizzi-plugin.artifactGenerator
+				[ contextModels
+					{ contextModel
+						api-ref wizzi.model.modelInfo
+				cb()
+					{ generationInfo
+						# The meat, the created genContext, is added to the artifactInfo instance.
+						string oper
+							# AsyncArtifactGenerator.generateCodeWrite
+						string status
+							# success
+
+				info
+					# contextModels are compacted in a single model object, where
+					# each contextModel is exposed using its exportName as property name.
+					api-create wizzi.artifact.genContext
+
+			m _gen_item
+				internal
+				{ genInfo
+					{ generator
+						api-ref wizzi.plugin.artifactGenerator
+					{ modelContext
+						# Wizzi Model or POJO
+					{ genContext
+						api-ref wizzi.artifact.genContext
+				cb()
+					{ genContext
+						api-ref wizzi.artifact.genContext
+						# enriched with the in-memory generated artifact
+				info
+					api-call wizzi.plugin.artifactGenerator
+

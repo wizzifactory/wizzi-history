@@ -1,0 +1,111 @@
+﻿module
+	kind jsfile
+
+	# VIA var file = require('../../fs/file')
+	var liner = require('./liner')
+	var nodifier = require('./nodifier')
+
+	function AsisLoader
+		param ittfDocumentUri
+		param options
+		param callback
+
+		# VIA var reader = options.file || file
+		var reader = options.file
+		_ reader.read
+			@ ittfDocumentUri
+			f_cb( content )
+			
+				var lines
+					_ liner
+						@ content
+						{
+
+				var count = 0
+				var asisMTree
+					{
+						@ loadHistory
+							{
+								@ getNewNodeId
+									function
+										return ++count
+						@ uri ittfDocumentUri
+						@ content content
+
+				set asisMTree.nodes
+					_ nodifier
+						@ lines
+						@ asisMTree
+
+				if asisMTree.nodes.__is_error
+					set asisMTree.nodes
+						[
+							{
+								@ name 'Cannot load this ittf document: ' + asisMTree.nodes.message
+				else
+					# log 'asis.loader.asisMTree.nodes.length', asisMTree.nodes.length, asisMTree.nodes.length != 1
+					if asisMTree.nodes.length != 1
+						var message = 'wizzi-utils.asIsLoader.error. The ittf source document must have one node. Found: ' + asisMTree.nodes.length +
+							\b ' in document: ' + ittfDocumentUri
+						if callback
+							return
+								_ callback
+									{
+										@ __is_error true
+										@ message message
+						else
+							throw new Error(message)
+
+				if asisMTree.nodes && asisMTree.nodes.length > 0
+					if options.clean
+						_ clean
+							@ asisMTree.nodes[0]
+					elif options.clean_remove
+						set asisMTree
+							_ clean
+								@ asisMTree.nodes[0]
+
+				if callback
+					_ callback
+						@ null
+						@ asisMTree
+				else
+					return asisMTree
+
+	function clean
+		param node
+		delete node.parent
+		delete node.model
+		delete node.hasMacro
+		delete node.id
+		if node.children
+			foreach item in node.children
+				_ clean(item)
+		return node
+
+	set AsisLoader.createFromString
+		function
+			param text
+			param options
+			param callback
+			set options = options || {}
+			set options.file
+				{
+					@ read
+						function
+							param dummy
+							param callback
+							if callback
+								return
+									_ callback
+										@ null
+										@ text
+							else
+								return text
+			return
+				_ AsisLoader
+					@ 'dummy'
+					@ options
+					@ callback
+
+	set module.exports = AsisLoader

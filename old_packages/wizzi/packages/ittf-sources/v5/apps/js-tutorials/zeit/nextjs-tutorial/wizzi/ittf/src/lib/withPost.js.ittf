@@ -1,0 +1,29 @@
+﻿module
+    kind react
+    
+	import React from 'react'
+    import MyLayout from '../components/MyLayout'
+    import marked from 'marked'
+    import Highlight from 'react-highlight'
+    
+	_ marked.setOptions
+        { 
+            @ gfm true
+            @ tables true
+            @ breaks true
+    
+	export-default 
+        function WithPost
+            param options
+            return 
+                class PostPage
+                    super React.Component
+                    m render
+                        return 
+                            < MyLayout 
+                                h1 
+                                    + {options.title}
+                                div 
+                                    < Highlight 
+                                        @ innerHTML
+                                        + {marked(options.content)}

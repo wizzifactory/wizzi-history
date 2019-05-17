@@ -1,0 +1,139 @@
+﻿$group
+
+	$*
+	
+	m toIttfRoot
+		param ittf
+		var kempty = ""
+		var kschema = "schema"
+		var kfolder = "folder"
+		var klib = "lib"
+		var kutil = "util"
+		var ktest = "test"
+		var kexample = "example"
+		
+		var r = this.root()
+		
+		if r === this
+			
+			addvar(inf, ittf, fs-info)
+
+			var dg, t, any
+			
+			for var k in r.info.schemas
+				addset(dg, inf, d-group, k)
+				addset(t, dg, type, kschema)
+				# foreach d in r.info.schemas[k].documents
+				# 	addset(any, dg, d, d.path)
+				
+			if r.info.lib.documents.length > 0
+				addset(dg, inf, d-group, klib)
+				addset(t, dg, type, kfolder)
+				# foreach d in r.info.lib.documents
+				# 	addset(any, dg, d, d.path)
+			
+			if r.info.util.documents.length > 0
+				addset(dg, inf, d-group, kutil)
+				addset(t, dg, type, kfolder)
+				# foreach d in r.info.util.documents
+				# 	addset(any, dg, d, d.path)
+			
+			if r.info.test.documents.length > 0
+				addset(dg, inf, d-group, ktest)
+				addset(t, dg, type, kfolder)
+				# foreach d in r.info.test.documents
+				# 	addset(any, dg, d, d.path)
+			
+			if r.info.example.documents.length > 0
+				addset(dg, inf, d-group, kexample)
+				addset(t, dg, type, kfolder)
+				# foreach d in r.info.example.documents
+				# 	addset(any, dg, d, d.path)
+			
+	m toIttf
+		param ittf
+		_ this.toIttfRoot(ittf)
+		var n
+			_ ittf.add
+				iif this.isDirectory
+					then 'f'
+					else 'd'
+				@ this.basename
+		_ n.add
+			@ 'id'
+			@ this.id
+		if this.isDirectory
+			if this.isPackageRoot
+				_ n.add
+					@ 'is-package-root'
+			if this.isJobFolder
+				_ n.add
+					@ 'is-job-folder'
+			if this.isTFolder
+				_ n.add
+					@ 'is-t-folder'
+			if this.isInsideTFolder
+				_ n.add
+					@ 'is-inside-t-folder'
+		else
+			if this.isFragment
+				_ n.add
+					@ 'is-fragment'
+			var pretty
+				_ this.getPrettyAnalizedIttfSource()
+			if pretty.__is_error
+				_ n.add
+					@ 'ittf'
+					@ 'Error: not loaded'
+			else
+				var ittfSource
+					_ n.add
+						@ 'ittf'
+						_ verify.makeInline(pretty.prettyLines.join(''))
+
+				var r = this.root()
+				var ittfBasePath = r.ittfBasePath
+				foreach item in Object.keys(pretty.fragments)
+					var ittfFragmentsNode
+						_ ittfSource.add
+							@ 'fragment'
+							@ item
+					_ ittfFragmentsNode.add
+						@ 'd-id'
+						@ pretty.fragments[item].id
+					_ ittfFragmentsNode.add
+						@ 'uri'
+						plus
+							+ '/'
+							_ verify.replaceAll
+								_ path.relative
+									@ ittfBasePath
+									@ pretty.fragments[item].uri
+								@ '\\'
+								@ '/'
+		if this.isTest
+			_ n.add
+				@ 'is-test'
+		if this.isExample
+			_ n.add
+				@ 'is-example'
+		if this.isUtil
+			_ n.add
+				@ 'is-util'
+		_ n.add
+			@ 'dirname'
+			@ this.dirname
+		_ n.add
+			@ 'path'
+			@ this.path
+		if this.isDirectory
+			foreach f in this.folders
+				_ f.toIttf(n)
+			foreach d in this.documents
+				_ d.toIttf(n)
+		else
+			_ n.add
+				@ 'schema'
+				@ this.schema
+
+	*$

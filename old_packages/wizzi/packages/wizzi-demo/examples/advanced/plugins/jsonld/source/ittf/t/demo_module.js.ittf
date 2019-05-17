@@ -1,0 +1,28 @@
+module
+	$params name
+	kind jsfile
+
+	import path
+	import util
+	import wizzi
+	var stringify = require('json-stringify-safe')
+	var inspect = require('object-inspect')
+
+	var ${name}
+		function
+			_ heading1
+				@ 'DEMO ${name}'
+			$hook
+
+	function heading1
+		param text
+		log ''
+		log '****************************************'
+		log '** ' + text
+		log '****************************************'
+		log ''
+
+	set module.exports = ${name}
+
+	if typeof require != 'undefined' && require.main === module
+		_ ${name}

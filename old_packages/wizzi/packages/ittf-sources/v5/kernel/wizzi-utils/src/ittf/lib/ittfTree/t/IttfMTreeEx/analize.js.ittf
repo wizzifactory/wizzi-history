@@ -1,0 +1,258 @@
+﻿$group
+	
+	# called on the root node
+	# for example by ittfHtmlPrettifier
+	# params
+	# { ctx
+	#    { fragments
+	#    { ittfReferences
+	#    { ittfFsNode
+	#    string ittfBasePath
+
+	m analize
+		param ctx
+		param callback
+
+		if typeof ctx === 'undefined'
+			set ctx = {}
+
+		var that = this
+		_ this.analizeRoot
+			@ ctx
+			f_cb()
+				_ that.analizeFragment
+					@ ctx
+					f_cb()
+						if that.isCodeDeclare() == false && that.isMultilineDeclare() == false
+							_ async.map
+								@ that.children
+								function
+									param c
+									param callback
+									if c.commentState == 0
+										return
+											_ c.analize
+												@ ctx
+												@ callback
+									else
+										return
+											_ callback
+								f_cb()
+									return
+										_ callback
+						else
+							return
+								_ callback
+
+	m analizeRoot
+		param ctx
+		param callback
+
+		var r = this.root()
+
+		if this == r && ctx.rootFolder && r.model && r.model.jsonTwinUri && r.model.jsonTwinUri.length > 0
+			_ r.file.isFile
+				@ r.model.jsonTwinUri
+				f_cb( isFile )
+					if isFile
+						var fragment
+							{
+								@ oper 'ittfReference'
+								@ baseUri verify.unixifyPath(r.model.dirname)
+								@ name path.basename(r.model.jsonTwinUri)
+								@ uri r.model.jsonTwinUri
+								@ id 'unknown'
+								@ relUri
+									_ verify.unixifyPath
+										_ path.relative
+											@ ctx.rootFolder
+											@ r.model.jsonTwinUri
+						set r.ittfReferences[fragment.name] = fragment
+					return
+						_ callback
+		else
+			return
+				_ callback
+
+	m analizeFragment
+		param ctx
+		param callback
+		
+		if this.isMixinCall() == false &&
+			\b this.isIncludeCall() == false &&
+			\b this.isReferenceToIttf() == false
+			return
+				_ callback
+
+		if this.isReferenceToIttf() &&
+			\b !(ctx && ctx.rootFolder)
+			return
+				_ callback
+
+		# log 'analizeFragment', this.name, this.value
+
+		var r = this.root()
+
+		if typeof r.model === 'undefined'
+			return
+				_ callback
+					new Error('wizzi-utils.ittfMTreeEx.analize require a `model` object in the root node. For example when created calling ittfMTreeEx.createFrom(documentUri)')
+			
+		if r.model.uri.indexOf('__copy') > -1
+			# TODO why false ???
+			return
+				_ callback
+					@ null
+					@ false
+
+		if this.isMixinCall()
+			set this.fragmentName
+				iif verify.endsWith(this.name, '(')
+					then this.name.substr(0, this.name.length -1)
+					else this.name
+		elif this.isIncludeCall()
+			set this.fragmentName = this.getValueStripComments()
+		else
+			set this.fragmentName = this.getValueStripComments()
+
+		var fragment
+			{
+				@ oper this.isMixinCall() ? 'mix' : this.isIncludeCall() ? 'include' : 'ittfReference'
+				@ baseUri verify.unixifyPath(path.dirname(r.model.uri))
+				@ name this.fragmentName
+				@ uri 'unknown'
+				@ id 'unknown'
+
+		var that = this
+		_ this.__getFragmentPath
+			@ ctx
+			f_cb( fragmentPath )
+			
+				if fragmentPath.__is_error
+				
+					set fragment.__is_error = true
+					set fragment.message = 'NotFound in repository'
+
+					_ r.errorFragments.push(fragment)
+				
+					log 'wizzi-utils.ittfMTreeEx.analizeFragment.error', fragmentPath, fragment
+					
+					return
+						_ callback
+
+				else
+
+					set fragment.uri = verify.unixifyPath(fragmentPath)
+				
+					if ctx && ctx.ittfBasePath && ctx.ittfFsNode
+					
+						var mixinIttfFsNodePath
+							_ path.relative
+								@ ctx.ittfBasePath
+								@ fragmentPath
+					
+						var fragmentDocument = ctx.ittfFsNode.searchDocument(mixinIttfFsNodePath)
+					
+						if !fragmentDocument
+						
+							log 'wizzi-utils.ittfMTreeEx.analize.fragmentNotFound in ittfFsNode', unixify(mixinIttfFsNodePath), unixify(fragmentPath)
+							set fragment.__is_error = true
+							set fragment.message = 'NotFound in ittfFsNode documents.'
+							_ r.errorFragments.push(fragment)
+							if ctx.externalFragments
+								set ctx.externalFragments[that.fragmentName] = fragment
+
+						else
+						
+							set fragment.id = fragmentDocument.id
+							if that.isReferenceToIttf()
+								if ctx.ittfReferences
+									set ctx.ittfReferences[that.fragmentName] = fragment
+							else
+								if ctx.fragments
+									set ctx.fragments[that.fragmentName] = fragment
+
+					if ctx && ctx.rootFolder
+						set fragment.relUri
+							_ verify.unixifyPath
+								_ path.relative
+									@ ctx.rootFolder
+									@ fragmentPath
+
+					if that.isReferenceToIttf()
+						# do not override
+						if !r.ittfReferences[that.fragmentName]
+							set r.ittfReferences[that.fragmentName] = fragment
+					else
+						# do not override
+						if !r.fragments[that.fragmentName]
+							set r.fragments[that.fragmentName] = fragment
+
+					return
+						_ callback
+
+	m __getFragmentPath
+		param ctx
+		param callback
+
+		var
+			decl r = this.root()
+			decl fragmentPath
+
+		if this.isReferenceToIttf() && ctx && verify.isNotEmpty(ctx.rootFolder)
+
+			# log "ittfMTreeEx.__getFragmentPath.this.fragmentName, ctx.rootFolder", this.fragmentName, ctx.rootFolder
+
+			if this.fragmentName[0] === '/'
+				set fragmentPath
+					_ path.join
+						@ ctx.rootFolder
+						@ this.fragmentName
+			else
+				set fragmentPath
+					_ path.resolve
+						@ r.model.dirname
+						@ this.fragmentName
+			
+			# log '__getFragmentPath.fragmentPath', fragmentPath
+			
+			_ r.file.isFile
+				@ fragmentPath
+				f_cb( isFile )
+					if isFile
+						return
+							_ callback
+								@ null
+								@ fragmentPath
+					else
+						return
+							_ callback
+								@ null
+								{
+									@ __is_error true
+									@ uri fragmentPath
+		else
+			
+			var ittfFinder 
+				new IttfFinder
+					@ r.file
+			
+			var that = this
+			_ ittfFinder.resolvePath
+				{
+					@ callerFullPath r.model.uri
+					@ fragmentName this.fragmentName
+				f_cb_no_err( result )
+					if err
+						return
+							_ callback
+								@ null
+								{
+									@ __is_error true
+									@ fragment that.fragmentName
+									@ message err.message
+					else
+						return
+							_ callback
+								@ null
+								@ result

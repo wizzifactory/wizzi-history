@@ -1,0 +1,36 @@
+﻿$group
+
+	decl_rsf( wfjob, execute )
+	decl_rsf( job_batches, get )
+	decl_rsf( job_batch, get, exec )
+	decl_rsf( job_gists, get )
+	decl_rsf( job_gist, create, update, delete )
+	decl_rsf( job_gist, get, duplicate, rename )
+	decl_rsf( job_snippet, wizzify )
+	decl_rsf( job_navigations, clear )
+	decl( CHANGED_JOB_GIST  )
+
+	export
+		const executeWfJob
+			=>
+				param hash
+				return
+					{
+						@ type EXECUTE_WFJOB
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ EXECUTE_WFJOB_REQUEST
+										@ EXECUTE_WFJOB_SUCCESS
+										@ EXECUTE_WFJOB_FAILURE
+								@ url '/api/wizzi/wfjob'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+
+	$include job/batches
+	$include job/gists
+	$include job/snippets
+

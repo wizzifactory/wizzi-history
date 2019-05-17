@@ -1,0 +1,66 @@
+﻿module
+	kind es6
+
+    $foreach t in data.tables
+        var ${t.objectName} = require('./models').${t.objectName};
+
+    $foreach t in data.tables
+
+        # Simple version, without validation or sanitation
+        set exports.test =
+            function 
+                param req
+                param res
+                _ res.send('Greetings from the Test controller!')
+        set exports.${t.name}_create =
+            function 
+                param req
+                param res
+                var ${t.name}
+                    new ${t.objectName}
+                        { 
+                            @ name req.body.name
+                            @ price req.body.price
+                _ ${t.name}.save
+                    function 
+                        param err
+                        if err
+                            return next(err)
+                        _ res.send('${t.objectName} Created successfully')
+        set exports.${t.name}_details =
+            function 
+                param req
+                param res
+                _ ${t.objectName}.findById
+                    @ req.params.id
+                    function 
+                        param err
+                        param ${t.name}
+                        if err
+                            return next(err)
+                        _ res.send(${t.name})
+        set exports.${t.name}_update =
+            function 
+                param req
+                param res
+                _ ${t.objectName}.findByIdAndUpdate
+                    @ req.params.id
+                    { 
+                        @ $set req.body
+                    function 
+                        param err
+                        param ${t.name}
+                        if err
+                            return next(err)
+                        _ res.send('${t.objectName} udpated.')
+        set exports.${t.name}_delete =
+            function 
+                param req
+                param res
+                _ ${t.objectName}.findByIdAndRemove
+                    @ req.params.id
+                    function 
+                        param err
+                        if err
+                            return next(err)
+                        _ res.send('Deleted successfully!')

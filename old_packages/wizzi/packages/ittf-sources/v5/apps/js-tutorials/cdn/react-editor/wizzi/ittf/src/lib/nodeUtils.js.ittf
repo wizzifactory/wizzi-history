@@ -1,0 +1,131 @@
+﻿module
+	kind es6
+
+    const md
+        set module.exports =
+            { 
+	
+	set md.addChild
+        function 
+            { parent
+				[ wzChildren
+            { child
+			set child.parent = parent
+			_ parent.wzChildren.push
+				@ child
+
+	set md.addBefore
+        function
+            { pivot
+				{ parent
+            { item
+			set item.parent = pivot.parent
+            var nodes = pivot.parent.wzChildren
+            set pivot.parent.wzChildren = []
+            foreach child in nodes
+                if child === pivot
+					_ pivot.parent.wzChildren.push(item)
+				_ pivot.parent.wzChildren.push(child)
+
+	set md.addAfter
+        function
+            { pivot
+				{ parent
+            { item
+			set item.parent = pivot.parent
+            var nodes = pivot.parent.wzChildren
+			log 'react.editor.nodeUtils.addAfter.nodes', nodes
+            set pivot.parent.wzChildren = []
+            foreach child in nodes
+				_ pivot.parent.wzChildren.push(child)
+				log 'react.editor.nodeUtils.addAfter.push', child
+                if child === pivot
+					_ pivot.parent.wzChildren.push(item)
+					log 'react.editor.nodeUtils.addAfter.push added', item
+			log 'react.editor.nodeUtils.addAfter.pivot.parent.wzChildren', pivot.parent.wzChildren
+
+	set md.addAsWrapper
+        function 
+            { pivot
+				{ parent
+			{ wrapper
+			log 'nodeUtils.addAsWrapper'
+			_ md.replace
+				@ pivot
+				[
+					@ wrapper
+			_ md.addChild
+				@ wrapper
+				@ pivot
+
+	set md.replace
+        function 
+            { item
+				{ parent
+            [ replacers
+            var nodes = item.parent.wzChildren
+            set item.parent.wzChildren = []
+            foreach child in nodes
+                if child === item
+                    foreach replchild in replacers
+                        set replchild.parent = item.parent
+                        _ item.parent.wzChildren.push(replchild)
+                else 
+                    _ item.parent.wzChildren.push(child)
+    
+	set md.remove
+        function 
+            { item
+				{ parent
+            var nodes = item.parent.wzChildren
+            set item.parent.wzChildren = []
+            foreach child in nodes
+                if child !== item
+                    _ item.parent.wzChildren.push(child)
+
+	set md.move
+        function 
+            { item
+				{ parent
+            { target
+				{ parent
+			_ md.remove(item)
+			_ md.addChild
+				@ target
+				@ item
+
+
+	set md.moveBefore
+        function
+            { item
+				{ parent
+            { target
+			_ md.remove(item)
+			_ md.addBefore
+				@ target
+				@ item
+
+	set md.moveAfter
+        function
+            { item
+				{ parent
+            { target
+			_ md.remove(item)
+			_ md.addAfter
+				@ target
+				@ item
+
+	set md.moveAsWrapper
+        function 
+            { item
+				{ parent
+			{ target
+				{ parent
+			_ md.remove(item)
+			_ md.addAsWrapper
+				@ target
+				@ item
+
+
+
+

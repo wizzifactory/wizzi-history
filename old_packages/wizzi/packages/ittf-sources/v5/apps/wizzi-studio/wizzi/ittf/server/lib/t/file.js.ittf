@@ -1,0 +1,62 @@
+﻿$group
+
+	@ getGlobbedFiles
+
+		function 
+			param globPatterns
+			param options
+
+			set options = options || {}
+			var exclude = options.exclude
+
+			+
+			# For context switching
+			var _this = this
+		
+			+
+			# URL paths regex
+			var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i')
+		
+			+
+			# The output array
+			var output = []
+		
+			+
+			# If glob pattern is array so we use each pattern in a recursive way, otherwise we use glob 
+			if _.isArray(globPatterns)
+				_ globPatterns.forEach
+					function
+						param globPattern
+						set output = _.union(output, _this.getGlobbedFiles(globPattern, exclude))
+		
+			elif _.isString(globPatterns)
+			
+				if urlRegex.test(globPatterns)
+					_ output.push(globPatterns)
+			
+				else
+					var files = glob.sync(globPatterns)
+					if exclude
+						set files
+							_ files.map
+								function 
+									param file
+									if _.isArray(exclude)
+										foreach exclude in exclude
+											set file = file.replace(exclude, '')
+									else 
+										set file = file.replace(exclude, '')
+									return file
+					set output = _.union(output, files)
+					set output = _.filter(output, function (item) { return item.indexOf('/_debug') < 0; })
+			return output
+
+	@ walkDirectory
+		function
+			param path
+			var filetree = {}
+			_ _walkDirectory(path, filetree)
+			return filetree
+
+	$$ parallel and serial http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+

@@ -1,0 +1,79 @@
+﻿module
+    kind jsfile
+
+	import url
+	var errors = require('./errors');
+
+	set module.exports
+		function
+			param uri
+			param callback
+
+			set uri = uri.toLowerCase()
+			
+			var ret = {}
+
+            var parsedUri = url.parse(uri)
+            if typeof(parsedUri.protocol) !== 'string'
+				var_cb_error( InvalidRequest )
+					@ "ittf.uriparser. uri must have a protocol (must be an absolute url) : " + uri
+					@ "UriError"
+            
+			var protocol
+                iif parsedUri.protocol.substr(-1, 1) === ':'
+                    then 
+                        _ parsedUri.protocol.substr(0, (parsedUri.protocol.length - 1))
+                    else 
+                        set parsedUri.protocol
+            
+			# log 'parseuri.parsedUri', parsedUri
+			var name, parts = parsedUri.pathname ? parsedUri.pathname.split('/') : []
+			if parsedUri.pathname && parsedUri.pathname.length > 0 && parsedUri.pathname[0] == '/'
+				_ parts.shift()
+
+			if protocol.length === 1
+                
+				if parts.length < 3
+					var_cb_error( InvalidRequest )
+						@ 'Invalid uri for an IttfDocument. Too short: ' + uri
+						@ 'UriError'
+				set ret.storeKind = 'filesystem'
+				set ret.userId = parts[0]
+				set ret.projectId = parts[1]
+				set ret.uri = uri
+				_ parts.shift()
+				_ parts.shift()
+				set ret.path = parts.join('/')
+                set name = parts[parts.length-1]
+            
+			elif protocol === 'repo'
+				if parts.length < 2
+					var_cb_error( InvalidRequest )
+						@ 'Invalid uri for an IttfDocument. Too short: ' + uri
+						@ 'UriError'
+                log 'parsedUri.parts', parts
+				log 'parsedUri', parsedUri
+				set ret.storeKind = 'repo'
+                set ret.userId = parsedUri.host
+				set ret.projectId = parts[0]
+				set ret.uri = uri
+				_ parts.shift();
+				set ret.path = parts.join('/')
+				set name = parts[parts.length-1]
+
+			else
+				var_cb_error( InvalidRequest )
+					@ 'Invalid uri protocol for an IttfDocument. Must be a drive letter or "repo": uri=' + uri
+					@ 'UriError'
+
+			var nameparts = name.split('.')
+			if nameparts.length > 2 && nameparts[nameparts.length -1] === 'ittf'
+				set ret.isIttfDocument = true
+				set ret.schema = nameparts[nameparts.length -2]
+			else
+				set ret.isIttfDocument = false
+
+			return
+				_ callback
+					@ null
+					@ ret

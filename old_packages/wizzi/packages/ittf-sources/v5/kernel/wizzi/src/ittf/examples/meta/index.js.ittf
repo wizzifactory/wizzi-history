@@ -1,0 +1,95 @@
+﻿module
+	kind jsfile
+
+	import async
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	var wizzi = require('../../index')
+
+	var jsCheatPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'js'
+			@ 'cheatsheet.meta.ittf'
+
+	# Generate the meta mTree.
+	_ wizzi.mtree
+		@ jsCheatPath
+		{
+		f_cb_test(mTree)
+			
+			var result
+				{
+					[ items
+			
+			foreach n in mTree.nodes[0].children
+				log n.n, n.v
+				if n.n === 'item'
+					var itemResult = {}
+					foreach item in n.children
+						if item.n === 'ittf' && item.children.length == 1
+							log item.n, mTree.toIttf(item.children[0])
+							var ittfNode
+								{
+									@ n 'module'
+									[ children
+										{
+											@ n 'kind'
+											@ v 'react'
+											[ children
+							foreach node in item.children
+								_ ittfNode.children.push
+									@ node
+							set itemResult[item.n] = mTree.toIttf(item.children[0])
+							set itemResult[item.n + 'Wrapped'] = mTree.toIttf(ittfNode)
+						else
+							set itemResult[item.n] = item.v
+							log item.n, item.v
+					_ result.items.push
+						@ itemResult
+				else
+					set result[n.n] = n.v
+			var dump
+				_ stringify
+					@ result
+					@ null
+					@ 2
+			log 'result\n', dump
+			var dump
+				_ stringify
+					_ mTree.toIttf
+					@ null
+					@ 2
+			# log 'jsCheatSheet\n', dump
+			var dump
+				_ stringify
+					@ mTree
+					@ null
+					@ 2
+			# log 'jsCheatSheet\n', dump
+
+			_ async.map
+				@ result.items
+				function
+					param item
+					param callback
+					_ wizzi.genFromText
+						@ item.ittfWrapped
+						{
+						{
+							@ artifactName 'js/module'
+						f_cb_test(artifactText)
+							set item.generated = artifactText
+							_ callback
+								@ null
+				f_cb()
+					var dump
+						_ stringify
+							@ result
+							@ null
+							@ 2
+					log 'result\n', dump
+
+
+

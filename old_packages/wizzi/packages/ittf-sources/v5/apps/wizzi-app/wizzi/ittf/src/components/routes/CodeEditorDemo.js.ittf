@@ -1,0 +1,50 @@
+﻿r-component( CodeEditorDemo
+
+	$append imports
+		import CodeBeautify from '../mui/CodeBeautify'
+		import CodeEditor from '../mui/CodeEditor'
+		const jsSnippet
+			[
+				@ "import Lowlight from 'react-lowlight'"
+				@ ""
+				@ "// Load any languages you want to use"
+				@ "// (see https://github.com/isagalaev/highlight.js/tree/master/src/languages)"
+				@ "import js from 'highlight.js/lib/languages/javascript"
+				@ ""
+				@ "// Then register them with lowlight"
+				@ "Lowlight.registerLanguage('js', js)"
+				@ ""
+				@ "ReactDOM.render(<Lowlight language='js' value='/* Code to highlight */' />,"
+				@ "  document.getElementById('target')"
+				@ ")"
+				._ join('\n')
+		
+	style
+
+	state
+		@ codeSnippet jsSnippet
+	
+	=> handleCodeChange
+		param value
+		_ this.setState
+			{
+				@ codeSnippet value
+
+	render
+
+		const { codeSnippet } = this.state
+
+		return
+			
+			table
+				tbody
+					tr
+						td
+							< CodeEditor 
+								@ language { 'js' }
+								@ value { codeSnippet }
+								@ onChange { this.handleCodeChange }
+						td
+							< CodeBeautify 
+								@ language { 'js' }
+								@ codeSnippet { codeSnippet }

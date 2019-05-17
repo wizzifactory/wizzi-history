@@ -1,0 +1,148 @@
+﻿r-component( CodemirrorEditor )
+	
+	$append imports
+		import isEqual from 'lodash/isEqual'
+		# _ require('codemirror/lib/codemirror.css')
+		# _ require('codemirror/mode/css/css')
+		# _ require('codemirror/mode/yaml/yaml')
+		# _ require('codemirror/mode/javascript/javascript')
+		# _ require('codemirror/theme/twilight.css')
+		_ require('codemirror/addon/scroll/simplescrollbars')
+		# _ require('./styles/main.css')
+		const CodeMirror = require('codemirror/lib/codemirror.js')
+
+	style
+
+	prop autoFocus
+		boolean
+	prop className
+		any
+	prop codeMirrorInstance
+		func
+	prop defaultValue
+		string
+	prop name
+		string
+	prop onChange
+		func
+	prop onFocusChange
+		func
+	prop options
+		{
+	prop value
+		string
+	prop preserveScrollPosition
+		boolean
+		default false
+
+	state
+		@ isFocused false
+
+	m getCodeMirrorInstance
+		if this.props.codeMirrorInstance
+			return this.props.codeMirrorInstance
+		if !window.CodeMirror
+			_ require('codemirror/addon/scroll/simplescrollbars')
+			set window.CodeMirror = CodeMirror
+			#
+				set window.CodeMirror = require('codemirror/lib/codemirror.js')
+		return window.CodeMirror
+
+	did-mount
+		if process.browser
+			const codeMirrorInstance = this.getCodeMirrorInstance()
+			set this.codeMirror
+				_ codeMirrorInstance.fromTextArea
+					@ this.textareaNode
+					@ this.props.options
+			_ this.codeMirror.on
+				@ 'change'
+				@ this.codemirrorValueChanged
+			_ this.codeMirror.on
+				@ 'focus'
+				_  this.focusChanged.bind(this, true)
+			_ this.codeMirror.on
+				@ 'blur'
+				_ this.focusChanged.bind(this, false)
+			_ this.codeMirror.on
+				@ 'cursorActivity'
+				_ this.cursorActivity.bind(this, false)
+			_ this.codeMirror.setValue
+				@ this.props.defaultValue || this.props.value || ''
+
+	will-unmount
+		if this.codeMirror
+			_ this.codeMirror.toTextArea();
+
+	m setOptionIfChanged
+		param optionName
+		param newValue
+		const oldValue = this.codeMirror.getOption(optionName)
+		if !isEqual(oldValue, newValue)
+			_ this.codeMirror.setOption(optionName, newValue)
+
+	m getCodeMirror
+		return this.codeMirror
+
+	m focus
+		if this.codeMirror
+			_ this.codeMirror.focus()
+
+	m focusChanged
+		param focused
+		_ this.setState
+			{
+				@ isFocused focused
+		_ this.props.onFocusChange && this.props.onFocusChange(focused)
+	
+	=> cursorActivity
+		prop onCursorActivity
+		if onCursorActivity
+			const cur
+				_ this.codeMirror.getCursor()
+			_ onCursorActivity
+				@ cur
+				@ this.codeMirror.getValue()
+
+	=> codemirrorValueChanged
+		param doc
+		param change
+		if this.props.onChange && change.origin !== 'setValue'
+			_ this.props.onChange(doc.getValue(), change)
+
+	render
+		prop name
+		prop value
+		prop preserveScrollPosition
+		prop options
+		
+		if this.codeMirror
+			if value != this.codeMirror.getValue()
+				if preserveScrollPosition
+					const prevScrollPosition = this.codeMirror.getScrollInfo()
+					_ this.codeMirror.setValue(value)
+					_ this.codeMirror.scrollTo(prevScrollPosition.left, prevScrollPosition.top)
+				else
+					_ this.codeMirror.setValue(value)
+			
+			if typeof options === 'object'
+				for let optionName in options
+					if options.hasOwnProperty(optionName)
+						_ this.setOptionIfChanged(optionName, options[optionName])
+
+		const editorClassName
+			_ classNames
+				@ 'ReactCodeMirror'
+				@ this.state.isFocused ? 'ReactCodeMirror--focused' : null
+				@ this.props.className
+		return
+			. {editorClassName}
+				textarea
+					@ ref
+						=>
+							param ref
+							set this.textareaNode = ref
+					@ name {name}
+					@ defaultValue {value}
+					@ autoComplete off
+					@ autoFocus {this.props.autoFocus}

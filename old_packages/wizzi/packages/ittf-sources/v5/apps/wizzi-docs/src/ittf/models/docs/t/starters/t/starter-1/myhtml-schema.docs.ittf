@@ -1,0 +1,57 @@
+﻿$group
+
+	h3 The WizziSchema 'myhtml'
+
+		p We want to exploit the power of the Ittf template engine
+			+ for building html pages, without the need to detail 
+			+ all the tags of the html specification in a WizziSchema.
+
+		p We would like to write
+		ittf
+			- html
+				- < body
+					- < div Hello world in many colors
+					- $ var i = 10
+					- $while i <= 360
+						- < div Hello world
+							- @ style color: hsl(${dollar}{i}, 100%, 50%);
+						- $ i += 10;
+
+		p We need a very simple schema with three elements only:
+		ul
+			li the html root node
+			li the element/< element for HtmlElement tags
+			li the attribute/@ element for HtmlAttributes
+
+		p A first draft of the WizziSchema could be:
+		ittf
+			- wfschema myhtml
+				- e html
+					- r attribute/s
+					- r element/s
+				- e attribute
+					- tag @
+				- e element
+					- tag <
+					- r attribute/s
+					- r element/s
+
+		p It will work but there is a redundancy. We may
+			+ derive the root html element from di element element.
+
+		ittf
+			- wfschema myhtml
+				- e element
+					- tag <
+					- r attribute/s
+					- r element/s
+				- e html : element
+					- is-root
+				- e attribute
+					- tag @
+
+		p We declare the html element after di element element.
+			+ Super elements must be previously declared.
+			+ We need to specify that the html element is the schema root element;
+			+ by default the root node is the first element of the schema.
+		

@@ -1,0 +1,18 @@
+﻿$group
+
+	function makeGistsApi
+		param config
+
+		var paths = makePaths(config)
+
+		var GIST_KINDS = ['gist', 'fragment', 'context']
+		function isGistKind
+			param kind
+			return GIST_KINDS.indexOf(kind) > -1
+
+		return
+			{
+				$include ./get_executeGist
+				$include ./crudGist
+				$include ./duplicateRename
+				$include ./getGistList

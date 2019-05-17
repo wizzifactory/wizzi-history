@@ -1,0 +1,33 @@
+﻿$group
+
+	set md.writeFile
+		function
+			param userId
+			param projectId
+			param path_string
+			param content
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+
+			var fsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ path_string
+				
+			# log 'wizzi-io.filesystem.writeFile.fsPath', fsPath
+
+			_ file.writeFile
+				@ fsPath
+				@ content
+				f_cb( result )
+					# log 'wizzi-io.filesystem.writeFile.fsPath', fsPath, 'result', result
+					return 
+						_ callback(null, result)

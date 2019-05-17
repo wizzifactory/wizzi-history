@@ -1,0 +1,46 @@
+﻿module 
+	$params name
+    kind jsfile
+	+
+	import path
+	import util
+	+
+	var file = require('../../tests/util/file')
+	var mocks = require('../../tests/loader/mocks/misc')
+	var mTreeLoader = require('../../tests/loader/mocks/mTreeLoader')
+
+	set module.exports
+		function
+			var
+				decl store
+				decl evaluatedModel
+
+			log 1
+			set store = new mocks.IttfDocumentStore()
+			log 2
+			_ store.init
+				{
+					@ storeKind 'filesystem'
+				f_cb_throw( notUsed )
+					log 3
+					var ittfPath
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ '${name}.tests.ittf'
+					log 4
+					_ mTreeLoader
+						@ store
+						@ ittfPath
+						f_cb_throw( result )
+							log 5, result
+							set evaluatedModel = result
+							$hook
+							_ file.write
+								_ path.join
+									@ __dirname
+									@ 'outputs'
+									@ '${name}.tests.ittf'
+								@ evaluatedModel.toIttf()
+
+		

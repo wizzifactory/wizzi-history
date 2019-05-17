@@ -1,0 +1,131 @@
+﻿common/kernel( ${ isBrowserTarget ? 'wizzi-browser' : 'wizzi-utils'}, ${wfpackage.title}. )
+
+	h2 vfile - virtual file system
+	h4 var vfile = require('wizzi-utils').vfile
+	
+	h3 vfileInst - create a virtual file system instance
+	h4 var vfileInst = vfile([fsimpl])
+	ul
+		li `fsimpl` `Object` Default: NodeJS fs object or fs-graceful if available.
+
+	h3 vfileInst.read(path_string, options[, callback])
+	ul
+		li `path_string`
+		li `options` `Object`
+		li `callback` `Function` If absent the call is sync.
+			ul 
+				li `err`
+				li `content`
+
+	h3 vfileInst.write(path_string, content, options[, callback])
+	ul
+		li `path_string`
+		li `content` `String`
+		li `options` `Object`
+		li `callback` `Function` If absent the call is sync.
+			p When the call is sync if `fsimpl` does not implement `readFileSync` throw Error.
+			ul 
+				li `err`
+				li `content`
+
+	h3 vfileInst.readJSON(path_string, options[, callback])
+	h3 vfileInst.writeJSON(path_string, obj, options[, callback])
+
+	$include fsimpl
+	
+	h2 verify - helper object
+	h4 var verify = require('wizzi-utils').verify
+
+	h2 verify - type checks
+	h4 verify.isDefined(item)
+	h4 verify.isNullOrUndefined(item)
+	h4 verify.isObject(item)
+	h4 verify.isArray(item)
+	h4 verify.isFunction(item)
+	h4 verify.isNumber(item)
+	h4 verify.isBoolean(item)
+	h4 verify.isDate(item)
+	h4 verify.isString(item)
+	h4 verify.isEmpty(item)
+	h4 verify.isNotEmpty(item)
+	h4 verify.isPrimitive(item)
+	h4 verify.isRegExp(item)
+	h4 verify.isError(item)
+	h4 verify.isAbsolutePath(item)
+	h4 verify.isIttfMacro(item)
+
+	h2 verify.convert(value, type[, unquote])
+	ul
+		li `value` `String` If `@@null` return null; if `@@undefined` return undefined.
+		li `type` `String` One-of string, integer, float, boolean, date
+		li `options` `Object`
+
+	h2 verify.canConvertTo(value, type)
+	ul
+		li `value` `String` 
+		li `type` `String` One-of string, integer, float, boolean, date
+
+	h2 verify - validations
+	
+	h4 verify.isEmail(value)
+	h4 verify.isEmails(value)
+	h4 verify.isMinLength(value, length)
+	h4 verify.isMaxLength(value, length)
+	h4 verify.isExactLength(value, length)
+	h4 verify.isGreaterThan(value, test)
+	h4 verify.isLessThan(value, test)
+	h4 verify.isGreaterEqualThan(value, test)
+	h4 verify.isLessEqualThan(value, test)
+	h4 verify.isAlpha(value)
+	h4 verify.isAlphaNumeric(value)
+	h4 verify.isIp(value)
+	h4 verify.isBase64(value)
+	h4 verify.isUrl(value)
+	h4 verify.isCreditCard(value)
+	h4 verify.isGreaterThanDate(value, date)
+	h4 verify.isLessThanDate(value, date)
+	h4 verify.isGreaterEqualDate(value, date)
+	h4 verify.isLessEqualDate(value, date)
+
+	h2 verify - errors
+	h4 verify.error([inner,] [obj,] message, [arg-1[, arg-2[, arg-...]]])
+	h4 verify.fatal(err[, code])
+
+	h2 folderScanner - ittf documents folder scanner
+	h4 var folderScanner = require('wizzi-utils').folderScanner
+
+
+	h2 folderScanner.scan(folderPath[, options])
+	ul
+		li `folderPath` `uri`
+		li `options` `Object`
+		li returns the root IttfFsNode of the 'folderPath' with its descendant folders as children.
+
+	h2 ittfMTreeEx - enhanced mTree with import, export, analize capabilities
+	h4 var ittfMTreeEx = require('wizzi-utils').ittfMTreeEx
+	h4 ittfMTreeEx.loadFrom(path_string)
+	ul
+		li `path_string` `uri` The uri of the ittf document that will be loaded as is (no composition, non template evaluation)
+		li returns an ittfMTreeEx instance
+	h4 ittfMTreeEx.loadFrom(mTree)
+	ul
+		li `mTree` `Object` An existent final or partial mTree.
+		li returns an ittfMTreeEx instance
+
+	h2 ittfHtmlPrettifier - ittf html formatter for documentation
+	h4 var ittfHtmlPrettifier = require('wizzi-utils').ittfHtmlPrettifier
+
+	h2 ittfHtmlPrettifier(rootNode[, options])
+	ul
+		li `rootNode` `Object` ittfMTreeEx instance
+		li `options` `Object`
+
+	h2 jsHtmlPrettifier - javascript html formatter for documentation
+	h4 var jsHtmlPrettifier = require('wizzi-utils').jsHtmlPrettifier
+
+	h2 jsHtmlPrettifier(script[, options])
+	ul
+		li `script` `String` javascript code
+		li `options` `Object`
+
+	

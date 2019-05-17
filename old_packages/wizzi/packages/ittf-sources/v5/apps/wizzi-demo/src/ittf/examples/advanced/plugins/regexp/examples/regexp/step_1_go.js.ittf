@@ -1,0 +1,42 @@
+﻿demo_module( plugin_examples, regexp, 1 )
+
+	# 
+		# DEMO: How to use the `regexp` wizzi model type to 
+		#       test regular expressions
+	+
+	#
+		# Commons
+	var wizziFactoryConfig
+		{
+			@ plugins
+				{
+					[ items
+						@ './regexp/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+							@ '..'
+	+
+	loadMTree( 1, first.regexp.ittf, print:dump )
+		loadModel_with_config( 1, first.regexp.ittf, save;print:json )
+			log 'wizziModel.executables', Object.keys(wizziModel.executables)
+			log 'wizziModel.elements', Object.keys(wizziModel.elements)
+			var results = wizziModel.execTests()
+			foreach r in results
+				var e = r.expected
+				var ie = r.isExpected
+				delete r.expected
+				delete r.isExpected
+				_ printValue('test', r, 'dashes')
+				if ie
+					log '     ', 'OK'
+				elif ie === null
+					log '     ', 'unknown expected value'
+				else
+					log '     ', '*****', 'ERROR', 'expected', e
+			if step_callback
+				_ step_callback
+					@ null
+

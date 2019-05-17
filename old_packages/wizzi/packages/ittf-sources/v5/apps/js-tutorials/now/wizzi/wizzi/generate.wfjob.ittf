@@ -1,0 +1,23 @@
+﻿wfjob now-static
+	
+	$include app-options
+	
+	$
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var dest_folder       = path.resolve(__dirname, '..', 'dist');
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+		$include wfjob/any_js
+		$include wfjob/any_html
+		$include wfjob/any_md
+		$include wfjob/.nowignore
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root

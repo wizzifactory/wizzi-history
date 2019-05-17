@@ -1,0 +1,86 @@
+﻿$group
+
+	@ copyPasteFsItems
+		function
+			param userId
+			param projectId
+			param itemPath
+			param fsItems
+			param callback
+			var actions = []
+			foreach item in fsItems
+				var basename = item.itemPath.substr(item.itemPath.lastIndexOf('/') + 1)
+				_ actions.push
+					{
+						@ actionType 'copy'
+						@ itemKind item.kind
+						@ userId item.userId
+						@ sourceProjectId item.projectId
+						@ sourceItemPath item.itemPath
+						@ destProjectId projectId
+						@ destItemPath itemPath + '/' + basename
+			
+			var dummy = ''
+			var that = this
+			_ repoFS.batch
+				@ userId
+				@ actions
+				f_cb()
+					copycut_folderRefresh( Copy - paste executed )
+					# r_cb_success( 'Copy - paste executed' + dummy
+					# 	@ result actions
+
+	@ cutPasteFsItems
+		function
+			param userId
+			param projectId
+			param itemPath
+			param fsItems
+			param callback
+			
+			var actions = []
+			foreach item in fsItems
+				var basename = item.itemPath.substr(item.itemPath.lastIndexOf('/') + 1)
+				_ actions.push
+					{
+						@ actionType 'move'
+						@ itemKind item.kind
+						@ userId item.userId
+						@ sourceProjectId item.projectId
+						@ sourceItemPath item.itemPath
+						@ destProjectId projectId
+						@ destItemPath itemPath + '/' + basename
+			
+			var dummy = ''
+			var that = this
+			_ repoFS.batch
+				@ userId
+				@ actions
+				f_cb()
+					copycut_folderRefresh( Cut - paste executed )
+					# r_cb_success( 'Cut - paste executed ' + dummy
+					# 	@ result actions
+
+	@ deleteFsItems
+		function
+			param fsItems
+			param currentPath
+			param callback
+			
+			log 'apis.repo.deleteFsItems', 'currentPath', currentPath, 'fsItems', fsItems
+			var actions = []
+			foreach item in fsItems
+				_ actions.push
+					{
+						@ actionType 'delete'
+						@ itemKind item.kind
+						@ userId item.userId
+						@ projectId item.projectId
+						@ itemPath item.itemPath
+			
+			var that = this
+			_ repoFS.batch
+				@ null
+				@ actions
+				f_cb()
+					currentPath_folderRefresh( Delete items executed )

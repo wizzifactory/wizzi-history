@@ -1,0 +1,437 @@
+  module  ids: 1 22
+    kind jsfile ids: 2 23
+    $group  ids: 43 47
+      function _typeof ids: 44 48
+        param obj ids: 45 49
+        return obj && typeof (Symbol) !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof (obj) ids: 46 50
+    $group  ids: 51 63
+      var _extends ids: 52 64
+        op||  ids: 53 65
+          set Object.assign ids: 54 66
+          function  ids: 55 67
+            param target ids: 56 68
+            for var i = 1; i < arguments.length; i++ ids: 57 69
+              var source = arguments[i] ids: 58 70
+              for var key in source ids: 59 71
+                if Object.prototype.hasOwnProperty.call(source, key) ids: 60 72
+                  set target[key] = source[key] ids: 61 73
+            return target ids: 62 74
+    $group  ids: 75 81
+      function argumentsToArray ids: 76 82
+        param argumentsObject ids: 77 83
+        for var _len = argumentsObject.length, ret = Array(_len), _key = 0; _key < _len; _key++ ids: 78 84
+          set ret[_key] = argumentsObject[_key] ids: 79 85
+        return ret ids: 80 86
+    $group  ids: 87 107
+      var fnToString ids: 88 108
+        function fnToString ids: 89 109
+          param fn ids: 90 110
+          return Function.prototype.toString.call(fn) ids: 91 111
+      var objStringValue = fnToString(Object) ids: 92 112
+      function isPlainObject ids: 93 113
+        param obj ids: 94 114
+        if !obj || (typeof (obj) === 'undefined' ? 'undefined' : _typeof(obj) !== 'object') ids: 95 115
+          return false ids: 96 116
+        var proto ids: 97 117
+          iif typeof (obj.constructor) === 'function' ids: 98 118
+            then  ids: 99 119
+              _ Object.getPrototypeOf(obj) ids: 100 120
+            else  ids: 101 121
+              set Object.prototype ids: 102 122
+        if proto === null ids: 103 123
+          return true ids: 104 124
+        var constructor = proto.constructor ids: 105 125
+        return typeof (constructor) === 'function' && constructor instanceof constructor && fnToString(constructor) === objStringValue ids: 106 126
+    $group  ids: 127 141
+      function pick ids: 128 142
+        param obj ids: 129 143
+        param fn ids: 130 144
+        return  ids: 131 145
+          _ Object.keys(obj) ids: 132 146
+            ._ reduce ids: 133 147
+              function  ids: 134 148
+                param result ids: 135 149
+                param key ids: 136 150
+                if fn(obj[key]) ids: 137 151
+                  set result[key] = obj[key] ids: 138 152
+                return result ids: 139 153
+              {  ids: 140 154
+    $group  ids: 155 168
+      function mapValues ids: 156 169
+        param obj ids: 157 170
+        param fn ids: 158 171
+        return  ids: 159 172
+          _ Object.keys(obj) ids: 160 173
+            ._ reduce ids: 161 174
+              function  ids: 162 175
+                param result ids: 163 176
+                param key ids: 164 177
+                set result[key] = fn(obj[key], key) ids: 165 178
+                return result ids: 166 179
+              {  ids: 167 180
+    $group  ids: 181 219
+      function compose ids: 182 220
+        var funcs = argumentsToArray(arguments) ids: 183 221
+        return  ids: 184 222
+          function  ids: 185 223
+            param arg ids: 186 224
+            return  ids: 187 225
+              _ funcs.reduceRight ids: 188 226
+                function  ids: 189 227
+                  param composed ids: 190 228
+                  param f ids: 191 229
+                  log 'compose.f', f ids: 192 230
+                  return f(composed) ids: 193 231
+                @ arg ids: 194 232
+      function test_compose ids: 195 233
+        function a ids: 196 234
+          param x ids: 197 235
+          log 'func a received', x, 'returned', x*2 ids: 198 236
+          return x * 2 ids: 199 237
+        function b ids: 200 238
+          param x ids: 201 239
+          log 'func b received', x, 'returned', x*3 ids: 202 240
+          return x * 3 ids: 203 241
+        var composed = compose(a, b) ids: 204 242
+        log 'test_compose', composed(5) ids: 205 243
+      function test_compose_state ids: 206 244
+        function a ids: 207 245
+          param state ids: 208 246
+          log 'func a received', state ids: 209 247
+          set state.alfa = 'alfa' ids: 210 248
+          return state ids: 211 249
+        function b ids: 212 250
+          param state ids: 213 251
+          log 'func b received', state ids: 214 252
+          set state.beta = 'beta' ids: 215 253
+          return state ids: 216 254
+        var composed = compose(a, b) ids: 217 255
+        log 'test_compose_state', composed({}) ids: 218 256
+    $group  ids: 257 280
+      function bindActionCreator ids: 258 281
+        param actionCreator ids: 259 282
+        param dispatch ids: 260 283
+        return  ids: 261 284
+          function  ids: 262 285
+            return  ids: 263 286
+              _ dispatch ids: 264 287
+                _ actionCreator.apply(undefined, arguments) ids: 265 288
+      function bindActionCreators ids: 266 289
+        param actionCreators ids: 267 290
+        param dispatch ids: 268 291
+        if typeof (actionCreators) === 'function' ids: 269 292
+          return bindActionCreator(actionCreators, dispatch) ids: 270 293
+        if (typeof (actionCreators) === 'undefined' ? 'undefined' : _typeof(actionCreators) !== 'object') || actionCreators === null || actionCreators === undefined ids: 271 294
+          throw  ids: 272 295
+            new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof (actionCreators) === 'undefined' ? 'undefined' : _typeof(actionCreators)) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?') ids: 273 296
+        return  ids: 274 297
+          _ mapValues ids: 275 298
+            @ actionCreators ids: 276 299
+            function  ids: 277 300
+              param actionCreator ids: 278 301
+              return bindActionCreator(actionCreator, dispatch) ids: 279 302
+    $group  ids: 303 395
+      function getUndefinedStateErrorMessage ids: 304 396
+        param key ids: 305 397
+        param action ids: 306 398
+        var actionType = action && action.type ids: 307 399
+        var actionName = (actionType && '"' + actionType.toString() + '"') || 'an action' ids: 308 400
+        return 'Reducer "' + key + '" returned undefined handling ' + actionName + '. ' + 'To ignore an action, you must explicitly return the previous state.' ids: 309 401
+      function getUnexpectedStateKeyWarningMessage ids: 310 402
+        param inputState ids: 311 403
+        param outputState ids: 312 404
+        param action ids: 313 405
+        var reducerKeys = Object.keys(outputState) ids: 314 406
+        var argumentName = action && action.type === createStoreActionTypes.INIT ? 'initialState argument passed to createStore' : 'previous state received by the reducer' ids: 315 407
+        if reducerKeys.length === 0 ids: 316 408
+          return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.' ids: 317 409
+        if !isPlainObject(inputState) ids: 318 410
+          return 'The ' + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + 'keys: "' + reducerKeys.join('", "') + '"' ids: 319 411
+        var unexpectedKeys ids: 320 412
+          _ Object.keys(inputState) ids: 321 413
+            ._ filter ids: 322 414
+              function  ids: 323 415
+                param key ids: 324 416
+                return reducerKeys.indexOf(key) < 0 ids: 325 417
+        if unexpectedKeys.length > 0 ids: 326 418
+          return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + '"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ' + 'Expected to find one of the known reducer keys instead: ' + '"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.' ids: 327 419
+      function assertReducerSanity ids: 328 420
+        param reducers ids: 329 421
+        _ Object.keys(reducers) ids: 330 422
+          ._ forEach ids: 331 423
+            function  ids: 332 424
+              param key ids: 333 425
+              var reducer = reducers[key] ids: 334 426
+              var initialState ids: 335 427
+                _ reducer ids: 336 428
+                  @ undefined ids: 337 429
+                  {  ids: 338 430
+                    @ type createStoreActionTypes.INIT ids: 339 431
+              if typeof (initialState) === 'undefined' ids: 340 432
+                throw  ids: 341 433
+                  new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.') ids: 342 434
+              var type = ('@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.')) ids: 343 435
+              if typeof (reducer(undefined, {type: type})) === 'undefined' ids: 344 436
+                throw  ids: 345 437
+                  new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + 'Don\'t try to handle ' + createStoreActionTypes.INIT + ' or other actions in "redux/*" ' + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.') ids: 346 438
+      function combineReducers ids: 347 439
+        param reducers ids: 348 440
+        var finalReducers ids: 349 441
+          _ pick ids: 350 442
+            @ reducers ids: 351 443
+            function  ids: 352 444
+              param val ids: 353 445
+              return typeof (val) === 'function' ids: 354 446
+        var sanityError ids: 355 447
+        try  ids: 356 448
+          _ assertReducerSanity(finalReducers) ids: 357 449
+        catch e ids: 358 450
+          set sanityError = e ids: 359 451
+        var defaultState ids: 360 452
+          _ mapValues ids: 361 453
+            @ finalReducers ids: 362 454
+            function  ids: 363 455
+              return undefined ids: 364 456
+        return  ids: 365 457
+          function combination ids: 366 458
+            var state ids: 367 459
+              iif arguments.length <= 0 || arguments[0] === undefined ids: 368 460
+                then defaultState ids: 369 461
+                else  ids: 370 462
+                  set arguments[0] ids: 371 463
+            var action = arguments[1] ids: 372 464
+            if sanityError ids: 373 465
+              throw sanityError ids: 374 466
+            var hasChanged = false ids: 375 467
+            var finalState ids: 376 468
+              _ mapValues ids: 377 469
+                @ finalReducers ids: 378 470
+                function  ids: 379 471
+                  param reducer ids: 380 472
+                  param key ids: 381 473
+                  var previousStateForKey = state[key] ids: 382 474
+                  var nextStateForKey = reducer(previousStateForKey, action) ids: 383 475
+                  if typeof (nextStateForKey) === 'undefined' ids: 384 476
+                    var errorMessage = getUndefinedStateErrorMessage(key, action) ids: 385 477
+                    throw  ids: 386 478
+                      new Error(errorMessage) ids: 387 479
+                  set hasChanged = hasChanged || nextStateForKey !== previousStateForKey ids: 388 480
+                  return nextStateForKey ids: 389 481
+            # if process.env.NODE_ENV !== 'production' ids: 390 482
+            var warningMessage = getUnexpectedStateKeyWarningMessage(state, finalState, action) ids: 391 483
+            if warningMessage ids: 392 484
+              _ console.error(warningMessage) ids: 393 485
+            return hasChanged ? finalState : state ids: 394 486
+    $group  ids: 487 552
+      var createStoreActionTypes ids: 488 553
+        {  ids: 489 554
+          @ INIT '@@redux/INIT' ids: 490 555
+      function createStore ids: 491 556
+        param reducer ids: 492 557
+        param initialState ids: 493 558
+        if typeof (reducer) !== 'function' ids: 494 559
+          throw  ids: 495 560
+            new Error('Expected the reducer to be a function.') ids: 496 561
+        var currentReducer = reducer ids: 497 562
+        var currentState = initialState ids: 498 563
+        var listeners ids: 499 564
+          [  ids: 500 565
+        var isDispatching = false ids: 501 566
+        function getState ids: 502 567
+          return currentState ids: 503 568
+        function subscribe ids: 504 569
+          param listener ids: 505 570
+          _ listeners.push(listener) ids: 506 571
+          var isSubscribed = true ids: 507 572
+          return  ids: 508 573
+            function unsubscribe ids: 509 574
+              if ! (isSubscribed) ids: 510 575
+                return  ids: 511 576
+              set isSubscribed = false ids: 512 577
+              var index = listeners.indexOf(listener) ids: 513 578
+              _ listeners.splice(index, 1) ids: 514 579
+        function dispatch ids: 515 580
+          param action ids: 516 581
+          if !isPlainObject(action) ids: 517 582
+            throw  ids: 518 583
+              new Error(('Actions must be plain objects. ' + 'Use custom middleware for async actions.')) ids: 519 584
+          if typeof (action.type) === 'undefined' ids: 520 585
+            throw  ids: 521 586
+              new Error(('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?')) ids: 522 587
+          if isDispatching ids: 523 588
+            throw  ids: 524 589
+              new Error('Reducers may not dispatch actions.') ids: 525 590
+          try  ids: 526 591
+            set isDispatching = true ids: 527 592
+            set currentState = currentReducer(currentState, action) ids: 528 593
+          finally  ids: 529 594
+            set isDispatching = false ids: 530 595
+          _ listeners.slice() ids: 531 596
+            ._ forEach ids: 532 597
+              function  ids: 533 598
+                param listener ids: 534 599
+                return listener() ids: 535 600
+          return action ids: 536 601
+        function replaceReducer ids: 537 602
+          param nextReducer ids: 538 603
+          set currentReducer = nextReducer ids: 539 604
+          _ dispatch ids: 540 605
+            {  ids: 541 606
+              @ type createStoreActionTypes.INIT ids: 542 607
+        _ dispatch ids: 543 608
+          {  ids: 544 609
+            @ type createStoreActionTypes.INIT ids: 545 610
+        return  ids: 546 611
+          {  ids: 547 612
+            @ dispatch dispatch ids: 548 613
+            @ subscribe subscribe ids: 549 614
+            @ getState getState ids: 550 615
+            @ replaceReducer replaceReducer ids: 551 616
+    $group  ids: 617 656
+      function applyMiddleware ids: 618 657
+        var middlewares = argumentsToArray(arguments) ids: 619 658
+        log 'entered applyMiddleware.middlewares' ids: 620 659
+        return  ids: 621 660
+          function  ids: 622 661
+            param next ids: 623 662
+            log 'next should be the function createStore' ids: 624 663
+            log 'entered.applyMiddleware.next', next ids: 625 664
+            return  ids: 626 665
+              function  ids: 627 666
+                param reducer ids: 628 667
+                param initialState ids: 629 668
+                log 'entered.applyMiddleware.reducer,initialState', reducer, initialState ids: 630 669
+                log 'applyMiddleware.create the store using the next closure' ids: 631 670
+                var store = next(reducer, initialState) ids: 632 671
+                var dispatch = store.dispatch ids: 633 672
+                var chain ids: 634 673
+                  [  ids: 635 674
+                var middlewareAPI ids: 636 675
+                  {  ids: 637 676
+                    @ getState store.getState ids: 638 677
+                    @ dispatch ids: 639 678
+                      function dispatch ids: 640 679
+                        param action ids: 641 680
+                        return dispatch(action) ids: 642 681
+                set chain = ids: 643 682
+                  _ middlewares.map ids: 644 683
+                    function  ids: 645 684
+                      param middleware ids: 646 685
+                      return middleware(middlewareAPI) ids: 647 686
+                log 'applyMiddleware.before calling compose.chain', chain ids: 648 687
+                set dispatch = compose.apply(undefined, chain)(store.dispatch) ids: 649 688
+                return  ids: 650 689
+                  _ _extends ids: 651 690
+                    {  ids: 652 691
+                    @ store ids: 653 692
+                    {  ids: 654 693
+                      @ dispatch dispatch ids: 655 694
+    $group  ids: 695 711
+      function thunkMiddleware ids: 696 712
+        param options ids: 697 713
+        var dispatch = options.dispatch ids: 698 714
+        var getState = options.getState ids: 699 715
+        return  ids: 700 716
+          function  ids: 701 717
+            param next ids: 702 718
+            return  ids: 703 719
+              function  ids: 704 720
+                param action ids: 705 721
+                iif typeof action === 'function' ids: 706 722
+                  then  ids: 707 723
+                    _ action(dispatch, getState) ids: 708 724
+                  else  ids: 709 725
+                    _ next(action) ids: 710 726
+    $group  ids: 695 727
+      function thunkMiddleware ids: 696 728
+        param options ids: 697 729
+        var dispatch = options.dispatch ids: 698 730
+        var getState = options.getState ids: 699 731
+        return  ids: 700 732
+          function  ids: 701 733
+            param next ids: 702 734
+            return  ids: 703 735
+              function  ids: 704 736
+                param action ids: 705 737
+                iif typeof action === 'function' ids: 706 738
+                  then  ids: 707 739
+                    _ action(dispatch, getState) ids: 708 740
+                  else  ids: 709 741
+                    _ next(action) ids: 710 742
+    $group  ids: 743 758
+      function loggerMiddleware ids: 744 759
+        param store ids: 745 760
+        log 'entered.logger.storeMinimal(getState, dispatch)', store ids: 746 761
+        return  ids: 747 762
+          function  ids: 748 763
+            param next ids: 749 764
+            log 'entered.logger.next', next ids: 750 765
+            return  ids: 751 766
+              function  ids: 752 767
+                param action ids: 753 768
+                log 'logger.dispatching', action ids: 754 769
+                let result = next(action) ids: 755 770
+                log 'logger.next state', store.getState() ids: 756 771
+                return result ids: 757 772
+    $group  ids: 773 801
+      function simple_increment ids: 774 802
+        return  ids: 775 803
+          {  ids: 776 804
+            @ type '++' ids: 777 805
+      function simple_decrement ids: 778 806
+        return  ids: 779 807
+          {  ids: 780 808
+            @ type '--' ids: 781 809
+      function simple_counterReducer ids: 782 810
+        param state ids: 783 811
+        param action ids: 784 812
+        set state = state || 0 ids: 785 813
+        switch action.type ids: 786 814
+          case '++' ids: 787 815
+            return state + 1 ids: 788 816
+          case '--' ids: 789 817
+            return state - 1 ids: 790 818
+          default  ids: 791 819
+            return state ids: 792 820
+      function test_simple ids: 793 821
+        log 'test simple started' ids: 794 822
+        var counterApp = combineReducers({ counterReducer: simple_counterReducer }) ids: 795 823
+        log 'test simple before create store' ids: 796 824
+        var store = createStore(counterApp) ids: 797 825
+        log 'test simple initial store', store.getState() ids: 798 826
+        _ store.dispatch(simple_increment()) ids: 799 827
+        log 'test simple current store', store.getState() ids: 800 828
+    $group  ids: 829 860
+      function middle_increment ids: 830 861
+        return  ids: 831 862
+          {  ids: 832 863
+            @ type '++' ids: 833 864
+      function middle_decrement ids: 834 865
+        return  ids: 835 866
+          {  ids: 836 867
+            @ type '--' ids: 837 868
+      function middle_counterReducer ids: 838 869
+        param state ids: 839 870
+        param action ids: 840 871
+        set state = state || 0 ids: 841 872
+        switch action.type ids: 842 873
+          case '++' ids: 843 874
+            return state + 1 ids: 844 875
+          case '--' ids: 845 876
+            return state - 1 ids: 846 877
+          default  ids: 847 878
+            return state ids: 848 879
+      function test_middle ids: 849 880
+        log 'test middle started' ids: 850 881
+        log 'test middle before applyMiddleware' ids: 851 882
+        var createStoreWithMiddleware = applyMiddleware(loggerMiddleware)(createStore) ids: 852 883
+        var counterApp = combineReducers({ counterReducer: middle_counterReducer }) ids: 853 884
+        log 'test middle before createStoreWithMiddleware' ids: 854 885
+        var store = createStoreWithMiddleware(counterApp) ids: 855 886
+        log '*** start store updates' ids: 856 887
+        log 'test middle initial store', store.getState() ids: 857 888
+        _ store.dispatch(middle_increment()) ids: 858 889
+        log 'test middle current store', store.getState() ids: 859 890
+    # _ test_compose() ids: 19 40
+    # _ test_compose_state() ids: 20 41
+    _ test_middle() ids: 21 42

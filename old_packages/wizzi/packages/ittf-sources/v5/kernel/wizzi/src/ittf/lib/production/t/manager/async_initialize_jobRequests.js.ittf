@@ -1,0 +1,50 @@
+﻿$group
+
+	# async run a wizzi job request
+		# from jobRequest
+	#
+		# called by the productionManager.initialize method
+		# . loads a requested wfjob model and
+		# . add its artifactInfos objects to the productionManager artifactInfos collection and
+		# . initializes them
+	var AsyncInitializeJobRequests
+		{
+			@ run
+				function
+					{ jobRequest
+						{ __pman
+						{ wfjob
+							string ittfDocumentUri
+					callback
+
+					var pman = jobRequest.__pman
+					
+					# ok log 'AsyncInitializeJobRequests.pman.globalContext()', pman.globalContext()
+					
+					var wfjobIttfDocumentUri = jobRequest.wfjob.ittfDocumentUri
+					set pman.productionName += '_' + path.basename(wfjobIttfDocumentUri)
+					
+					# log 'wizzi.production.asyncInitializeJobRequests.productionName', pman.productionName
+
+					# The wfjobLoader instance is created here and used 
+					# in any case of recursive request of `wfjob` executions.
+					var wfjobLoader = new WfjobLoader(pman)
+					var wfjobLoadRequest
+						{
+							@ model
+								{
+									@ src wfjobIttfDocumentUri
+							@ wfjobLoader wfjobLoader
+
+					_ AsyncRecurseWfjobLoad
+						@ wfjobLoadRequest
+						f_cb( result )
+							
+							foreach artifactInfoConfig in result.artifactInfoConfigs
+								# log 'wizzi.production.asyncInitializeJobRequests.artifactInfoConfig', util.inspect(artifactInfoConfig, { depth: 2 })
+								set artifactInfoConfig.wfjob = wfjobIttfDocumentUri
+								if pman.options.trace
+									log 'ProductionManager.initialize.artifactInfoConfig', artifactInfoConfig.toString()
+								_ pman.addArtifactRequest(artifactInfoConfig)
+
+							_ callback(null)

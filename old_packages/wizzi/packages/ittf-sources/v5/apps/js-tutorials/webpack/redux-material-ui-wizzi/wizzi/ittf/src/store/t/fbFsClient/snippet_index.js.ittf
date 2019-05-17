@@ -1,0 +1,175 @@
+﻿$group
+
+
+	m getSnippetIndexPath
+		# A snippet snippetIndex object is owned by current user and current project.
+		return 'snippet/' + this.user + '/' + this.project + '/meta-schemas'
+
+	m getSnippetIndexDocRef
+		const docPath = this.getSnippetIndexPath()
+		var ret = this.docRefsPool[docPath]
+		if !ret
+			set ret
+				_ this.firestore.doc
+					@ docPath
+			set this.docRefsPool[docPath] = ret
+			log 'FbFsClient.getSnippetIndexDocRef. Created schemasDocRef for: ' + docPath
+		return ret
+
+	m retrieveSnippetIndex
+		param callback
+		const docPath = this.getSnippetIndexPath()
+		const docRef = this.getSnippetIndexDocRef()
+		log 1, docRef
+		_ docRef.get
+			._ then
+				function
+					param doc
+					log 2, doc
+					if doc && doc.exists
+						const dataReceived = doc.data()
+						const message = 'Got snippetIndex data from cloud [' + docPath + ']'
+						log message + ' : ', dataReceived
+						return
+							_ callback
+								@ null
+								{
+									@ data dataReceived
+									@ message message
+					else
+						log 'FbFsClient.retrieveSnippetIndex. Doc not found: ' + docPath
+						return
+							_ callback
+								new Error
+									@ 'Doc not found: ' + docPath
+				._ catch
+					function
+						param err
+						log 3, err
+						const message = 'Got an error loading ' + docPath + ' : ' + err
+						log message
+						return
+							_ callback
+								new Error
+									@ message
+
+	m saveSnippetIndex
+		param payload
+		param callback
+		const docPath = this.getSnippetIndexPath()
+		const docRef = this.getSnippetIndexDocRef()
+		_ docRef.set
+			@ payload
+			._ then
+				function
+					const message = 'Saved snippetIndex data to cloud [' + docPath + ']'
+					log message + ' : ', payload
+					return
+						_ callback
+							@ null
+							{
+								@ data payload
+								@ message message
+				._ catch
+					function
+						param err
+						const message = 'Got an error saving snippetIndex ' + docPath + ' : ' + err
+						log message
+						return
+							_ callback
+								new Error
+									@ message
+
+	
+	m addSnippetItem
+		param schemaName
+		param snippetName
+		param callback
+
+		# Add a new snippet to the snippet directory in the cloud
+		
+		log 'FbFsClient.addSnippetItem', schemaName, snippetName
+		
+		const that = this
+		_ this.retrieveSnippetIndex
+			f_cb( payload )
+				
+				log 'FbFsClient.addSnippetItem', schemaName, snippetName, 'payload', payload
+				
+				const schema = payload.data[schemaName]
+				if !schema
+					set payload.data[schemaName]
+						{
+							[ artifacts
+								@ schemaName + '/document'
+							[ snippets
+					set schema = payload.data[schemaName]
+				
+				foreach item in schema.snippets
+					if item.name === snippetName
+						return
+							_ callback
+								new Error
+									@ 'Snippet already exists: ' + schemaName + '/' + snippetName
+				
+				const rootTag = schemaName == 'js' ? 'module' : schemaName
+				_ schema.snippets.push
+					{
+						@ name snippetName 
+						[ code
+							@ ""
+				
+				_ that.saveSnippetIndex
+					@ payload.data
+					@ callback
+	
+	m renameSnippetItem
+		param schemaName
+		param snippetOld
+		param snippetNew
+		param callback
+		log 'FbFsClient.renameSnippetItem', schemaName, snippetOld, snippetNew
+		const that = this
+		_ this.retrieveSnippetIndex
+			f_cb( payload )
+				log 'FbFsClient.renameSnippetItem', schemaName, snippetOld, snippetNew, 'payload', payload
+				const schema = payload.data[schemaName]
+				if !schema
+					r_cb_error(
+						@ 'Rename error. Schema does not exists for: ' + schemaName + '/' + snippetName
+				foreach item in schema.snippets
+					if item.name === snippetNew
+						return
+							_ callback
+								new Error
+									@ 'Snippet new name already exists: ' + schemaName + '/' + snippetNew
+					if item.name === snippetOld
+						set item.name = snippetNew
+				_ that.saveSnippetIndex
+					@ payload.data
+					@ callback
+	
+	m removeSnippetItem
+		param schemaName
+		param snippetName
+		param callback
+		const that = this
+		_ this.retrieveSnippetIndex
+			f_cb( payload )
+				const schema = payload.data[schemaName]
+				if !schema
+					r_cb_error(
+						@ 'Remove error. Schema does not exists for: ' + schemaName + '/' + snippetName
+				var copy = []
+				foreach item in schema.snippets
+					if item.name !== snippetName
+						_ copy.push(item)
+				if schema.snippets.length == copy.length
+					return
+						_ callback
+							new Error
+								@ 'Remove error. Snippet does not exists: ' + schemaName + '/' + snippetName
+				set schema.snippets = copy
+				_ that.saveSnippetIndex
+					@ payload.data
+					@ callback

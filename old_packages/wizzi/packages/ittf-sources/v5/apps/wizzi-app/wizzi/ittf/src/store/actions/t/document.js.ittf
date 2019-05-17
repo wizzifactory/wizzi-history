@@ -1,0 +1,118 @@
+﻿$group
+	+
+	decl_rsf( documents, get 
+	decl_rsf( document, create
+	decl_rsf( document, select
+	decl_rsf( document, update
+	decl( DOCUMENT_CHANGED
+	+
+	export
+		const getDocuments
+			=>
+				param project
+				return
+					{
+						@ type GET_DOCUMENTS
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_DOCUMENTS_REQUEST
+										@ GET_DOCUMENTS_SUCCESS
+										@ GET_DOCUMENTS_FAILURE
+								@ url '/api/studio/documents'
+								@ method 'get'
+								@ queryParams
+									{
+										@ project project
+	+
+	
+	+
+	export
+		const createDocument
+			=>
+				param name
+				param schema
+				param folder
+				param project
+				return
+					{
+						@ type CREATE_DOCUMENT
+						@ name name
+						@ schema schema
+						@ folder folder
+						@ project project
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ CREATE_DOCUMENT_REQUEST
+										@ CREATE_DOCUMENT_SUCCESS
+										@ CREATE_DOCUMENT_FAILURE
+								@ url '/api/studio/document'
+								@ method 'post'
+								@ payload
+									{
+										@ name name
+										@ schema schema
+										@ folder folder
+										@ project project
+	+
+	export
+		const selectDocument
+			=>
+				param uri
+				param schema
+				log 'action.selectDocument', uri, schema
+				return
+					{
+						@ type SELECT_DOCUMENT
+						@ uri uri
+						@ schema schema
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ SELECT_DOCUMENT_REQUEST
+										@ SELECT_DOCUMENT_SUCCESS
+										@ SELECT_DOCUMENT_FAILURE
+								@ url '/api/studio/document'
+								@ method 'get'
+								@ queryParams
+									{
+										@ uri uri
+	+
+	export
+		const changeDocument
+			=>
+				param newContent
+				return
+					{
+						@ type DOCUMENT_CHANGED
+						@ newContent newContent
+	+
+	export
+		const updateDocument
+			=>
+				param uri
+				param newIttfContent
+				return
+					{
+						@ type UPDATE_DOCUMENT
+						@ uri uri
+						@ newIttfContent newIttfContent
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ UPDATE_DOCUMENT_REQUEST
+										@ UPDATE_DOCUMENT_SUCCESS
+										@ UPDATE_DOCUMENT_FAILURE
+								@ url '/api/studio/document'
+								@ method 'post'
+								@ payload
+									{
+										@ uri uri
+										@ newcontent newIttfContent
+								@ delayId UPDATE_DOCUMENT + uri
+								@ delay 2000

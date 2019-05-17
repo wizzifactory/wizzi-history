@@ -1,0 +1,696 @@
+﻿module 
+    kind jsfile
+
+	$if isWebpackTarget
+		
+		# For use in webpack (isWebpackTarget == true)
+		# not implemented
+		var md
+			set module.exports =
+				{ 
+		set md.openWrite
+			function 
+
+		$include file/splitLines
+	
+	$else
+
+		var fs = require('fs-extra')
+		var path = require('path')
+		var _ = require('lodash')
+		var iconv = require('iconv-lite')
+		var glob = require('glob')
+		var verify = require('../verify')
+		var errors = require('../errors')
+    
+		var md
+			set module.exports =
+				{ 
+		var pathSeparatorRe = /[\/\\]/g
+		set md.defaultEncoding = 'utf8'
+		set md.preserveBOM = false
+		var win32 = process.platform === 'win32'
+    
+		set md.unixifyPath =
+			function 
+				param path_string
+				if win32
+					return path_string.replace(/\\/g, '/')
+				else 
+					return path_string
+    
+		# sync read
+		set md.read
+			function 
+				param path_string
+				param options
+				if !(options)
+					set options =
+						{ 
+				var contents = fs.readFileSync(String(path_string))
+				if options.encoding !== null
+					set contents = iconv.decode(contents, (options.encoding || md.defaultEncoding))
+					if !md.preserveBOM && contents.charCodeAt(0) === 0xFEFF
+						set contents = contents.substring(1)
+				return contents
+    
+		# sync readJSON
+		set md.readJSON
+			function 
+				param path_string
+				param options
+				var src = md.read(path_string, options)
+				var result
+				try 
+					set result = JSON.parse(src)
+					return result
+				catch ex
+					throw 
+						new errors.FileError
+							@ 'Unable to parse "' + path_string + '" file (' + ex.message + ').'
+							@ ex
+    
+		# async read
+		set md.readFile
+			function 
+				param path_string
+				param options
+				param callback
+				if typeof(callback) == 'undefined'
+					set callback = options
+					set options = null
+				if !options
+					set options =
+						{ 
+							@ encoding md.defaultEncoding
+				_ fs.readFile
+					@ path_string
+					function 
+						param err
+						param contents
+						if err
+							return
+								_ callback(err)
+						log 'readFile.contents', contents
+						if options.encoding !== null
+							if verify.isString(contents)
+								log 'wizzi-utils.file.read.isString', path_string, content
+							set contents = iconv.decode(contents, (options.encoding || md.defaultEncoding))
+							if !md.preserveBOM && contents.charCodeAt(0) === 0xFEFF
+								set contents = contents.substring(1)
+						return
+							_ callback(null, contents)
+    
+		set md.readLines
+			function 
+				param path_string
+				param options
+				var contents = md.read(path_string, options)
+				return md.splitLines(contents)
+    
+		$include file/splitLines
+   
+		set md.openWrite
+			function 
+				param path_string
+				param callback
+				var stream
+				if md.exists(path_string)
+					_ fs.unlink
+						@ path_string
+						function 
+							param err
+							if err
+								return
+									_ callback(err)
+							set stream = fs.createWriteStream(path_string)
+							return
+								_ callback(null, stream)
+				else 
+					_ md.mkpath(path_string)
+					set stream = fs.createWriteStream(path_string)
+					return
+						_ callback(null, stream)
+    
+		set md.write
+			function 
+				param path_string
+				param contents
+				param options
+				if !options
+					set options =
+						{ 
+				_ md.mkpath(path_string)
+				try 
+					if !Buffer.isBuffer(contents)
+						set contents = iconv.encode(contents, (options.encoding || md.defaultEncoding))
+					_ fs.writeFileSync(path_string, contents)
+					return true
+				catch ex
+					set ex.message = 'Writing file ' + path_string + '.\n' + ex.message
+					throw ex
+    
+		set md.writeFile
+			function 
+				param path_string
+				param contents
+				param options
+				param callback
+				if typeof(callback) === 'undefined'
+					set callback = options
+					set options = null
+				if !options
+					set options =
+						{ 
+				_ md.mkpath(path_string)
+				if !Buffer.isBuffer(contents)
+					set contents = iconv.encode(contents, (options.encoding || md.defaultEncoding))
+				_ fs.writeFile
+					@ path_string
+					@ contents
+					@ callback
+
+		set md.writeJSON
+			function 
+				param path_string
+				param contentObject
+				_ md.write
+					@ path_string
+					_ JSON.stringify(contentObject, null, 2)
+    
+		set md.mkpath
+			function 
+				param path_string
+				var dir = path.dirname(path_string)
+				_ md.mkdir(dir)
+    
+		set md.mkdir
+			function 
+				param dirpath
+				param mode
+				if mode == null
+					set mode = parseInt('0777', 8) & ~ (process.umask())
+				_ dirpath.split(pathSeparatorRe)
+					._ reduce
+						function 
+							param parts
+							param part
+							set parts += part + '/'
+							var subpath = path.resolve(parts)
+							if !md.exists(subpath)
+								try 
+									_ fs.mkdirSync(subpath, mode)
+								catch ex
+									throw 
+										new errors.FileError
+											@ 'Unable to create directory "' + subpath + '" (Error code: ' + ex.code + ').'
+											@ ex
+							return parts
+						@ ''
+    
+		set md.copy
+			function 
+				param src
+				param dest
+				try 
+					_ md.mkpath(dest)
+					_ md.write(dest, md.read(src))
+				catch ex
+					set ex.message += '\nfile.copy from ' + src + ' to ' + dest
+					throw ex
+
+		set md.copyFile
+			function 
+				param sourcepath_string
+				param destpath_string
+				param callback
+				if !md.isFile(sourcepath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ copied false
+								@ reason 'Source file does not exists or is not a file'
+				_ fs.copy
+					@ String(sourcepath_string)
+					@ String(destpath_string)
+					f_cb()
+						return
+							_ callback
+								@ null
+								{
+									@ copied true
+    
+		set md.moveFile
+			function 
+				param sourcepath_string
+				param destpath_string
+				param callback
+				if !md.isFile(sourcepath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ moved false
+								@ reason 'Source file does not exists or is not a file'
+				_ fs.move
+					@ String(sourcepath_string)
+					@ String(destpath_string)
+					f_cb()
+						return
+							_ callback
+								@ null
+								{
+									@ moved true
+
+		var getFilesDefaults
+			{ 
+				@ deep true
+				@ extension null
+				@ documentContent false
+    
+		set md.getFiles
+			function 
+				param path_string
+				param options
+				log 'wizzi-utils.file.getFiles', path_string, options
+				set options = _.assign({}, getFilesDefaults, (options || {}))
+				var result
+				if md.isDirectory(path_string)
+					var files
+						[ 
+					var relPath
+						[ 
+					_ md._appendFiles(path_string, files, relPath, options)
+					set result = files
+				elif md.isFile(path_string)
+					set result = [md.unixifyPath(path_string)]
+				else 
+					set result = []
+				if options.documentContent
+					var 
+						decl newResult
+							[ 
+						decl content
+					foreach item in result
+						set content = md.read(item)
+						_ newResult.push
+							{ 
+								@ file item
+								@ content content
+					return newResult
+				return result
+    
+		set md._appendFiles
+			function 
+				param path_string
+				param files
+				param relPath
+				param options
+				var dir = fs.readdirSync(String(path_string))
+				log 'wizzi-utils.file.appendFiles', dir
+				var folders = []
+				foreach item in dir
+					var filePath = path.join(path_string, item)
+					if md.isDirectory(filePath)
+						if options.deep
+							_ folders.push(item)
+					else 
+						if !options.extension || verify.endsWith(item, options.extension)
+							_ files.push
+								_ md.unixifyPath
+									_ path.join
+										_ relPath.join('/')
+										@ item
+				foreach item in folders
+					var filePath = path.join(path_string, item)
+					var newRelPath = relPath.slice(0)
+					_ newRelPath.push(item)
+					_ md._appendFiles(filePath, files, newRelPath, options)
+    
+		var getFoldersDefaults
+			{ 
+				@ deep true
+				@ tFoldersOnly false
+				@ documentNames false
+				@ documentContents false
+    
+		set md.getFolders
+			function 
+				param path_string
+				param options
+				set options = _.assign({}, getFoldersDefaults, options)
+				var result
+				if md.isDirectory(path_string)
+					var folders
+						[ 
+					var relPath
+						[ 
+					_ md._appendFolders(path_string, folders, relPath, options)
+					set result = folders
+				elif md.isDirectory(path_string)
+					set result = [md.unixifyPath(path_string)]
+				else 
+					set result = []
+            
+				if options.documentNames
+					var 
+						decl newResult
+							[ 
+						decl files
+					foreach item in result
+						var filePath = path.join(path_string, item)
+						if options.tFoldersOnly
+							set files = md.getFiles(filePath, {deep: true, filesOnly: true})
+						else
+							set files = md.getFiles(filePath, {deep: false, filesOnly: true})
+						_ newResult.push
+							{ 
+								@ folder item
+								@ documents files
+					return newResult
+				return result
+    
+		set md._appendFolders
+			function 
+				param path_string
+				param folders
+				param relPath
+				param options
+				var dir = fs.readdirSync(String(path_string))
+				foreach item in dir
+					var filePath = path.join(path_string, item)
+					if md.isDirectory(filePath)
+						if options.tFoldersOnly
+							if item.toLowerCase() === 't'
+								_ folders.push
+									_ md.unixifyPath
+										_ path.join
+											_ relPath.join('/')
+											@ item
+								return 
+						else 
+							_ folders.push
+								_ md.unixifyPath
+									_ path.join
+										_ relPath.join('/')
+										@ item
+						if options.deep
+							var newRelPath = relPath.slice(0)
+							_ newRelPath.push(item)
+							_ md._appendFolders(filePath, folders, newRelPath, options)
+    
+		set md.getGlobbedFilesEx
+			function 
+				param globPatterns
+				param options
+				var options = (options || {})
+				return 
+					_ md.getGlobbedFiles
+						@ globPatterns
+						@ options.removeRoot
+						@ options
+    
+		set md.getGlobbedFiles
+			function 
+				param globPatterns
+				param removeRoot
+				param options
+            
+				var _this = this
+				var urlRegex
+					new RegExp('^(?:[a-z]+:)?\/\/', 'i')
+				var output
+					[ 
+            
+				if verify.isArray(globPatterns)
+					_ globPatterns.forEach
+						function 
+							param globPattern
+							set output
+								_  _.union
+									@ output
+									_ this.getGlobbedFiles
+										@ globPattern
+										@ removeRoot
+										@ options
+				elif verify.isString(globPatterns)
+					if urlRegex.test(globPatterns)
+						_ output.push(globPatterns)
+					else 
+						# log 'wizzi-utils.globPatterns, options', globPatterns, options
+						var files = glob.sync(globPatterns, options)
+						# log 'wizzi-meta.file.globPatterns ', globPatterns, 'files', files.length
+						if removeRoot
+							log 'removeRoot', removeRoot
+							set files =
+								_ files.map
+									function 
+										param file
+										if _.isArray(removeRoot)
+											for var i in removeRoot
+												set file = file.replace(removeRoot[i], '')
+										else 
+											# log md.unixifyPath(file), removeRoot
+											set file
+												_ md.unixifyPath
+													@ file
+													._ replace
+														_ md.unixifyPath
+															@ removeRoot
+														@ ''
+										return file
+						set output = _.union(output, files)
+				return output
+    
+		set md.exists
+			function
+				param path_string
+				try 
+					var stat = fs.lstatSync(String(path_string))
+					return stat.isFile() || stat.isDirectory()
+				catch ex
+				return false
+    
+		set md.isDirectory =
+			function 
+				param path_string
+				try 
+					return 
+						_ fs.lstatSync(String(path_string))
+							._ isDirectory()
+				catch ex
+				return false
+    
+		set md.isFile
+			function 
+				param path_string
+				try 
+					return 
+						_ fs.lstatSync(String(path_string))
+							._ isFile()
+				catch ex
+				return false
+
+		set md.isFilePath
+			function 
+				param path
+				if verify.isString(path)
+					var protocol
+						_ _protocol
+							_ url.parse(path)
+								. protocol
+					return protocol.length === 1 || protocol === 'file'
+				return false
+    
+		function _protocol
+			param value
+			return 
+				iif value.substr(-1, 1) === ':'
+					then 
+						_ value.substr(0, value.length - 1)
+					else value
+    
+		set md.emptyDirectory =
+			function 
+				param path
+				param fn
+				_ fs.readdir
+					@ path
+					function 
+						param err
+						param files
+						if err && 'ENOENT' != err.code
+							throw err
+						_ fn(!files || !files.length)
+    
+		set md.deleteFile
+			function 
+				param path_string
+				param callback
+				if !md.isFile(path_string)
+					return
+						_ callback
+							@ null
+							{
+								@ deleted false
+								@ reason 'Source file does not exists or is not a file'
+				_ fs.unlink
+					@ String(path_string)
+					function 
+						param err
+						if err
+							return
+								_ callback(err)
+						return
+							_ callback
+								@ null
+								{
+									@ deleted true
+
+		set md.getDir
+			function 
+				param path_string
+				param callback
+				var dir = fs.readdirSync(String(path_string))
+				var ret = []
+				foreach item in dir
+					_ ret.push
+						_ path.join(path_string, item)
+				return
+					_ callback
+						@ null
+						@ ret
+
+		# async deleteFolder
+		set md.deleteFolder
+			function 
+				param path_string
+				param callback
+				if !md.isDirectory(path_string)
+					return
+						_ callback
+							@ null
+							{
+								@ deleted false
+								@ reason 'Source folder does not exists or is not a folder'
+				_ fs.remove
+					@ String(path_string)
+					function 
+						param err
+						if err
+							return
+								_ callback(err)
+						_ callback
+							@ null
+							{
+								@ deleted true
+
+		# async copyFolder
+		set md.copyFolder
+			function
+				param sourcepath_string
+				param destpath_string
+				param callback
+				if !md.isDirectory(sourcepath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ copied false
+								@ reason 'Source folder does not exists or is not a folder'
+				_ fs.copy
+					@ String(sourcepath_string)
+					@ String(destpath_string)
+					f_cb()
+						return
+							_ callback
+								@ null
+								{
+									@ copied true
+
+		# async moveFolder
+		set md.moveFolder
+			function
+				param sourcepath_string
+				param destpath_string
+				param callback
+				if !md.isDirectory(sourcepath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ moved false
+								@ reason 'Source folder does not exists or is not a folder'
+				_ fs.move
+					@ String(sourcepath_string)
+					@ String(destpath_string)
+					f_cb()
+						_ callback
+							@ null
+							{
+								@ moved true
+
+		# async rename
+		set md.rename
+			function
+				param oldpath_string
+				param newpath_string
+				param callback
+				if !md.exists(oldpath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ renamed false
+								@ reason 'Source item does not exists'
+				_ fs.rename
+					@ String(oldpath_string)
+					@ String(newpath_string)
+					f_cb()
+						return
+							_ callback
+								@ null
+								{
+									@ renamed true
+
+		# async duplicate
+		set md.duplicate
+			function
+				param oldpath_string
+				param newpath_string
+				param callback
+				if !md.exists(oldpath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ duplicated false
+								@ reason 'Source item does not exists'
+				if md.exists(newpath_string)
+					return
+						_ callback
+							@ null
+							{
+								@ duplicated false
+								@ reason 'Destination item already exists'
+				if md.isFile(oldpath_string)
+					_ md.copyFile
+						@ oldpath_string
+						@ newpath_string
+						f_cb()
+							return
+								_ callback
+									@ null
+									{
+										@ duplicated true
+				else
+					_ md.copyFolder
+						@ oldpath_string
+						@ newpath_string
+						f_cb()
+							return
+								_ callback
+									@ null
+									{
+										@ duplicated true

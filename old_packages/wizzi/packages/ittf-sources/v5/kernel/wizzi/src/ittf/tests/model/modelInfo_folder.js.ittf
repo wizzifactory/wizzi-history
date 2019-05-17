@@ -1,0 +1,102 @@
+﻿base_test(modelInfo)
+
+	$append imports
+		var wizziFactory = require('../../lib/services/wizziFactory')
+		var modelInfo = require('../../lib/model/modelInfo').ModelInfo
+		var mocks = require('../mocks/misc')
+
+	var mi = null
+	
+	before-async
+		_ wizziFactory.createFactory
+			{
+				@ repo
+					{
+						@ storeKind 'filesystem'
+				@ plugins
+					{
+						@ items
+							[
+								@ '../mocks/plugin'
+						@ pluginsBaseFolder __dirname
+				@ test
+					{
+						@ testOnlyMockBaseDir __dirname
+			f_cb_test( wf )
+				var pman
+					_ wf.createProductionManager
+						{
+							@ indentSpaces 4
+							@ basedir __dirname
+						{
+				set mi
+					new modelInfo
+						{
+							@ cwd
+								_ path.join
+									@ __dirname
+									@ 'ittf'
+									@ 'folder1'
+							@ src './**/*.tests.ittf'
+							@ schema 'tests'
+				_ mi.productionManager
+					@ pman
+				_ done
+
+	it-async should get a single source
+		_ mi.getSource
+			f_cb_no_err( source )
+				tobe_true( err.__is_error )
+				_ done
+
+	it-async should get sources
+		var s1Path
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'folder1'
+				@ 'mock2.tests.ittf'
+				._ replace(/\\/g, '/')
+		_ mi.getSources
+			f_cb_test( sources )
+				tobe_array( sources, 2)
+				var s1 = sources[0]
+				tobe_string_value( s1.fullpath, s1Path )
+				tobe_string( s1.relpath, mock2.tests.ittf )
+				tobe_string( s1.content, tests mock2 )
+				_ done
+
+	it-async should get source files
+		var s1Path
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'folder1'
+				@ 'mock2.tests.ittf'
+				._ replace(/\\/g, '/')
+		_ mi.getFiles
+			{
+				@ final false
+			f_cb_test( files )
+				tobe_array( files, 2)
+				var f1 = files[0]
+				tobe_string_value( f1.fullpath, s1Path )
+				_ done
+    
+	it-async should check if the source exists
+		_ mi.exists
+			f_cb_test( exists )
+				tobe_true( exists )
+				_ done
+
+	it-async should check if the source is a directory
+		_ mi.isDirectory
+			f_cb_test( isDirectory )
+				tobe_true( isDirectory )
+				_ done
+
+	it-async should check if the source is a file
+		_ mi.isFile
+			f_cb_test( isFile )
+				tobe_false( isFile )
+				_ done

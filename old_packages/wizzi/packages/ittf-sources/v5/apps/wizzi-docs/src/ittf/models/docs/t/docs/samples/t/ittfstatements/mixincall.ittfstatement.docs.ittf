@@ -1,0 +1,39 @@
+﻿$group
+
+	sample mixin call
+		
+		summary
+
+			p A mixin call is an Ittf statement that the loader recognizes because a
+				+ node name ends with an open paren. You can declare single node mixin calls:
+			ittf
+				-
+					- ui/dialog( title, &data )
+					-
+			p
+			p or multi node calls:
+			ittf
+				-
+					- ui/control(
+						- $param id name
+						- $param type input
+						- $param label Your name
+					-
+			p
+			p Arguments in a single node call must be comma separated. The closing paren is optional
+				+ in both cases.
+	
+		ittf my.html.ittf
+			kind primary
+			- div
+				- $ var myFriends = 'Steve,Annie,John'.split(',')
+				- ul
+					- li hello ${dollar}{myFriends[0]}
+					- ${dollar}${dollar} li hello ${dollar}{myFriends[1]}
+					- li hello ${dollar}{myFriends[2]}
+				- ${dollar}* div
+					- a wizzifactory
+						- href http://wizzifactory.org 
+					- *${dollar}
+
+		$include wfschema.html.sample

@@ -1,0 +1,67 @@
+﻿$group
+	
+	{
+		@ name 'dot'
+		@ re '.'
+		@ flags ''
+		@ src '\\n'
+		@ desc
+			[
+				@ '. (dot) Matches any JavaScript character (UTF-16 code unit)'
+				@ 'except line terminators (newline, carriage return, etc.)'
+
+	{
+		@ name 'sS'
+		@ re '\\s\\S'
+		@ flags ''
+		@ src '\\n'
+		@ desc
+			[
+				@ 'To really match any character, use [\\s\\S]'
+
+	{ 
+		@ name 'meta_cap'
+		@ re '^Cat'
+		@ src 'Cat go fast'
+		@ desc
+			[
+				@ 'must start with Cat'
+	{ 
+		@ name 'meta_dollar'
+		@ re 'slow$'
+		@ src 'Dogs are slow'
+		@ desc
+			[
+				@ 'must end with slow'
+	{ 
+		@ name 'meta_aster'
+		@ re 'bo*'
+		@ src 'boom and boat and bug'
+		@ desc
+			[
+				@ 'matches when the preceding o occurs 0 or more times'
+				@ 'is a quantifier'
+    { 
+		@ name 'meta_plus'
+		@ re 'bo+'
+		@ src 'boom and boat and bug'
+		@ desc
+			[
+				@ 'matches when the preceding o occurs 1 or more times'
+				@ 'is a quantifier'
+	{ 
+		@ name 'meta_question_mark'
+		@ re 'bo?'
+		@ src 'boom and boat and bug'
+		@ desc
+			[
+				@ 'matches when the preceding o occurs 0 or one time'
+				@ 'is a quantifier'
+    { 
+		@ name 'meta_dot'
+		@ re '.a'
+		@ src 'Cats fats rats'
+		@ desc
+			[
+				@ 'any character followed by an a'
+				@ 'is a character class'

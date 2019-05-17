@@ -1,0 +1,32 @@
+﻿$group
+
+	api wizzi-mtree.jsWizziContext
+		kernel
+
+		# It is used internally for managing the execution environment.
+		# Evaluation context objects are pre-loaded loaded in this object with a global scope.
+		# Variables created by jswizzi code at runtime have a wizzi-mtree.loader.mTreeBrick scope.
+		# The nodes of the mTree that is builtup have a node scope.
+
+	api wizzi-mtree.jsWizziRunner
+		kernel
+
+		# The jswizzi executor engine.
+
+		module
+			path wizzi-mtree/lib/jswizzi/jsWizziRunner.js
+		{
+			m run
+				# If a callback is passed then the method is async.
+				string code
+					# A block of jswizzi code.
+				{ jsWizziContext
+					api-ref wizzi-mtree.jsWizziContext
+				{ options
+					boolean verbose
+						# prints every processed ast node
+					function dumpfile
+						# The stringified ast parsed by esprima is passed
+						# to this function for debug purposes.
+				cb()
+					any result

@@ -1,0 +1,184 @@
+﻿module
+	kind jsfile
+
+	function randomInteger
+		param min
+		param max
+		return 
+			_ Math.floor
+				@ Math.random() * (max - min + 1) + min
+
+	function randomWord
+		return words[randomInteger(0, words.length - 1)]
+
+	function randomSentence
+		param lowerBound
+		param upperBound
+		var
+			decl sentence = ''
+			decl bounds
+				{
+					@ min 0
+					@ max
+						_ randomInteger(lowerBound, upperBound)
+
+		while bounds.min < bounds.max
+			set sentence += ' ' + randomWord()
+			set bounds.min++
+
+		if sentence.length
+			set sentence = sentence.slice(1)
+			set sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1)
+
+		return sentence
+
+	function randomParagraph
+		param lowerBound
+		param upperBound
+		param sentenceLowerBound
+		param sentenceUpperBound
+
+		var
+			decl paragraph = ''
+			decl bounds
+				{
+					@ min 0
+					@ max randomInteger(lowerBound, upperBound)
+
+		while bounds.min < bounds.max
+			set paragraph += '. ' + randomSentence(sentenceLowerBound, sentenceUpperBound)
+			set bounds.min++
+
+		if paragraph.length
+			set paragraph = paragraph.slice(2)
+			set paragraph += '.'
+
+		return paragraph
+
+	function generator
+		param options
+		set options = options || {}
+		var count = options.count || 20
+		var
+			decl units = options.units || 'words'
+			decl sentenceLowerBound = options.sentenceLowerBound || 5
+			decl sentenceUpperBound = options.sentenceUpperBound || 15
+			decl paragraphLowerBound = options.paragraphLowerBound || 3
+			decl paragraphUpperBound = options.paragraphUpperBound || 7
+			decl htmlTag = options.htmlTag || null
+			decl format = options.htmlTag ? 'html' : ''
+			decl suffix = options.suffix
+
+		if !suffix
+			var isNode = typeof module !== 'undefined' && module.exports
+			var isReactNative = typeof product !== 'undefined' && product.navigator === 'ReactNative'
+			var isWindows = typeof process !== 'undefined' && 'win32' === process.platform
+			if !isReactNative && isNode && isWindows
+				set suffix = '\r\n'
+			else
+				set suffix = '\n'
+
+		var 
+			decl bounds = {min: 0, max: count}
+			decl string = ''
+			decl openingTag = htmlTag ? '<' + htmlTag + '>' : ''
+			decl closingTag = htmlTag ? '</' + htmlTag + '>' : ''
+
+		while bounds.min < bounds.max
+			switch units.toLowerCase()
+				case 'words'
+					set string += ' ' + randomWord()
+					break
+				case 'sentences'
+					set string += '. ' + randomSentence(sentenceLowerBound, sentenceUpperBound)
+					break
+				case 'paragraphs'
+					var nextString = randomParagraph(paragraphLowerBound, paragraphUpperBound, sentenceLowerBound, sentenceUpperBound)
+					if format === 'html'
+						set nextString = openingTag + nextString + closingTag
+						if bounds.min < bounds.max - 1
+							set nextString += suffix; $$ Each paragraph on a new line
+					elif bounds.min < bounds.max - 1
+						set nextString += suffix + suffix; $$ Double-up the EOL character to make distinct paragraphs, like carriage return
+					set string += nextString
+					break
+			set bounds.min++
+		
+		if string.length
+			var pos = 0
+			if string.indexOf('. ') === 0
+				set pos = 2
+			elif string.indexOf('.') === 0 || string.indexOf(' ') === 0
+				set pos = 1
+			set string = string.slice(pos);
+			if units === 'sentences'
+				set string += '.'
+		
+		return string
+
+	var words
+		[
+			@ 'ad'
+			@ 'adipisicing'
+			@ 'aliqua'
+			@ 'aliquip'
+			@ 'amet'
+			@ 'anim'
+			@ 'aute'
+			@ 'cillum'
+			@ 'commodo'
+			@ 'consectetur'
+			@ 'consequat'
+			@ 'culpa'
+			@ 'cupidatat'
+			@ 'deserunt'
+			@ 'do'
+			@ 'dolor'
+			@ 'dolore'
+			@ 'duis'
+			@ 'ea'
+			@ 'eiusmod'
+			@ 'elit'
+			@ 'enim'
+			@ 'esse'
+			@ 'est'
+			@ 'et'
+			@ 'eu'
+			@ 'ex'
+			@ 'excepteur'
+			@ 'exercitation'
+			@ 'fugiat'
+			@ 'id'
+			@ 'in'
+			@ 'incididunt'
+			@ 'ipsum'
+			@ 'irure'
+			@ 'labore'
+			@ 'laboris'
+			@ 'laborum'
+			@ 'Lorem'
+			@ 'magna'
+			@ 'minim'
+			@ 'mollit'
+			@ 'nisi'
+			@ 'non'
+			@ 'nostrud'
+			@ 'nulla'
+			@ 'occaecat'
+			@ 'officia'
+			@ 'pariatur'
+			@ 'proident'
+			@ 'qui'
+			@ 'quis'
+			@ 'reprehenderit'
+			@ 'sint'
+			@ 'sit'
+			@ 'sunt'
+			@ 'tempor'
+			@ 'ullamco'
+			@ 'ut'
+			@ 'velit'
+			@ 'veniam'
+			@ 'voluptate'
+
+	set module.exports = generator

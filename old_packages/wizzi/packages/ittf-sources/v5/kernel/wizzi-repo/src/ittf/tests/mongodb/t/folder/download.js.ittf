@@ -1,0 +1,51 @@
+﻿$group
+
+	var downloadFolder = "c:/my/starters/download"
+	var file_1 = downloadFolder + "/f_1.js"
+	var file_2 = downloadFolder + "/f_2.js"
+	var file_3 = downloadFolder + "/fold/f_3.js"
+	var file_4 = downloadFolder + "/fold/f_4.js"
+	var file_5 = downloadFolder + "/fold/sub/f_5.js"
+	var content = "Hello "
+	var downloadZipFile = "c:/my/starters/download/zip/zipped.zip"
+
+	describe download a folder
+
+		before-async
+			_ file.write
+				@ file_1
+				@ content + 'file_1'
+			_ file.write
+				@ file_2
+				@ content + 'file_2'
+			_ file.write
+				@ file_3
+				@ content + 'file_3'
+			_ file.write
+				@ file_4
+				@ content + 'file_4'
+			_ file.write
+				@ file_5
+				@ content + 'file_5'
+			_ doc.uploadFolder
+				@ downloadFolder
+				f_cb_done( r )
+					log 'doc.uploadFolder', r
+
+		it-async should download c:/my/starters/download
+			_ file.mkpath(downloadZipFile)
+			_ doc.downloadFolder
+				@ downloadFolder
+				f_cb_test( zip )
+					log 'doc.downloadFolder', zip
+					_ zip.generateNodeStream
+						{
+							@ type 'nodebuffer'
+							@ streamFiles true
+						._ pipe
+							@ fs.createWriteStream(downloadZipFile)
+							._ on
+								@ 'finish'
+								function
+									log downloadZipFile + " written."
+									_ done()

@@ -1,0 +1,26 @@
+﻿module
+    kind jsfile
+
+    class Acl
+		ctor
+			param config
+			param wizziConfig
+			set this.config = config
+			set this.wizziConfig = wizziConfig
+		
+		m checkAuth
+			param userId
+			param subscriptionType
+			param operId
+			param resourceType
+			param resourceName
+			if subscriptionType === 'admin'
+				return
+					{
+						@ ok true
+			return
+				{
+					@ ok false
+					@ reason userId + ' not authorized to ' + operId
+		
+	set module.exports = Acl    

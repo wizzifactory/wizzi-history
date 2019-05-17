@@ -1,0 +1,62 @@
+﻿$group
+
+	function makeJsonWizziFactoryCreator
+		param plugins
+		param configGlobalContext
+		param configUser
+		param configRoleOrSubscription
+		set configGlobalContext = configGlobalContext || {}
+		if verify.isString(configUser) && verify.isString(configRoleOrSubscription)
+			return
+				function createWizziFactory
+					param documents
+					param globalContext
+					param callback
+					_ wizzi.JsonComponents.createJsonFsData
+						@ documents
+						f_cb( jsonFsData )
+							set globalContext
+								_ _.merge
+									@ configGlobalContext
+									@ globalContext || {}
+							_ wizzi.createFactory
+								@ configUser
+								@ configRoleOrSubscription
+								{
+									@ repo
+										{
+											@ storeKind 'json'
+											@ storeJsonFsData jsonFsData
+									@ plugins
+										{
+											@ items plugins
+									@ globalContext globalContext || {}
+								@ callback
+		else
+			return
+				function createWizziFactory
+					param user
+					param roleOrSubscription
+					param documents
+					param globalContext
+					param callback
+					_ wizzi.JsonComponents.createJsonFsData
+						@ documents
+						f_cb( jsonFsData )
+							set globalContext
+								_ _.merge
+									@ configGlobalContext
+									@ globalContext || {}
+							_ wizzi.createFactory
+								@ user
+								@ roleOrSubscription
+								{
+									@ repo
+										{
+											@ storeKind 'json'
+											@ storeJsonFsData jsonFsData
+									@ plugins
+										{
+											@ items plugins
+									@ globalContext globalContext || {}
+								@ callback

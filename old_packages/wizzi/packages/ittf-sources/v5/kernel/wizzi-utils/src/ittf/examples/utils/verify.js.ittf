@@ -1,0 +1,15 @@
+﻿base_example( verify )
+
+	var nv
+		_ verify.parseNameValue
+			@ "['@id'] this.id"
+			@ null
+			{
+				@ objectProperty true
+	
+	log 'verify.parseNameValue', nv
+	
+	set nv
+		_ verify.parseNameValue("['@id'] this.id")
+
+	log 'verify.parseNameValue', nv

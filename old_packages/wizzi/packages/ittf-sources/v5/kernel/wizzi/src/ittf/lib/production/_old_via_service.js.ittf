@@ -1,0 +1,107 @@
+﻿module
+	kind jsfile
+
+	var verify = require('wizzi-utils').verify
+	var file = require('wizzi-utils').file
+	var log = require('../util/log')(module)
+	var sourcetree = require('./helpers/sourcetree')
+	var ProductionContext = require('./context')
+
+	class ProductionService
+		ctor
+			param options
+			set this.options = options
+			set this.schemaModules = []
+			set this.artifactModules = []
+			set this.productionContext = new ProductionContext()
+			_ log.setLevel(options.verbose || 0);
+
+		m registerSchemaModule
+			param schemaModule
+			_ this.schemaModules.push(schemaModule)
+
+		m getSchemaLoader
+			param schemaName
+			# console.log('ProductionService.getSchemaLoader.schemaName: ' + schemaName);
+			var result = null
+			
+			foreach item in this.schemaModules
+				if result == null && verify.isFunction(item[schemaName])
+					set result = item[schemaName]
+			
+			if !result
+				var availables = []
+				foreach item in this.schemaModules
+					for key in item
+						if verify.isFunction(item[key])
+							_ availables.push(key)
+				_ log.error('getSchemaLoader. Cannot find schema loader: ' + schemaName + '\n' + 'availables: ' + availables.join(', '))
+			
+			return result
+
+		m registerArtifactModule
+			param artifactModule
+			_ this.artifactModules.push(artifactModule)
+
+		m getArtifactGenerator
+			param artifactName
+			# console.log('ProductionService.getArtifactGenerator.artifactName: ' + artifactName);
+			var result = null
+			foreach item in this.artifactModules
+				if result == null && verify.isFunction(item[artifactName])
+					set result = item[artifactName]
+			if !result
+				_ log.error('getArtifactGenerator. Cannot find artifact generator: ' + artifactName)
+			return result
+
+		m loadWizziModel
+			param schemaName
+			param ittfSource
+			param context
+			param callback
+			var schemaNameDef = file.exists(ittfSource) ? schemaName : schemaName + 'FromString';
+			var schemaLoader = this.getSchemaLoader(schemaNameDef);
+			if schemaLoader == null
+				return callback({ message: 'ProductionService.loadWmtModel error. Cannot find schema loader for schema ' + schemaName })
+			_ schemaLoader
+				@ ittfSource
+				@ context
+				@ callback
+
+		m loadWizziModelSourceTree
+			param schemaName
+			param ittfSource
+			param context
+			param callback
+			var schemaNameDef = file.exists(ittfSource) ? schemaName : schemaName + 'FromString'
+			var schemaLoader = this.getSchemaLoader(schemaNameDef)
+			if schemaLoader == null
+				return callback({ message: 'ProductionService.loadWmtModel error. Cannot find schema loader for schema ' + schemaName })
+			var self = this
+			_ schemaLoader
+				@ ittfSource
+				@ context
+				@ callback(err, sourcetree(result, file.exists(ittfSource) ? ittfSource : null, context.wzrepoRootPath))
+
+		m generateArtifact
+			param artifactName
+			param ittfSource
+			param context
+			param callback
+			if verify.isString(artifactName) === false
+				return callback({ message: 'ProductionService.generateArtifact error. Invalid artifact name ' + artifactName })
+			var ss = artifactName.split('/')
+			if ss.length == 2
+				set artifactName = ss[0] + ss[1].substr(0, 1).toUpperCase() + ss[1].substr(1)
+			var artifactNameDef = file.exists(ittfSource) ? artifactName : artifactName + 'FromString'
+			var artifactGenerator = this.getArtifactGenerator(artifactNameDef)
+			
+			if artifactGenerator == null
+				return callback({ message: 'ProductionService.generateArtifact error. Cannot find artifact generator for artifact ' + artifactName });
+			
+			_ artifactGenerator
+				@ ittfSource
+				@ context
+				@ callback
+
+	set module.exports = ProductionService

@@ -1,0 +1,15 @@
+$group
+	$params title, href, subtitle|@@null
+
+	div ${title}
+        class text-gamma
+    $if subtitle != null
+		p ${subtitle}
+			class mb-2
+	$hook
+    p 
+        class mb-6
+        a Read the guide →
+            href ${href}
+            class link-mono
+                        

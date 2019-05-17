@@ -1,0 +1,22 @@
+﻿$group
+
+	function makeWizziIttfApi
+		param config
+
+		var paths = makePaths(config)
+
+		var createWizziFactory
+			_ makeWizziFactoryCreator
+				@ config.storeKind 
+				@ config.plugins
+				@ config.globalContext
+				@ config.user
+				@ config.role
+		
+		return
+			{
+				$include ./fs
+				$include ./wf
+				$include ./gen
+				$include ./job
+				$include ./schema

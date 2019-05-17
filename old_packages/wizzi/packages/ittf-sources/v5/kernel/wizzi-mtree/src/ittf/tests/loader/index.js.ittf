@@ -1,0 +1,79 @@
+﻿base_test( index )
+	
+	$append imports
+		var mocks = require('./mocks/misc')
+		var file = require('wizzi-utils').file
+		var stringify = require('json-stringify-safe')
+		var loader = require('../../lib/loader')
+    
+	var result
+	var store
+
+	before-async
+
+		set store = new mocks.IttfDocumentStore()
+		_ store.init
+			{
+				@ storeKind 'filesystem'
+			f_cb_test( notUsed )
+				_ done
+
+	it-async should load an mTree
+
+		_ loader.loadMTree
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'ittf_object_args.tests.ittf'
+            {
+				@ mTreeBuildUpContext
+					{
+						@ items
+							[
+								{
+									@ name 'stefi'
+									@ value 60
+								{
+									@ name 'annie'
+									@ value 59
+								{
+									@ name 'afro'
+									@ value 98
+
+				@ __productionManager mocks.ProductionManager
+				@ __ittfDocumentStore store
+			f_cb_test( mTree )
+				set result = mTree
+				tobe_object( result )
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'repo'
+						@ 'data'
+						@ 'ittf_object_args.json'
+					_ stringify
+						@ mTree
+						@ null
+						@ 2
+				_ done()
+
+	it-async should get a NotFoundError
+
+		_ loader.loadMTree
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'dummy.tests.ittf'
+            {
+				@ __productionManager mocks.ProductionManager
+				@ __ittfDocumentStore store
+			f_cb_no_err( result )
+				log 'should get an RepoIOError error.err', err
+				tobe_string( err.name, RepoIOError )
+				_ done()
+
+		
+		
+

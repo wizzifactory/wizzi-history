@@ -1,0 +1,27 @@
+$group
+
+	function bindActionCreator
+        param actionCreator
+        param dispatch
+        return 
+            function 
+                return 
+                    _ dispatch
+                        _ actionCreator.apply(undefined, arguments)
+    
+	function bindActionCreators
+        param actionCreators
+        param dispatch
+        if typeof (actionCreators) === 'function'
+            return bindActionCreator(actionCreators, dispatch)
+        
+		if (typeof (actionCreators) === 'undefined' ? 'undefined' : _typeof(actionCreators) !== 'object') || actionCreators === null || actionCreators === undefined
+            throw 
+                new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof (actionCreators) === 'undefined' ? 'undefined' : _typeof(actionCreators)) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?')
+        
+		return 
+            _ mapValues
+                @ actionCreators
+                function 
+                    param actionCreator
+                    return bindActionCreator(actionCreator, dispatch)

@@ -1,0 +1,216 @@
+﻿$group
+
+	it-async should async get files in a basefolder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+
+		_ file.getFiles
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+			{ 
+				@ deep false
+				@ extension null
+				@ documentContent false
+			f_cb_test( files )
+				log 'should get files in a basefolder - files', files
+				tobe_array( files, 2 )
+				_ done
+
+	it-async should get async files with content in a basefolder
+		
+		_ file.getFiles
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+			{ 
+				@ deep false
+				@ extension null
+				@ documentContent true
+			f_cb_test( files )
+				tobe_array( files, 2 )
+				tobe_string( files[0].content, globbed 1 )
+				tobe_string( files[0].relPath, globbed_1.ittf )
+				tobe_string( files[1].content, globbed 2 )
+				tobe_string( files[1].relPath, globbed_2.ittf )
+				_ done
+
+	it-async should async get folders in a basefolder
+
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs'
+				@ 'one'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'two'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+
+		_ file.getFolders
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+			{ 
+				@ deep false
+				@ tFoldersOnly false
+				@ documentNames false
+			f_cb_test( folders )
+				log 'folders', folders
+				tobe_array( folders, 2 )
+				_ done
+
+	it-async should async get folders in a basefolder deep
+
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs'
+				@ 'one'
+				@ 'deep'
+				@ 'globbed_1deep.ittf'
+			@ 'globbed 1 deep'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'two'
+				@ 'deep'
+				@ 'globbed_2deep.ittf'
+			@ 'globbed 2 deep'
+
+		_ file.getFolders
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+			{ 
+				@ deep true
+				@ tFoldersOnly false
+				@ documentNames false
+			f_cb_test( folders )
+				
+				log 'folders', folders
+
+				tobe_array( folders, 4 )
+				tobe_string( folders[0].relPath, one )
+				tobe_string( folders[1].relPath, two )
+				tobe_string( folders[2].relPath, one/deep )
+				tobe_string( folders[3].relPath, two/deep )
+				_ done
+
+	it-async should async get folders in a basefolder deep with document names
+
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs'
+				@ 'one'
+				@ 'deep'
+				@ 'globbed_1deep.ittf'
+			@ 'globbed 1 deep'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'two'
+				@ 'deep'
+				@ 'globbed_2deep.ittf'
+			@ 'globbed 2 deep'
+
+		_ file.getFolders
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+			{ 
+				@ deep true
+				@ tFoldersOnly false
+				@ documentNames true
+			f_cb_test( folders )
+
+				log ''
+				log ''
+				log '*** folders', folders
+
+				tobe_array( folders, 4 )
+				tobe_array( folders[0].documents, 1 )
+				tobe_array( folders[1].documents, 1 )
+				tobe_array( folders[2].documents, 1 )
+				tobe_array( folders[3].documents, 1 )
+				_ done
+
+	it-async should async glob a folder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'one'
+				@ 'globbed_2_one.ittf'
+			@ 'globbed 2 one'
+
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+			@ file
+			f_cb_test( result )
+				tobe_array(result, 3)
+				_ file.getGlobbedFilesEx
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'globs2'
+						@ '**/*.ittf'
+					{
+						@ removeRoot
+							_ path.join
+								@ __dirname
+								@ 'ittf'
+					f_cb_test( result )
+						tobe_array(result, 3)
+						tobe_string(result[0], /globs2/globbed_1.ittf)
+						_ done

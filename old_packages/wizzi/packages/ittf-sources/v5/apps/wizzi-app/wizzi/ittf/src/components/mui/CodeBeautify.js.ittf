@@ -1,0 +1,28 @@
+﻿r-simple( CodeBeautify
+
+	$append imports
+		import CodeHighLight from './CodeHighLight'
+		var beauties = {}
+		set beauties['js'] = require('js-beautify').js
+		set beauties['html'] = require('js-beautify').html
+		set beauties['css'] = require('js-beautify').css
+		
+	=>
+		param { codeSnippet, language, indentSize }
+
+		var formattedCodeSnippet = codeSnippet
+
+		if beauties[language]
+			set formattedCodeSnippet
+				_ beauties[language]
+					@ codeSnippet
+					{
+						@ indent_size indentSize || 2
+
+		return
+			< CodeHighLight 
+				@ language { language || 'js' }
+				@ codeSnippet { formattedCodeSnippet }
+
+
+

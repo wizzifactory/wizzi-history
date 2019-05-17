@@ -1,0 +1,32 @@
+module
+	$params schema, name, checkRoot:boolean|false
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var verify = require('wizzi-utils').verify
+	$hook imports
+	+
+	var myname = 'model.transformer.${schema}.${name}'
+	+
+	var md = module.exports = {}
+	+
+	set md.trans
+		function
+			param model
+			param ctx
+			param callback
+
+			if verify.isFunction(callback) != true
+				throw new Error(myname + ' a callback parameter of type function is required. In uri: ' + model.ittfDocumentUri)
+			
+			if verify.isObject(ctx) != true
+				throw new Error(myname + ' a context parameter of type object is required. In uri: ' + model.ittfDocumentUri)
+			
+			$if checkRoot
+				if model.wzElement !== '${schema}'
+					throw new Error(myname + ' the model wzElement must be: ${schema}. Found: ' + model.wzElement + '. in uri: ' + model.ittfDocumentUri)
+			
+			$hook
+	
+	$hook methods

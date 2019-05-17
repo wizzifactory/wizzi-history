@@ -1,0 +1,564 @@
+﻿$group
+
+	runner( UnaryExpression
+		var exp
+		if node.operator === 'typeof'
+			set exp
+				_ runner
+					@ node.argument
+					@ ctx
+			if exp && exp.__is_error
+				# log 'wizzi-mtree-jsWizziRunner.__is_error CallExpression argument', exp
+				if exp.name === 'JsWizziError-ReferenceError'
+					set exp = undefined
+				else
+					return exp
+		else
+			checked_run_set( exp, UnaryExpression
+				_ runner
+					@ node.argument
+					@ ctx
+        if node.prefix
+            if node.operator === '!'
+                return !exp
+            elif node.operator === '-'
+                return -exp
+            elif node.operator === '+'
+                return exp
+            elif node.operator === '~'
+                return ~exp
+            elif node.operator === 'typeof'
+                return typeof exp
+            else 
+				return
+					_ local_error
+						@ ctx
+						@ 'Unmanaged unary operator ' + node.operator + ' (prefix: true)'
+						@ node.operator
+						@ node
+						@ 'UnaryExpression'
+        else 
+            if node.operator === '!'
+                return !exp
+            else 
+				return
+					_ local_error
+						@ ctx
+						@ 'Unmanaged unary operator ' + node.operator + ' (prefix: false)'
+						@ node.operator
+						@ node
+						@ 'UnaryExpression'
+    
+	runner( BinaryExpression
+		checked_run( l, BinaryExpression l
+            _ runner
+                @ node.left
+                @ ctx
+        checked_run( r, BinaryExpressior
+            _ runner
+                @ node.right
+                @ ctx
+        _ log
+            @ 'BinaryExpression.l,r'
+            [ 
+                @ l
+                @ r
+        if node.operator === '+'
+            return (l + r)
+        elif node.operator === '-'
+            return (l - r)
+        elif node.operator === '*'
+            return l * r
+        elif node.operator === '/'
+            return l / r
+        elif node.operator === '%'
+            return l % r
+        elif node.operator === '=='
+            return l == r
+        elif node.operator === '==='
+            return l === r
+        elif node.operator === '!='
+            return l != r
+        elif node.operator === '!=='
+            return l !== r
+        elif node.operator === '>='
+            return l >= r
+        elif node.operator === '>'
+            return l > r
+        elif node.operator === '<='
+            return l <= r
+        elif node.operator === '<'
+            return l < r
+        elif node.operator === '<<'
+            return l << r
+        elif node.operator === '>>'
+            return l >> r
+        elif node.operator === '>>>'
+            return l >>> r
+        elif node.operator === '|'
+            return l | r
+        elif node.operator === '&'
+            return l & r
+        elif node.operator === '^'
+            return l ^ r
+        elif node.operator === 'in'
+            return l in r
+        elif node.operator === 'instanceof'
+            return l instanceof r
+		else
+			return
+				_ local_error
+					@ ctx
+					@ 'Unmanaged binary operator ' + node.operator
+					@ node.operator
+					@ node
+					@ 'BinaryExpression'
+    
+	runner( UpdateExpression
+        var 
+            decl v
+            decl exp
+		checked_run( exp, UpdateExpression
+            _ runner
+                @ node.argument
+                @ ctx
+        if node.operator === '++'
+            set v = exp + 1
+        elif node.operator === '--'
+            set v = exp - 1
+        else 
+			return
+				_ local_error
+					@ ctx
+					@ 'Unmanaged update expression ' + node.operator
+					@ node.operator
+					@ node
+					@ 'UpdateExpression'
+        
+		_ ctx.put
+            @ node.argument.name
+            @ v
+        return node.prefix ? v : exp
+    
+	runner( LogicalExpression
+		checked_run( l, LogicalExpression l
+            _ runner
+                @ node.left
+                @ ctx
+        if node.operator === '&&' && (l === false || l === null)
+            return false
+        checked_run( r, LogicalExpression r
+            _ runner
+                @ node.right
+                @ ctx
+        _ log
+            @ 'LogicalExpression.l,r'
+            [ 
+                @ l
+                @ r
+        if node.operator === '&&'
+            return l && r
+        elif node.operator === '||'
+            return l || r
+        else 
+			return
+				_ local_error
+					@ ctx
+					@ 'Unmanaged logical expression ' + node.operator
+					@ node.operator
+					@ node
+					@ 'LogicalExpression'
+    
+	runner( ConditionalExpression
+		checked_run( test, ConditionalExpression
+			_ runner(node.test, ctx)
+        if test
+			checked_run( value, ConditionalExpression node.consequent
+                _ runner
+                    @ node.consequent
+                    @ ctx
+			return value
+		else 
+			checked_run( value, ConditionalExpression node.alternate
+                _ runner
+                    @ node.alternate
+                    @ ctx
+			return value
+    
+	runner( CallExpression
+        var 
+			decl value
+			decl args
+				[ 
+			decl property
+
+		# log 'CallExpression.node.callee', node.callee
+        
+		if node.callee.type === 'MemberExpression'
+			
+			foreach item in node.arguments
+				checked_run_set( value, CallExpression argument
+					_ runner(item, ctx)
+				_ args.push(value)
+
+			checked_run( obj, CallExpression node.callee.object
+                _ runner
+                    @ node.callee.object
+                    @ ctx
+            if !obj
+				return
+					_ local_error
+						@ ctx
+						@ 'The value of callee must be an object. It is "' + getTypeDescription(obj) + '" : ' + obj + '.'
+						@ node.callee.object
+						@ node
+						@ 'CallExpression'
+            if node.callee.computed
+				checked_run_set( property, CallExpression node.callee.property
+                    _ runner
+                        @ node.callee.property
+                        @ ctx
+            else 
+                set property = node.callee.property.name
+            if !obj[property]
+				return
+					_ local_error
+						@ ctx
+						@ 'Missing object property.'
+						@ node.callee.property
+						@ node
+						@ 'CallExpression'
+            if verify.isFunction(obj[property])
+				try
+					var value = obj[property].apply(obj, args)
+					if value && value.__is_error
+						# log 'wizzi-mtree.jswizzi.jsWizziRunner.CallExpression. Error calling ' + property + ', on statement: ' + escodegen.generate(node)
+						var currentModelInfo = ctx.get_currentMTreeBrickInfo()
+						return
+							_ error
+								@ 'JsWizziError'
+								@ 'CallExpression'
+								{
+									@ message value.message
+									{ parameter
+										@ callingProperty property
+										@ onStatement escodegen.generate(node)
+										@ currentModelUri currentModelInfo.currentModel_uri
+										@ currentModelMixerUri currentModelInfo.currentModel_mixerUri
+								@ value
+					return value
+				catch ex
+					return 
+						_ local_error
+							@ ctx
+							@ 'Exception calling function: ' + (ex ? ex.message : 'exception message unavailable')
+							@ node.callee.property
+							@ node
+							@ 'CallExpression'
+							@ ex
+            else 
+				return
+					_ local_error
+						@ ctx
+						@ 'property: "' + property + '" is not a function'
+						@ node.callee.property
+						@ node
+						@ 'CallExpression'
+        
+		if node.callee.type === 'Identifier'
+            var f
+                _ ctx.getFunction
+                    @ node.callee.name
+			# log 'CallExpression.node.callee.name', node.callee.name, f
+            if f == null
+				set f = ctx.getValue(node.callee.name)
+				if f != null && verify.isFunction(f)
+					foreach item in node.arguments
+						checked_run_set(value, CallExpression argument)
+							set value = runner(item, ctx)
+						_ args.push(value)
+					try
+						return f.apply(null, args)
+					catch ex
+						return 
+							_ local_error
+								@ ctx
+								@ 'Exception calling function: ' + (ex ? ex.message : 'exception message unavailable')
+								@ node.callee.name
+								@ node
+								@ 'CallExpression'
+								@ ex
+				else
+					return
+						_ local_error
+							@ ctx
+							@ ('Function undeclared ' + node.callee.name)
+							@ node.callee
+							@ node
+							@ 'CallExpression'
+							@ new Error()
+            # log 'wizzi-mtree.jswizzi.runner.expressions.CallExpression.jsWizziFunction', f.params
+
+			
+			if f.params.length !== node.arguments.length
+				return
+					_ local_error
+						@ ctx
+						@ 'A jsWizziFunction call must have the same number of arguments of the callee. Found: ' +
+							\b f.params.length + ' and ' + node.arguments.length 
+						@ null
+						@ node
+						@ 'CallExpression'
+			
+			# _ ctx.elapsedTime('wizzi-mtree.jsWizziRunner.Call function ' + node.callee.name + ' start')
+			_ ctx.beginLoadingCallArguments();
+			foreach item in node.arguments
+				checked_run_set(value, CallExpression argument)
+					set value = runner(item, ctx)
+				# log 'wizzi-mtree.jswizzi.runner.expressions.CallExpression.value', value
+				_ args.push(value)
+			_ ctx.endLoadingCallArguments();
+			var result = runnerCall(f, ctx, args)
+			# _ ctx.elapsedTime('wizzi-mtree.jsWizziRunner.Call function ' + node.callee.name + ' end')
+			return result
+        
+		if node.callee.type === 'FunctionExpression'
+
+			# log 'FunctionExpression', node.callee, true
+			
+			var f = node.callee
+
+			if f.params.length !== node.arguments.length
+				return
+					_ local_error
+						@ ctx
+						@ 'A jsWizziFunction call must have the same number of arguments of the callee. Found: ' +
+							\b f.params.length + ' and ' + node.arguments.length 
+						@ null
+						@ node
+						@ 'CallExpression'
+			
+			_ ctx.beginLoadingCallArguments();
+			foreach item in node.arguments
+				checked_run_set(value, CallExpression argument)
+					_ runner(item, ctx)
+				_ args.push(value)
+			_ ctx.endLoadingCallArguments();
+			set f.type = 'FunctionDeclaration'
+			return runnerCall(f, ctx, args)
+
+		return
+			_ local_error
+				@ ctx
+				@ 'Not implemented. CallExpression.node.callee.type: "' + node.callee.type + '"'
+				@ null
+				@ node
+				@ 'CallExpression'
+
+    runner( MemberExpression
+		checked_run( obj, MemberExpression
+            _ runner
+                @ node.object
+                @ ctx
+        if !obj
+			return
+				_ local_error
+					@ ctx
+					@ 'The value must be an object. It is "' + getTypeDescription(obj) + '".'
+					@ node.object
+					@ node
+					@ 'MemberExpression'
+        if node.computed
+			checked_run( property, MemberExpression node.property
+                _ runner
+                    @ node.property
+                    @ ctx
+            return obj[property]
+        else 
+            var property = node.property.name
+            return obj[property]
+    
+	runner( MemberExpression_Set, data
+		checked_run( obj, MemberExpression_Set
+            _ runner
+                @ node.object
+                @ ctx
+        if !obj
+			return
+				_ local_error
+					@ ctx
+					@ 'The value must be an object. It is "' + getTypeDescription(obj) + '".'
+					@ node.object
+					@ node
+					@ 'MemberExpression_Set'
+        if node.computed
+            checked_run( property, MemberExpression_Set node.property
+                _ runner
+                    @ node.property
+                    @ ctx
+            set obj[property] = data
+        else 
+            var property = node.property.name
+            set obj[property] = data
+    
+	runner( AssignmentExpression
+        checked_run( l, AssignmentExpression l
+            _ runner
+                @ node.left
+                @ ctx
+        checked_run( r, AssignmentExpression r
+            _ runner
+                @ node.right
+                @ ctx
+        var v
+        if node.operator === '='
+            set v = l = r
+        elif node.operator === '*='
+            set v = l *= r
+        elif node.operator === '/='
+            set v = l /= r
+        elif node.operator === '%='
+            set v = l %= r
+        elif node.operator === '+='
+            set v = l += r
+        elif node.operator === '-='
+            set v = l -= r
+        elif node.operator === '<<='
+            set v = l <<= r
+        elif node.operator === '>>='
+            set v = l >>= r
+        elif node.operator === '>>>='
+            set v = l >>>= r
+        elif node.operator === '&='
+            set v = l &= r
+        elif node.operator === '^='
+            set v = l ^= r
+        elif node.operator === '|='
+            set v = l |= r
+        else 
+			return
+				_ local_error
+					@ ctx
+					@ 'Unmanaged expression operator ' + node.operator
+					@ node.operator
+					@ node
+					@ 'AssignmentExpression'
+        
+		# log 'jsWizziRunner.AssignmentExpression.node.left', node.left
+		checked_run( notUsed, AssignmentExpression node.left
+			_ runnerSet
+				@ node.left
+				@ ctx
+				@ v
+        return v
+    
+	runner( ArrayExpression
+        var 
+			decl ret
+				[ 
+			decl value
+        foreach element in node.elements
+			checked_run_set( value, ArrayExpression
+				_ runner(element, ctx)
+            _ ret.push(value)
+        return ret
+    
+	runner( ObjectExpression
+        if node.properties.length == 0
+            return 
+                { 
+        var 
+			decl ret
+				{ 
+			decl prop
+		foreach property in node.properties
+			checked_run_set( prop, ObjectExpression
+				_ runner(property, ctx)
+            set ret[prop.key] = prop.value
+        return ret
+    
+	runner( Property
+        var key = node.key.name
+        checked_run( value, Property
+            _ runner
+                @ node.value
+                @ ctx
+        return
+            { 
+                @ key key
+                @ value value
+
+	runner( NewExpression
+		# log 'NewExpression.node', node
+
+		if node.callee.type === 'Identifier'
+			var l = node.arguments.length
+			var args = []
+			foreach item in node.arguments
+				checked_run( value, NewExpression argument
+					_ runner(item, ctx)
+				_ args.push(value)
+			# log 'NewExpression.args', args
+			if node.callee.name === 'String' && l === 0
+				return new String()
+			elif node.callee.name === 'String' && l === 1
+				return new String(args[0])
+			elif node.callee.name === 'Number' && l === 0
+				return new Number()
+			elif node.callee.name === 'Number' && l === 1
+				return new Number(args[0])
+			elif node.callee.name === 'Date' && l === 0
+				return new Date()
+			elif node.callee.name === 'Date' && l === 1
+				return new Date(args[0])
+			elif node.callee.name === 'Date' && l === 2
+				return new Date(args[0],args[1])
+			elif node.callee.name === 'Date' && l === 3
+				return new Date(args[0],args[1], args[2])
+			elif node.callee.name === 'Date' && l === 4
+				return new Date(args[0],args[1], args[2], args[3])
+			elif node.callee.name === 'Date' && l === 5
+				return new Date(args[0],args[1], args[2], args[3], args[4])
+			elif node.callee.name === 'Date' && l === 6
+				return new Date(args[0],args[1], args[2], args[3], args[4], args[5])
+			elif node.callee.name === 'RegExp' && l === 1
+				return new RegExp(args[0])
+			elif node.callee.name === 'Array' && l === 0
+				return new Array()
+			elif node.callee.name === 'Array' && l === 1
+				return new Array(args[0])
+			elif node.callee.name === 'Object' && l === 0
+				return new Object()
+			elif node.callee.name === 'Object' && l === 1
+				return new Object(args[0])
+			elif node.callee.name === 'Map' && l === 0
+				return new Map()
+			elif node.callee.name === 'Map' && l === 1
+				return new Map(args[0])
+			elif node.callee.name === 'Set' && l === 0
+				return new Set()
+			elif node.callee.name === 'Set' && l === 1
+				return new Set(args[0])
+			elif node.callee.name === 'RegExp' && l === 1
+				return new RegExp(args[0])
+			elif node.callee.name === 'RegExp' && l === 2
+				return new RegExp(args[0], args[1])
+			else
+				return
+					_ local_error
+						@ ctx
+						@ ('Builtin object (or number of arguments) not managed ' + node.callee.name + ', num arguments ' + l)
+						@ node.callee
+						@ node
+						@ 'NewExpression'
+		return
+			_ local_error
+				@ ctx
+				@ 'Not implemented. NewExpression.node.callee.type: "' + node.callee.type + '"'
+				@ null
+				@ node
+				@ 'NewExpression'
+
+
+    
+

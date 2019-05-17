@@ -1,0 +1,259 @@
+﻿$group
+
+	m beginLoadingCallArguments
+		set this.loadingCallArguments = true
+	
+	m endLoadingCallArguments
+		set this.loadingCallArguments = false
+
+    m declare
+        param name
+        param value
+		if value && value.__is_function
+			_ this.declareFunction
+				@ name
+				@ value
+		else
+			if this.ittf_state === ittfStates.globalContext
+				_ this.globalContext.declare(name, value)
+			elif this.ittf_state === ittfStates.nodeContext
+				_ this.nodeContext.declare(name, value)
+			else
+				_ this.brickEvalContext.declare(name, value)
+
+    m declareCallParam
+        param name
+        param value
+		# log 'wizzi-mtree.jsWizziContext.declareCallParam', name, value
+		_ this.callContext.declare(name, value)
+
+    m undeclare
+        param name
+		if this.ittf_state === ittfStates.globalContext
+			_ this.globalContext.undeclare(name)
+		elif this.ittf_state === ittfStates.nodeContext
+			_ this.nodeContext.undeclare(name)
+		else
+			_ this.brickEvalContext.undeclare(name)
+
+    m isDeclared
+        param name
+		var ret = false
+		if this.loadingCallArguments
+			if this.globalContext.isDeclared(name)
+				return true
+			if this.callContext.isDeclared(name)
+				return true
+			if this.isForInterpolation == false
+				if this.nodeContext.isDeclared(name)
+					return true
+				if this.brickEvalContext && this.brickEvalContext.isDeclared(name)
+					return true
+				if this.getFunction(name)
+					return true
+			return false
+		
+		elif this.ittf_state === ittfStates.globalContext
+			var ret = this.brickEvalContext ? this.brickEvalContext.isDeclared(name) : null
+			if !ret
+				set ret = this.globalContext.isDeclared(name)
+		
+		elif this.ittf_state === ittfStates.nodeContext
+			var ret = this.nodeContext.isDeclared(name)
+			if !ret
+				set ret = this.globalContext.isDeclared(name)
+		
+		else
+			var ret = this.brickEvalContext.isDeclared(name)
+			if !ret
+				set ret = this.globalContext.isDeclared(name)
+			if !ret
+				set ret = this.getFunction(name)
+		
+		if !ret
+			set ret = this.callContext.isDeclared(name)
+		return ret
+
+    m setValue
+        param name
+        param value
+		if value && value.__is_function
+			_ this.declareFunction
+				@ name
+				@ value
+		else
+			if this.ittf_state === ittfStates.globalContext
+				_ this.globalContext.setValue(name, value)
+			elif this.ittf_state === ittfStates.nodeContext
+				_ this.nodeContext.setValue(name, value)
+			else
+				_ this.brickEvalContext.setValue(name, value)
+		
+    m setValues
+        param values
+        set values = (values || {})
+		for var k in values
+			_ this.setValue
+				@ k
+				@ values[k]
+
+    m put
+        param name
+        param value
+		_ assert
+			@ this.ittf_state != ittfStates.nodeContext
+			@ 'put is an invalid operation for NodeContext state'
+		if value && value.__is_function
+			_ this.declareFunction
+				@ name
+				@ value
+		else
+			var ok = false
+			if this.ittf_state === ittfStates.globalContext
+				set ok = this.globalContext.put(name, value)
+			else
+				set ok = this.brickEvalContext.put(name, value)
+				if !ok
+					set ok = this.globalContext.put(name, value)
+			if !ok
+				# log 'wizzi-mtree.jsWizziContext.brickEvalContext.declaresStack', this.brickEvalContext.declaresStack
+				# log 'wizzi-mtree.jsWizziContext.brickEvalContext.valuesStack', this.brickEvalContext.valuesStack
+				throw new Error('jsWizziContext.put error. Not declared: ' + name);
+
+	m getValue
+        param name
+
+		if this.loadingCallArguments
+			if this.globalContext.isDeclared(name)
+				return this.globalContext.getValue(name)
+			if this.callContext.isDeclared(name)
+				return this.callContext.getValue(name)
+			if this.isForInterpolation == false
+				if this.nodeContext.isDeclared(name)
+					return this.nodeContext.getValue(name)
+				if this.brickEvalContext && this.brickEvalContext.isDeclared(name)
+					return this.brickEvalContext.getValue(name)
+			return undefined
+		
+		elif this.ittf_state === ittfStates.globalContext
+			if this.brickEvalContext && this.brickEvalContext.isDeclared(name)
+				return this.brickEvalContext.getValue(name)
+			if this.globalContext.isDeclared(name)
+				return this.globalContext.getValue(name)
+		
+		elif this.ittf_state === ittfStates.nodeContext
+			if this.nodeContext.isDeclared(name)
+				return this.nodeContext.getValue(name)
+			if this.globalContext.isDeclared(name)
+				return this.globalContext.getValue(name)
+		
+		else
+			if this.brickEvalContext.isDeclared(name)
+				return this.brickEvalContext.getValue(name)
+			elif this.globalContext.isDeclared(name)
+				return this.globalContext.getValue(name)
+		
+		if this.callContext.isDeclared(name)
+			return this.callContext.getValue(name)
+		else
+			var fn = this.getFunction(name)
+			if fn
+				return fn
+			else
+				# return undefined
+				# log 'JsWizziContext.getValue context value not found for', name
+				# log 'JsWizziContext.getValue ittf_state ', this.ittf_state
+				# log 'JsWizziContext.getValue currentMTreeBrickKey ', this.currentMTreeBrickKey
+				# _ this.dumpValues
+				throw new Error('jsWizziContext.getValue error. Not declared: ' + name);
+
+	m getValues
+		# TODO brickEvalContext needs globalValues ???
+		if this.ittf_state === ittfStates.globalContext
+			return this.globalContext.getValues()
+		elif this.ittf_state === ittfStates.nodeContext
+			return this.nodeContext.getValues()
+		else
+			return this.brickEvalContext.getValues()
+    
+	m setGlobalValues
+		param values
+		_ this.globalContext.setValues(values)
+
+	m getGlobalValues
+		return
+			_ this.globalContext.getValues()
+    
+	m declareFunction
+        param name
+		param fn
+		set fn.__is_function = true
+		if this.ittf_state === ittfStates.globalContext
+			_ this.globalContext.declareFunction(name, fn)
+		else
+			_ this.brickEvalContext.declareFunction(name, fn)
+
+	m getFunction
+        param name
+		if this.ittf_state === ittfStates.globalContext
+			return this.globalContext.getFunction(name)
+		else
+			var ret = this.brickEvalContext.getFunction(name)
+			return ret ? ret : this.globalContext.getFunction(name)
+
+    m beginExpr
+
+        set this.exprPending =
+            { 
+
+    m endExpr
+	
+		_ assert
+			@ this.exprPending
+			@ 'endExpr called without previous call to beginExpr'
+    
+	    for var k in this.exprPending
+            _ this.put
+                @ k
+                @ this.exprPending[k]
+    
+	    set this.exprPending = null
+
+    m abortExpr
+	
+	    set this.exprPending = null
+
+	m dumpValues
+		# TODO if this.verbose
+		log 'Dump context value for debug'
+		log 'JsWizziContext ittf_state ', this.ittf_state
+		log 'JsWizziContext currentMTreeBrickKey ', this.currentMTreeBrickKey
+		if this.brickEvalContext
+			log 'Local values'
+			_ this.brickEvalContext.dumpValues
+		log 'Global values'
+		_ this.globalContext.dumpValues
+
+	m getDeclaredInfo
+		
+		var ret = []
+		
+		if this.ittf_state === ittfStates.globalContext
+			_ ret.push
+				@ 'state=global'
+			_ ret.push
+				@ 'global declares:' + this.globalContext.getDeclaredInfo()
+		elif this.ittf_state === ittfStates.nodeContext
+			_ ret.push
+				@ 'state=node'
+		else
+			_ ret.push
+				@ 'state=brick:' + this.currentMTreeBrickKey
+			_ ret.push
+				@ 'model declares:' + this.brickEvalContext.getDeclaredInfo()
+			_ ret.push
+				@ 'global declares:' + this.globalContext.getDeclaredInfo()
+
+		return ret.join(', ')
+
+			

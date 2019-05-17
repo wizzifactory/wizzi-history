@@ -1,0 +1,38 @@
+html __dummy_root__
+    svelte:head 
+        @title Blog
+    h1 Recent posts
+    ul {#each posts as post}
+        li 
+            a {post.title}
+                rel prefetch
+                href blog/{post.slug}
+        + {/each}
+    @style 
+        css
+            < ul
+                margin 0 0 1em 0
+                line-height 1.5
+    script 
+        module
+            kind react
+            export-default 
+                { 
+                    m preload
+                        { 
+                            @ params
+                            @ query
+                        return 
+                            _ this.fetch
+                                `lit 
+                                    + blog.json
+                                ._ then
+                                    => 
+                                        param r
+                                        _ r.json
+                                ._ then
+                                    => 
+                                        param posts
+                                        return 
+                                            { 
+                                                @ posts

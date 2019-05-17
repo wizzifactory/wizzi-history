@@ -1,0 +1,24 @@
+  module  ids: 1 23
+    kind jsfile ids: 2 24
+    +  ids: 3 25
+    import path ids: 4 26
+    import util ids: 5 27
+    +  ids: 6 28
+    var expect = require('expect.js') ids: 7 29
+    var thisPackageIndex = require('../../index') ids: 8 30
+    describe loading the dash rdbms WizziModel ids: 9 31
+      it-async should load the WizziModel ids: 10 32
+        _ thisPackageIndex.rdbms ids: 11 33
+          _ path.join ids: 12 34
+            @ __dirname ids: 13 35
+            @ 'ittf' ids: 14 36
+            @ 'dash.rdbms.ittf' ids: 15 37
+          {  ids: 16 38
+          function  ids: 17 39
+            param err ids: 18 40
+            param wizziModel ids: 19 41
+            # log 'dash.rdbms.wizziModel', wizziModel ids: 20 42
+            $group  ids: 45 48
+              $args: wizziModel  $params: name
+              _ expect(${name}).to.be.an('object') ids: 47 49
+            _ done ids: 22 44

@@ -1,0 +1,77 @@
+html
+
+	$
+		var currentPage = 'Api'
+		var currentSubPage = null;
+		var type = {};
+
+	wizzi-site-layout-compile()
+
+		$append styles
+			css api-styles.css
+
+		$include misc
+		$include alternative
+		$include cb
+		$include info
+		$include object
+		$include array
+		$include type
+
+		html/nav_sidebar()
+			section
+				id main-toc
+				class toc
+
+				h3 Contents:
+				ol
+					$foreach api in wfsystem.apis
+						li 
+							a ${api.wzName}
+								href #${api.wzName}
+
+		div
+			class main-content
+			$foreach api in wfsystem.apis
+
+				h1 ${api.wzName}
+					@ name ${api.wzName}
+					@ id ${api.wzName}
+				
+				$if api.extends
+					div
+						class api-sub-1
+						span extends&nbsp;
+						span
+							a ${api.extends}
+								href #${api.extends}
+				div
+					class api-sub-1
+					span ${api.kind} API
+					$if api.implementation
+						span , ${api.implementation.type}
+						$if api.implementation.path
+							span , source path: ${api.implementation.path}
+						$if api.implementation.standardPath
+							span , source standard path: ${api.implementation.standardPath}
+
+				$_ comments
+					$@ api
+					$@ 0
+					$@ 'api'
+			
+				$if api.interface
+					$ var type = api.interface;
+					$_ buildup_type
+						$@ 'Interface'
+						$@ api
+						$@ type
+					hr
+				$if api.type
+					$ var type = api.type;
+					$_ buildup_type
+						$@ 'Type'
+						$@ api
+						$@ type
+
+

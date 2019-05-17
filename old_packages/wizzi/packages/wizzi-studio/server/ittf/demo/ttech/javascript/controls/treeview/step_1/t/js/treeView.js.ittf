@@ -1,0 +1,282 @@
+﻿$group
+
+	class TreeView : wz.EventTarget
+		ctor
+			param ctx
+			set this.events
+				[
+					@ 'expand'
+					@ 'change'
+					@ 'collapse'
+					@ 'select'
+			 set this.handlers = {};
+			 set this.ctx = ctx
+			 set this.app = ctx.app
+			 set this.filesystem = ctx.filesystem
+
+		m render
+			param callback
+			# set this.rootNode = new TreeNode(data, this)
+			_ this.filesystem.getFolderRoot
+				a_cb_throw( data )
+					# log 'TreeView.folderRoot', data
+					set this.rootNode = new TreeNode(data, this)
+					r_cb( this.rootNode.render() )
+
+		m handleContextMenu
+			param payload
+			# log 'handleContextMenu.payload', payload, payload.data
+
+			if payload.data.isFolder
+				_ this.handleContextMenuFolder
+					@ payload
+			else
+				_ this.handleContextMenuFile
+					@ payload
+
+		m handleContextMenuFolder
+			param context
+
+			var that = this
+
+			if !this.contextmenuFolder
+				
+				set this.contextmenuFolder
+					new wz.ContextMenu
+						{
+							@ menusContainerId this.ctx.formsContainerId
+				_ this.contextmenuFolder.create
+					{
+						{ menu
+							@ id (this.ctx.id || 'treeview') + '-contextmenuFolder'
+							@ items
+								_ this.filesystem.folderContextmenuItems
+									@ context.treeNode
+						@ onClick
+							=>
+								param data
+								# log 'handleContextMenu_ittfDocument.onClick', data
+								if data.command === 'rename'
+									_ data.payload.treeNode.renameStart
+								elif data.command === 'create folder'
+									_ this.createFolder
+										@ data.payload.treeNode
+								elif data.command === 'create file'
+									_ this.createFile
+										@ data.payload.treeNode
+								elif data.command === 'copy' || data.command === 'cut'
+									_ this.copyCutStart
+										@ data.payload.treeNode
+										@ data.command
+								elif data.command === 'paste'
+									_ this.pasteTo
+										@ data.payload.treeNode
+								elif data.command === 'delete'
+									_ this.deleteFolder
+										@ data.payload.treeNode
+
+			else
+				
+				_ this.contextmenuFolder.replace
+					{
+						@ items
+							_ this.filesystem.folderContextmenuItems
+								@ context.treeNode
+
+			_ this.contextmenuFolder.handleRightClick
+				@ event
+				{
+					@ data context.data
+					@ treeNode context.treeNode
+
+			set this.contextmenuFolder.onClose
+				=>
+					_ wz.removeClass
+						@ context.treeNode.contentEl
+						@ 'tree-node-context-menu-on'
+
+
+		m handleContextMenuFile
+			param context
+
+			var that = this
+
+			if !this.contextmenuFile
+				
+				set this.contextmenuFile
+					new wz.ContextMenu
+						{
+							@ menusContainerId this.ctx.formsContainerId
+				_ this.contextmenuFile.create
+					{
+						{ menu
+							@ id (this.ctx.id || 'treeview') + '-contextmenuFile'
+							@ items 
+								_ this.filesystem.fileContextmenuItems
+									@ context.treeNode
+						@ onClick
+							=>
+								param data
+								# log 'handleContextMenu_ittfDocument.onClick', data
+								if data.command === 'rename'
+									_ data.payload.treeNode.renameStart
+								elif data.command === 'copy' || data.command === 'cut'
+									_ this.copyCutStart
+										@ data.payload.treeNode
+										@ data.command
+								elif data.command === 'paste'
+									_ this.pasteTo
+										@ data.payload.treeNode
+								elif data.command === 'delete'
+									_ this.deleteFile
+										@ data.payload.treeNode
+			
+			else
+				
+				_ this.contextmenuFile.replace
+					{
+						@ items
+							_ this.filesystem.fileContextmenuItems
+								@ context.treeNode
+
+			_ this.contextmenuFile.handleRightClick
+				@ event
+				{
+					@ data context.data
+					@ treeNode context.treeNode
+
+			set this.contextmenuFile.onClose
+				=>
+					_ wz.removeClass
+						@ context.treeNode.contentEl
+						@ 'tree-node-context-menu-on'
+
+		m populate
+			param treeNode
+			param callback
+			_ this.filesystem.populateFolderItem
+				@ treeNode.item
+				a_cb_throw( populatedItem )
+					# log 'TreeView.populate', populatedItem
+					_ treeNode.replace
+						@ populatedItem
+					if callback
+						r_cb()
+
+		m createFolder
+			param treeNode
+
+			var createExec
+				=>
+					_ this.filesystem.createFolder
+						@ treeNode.item
+						a_cb_throw( newItem
+							log 'createFolder.1', newItem
+							var newNode
+								_ treeNode.addItem
+									@ newItem
+							_ treeNode.expand
+							_ newNode.renameStart
+			if !treeNode.item.loadedAt
+				log 'createFolder.populate'
+				_ this.populate
+					@ treeNode
+					a_cb_throw()
+						_ createExec
+			else
+				_ createExec
+
+		m deleteFolder
+			param treeNode
+			_ this.filesystem.deleteFolder
+				@ treeNode.item
+				a_cb_throw( result
+					_ treeNode.remove
+
+		m createFile
+			param treeNode
+
+			var createExec
+				=>
+					_ this.filesystem.createFile
+						@ treeNode.item
+						a_cb_throw( newItem
+							var newNode
+								_ treeNode.addItem
+									@ newItem
+							_ treeNode.expand
+							_ newNode.renameStart
+			if !treeNode.item.loadedAt
+				_ this.populate
+					@ treeNode
+					a_cb_throw()
+						_ createExec
+			else
+				_ createExec
+
+		m updateFile
+			param treeNode
+			param newContent
+			_ this.filesystem.updateFile
+				@ treeNode.item
+				@ newContent
+				a_cb_throw( result
+					set treeNode.item.content = newContent
+					_ this.app.onTreeNodeUpdate
+						@ treeNode
+
+		m deleteFile
+			param treeNode
+			_ this.filesystem.deleteFile
+				@ treeNode.item
+				a_cb_throw( result
+					_ treeNode.remove
+
+		m rename
+			param treeNode
+			param newName
+			param callback
+			_ this.filesystem.rename
+				@ treeNode.item
+				@ newName
+				@ callback
+
+		m copyCutStart
+			param treeNode
+			param oper
+			_ treeNode.copyCutStart
+				@ oper
+			_ this.filesystem.copyCutStart
+				@ treeNode.item
+				@ treeNode
+				@ oper
+
+		m pasteTo
+			param treeNode
+			_ this.filesystem.pasteTo
+				@ treeNode.item
+				a_cb_throw( from
+
+					log 'treeView.pasteTo', 'from', from, 'to', treeNode.item
+					
+					if from.action === 'copyFile' || from.action === 'copyFolder'
+						var newItem
+							_ itemUtils.cloneItem
+								@ from.context.item
+						_ itemUtils.setDirname
+							@ newItem
+							@ treeNode.item.dirname
+						_ treeNode.addItem
+							@ newItem
+						_ from.context.copyCutFinish
+
+					if from.action === 'moveFile' || from.action === 'moveFolder'
+						var newItem
+							_ itemUtils.cloneItem
+								@ from.context.item
+						_ itemUtils.setDirname
+							@ newItem
+							@ treeNode.item.dirname
+						_ treeNode.addItem
+							@ newItem
+						_ from.context.remove

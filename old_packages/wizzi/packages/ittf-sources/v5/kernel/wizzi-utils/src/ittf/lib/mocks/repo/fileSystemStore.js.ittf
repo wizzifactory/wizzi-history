@@ -1,0 +1,84 @@
+﻿module
+    kind jsfile
+
+	var file = require('../../fs/file')
+	var errors = require('./errors')
+	var uriparser = require('./uriparser')
+
+    class FileSystemStore
+        ctor
+            set this.storeKind = 'filesystem'
+
+		m parseUri
+			param ittfDocumentUri
+			param callback
+			_ uriparser
+				@ ittfDocumentUri
+				@ callback
+
+		m documentExists
+            param filepath
+            param callback
+            var documentExists
+            try 
+                set documentExists = file.isFile(filepath)
+            catch ex
+				var_error( RepoIO )
+					@ ex.message + '\nChecking documentExists'
+					@ filepath
+                return callback(error)
+            _ callback(null, documentExists)
+
+		m folderExistsSync
+            param folderpath
+            var folderExists
+            try 
+                set folderExists = file.isDirectory(folderpath)
+            catch ex
+				_ return
+					_ this.error
+						@ ex.message
+						@ folderpath
+						@ 'folderExistsSync'
+            return folderExists
+
+		m getFoldersSync
+            param parentFolderPath
+            param options
+            var folders
+            try 
+                set folders = file.getFolders(parentFolderPath, options)
+            catch ex
+				_ return
+					_ this.error
+						@ ex.message
+						@ parentFolderPath
+						@ 'getFolders'
+            return folders
+
+		m getModelContent
+            param filepath
+            param callback
+            var content
+            try 
+                set content = file.read(filepath)
+            catch ex
+				var_error( RepoIO )
+                    @ ex.message
+                    @ filepath
+                return callback(error)
+            return callback(null, content)
+
+		m error
+			param message
+			param path
+			param method
+			return
+				{
+					@ __is_error true
+					@ message message
+					@ path path
+					@ source '/lib/ittf/repo/' + method
+
+	set module.exports = FileSystemStore
+

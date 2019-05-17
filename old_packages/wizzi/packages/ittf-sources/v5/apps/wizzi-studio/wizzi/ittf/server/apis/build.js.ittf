@@ -1,0 +1,30 @@
+﻿api_async( Build )
+	+
+	$include filefy
+	$include makeWizziFactoryCreator
+	$include build/index
+	+
+	$append imports
+		import assert
+		import chalk
+		import fs
+		import temp
+		$include hashImports
+		$include hashFunctions
+		var wizziTools = require("wizzi-tools")
+		var wizziScripts = require("wizzi-scripts")
+		var scriptManager = new wizziScripts.Manager()
+
+	$append methods
+
+		var tasksApi = makeTasksApi(config)
+		set api.build
+			{
+				@ wizzifySnippet tasksApi.wizzifySnippet
+				@ transpileSnippet tasksApi.transpileSnippet
+				@ getSnippetAst tasksApi.getSnippetAst
+				@ flowSnippet tasksApi.flowSnippet
+				@ prettierSnippet tasksApi.prettierSnippet
+				@ eslintSnippet tasksApi.eslintSnippet
+
+		return callback(null, api)

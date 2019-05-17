@@ -1,0 +1,48 @@
+$group
+
+	function initMiddleware
+        param app
+
+        _ app.set('showStackError', true)
+
+        _ app.enable('jsonp callback')
+
+        _ app.use
+            _ compress
+                { 
+                    @ filter
+                        function 
+                            param req
+                            param res
+                            return 
+                                _ /json|text|javascript|css|font|svg/.test
+                                    _ res.getHeader('Content-Type')
+                    @ level 9
+        
+		$if spa.favicon
+			_ app.use
+				_ favicon('${spa.favicon}')
+        
+		if process.env.NODE_ENV === 'development'
+            _ app.use(morgan('dev'))
+            _ app.set('view cache', false)
+        
+		elif process.env.NODE_ENV === 'production'
+            set app.locals.cache = 'memory'
+        
+		_ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+
+        _ app.use(bodyParser.json({limit: '50mb'}))
+
+        _ app.use(methodOverride())
+
+		$if spa.session
+			_ app.use(cookieParser())
+        	_ app.use(flash())
+        
+		$if spa.uploads
+			_ app.use
+				_ multer
+					{ 
+						@ dest './uploads/'
+						@ inMemory true

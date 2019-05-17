@@ -1,0 +1,235 @@
+// 30/5/2017:11:33:16  by C:\My\wizzi\boot\v.2\node_modules\wizzi-boot\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //117
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //118
+$.a($1, $2, 7);
+var $3 = { n: "var", v: "StringWriter = require('../util/stringwriter')", r: 4, c: 5, s: "f1", u: "f1",  }; //119
+$.a($1, $3, 9);
+var $4 = { n: "var", v: "verify = require('../util/verify')", r: 5, c: 5, s: "f1", u: "f1",  }; //120
+$.a($1, $4, 11);
+var $5 = { n: "var", v: "block = require('./block')", r: 6, c: 5, s: "f1", u: "f1",  }; //121
+$.a($1, $5, 13);
+var $6 = { n: "var", v: "interpolate = require('../util/interpolate')", r: 7, c: 5, s: "f1", u: "f1",  }; //122
+$.a($1, $6, 15);
+var $7 = { n: "var", v: "errors = require('../errors')", r: 8, c: 5, s: "f1", u: "f1",  }; //123
+$.a($1, $7, 17);
+var $8 = { n: "class", v: "GenWriter", r: 10, c: 5, s: "f1", u: "f1",  }; //124
+$.a($1, $8, 19);
+var $9 = { n: "ctor", v: "", r: 11, c: 9, s: "f1", u: "f1",  }; //125
+$.a($8, $9, 21);
+var $10 = { n: "param", v: "genconfig", r: 12, c: 13, s: "f1", u: "f1",  }; //126
+$.a($9, $10, 23);
+var $11 = { n: "if", v: "!verify.isObject(genconfig)", r: 13, c: 13, s: "f1", u: "f1",  }; //127
+$.a($9, $11, 25);
+var $12 = { n: "throw", v: "", r: 14, c: 17, s: "f1", u: "f1",  }; //128
+$.a($11, $12, 27);
+var $13 = { n: "new", v: "Error('GenWriter: genconfig argument must be an Object')", r: 15, c: 21, s: "f1", u: "f1",  }; //129
+$.a($12, $13, 29);
+var $14 = { n: "if", v: "!verify.isObject(genconfig.options)", r: 16, c: 13, s: "f1", u: "f1",  }; //130
+$.a($9, $14, 31);
+var $15 = { n: "throw", v: "", r: 17, c: 17, s: "f1", u: "f1",  }; //131
+$.a($14, $15, 33);
+var $16 = { n: "new", v: "Error('GenWriter: genconfig.options argument must be an Object')", r: 18, c: 21, s: "f1", u: "f1",  }; //132
+$.a($15, $16, 35);
+var $17 = { n: "set", v: "this.genconfig = genconfig", r: 19, c: 13, s: "f1", u: "f1",  }; //133
+$.a($9, $17, 37);
+var $18 = { n: "set", v: "this.model = genconfig.model", r: 20, c: 13, s: "f1", u: "f1",  }; //134
+$.a($9, $18, 39);
+var $19 = { n: "set", v: "this.srcPath = genconfig.srcPath", r: 21, c: 13, s: "f1", u: "f1",  }; //135
+$.a($9, $19, 41);
+var $20 = { n: "set", v: "this.pman = genconfig.pman", r: 22, c: 13, s: "f1", u: "f1",  }; //136
+$.a($9, $20, 43);
+var $21 = { n: "set", v: "this.block = new block(this.genconfig.options)", r: 23, c: 13, s: "f1", u: "f1",  }; //137
+$.a($9, $21, 45);
+var $22 = { n: "set", v: "this.values = this.genconfig.options.data || {}", r: 24, c: 13, s: "f1", u: "f1",  }; //138
+$.a($9, $22, 47);
+var $23 = { n: "m", v: "forceIndent", r: 26, c: 9, s: "f1", u: "f1",  }; //139
+$.a($8, $23, 49);
+var $24 = { n: "param", v: "value", r: 27, c: 13, s: "f1", u: "f1",  }; //140
+$.a($23, $24, 51);
+var $25 = { n: "return", v: "this.block.forceIndent(value)", r: 28, c: 13, s: "f1", u: "f1",  }; //141
+$.a($23, $25, 53);
+var $26 = { n: "m", v: "indent", r: 30, c: 9, s: "f1", u: "f1",  }; //142
+$.a($8, $26, 55);
+var $27 = { n: "param", v: "value", r: 31, c: 13, s: "f1", u: "f1",  }; //143
+$.a($26, $27, 57);
+var $28 = { n: "_", v: "this.block.indent(value)", r: 32, c: 13, s: "f1", u: "f1",  }; //144
+$.a($26, $28, 59);
+var $29 = { n: "m", v: "deindent", r: 34, c: 9, s: "f1", u: "f1",  }; //145
+$.a($8, $29, 61);
+var $30 = { n: "param", v: "value", r: 35, c: 13, s: "f1", u: "f1",  }; //146
+$.a($29, $30, 63);
+var $31 = { n: "_", v: "this.block.deindent(value)", r: 36, c: 13, s: "f1", u: "f1",  }; //147
+$.a($29, $31, 65);
+var $32 = { n: "m", v: "a", r: 38, c: 9, s: "f1", u: "f1",  }; //148
+$.a($8, $32, 67);
+var $33 = { n: "param", v: "name", r: 39, c: 13, s: "f1", u: "f1",  }; //149
+$.a($32, $33, 69);
+var $34 = { n: "param", v: "value", r: 40, c: 13, s: "f1", u: "f1",  }; //150
+$.a($32, $34, 71);
+var $35 = { n: "set", v: "this.values[name] = value", r: 41, c: 13, s: "f1", u: "f1",  }; //151
+$.a($32, $35, 73);
+var $36 = { n: "m", v: "g", r: 43, c: 9, s: "f1", u: "f1",  }; //152
+$.a($8, $36, 75);
+var $37 = { n: "param", v: "name", r: 44, c: 13, s: "f1", u: "f1",  }; //153
+$.a($36, $37, 77);
+var $38 = { n: "return", v: "this.values[name]", r: 45, c: 13, s: "f1", u: "f1",  }; //154
+$.a($36, $38, 79);
+var $39 = { n: "m", v: "r", r: 47, c: 9, s: "f1", u: "f1",  }; //155
+$.a($8, $39, 81);
+var $40 = { n: "param", v: "name", r: 48, c: 13, s: "f1", u: "f1",  }; //156
+$.a($39, $40, 83);
+var $41 = { n: "if", v: "this.values[name]", r: 49, c: 13, s: "f1", u: "f1",  }; //157
+$.a($39, $41, 85);
+var $42 = { n: "set", v: "delete (this.values[name])", r: 50, c: 17, s: "f1", u: "f1",  }; //158
+$.a($41, $42, 87);
+var $43 = { n: "m", v: "w", r: 52, c: 9, s: "f1", u: "f1",  }; //159
+$.a($8, $43, 89);
+var $44 = { n: "param", v: "text", r: 53, c: 13, s: "f1", u: "f1",  }; //160
+$.a($43, $44, 91);
+var $45 = { n: "if", v: "verify.isString(text)", r: 54, c: 13, s: "f1", u: "f1",  }; //161
+$.a($43, $45, 93);
+var $46 = { n: "_", v: "this.block.w", r: 55, c: 17, s: "f1", u: "f1",  }; //162
+$.a($45, $46, 95);
+var $47 = { n: "iif", v: "text.indexOf('{') > - (1)", r: 56, c: 21, s: "f1", u: "f1",  }; //163
+$.a($46, $47, 97);
+var $48 = { n: "then", v: "", r: 57, c: 25, s: "f1", u: "f1",  }; //164
+$.a($47, $48, 99);
+var $49 = { n: "_", v: "interpolate", r: 58, c: 29, s: "f1", u: "f1",  }; //165
+$.a($48, $49, 101);
+var $50 = { n: "@", v: "text", r: 59, c: 33, s: "f1", u: "f1",  }; //166
+$.a($49, $50, 103);
+var $51 = { n: "@", v: "this.values", r: 60, c: 33, s: "f1", u: "f1",  }; //167
+$.a($49, $51, 105);
+var $52 = { n: "else", v: "text", r: 61, c: 25, s: "f1", u: "f1",  }; //168
+$.a($47, $52, 107);
+var $53 = { n: "else", v: "", r: 62, c: 13, s: "f1", u: "f1",  }; //169
+$.a($43, $53, 109);
+var $54 = { n: "_", v: "this.block.w('')", r: 63, c: 17, s: "f1", u: "f1",  }; //170
+$.a($53, $54, 111);
+var $55 = { n: "m", v: "write", r: 65, c: 9, s: "f1", u: "f1",  }; //171
+$.a($8, $55, 113);
+var $56 = { n: "param", v: "text", r: 66, c: 13, s: "f1", u: "f1",  }; //172
+$.a($55, $56, 115);
+var $57 = { n: "if", v: "!verify.isString(text)", r: 67, c: 13, s: "f1", u: "f1",  }; //173
+$.a($55, $57, 117);
+var $58 = { n: "return", v: "", r: 68, c: 17, s: "f1", u: "f1",  }; //174
+$.a($57, $58, 119);
+var $59 = { n: "_", v: "this.block.write", r: 69, c: 13, s: "f1", u: "f1",  }; //175
+$.a($55, $59, 121);
+var $60 = { n: "_", v: "interpolate", r: 70, c: 17, s: "f1", u: "f1",  }; //176
+$.a($59, $60, 123);
+var $61 = { n: "@", v: "text", r: 71, c: 21, s: "f1", u: "f1",  }; //177
+$.a($60, $61, 125);
+var $62 = { n: "@", v: "this.values", r: 72, c: 21, s: "f1", u: "f1",  }; //178
+$.a($60, $62, 127);
+var $63 = { n: "m", v: "writeFile", r: 74, c: 9, s: "f1", u: "f1",  }; //179
+$.a($8, $63, 129);
+var $64 = { n: "param", v: "filePath", r: 75, c: 13, s: "f1", u: "f1",  }; //180
+$.a($63, $64, 131);
+var $65 = { n: "_", v: "this.block.writeFile", r: 76, c: 13, s: "f1", u: "f1",  }; //181
+$.a($63, $65, 133);
+var $66 = { n: "_", v: "interpolate", r: 77, c: 17, s: "f1", u: "f1",  }; //182
+$.a($65, $66, 135);
+var $67 = { n: "@", v: "filePath", r: 78, c: 21, s: "f1", u: "f1",  }; //183
+$.a($66, $67, 137);
+var $68 = { n: "@", v: "this.values", r: 79, c: 21, s: "f1", u: "f1",  }; //184
+$.a($66, $68, 139);
+var $69 = { n: "m", v: "toStream", r: 81, c: 9, s: "f1", u: "f1",  }; //185
+$.a($8, $69, 141);
+var $70 = { n: "param", v: "stream", r: 82, c: 13, s: "f1", u: "f1",  }; //186
+$.a($69, $70, 143);
+var $71 = { n: "_", v: "this.block.toStream(stream)", r: 83, c: 13, s: "f1", u: "f1",  }; //187
+$.a($69, $71, 145);
+var $72 = { n: "m", v: "getContent", r: 85, c: 9, s: "f1", u: "f1",  }; //188
+$.a($8, $72, 147);
+var $73 = { n: "var", v: "sw = new StringWriter()", r: 86, c: 13, s: "f1", u: "f1",  }; //189
+$.a($72, $73, 149);
+var $74 = { n: "_", v: "this.block.toStream(sw)", r: 87, c: 13, s: "f1", u: "f1",  }; //190
+$.a($72, $74, 151);
+var $75 = { n: "return", v: "sw.toString()", r: 88, c: 13, s: "f1", u: "f1",  }; //191
+$.a($72, $75, 153);
+var $76 = { n: "m", v: "getContentInLine", r: 90, c: 9, s: "f1", u: "f1",  }; //192
+$.a($8, $76, 155);
+var $77 = { n: "return", v: "", r: 91, c: 13, s: "f1", u: "f1",  }; //193
+$.a($76, $77, 157);
+var $78 = { n: "_", v: "verify.replaceAll", r: 92, c: 17, s: "f1", u: "f1",  }; //194
+$.a($77, $78, 159);
+var $79 = { n: "_", v: "this.getContent()", r: 93, c: 21, s: "f1", u: "f1",  }; //195
+$.a($78, $79, 161);
+var $80 = { n: "@", v: "'\\n'", r: 94, c: 21, s: "f1", u: "f1",  }; //196
+$.a($78, $80, 163);
+var $81 = { n: "@", v: "'__1_2_3__'", r: 95, c: 21, s: "f1", u: "f1",  }; //197
+$.a($78, $81, 165);
+var $82 = { n: "m", v: "error", r: 97, c: 9, s: "f1", u: "f1",  }; //198
+$.a($8, $82, 167);
+var $83 = { n: "param", v: "message", r: 98, c: 13, s: "f1", u: "f1",  }; //199
+$.a($82, $83, 169);
+var $84 = { n: "param", v: "node", r: 99, c: 13, s: "f1", u: "f1",  }; //200
+$.a($82, $84, 171);
+var $85 = { n: "return", v: "", r: 100, c: 13, s: "f1", u: "f1",  }; //201
+$.a($82, $85, 173);
+var $86 = { n: "new", v: "errors.NodeError(message, node)", r: 101, c: 17, s: "f1", u: "f1",  }; //202
+$.a($85, $86, 175);
+var $87 = { n: "m", v: "artifactGenerationError", r: 103, c: 9, s: "f1", u: "f1",  }; //203
+$.a($8, $87, 177);
+var $88 = { n: "param", v: "message", r: 104, c: 13, s: "f1", u: "f1",  }; //204
+$.a($87, $88, 179);
+var $89 = { n: "param", v: "location", r: 105, c: 13, s: "f1", u: "f1",  }; //205
+$.a($87, $89, 181);
+var $90 = { n: "param", v: "node", r: 106, c: 13, s: "f1", u: "f1",  }; //206
+$.a($87, $90, 183);
+var $91 = { n: "_", v: "errors.ArtifactGenerationError(message, location, node)", r: 107, c: 13, s: "f1", u: "f1",  }; //207
+$.a($87, $91, 185);
+var $92 = { n: "m", v: "terminate", r: 109, c: 9, s: "f1", u: "f1",  }; //208
+$.a($8, $92, 187);
+var $93 = { n: "set", v: "delete this.pman", r: 110, c: 13, s: "f1", u: "f1",  }; //209
+$.a($92, $93, 189);
+var $94 = { n: "set", v: "delete this.genconfig.pman", r: 111, c: 13, s: "f1", u: "f1",  }; //210
+$.a($92, $94, 191);
+var $95 = { n: "_", v: "this.block.terminate()", r: 112, c: 13, s: "f1", u: "f1",  }; //211
+$.a($92, $95, 193);
+var $96 = { n: "m", v: "hydrate", r: 114, c: 9, s: "f1", u: "f1",  }; //212
+$.a($8, $96, 195);
+var $97 = { n: "param", v: "block", r: 115, c: 13, s: "f1", u: "f1",  }; //213
+$.a($96, $97, 197);
+var $98 = { n: "param", v: "options", r: 116, c: 13, s: "f1", u: "f1",  }; //214
+$.a($96, $98, 199);
+var $99 = { n: "set", v: "this.block = new block(options)", r: 117, c: 13, s: "f1", u: "f1",  }; //215
+$.a($96, $99, 201);
+var $100 = { n: "_", v: "this.block.hydrate", r: 118, c: 13, s: "f1", u: "f1",  }; //216
+$.a($96, $100, 203);
+var $101 = { n: "@", v: "block.lines", r: 119, c: 17, s: "f1", u: "f1",  }; //217
+$.a($100, $101, 205);
+var $102 = { n: "@", v: "options", r: 120, c: 17, s: "f1", u: "f1",  }; //218
+$.a($100, $102, 207);
+var $103 = { n: "m", v: "toStringFromJSON", r: 122, c: 9, s: "f1", u: "f1",  }; //219
+$.a($8, $103, 209);
+var $104 = { n: "param", v: "block", r: 123, c: 13, s: "f1", u: "f1",  }; //220
+$.a($103, $104, 211);
+var $105 = { n: "param", v: "options", r: 124, c: 13, s: "f1", u: "f1",  }; //221
+$.a($103, $105, 213);
+var $106 = { n: "if", v: "!block || !block.lines", r: 125, c: 13, s: "f1", u: "f1",  }; //222
+$.a($103, $106, 215);
+var $107 = { n: "return", v: "'NO TEXT'", r: 126, c: 17, s: "f1", u: "f1",  }; //223
+$.a($106, $107, 217);
+var $108 = { n: "var", v: "gw", r: 127, c: 13, s: "f1", u: "f1",  }; //224
+$.a($103, $108, 219);
+var $109 = { n: "new", v: "GenWriter", r: 128, c: 17, s: "f1", u: "f1",  }; //225
+$.a($108, $109, 221);
+var $110 = { n: "{", v: "", r: 129, c: 21, s: "f1", u: "f1",  }; //226
+$.a($109, $110, 223);
+var $111 = { n: "@", v: "options options", r: 130, c: 25, s: "f1", u: "f1",  }; //227
+$.a($110, $111, 225);
+var $112 = { n: "_", v: "gw.block.hydrate", r: 131, c: 13, s: "f1", u: "f1",  }; //228
+$.a($103, $112, 227);
+var $113 = { n: "@", v: "block.lines", r: 132, c: 17, s: "f1", u: "f1",  }; //229
+$.a($112, $113, 229);
+var $114 = { n: "@", v: "options", r: 133, c: 17, s: "f1", u: "f1",  }; //230
+$.a($112, $114, 231);
+var $115 = { n: "return", v: "gw.getContent()", r: 134, c: 13, s: "f1", u: "f1",  }; //231
+$.a($103, $115, 233);
+var $116 = { n: "set", v: "module.exports = GenWriter", r: 136, c: 5, s: "f1", u: "f1",  }; //232
+$.a($1, $116, 235);

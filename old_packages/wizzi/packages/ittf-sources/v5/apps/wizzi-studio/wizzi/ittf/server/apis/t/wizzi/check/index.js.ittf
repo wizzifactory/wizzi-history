@@ -1,0 +1,70 @@
+﻿$group
+
+	function makeCheckApi
+		param config
+
+		var paths = makePaths(config)
+		
+		return
+			{
+				@ get
+					function
+						param options
+						param callback
+
+						var version = options.version || config.wizziCurrentVersion
+
+						r_cb()
+							{
+								@ data 
+									{
+										@ config config
+										@ kernelUriFromPath
+											{
+												@ in 'C:\\My\\wizzi\\v5\\kernel\\wizzi-mtree\\src\\ittf\\tests\\loader\\function.js.ittf'
+												@ out paths.kernelUriFromPath('C:\\My\\wizzi\\v5\\kernel\\wizzi-mtree\\src\\ittf\\tests\\loader\\function.js.ittf')
+										@ kernelPathFromUri
+											{
+												@ in '/wizzi-mtree/src/ittf/tests/loader/function.js.ittf, ' + version
+												@ out paths.kernelPathFromUri('/wizzi-mtree/src/ittf/tests/loader/function.js.ittf', version)
+										@ kernelSrcPath
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.kernelSrcPath('wizzi-mtree', version)
+										@ kernelGeneratePath
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.kernelGeneratePath('wizzi-mtree', version)
+										@ kernelGenerateWfJobPath
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.kernelGenerateWfJobPath('wizzi-mtree', version)
+										@ kernelRootFolderPath
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.kernelRootFolderPath('wizzi-mtree', version)
+										@ kernelRootFolderIttfDocuments
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.getIttfFiles(paths.kernelRootFolderPath('wizzi-mtree', version))
+										@ kernelLibFolderPath
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.kernelLibFolderPath('wizzi-mtree', version)
+										@ kernelLibFolderIttfDocuments
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.getIttfFiles(paths.kernelLibFolderPath('wizzi-mtree', version))
+										@ kernelLibUtilsFolderPath
+											{
+												@ in 'wizzi-mtree, ' + version + ', utils'
+												@ out paths.kernelLibFolderPath('wizzi-mtree', version, 'utils')
+										@ kernelLibUtilsFolderIttfDocuments
+											{
+												@ in 'wizzi-mtree, ' + version
+												@ out paths.getIttfFiles(paths.kernelLibFolderPath('wizzi-mtree', version, 'utils'))
+								@ status
+									_ success
+										@ 'Check data retrieved'
+
+

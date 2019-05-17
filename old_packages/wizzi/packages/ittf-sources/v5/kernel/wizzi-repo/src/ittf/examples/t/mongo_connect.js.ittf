@@ -1,0 +1,25 @@
+﻿$group
+
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsmongo, doc
+
+	function mongoConnect
+		param callback
+		_ MongoClient.connect
+			@ 'mongodb://localhost:27017/test'
+			f_cb_test( db )
+				set fsmongo = new FsMongo(db)
+				set doc = new Document(fsmongo)
+				_ db.collection(FSITEMS).drop
+					f_cb( result )
+						log 'FSITEMS.drop result', result
+						_ db.collection(DOCUMENTS).drop
+							f_cb( result )
+								log 'DOCUMENTS.drop result', result
+								return
+									_ callback
+										@ null
+										{
+											@ fsmongo fsmongo
+											@ doc doc

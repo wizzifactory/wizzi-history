@@ -1,0 +1,54 @@
+﻿r-simple( CodePrettier
+
+	$append imports
+		import prettier  from 'prettier'
+		import CodeHighLight from './CodeHighLight'
+		
+	=>
+		param { codeSnippet, language }
+		
+		var parser
+		
+		if language === 'js'
+			set parser = 'babylon'
+		elif language === 'flow'
+			set parser = 'flow'
+		elif language === 'ts'
+			set parser = 'typescript'
+		elif language === 'css'
+			set parser = 'postcss'
+		elif language === 'json'
+			set parser = 'json'
+		elif language === 'graphql'
+			set parser = 'graphql'
+		elif language === 'markdown'
+			set parser = 'markdown'
+		else
+			set parser = 'babylon'
+
+		const message
+			[
+				@ "Sorry but"
+				@ "Prettier doesn't work when builded with webpack"
+				@ "because it tries to access the filesystem."
+				@ "We must call a service to make it work."
+				@ ""
+				@ ""
+				._ join('\n')
+
+		const formattedCodeSnippet = message + codeSnippet
+		
+		#
+			const formattedCodeSnippet
+				_ prettier.format
+					@ codeSnippet
+					{
+						@ parser parser
+				
+		return
+			< CodeHighLight 
+				@ language { language || 'js' }
+				@ codeSnippet { formattedCodeSnippet }
+
+
+

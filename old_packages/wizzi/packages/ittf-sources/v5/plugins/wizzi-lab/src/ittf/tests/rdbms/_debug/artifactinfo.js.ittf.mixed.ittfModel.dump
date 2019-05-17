@@ -1,0 +1,45 @@
+  module  ids: 1 44
+    kind jsfile ids: 2 45
+    +  ids: 3 46
+    import path ids: 4 47
+    import util ids: 5 48
+    +  ids: 6 49
+    var expect = require('expect.js') ids: 7 50
+    var ProductionManager = require('../../lib/production/manager') ids: 8 51
+    var ArtifactInfo = require('../../lib/artifact/artifactInfo') ids: 9 52
+    var productionManager ids: 10 53
+      new ProductionManager ids: 11 54
+        {  ids: 12 55
+          @ verbose false ids: 13 56
+          @ basedir __dirname ids: 14 57
+    describe artifactInfo wraps an artifact element of a wfjob ids: 15 58
+      it should have options set ids: 16 59
+        var exampleCWD ids: 17 60
+          _ path.join ids: 18 61
+            @ __dirname ids: 19 62
+            @ 'ittf' ids: 20 63
+            @ 'example_01' ids: 21 64
+        var artifactInfo1 ids: 22 65
+          new ArtifactInfo ids: 23 66
+            {  ids: 24 67
+              @ name 'art1' ids: 25 68
+              @ options ids: 26 69
+                {  ids: 27 70
+              @ contexts ids: 28 71
+                [  ids: 29 72
+              @ gen ids: 30 73
+                {  ids: 31 74
+                  @ generator '' ids: 32 75
+              @ dest ids: 33 76
+                {  ids: 34 77
+                  @ baseFolder exampleCWD ids: 35 78
+                  @ folder path.join(exampleCWD, 'resultFolder') ids: 36 79
+                  @ path path.join(exampleCWD, 'resultPath') ids: 37 80
+                  @ extension 'js' ids: 38 81
+        _ artifactInfo1.initialize ids: 39 82
+          @ productionManager ids: 40 83
+        # log 'artifactInfo1 after initialize', artifactInfo1 ids: 41 84
+        # log 'productionManager after artifactInfo1 initialize', productionManager ids: 42 85
+        $group  ids: 87 90
+          $args: artifactInfo1.options  $params: name
+          _ expect(${name}).to.be.an('object') ids: 89 91

@@ -1,0 +1,183 @@
+﻿r-component( FormDialog
+    
+	$append imports
+		import Button from '@material-ui/core/Button'
+		import TextField from '@material-ui/core/TextField'
+		import Dialog from '@material-ui/core/Dialog'
+		import DialogActions from '@material-ui/core/DialogActions'
+		import DialogContent from '@material-ui/core/DialogContent'
+		import DialogContentText from '@material-ui/core/DialogContentText'
+		import DialogTitle from '@material-ui/core/DialogTitle'
+		#
+		import Typography from '@material-ui/core/Typography'
+		#		
+		import SimpleDialog from './dialogs/SimpleDialog'
+		#
+		import FullScreen from './dialogs/FullScreen'
+		#
+		import Confirmation from './dialogs/Confirmation'
+		#
+		import OptionsDialog from './dialogs/OptionsDialog'
+		#
+		import TemporaryDrawer from './drawers/TemporaryDrawer'
+		const emails
+			[ 
+				@ 'username@gmail.com'
+				@ 'user02@gmail.com'
+		
+
+    style
+
+	state
+		@ open false
+        @ openSimple false
+        @ selectedValue emails[1]
+		@ scroll 'paper'
+		@ openScroll false
+		@ optionsDialogOpen false
+		@ optionsDialogTitle "Options"
+		@ optionsDialogOptions
+			[
+				{
+					@ name 'project'
+				{
+					@ name 'folder'
+				{
+					@ name 'document'
+
+    => handleClickOpenScroll
+        param scroll
+		return
+			=>
+				_ this.setState
+					{ 
+						@ openScroll true
+						@ scroll scroll
+    
+	=> handleCloseScroll
+        _ this.setState
+            { 
+                @ openScroll false
+
+
+	=> handleClickOpenSimple
+        _ this.setState
+            { 
+                @ openSimple true
+
+	=> handleCloseSimple
+        param value
+        _ this.setState
+            { 
+                @ selectedValue value
+                @ openSimple false
+    
+	=> handleClickOpen
+        _ this.setState
+            { 
+                @ open true
+    
+	=> handleClose
+        _ this.setState
+            { 
+                @ open false
+
+	=> handleOptionsDialogOpen
+        _ this.setState
+            { 
+                @ optionsDialogOpen true
+
+    render
+        return 
+            div 
+                < Button 
+                    @ onClick {this.handleClickOpen}
+                    + Open form dialog
+                < Dialog 
+                    @ open {this.state.open}
+                    @ onClose {this.handleClose}
+                    @ aria-labelledby "form-dialog-title"
+                    < DialogTitle 
+                        @ id "form-dialog-title"
+                        + Subscribe
+                    < DialogContent 
+                        < DialogContentText 
+                            + To subscribe to this website, please enter your email address here. We will send updates occasionally.
+                        < TextField 
+                            @ autoFocus
+                            @ margin "dense"
+                            @ id "name"
+                            @ label "Email Address"
+                            @ type "email"
+                            @ fullWidth
+                    < DialogActions 
+                        < Button 
+                            @ onClick {this.handleClose}
+                            @ color "primary"
+                            + Cancel
+                        < Button 
+                            @ onClick {this.handleClose}
+                            @ color "primary"
+                            + Subscribe
+				hr
+                < Typography 
+                    @ variant "subheading"
+                    + Selected:
+                    + {this.state.selectedValue}
+                br 
+                < Button 
+                    @ onClick {this.handleClickOpenSimple}
+                    + Open simple dialog
+                < SimpleDialog 
+                    @ selectedValue {this.state.selectedValue}
+                    @ open {this.state.openSimple}
+                    @ onClose {this.handleCloseSimple}
+				hr
+                div 
+                    < Button 
+                        @ onClick {this.handleClickOpenScroll('paper')}
+                        + scroll=paper
+                    < Button 
+                        @ onClick {this.handleClickOpenScroll('body')}
+                        + scroll=body
+                    < Dialog 
+                        @ open {this.state.openScroll}
+                        @ onClose {this.handleCloseScroll}
+                        @ scroll {this.state.scroll}
+                        @ aria-labelledby "scroll-dialog-title"
+                        < DialogTitle 
+                            @ id "scroll-dialog-title"
+                            + Subscribe
+                        < DialogContent 
+                            < DialogContentText 
+                                + \n              Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac\n              facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum\n              at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus\n              sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum\n              nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur\n              et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras\n              mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,\n              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.\n              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis\n              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla\n              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.\n              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis\n              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,\n              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.\n              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis\n              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla\n              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.\n              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis\n              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,\n              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.\n              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis\n              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla\n              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.\n              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis\n              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,\n              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.\n              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis\n              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla\n              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.\n              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis\n              consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,\n              egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.\n              Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis\n              lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla\n              sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.\n              Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.\n
+                        < DialogActions 
+                            < Button 
+                                @ onClick {this.handleCloseScroll}
+                                @ color "primary"
+                                + \n              Cancel\n
+                            < Button 
+                                @ onClick {this.handleCloseScroll}
+                                @ color "primary"
+                                + \n              Subscribe\n
+				hr
+				< FullScreen
+				hr
+				< Confirmation
+				hr
+				< TemporaryDrawer
+				hr
+                < Button 
+                    @ onClick {this.handleOptionsDialogOpen}
+                    + Options dialog
+				< OptionsDialog
+					@ open {this.state.optionsDialogOpen}
+					@ title {this.state.optionsDialogTitle}
+					@ options {this.state.optionsDialogOptions}
+					@ onClose
+						=>
+							param values
+							_ alert(JSON.stringify(values, null, 2))
+							_ this.setState
+								{
+									@ optionsDialogOpen false

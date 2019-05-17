@@ -1,0 +1,69 @@
+﻿wfjob wizzi-scripts
+	
+	$
+		var pkgName = 'wizzi-scripts';
+		var ittf_meta_folder      = path.join(__dirname, 'ittf', 'meta');
+		var ittf_lib_folder       = path.join(__dirname, 'ittf', 'lib');
+		var ittf_root_folder      = path.join(__dirname, 'ittf', 'root');
+		var ittf_tests_folder     = path.join(__dirname, 'ittf', 'tests');
+		var ittf_examples_folder  = path.join(__dirname, 'ittf', 'examples');
+		var dest_folder           = path.join(__dirname, '..', 'dist');
+
+	model meta
+		schema json
+		src ${ittf_meta_folder}/index.json.ittf
+
+	$include wfjob/lib
+	$include wfjob/examples
+	$include wfjob/tests
+
+	line ittf-root
+		cwd-folder ${ittf_root_folder}
+		dest-folder ${dest_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		wfjob/any_json()
+			model-ref meta
+				export-name wfpackage
+
+		wfjob/any_md()
+			model-ref meta
+				export-name wfpackage
+
+		wfjob/any_text()
+			model-ref meta
+				export-name wfpackage
+
+		artifact .gitignore
+			src .gitignore.text.ittf
+			schema text
+			generator text/document
+			dest-path .gitignore
+			extension gitignore
+
+		artifact .babelrc
+			src .babelrc.json.ittf
+			schema json
+			generator json/document
+			dest-path .babelrc
+			extension babelrc
+
+		wfjob/any_plain(ps1)
+
+	line ittf-examples-data
+		cwd-folder ${ittf_examples_folder}
+		dest-folder ${dest_folder}/examples
+
+		wfjob/any_plain(ps1)
+		wfjob/any_plain(txt)
+		wfjob/any_plain(js)
+
+	production
+		dest-folder ${dest_folder}
+		line-ref ittf-lib
+		line-ref ittf-examples
+		line-ref ittf-examples-data
+		line-ref ittf-root
+		line-ref ittf-tests

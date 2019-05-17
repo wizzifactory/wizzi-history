@@ -1,0 +1,15 @@
+﻿$group
+
+	describe delete a filesystem item
+
+		it-async should delete a root child
+
+			_ fsJson.deleteItem
+				@ hellotxt_item._id
+				f_cb_test( r )
+					log 'deletedItem.r', err, r
+					tobe_number( r.n, 1 )
+					tobe_string( r.code, FSITEM_DELETED )
+					_ done
+
+

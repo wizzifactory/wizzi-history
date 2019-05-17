@@ -1,0 +1,135 @@
+﻿module
+	kind jsfile
+
+	import path
+	var webpack = require("webpack")
+	var wizziWebpackLoader = require('./wizziWebpackLoader')
+
+	var md
+		set module.exports
+			{
+
+	set md.makeBundle
+		function
+			param filePath
+			param options
+			param callback
+
+			var outputPath
+				op||
+					+ options.outputPath
+					_ path.resolve
+						@ path.dirname(filePath)
+						@ '..'
+						@ 'scripts'
+			var outputFileName = options.outputFileName || 'bundle.js'
+
+			var SRC_PATH = path.dirname(filePath)
+			var NODE_MODULES_PATH = path.dirname(filePath)
+
+			var compiler
+				_ webpack
+					{ 
+						@ mode 'development'
+						
+						{ entry
+							@ file filePath
+						
+						{ output
+							@ path outputPath
+							@ filename outputFileName
+						
+						{ resolve
+							$*
+							@ root [SRC_PATH, NODE_MODULES_PATH]
+							@ fallback NODE_MODULES_PATH
+							*$
+							@ extensions ['.js.ittf','.js']
+						
+						$*
+						{ resolveLoader
+							[ plugins
+								@ WizziResolver
+						*$
+
+						{ module
+							[ rules
+								{ 
+									@ test /\.(js|jsx)$/
+									@ exclude /node_modules/
+									[ use
+										{
+											@ loader "babel-loader"
+											{ options
+												[ presets
+													@ "@babel/env"
+													@ "@babel/react"
+								{ 
+									@ test /\.(js.ittf)$/
+									@ exclude /node_modules/
+									[ use
+										{
+											@ loader "babel-loader"
+											{ options
+												[ presets
+													@ "@babel/env"
+													@ "@babel/react"
+										{
+											@ loader
+												_ path.join
+													@ __dirname
+													@ 'wizziWebpackLoader.js'
+											{ options
+
+			_ compiler.run
+				=>
+					param err
+					param stats
+					
+					if err
+						return
+							_ callback
+								@ err
+					
+					if stats.hasErrors()
+						return
+							_ callback
+								@ stats
+
+					return
+						_ callback
+							@ null
+							@ stats
+
+
+    var WizziResolver
+        { 
+            @ apply
+                function 
+                    param resolver
+                    _ resolver.plugin
+                        @ 'module'
+                        function 
+                            param request
+                            param callback
+                            
+							log 'WizziResolver.request', request
+							$*
+							if request.request[0] === '#'
+                                var req = request.request.substr(1)
+                                var obj
+                                    { 
+                                        @ path request.path
+                                        @ request req + '/' + path.basename(req) + '.js'
+                                        @ query request.query
+                                        @ directory request.directory
+                                _ this.doResolve
+                                    [ 
+                                        @ 'file'
+                                    @ obj
+                                    @ callback
+                            else
+                                _ callback
+							*$
+							_ callback
+

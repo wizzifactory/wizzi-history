@@ -1,0 +1,23 @@
+﻿wfjob step_1
+
+	# Generates a javascript module
+	# from a single ittf document of schema `js`
+
+	$
+		console.log('Destination folder name: ' + options.destFolder)
+		var ittf_lib_folder  = path.join(__dirname, 'ittf', 'lib');
+		var dest_folder      = path.join(__dirname, options.destFolder);
+
+	line lib
+		cwd-folder ${ittf_lib_folder}
+
+		# Generates a single javascript module
+		artifact step_1_javascript_module
+			src step_1.js.ittf
+			schema js
+			generator js/module
+			extension js
+
+	production
+		dest-folder ${dest_folder}
+		line-ref lib

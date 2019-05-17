@@ -1,0 +1,17 @@
+﻿$group
+	$params varName, method
+	var resolved_${varName} = verify.resolveToString(${varName})
+	# log 'resolved_${varName}', resolved_${varName}
+	if verify.isNotEmpty(resolved_${varName}) === false
+		return
+			_ callback
+				_ error
+					@ 'InvalidArgument'
+					@ '${method}'
+					{
+						@ parameter '${varName}'
+						@ message "'${varName}' must be a not empty string. Received: " + util.inspect(${varName}, { depth: null })
+	else
+		set ${varName} = resolved_${varName}
+
+		

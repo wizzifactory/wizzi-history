@@ -1,0 +1,53 @@
+﻿wfjob parcel-plugin-wizzi
+	
+	$include app-options
+	
+	$
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var ittf_src          = path.join(__dirname, 'ittf', 'src');
+		var ittf_examples     = path.join(__dirname, 'ittf', 'examples');
+		var dest_folder       = path.resolve(__dirname, '..', 'dist');
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+		$include wfjob/any_text
+		$include wfjob/any_md
+
+		$include wfjob/.gitignore
+
+	line src
+		cwd-folder ${ittf_src}
+		dest-folder ${dest_folder}/src
+
+		$include wfjob/any_js
+
+	line examples
+		cwd-folder ${ittf_examples}
+		dest-folder ${dest_folder}/examples
+		
+		$include wfjob/any_json
+
+		wfjob/any_js()
+			ignore ${ittf_examples}/**/*__copy/**/*.js.ittf
+
+		wfjob/any_html()
+			ignore ${ittf_examples}/**/*__copy/**/*.html.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_examples}/**/*__copy/**/*.ittf
+			extension ittf
+
+		artifact any_ittf_inside___copy
+			src ${js_examples}/**/*__copy/**/*.js
+			extension js
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref src
+		line-ref examples

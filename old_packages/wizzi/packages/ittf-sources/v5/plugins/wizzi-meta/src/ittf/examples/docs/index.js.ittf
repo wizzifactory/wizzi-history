@@ -1,0 +1,48 @@
+﻿common/example/plugin('docs examples')
+
+	$append imports
+		var docsfactory = require('../../lib/wizzi/models/docs-factory.g')
+		var docstransformer = require('../../lib/artifacts/docs/preprint/trans/main')
+	
+	+
+	var loadModel
+		_ docsfactory.createLoadModel
+			_ getWizziObject
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath,'docs')
+		set item = item.substring(0, item.length - '.docs.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	+
+	function execute
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.docs.ittf'
+		var docsOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.docs'
+		_ loadModel
+			@ ittfSource
+			_ getLoadModelContext
+				{
+			f_cb_test( docsWizziModel )
+				# log 'docsWizziModel', docsWizziModel
+				var ctx
+					_ mocks.getGenContext
+				_ docstransformer.trans
+					@ docsWizziModel
+					@ ctx
+					f_cb_test( result )
+						log 'result', stringify(result, null, 2)
+						_ file.write
+							@ docsOutput
+							@ stringify(result, null, 2)

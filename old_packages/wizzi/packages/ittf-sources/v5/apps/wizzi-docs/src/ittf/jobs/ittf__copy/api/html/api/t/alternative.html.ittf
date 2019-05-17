@@ -1,0 +1,16 @@
+﻿$group
+
+	$function buildup_alternative
+		$param alt
+		$param smr
+
+		. gsf-smr-${smr}
+			span one-of
+			
+			$foreach v in alt.values
+				$_ typed_value
+					$@ v
+					$@ smr+1
+
+
+

@@ -1,0 +1,66 @@
+﻿module
+	kind jsfile
+
+	import path
+	var bundlers = require("wizzi-bundlers")
+	var file = require('wizzi-utils').file
+
+	var source_rollup
+		_ path.join
+			@ __dirname
+			@ 'src'
+			@ 'ittf'
+			@ 'rollup'
+			@ 'index.js.ittf'
+	
+	var output_rollup
+		_ path.join
+			@ __dirname
+			@ 'scripts'
+			@ 'rollup.bundle.js'
+
+	var source_webpack
+		_ path.join
+			@ __dirname
+			@ 'src'
+			@ 'ittf'
+			@ 'webpack'
+			@ 'index.js.ittf'
+
+	var source_parcel
+		_ path.join
+			@ __dirname
+			@ 'src'
+			@ 'parcel'
+			@ 'index.html'
+
+	_ bundlers.rollupBundler.makeBundle
+		@ source_rollup
+		{
+		f_cb_throw( generated )
+			log 'wizzi-bundlers-demo.generated rollup', generated
+			_ file.write
+				@ output_rollup
+				@ generated
+
+	_ bundlers.webpackBundler.makeBundle
+		@ source_webpack
+		{
+			@ outputPath
+				_ path.join
+					@ __dirname
+					@ 'scripts'
+			@ outputFileName 'webpack.bundle.js'
+		f_cb_throw( generated )
+			log 'wizzi-bundlers-demo.generated webpack', generated
+
+	_ bundlers.parcelBundler.makeBundle
+		@ source_parcel
+		{
+			@ outputPath
+				_ path.join
+					@ __dirname
+					@ 'dist'
+			@ outputFileName 'parcel.bundle.html'
+		f_cb_throw( generated )
+			log 'wizzi-bundlers-demo.generated parcel', generated

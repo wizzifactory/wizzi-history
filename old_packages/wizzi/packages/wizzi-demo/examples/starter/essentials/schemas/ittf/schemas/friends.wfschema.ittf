@@ -1,0 +1,16 @@
+wfschema friends
+
+	$if comments == true
+		e comment
+			tag #
+			r comment/s
+	
+	e friends ${ comments ? ': comment' : ''}
+		is-root
+		r friend/s
+
+	e friend ${ comments ? ': comment' : ''}
+		a mobilePhone
+			tag cell
+		a phone
+		a birthday

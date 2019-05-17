@@ -1,0 +1,120 @@
+﻿$group
+
+	@ createGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var name = options.name
+			var schema = options.schema
+			var type = options.type
+			var kind = options.kind
+
+			var fullName = name
+			var content = ''
+			if schema
+				if isGistKind(kind)
+					set fullName = name + '.' + schema + '.ittf'
+				else
+					set fullName = name + '.' + schema
+				if schema === 'js' 
+					if isGistKind(kind)
+						if kind === 'gist' || kind === 'context'
+							set content
+								[
+									@ 'module'
+									@ '\tkind jsfile'
+									@ '\t_ go'
+									@ '\t\t@ "stefi"'
+									@ '\tfunction go'
+									@ '\t\tparam p1'
+									@ '\t\tlog "Hello " + p1'
+									._ join('\n')
+						else
+							set content
+								[
+									@ '$group'
+									@ '\t$params p1, p2|@@null'
+									@ '\t'
+									._ join('\n')
+					else
+						set content
+							[
+								@ 'go("stefi")'
+								@ 'function go(p1) {'
+								@ '\tconsole.log("Hello " + p1);'
+								@ '}'
+								._ join('\n')
+
+			var that = this
+			_ paths.gistFileExists
+				@ kind
+				@ userId
+				@ fullName
+				f_cb_api(result)
+					if result
+						r_cb_error( kind + ' already exists' )
+					_ paths.putGistFile
+						@ kind
+						@ userId
+						@ fullName
+						@ content
+						f_cb_api(putResult)
+							_ that.getGistList
+								{
+									@ userId userId
+									@ kind kind
+								f_cb_api( result )
+									if isGistKind(kind)
+										r_cb_success( kind + ' created' )
+											@ gists result.data.gists
+											@ gist putResult.data.gist
+									else
+										# BEWARE! putGistFile result.data contains 'gist' property
+										r_cb_success_quoted( Snippet created )
+											@ snippets result.data.snippets
+											@ snippet putResult.data.gist
+
+	@ updateGist
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var content = options.content
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			
+			_ paths.putFile
+				@ filePath
+				@ content
+				f_cb_api( result )
+					r_cb_success( kind + ' updated' )
+
+	@ deleteGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var hash = options.hash
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			
+			var that = this
+			_ paths.deleteFile
+				@ filePath
+				f_cb_api( result )
+					_ that.getGistList
+						{
+							@ userId userId
+							@ kind kind
+						f_cb_api( result )
+							if isGistKind(kind)
+								r_cb_success( kind + ' deleted' )
+									@ gists result.data.gists
+							else
+								r_cb_success_quoted( Snippet deleted )
+									@ snippets result.data.snippets
+

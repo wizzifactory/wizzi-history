@@ -1,0 +1,27 @@
+﻿$group
+
+	function setupClickHandler
+		param ctx
+		_ wzui.click
+			@ wzui.element('#mc-wrapper')
+			@ create_wrapperClickHandler(ctx)
+
+	function create_wrapperClickHandler
+		param ctx
+		return
+			function wrapperClickHandler
+				param event
+				log 'wrapperClickHandler.target', event.target
+				log 'wrapperClickHandler.target.dataset', event.target.dataset
+				log 'wrapperClickHandler.target.dataset.fragId', event.target.dataset.fragId
+				log 'has class frag-to-link-a', wzui.hasClass(event.target, 'frag-to-link-a')
+				if wzui.hasClass(event.target, 'frag-to-link-a')
+					log 'href', event.target.href
+					_ ctx.modalManager.pushFragment
+						@ event.target.dataset.fragId
+					_ event.preventDefault()
+					_ event.stopPropagation()
+				else
+					if ctx.modalManager.checkClick(event.target)
+						_ event.preventDefault()
+						_ event.stopPropagation()

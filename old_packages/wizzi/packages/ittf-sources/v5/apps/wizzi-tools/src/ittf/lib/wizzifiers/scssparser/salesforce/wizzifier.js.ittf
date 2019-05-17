@@ -1,0 +1,41 @@
+﻿basewizzifier()
+
+	$append imports
+		var scss_parser = require('scss-parser').parse
+		function parseInternal
+			param scss
+			param callback
+			var syntax = scss_parser(scss)
+			return
+				_ callback
+					@ null
+					@ syntax
+            
+    var format
+        function 
+            param ast
+            param options
+            return ast
+			var formatter = format[ast.type]
+            if verbose
+                _ console.log
+                    @ 'ast.type'
+                    @ ast.type
+            if formatter
+                return formatter(ast, options)
+            throw 
+                new Error('no formatter for type: ' + ast.type)
+    
+	function wizzify
+        param scss
+        param options
+        param callback
+		_ parseInternal
+			@ scss
+			f_cb( syntax )
+				var node = format(syntax)
+				_ log("wizziTree", node)
+				return
+					_ callback
+						@ null
+						@ node

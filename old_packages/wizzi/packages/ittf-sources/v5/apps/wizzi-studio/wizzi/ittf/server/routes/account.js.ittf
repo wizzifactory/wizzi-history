@@ -1,0 +1,114 @@
+﻿route( Account )
+
+	# http://shiya.io/how-to-do-3-legged-oauth-with-github-a-general-guide-by-example-with-node-js/
+
+	$append imports
+		var qs = require('querystring');
+		var randomString = require('randomstring')
+		var axios = require('axios')
+		# random string, will be used in the workflow later
+		var csrfString = randomString.generate()
+		var redirect_uri = process.env.HOST + '/account/github/redirect'
+
+	get( /account/login )
+
+		# generate that csrf_string for your "state" parameter
+		set req.session.csrf_string = randomString.generate()
+		
+		# construct the GitHub URL you redirect your user to.
+		var githubAuthUrl
+			op+
+				+ 'https://github.com/login/oauth/authorize?'
+				_ qs.stringify
+					{ 
+						@ client_id process.env.GITHUB_CLIENT_ID
+						@ redirect_uri redirect_uri
+						@ state req.session.csrf_string
+						$$ @ scope 'user:email'
+		# redirect user with express
+		_ res.redirect(githubAuthUrl)
+
+    # Handle the response your application gets.
+    # Using app.all make sures no matter the provider sent you
+    # get or post request, they will all be handled
+
+    all( /account/github/redirect
+
+		# Here, the req is request object sent by GitHub
+		log 'Request sent by GitHub: ', req.query, 'session', req.session.csrf_string
+		
+		# req.query should look like this:
+		# {
+		# code: '3502d45d9fed81286eba',
+		# state: 'RCr5KXq8GwDyVILFA6Dk7j0LbFNTzJHs'
+		# }
+		
+		var code = req.query.code
+		var returnedState = req.query.state
+		if req.session.csrf_string === returnedState
+			# Remember from step 5 that we initialized
+			# If state matches up, send request to get access token
+			# the request module is used here to send the post request
+			_ axios.post
+				op+ 
+					+ 'https://github.com/login/oauth/access_token?'
+					_ qs.stringify
+						{ 
+							@ client_id process.env.GITHUB_CLIENT_ID
+							@ client_secret process.env.GITHUB_CLIENT_SECRET
+							@ code code
+							@ redirect_uri redirect_uri
+							@ state req.session.csrf_string
+				._ then
+					function 
+						param response
+						_ console.log(response.data)
+						# The response will contain your new access token
+						# this is where you store the token somewhere safe
+						# for this example we're just storing it in session
+						log 'Your Access Token: ', qs.parse(response.data)
+					
+						set req.session.access_token = qs.parse(response.data).access_token
+						# Redirects user to /user page so we can use
+						# the token to get some data.
+						_ res.redirect('/account/github/user')
+
+				._ catch
+					function 
+						param error
+						_ console.log(error)
+					
+		else
+			# if state doesn't match up, something is wrong
+			# just redirect to homepage
+			_ res.redirect('/')
+
+	get( /account/github/user
+		# GET request to get emails
+		# this time the token is in header instead of a query string
+		_ axios.get
+			@ 'https://api.github.com/user'
+			{
+				{ headers
+					@ Authorization 'token ' + req.session.access_token
+			._ then
+				function 
+					param response
+					_ console.log(response.data)
+					_ axios.get
+						@ response.data.repos_url
+						{
+							{ headers
+								@ Authorization 'token ' + req.session.access_token
+						._ then
+							function 
+								param response_repo
+								var msg
+									_ JSON.stringify
+										[
+											@ response.data
+											@ response_repo.data
+										@ null
+										@ 2
+
+								_ res.send("<p>You're logged in! Here's your data on GitHub: </p><pre><code>" + msg + '</code></pre><p>Go back to <a href="/">log in page</a>.</p>')

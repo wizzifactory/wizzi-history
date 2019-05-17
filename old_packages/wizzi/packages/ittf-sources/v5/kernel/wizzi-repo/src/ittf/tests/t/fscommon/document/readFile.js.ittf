@@ -1,0 +1,25 @@
+﻿$group
+
+	m readFile
+		param filePath
+		param callback
+
+		set filePath = normalize(filePath)
+		var that = this
+		
+		_ this.fsCommon.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem == null
+					throw Error('MongoFS error. Document does not exists: ' + path)
+				elif fsitem.kind == 0
+					throw Error('MongoFS error. Cannot read a folder: ' + path)
+				else
+					that.fsCommon.readDocumentile
+						@ fsitem._id
+						f_cb( content )
+							return
+								_ callback(content)
+		
+
+

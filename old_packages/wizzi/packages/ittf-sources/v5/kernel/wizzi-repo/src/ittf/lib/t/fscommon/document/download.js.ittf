@@ -1,0 +1,43 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m downloadFolder
+		string folderPath
+		options-callback
+		+
+		var that = this
+		+
+		function read_file_Async
+			param singleFilePath
+			param callback
+			+
+			_ that.readFile
+				@ singleFilePath
+				f_cb( content )
+					log 'wizzi-repo.${fsname}.document.download.content', content
+					return
+						_ callback
+							@ null
+							{
+								@ path singleFilePath
+								@ content content
+
+		_ this.getFiles
+			@ folderPath
+			{
+				@ deep true
+			f_cb( files )
+				_ async.map
+					@ files
+					@ read_file_Async
+					f_cb( fileContents )
+						log 'wizzi-repo.${fsname}.document.download.fileContents', fileContents
+						var zip = new JSZip()
+						foreach item in fileContents
+							_ zip.file
+								@ item.path
+								@ item.content
+						return
+							_ callback
+								@ null
+								@ zip

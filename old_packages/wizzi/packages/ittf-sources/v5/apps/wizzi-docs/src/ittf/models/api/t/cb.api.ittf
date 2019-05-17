@@ -1,0 +1,17 @@
+﻿callback
+	exception null | exception
+		$hook error-types
+	$hook
+
+	$*
+	callback
+		alt error
+			null
+			exception
+				$hook error-types
+		switch result
+			on error == null
+				$hook
+			on error == exception
+				null
+	*$

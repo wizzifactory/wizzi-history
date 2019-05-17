@@ -1,0 +1,109 @@
+﻿text default
+
+    <#
+		WARNING this is a generate file
+		THE SOURCE IS IN : ${__filename}
+        Scripts to prepare github pushes of wizzi factory ittf source code.
+		Go to wizzifactory/wizzi/packages/ittf-sources.
+    #>
+
+    $
+        var verBase = 'v5';
+		var ver = 'v6';
+        var s_root = 'c:/my/wizzi/' + ver;
+        var s_kernel = s_root + '/kernel';
+        var s_plugins = s_root + '/plugins';
+        var s_legacy = s_root + '/legacy';
+        var s_scripts = s_root + '/scripts';
+        var s_app = s_root + '/apps';
+        var s_tutorial = s_app + '/js-tutorials'
+        var s_studio = s_app + '/wizzi-studio'
+        
+        var d_github = 'c:/my/wizzi/' + verBase + '/github/wizzi/packages/ittf-sources/' + ver;
+        var d_github_src = d_github;
+        var d_github_src_kernel = d_github + '/kernel';
+		var d_github_src_plugins = d_github + '/plugins';
+        var d_github_src_legacy = d_github + '/legacy';
+		var d_github_src_apps = d_github + '/apps';
+        
+        var kernels = [
+        ];
+    
+        var plugins = [
+            'wizzi-js',
+            'wizzi-web'
+        ];
+
+        var legacy = [
+            'wizzi-legacy-v5'
+        ];
+
+        var apps = [
+        ];
+
+        var apps_new = [
+        ];
+
+        var apps_webpacks = [
+        ];
+
+        var tutorials = [
+        ];
+
+        var studio = [
+        ];
+    
+    <#
+        Root t-folder
+    #>
+    robocopy ${s_root}\t ${d_github_src}/t /MIR /XD .git, node_modules
+    
+    <#
+        Kernel packages, source: ${s_kernel} , dest: ${d_github_src}
+    #>
+    robocopy ${s_kernel}/t ${d_github_src_kernel}/t /MIR /XD .git, node_modules
+    $foreach item in kernels
+        robocopy ${s_kernel}/${item}/src ${d_github_src_kernel}/${item}/src /MIR /XD .git, node_modules
+        robocopy ${s_kernel}/${item}/t ${d_github_src_kernel}/${item}/t /MIR /XD .git, node_modules
+        
+    <#
+        Plugin packages, source: ${s_plugins} , dest: ${d_github_src}
+    #>
+    robocopy ${s_plugins}/t ${d_github_src_plugins}/t /MIR /XD .git, node_modules
+    $foreach item in plugins
+        robocopy ${s_plugins}/${item}/src ${d_github_src_plugins}/${item}/src /MIR /XD .git, node_modules
+        robocopy ${s_plugins}/${item}/t ${d_github_src_plugins}/${item}/t /MIR /XD .git, node_modules
+    
+    <#
+        Legacy packages, source: ${s_legacy} , dest: ${d_github_src}
+    #>
+    $foreach item in legacy
+        robocopy ${s_legacy}/${item} ${d_github_src}/${item} /MIR /XD .git, node_modules
+
+    <#
+        App packages, source: ${s_app} , dest: ${d_github_src}
+    #>
+    robocopy ${s_app}\t ${d_github_src}/apps/t /MIR /XD .git, node_modules
+    $foreach item in apps
+        robocopy ${s_app}/${item}/src ${d_github_src_apps}/${item}/src /MIR /XD .git, node_modules
+        robocopy ${s_app}/${item}/t ${d_github_src_apps}/${item}/t /MIR /XD .git, node_modules
+    $foreach item in apps_new
+        robocopy ${s_app}/${item}/wizzi ${d_github_src_apps}/${item}/wizzi /MIR /XD .git, node_modules
+    $foreach item in apps_webpacks
+        robocopy ${s_app}/wizzi-webpack-source/${item}/wizzi ${d_github_src_apps}/${item}/wizzi /MIR /XD .git, node_modules
+
+    <#
+        Tutorial packages, source: ${s_tutorial} , dest: ${d_github_src} 
+    #>
+    $foreach t in tutorials
+        <# ${t.group} #>
+        $foreach item in t.items
+            robocopy ${s_tutorial}/${t.group}/${item}/wizzi ${d_github_src_apps}/js-tutorials/${t.group}/${item}/wizzi /MIR /XD .git, node_modules
+
+    <#
+        Scripts
+    #>
+    robocopy ${s_scripts} ${d_github_src}/scripts /MIR /XD .git, node_modules
+        
+            
+        

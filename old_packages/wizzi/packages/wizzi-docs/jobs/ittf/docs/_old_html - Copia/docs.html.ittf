@@ -1,0 +1,24 @@
+html/layout( docs, ${docs.name} )
+
+	html/nav_sidebar()
+		$include html/docs/toc
+	
+	div
+		class main-content
+		$foreach concept in docs.concepts
+			h2 ${concept.name}
+				id ${concept.id}
+				class concept
+			. summary
+				$foreach line in concept.summaryLines
+					+ ${line}
+		section
+			$foreach section in docs.sections
+				h2 Package ${section.name}
+				$foreach concept in section.concepts
+					h2 ${concept.name}
+						id ${concept.id}
+					. summary
+						$foreach line in concept.summaryLines
+							+ ${line}
+

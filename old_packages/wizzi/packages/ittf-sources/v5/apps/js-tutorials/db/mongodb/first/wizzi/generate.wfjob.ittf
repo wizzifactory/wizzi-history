@@ -1,0 +1,45 @@
+﻿wfjob db-mongodb-first
+	
+	$include app-options
+	
+	$
+		var ittf_meta_folder    = path.join(__dirname, '..', '..', '..', 'models');
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var ittf_src          = path.join(__dirname, 'ittf', 'src');
+		var dest_folder       = path.resolve(__dirname, '..', 'app');
+
+	model data
+		schema json
+		src ${ittf_meta_folder}/library.json.ittf
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+		$include wfjob/any_html
+		$include wfjob/any_vue
+
+		$include wfjob/.babelrc
+		$include wfjob/.prettierrc
+
+	line src
+		cwd-folder ${ittf_src}
+		dest-folder ${dest_folder}/src
+
+		wfjob/any_js()
+			model-ref data
+				export-name data
+		$include wfjob/any_json
+		$include wfjob/any_html
+		wfjob/any_vue()
+			model-ref data
+				export-name data
+		$include wfjob/any_svg
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref src

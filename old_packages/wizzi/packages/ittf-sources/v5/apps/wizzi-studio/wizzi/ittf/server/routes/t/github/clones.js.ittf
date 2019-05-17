@@ -1,0 +1,41 @@
+﻿$group
+
+	get( /api/github/clone )
+
+		check-params()
+			not-empty( query, url )
+			optional( query, name )
+
+		log '/api/github/clone', url
+
+		_ api.github.getClone
+			{
+				@ userId req.user.id
+				@ url url
+				@ name name
+			f_cb_rest( result )
+				log '/api/github/clone', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/github/wizzify )
+
+		check-params()
+			not-empty( query, name )
+			optional( query, folder )
+
+		log '/api/github/wizzify', name
+
+		_ api.github.wizzifyClone
+			{
+				@ userId req.user.id
+				@ name name
+				@ folder folder
+			f_cb_rest( result )
+				log '/api/github/wizzify', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

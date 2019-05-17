@@ -1,0 +1,152 @@
+﻿text default
+
+    <#
+		WARNING this is a generate file
+		THE SOURCE IS IN : ${__filename}
+        Scripts to prepare github pushes of wizzi factory ittf source code.
+		Go to wizzifactory/wizzi/packages/ittf-sources.
+    #>
+
+    $
+        var verBase = 'v5';
+		var ver = 'v5';
+        var s_root = 'c:/my/wizzi/' + ver;
+        var s_kernel = s_root + '/kernel';
+        var s_plugins = s_root + '/plugins';
+        var s_legacy = s_root + '/legacy';
+        var s_scripts = s_root + '/scripts';
+        var s_app = s_root + '/apps';
+        var s_tutorial = s_app + '/js-tutorials'
+        var s_studio = s_app + '/wizzi-studio'
+        
+        var d_github = 'c:/my/wizzi/' + verBase + '/github/wizzi/packages/ittf-sources/' + ver;
+        var d_github_src = d_github;
+        var d_github_src_kernel = d_github + '/kernel';
+		var d_github_src_plugins = d_github + '/plugins';
+        var d_github_src_legacy = d_github + '/legacy';
+		var d_github_src_apps = d_github + '/apps';
+        
+        var kernels = [
+            'wizzi',
+            'wizzi-utils',
+            'wizzi-git',
+            'wizzi-mtree',
+            'wizzi-repo',
+            'wizzi-scripts',
+            'wizzi-monorepo',
+        ];
+    
+        var plugins = [
+            'wizzi-core',
+            'wizzi-meta',
+            $$ 'wizzi-js',
+            $$ 'wizzi-web',
+            'wizzi-lab',
+            
+        ];
+
+        var legacy = [
+            'wizzi-legacy-v4',
+            'wizzi-legacy-v4-codegen',
+            'wizzi-legacy-v5'
+        ];
+
+        var apps = [
+            'wizzi-demo',
+            'wizzi-tools',
+            'wizzi-docs',
+        ];
+
+        var apps_new = [
+            'wizzi-app',
+			'wizzi-bundlers',
+			'wizzi-bundlers-demo',
+			'wizzi-play',
+			'wizzi-studio',
+            'wizzi-ui',            
+            'wizzi-github-io',
+			'parcel-plugin-wizzi',
+        ];
+
+        var apps_webpacks = [
+            'wizzi-play',
+            'wizzi-standalone'
+        ];
+
+        var tutorials = [
+            { group: 'nodejs-es6', items: ['es6-simple', 'es6-express', 'es6-firebase'] },
+            { group: 'webpack', items: ['react-codemirror', 'react-monaco', 'react-static', 'react-static-schema-doc', 'redux-material-ui-wizzi', 'router-redux-firestore'] },
+            { group: 'nextjs', items: ['starter', 'hello-next', 'redux-material-ui-wizzi', 'with-redux', 'wizzi', 'wizzifier'] },
+            { group: 'cdn', items: ['react-editor'] },
+            { group: 'zeit', items: ['firebase-hn', 'nextjs-tutorial', 'markdown-blog'] },
+            { group: 'now', items: ['static', 'wizzi'] },
+            { group: 'chrome', items: ['wz1'] },
+			{ group: 'vue', items: ['first', 'second', 'monaco'] },
+			{ group: 'db', items: ['neo4j/first', 'mysql/first', 'mysql/second', 'mongodb/first', 'firebase/first', 'models'] },
+			{ group: 'babel', items: ['express/first'] },
+        ];
+
+        var studio = [
+        ];
+    
+    <#
+        Root t-folder
+    #>
+    robocopy ${s_root}\t ${d_github_src}/t /MIR /XD .git, node_modules
+    
+    <#
+        Kernel packages, source: ${s_kernel} , dest: ${d_github_src}
+    #>
+    robocopy ${s_kernel}/t ${d_github_src_kernel}/t /MIR /XD .git, node_modules
+    $foreach item in kernels
+        robocopy ${s_kernel}/${item}/src ${d_github_src_kernel}/${item}/src /MIR /XD .git, node_modules
+        robocopy ${s_kernel}/${item}/t ${d_github_src_kernel}/${item}/t /MIR /XD .git, node_modules
+        
+    <#
+        Plugin packages, source: ${s_plugins} , dest: ${d_github_src}
+    #>
+    robocopy ${s_plugins}/t ${d_github_src_plugins}/t /MIR /XD .git, node_modules
+    $foreach item in plugins
+        robocopy ${s_plugins}/${item}/src ${d_github_src_plugins}/${item}/src /MIR /XD .git, node_modules
+        robocopy ${s_plugins}/${item}/t ${d_github_src_plugins}/${item}/t /MIR /XD .git, node_modules
+    
+    <#
+        Legacy packages, source: ${s_legacy} , dest: ${d_github_src}
+    #>
+    $foreach item in legacy
+        robocopy ${s_legacy}/${item} ${d_github_src}/${item} /MIR /XD .git, node_modules
+
+    <#
+        App packages, source: ${s_app} , dest: ${d_github_src}
+    #>
+    robocopy ${s_app}\t ${d_github_src}/apps/t /MIR /XD .git, node_modules
+    $foreach item in apps
+        robocopy ${s_app}/${item}/src ${d_github_src_apps}/${item}/src /MIR /XD .git, node_modules
+        robocopy ${s_app}/${item}/t ${d_github_src_apps}/${item}/t /MIR /XD .git, node_modules
+    $foreach item in apps_new
+        robocopy ${s_app}/${item}/wizzi ${d_github_src_apps}/${item}/wizzi /MIR /XD .git, node_modules
+    $foreach item in apps_webpacks
+        robocopy ${s_app}/wizzi-webpack-source/${item}/wizzi ${d_github_src_apps}/${item}/wizzi /MIR /XD .git, node_modules
+
+    <#
+        Tutorial packages, source: ${s_tutorial} , dest: ${d_github_src} 
+    #>
+    $foreach t in tutorials
+        <# ${t.group} #>
+        $foreach item in t.items
+            robocopy ${s_tutorial}/${t.group}/${item}/wizzi ${d_github_src_apps}/js-tutorials/${t.group}/${item}/wizzi /MIR /XD .git, node_modules
+
+    <#
+        Static ittf documents in the /server folder of wizzi-studio
+    #>
+    robocopy ${s_studio}/dist/server/ittf ${d_github_src_apps}/wizzi-studio/dist/server/ittf /MIR /XD .git, node_modules
+    robocopy ${s_studio}/dist/server/data ${d_github_src_apps}/wizzi-studio/dist/server/data /MIR /XD .git, node_modules
+	robocopy ${s_studio}/dist/server/static ${d_github_src_apps}/wizzi-studio/dist/server/static /MIR /XD .git, node_modules
+
+    <#
+        Scripts
+    #>
+    robocopy ${s_scripts} ${d_github_src}/scripts /MIR /XD .git, node_modules
+        
+            
+        

@@ -1,0 +1,205 @@
+$group
+	+
+	m get${node.namePlural}
+		$foreach item in node.pathKeys
+			param ${item.end}
+		param callback
+		_ assert
+			@ !!callback
+			@ 'Missing callback parameter in call to ${node.name}.get${node.namePlural}'
+
+		_ this.persister.getAllMetaData
+			$foreach item in node.pathKeys
+				@ ${item.end}
+			@ callback
+	+
+	m get${node.name}
+		$foreach item in node.pathKeys
+			param ${item.end}
+		$foreach item in node.keys
+			param ${item}
+		param callback
+		_ assert
+			@ !!callback
+			@ 'Missing callback parameter in call to ${node.name}.get${node.name}'
+		+
+		# Persister.get must give back a NotFoundError if item does not exists
+		+
+		_ this.persister.getMetaData
+			$foreach item in node.pathKeys
+				@ ${item.end}
+			$foreach item in node.keys
+				@ ${item}
+			@ callback
+	+
+	m insert${node.name}
+		$foreach item in node.pathKeys
+			param ${item.end}
+		$foreach item in node.keys
+			param ${item}
+		param callback
+		_ assert
+			@ !!callback
+			@ 'Missing callback parameter in call to ${node.name}.insert${node.name}'
+		
+		var self = this;
+		_ this.checkInsert
+			$foreach item in node.startNode.fullKeys
+				@ ${item}
+			function
+				param err
+				param result
+				if err
+					return callback(err)
+				_ self.persister.existsMetaData
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					$foreach item in node.keys
+						@ ${item}
+					function
+						param err
+						param result
+						if err
+							return callback(err)
+						if result
+							return
+								_ callback
+									new errors.AlreadyExistsError
+										@ '${node.name}'
+										_ utils.buildResourcePath
+											$foreach item in node.pathKeys
+												@ ${item.end}
+											$foreach item in node.keys
+												@ ${item}
+						var newItem
+							{
+								@ type '${node.name}'
+								$foreach item in node.pathKeys
+									@ ${item.end} ${item.end}
+								$foreach item in node.keys
+									@ ${item} ${item}
+								$foreach item in node.endNodes
+									@ ${item.role}
+										[
+						_ self.persister.putMetaData
+							$foreach item in node.pathKeys
+								@ ${item.end}
+							$foreach item in node.keys
+								@ ${item}
+							@ newItem
+							function
+								param err
+								param result
+								if err
+									return callback(err)
+								#
+								# TODO add to oneTable ?
+								# TODO or always make the oneTable api call this insert ?
+								#
+
+								_ callback(null, result)
+
+	+
+	m update${node.name}
+		$foreach item in node.pathKeys
+			param ${item.end}
+		$foreach item in node.keys
+			param ${item}
+		param item
+		param callback
+		_ assert
+			@ !!callback
+			@ 'Missing callback parameter in call to ${node.name}.update${node.name}'
+		_ this.persister.putMetaData
+			$foreach item in node.pathKeys
+				@ ${item.end}
+			$foreach item in node.keys
+				@ ${item}
+			@ item
+			@ callback
+
+	+
+	m delete${node.name}
+		$foreach item in node.pathKeys
+			param ${item.end}
+		$foreach item in node.keys
+			param ${item}
+		param callback
+		_ assert
+			@ !!callback
+			@ 'Missing callback parameter in call to ${node.name}.delete${node.name}'
+
+		var self = this;
+		_ this.checkDelete
+			$foreach item in node.pathKeys
+				@ ${item.end}
+			$foreach item in node.keys
+				@ ${item}
+			function
+				param err
+				param result
+				if err
+					return callback(err)
+				_ self.persister.deleteMetaData
+					$foreach item in node.pathKeys
+						@ ${item.end}
+					$foreach item in node.keys
+						@ ${item}
+					@ callback
+
+	+
+	m checkInsert
+		$foreach item in node.startNode.fullKeys
+			param ${item}
+		param callback
+		$if node.startNode.fullKeys.length > 0
+			_ this.${node.startNode.name}Node
+				._ get${node.startNode.name}
+					$foreach item in node.startNode.fullKeys
+						@ ${item}
+					function
+						param err
+						param result
+						if !!err
+							_ callback
+								new errors.MissingRelatedEntityError
+									@ '${node.startNode.name}'
+									_ utils.buildResourcePath
+										$foreach item in node.startNode.fullKeys
+											@ ${item}
+									@ 'insert${node.name}'
+						_ callback(null)
+		$else
+			_ callback(null)
+
+	+
+	m checkDelete
+		$foreach item in node.pathKeys
+			param ${item.end}
+		$foreach item in node.keys
+			param ${item}
+		param callback
+
+		_ this.get${node.name}
+			$foreach item in node.pathKeys
+				@ ${item.end}
+			$foreach item in node.keys
+				@ ${item}
+			function
+				param err
+				param result
+				if err
+					return callback(err)
+				$foreach item in node.endNodes
+					if result.${item.role}.length > 0
+						_ callback
+							new errors.ExistingRelatedEntityError
+								@ '${item.role}'
+								_ utils.buildResourcePath
+									$foreach item in node.pathKeys
+										@ ${item.end}
+									$foreach item in node.keys
+										@ ${item}
+								@ 'delete${node.name}'
+				_ callback(null)
+

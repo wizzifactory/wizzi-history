@@ -1,0 +1,59 @@
+﻿example-essentials()
+
+	var htmlFriendsPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'models'
+			@ 'friends.html.ittf'
+
+	var modelsComplexPath
+		_ path.join 
+			@ __dirname
+			@ 'ittf'
+			@ 'models'
+			@ 'complex'
+
+	# Load an html model.
+		# The html schema is detected from the path.
+	_ wizzi.model
+		@ htmlFriendsPath
+		{
+			@ friends friendsArray
+		f_cb_test(wizziModel)
+			var dump
+				_ stringify
+					@ wizziModel.elements
+					@ null
+					@ 2
+			log 'wizziModel friends\n', dump
+
+			# Load a complex wizzi model passing a model description to the loader
+			_ wizzi.model
+				{
+					@ src
+						_ path.join
+							@ modelsComplexPath
+							@ 'forms.html.ittf'
+					@ schema 'html'
+					[ contexts
+						{
+							@ src
+								_ path.join
+									@ modelsComplexPath
+									@ 'formsData.json.ittf'
+							@ schema 'json'
+							@ exportName 'data'
+				f_cb_test(wizziModel)
+					log 'wizziModel.wzElement', wizziModel.wzElement
+					_ wizzi.gen
+						@ wizziModel
+						f_cb_test(artifactText)
+							log 'artifactText complex forms\n', artifactText
+					return
+						_ callback
+							@ null
+							@ 'models example executed'
+
+
+

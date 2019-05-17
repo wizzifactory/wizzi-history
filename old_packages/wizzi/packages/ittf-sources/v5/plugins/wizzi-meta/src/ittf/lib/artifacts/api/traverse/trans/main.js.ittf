@@ -1,0 +1,451 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var verify = require('wizzi-utils').verify
+	var md = module.exports = {}
+	var myname = 'model.transformation.api.traverse.main'
+
+	var _args_simple = ['string', 'boolean', 'integer', 'float', 'date', 'json', 'any'];
+
+	var name_object = 'object'
+	var name_mergedobject = 'mergedobject'
+	var name_array = 'array'
+	var name_callback = 'callback'
+	var name_callbackfunction = 'callback-function'
+	var name_alternative = 'alternative'
+	var name_switch = 'switch'
+	var name_closure = 'closure'
+	var name_function = 'function'
+	var name_hof = 'high-order-function'
+	var name_facade = 'facade-function'
+	var name_exception = 'exception'
+	var name_empty = ''
+	var name_null = ''
+
+	set md.trans
+		function
+			param model
+			param ctx
+			param callback
+			set ctx.apis = {}
+			set ctx.apiCount = 0
+			
+			var root
+				{
+					@ name model.name
+					@ value model.value
+					@ parent null
+					@ children []
+			
+			foreach item in model.children
+				if item.name === 'api'
+					_ md.api(item, ctx, root)
+			
+			# log 'api/traverse.root', root
+
+			_ callback(null, root)
+
+	oper( api )
+		set ctx.apiCount++
+		var newnode
+			_ createNode
+				@ 'api'
+				@ node.value
+				@ parent
+		if ctx.apis[node.value]
+			throw ctx.error('Duplicated api name: ' + node.value)
+		set ctx.apis[node.value] = newnode
+
+		var apiId = verify.replaceAll(node.value, '.', '_')
+		set apiId = verify.replaceAll(apiId, '-', '_')
+		newnode_named( apiIdNode, id, apiId, newnode )
+
+		foreach item in node.children
+			if ['kernel', 'plugin'].indexOf(item.name) > -1
+				newnode_named( nkind, kind, item.name, newnode )
+			elif item.name === 'iface'
+				_ md.api_iface(item, ctx, newnode)
+			elif item.name === '{'
+				_ md.api_type(item, ctx, newnode)
+			elif ['extends'].indexOf(item.name) > -1
+				newnode_named_ref( attrib, item.name, item.value, newnode )
+			elif ['module', 'class-instance', 'pojo'].indexOf(item.name) > -1
+				_ md.api_implementation(item, ctx, newnode)
+			check( item, newnode, api )
+
+	oper( api_iface )
+		newnode( interface )
+		foreach item in node.children
+			_ md.api_member(item, ctx, newnode)
+
+	oper( api_type )
+		newnode( type )
+		foreach item in node.children
+			_ md.api_member(item, ctx, newnode)
+
+	oper( api_implementation )
+		newnode_named( nimplementation,  implementation )
+		newnode( type, node.name, nimplementation )
+		foreach item in node.children
+			if ['path', 'standard-path'].indexOf(item.name) > -1
+				newnode_ref( item.name, item.value, nimplementation )
+			check( item, newnode, api_implementation )
+
+	oper( api_member )
+		if _args_simple.indexOf(node.name) > -1
+			newnode_named( nproperty, property )
+			newnode( type, node.name, nproperty )
+			foreach item in node.children
+				_ md.constraint(item, ctx, nproperty)
+		elif node.name === '{'
+			newnode_named( nproperty, property )
+			newnode( type, name_object, nproperty )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, nproperty)
+		elif node.name === '['
+			newnode_named( nproperty, property )
+			newnode( type, name_array, nproperty )
+			foreach item in node.children
+				_ md.array_item(item, ctx, nproperty)
+		elif node.name === 'function'
+			newnode_named( nproperty, property )
+			newnode( type, node.name, nproperty )
+			foreach item in node.children
+				_ md.function_params(item, ctx, nproperty)
+		elif node.name === 'merge'
+			newnode_named( nproperty, property )
+			newnode( type, name_mergedobject, nproperty )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, nproperty)
+		elif node.name === 'm'
+			newnode_named( nmethod, method )
+			newnode( type, name_function, nmethod )
+		elif node.name === 'hof'
+			newnode_named( nmethod, method )
+			newnode( type, name_hof, nmethod )
+		elif node.name === 'ctor'
+			newnode_named( nmethod, ctor )
+		elif node.name === 'facade'
+			newnode_named( nmethod, method )
+			newnode( type, name_facade, nmethod )
+		check( node, parent, api_member )
+		if ['ctor', 'm', 'hof', 'facade'].indexOf(node.name) > -1
+			foreach item in node.children
+				_ md.method_member(item, ctx, nmethod)
+
+	oper( method_member )
+		if _args_simple.indexOf(node.name) > -1
+			newnode_named( nparam, param )
+			newnode( type, node.name, nparam )
+			foreach item in node.children
+				_ md.constraint(item, ctx, nparam)
+		elif node.name === 'alt'
+			_ md.param_alternative(node, ctx, parent)
+		elif node.name === '{'
+			_ md.object_param(node, ctx, parent)
+		elif node.name === '['
+			_ md.array_param(node, ctx, parent)
+		elif node.name === 'function'
+			newnode_named( nparam, param )
+			newnode( type, node.name, nparam )
+			foreach item in node.children
+				_ md.function_params(item, ctx, nparam)
+		elif node.name === 'callback'
+			newnode( is-async, name_empty, parent )
+			_ md.callback(node, ctx, parent)
+		elif node.name === 'function'
+			newnode_named( narg, argument )
+			newnode( type, node.name, narg )
+			foreach item in node.children
+				_ md.function_params(item, ctx, narg)
+		elif node.name === 'called-by'
+			newnode( called-by )
+		elif node.name === 'return'
+			_ md.return(node, ctx, parent)
+		elif node.name === 'info'
+			_ md.method_info(node, ctx, parent)
+		elif node.name === 'implemented-by'
+			newnode( implemented-by )
+		elif node.name === 'internal'
+			newnode( is-internal )
+		elif node.name === 'throw-if'
+			newnode( throw-if )
+		check( node, parent, method_member )
+
+	oper( param_alternative )
+		newnode_named( nparam, param )
+		newnode( type, name_alternative, nparam )
+		foreach item in node.children
+			_ md.value_item(item, ctx, nparam)
+
+	oper( method_info )
+		newnode_named( ninfo, info )
+		foreach item in node.children
+			_ md.info_item(item, ctx, ninfo)
+
+	oper( callback )
+		newnode_named( nparam, param, name_callback )
+		newnode( type, name_callbackfunction, nparam )
+		foreach item in node.children
+			_ md.arg_item(item, ctx, nparam)
+
+	oper( arg_item )
+		if node.name === 'alt'
+			_ md.arg_alternative(node, ctx, parent)
+		elif node.name === 'switch'
+			_ md.arg_switch(node, ctx, parent)
+		elif _args_simple.indexOf(node.name) > -1
+			newnode_named( narg, argument, node.name )
+			newnode( type, node.name, narg )
+			foreach item in node.children
+				_ md.constraint(item, ctx, narg)
+		elif node.name === '{'
+			newnode_named( narg, argument, node.value )
+			newnode( type, name_object, narg )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, narg)
+		elif node.name === '['
+			newnode_named( narg, argument, node.value )
+			newnode( type, name_array, narg )
+			foreach item in node.children
+				_ md.array_item(item, ctx, narg)
+		elif node.name === 'exception'
+			newnode_named( narg, argument, node.value )
+			newnode( type, name_exception, narg )
+			foreach item in node.children
+				_ md.exception_error(item, ctx, narg)
+		elif node.name === 'function'
+			newnode_named( narg, argument )
+			newnode( type, node.name, narg )
+			foreach item in node.children
+				_ md.function_params(item, ctx, narg)
+		elif node.name === 'api-ref'
+			newnode_named( narg, argument, node.name )
+			newnode( type, name_null, narg )
+		elif node.name === 'iface'
+			newnode_named( narg, argument, node.value )
+			newnode( iface, node.value, narg )
+		elif node.name === 'null'
+			newnode_named( narg, argument, node.name )
+			newnode( type, name_null, narg )
+		check(node, parent, arg_item)
+
+	oper( arg_alternative )
+		newnode_named( nargument, argument )
+		newnode( type, name_alternative, nargument )
+		foreach item in node.children
+			_ md.value_item(item, ctx, nargument)
+
+	oper( function_params )
+		# api_member, object_prop, array_item, value_item, arg_item
+		if _args_simple.indexOf(node.name) > -1
+			newnode_named( nparam, param )
+			newnode( type, node.name, nparam )
+			foreach item in node.children
+				_ md.constraint(item, ctx, nparam)
+		elif node.name === 'alt'
+			_ md.param_alternative(node, ctx, parent)
+		elif node.name === '{'
+			_ md.object_param(node, ctx, parent)
+		elif node.name === '['
+			_ md.array_param(node, ctx, parent)
+		elif node.name === 'callback'
+			newnode( is-async, name_empty, parent )
+			_ md.callback(node, ctx, parent)
+		elif node.name === 'called-by'
+			newnode( called-by )
+		elif node.name === 'return'
+			_ md.return(node, ctx, parent)
+		elif node.name === 'info'
+			_ md.method_info(node, ctx, parent)
+		elif node.name === 'implemented-by'
+			newnode( implemented-by )
+		elif node.name === 'internal'
+			newnode( is-internal )
+		elif node.name === 'throw-if'
+			newnode( throw-if )
+		else
+			_ md.constraint(node, ctx, parent)
+		
+	oper( object_param )
+		newnode_named( nparam, param )
+		newnode( type, name_object, nparam )
+		foreach item in node.children
+			_ md.object_prop(item, ctx, nparam)
+
+	oper( object_prop )
+		if ['iface', 'api-ref', 'POJO'].indexOf(node.name) > -1
+			newnode_ref( node.name, node.value, parent )
+		elif node.name === 'required'
+			newnode( is-required )
+		elif _args_simple.indexOf(node.name) > -1
+			newnode_named( nproperty, property )
+			newnode( type, node.name, nproperty )
+			foreach item in node.children
+				_ md.constraint(item, ctx, nproperty)
+		elif node.name === '{'
+			newnode_named( nproperty, property )
+			newnode( type, name_object, nproperty )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, nproperty)
+		elif node.name === '['
+			newnode_named( nproperty, property )
+			newnode( type, name_array, nproperty )
+			foreach item in node.children
+				_ md.array_item(item, ctx, nproperty)
+		elif node.name === 'function'
+			newnode_named( nproperty, property )
+			newnode( type, node.name, nproperty )
+			foreach item in node.children
+				_ md.function_params(item, ctx, nproperty)
+		elif node.name === 'merge'
+			newnode_named( nproperty, property )
+			newnode( type, name_mergedobject, nproperty )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, nproperty)
+		elif node.name === 'alt'
+			_ md.prop_alternative(node, ctx, parent)
+		elif node.name === 'switch'
+			_ md.object_prop_switch(node, ctx, parent)
+		check( node, parent, object_prop )
+
+	oper( prop_alternative )
+		newnode_named( nproperty, property )
+		newnode( type, name_alternative, nproperty )
+		foreach item in node.children
+			_ md.value_item(item, ctx, nproperty)
+
+	oper( value_item )
+		if _args_simple.indexOf(node.name) > -1
+			newnode_named( nvalue, value )
+			newnode( type, node.name, nvalue )
+			foreach item in node.children
+				_ md.constraint(item, ctx, nvalue)
+		elif node.name === '{'
+			newnode_named( nvalue, value )
+			newnode( type, name_object, nvalue )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, nvalue)
+		elif node.name === '['
+			newnode_named( nvalue, value )
+			newnode( type, name_array, nvalue )
+			foreach item in node.children
+				_ md.array_item(item, ctx, nvalue)
+		elif node.name === 'function'
+			newnode_named( nvalue, value )
+			newnode( type, node.name, nvalue )
+			foreach item in node.children
+				_ md.function_params(item, ctx, nvalue)
+		elif node.name === 'null'
+			newnode_named( nvalue, value, node.name )
+			newnode( type, node.name, nvalue )
+		$* FIXME VIA
+		elif node.name === 'any'
+			newnode_named( nany, value, node.value )
+			newnode( type, node.name, nany )
+			foreach item in node.children
+				_ md.value_item(item, ctx, nany)
+		*$
+		elif node.name === 'exception'
+			newnode_named( nvalue, value, node.name )
+			newnode( type, node.name, nvalue )
+			foreach item in node.children
+				_ md.exception(item, ctx, nvalue)
+		elif ['iface', 'api-ref', 'POJO'].indexOf(node.name) > -1
+			newnode_named( nvalue, value, node.value )
+			newnode_ref( node.name, node.value, nvalue )
+		check( node, parent, value_item )
+
+	oper( array_item )
+		if _args_simple.indexOf(node.name) > -1
+			newnode_named( nitem, item )
+			newnode( type, node.name, nitem )
+			foreach item in node.children
+				_ md.constraint(item, ctx, nitem)
+		elif node.name === '{'
+			newnode_named( nitem, item )
+			newnode( type, name_object, nitem )
+			foreach item in node.children
+				_ md.object_prop(item, ctx, nitem)
+		elif node.name === '['
+			newnode_named( nitem, item )
+			newnode( type, name_array, nitem )
+			foreach item in node.children
+				_ md.array_item(item, ctx, nitem)
+		elif node.name === 'function'
+			newnode_named( nitem, item )
+			newnode( type, node.name, nitem )
+			foreach item in node.children
+				_ md.function_params(item, ctx, nitem)
+		elif node.name === 'null'
+			newnode_named( nitem, item, node.name )
+			newnode( type, node.name, nitem )
+		$* FIXME VIA
+		elif node.name === 'any'
+			newnode_named( nany, item, node.value )
+			newnode( type, node.name, nany )
+			foreach item in node.children
+				_ md.value_item(item, ctx, nany)
+		*$
+		elif node.name === 'exception'
+			newnode_named( nitem, item, node.name )
+			newnode( type, node.name, nitem )
+			foreach item in node.children
+				_ md.exception(item, ctx, nitem)
+		elif node.name === 'alt'
+			_ md.array_alternative(node, ctx, parent)
+		elif ['iface', 'api-ref', 'json', 'POJO'].indexOf(node.name) > -1
+			newnode_named( nitem, item, node.value )
+			newnode_ref( node.name, node.value, nitem )
+		check( node, parent, array_item )
+
+	oper( exception_error )
+
+	oper( array_param )
+		newnode_named( nparam, param, node.value )
+		newnode( type, name_array, nparam )
+		foreach item in node.children
+			_ md.array_item(item, ctx, nparam)
+
+	oper( array_alternative )
+		newnode_named( nitem, item )
+		newnode( type, name_alternative, nitem )
+		foreach item in node.children
+			_ md.value_item(item, ctx, nitem)
+
+	oper( return )
+		newnode_named( nreturn, return )
+		foreach item in node.children
+			if item.name === 'alt'
+				newnode( type, name_alternative, nreturn )
+				foreach item2 in item.children
+					_ md.value_item(item2, ctx, nreturn)
+			else
+				_ md.value_item(item, ctx, nreturn)
+	
+	oper( exception )
+		if node.name === 'error'
+			newnode( error )
+		check( node, parent, exception )
+	
+	oper( comment )
+		newnode( # )
+		foreach item in node.children
+			_ md.comment(item, ctx, newnode)
+
+	$include constraint
+	$include info
+
+	function createNode
+		param name
+		param value
+		param parent
+		var node
+			{
+				@ name name
+				@ value value
+				@ parent parent
+				@ children []
+		_ parent.children.push(node)
+		return node

@@ -1,0 +1,87 @@
+$group
+
+	+
+	# ========================================
+	# OBJECTS
+	# ========================================
+	+
+
+	# 
+		# How to declare an empty object
+	var object1
+		{
+	var object1_b = {}
+	
+	# 
+		# How to declare an object structure
+	var object2
+		{
+			@ name 'stefi'
+			@ friends
+				[
+					{
+						@ name 'arthur'
+					{
+						@ name 'marilu'
+
+	# 
+		# How to declare an object structure, new compact format
+	var object3
+		{
+			@ name 'stefi'
+			{ address
+				@ city 'Reggio nell'Emilia'
+			[ friends
+				{
+					@ name 'arthur'
+				{
+					@ name 'marilu'
+
+	# 
+		# How to declare an empty array
+	var arr1
+		[
+	var arr1_b = []
+	
+	# 
+		# How to declare simple arrays
+	var arr2
+		[ 'stefi'
+	var arr2_b = [ 'stefi' ]
+	var arr3
+		[ 'stefi', 'annie'
+	var arr3_b = [ 'stefi', 'annie' ]
+	
+	# 
+		# How to declare an array structure
+	var arr4
+		[
+			@ 'stefi'
+			@ 'annie'
+	var arr5
+		[
+			{
+				@ id 1
+			{
+				@ id 2
+
+	# 
+		# Object and array properties can be functions 
+		# or results of functions call.
+		# Note: properties may be written both escaped or not.
+	var object4
+		{
+			@ name
+				_ 'stefi'.toUpperCase()
+			{ address
+				@ city 'Reggio nell\'Emilia'
+			{ address2
+				@ city 'Reggio nell'Emilia'
+			@ getInfo
+				function
+					return this.name + ', city: ' + this.address.city
+
+
+
+
+

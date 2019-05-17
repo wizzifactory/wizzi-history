@@ -1,0 +1,282 @@
+$group
+
+	#
+		# Retrieve a loadModel function by the model schema name.
+		# Model factories are searched in the PluginsManager.
+		# They are cached.
+		# return
+		# | func wizzi-plugin.modelFactory.loadModel
+		# | wzError NotFound
+		# params
+		#   string schemaName
+		#   { globalContext
+		#     optional
+		#     # A global context object can be used to add mTree buildup contex values
+		#     # to those contained in the mTreeBuildUpContext parameter, every time
+		#     # the returned loadModel function is called.
+		#   string testOnlyMockBaseDir
+		#     # used for test purposes
+	m getLoadModel
+		string schemaName
+		{ globalContext
+			optional
+		param testOnlyMockBaseDir
+		+
+		# log 'wizzi.services.wizziFactory.getLoadModel: globalContext, testOnlyMockBaseDir', globalContext, testOnlyMockBaseDir
+		var loadModel = this.modelLoaders[schemaName] || null
+		if loadModel == null
+			checked_call_r( factory )
+				_ this.pluginsManager.getModelFactory
+					@ schemaName
+					@ (testOnlyMockBaseDir || this.testOnlyMockBaseDir)
+			# log 'wizzi.wizziFactory.getLoadModel.schemaName,factory', schemaName, factory
+			# log 'wizzi.wizziFactory.getLoadModel.this.__loadMTree.loadHistory', this.__loadMTree.loadHistory
+			set loadModel
+				_ factory.createLoadModel
+					{
+						@ loadMTree this.__loadMTree
+						@ file file
+						@ verify verify
+						@ errors errors
+						@ wizziFactory this
+					@ globalContext
+			# log 'getLoadModel.loadModel', loadModel
+			set this.modelLoaders[schemaName] = loadModel
+		return loadModel
+
+	#
+		# Retrieve a loadModelFromTree function by the model schema name.
+		# Model factories are searched in the PluginsManager.
+		# They are cached.
+		# return
+		# | func wizzi-plugin.modelFactory.loadModel
+		# | wzError NotFound
+		# params
+		#   string schemaName
+	m getLoadModelFromMTree
+		string schemaName
+		var loadModel = this.modelLoaders[schemaName + 'FromMTree'] || null
+		if loadModel == null
+			checked_call_r( factory )
+				_ this.pluginsManager.getModelFactory
+					@ schemaName
+					@ null
+			# log 'wizzi.wizziFactory.getLoadModel.schemaName,factory', schemaName, factory
+			set loadModel
+				_ factory.createLoadModel
+					{
+						@ loadMTree this.__loadMTree
+						@ file file
+						@ verify verify
+						@ errors errors
+						@ wizziFactory this
+						@ options
+							{
+								@ loadFromMTree true
+					@ {}
+			# log 'getLoadModel.loadModel', loadModel
+			set this.modelLoaders[schemaName + 'FromMTree'] = loadModel
+		return loadModel
+	
+	#
+		# Async load a wizzi model
+		# params
+		#   string schemaName
+		#   string ittfDocumentUri
+		#   { loadContext
+		#     { mTreeBuildUpContext
+		#       optional
+		#     { globalContext
+		#         # Being the loadModel function called once this usually is not used.
+		#       optional
+		#     { formatOptions
+		#       optional
+		#       boolean ittfSources
+		#         # if true returns not the model but its ittf source documents.
+		#   callback
+	m loadModel
+		param schemaName
+		param ittfDocumentUri
+		param loadContext
+		param callback
+		param testOnlyMockBaseDir
+		+
+		if typeof(callback) == 'undefined'
+			set testOnlyMockBaseDir = null
+			set callback = loadContext
+			set loadContext = ittfDocumentUri
+			set ittfDocumentUri = schemaName
+			set schemaName = null
+		+
+		check_wz_callback( loadModel )
+		if schemaName == null
+			checked_call_set( schemaName )
+				_ detectSchema(ittfDocumentUri)
+		check_wz_not_empty( ittfDocumentUri, loadModel )
+		+
+		# log 'wizzi.wizziFactory.loadModel: schemaName, ittfDocumentUri, testOnlyMockBaseDir', schemaName, ittfDocumentUri, testOnlyMockBaseDir
+		+
+		set loadContext = loadContext || {}
+		+
+		var loadModel
+			_ this.getLoadModel
+				@ schemaName
+				@ loadContext.globalContext
+				@ testOnlyMockBaseDir
+		+
+        if loadModel.__is_error
+			set loadModel.ittfDocumentUri = ittfDocumentUri
+            return callback(loadModel)
+		+
+		var that = this
+		_ loadModel
+			@ ittfDocumentUri
+			_ this.createLoadContext
+				@ loadContext
+			f_cb( wizziModel )
+				return
+					_ callback
+						@ null
+						_ that.formatWizziModel
+							@ wizziModel
+							@ loadContext.formatOptions
+
+	m formatWizziModel
+		param model
+		param formatOptions
+		
+		if !formatOptions
+			return model
+		
+		var partial = false
+
+		var ret = {}
+		if formatOptions.ittfSources
+			set partial = true
+			set ret.loadHistory = {}
+			set ret.loadHistory.ittfSources = model.loadHistory.ittfSources
+		
+		if partial
+			return ret
+		else
+			return model
+
+	m loadModelFromMtree
+		param schemaName
+		param mTree
+		param loadContext
+		param callback
+		+
+		if typeof(callback) == 'undefined'
+			set callback = loadContext
+			set loadContext = {}
+		# log 'wizzi.wizziFactory.loadModelFromMtree 2', schemaName, mTree, mTree.nodes[0].children, loadContext, callback
+		+
+		check_wz_callback( loadModelFromMtree )
+		+
+		var loadModel
+			_ this.getLoadModelFromMTree
+				@ schemaName
+		+
+        if loadModel.__is_error
+			set loadModel.ittfDocumentUri = "Unavailable (loaded from mTree)"
+            return callback(loadModel)
+		+
+		var that = this
+		_ loadModel
+			@ mTree
+			_ this.createLoadContext
+				@ loadContext || {}
+			f_cb( wizziModel )
+				return
+					_ callback
+						@ null
+						_ that.formatWizziModel
+							@ wizziModel
+							@ loadContext.formatOptions
+
+	#
+		# Async load a wizzi model from a
+		# config object built programmatically
+		# params
+        #   { modelConfig
+		#     string src
+		#     string cwd
+		#     	optional
+		#     string schema
+		#     	optional
+		#     string format
+		#     	optional
+		#     string exportName
+		#     	optional - has meaning only for context models.
+		#     [ contexts
+		#     	optional - has the same format of modelConfig
+		#     [ transformers
+		#     	optional
+		#   { formatOptions
+		#     optional
+		#     boolean ittfSources
+		#       # if true returns not the model but its ittf source documents.
+
+	m loadModelFromConfig
+        { modelConfig
+			string src
+			string cwd
+				optional
+			string schema
+				optional
+			string format
+				optional
+			string exportName
+				optional
+			[ contexts
+				optional
+			[ transformers
+				optional
+		{ globalContext
+			{ formatOptions
+				optional
+		callback
+
+		if ModelInfo == null
+			set ModelInfo = require("../model/modelInfo").ModelInfo
+			set AsyncModelLoader = require('../model/asyncModelLoader')
+		var mi = new ModelInfo(modelConfig)
+		_ mi.productionManager
+			_ this.createProductionManager
+				@ null
+				@ globalContext
+		var that = this
+		_ AsyncModelLoader.load
+			@ mi
+			f_cb( wizziModel )
+				return
+					_ callback
+						@ null
+						_ that.formatWizziModel
+							@ wizziModel
+							@ globalContext.formatOptions
+
+	m loadModelFromText
+        param ittfContent
+		param schema
+		param loadContext
+		param callback
+		+
+		if typeof(callback) == 'undefined'
+			set callback = loadContext
+			set loadContext = {}
+		# log 'wizzi.wizziFactory.loadModelFromText', ittfContent, schema, loadContext, callback
+		+
+		check_wz_callback( loadModelFromText )
+
+		_ this.createSingleTextSourceFactory
+			@ ittfContent
+			@ schema
+			{
+			f_cb( result )
+				_ result.wizziFactory.loadModel
+					@ schema
+					@ result.ittfDocumentUri
+					@ loadContext
+					@ callback

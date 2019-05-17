@@ -1,0 +1,109 @@
+  module  ids: 1 13
+    kind jsfile ids: 2 14
+    $hook deps ids: 3 15
+    +  ids: 4 16
+    set module.exports ids: 5 17
+      {  ids: 6 18
+        $group  ids: 25 38
+          $append functions ids: 26 39
+            function escapeRegExp ids: 27 40
+              param s ids: 28 41
+              return s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") ids: 29 42
+          @ replaceAll ids: 30 43
+            function  ids: 31 44
+              param s ids: 32 45
+              param find ids: 33 46
+              param replace ids: 34 47
+              if typeof s === 'undefined' || s == null ids: 35 48
+                return s ids: 36 49
+              return s.replace(new RegExp(escapeRegExp(find), 'g'), replace) ids: 37 50
+        $group  ids: 51 122
+          $append deps ids: 52 123
+            var fs = require('fs') ids: 53 124
+            var glob = require('glob') ids: 54 125
+          $append functions ids: 55 126
+            function _walkDirectory ids: 56 127
+              param path ids: 57 128
+              param obj ids: 58 129
+              var dir = fs.readdirSync(path) ids: 59 130
+              foreach name in dir ids: 60 131
+                var target = path + '/' + name ids: 61 132
+                var stats = fs.statSync(target) ids: 62 133
+                if stats.isFile() ids: 63 134
+                  set obj[name] ids: 64 135
+                    {  ids: 65 136
+                      @ kind 0 ids: 66 137
+                      @ path target ids: 67 138
+                elif stats.isDirectory() ids: 68 139
+                  set obj[name] ids: 69 140
+                    {  ids: 70 141
+                      @ kind 1 ids: 71 142
+                      @ path target ids: 72 143
+                      @ children {} ids: 73 144
+                  _ _walkDirectory(target, obj[name].children) ids: 74 145
+          @ getGlobbedFiles ids: 75 146
+            function  ids: 76 147
+              param globPatterns ids: 77 148
+              param options ids: 78 149
+              set options = options || {} ids: 79 150
+              var exclude = options.exclude ids: 80 151
+              +  ids: 81 152
+              # For context switching ids: 82 153
+              var _this = this ids: 83 154
+              +  ids: 84 155
+              # URL paths regex ids: 85 156
+              var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i') ids: 86 157
+              +  ids: 87 158
+              # The output array ids: 88 159
+              var output = [] ids: 89 160
+              +  ids: 90 161
+              # If glob pattern is array so we use each pattern in a recursive way, otherwise we use glob ids: 91 162
+              if _.isArray(globPatterns) ids: 92 163
+                _ globPatterns.forEach ids: 93 164
+                  function  ids: 94 165
+                    param globPattern ids: 95 166
+                    set output = _.union(output, _this.getGlobbedFiles(globPattern, exclude)) ids: 96 167
+              elif _.isString(globPatterns) ids: 97 168
+                if urlRegex.test(globPatterns) ids: 98 169
+                  _ output.push(globPatterns) ids: 99 170
+                else  ids: 100 171
+                  var files = glob.sync(globPatterns) ids: 101 172
+                  if exclude ids: 102 173
+                    set files ids: 103 174
+                      _ files.map ids: 104 175
+                        function  ids: 105 176
+                          param file ids: 106 177
+                          if _.isArray(exclude) ids: 107 178
+                            foreach exclude in exclude ids: 108 179
+                              set file = file.replace(exclude, '') ids: 109 180
+                          else  ids: 110 181
+                            set file = file.replace(exclude, '') ids: 111 182
+                          return file ids: 112 183
+                  set output = _.union(output, files) ids: 113 184
+                  set output = _.filter(output, function (item) { return item.indexOf('/_debug') < 0; }) ids: 114 185
+              return output ids: 115 186
+          @ walkDirectory ids: 116 187
+            function  ids: 117 188
+              param path ids: 118 189
+              var filetree = {} ids: 119 190
+              _ _walkDirectory(path, filetree) ids: 120 191
+              return filetree ids: 121 192
+        $group  ids: 193 200
+          @ htmlEncode ids: 194 201
+            function  ids: 195 202
+              param string ids: 196 203
+              var ret = this.replaceAll(string, '<', '&lt;') ids: 197 204
+              set ret = this.replaceAll(ret, '>', '&gt;') ids: 198 205
+              return this.replaceAll(ret, '&', '&amp;') ids: 199 206
+        $group  ids: 207 217
+          @ now_GMYHMS ids: 208 218
+            function  ids: 209 219
+              var date = new Date() ids: 210 220
+              + return date.getDate() + '/' + ids: 211 221
+                + (date.getMonth() + 1) + '/' + ids: 212 222
+                + date.getFullYear() + ':' + ids: 213 223
+                + date.getHours() + ':' + ids: 214 224
+                + date.getMinutes() + ':' + ids: 215 225
+                + date.getSeconds(); ids: 216 226
+    +  ids: 11 23
+    $hook functions ids: 12 24

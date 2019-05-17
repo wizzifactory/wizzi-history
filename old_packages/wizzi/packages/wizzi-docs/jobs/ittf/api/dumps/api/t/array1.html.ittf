@@ -1,0 +1,40 @@
+$group
+	$params &obj1
+	
+	$
+		var item = obj1.items.length == 1 ? obj1.items[0] : null;
+		var obj2 = item;
+
+	$if item != null
+		table
+			tr
+				td item ${item.wzName}
+					@ valign top
+				td 
+					@ valign top
+					span ${item.type} 
+					$if item.type === 'object' 
+						span {
+					$if item.type === 'array' 
+						span [
+					table
+						$if item.type.apiRef
+							tr
+								td api ref
+									@ valign top
+								td 
+									@ valign top
+									a ${item.type.apiRef}
+										href #${item.type.apiRef}
+		
+						$if item.type === 'array'
+							tr
+								td
+									@ valign top
+									./array2(&obj2)
+
+						$if item.type === 'object'
+							tr
+								td
+									@ valign top
+									./object2(&obj2)

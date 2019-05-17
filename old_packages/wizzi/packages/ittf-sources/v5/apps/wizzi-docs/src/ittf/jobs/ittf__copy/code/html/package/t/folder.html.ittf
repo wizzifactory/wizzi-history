@@ -1,0 +1,28 @@
+﻿$group
+
+	$function buildup_folder
+		$param folder
+		$param level
+
+		ul 
+			
+			$foreach f in folder.folders
+				li
+					input
+						type checkbox
+						$if f.isTFolder == false && level < 2
+							checked
+						id ${f.id}
+					span
+					label ${f.wzName}
+						for ${f.id}
+					$_ buildup_folder
+						$@ f
+						$@ level + 1
+			
+			$foreach d in folder.documents
+				li
+					a ${d.wzName}
+						href #${d.id}
+
+

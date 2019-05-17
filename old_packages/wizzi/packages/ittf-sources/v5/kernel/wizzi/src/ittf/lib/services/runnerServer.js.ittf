@@ -1,0 +1,63 @@
+﻿module wizzi.runnerServer
+    kind jsfile
+    
+	var _ = require('lodash')
+	var async = require('async')
+	var chalk = require('chalk')
+	var errors = require('../errors')
+	var wizziFactory = require('./wizziFactory')
+    
+	class RunnerServer
+        ctor
+            string cwd
+			param user
+			param role
+			set this.cwd = cwd
+			set this.user = user
+			set this.role = role
+			set this.wizziFactoryDatas = []
+			set this.apis = {}
+			set this.models = {}
+			$$ TODO VIA
+			set this.registeredPlugins = []
+			$$ TODO VIA
+			set this.globalContext = {}
+    
+		$$ TODO VIA
+		m registerPlugin
+			string pluginName
+			if this.wizziFactory != null
+				throw new Error('wizzi/runnerServer/registerPlugin error: Cannot register a plugin. The WizziFactory has been already initialized.')
+			_ this.registeredPlugins.push
+				@ pluginName
+    
+		$$ TODO VIA
+		m registerGlobalContext
+			{ context
+			if this.wizziFactory != null
+				throw new Error('wizzi/runnerServer/registerPlugin error: Cannot register a global context. The WizziFactory has been already initialized.')
+			set this.globalContext
+				_ _.merge
+					@ this.globalContext
+					@ context
+
+    
+		$include runnerServer/factoryServer
+		$include runnerServer/apiServer
+
+	set module.exports
+		{
+			@ instance null
+			@ init
+				function
+					param cwd
+					param user
+					param role
+					if this.instance != null
+						throw new Error('wizzi/services/runnerServer/init error: The runner server has already been instantiated.')
+					set this.instance 
+						new RunnerServer
+							@ cwd
+							@ user 
+							@ role 
+						

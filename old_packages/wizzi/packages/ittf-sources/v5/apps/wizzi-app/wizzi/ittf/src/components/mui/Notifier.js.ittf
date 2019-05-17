@@ -1,0 +1,132 @@
+﻿r-component( Notifier
+
+	$append imports
+		import Snackbar from '@material-ui/core/Snackbar'
+		import Button from '@material-ui/core/Button'
+		import IconButton from '@material-ui/core/IconButton'
+		import CloseIcon from '@material-ui/icons/Close'
+
+		function isString
+			param test
+			return test !== null && typeof(test) === 'string'
+
+        function isEmpty
+            param test
+            return isString(test) == false || test.length == 0
+
+	prop message
+		string
+		default ''
+
+	prop duration
+		number
+		default 5000
+
+	prop vertical
+		string
+		default 'top'
+
+	prop horizontal
+		string
+		default 'center'
+
+	style
+        { close
+            @ width theme.spacing.unit * 4
+            @ height theme.spacing.unit * 4
+
+    state
+        @ open false
+        @ messageInfo
+			{
+				@ message ''
+        
+	property queue = []
+
+	did-mount
+		prop message
+		if !isEmpty(message)
+			_ this.enqueueNotify
+				@ message
+
+	did-update
+		prop message
+		if message !== prevProps.message &&
+			\b message !== this.state.messageInfo.message &&
+			\b isEmpty(message) == false
+			_ this.enqueueNotify
+				@ message
+
+	=> enqueueNotify
+		param message
+		_ this.queue.push
+			{ 
+				@ message message
+				@ key new Date().getTime()
+		if this.state.open
+			# immediately begin dismissing current message
+			# to start showing new one
+			_ this.setState
+				{ 
+					@ open false
+		else
+			_ this.processQueue
+	
+	=> processQueue
+		if this.queue.length > 0
+			_ this.setState
+				{ 
+					@ messageInfo this.queue.shift()
+					@ open true
+	
+	=> handleClose
+		param event
+		param reason
+		if reason === 'clickaway'
+			return 
+		_ this.setState
+			{ 
+				@ open false
+	
+	=> handleExited
+		_ this.processQueue
+
+	render
+		prop classes
+		prop vertical
+		prop horizontal
+		prop duration
+
+		const { open, messageInfo } = this.state
+		const { message, key } = messageInfo
+
+        const messageElement
+            span 
+                @ id "snackbar-message-id"
+                @ dangerouslySetInnerHTML
+                    { 
+                        @ __html message.split('|')[0]
+        return 
+            < Snackbar 
+				@ key {key}
+                @ anchorOrigin
+                    { 
+                        @ vertical vertical
+                        @ horizontal horizontal
+                @ message {messageElement}
+                @ autoHideDuration {duration}
+                @ onClose {this.handleClose}
+                @ onExited {this.handleExited}
+                @ open {open}
+                @ ContentProps
+                    { 
+                        @ 'aria-describedby' 'snackbar-message-id'
+                @ action
+                    [ 
+                        < IconButton 
+                            @ key "close"
+                            @ aria-label "Close"
+                            @ color "inherit"
+                            @ className {classes.close}
+                            @ onClick {this.handleClose}
+                            < CloseIcon 

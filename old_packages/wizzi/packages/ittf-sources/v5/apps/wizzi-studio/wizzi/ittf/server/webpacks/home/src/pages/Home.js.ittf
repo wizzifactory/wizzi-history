@@ -1,0 +1,61 @@
+﻿module
+	kind react
+
+	import React from 'react'
+	import PropTypes from 'prop-types'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+	import Link from 'react-router/lib/Link'
+	import Typography from 'material-ui/Typography'
+	import Button from 'material-ui/Button'
+	import wfLogo from '../assets/images/wizzi-factory-logo.svg'
+
+	const styleSheet
+        _ createStyleSheet
+            @ 'Home'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/Home
+
+	function Home
+		param props
+		const classes = props.classes
+
+		return
+			div
+				@ className {classes.root}
+				div
+					@ className {classes.hero}
+					div
+						@ className {classes.content}
+						< img
+							@ src {wfLogo}
+							@ alt "Material UI Logo"
+							@ className {classes.logo}
+						< Typography
+							@ type "display2"
+							@ component "h1"
+							@ colorInherit
+							+ {'Material-UI'}
+						< Typography
+							@ type "subheading"
+							@ component "h2"
+							@ colorInherit
+							+ {"A React component library implementing Google's Material Design"}
+						< Button
+							@ component {Link}
+							@ className {classes.button}
+							@ raised
+							@ to "/getting-started/installation"
+							+ {'Get Started'}
+
+	set Home.propTypes
+		{
+			@ classes PropTypes.object.isRequired
+
+	export default 
+		_ withStyles
+			@ styleSheet
+			(
+				@ Home

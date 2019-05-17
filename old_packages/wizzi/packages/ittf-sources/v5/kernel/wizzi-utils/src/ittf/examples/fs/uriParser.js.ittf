@@ -1,0 +1,38 @@
+﻿module
+	kind jsfile
+
+	import path
+	var uriParser = require('../../lib/fs/uriParser')
+
+	_ parse
+		@ '\\tmp\\stefi\\wizzi\\index.js.ittf'
+	_ parse
+		@ '/tmp/stefi/wizzi/index.js.ittf'
+
+	_ parse
+		@ 'c:\\stefi\\wizzi\\index.js.ittf'
+	_ parse
+		@ 'db:\\stefi\\wizzi\\index.js.ittf'
+	_ parse
+		@ 'ls:\\stefi\\wizzi\\index.js.ittf'
+
+	_ parse
+		@ 'c:/stefi/wizzi/index.js.ittf'
+	_ parse
+		@ 'db:/stefi/wizzi/index.js.ittf'
+	_ parse
+		@ 'ls:/stefi/wizzi/index.js.ittf'
+
+	_ parse
+		@ 'c://stefi/wizzi/index.js.ittf'
+	_ parse
+		@ 'db://stefi/wizzi/index.js.ittf'
+	_ parse
+		@ 'ls://stefi/wizzi/index.js.ittf'
+
+	function parse
+		param uri
+		var parsed
+			_ uriParser
+				@ uri
+		log uri, '\n', path.dirname(uri), '\n', JSON.stringify(parsed, null, 2)

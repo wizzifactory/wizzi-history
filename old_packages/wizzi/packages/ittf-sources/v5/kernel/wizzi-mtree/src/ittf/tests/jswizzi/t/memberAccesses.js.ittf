@@ -1,0 +1,21 @@
+﻿$group
+
+	var memberAccesses
+		[
+			{
+				@ code 'var x = { a: [ { b:[9] } ] }; return x.a[0].b[0];'
+				@ expected_number 9
+			{
+				@ code 'var x = { a: [ { b:[\'abcd\'] } ] }; return x.a[0].b;'
+				@ expected_equal
+					[
+						@ 'abcd'
+			{
+				@ code 'var x = { a: [ { b:[\'abcd\'] } ] }; return x.a[0].b[0];'
+				@ expected_equal 'abcd'
+			{
+				@ code 'var x = { a: [ { b:[\'abcd\'] } ] }; return x.a[0].b[0].toUpperCase();'
+				@ expected_equal 'ABCD'
+			{
+				@ code 'var x = { a: [ { b:[\'abcd\'] } ] }; return x.a[0].b[0].toUpperCase()[1];'
+				@ expected_equal 'B'

@@ -1,0 +1,151 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var _ = require('lodash') ids: undefined undefined
+    var errors = require('../../../../../lib/errors') ids: undefined undefined
+    var verify = require('../../../../../lib/util/verify') ids: undefined undefined
+    var log = require('../../../../../lib/util/log')(module) ids: undefined undefined
+    var jsModelType = require('../../../../../legacy').jsModelType ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    var myname = 'model.transformation.wizzischema.html.docs.main' ids: undefined undefined
+    set md.trans ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param callback ids: undefined undefined
+        if model.wzElement != 'wizzischema' ids: undefined undefined
+          _ errors.NodeError(myname + '.trans. Model wzElement must be wizzischema. Found: ' + model.wzElement, model); ids: undefined undefined
+        set ctx.result ids: undefined undefined
+          {  ids: undefined undefined
+            @ name model.wzName ids: undefined undefined
+            @ preserveTags model.preserveTags ids: undefined undefined
+        _ md.wizzischema(model, ctx) ids: undefined undefined
+        _ callback(null, ctx.result) ids: undefined undefined
+    set md.wizzischema ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param parent ids: undefined undefined
+        set ctx.result.requires = [] ids: undefined undefined
+        set ctx.result.exportTos = [] ids: undefined undefined
+        set ctx.result.elements = [] ids: undefined undefined
+        foreach exportTo in model.exportTos ids: undefined undefined
+          _ md.exportTo(exportTo, ctx, ctx.result) ids: undefined undefined
+        foreach element in model.elements ids: undefined undefined
+          _ md.element(element, ctx, ctx.result) ids: undefined undefined
+    set md.exportTo ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param parent ids: undefined undefined
+        _ parent.exportTos.push(model.wzName) ids: undefined undefined
+    set md.element ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param parent ids: undefined undefined
+        var flags = '' ids: undefined undefined
+        set flags += model.isAbstract ? 'is-abstract ' : '' ids: undefined undefined
+        set flags += model.addToChildren ? 'add-to-children ' : '' ids: undefined undefined
+        var node ids: undefined undefined
+          {  ids: undefined undefined
+            @ name model.wzId ids: undefined undefined
+            @ super model.superId ids: undefined undefined
+            @ isRoot model.isRoot ids: undefined undefined
+            @ tags model.tagName.split('|') ids: undefined undefined
+            @ flags flags ids: undefined undefined
+            @ attributes ids: undefined undefined
+              [  ids: undefined undefined
+            @ relations ids: undefined undefined
+              [  ids: undefined undefined
+            @ derived ids: undefined undefined
+              [  ids: undefined undefined
+            @ restricts ids: undefined undefined
+              [  ids: undefined undefined
+            @ methods ids: undefined undefined
+              [  ids: undefined undefined
+            @ comments ids: undefined undefined
+              [  ids: undefined undefined
+        var flatAttributes = model.getFlatAttributes() ids: undefined undefined
+        foreach attr in flatAttributes ids: undefined undefined
+          _ node.attributes.push(attr) ids: undefined undefined
+        var flatRelations = model.getFlatRelations() ids: undefined undefined
+        foreach r in flatRelations ids: undefined undefined
+          _ node.relations.push(r) ids: undefined undefined
+        foreach d in model.derived ids: undefined undefined
+          _ node.derived.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ name d.wzId ids: undefined undefined
+              @ tags d.tagName.split('|') ids: undefined undefined
+        foreach m in model.methods ids: undefined undefined
+          var methodNode ids: undefined undefined
+            {  ids: undefined undefined
+              @ name m.wzName ids: undefined undefined
+              @ emitKey m.emitKey ids: undefined undefined
+              @ isStatic m.isStatic ids: undefined undefined
+              @ isKnownMethod m.isKnownMethod ids: undefined undefined
+              @ params ids: undefined undefined
+                [  ids: undefined undefined
+              @ statements ids: undefined undefined
+                [  ids: undefined undefined
+              @ comments ids: undefined undefined
+                [  ids: undefined undefined
+          foreach param in m.params ids: undefined undefined
+            _ methodNode.params.push(param.wzName) ids: undefined undefined
+          foreach stm in m.statements ids: undefined undefined
+            foreach item in normalizeJST(stm.wzName) ids: undefined undefined
+              _ methodNode.statements.push(item) ids: undefined undefined
+          foreach comment in m.comments ids: undefined undefined
+            _ methodNode.comments.push(comment.wzName) ids: undefined undefined
+          _ node.methods.push(methodNode) ids: undefined undefined
+        foreach restrict in model.restricts ids: undefined undefined
+          _ node.restricts.push(getRestrictFill(restrict)) ids: undefined undefined
+        foreach comment in model.comments ids: undefined undefined
+          _ node.comments.push(comment.wzName) ids: undefined undefined
+        _ parent.elements.push(node) ids: undefined undefined
+    function getRestrictFill ids: undefined undefined
+      param model ids: undefined undefined
+      var restrictCloned ids: undefined undefined
+        {  ids: undefined undefined
+          @ facets ids: undefined undefined
+            [  ids: undefined undefined
+          @ comments ids: undefined undefined
+            [  ids: undefined undefined
+      foreach facet in model.facets ids: undefined undefined
+        var facetCloned ids: undefined undefined
+          {  ids: undefined undefined
+            @ type facet.wzElement ids: undefined undefined
+            @ value facet.wzName ids: undefined undefined
+            @ comments ids: undefined undefined
+              [  ids: undefined undefined
+        foreach comment in facet.comments ids: undefined undefined
+          _ facetCloned.comments.push(comment.wzName) ids: undefined undefined
+        _ restrictCloned.facets.push(facetCloned) ids: undefined undefined
+      foreach comment in model.comments ids: undefined undefined
+        _ restrictCloned.comments.push(comment.wzName) ids: undefined undefined
+      return restrictCloned ids: undefined undefined
+    function normalizeJST ids: undefined undefined
+      param stm ids: undefined undefined
+      var json = JSON.parse(stm) ids: undefined undefined
+      var ret = [] ids: undefined undefined
+      if verify.isArray(json) ids: undefined undefined
+        foreach item in json ids: undefined undefined
+          _ ret.push(normalizeJSTNode(item)) ids: undefined undefined
+      else  ids: undefined undefined
+        _ ret.push(normalizeJSTNode(json)) ids: undefined undefined
+      return ret ids: undefined undefined
+    function normalizeJSTNode ids: undefined undefined
+      param jstnode ids: undefined undefined
+      var node ids: undefined undefined
+        {  ids: undefined undefined
+          @ tag jstnode.n ids: undefined undefined
+          @ name jstnode.n ids: undefined undefined
+          @ value jstnode.v ids: undefined undefined
+          @ statements ids: undefined undefined
+            [  ids: undefined undefined
+      if jsModelType.__tagElementMapping[jstnode.n] ids: undefined undefined
+        set node.name = jsModelType.__tagElementMapping[jstnode.n] ids: undefined undefined
+      if jstnode.childs ids: undefined undefined
+        foreach item in jstnode.childs ids: undefined undefined
+          _ node.statements.push(normalizeJSTNode(item)) ids: undefined undefined
+      return node ids: undefined undefined

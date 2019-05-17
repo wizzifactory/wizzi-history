@@ -1,0 +1,29 @@
+plutone
+	$
+		var item_data = {
+			name: 'alfa',
+			value: 'x',
+			children: [{
+				name: 'beta',
+				value: 'y',
+				children: [{
+					name: 'sigma',
+					value: 't',
+					children: []
+				}]
+			},{
+				name: 'gamma',
+				value: 'z',
+				children: []
+			}]
+		};
+	$function buildup_item
+		$param item
+		giove ${item.name} ${item.value}
+			$foreach c in item.children
+				$_ buildup_item
+					$@ c
+	$_ buildup_item
+		$@ item_data
+
+

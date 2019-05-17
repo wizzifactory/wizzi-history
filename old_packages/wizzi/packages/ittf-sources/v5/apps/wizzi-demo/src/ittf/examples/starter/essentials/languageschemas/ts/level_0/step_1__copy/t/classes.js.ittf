@@ -1,0 +1,54 @@
+﻿$group
+
+	+
+	# ========================================
+	# CLASSES
+	# ========================================
+	+
+
+	# 
+		# A class example
+		# In module.kind es5, three common functions are generated 
+		# once at the beginning of
+		# the module and used by all the declared classes:
+		#   _inherits(subClass, superClass)
+		#   _classCallCheck(instance, Constructor)
+		#   _get
+
+	class Horse
+		super Animal
+		ctor
+			string name
+			{ options
+				boolean canSpeakLikeAHuman
+					optional
+			set this.name = name
+			set this.options = options
+		m sayHello
+			if this.options.canSpeakLikeAHuman
+				log 'Hello i am ' + this.name
+			else
+				log 'Hii i am ' + this.name
+		m create
+			static
+			string name
+			{ options
+				boolean canSpeakLikeAHuman
+					optional
+			return
+				new Horse
+					@ name
+					@ options
+
+	# 
+		# Creating a class instance
+	var instance1
+		new Horse
+			@ name
+			{
+				@ canSpeakLikeAHuman false
+
+
+
+
+

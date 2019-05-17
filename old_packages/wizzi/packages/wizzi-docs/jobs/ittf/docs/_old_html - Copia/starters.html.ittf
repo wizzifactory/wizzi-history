@@ -1,0 +1,23 @@
+html/layout( starters )
+
+	html/nav_sidebar()
+		section
+			id main-toc
+			class toc
+
+			h3 Contents:
+			ol
+				$foreach object in docs.objects
+					li
+						a ${object.name}
+							href #${object.id}
+
+	div
+		class main-content
+		section
+			$foreach object in docs.objects
+				h2 ${object.name}
+					id ${object.id}
+				. summary
+					$foreach line in object.summaryLines
+						+ ${line}

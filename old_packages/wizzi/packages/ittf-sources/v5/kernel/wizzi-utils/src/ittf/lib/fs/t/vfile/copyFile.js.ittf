@@ -1,0 +1,49 @@
+﻿$group
+
+	vfile/m( copyFile, writeFileSync, dest, options )
+		
+		set options = options || {}
+
+		$append async
+			
+			var src = path_string
+			var that = this
+			_ this.isFile
+				@ src
+				f_cb(result)
+					if result == false
+						r_cb()
+							new Error
+								@ `Source '${src}' is not a file`
+					_ that.isFile
+						@ dest
+						f_cb(result)
+							if result == false
+								if src === dest
+									r_cb()
+										new Error
+											@ `Source '${src}' and destination '${dest}' are the same file.`
+								else
+									# no need to ensure parent dir
+									# write method always ensures
+									return that.exec_copyFile(src, dest, options, callback)
+							else
+								if options && options.overwrite
+									_ that.unlink
+										@ dest
+										f_cb()
+											return that.exec_copyFile(src, dest, options, callback)
+								else
+									if options.errorOnExist
+										r_cb()
+											new Error(`Destination '${dest}' already exists.`)
+									else
+										return callback()
+    	
+		$append sync
+			
+			var src = path_string
+			if this.fsimpl.copyFileSync
+				return this.fsimpl.copyFileSync(src, dest)
+			else
+				throw new Error('Not implemented')

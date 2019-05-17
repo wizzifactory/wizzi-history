@@ -1,0 +1,29 @@
+﻿module
+	kind es6
+
+	$include app-options
+
+	set module.exports
+		{
+			@ webpack
+				function
+					param config
+					param { isServer }
+					log 'next.config.js.webpack.isServer', isServer
+					if isServer == false
+						if !config.node
+							set config.node = {}
+						set config.node.fs = "empty"
+						set config.node.module = "empty"
+						log 'next.config.js.webpack.config', config
+						if !config.module
+							set config.module = {}
+						if !config.module.rules
+							set config.module.rules = []
+						_ config.module.rules.push
+							{
+								@ test /\.css$/
+								[ use
+									@ 'style-loader'
+									@ 'css-loader'
+					return config

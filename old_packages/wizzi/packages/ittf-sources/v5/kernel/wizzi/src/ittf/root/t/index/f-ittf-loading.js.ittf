@@ -1,0 +1,28 @@
+$group
+
+	#
+		# Simply load an MTree from an IttfDocument
+		# param ittfDocumentUri      - the uri of the primary IttfDocument that declares the model
+		# param evaluationContext    - the MTree evaluation context
+		# param callback
+	set md.ittf
+		function
+			param ittfDocumentUri
+			param evaluationContext
+			param callback
+			_ ittf.loadModel
+				@ ittfDocumentUri
+				@ evaluationContext
+				function
+					param err
+					param mTree
+					if err
+						set err.srcPath = ittfDocumentUri
+						_ fail.warn(util.inspect(err, { depth: null}))
+						return callback(err)
+					var ittfmodel = mTree.nodes[0]
+					
+					# log 'md.ittf.ittfDocumentUri', ittfDocumentUri, ittfmodel
+					
+					_ callback(null, ittfmodel)
+

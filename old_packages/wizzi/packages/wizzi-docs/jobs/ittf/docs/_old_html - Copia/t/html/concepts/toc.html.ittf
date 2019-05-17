@@ -1,0 +1,38 @@
+$group
+
+	section
+		id main-toc
+		class toc sidebar__inner
+
+		h3 Contents:
+		ol
+			$*
+			li
+				a Introduction
+					href #intro
+			
+			li
+				a Concepts
+				ol
+			*$
+			li
+				a Introduction
+					href #concepts_title
+			$foreach concept in docs.concepts
+				li
+					a ${concept.name}
+						href #${concept.id}
+			$*
+			li
+				a Samples
+				ol
+					$foreach sgroup in docs.sampleGroups
+						li
+							a ${sgroup.name}
+								href #${sgroup.id}
+							ol
+								$foreach sample in sgroup.samples
+									li
+										a ${sample.name}
+											href #${sample.id}
+			*$

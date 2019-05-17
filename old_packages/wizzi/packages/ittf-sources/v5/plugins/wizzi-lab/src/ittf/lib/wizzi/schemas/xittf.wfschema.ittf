@@ -1,0 +1,34 @@
+﻿wfschema xittf
+
+	e statement
+		# A statement line node with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag _$$
+		r statement/s
+
+	e xittf : statement
+		is-root
+		unknown-element-replacer sem
+
+	e sem : statement
+		# Semantic element of the preprocessed wizzi schema.
+		# Will be emitted as is.
+		# Every unrecognized ittf node will become a
+		# `sem` element.
+
+	e_tag( mixin, _$mixin, statement)
+	e_tag( mixinParam, _$param, statement)
+	e_tag( mixinInclude, _$include, statement)
+	e_tag( mixinVarDecl, _$var, statement)
+	e_tag( mixinVarRef, _$:, statement)
+	
+	e_tag( function, _$function, statement)
+	e param : statement
+	e return : statement
+
+	$include xittf/vars
+	$include xittf/calls
+	$include xittf/objects
+	$include xittf/expressions
+	$include xittf/statements

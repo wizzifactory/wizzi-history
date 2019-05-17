@@ -1,0 +1,62 @@
+module
+    kind react
+    import Layout from '../components/MyLayout.js'
+    import Link from 'next/link'
+    import loadDB from '../lib/load-db'
+    const PostLink
+        => 
+            param props
+            li 
+                < Link 
+                    @ as
+                        `lit 
+                            + /p/
+                            @ props.id
+                    @ href
+                        `lit 
+                            + /post?id=
+                            @ props.id
+                    a 
+                        + {props.title}
+    const Index
+        => 
+            { 
+                @ stories stories
+            < Layout 
+                h1 
+                    + Hacker News - Latest
+                ul 
+                    { 
+                        _ stories.map
+                            => 
+                                param story
+                                < PostLink 
+                                    @ key {story.id}
+                                    @ id {story.id}
+                                    @ title {story.title}
+    set Index.getInitialProps =
+        async=> 
+            const db
+                await 
+                    _ loadDB
+            const ids
+                await 
+                    _ db.child('topstories').once('value')
+            log 'ids', ids.val()
+			let stories
+                await 
+                    _ Promise.all
+                        _ ids.val().slice(0, 10).map
+                            => 
+                                param id
+                                _ db.child('item').child(id).once('value')
+            log 'stories', stories
+			set stories =
+                _ stories.map
+                    => 
+                        param s
+                        _ s.val
+            return 
+                { 
+                    @ stories stories
+    export-default Index

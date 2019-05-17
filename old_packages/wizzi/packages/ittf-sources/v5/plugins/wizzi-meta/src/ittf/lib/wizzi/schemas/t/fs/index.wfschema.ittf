@@ -1,0 +1,51 @@
+﻿$group
+
+	e_tag( fsInfo, fs-info, commentable )
+		r documentGroup/s
+
+	e_tag( documentGroup, d-group, commentable )
+		a type
+			restrict
+				enum schema
+				enum folder
+		r document/s
+
+	e fsitem : commentable
+		is-abstract
+		a id
+		a dirname
+		a path
+		a_tag( relDirname, rel-dirname )
+			# relative to package.fsBaseUri
+		a_tag( relUri, rel-uri )
+			# relative to package.fsBaseUri
+		a_flag(isPackageRoot, is-package-root)
+		a_flag(isTFolder, is-t-folder)
+		a_flag(isInsideTFolder, is-inside-t-folder)
+		a_flag(isExample, is-example)
+		a_flag(isTest, is-test)
+		a_flag(isUtil, is-util)
+
+	e_tag( folder, f, fsitem )
+		r folder/s
+		r document/s
+
+	e_tag( document, d, fsitem )
+		a schema
+		a_tag( jsCode, js )
+		a_flag(isFragment, is-fragment)
+		a_flag(isExternal, is-external)
+		r ittf
+			one-to-one
+
+	e ittf : commentable
+		r fragmentRef/s
+	
+	e_tag( fragmentRef, fragment, commentable
+		a_tag( documentId, d-id )
+			# The id of the fragment document
+		a uri
+		a_tag( relUri, rel-uri )
+			# relative to package.fsBaseUri
+
+

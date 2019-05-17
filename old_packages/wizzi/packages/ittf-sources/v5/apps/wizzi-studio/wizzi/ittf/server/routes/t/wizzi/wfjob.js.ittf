@@ -1,0 +1,17 @@
+﻿$group
+
+	get( /api/wizzi/wfjob )
+		
+		check-params( )
+			optional( query , hash )
+
+		_ wizziApi.generateWfJob
+			{
+				@ userId req.user.id
+				@ hash hash
+
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

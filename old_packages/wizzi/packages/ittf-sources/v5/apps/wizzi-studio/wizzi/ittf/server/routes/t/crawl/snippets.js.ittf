@@ -1,0 +1,48 @@
+﻿$group
+
+	put( /api/crawl/snippet )
+
+		check-params()
+			not-empty( body , name )
+			not-empty( body , code )
+			optional( body , ittf )
+			optional( body , mime )
+			optional( body , tags )
+
+		log '/api/crawl/snippet', name
+
+		_ api.crawl.putSnippet
+			{
+				@ userId req.user.id
+				@ name name
+				@ code code
+				@ ittf ittf
+				@ mime mime
+				@ tags tags
+			f_cb_rest( result )
+				log '/api/crawl/snippet', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/crawl/wizzify )
+
+		check-params()
+			not-empty( body , code )
+			not-empty( body , mime )
+
+		log '/api/crawl/wizzify', mime
+
+		_ api.crawl.wizzifySnippet
+			{
+				@ userId req.user.id
+				@ code code
+				@ mime mime
+			f_cb_rest( result )
+				log '/api/crawl/wizzify', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+

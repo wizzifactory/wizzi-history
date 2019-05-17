@@ -1,0 +1,30 @@
+﻿module
+    kind react
+    
+	import 
+        @ Router
+        from 'express'
+    
+	const router = Router()
+    
+	_ router.get
+        @ '/'
+        async=> 
+            param req
+            param res
+            const users
+                await 
+                    _ req.context.models.User.find
+            return res.send(users)
+    
+	_ router.get
+        @ '/:userId'
+        async=> 
+            param req
+            param res
+            const user
+                await 
+                    _ req.context.models.User.findById(req.params.userId)
+            return res.send(user)
+    
+	export-default router

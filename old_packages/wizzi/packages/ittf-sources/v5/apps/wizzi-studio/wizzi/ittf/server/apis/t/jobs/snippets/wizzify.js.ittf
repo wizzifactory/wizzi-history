@@ -1,0 +1,48 @@
+﻿$group
+
+	@ wizzifySnippet
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var filePath = hashDecrypt(hash)
+			var gist = paths.gistInfoByPath(filePath)
+
+			log 'wizzifySnippet.gist', gist
+
+			if gist.isIttfDocument
+				r_cb_error_quoted( The file already is a wizzi document )
+
+			var validMimes
+				[
+					@ 'js'
+					@ 'html'
+					@ 'css'
+					@ 'scss'
+					@ 'json'
+					@ 'xml'
+					@ 'graphql'
+					@ 'svg'
+
+			if validMimes.indexOf(gist.mime) < 0
+				r_cb_error( 'Cannot wizzyfy the mime type ' + gist.mime )
+
+			_ paths.getFile
+				@ filePath
+				f_cb_api( codeContent )
+					log 'wizzifySnippet.codeContent', codeContent
+					_ wizziTools.wizzify
+						@ gist.mime
+						@ codeContent
+						f_cb_api( wizzifiedSnippet )
+							log 'wizzifySnippet.wizzifiedSnippet', wizzifiedSnippet
+							return
+								_ callback
+									@ null
+									{
+										{ data
+											@ wizzified wizzifiedSnippet
+										@ status
+											_ success
+												@ 'Code snippet wizzified'

@@ -1,0 +1,24 @@
+﻿$group
+
+	get( /api/studio/commons )
+		
+		_ studioApi.getCommons
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				log '/api/studio/commons', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/studio/commons/defaultartifacts )
+		
+		_ studioApi.getDefaultArtifacts
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

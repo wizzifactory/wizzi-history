@@ -1,0 +1,46 @@
+  module  ids: 1 45
+    kind jsfile ids: 2 46
+    +  ids: 3 47
+    import path ids: 4 48
+    import util ids: 5 49
+    +  ids: 6 50
+    var expect = require('expect.js') ids: 7 51
+    var ProductionManager = require('../../lib/production/manager') ids: 8 52
+    var ArtifactInfo = require('../../lib/artifact/artifactInfo') ids: 9 53
+    var asyncArtifactGenerator = require('../../lib/artifact/asyncArtifactGenerator') ids: 10 54
+    var productionManager ids: 11 55
+      new ProductionManager ids: 12 56
+        {  ids: 13 57
+          @ verbose false ids: 14 58
+          @ basedir __dirname ids: 15 59
+    describe asyncArtifactGenerator  wraps an artifact element of a wfjob ids: 16 60
+      it should have options set ids: 17 61
+        var exampleCWD ids: 18 62
+          _ path.join ids: 19 63
+            @ __dirname ids: 20 64
+            @ 'ittf' ids: 21 65
+            @ 'example_01' ids: 22 66
+        var artifactInfo1 ids: 23 67
+          new ArtifactInfo ids: 24 68
+            {  ids: 25 69
+              @ name 'art1' ids: 26 70
+              @ options ids: 27 71
+                {  ids: 28 72
+              @ contexts ids: 29 73
+                [  ids: 30 74
+              @ gen ids: 31 75
+                {  ids: 32 76
+                  @ generator '' ids: 33 77
+              @ dest ids: 34 78
+                {  ids: 35 79
+                  @ baseFolder exampleCWD ids: 36 80
+                  @ folder path.join(exampleCWD, 'resultFolder') ids: 37 81
+                  @ path path.join(exampleCWD, 'resultPath') ids: 38 82
+                  @ extension 'js' ids: 39 83
+        _ artifactInfo1.initialize ids: 40 84
+          @ productionManager ids: 41 85
+        # log 'artifactInfo1 after initialize', artifactInfo1 ids: 42 86
+        # log 'productionManager after artifactInfo1 initialize', productionManager ids: 43 87
+        $group  ids: 89 92
+          $args: artifactInfo1.options  $params: name
+          _ expect(${name}).to.be.an('object') ids: 91 93

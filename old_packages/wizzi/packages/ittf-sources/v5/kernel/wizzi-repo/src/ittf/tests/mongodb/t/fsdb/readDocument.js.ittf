@@ -1,0 +1,15 @@
+﻿$group
+
+	describe read a document item
+
+		it-async should read a document content
+
+			log 'hellotxt_item', hellotxt_item
+			tobe_object( hellotxt_item._id )
+			_ fsmongo.readDocument
+				@ hellotxt_item._id
+				f_cb_test( r )
+					log 'readDocument.r', err, r
+					# tobe_number( r.n, 1 )
+					tobe_string( r, hello world )
+					_ done

@@ -1,0 +1,87 @@
+﻿vue App
+    
+    template
+		div
+			id app
+			style display:flex;
+			div
+				div
+					span name  \b
+					input
+						type text
+						v-model name
+				div
+					v-for (item, idx) in records
+					:key idx
+					span {{item.keys[0]}} - \b
+					span {{item._fields[0]}} - \b
+				div
+					button Create
+						@click submit
+					button Match
+						@click match
+					button Exit
+						@click exit
+			div
+				div
+					pre
+						code {{result}}
+
+    script
+		const neo4j = require('neo4j-driver').v1
+		const driver
+			_ neo4j.driver
+				@ 'bolt://localhost:7687'
+				_ neo4j.auth.basic
+					@ 'neo4j'
+					@ 'wizzi'
+		const session = driver.session()
+
+		export-default 
+            { 
+                m data
+                    return 
+                        { 
+                            @ name 'Annie'
+							@ result 'No action yet'
+							@ records []
+                { methods
+                    m submit
+						const resultPromise
+							_ session.run
+								@ 'CREATE (a:Person {name: $name}) RETURN a'
+								{ 
+									@ name this.name
+						_ resultPromise.then
+							=> 
+								param result
+								log 'result', result
+								
+								_ session.close
+								const singleRecord = result.records[0]
+								log 'singleRecord', singleRecord
+								const node = singleRecord.get(0)
+								set this.result = JSON.stringify(node, null, 2)
+								
+					m exit
+						# on application exit:
+						_ driver.close
+					
+					m match
+						const q = 'MATCH (people:Person) RETURN people.name'
+						_ session.run
+							@ q
+							._ then 
+								=> 
+									param result
+									log 'result', result
+									set this.result = JSON.stringify(result, null, 2)
+									set this.records = result.records
+
+    style 
+		< body
+			margin 100px
+            font-size 18px
+            font-family verdana
+            color blue
+

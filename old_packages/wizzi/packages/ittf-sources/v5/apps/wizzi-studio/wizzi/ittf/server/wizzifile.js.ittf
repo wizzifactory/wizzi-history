@@ -1,0 +1,165 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var chokidar = require('chokidar')
+	var serverConfig = require('./config')
+	+
+	var FACTORY_SITE = 'site'
+	var MODEL_TICKET_MAINSITE = 'mainsite'
+	+
+	log 'serverConfig', serverConfig
+	+
+	var md = module.exports = {}
+	+
+	set md.models = {}
+	+
+	var runnerServerInstance = null
+	+
+	var runnerModelsFolder
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'meta'
+			@ 'models'
+	var watcher
+		_ chokidar.watch
+			@ runnerModelsFolder + '/**/*.ittf'
+			{
+				@ persistent true
+	+
+	set md.onConfig
+		function
+			param wizziConfig
+			param callback
+			
+			#
+				# Set the path of the html page
+				# for metaediting of IttfDocuments
+			_ wizziConfig.set
+				@ 'meta-html-ittf-path'
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'meta'
+					@ 'html'
+					@ 'index.html.ittf'
+			
+			#
+				# Set the path of the html page
+				# for browsing an ittf folder path
+			_ wizziConfig.set
+				@ 'meta-folder-ittf-path'
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'meta'
+					@ 'folder'
+					@ 'index.html.ittf'
+			
+			#
+				# Set the path of the html page
+				# for simple text editing of non IttfDocuments
+			_ wizziConfig.set
+				@ 'meta-html-text-path'
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'meta'
+					@ 'text'
+					@ 'index.html.ittf'
+
+			log 'wizzifile.onConfig'
+			
+			_ callback(null)
+
+	set md.onStart
+		function
+			param runnerServer
+			param wizziConfig
+			param callback
+			log 'wizzifile.onStart.enter'
+			set runnerServerInstance = runnerServer
+			_ runnerServer.registerFsNoAclFactory
+				@ FACTORY_SITE
+				{ 
+					{ plugins
+						@ pluginsBaseFolder __dirname
+						[ items
+							@ 'wizzi-web'
+			_ runnerServer.registerApi('default', md.defaultApi)
+			log 'wizzifile.onStart.exit'
+			_ callback(null)
+
+	set md.onPrepare
+		function
+			param factoryName
+			param runnerServer
+			param wizziConfig
+			param callback
+			
+			log 'wizzifile.onPrepare.enter.factoryName', factoryName
+			
+			if factoryName === FACTORY_SITE
+				_ loadRuntimeModels
+					f_cb()
+						var loading = false
+						log 'wizzifile.setting watcher', watcher
+						_ watcher.on
+							@ 'change'
+							=>
+								log 'wizzifile.reloading watched'
+								_ loadRuntimeModels
+						_ watcher.on
+							@ 'add'
+							=>
+								log 'wizzifile.reloading watched'
+								_ loadRuntimeModels
+						return 
+							_ callback
+			else
+				_ callback(null)
+
+	set md.defaultApi
+		function
+			param name
+			param query
+			
+			log 'wizzifile.defaultApi.request', name, query
+
+			if name === 'demos'
+				var model = md.models['mainsite']
+				return model.getDemosByPath(query)
+				
+			if name === 'categories'
+				var model = md.models['mainsite']
+				return model.getCategoriesByPath(query)
+
+			if name === 'links'
+				var model = md.models['mainsite']
+				return model.getLinksByPath(query)
+
+			throw new Error('wizzifile.defaultApi. Unknown api name: ' + name)
+
+	function loadRuntimeModels
+		param callback
+
+		var mainSiteIttfPath
+			_ path.join
+				@ runnerModelsFolder
+				@ 'main.site.ittf'
+			
+		log 'wizzifile loading', mainSiteIttfPath
+
+		_ runnerServerInstance.loadModel
+			@ FACTORY_SITE
+			@ MODEL_TICKET_MAINSITE
+			@ 'site'
+			@ mainSiteIttfPath
+			{
+			f_cb( wizziModel
+				set md.models[MODEL_TICKET_MAINSITE] = wizziModel
+				log 'wizzifile loaded', mainSiteIttfPath
+				if callback
+					_ callback(null)

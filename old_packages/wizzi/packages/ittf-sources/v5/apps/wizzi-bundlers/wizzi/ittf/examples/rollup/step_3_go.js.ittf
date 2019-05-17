@@ -1,0 +1,20 @@
+﻿demo_module( rollup_build, 1, 3 )
+
+	$append imports
+		var rollupBundler = require('../../lib/rollupBundler')
+
+	_ rollupBundler.makeBundle
+		_ path.join
+			@ __dirname
+			@ 'step_3'
+			@ 'src'
+			@ 'main.js.ittf'
+		{
+		f_cb_throw( generated )
+			_ printValue
+				@ 'rollupBundler'
+				@ generated
+			return
+				_ step_callback
+					@ null
+

@@ -1,0 +1,117 @@
+c(TreeNode)
+
+	f(getInitialState)
+		var node = this.props.node
+		return
+			{
+				@ expanded 
+					iif (node.state && node.state.hasOwnProperty('expanded')) 
+						then node.state.expanded 
+						else
+							iif (this.props.level < this.props.options.levels)
+								then true
+								else false
+				@ selected 
+					iif node.state && node.state.hasOwnProperty('selected')
+						then node.state.selected
+						else false
+				
+	f(toggleExpanded)
+		param id
+		param event
+		_ this.setState
+			{
+				@ expanded !this.state.expanded
+		_ event.stopPropagation()
+
+	f(toggleSelected)
+		param id
+		param event
+		_ this.setState
+			{
+				@ selected !this.state.selected
+		_ event.stopPropagation()
+	
+	f(render)
+
+		var node = this.props.node
+		var options = this.props.options
+
+		var style
+		if !this.props.visible
+			set style
+				{ 
+					@ display 'none' 
+		else
+			if options.highlightSelected && this.state.selected
+				set style
+					{
+						@ color options.selectedColor
+						@ backgroundColor options.selectedBackColor
+			else
+				set style
+					{
+						@ color node.color || options.color
+						@ backgroundColor node.backColor || options.backColor
+
+		if !options.showBorder
+			set style.border = 'none'
+		elif options.borderColor
+			set style.border = '1px solid ' + options.borderColor
+
+		var indents = []
+		for var i = 0; i < this.props.level-1; i++
+			_ indents.push
+				span()
+					{
+						@ className 'indent'
+
+		var expandCollapseIcon
+		if node.nodes
+			if !this.state.expanded
+				set expandCollapseIcon
+					span()
+						{
+							@ className options.expandIcon
+							@ onClick this.toggleExpanded.bind(this, node.nodeId)
+			else
+				set expandCollapseIcon
+					span()
+						{
+							@ className options.collapseIcon
+							@ onClick this.toggleExpanded.bind(this, node.nodeId)
+		else
+			set expandCollapseIcon
+				span()
+					{
+						@ className options.emptyIcon
+
+		var nodeIcon
+			span()
+				{
+					@ className 'icon'
+				i()
+					{
+						@ className node.icon || options.nodeIcon
+
+		var children = []
+		foreach item in node.nodes
+			_ children.push
+				e(TreeNode)
+					{
+						@ node item
+						@ level this.props.level+1 
+						@ visible this.state.expanded && this.props.visible
+						@ options options
+
+		return
+			li()
+				{
+					@ className 'list-group-item'
+					@ style style
+					@ key node.nodeId 
+				@ indents
+				@ expandCollapseIcon
+				@ nodeIcon
+				@ this.props.node.text
+				@ children

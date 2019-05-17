@@ -1,0 +1,50 @@
+﻿common/example/plugin('svg examples')
+
+	$append imports
+		var svgfactory = require('../../lib/wizzi/models/svg-factory.g')
+		var svggenerator = require('../../lib/artifacts/svg/document/gen/main')
+	
+	+
+	var loadModel
+		_ svgfactory.createLoadModel
+			_ getWizziObject
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath,'svg')
+		set item = item.substring(0, item.length - '.svg.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	+
+	function execute
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.svg.ittf'
+		var svgOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.svg'
+		_ loadModel
+			@ ittfSource
+			{
+				@ __productionManager
+					_ mocks.getProductionManager
+			f_cb_test( wizziModel )
+				log 'svg wizziModel', wizziModel
+				var ctx
+					_ mocks.getGenContext
+				_ svggenerator.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( ctxout )
+						log 'ctxout begin ========', '\n' + ctxout.getContent(), '\nctxout end ============'
+						_ file.write
+							@ svgOutput
+							@ ctxout.getContent()
+

@@ -1,0 +1,24 @@
+﻿api_async( Crawl )
+	+
+	$include filefy
+	$include makeWizziFactoryCreator
+	$include crawl/index
+	+
+	$append imports
+		import assert
+		import chalk
+		import fs
+		import temp
+		$include hashImports
+		$include hashFunctions
+		var wizziTools = require("wizzi-tools")
+
+	$append methods
+
+		var snippetsApi = makeSnippetsApi(config)
+		set api.crawl
+			{
+				@ putSnippet snippetsApi.putSnippet
+				@ wizzifySnippet snippetsApi.wizzifySnippet
+
+		return callback(null, api)

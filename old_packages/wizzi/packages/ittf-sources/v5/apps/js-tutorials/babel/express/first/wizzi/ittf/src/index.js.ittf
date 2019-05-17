@@ -1,0 +1,98 @@
+﻿module
+	kind es6
+
+    import '@babel/polyfill'
+	import 'dotenv/config'
+    import cors from 'cors'
+    import bodyParser from 'body-parser'
+    import express from 'express'
+    import models
+        @ connectDb
+        from './models'
+    import routes from './routes'
+    
+	const app = express()
+    
+	# Application-Level Middleware
+    _ app.use(cors())
+    _ app.use(bodyParser.json())
+    _ app.use
+        _ bodyParser.urlencoded
+            { 
+                @ extended true
+    _ app.use
+        async=> 
+            param req
+            param res
+            param next
+            set req.context =
+                { 
+                    @ models
+                    @ me
+                        await 
+                            _ models.User.findByLogin('rwieruch')
+            _ next
+    
+	# Routes
+    _ app.use('/session', routes.session)
+    _ app.use('/users', routes.user)
+    _ app.use('/messages', routes.message)
+    
+	# Start
+    const eraseDatabaseOnSync = true
+    _ connectDb().then
+        async=> 
+            if eraseDatabaseOnSync
+                await 
+                    _ Promise.all
+                        [ 
+                            @ models.User.deleteMany({})
+                            @ models.Message.deleteMany({})
+                _ createUsersWithMessages
+            
+			_ app.listen
+                @ process.env.PORT
+                => 
+                    _ console.log
+                        `lit 
+                            + Example app listening on port\b
+                            @ process.env.PORT
+                            + !
+    
+	const createUsersWithMessages
+        async=> 
+            const user1
+                new models.User
+                    { 
+                        @ username 'rwieruch'
+						@ email 'rwieruch@gmail'
+            const user2
+                new models.User
+                    { 
+                        @ username 'ddavids'
+						@ email 'ddavids@gmail'
+            const message1
+                new models.Message
+                    { 
+                        @ text 'Published the Road to learn React'
+                        @ user user1.id
+            const message2
+                new models.Message
+                    { 
+                        @ text 'Happy to release ...'
+                        @ user user2.id
+            const message3
+                new models.Message
+                    { 
+                        @ text 'Published a complete ...'
+                        @ user user2.id
+            await 
+                _ message1.save
+            await 
+                _ message2.save
+            await 
+                _ message3.save
+            await 
+                _ user1.save
+            await 
+                _ user2.save

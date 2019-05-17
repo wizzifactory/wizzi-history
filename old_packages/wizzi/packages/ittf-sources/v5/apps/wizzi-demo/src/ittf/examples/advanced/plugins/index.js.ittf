@@ -1,0 +1,38 @@
+﻿module
+	kind jsfile
+
+	import async
+
+	var examples
+		[
+			_ require('./jsonld')
+			$*
+			_ require('./jsonld')
+			_ require('./regexp')
+			*$
+
+	function exec
+		param request
+		param callback
+		_ async.mapSeries
+			@ examples
+			function
+				param example
+				param callback
+				_ example(request, callback)
+			f_cb_test(results)
+				log 'Advanced-plugins examples results\n', results
+				if callback
+					_ callback
+						@ null
+						@ 'Advanced-plugins examples executed'
+
+	set module.exports
+		function
+			param request
+			param callback
+			_ exec(request || 'build', callback)
+
+	if require.main === module
+		_ exec
+			@ 'build'

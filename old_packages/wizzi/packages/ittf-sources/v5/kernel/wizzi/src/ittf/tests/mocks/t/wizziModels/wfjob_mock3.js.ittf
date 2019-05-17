@@ -1,0 +1,39 @@
+﻿$group
+
+	#
+		# WizziModelTypesArtifact
+	function wfjob_mock3
+		var ret 
+			{
+				@ destBaseFolder
+					_ path.join
+						@  __dirname
+						@ 'result3'
+				@ models
+					[
+				@ productions
+					[
+						{
+							@ lines
+								[
+									{
+										@ wzName 'wizzi'
+										@ cwdFolder __dirname
+										@ destFolder
+											_ path.join
+												@  __dirname
+												@ 'result3'
+										@ artifacts
+											[
+												{
+													@ wzName 'artifactMock2'
+													@ src 'mock2.tests.ittf'
+													@ generator
+														{
+															@ gen 'tests/gen1'
+													@ modelRefs
+														[
+													@ transformers
+														[
+		return ret
+

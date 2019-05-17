@@ -1,0 +1,40 @@
+module wizzi.js.artifacts.module.gen.codegen.es6.property
+	kind jsfile
+	var statement = require('../statement')
+
+	var md = module.exports = {}
+	var myname = 'wizzi.js.artifacts.module.gen.codegen.es6.property'
+
+	md-gen-class( gen )
+
+		var hasChildren = model.statements.length > 0
+
+		if hasChildren
+    
+			if model.static
+				_ ctx.write('static ' + model.wzName + ' = ');
+			else
+				_ ctx.write(model.wzName + ' = ');
+		
+			if hasChildren
+				_ ctx.indent();
+				set model.wzElement = 'jsObject'
+				_ statement.gen
+					@ model
+					@ ctx
+					f_cb()
+						set model.wzElement = 'p'
+						_ ctx.deindent();
+						_ ctx.w('');
+						r_cb()
+			else
+				_ ctx.w('');
+				r_cb()
+		else
+			if model.static
+				_ ctx.write('static ' + model.wzName + ';')
+			else
+				_ ctx.write(model.wzName + ';')
+			_ ctx.w('');
+			r_cb()
+		

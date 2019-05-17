@@ -1,0 +1,31 @@
+﻿$
+	var app = {};
+	app.name = 'es6-express';
+	app.description = 'Nodejs-es6 express app tutorial';
+	app.useBabel = true;
+	app.useExpress = true;
+
+	if (app.useRedux) {
+		app.useReact = true;
+	}
+	if (app.useReact) {
+		app.useWebpack = true;
+		app.useBabel = true;
+		app.webpack = {};
+		app.webpack.loadCss = true;
+		if (!app.rootContainer) {
+			app.rootContainer = 'AppContainer';
+		}
+		if (!app.rootElementId) {
+			app.rootElementId = 'app';
+		}
+	}
+	if (!app.version) {
+		app.version = '0.0.1';
+	}
+	if (!app.author) {
+		app.author = 'Stefano Bassoli';
+	}
+	if (!app.license) {
+		app.license = 'MIT';
+	}

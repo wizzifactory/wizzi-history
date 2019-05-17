@@ -1,0 +1,61 @@
+﻿module
+	kind es6
+
+	#
+		# A snippet meta schema is a directory document of all the snippet archives
+		# persisted in google/firebase/firestore.
+		# The meta schema document is read and written with the [retrieve|save]SnippetIndex methods
+		# Single archives are managed with [add|rename|remove]Snippet
+
+	#
+		# Snippet archives are json file systems persisted in google/firebase/firestore.
+		# At the moment each file system has a single file.
+		# The snippetArchiveName is in the format: schemaName.archiveName
+		# The async CRUD methods are [get|save|rename|remove]SnippetArchive
+
+	class FbFsClient
+		ctor
+			param user
+			param options
+			set this.user = user || 'stefi'
+			set this.options = options || {}
+			set this.project = 'default'
+			set this.archive = 'default'
+			set this.docRefsPool = {}
+
+		m init
+			_ firebase.initializeApp
+				{
+					@ apiKey "AIzaSyACBhxkQICMYxWeftA2DmsOzCAqVf3aTOQ"
+					@ authDomain "wizzifactory.firebaseapp.com"
+					@ databaseURL "https://wizzifactory.firebaseio.com"
+					@ projectId "wizzifactory"
+					@ storageBucket ""
+					@ messagingSenderId "676985835415"
+			+
+			set this.firestore = firebase.firestore()
+			+
+			_ this.firestore.settings
+				{
+					# your settings...
+					@ timestampsInSnapshots true
+			# log 'FbFsClient.initialized. User: ' + this.user + ' project: ' + this.project + ', archive: ' + this.archive
+
+		m setUser
+			param user
+			set this.user = user
+			_ this.setProject
+				@ 'default'
+
+		m setProject
+			param project
+			set this.project = project
+			_ this.setArchive
+				@ 'default'
+
+		$include fbFsClient/static_methods
+		$include fbFsClient/snippet_index
+		$include fbFsClient/snippet_archives
+		$include fbFsClient/init_snippet_data
+
+	export default FbFsClient

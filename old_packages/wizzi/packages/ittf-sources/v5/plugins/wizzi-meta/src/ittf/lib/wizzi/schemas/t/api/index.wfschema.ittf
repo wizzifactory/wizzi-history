@@ -1,0 +1,71 @@
+﻿$group
+
+	e api : commentable
+		a kind
+			restrict
+				enum kernel
+				enum plugin
+			default kernel
+		a id
+		a extends
+
+		r implementation
+			one-to-one
+		r interface
+			one-to-one
+		r type
+			one-to-one
+
+	e implementation : commentable
+		a type
+			restrict
+				enum module
+				enum pojo
+				enum class-instance
+		a path
+		a_tag( standardPath, standard-path )
+
+	e interface : commentable
+		r propert-y/ies
+		r method/s
+
+	e type : commentable
+		r propert-y/ies
+		r method/s
+
+	e method : commentable
+		a type
+			restrict
+				enum function
+				enum high-order-function
+				enum facade-function
+		a_flag( isAsync, is-async )
+		a_flag( isInternal, is-internal )
+		a_tag( implementedBy, implemented-by)
+			# when type == facade-function
+		a_tag( calledBy, called-by)
+		a_tag( throwIf, throw-if)
+		r param/s
+		r return
+			one-to-one
+		r info
+			one-to-one
+	
+	e ctor : method
+	
+	param_arg_value_property( param )
+	param_arg_value_property( argument )
+	param_arg_value_property( value )
+	param_arg_value_property( item )
+	param_arg_value_property( property )
+
+	e return : commentable
+		a type
+			restrict
+				enum alternative
+		r value/s
+
+	$include info
+	$include switch
+	$include restrict
+

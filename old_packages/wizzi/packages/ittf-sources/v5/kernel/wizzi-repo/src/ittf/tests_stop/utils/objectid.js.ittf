@@ -1,0 +1,10 @@
+﻿base_test( utils.objectId )
+	
+	$append imports
+		var ObjectId = require('../../lib/utils/objectId')
+
+	it should create an objectId
+		var id = new ObjectId
+		log 'ObjectId.id', id
+		tobe_object(id)
+		tobe_number(id.toString().length, 24)

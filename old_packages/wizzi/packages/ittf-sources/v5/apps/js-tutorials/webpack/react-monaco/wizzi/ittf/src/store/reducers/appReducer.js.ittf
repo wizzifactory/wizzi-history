@@ -1,0 +1,53 @@
+﻿module
+    kind react
+	+
+	a( CHANGE_THEME )
+	a( CHANGE_MODE )
+	a( TOGGLE_CONTROLLED )
+	a( CHANGE_UI_OPTION_NAME
+	a( CHANGE_UI_OPTION_VALUE
+
+	+
+	const appInitialState
+		{
+			@ theme 'xq-light'
+			@ mode 'xml'
+			@ controlled false
+			@ uioptionname 'splitter-split'
+			@ uioptionvalue 'vertical'
+			@ uioptions {}
+	
+	+
+	r( app, appInitialState, true )
+	
+		c( CHANGE_THEME
+			{
+				@ ...state
+				@ theme action.theme
+
+		c( CHANGE_MODE
+			{
+				@ ...state
+				@ mode action.mode
+
+		c( TOGGLE_CONTROLLED
+			{
+				@ ...state
+				@ controlled !state.controlled
+
+		c( CHANGE_UI_OPTION_NAME
+			{
+				@ ...state
+				@ uioptionname action.uioptionname
+				@ uioptionvalue state.uioptions[action.uioptionname] || ''
+
+		c( CHANGE_UI_OPTION_VALUE
+			{
+				@ ...state
+				@ uioptionvalue action.uioptionvalue
+				@ uioptions
+					{
+						@ ...state.uioptions 
+						@ [state.uioptionname] action.uioptionvalue
+
+    

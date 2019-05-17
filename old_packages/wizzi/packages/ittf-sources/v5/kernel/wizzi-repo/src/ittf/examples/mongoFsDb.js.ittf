@@ -1,0 +1,63 @@
+﻿base_example( wizzi-repo.examples.mongoFsMongo )
+	
+	$append imports
+		var FsMongo = require('../lib/mongodb/fs/fsmongo')
+
+	var baseFolder = 'c:/wz/users/docexample'
+	var file_1_path
+		_ path.join
+			@ baseFolder
+			@ 'folder1'
+			@ 'hello.js.ittf'
+
+	_ heading1('start')
+
+	_ FsMongo.create
+		f_cb_test( fsmongo )
+			_ fsmongo.insertItem
+				{
+					@ parentId null
+					@ basename 'f'
+					@ dirname null
+					@ kind 0
+				f_cb_test( result )
+					_ heading2('insertItem')
+					_ printValue
+						@ 'result'
+						@ result
+					_ _updateItem(result.item)
+
+			function _updateItem
+				param item
+				_ _deleteItem(item)
+			
+			function _deleteItem
+				param item
+				_ fsmongo.deleteItem
+					@ item._id
+					f_cb_test( result )
+						_ heading2('deleteItem')
+						_ printValue
+							@ 'result'
+							@ result
+						_ _getAll
+
+			function _getAll
+				_ fsmongo.getItem
+					@ null
+					f_cb_test( items )
+						_ heading2('getAll / getItem(null)')
+						_ printArray
+							@ 'items'
+							@ items
+							[
+								@ 'path'
+								@ 'kind'
+						_ fsmongo.close
+
+
+
+	
+
+
+

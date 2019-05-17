@@ -1,0 +1,79 @@
+﻿$group
+
+	runner( FunctionCall
+		var 
+			decl objbase
+			decl value
+		# log 'wizzi-mtree.jswizzi.runner.functions.FunctionCall'
+        if node.name.base
+			checked_run_set( objbase, FunctionCall node.name.base
+                _ runner
+                    @ node.name.base
+                    @ ctx
+        else 
+            set objbase = ctx.values
+		if _.isObject(objbase) == false
+			return
+				_ local_error
+					@ ctx
+					@ 'The value must be an object. It is "' + getTypeDescription(obj) + '".'
+					@ node.name.base
+					@ node
+					@ 'FunctionCall'
+		var args
+            [ 
+        if Object.prototype.toString.call(node.arguments) == '[object Array]'
+            foreach item in node.arguments
+				# log 'wizzi-mtree.jswizzi.runner.functions.FunctionCall.item', item
+				checked_run_set( value, FunctionCall item
+					_ runner(item, ctx)
+				# log 'wizzi-mtree.jswizzi.runner.functions.FunctionCall.value', value
+                _ args.push(value)
+		var f = objbase[node.name.name]
+		if !f
+			return
+				_ local_error
+					@ ctx
+					@ 'Missing function.'
+					@ node.name.base
+					@ node
+					@ 'FunctionCall'
+		if verify.isFunction(f)
+			try
+				var v = objbase[node.name.name].apply(objbase, args)
+				return v
+			catch ex
+				return
+					_ local_error
+						@ ctx
+						@ (ex ? ex.message : 'Error calling function')
+						@ node.callee.property
+						@ node
+						@ 'CallExpression'
+						@ ex
+    
+	runner( FunctionDeclaration
+        _ ctx.declareFunction
+            @ node.id.name
+            @ node
+        return 
+            { 
+
+    runner( FunctionDeclaration_Call, data
+		# log 'wizzi-mtree.jswizzi.runner.functions.FunctionDeclaration_Call'
+		var save_brick_key = ctx.get_currentMTreeBrickKey()
+	    var ctx = ctx.push()
+        for var i = 0; i < node.params.length; i++
+			# log 'wizzi-mtree.jswizzi.runner.functions.FunctionDeclaration_Call.param', node.params[i].name
+            if data.length > i
+				# log 'wizzi-mtree.jswizzi.runner.functions.FunctionDeclaration_Call.value', data[i]
+                _ ctx.declareCallParam
+                    @ node.params[i].name
+                    @ data[i]
+        checked_run( state, FunctionCall node.body
+            _ runner
+                @ node.body
+                @ ctx
+        _ ctx.set_MTreeBrickEvalContext(save_brick_key, 0)
+		_ ctx.pop()
+        return state.value

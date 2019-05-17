@@ -1,0 +1,59 @@
+﻿module
+	kind es6
+
+	$
+		var types = {
+			string: 'String',
+			int: 'Number',
+			boolean: 'Boolean',
+			date: 'Date'
+		}
+
+    var mongoose = require('mongoose')
+    var Schema = mongoose.Schema
+	+
+	$foreach t in data.tables
+		var ${t.objectName}Schema
+			new Schema
+				{ 
+					$foreach c in t.columns
+						$if c.type === 'virtual'
+						$elif c.type === 'ref'
+							{ ${c.name}
+								@ type Schema.Types.ObjectId
+								@ ref '${c.refName}'
+								@ required true
+						$elif c.type === 'enum'
+							{ ${c.name}
+								@ type String
+								@ required true
+								$if c.defaultValue
+									@ default '${c.defaultValue}'
+								[ enum
+									$foreach v in c.values
+										@ '${v}'
+						$else
+							{ ${c.name}
+								@ type ${types[c.type]}
+								$if !(c.optional)
+									@ required true
+								$if c.unique
+									@ unique true
+								$if c.min
+									@ min ${c.min}
+								$if c.max
+									@ max ${c.max}
+		
+		$foreach c in t.columns
+			$if c.type === 'virtual'
+				_ ${t.objectName}Schema.virtual
+					@ '${c.name}'
+					._ get
+						function
+							$foreach l in c.lines
+								+ ${l}
+					
+    +
+	# Export the models
+	$foreach t in data.tables
+		set exports.${t.objectName} = mongoose.model('${t.objectName}', ${t.objectName}Schema)

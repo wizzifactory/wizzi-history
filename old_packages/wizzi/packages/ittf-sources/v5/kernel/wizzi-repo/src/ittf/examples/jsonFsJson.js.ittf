@@ -1,0 +1,49 @@
+﻿base_example( wizzi-repo.examples.jsonFsJson )
+	
+	$append imports
+		var json = require('../lib/json/index')
+
+	_ heading1('start')
+
+	var fsJson = new json.FsJson()
+	_ dump
+
+	_ fsJson.insertItem
+		{
+			@ basename 'alpha.js.ittf'
+			@ dirname 'w:/zero'
+			@ kind 1
+		f_cb_test( result )
+			log 'insert.alpha.js.ittf.result', result
+			var insertedId = result.insertedId
+			_ dump
+			set result.item.basename = 'beta.js.ittf'
+			_ fsJson.updateItem
+				@ result.item
+				f_cb_test( result )
+					log 'update.beta.js.ittf.result', result
+					_ dump
+					_ fsJson.writeDocument
+						@ result.item._id
+						@ 'My content'
+						f_cb_test( result )
+							log 'write.beta.js.ittf.result', result
+							_ dump
+							_ fsJson.readDocument
+								@ result.item._id
+								f_cb_test( result )
+									log 'read.beta.js.ittf.result', result
+									_ fsJson.deleteItem
+										@ insertedId
+										f_cb_test( result )
+											log 'delete.beta.js.ittf.result', result
+											_ dump
+
+	function dump
+		_ printValue
+			@ 'fsJson.items'
+			@ fsJson.items
+
+		_ printValue
+			@ 'fsJson.documents'
+			@ fsJson.documents

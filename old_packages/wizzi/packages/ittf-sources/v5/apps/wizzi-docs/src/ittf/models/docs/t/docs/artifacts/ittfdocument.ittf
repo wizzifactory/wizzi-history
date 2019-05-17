@@ -1,0 +1,35 @@
+﻿concept ittf/document core artifact
+
+	summary
+
+		p The 'ittf/document' core artifact exports the ittf
+			+ representation of a loaded mTree.
+			+ This allow the buildup of ittf documents
+			+ using the mTree loader for
+			+ merging sources and contexts and using JsWizzi
+			+ for manipulating them.
+
+		h4 Sample wizzi job using the 'ittf/document' generator.
+		ittf
+			- wfjob
+				- model styles
+					- src styles.json.ittf
+					- schema json
+				- model layout
+					- src layout.json.ittf
+					- schema json
+				- model options.forms
+					- src options.form.ittf
+					- schema form
+				- line ui
+					- artifact ittf document of model options-page.html.ittf
+						- src options-page.html.ittf
+						- schema ittf
+						- generator ittf/document
+						- extension ittf
+						- model-ref styles
+						- model-ref layout
+						- model-ref options.forms
+
+
+

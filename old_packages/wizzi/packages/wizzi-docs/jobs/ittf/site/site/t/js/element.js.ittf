@@ -1,0 +1,73 @@
+$group
+	$params wzui
+
+	var rclass = /[\n\t\r]/g
+	var rnotwhite = (/\S+/g)
+
+	set ${wzui}.element
+		function
+			param element
+			return typeof element === 'string' ? document.getElementById(element) : element
+
+	set ${wzui}.hasClass
+		function
+			param element
+			param selector
+			if (" " + element.className + " ").replace(rclass, " ").indexOf(" " + selector + " ") > -1
+				return true
+			return false
+
+	set ${wzui}.addClass
+		function
+			param element
+			param value
+
+			var classes, cur, finalValue
+
+			if value && typeof value === "string"
+
+				set classes = ( value || "" ).match( rnotwhite ) || []
+                if !element.className && classes.length === 1
+                    set element.className = value
+				
+				else
+				
+					set cur = " " + element.className + " "
+				
+					foreach clazz in classes
+						if cur.indexOf( " " + clazz + " " ) < 0
+							set cur += clazz + " "
+				
+					set finalValue = cur.trim()
+					if element.className !== finalValue
+						set element.className = finalValue
+
+	set ${wzui}.removeClass
+		function
+			param element
+			param value
+
+			var classes, cur, finalValue
+
+			if value && typeof value === "string"
+
+				set classes = ( value || "" ).match( rnotwhite ) || []
+
+				set cur = element.className ? ( " " + element.className + " " ).replace( rclass, " " ) : ""
+
+				foreach clazz in classes
+					while cur.indexOf( " " + clazz + " " ) >= 0 
+						set cur = cur.replace( " " + clazz + " ", " " )
+
+				set finalValue = cur.trim()
+				if element.className !== finalValue
+					set element.className = finalValue
+
+	set ${wzui}.text
+		function
+			param element
+			param value
+			if typeof value === 'undefined'
+				return element.textContent
+			elif element.textContent !== value
+				set element.textContent = value

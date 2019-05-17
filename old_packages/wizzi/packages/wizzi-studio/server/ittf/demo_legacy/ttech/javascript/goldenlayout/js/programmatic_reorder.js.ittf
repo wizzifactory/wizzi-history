@@ -1,0 +1,92 @@
+﻿module 
+    kind jsfile
+    var config
+        { 
+            @ content
+                [ 
+                    { 
+                        @ type 'column'
+                        @ content
+                            [ 
+                                { 
+                                    @ type 'component'
+                                    @ componentName 'example'
+                                    @ componentState
+                                        { 
+                                            @ text 'Component 1'
+                                { 
+                                    @ type 'component'
+                                    @ componentName 'example'
+                                    @ componentState
+                                        { 
+                                            @ text 'Component 2'
+                                { 
+                                    @ type 'component'
+                                    @ componentName 'example'
+                                    @ componentState
+                                        { 
+                                            @ text 'Component 3'
+                                { 
+                                    @ type 'component'
+                                    @ componentName 'example'
+                                    @ componentState
+                                        { 
+                                            @ text 'Component 4'
+    var myLayout
+        new GoldenLayout(config)
+    
+	var toggleRowColumn
+        function 
+            var 
+                decl oldElement = myLayout.root.contentItems[0]
+                decl newElement
+                    _ myLayout.createContentItem
+                        { 
+                            @ type 'column'
+                            @ content
+                                [ 
+                                    { 
+                                        @ type 'row'
+                                        @ content
+                                            [ 
+                                    { 
+                                        @ type 'row'
+                                        @ content
+                                            [ 
+                decl i
+            
+			var stacks = oldElement.getItemsByType('stack')
+            var rows = newElement.getItemsByType('row')
+            _ myLayout.root.replaceChild(oldElement, newElement)
+            _ rows[0].addChild
+                @ stacks[0]
+            _ rows[0].addChild
+                @ stacks[1]
+            _ rows[1].addChild
+                @ stacks[2]
+            _ rows[1].addChild
+                @ stacks[3]
+            _ $('button')
+                ._ remove()
+    
+	_ myLayout.registerComponent
+        @ 'example'
+        function 
+            param container
+            param state
+            var 
+                decl c
+                    function 
+                        return 
+                            _ Math.floor(Math.random() * 255)
+                                ._ toString(16)
+                decl toggleButton
+                    _ $('<button>to grid</button>')
+                        ._ click(toggleRowColumn)
+            _ container.getElement()
+                ._ css('background-color', '#' + c() + c() + c())
+            _ container.getElement()
+                ._ html('<h2>' + state.text + '</h2>')
+            _ container.getElement()
+                ._ append(toggleButton)
+    _ myLayout.init()

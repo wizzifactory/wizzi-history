@@ -1,0 +1,22 @@
+﻿wfschema wfpackage
+
+	# A schema modeling a wizzi factory package
+
+	export-to json
+	
+	$include common/comments
+	
+	e wfpackage : commentable
+		# The root tag of the wfpackage schema.
+		is-root
+
+		$include package/attributes_relations
+		$include package/methods
+		r fsInfo
+			one-to-one
+		r folder/s
+		r document/s
+
+	$include package/elements
+
+	$include fs/index

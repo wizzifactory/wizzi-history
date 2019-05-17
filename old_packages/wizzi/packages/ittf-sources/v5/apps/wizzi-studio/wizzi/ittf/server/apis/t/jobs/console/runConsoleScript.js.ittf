@@ -1,0 +1,37 @@
+﻿$group
+
+	@ runConsoleScript
+		function
+			param options
+			param callback
+
+			var cwd
+				_ paths.consoleJsFolder
+			var arg = options.name
+
+			const { execFile } = require('child_process')
+			const child
+				_ execFile
+					@ 'node'
+					@ [arg]
+					{
+						@ cwd cwd
+					=>
+						param err
+						param stdout
+						param stderr
+						if err
+							return
+								_ callback
+									_ error(err)
+						return							
+							_ callback
+								@ null
+								{
+									@ data
+										{
+											@ stdout stdout
+											@ stderr stderr
+									@ status
+										_ success
+											@ 'Console script run: ' + options.name

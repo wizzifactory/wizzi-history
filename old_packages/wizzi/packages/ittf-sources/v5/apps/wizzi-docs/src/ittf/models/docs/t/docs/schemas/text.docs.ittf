@@ -1,0 +1,34 @@
+﻿concept Text pseudo schema
+
+	summary
+
+		p A text ittf document is a bit out of standard. It is
+			+ a common text document that can break the rule of
+			+ only one root node. It can use any node command or expression
+			+ of an ittf document. A preprocessor transforms the text in
+			+ a standard ittf tree structure. After the buildup of the mTree
+			+ the 'text/document' artifact generator recreates the textual format.
+
+		h4 Example of text mixin for a license file
+		js
+			- $params copy, license
+			- MIT License
+			- 
+			- Copyright (c) ${'$'}{copy}
+			- 
+			- $if license === 'mit'
+				- $include mit_license_text
+			- $elif ...
+
+		h4 The mixin transformed by the prepocessor in a standard format
+		ittf
+			- text
+				- $params copy, license
+				- + MIT License
+				- +
+				- + Copyright (c) 2015 The Wizzi Team
+				- +
+				- $if license === 'mit'
+					- $include mit_license_text
+				- $elif ...
+

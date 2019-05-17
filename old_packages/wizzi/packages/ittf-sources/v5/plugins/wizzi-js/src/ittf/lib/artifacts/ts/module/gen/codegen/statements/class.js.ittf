@@ -1,0 +1,30 @@
+﻿loader( class )
+
+	$append requires
+		var xclass
+		var xclass_es6
+		var xclass_react
+		var method
+		var html
+            
+	stm( xclass
+        if !xclass_es6
+            set xclass_es6 = require('../es6/class')
+        _ xclass_es6.gen(model, ctx, callback)
+    
+	stm( ctor
+		# done by zclass
+        + ;
+		r_cb()
+    
+	stm( method
+        if !method
+            set method = require('../method')
+        new method.gen(model, ctx, callback)
+    
+	$* VIA
+	stm( tohtml
+        if !html
+            set html = require('../html')
+        new html.gen(model, ctx, callback)
+	*$

@@ -1,0 +1,68 @@
+docs
+	
+	concept Ittf documents as code units
+
+		summary
+
+			p We have seen that primary and mixed mTreeBricks have their own evaluation context.
+				+ An mTree loading also has a global evaluation context, where are loaded
+				+ javascript components that jswizzi can safely access and the context objects
+				+ passed to the wizzi-mtree.loader.loadMTree function.
+
+			p Template node commands and expressions contained in node names and node values can
+				+ access the global context and the evaluation context of their mTreeBrick.
+
+			p With code node commands we can declare statements that modify or create variables
+				+ in both the evaluation contexts.
+
+			h3 The '$' code node command
+			p Can be used to declare single line or multi-line jswizzi-statements, that
+				+ during the evaluation step, are executed in the mTreeBrick scope 
+				+ to which the node command belongs.
+			p They may declare and modify variables that have mTreeBrick scope, and
+				+ modify variables that have global scope.
+			h4 Single line format
+			ittf
+				- ...
+					- $ jswizzi-statement
+			h4 Example
+			ittf
+				- ...
+					- $ var names = ['stefi', 'annie'];
+			
+			h4 Multi-line format
+			ittf
+				- $
+					- jswizzi-statement
+					- jswizzi-statement
+					- ...
+		
+			h4 Example
+			ittf
+				- ...
+					- $
+						- var names = ['stefi', 'annie'];
+						- var j = 0;
+
+			
+			h3 The $global code node command
+			p Can be used to declare single line or multi-line jswizzi-statements, that
+				+ during the evaluation step, are executed in the global scope.
+			p They may modify variables that have mTreeBrick scope, and
+				+ create and modify variables that have global scope.
+
+			h4 Single line format
+			ittf
+				- ...
+					- $global jswizzi-statement
+		
+			h4 Multi-line format
+			ittf
+				- $global
+					- jswizzi-statement
+					- jswizzi-statement
+					- ...
+
+
+
+

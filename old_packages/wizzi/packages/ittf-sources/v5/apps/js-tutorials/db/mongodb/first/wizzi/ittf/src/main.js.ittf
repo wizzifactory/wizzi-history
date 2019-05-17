@@ -1,0 +1,37 @@
+﻿module
+    kind es6
+
+	$include app-options
+    
+	import '@babel/polyfill'
+	import Vue from 'vue'
+	
+	$if app.useVuetify
+		import './plugins/vuetify'
+	
+	import App from './App.vue'
+    
+	$if app.useVuex
+		import store from './store'
+	
+	$if app.useVueRouter
+		import router from './router'
+	
+	$if app.useFirebase
+		import '@/firebase/';
+
+	$if app.useVuetify
+		_ require('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons')
+		_ require('../node_modules/vuetify/dist/vuetify.min.css')
+
+	new Vue
+        { 
+            @ el '#app'
+			$if app.useVuex
+				@ store
+			$if app.useVueRouter
+				@ router
+            @ render
+                => 
+                    param h
+                    _ h(App)

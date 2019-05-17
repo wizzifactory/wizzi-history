@@ -1,0 +1,65 @@
+﻿$group
+
+	@ loadModelAndGenerateArtifact
+		function
+			param sessionData
+			param ittfDocumentUri
+			param modelContext
+			param artifactName
+			param artifactContext
+			param callback
+
+			if typeof(callback) != 'function'
+				set callback = artifactContext
+				set artifactContext = {}
+
+			set modelContext = modelContext || {}
+			set artifactContext = artifactContext || {}
+			
+			var requestContext
+				{
+					@ modelRequestContext modelContext
+					@ artifactRequestContext artifactContext
+			
+			# Global context on a single generateArtifact not implemented
+			var globalContext = {}
+
+			if userAuthRequired
+				_ createWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ globalContext
+					_ loadModelAndGenerateArtifact_cb
+						@ ittfDocumentUri
+						@ requestContext
+						@ artifactName
+						@ callback
+			else
+				_ createWizziFactory
+					@ globalContext
+					_ loadModelAndGenerateArtifact_cb
+						@ ittfDocumentUri
+						@ requestContext
+						@ artifactName
+						@ callback
+
+			function loadModelAndGenerateArtifact_cb
+				param ittfDocumentUri
+				param requestContext
+				param artifactName
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.loadModelAndGenerateArtifact
+							@ ittfDocumentUri 
+							@ requestContext
+							@ artifactName
+							f_cb_api( artifactText )
+								return
+									_ callback
+										@ null
+										{
+											@ data artifactText
+											@ status
+												_ success
+													@ 'Artifact generation ' + artifactName + ' on uri ' + ittfDocumentUri + ' executed'

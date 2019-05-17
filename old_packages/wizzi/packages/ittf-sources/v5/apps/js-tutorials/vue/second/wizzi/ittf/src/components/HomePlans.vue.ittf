@@ -1,0 +1,118 @@
+﻿vue 
+    template 
+        v-container 
+            grid-list-lg 
+            v-layout 
+                row 
+                v-flex Available Meal Plans
+                    xs12 
+                    class text-xs-center display-1 font-weight-black my-5
+            v-layout 
+                row 
+                wrap 
+                v-flex 
+                    xs12 
+                    sm12 
+                    md4 
+                    v-card 
+                        v-responsive 
+                            v-img 
+                                src http://source.unsplash.com/hjCA3ecCXAQ
+                                height 500px
+                                v-container 
+                                    fill-height 
+                                    fluid 
+                                    v-layout 
+                                        fill-height 
+                                        v-flex 
+                                            xs12 
+                                            align-end 
+                                            flexbox 
+                                            span KETO
+                                                class headline white--text
+                        v-card-text 
+                            div 
+                                h3 Keto
+                                    class headline mb-0
+                                div The Keto diet is a high-fat, adequate-protein, low-carbohydrate diet. The diet forces the body to burn fats rather than carbohydrates by putting the body into ketosis.
+                        v-card-actions 
+                            v-if ['menu'].includes($route.name)
+                            v-btn Select This Plan
+                                outline 
+                                block 
+                                color green
+                                @click showRecipes('keto')
+                v-flex 
+                    xs12 
+                    sm12 
+                    md4 
+                    v-card 
+                        v-responsive 
+                            v-img 
+                                src http://source.unsplash.com/6S27S6pZ6o0
+                                height 500px
+                                v-container 
+                                    fill-height 
+                                    fluid 
+                                    v-layout 
+                                        fill-height 
+                                        v-flex 
+                                            xs12 
+                                            align-end 
+                                            flexbox 
+                                            span PALEO
+                                                class headline white--text
+                        v-card-text 
+                            div 
+                                h3 Paleo
+                                    class headline mb-0
+                                div The Paleo diet requires the predominant consumption of foods presumed to have been the only foods available to or consumed by humans during the Paleolithic era.
+                        v-card-actions 
+                            v-if ['menu'].includes($route.name)
+                            v-btn Select This Plan
+                                outline 
+                                block 
+                                color green
+                                @click showRecipes('paleo')
+                v-flex 
+                    xs12 
+                    sm12 
+                    md4 
+                    v-card 
+                        v-responsive 
+                            v-img 
+                                src http://source.unsplash.com/1SPu0KT-Ejg
+                                height 500px
+                                v-container 
+                                    fill-height 
+                                    fluid 
+                                    v-layout 
+                                        fill-height 
+                                        v-flex 
+                                            xs12 
+                                            align-end 
+                                            flexbox 
+                                            span VEGAN
+                                                class headline white--text
+                        v-card-text 
+                            div 
+                                h3 Vegan
+                                    class headline mb-0
+                                div The vegan diet abstains from the use of animal products. The vegan diet does not consume meat, diary products, eggs or any all other animal-derived ingredients.
+                        v-card-actions 
+                            v-if ['menu'].includes($route.name)
+                            v-btn Select This Plan
+                                outline 
+                                block 
+                                color green
+                                @click showRecipes('vegan')
+    script 
+        export-default 
+            { 
+                @ name 'HomePlans'
+                { methods
+                    m showRecipes
+                        param plan
+                        _ this.$store.dispatch('getRecipes', plan)
+    style 
+        scoped 

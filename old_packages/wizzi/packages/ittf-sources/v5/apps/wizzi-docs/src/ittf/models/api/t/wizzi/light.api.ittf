@@ -1,0 +1,124 @@
+﻿$group
+
+	api wizzi.light
+	
+		{
+			m gen
+				string ittfDocumentPath
+					# the wizzi schema is detected from the path
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					string artifactName
+						# if undefined the default artifact for the wizzi schema is used
+						# optional
+					{ artifactContext
+						# optional
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+					string artifactTextContent 
+					# The generated artifact is a string of text.
+
+			m mtree
+				string ittfDocumentPath
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					boolean raw
+						# optional
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+					{ mTree
+						api-ref wizzi-mtree.mTree
+						# The builded mTree
+
+			m mtreeFromText
+				string ittfContent
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					string schema
+						# the wizzi schema of the ittf content
+					boolean raw
+						# optional
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+					{ mTree
+						api-ref wizzi-mtree.mTree
+						# The builded mTree
+
+			m model
+				string ittfDocumentPath
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+					{ wizziModel
+						api-ref wizzi-plugin.wizziModel
+						# The loaded Wizzi Model
+
+			m modelFromText
+				string ittfContent
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					string schema
+						# the wizzi schema of the ittf content
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+					{ wizziModel
+						api-ref wizzi-plugin.wizziModel
+						# The loaded Wizzi Model
+
+
+			m job
+				string ittfDocumentPath
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					integer indentedSpaces
+					integer verbose
+					{ jobContext
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+
+			m genSchema
+				string ittfDocumentPath
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()
+
+			m genFolder
+				string ittfDocumentPath
+				{ context
+					# the mTreeBuildUpContext
+					# optional
+				{ options
+					[ plugins
+						string pluginName
+						# optional
+				cb_2()

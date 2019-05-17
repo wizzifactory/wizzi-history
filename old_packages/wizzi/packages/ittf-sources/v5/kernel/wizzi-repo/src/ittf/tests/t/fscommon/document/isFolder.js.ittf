@@ -1,0 +1,10 @@
+﻿$group
+
+	describe folder existence test
+
+		it-async should test if a folder exists
+			_ doc.isFolder
+				@ 'c:/my/starters'
+				f_cb_done( f )
+					log 'should test if a folder exists', err, f
+					tobe_true( f )

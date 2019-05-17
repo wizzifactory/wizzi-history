@@ -1,0 +1,137 @@
+﻿module 
+    kind jsfile
+
+	var path = require('path')
+	var async = require('async')
+	var vfile = require('../fs/vfile')
+	var verify = require('../verify')
+	var asIsLoader = require('./asIsLoader')
+	var IttfFinder = require('./ittfFinder')
+    
+	#
+		#
+		# Simple mTreeBrick structure
+		# { mTreeNode
+		#   string name
+		#   string value
+		#   integer id?
+		#   [ children
+		#     { mTreeNode
+		#
+		# That can be used to build or analize an mTreeBrick.
+		# Usefull for
+		# - analizing raw ittf documents, before composition and evaluation, for
+		#   documentation purposes;
+		# - building mTreeBricks by code.
+		#
+		# can be loaded
+		# - from a source ittf document (loaded as is, no composition and evaluation)
+		# - from a loaded mTree (less usefull)
+		# - calling the 'add' and 'insertAt' methods 
+		#
+		# can be analized to detect
+		# - path of called mixins and includes
+		# - ittf node commands
+		# - nodes with jswizzi statements
+		# - nodes commented out
+		#
+		# can be exported to
+		# - a new mTreeBrick
+		# - appended to an existing mTreeNode
+		#
+		# Is Used by ittfHtmlPrettifier to analize and prettify
+		#
+		# The default store kind is 'filesystem' or 'browser'.
+		# Otherwise a vfile instance must be passed in the property 'file' of
+		# the 'options' param of the 'loadFrom' method.
+
+	class IttfMTreeEx
+        ctor 
+            param name
+			param value
+			param parent
+			set this.name = name
+			set this.value = value || ''
+			set this.parent = parent || null
+            set this.children = []
+			if this.parent == null
+				set this.fragments = {}
+				set this.ittfReferences = {}
+				set this.errorFragments = []
+
+		m root
+			return this.parent == null ? this : this.parent.root()
+    
+		m preAdd
+            param name
+			param value
+			if {}.toString.call(name) === '[object Object]' && name.name
+				set name.parent = this
+				return name
+			else
+				return new IttfMTreeEx(name, value, this)
+
+		m insertAt
+            param name
+			param value
+			param pos
+			var node = this.preAdd(name, value)
+			if pos > this.children.length
+				_ this.children.push(node)
+			else
+				_ this.children.splice(pos, 0, node);
+			return node
+
+		m add
+            param name
+			param value
+			var node = this.preAdd(name, value)
+			_ this.children.push(node)
+			return node
+
+		m append
+			param sb
+			param indent
+			# log 'sb',sb
+			_ sb.push
+				@ indentTabs(indent) + this.name + (this.value && this.value.length > 0 ? ' ' + this.value : '')
+			foreach node in this.children
+				_ node.append(sb, indent + 1)
+
+		m writeFile
+			param string_path
+			param callback
+			var sb = []
+			_ this.append(sb, 0)
+			_ this.file.write
+				@ string_path
+				_ sb.join('\n')
+			_ callback(null)
+
+		m toString
+			var sb = []
+			_ this.append(sb, 0)
+			return sb.join('\n')
+
+		$include ittfMTreeEx/loadFrom
+		$include ittfMTreeEx/export
+		$include ittfMTreeEx/detect
+		$include ittfMTreeEx/analize
+		$include ittfMTreeEx/find
+
+	function indentTabs
+		param num
+		var ret = []
+		for var i=0; i<num; i++
+			_ ret.push('\t')
+		return ret.join('')
+
+	function unixify
+		param path
+		return
+			_ verify.replaceAll
+				@ path
+				@ '\\'
+				@ '/'
+    
+	set module.exports = IttfMTreeEx

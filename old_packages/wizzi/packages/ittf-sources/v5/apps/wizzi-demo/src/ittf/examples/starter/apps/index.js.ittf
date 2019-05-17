@@ -1,0 +1,18 @@
+﻿module
+	kind jsfile
+
+	function exec
+		param callback
+		log 'The starter/apps demo is not implemented yet'
+		if callback
+			_ callback
+				@ null
+				@ 'Starter-apps examples not executed'
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require.main === module
+		_ exec

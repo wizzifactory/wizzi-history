@@ -1,0 +1,21 @@
+﻿$group
+
+	vfile/m( moveFile, writeFileSync, dest, options )
+
+		set options = options || {}
+
+		$append async
+
+			var src = path_string
+			var that = this
+			_ this.copyFile
+				@ src
+				@ dest
+				@ options
+				f_cb( result )
+					_ that.unlink
+						@ src
+						@ callback
+		
+		$append sync
+			throw new Error('Not implemented')

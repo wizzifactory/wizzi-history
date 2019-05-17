@@ -1,0 +1,50 @@
+﻿r-component( Index )
+
+	$append imports
+		import renderHTML from 'react-render-html'
+		import Link from "next/link"
+		import Head from "next/head"
+		import Layout from "../components/Layout"
+		import Navigation from "../components/Navigation"
+
+	m getInitialProps
+		static
+		async
+		return
+			_ Promise.resolve
+				{
+					{ fields
+						@ title 'Hello'
+						@ body '<p>My paragraph</p>'
+					[ activities
+						{ content
+							@ id 1
+							@ name 'stefi'
+						{ content
+							@ id 2
+							@ name 'annie'
+	
+	render
+		prop fields
+
+		return
+			< Layout
+				< Head
+					< title
+						+ {fields.title} - React Rauma
+				main
+					h1 {fields.title}
+					+ { renderHTML(fields.body) }
+					$*
+					{
+						&&
+							+ fields.main_image
+							p
+								img
+									@ src {fields.main_image}
+					*$
+				
+				aside
+					< Navigation
+						@ title Ohjelmaa
+						@ items {activities}

@@ -1,0 +1,31 @@
+﻿module
+	kind jsfile
+
+	import async
+
+	var examples
+		[
+			_ require('./jsonld')
+
+	function exec
+		param callback
+		_ async.mapSeries
+			@ examples
+			function
+				param example
+				param callback
+				_ example(callback)
+			f_cb_test(results)
+				log 'Advanced.essentials.filesystem.plugins.results\n', results
+				if callback
+					_ callback
+						@ null
+						@ 'Advanced.essentials.filesystem.plugins executed'
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require.main === module
+		_ exec

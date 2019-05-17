@@ -1,0 +1,50 @@
+﻿vue 
+    template 
+        v-container 
+            grid-list-lg 
+            v-layout 
+                row 
+                wrap 
+                v-flex 
+                    xs12 
+                    sm6 
+                    md6 
+                    lg4 
+                    v-for (item, idx) in recipes
+                    :key idx
+                    v-card 
+                        v-responsive 
+                            v-img 
+                                :src item.recipe.image
+                        v-card-text 
+                            div {{item.recipe.label}}
+                                class title my-5
+                            div Ingredients
+                                class subheading
+                            ul 
+                                li {{ingredient}}
+                                    v-for (ingredient, i) in item.recipe.ingredientLines
+                                    :key i
+                        v-card-actions 
+                            v-btn Order
+                                color green
+                                dark 
+                                @click orderRecipe(item.recipe)
+    script 
+        export-default 
+            { 
+                @ name 'MealRecipes'
+                { computed
+                    m recipes
+                        return this.$store.state.recipes
+                    m isAuthenticated
+                        return this.$store.getters.isAuthenticated
+                { methods
+                    m orderRecipe
+                        param item
+                        if this.isAuthenticated
+                            _ this.$store.dispatch('addRecipe', item)
+                        else
+                            _ this.$router.push('/sign-in')
+    style 
+        scoped 

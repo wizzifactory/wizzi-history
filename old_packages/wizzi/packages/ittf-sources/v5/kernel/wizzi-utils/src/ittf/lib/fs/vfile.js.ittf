@@ -1,0 +1,530 @@
+﻿module wizzi-utils.fs.vfile
+	kind jsfile
+	#
+		# virtual file manager
+		# WORK IN PROGRESS
+
+    var path = require('path')
+    var iconv = require('iconv-lite')
+	var async = require('async')
+	var _ = require('lodash')
+    var glob = require('../glob')
+    var verify = require('../verify')
+	var errors = require('../errors')
+	var uriParser = require('./uriParser')
+	+
+	$if isWebpackTarget
+		var BrowserFS = require('browserfs')
+	$else
+		var fs
+		try
+			# set fs = require('graceful-fs')
+			set fs = require('fs')
+		catch ex
+			set fs = require('fs')
+	+
+	$if isWebpackTarget
+		var DEFAULT_BROWSERFS_BACKEND = 'IndexedDB'
+	+
+    var PATH_SEPARATOR_RE = /[\/\\]/g
+	var DEFAULT_DECODING = 'utf8'
+    var PRESERVE_BOM = false
+	var win32 = process.platform === 'win32'
+	+
+	var GET_FILES_DEFAULTS
+        { 
+            @ deep true
+            @ extension null
+            @ documentContent false
+	var GET_FOLDERS_DEFAULTS
+        { 
+            @ deep true
+            @ tFoldersOnly false
+            @ documentNames false
+	+
+	# 
+	set module.exports
+		function
+			param options
+			param callback
+			
+			if typeof callback === 'undefined'
+				
+				if verify.isObject(options) && verify.isFunction(options.stat)
+				
+					# options is fsimpl
+					# allow this sync call:
+					#   var file = vfile(fsimpl)
+					return
+						new VFile
+							@ options
+				
+				else
+
+					set callback = options
+					# not used yet
+					set options = {}
+
+			$if isWebpackTarget == false
+				if typeof callback === 'undefined'
+					# allow this sync call defaulting to storeKind 'filesystem'
+					#   var file = vfile()
+					return
+						new VFile
+							_ build_default_fsimpl
+								@ fs
+								@ 'filesystem'
+			
+			if verify.isObject(options) && verify.isFunction(options.stat)
+				# options is fsimpl
+				return
+					_ callback
+						@ null
+						new VFile
+							@ options
+
+			elif verify.isObject(options) && verify.isNotEmpty(options.storeName)
+				# options has storename for browserFS
+				_ default_fs
+					@ options
+					f_cb( fsimpl )
+						# log 'wizzi-utils.lib.fs.vfile. Got fsimpl', fsimpl
+						_ callback
+							@ null
+							new VFile
+								@ fsimpl
+			else
+				_ default_fs
+					f_cb( fsimpl )
+						# log 'wizzi-utils.lib.fs.vfile. Got fsimpl', fsimpl
+						_ callback
+							@ null
+							new VFile
+								@ fsimpl
+
+	class VFile
+		
+		ctor
+			param fsimpl
+			set this.fsimpl = fsimpl
+
+		m unixifyPath
+			param path_string
+			if win32
+				return path_string.replace(/\\/g, '/')
+			else 
+				return path_string
+		
+		m close
+			if this.fsimpl.close
+				_ this.fsimpl.close
+		m stat
+			param path_string
+			param callback
+			return this.fsimpl.stat(path_string, callback)
+		
+		m statSync
+			param path_string
+			return this.fsimpl.statSync(path_string)
+
+		m lstat
+			param path_string
+			param callback
+			# lstat() is identical to stat(), 
+			# except that if path is a symbolic link, 
+			# then the link itself is stat-ed, 
+			# not the file that it refers to.
+			return this.fsimpl.lstat(path_string, callback)
+		
+		m lstatSync
+			param path_string
+			# lstat() is identical to stat(), 
+			# except that if path is a symbolic link, 
+			# then the link itself is stat-ed, 
+			# not the file that it refers to.
+			return this.fsimpl.lstatSync(path_string)
+
+		m unlink
+			param path_string
+			param callback
+			if verify.isFunction(callback)
+				return this.fsimpl.unlink(path_string, callback)
+			else
+				return this.unlinkSync(path_string)
+
+		m unlinkSync
+			param path_string
+			return this.fsimpl.unlinkSync(path_string)
+
+		m rename
+			param old_path_string
+			param new_path_string
+			param callback
+			return this.fsimpl.rename(old_path_string, new_path_string, callback)
+
+		m renameSync
+			param old_path_string
+			param new_path_string
+			param callback
+			return this.fsimpl.renameSync(old_path_string, new_path_string, callback)
+
+		m readdir
+			param path_string
+			param options
+			param callback
+			return this.fsimpl.readdir(path_string, options, callback)
+
+		m readdirSync
+			param path_string
+			param options
+			return this.fsimpl.readdirSync(path_string, options)
+
+		vfile/m( read, readFileSync, options )
+			if !options
+				set options
+					{
+						@ encoding DEFAULT_DECODING
+			$append async
+				var parsedUri = uriParser(path_string)
+				# read buffer (no options)
+				var that = this
+				_ this.fsimpl.readFile
+					@ path_string
+					f_cb( contents )
+						# TODO OLD VIA if parsedUri.storeKind === 'filesystem'
+						if that.fsimpl.kind === 'filesystem'
+							if options.encoding !== null
+								set contents = iconv.decode(contents, (options.encoding || DEFAULT_DECODING))
+								if !PRESERVE_BOM && contents.charCodeAt(0) === 0xFEFF
+									set contents = contents.substring(1)
+						if that.fsimpl.kind === 'browser'
+							set contents = contents.toString('utf8')
+						return
+							_ callback
+								@ null
+								@ contents
+			$append sync
+				var parsedUri = uriParser(path_string)
+				# read buffer (no options)
+				var contents = this.fsimpl.readFileSync(path_string)
+				if this.fsimpl.kind === 'filesystem'
+					if options.encoding !== null
+						set contents = iconv.decode(contents, (options.encoding || DEFAULT_DECODING))
+						if !PRESERVE_BOM && contents.charCodeAt(0) === 0xFEFF
+							set contents = contents.substring(1)
+				return contents
+
+		vfile/m( write, writeFileSync, contents, options )
+			var parsedUri = uriParser(path_string)
+			if !options
+				set options = {}
+			# log 'wizzi-utils.vfile.write.contents 1', contents
+			if parsedUri.storeKind === 'filesystem'
+				if !Buffer.isBuffer(contents)
+					set contents = iconv.encode(contents, (options.encoding || DEFAULT_DECODING))
+			# log 'wizzi-utils.vfile.write.contents 2', contents
+			
+			$append async
+				var that = this
+				_ this.mkpath
+					@ path_string
+					f_cb( notUsed )
+						# log 'write async', path_string, that.fsimpl.writeFile, callback
+						return
+							_ that.fsimpl.writeFile
+								@ path_string
+								@ contents
+								@ callback
+			$append sync
+				_ this.mkpath(path_string)
+				try
+					# log 'write sync', path_string, that.fsimpl.writeFile, callback
+					_ this.fsimpl.writeFileSync(path_string, contents)
+				catch ex
+					set ex.message = 'Writing file ' + path_string + '.\n' + ex.message
+					throw ex
+
+		m openWrite
+            param path_string
+			param callback
+			var stream
+			var that = this
+			_ this.isDirectoryAsync
+				@ path_string
+				f_cb( isDirectory )
+					if isDirectory
+						return
+							_ callback
+								_ error
+									@ 'VFileError'
+									@ 'openWrite'
+									@ 'Write path already exists and is a directory path : ' + path_string
+					_ that.isFileAsync
+						@ path_string
+						f_cb( isFile )
+							if isFile
+								_ that.fsimpl.unlink
+									@ path_string
+									f_cb( notUsed )
+										checked_call( stream )
+											_ that.fsimpl.createWriteStream(path_string)
+										_ callback(null, stream)
+							else 
+								_ that.mkpath
+									@ path_string
+									f_cb( notUsed )
+										checked_call( stream )
+											_ that.fsimpl.createWriteStream(path_string)
+										_ callback(null, stream)
+
+			
+
+		vfile/m( mkpath, mkdirSync )
+			# legacy
+
+			$append sync
+				# log 'mkpath sync', path_string
+				return
+					_ this.ensureParentDir
+						@ path_string
+			
+			$append async
+				# log 'mkpath async', path_string
+				_ this.ensureParentDir
+					@ path_string
+					@ callback
+
+		vfile/m( ensureParentDir, mkdirSync )
+			
+			$append sync
+				var pathParent = path.dirname(path_string)
+				if this.isDirectory(pathParent)
+					return
+				else
+					_ this.mkdir(pathParent)
+					_ this.mkpath(pathParent)
+
+			$append async
+
+				# log 'ensureParentDir', path_string
+
+				var that = this
+				var pathParent = path.dirname(path_string)
+				_ this.isDirectory
+					@ pathParent
+					f_cb( result )
+						# log 'ensureParentDir.isDirectory', result, path_string
+						if result == true
+							r_cb()
+						else
+							_ that.mkdir
+								@ pathParent
+								@ callback
+
+		vfile/m( mkdir, mkdirSync )
+
+			$append async
+				var curpath, subpath, parts, len
+				var parsedUri = uriParser(path_string)
+				if parsedUri.protocol === 'db'
+					set curpath = parsedUri.protocol + '://' + parsedUri.userId
+					if parsedUri.projectId
+						set curpath += '/' + parsedUri.projectId
+					# set parts = parsedUri.path.split(PATH_SEPARATOR_RE)
+					set parts = parsedUri.parts
+				elif parsedUri.protocol === 'ixdb'
+					set curpath = '/' + parsedUri.protocol
+					set parts = parsedUri.parts
+				else
+					# set curpath = ''
+					# protocol will be the root folder
+					set curpath = parsedUri.protocol + ':'
+					# set parts = path_string.split(PATH_SEPARATOR_RE)
+					set parts = parsedUri.parts
+				set len = parts.length
+				var that = this
+				function repeater
+					param index
+					if index === len
+						return callback(null)
+					var part = parts[index]
+					# TODO the if has no meaning 
+					if parsedUri.protocol === 'db' || parsedUri.protocol === 'ixdb'
+						set curpath += '/' + part
+						set subpath = curpath
+					else
+						set curpath += '/' + part
+						set subpath = curpath
+					_ that.exists
+						@ subpath
+						f_cb( exists )
+							if !exists
+								_ that.fsimpl.mkdir
+									@ subpath
+									@ null
+									f_cb( notUsed )
+										return 
+											_ process.nextTick
+												function 
+													_ repeater(index + 1)
+							else
+								return 
+									_ process.nextTick
+										function 
+											_ repeater(index + 1)
+
+				_ repeater(0)
+
+			$append sync
+				var that = this
+				_ path_string.split(PATH_SEPARATOR_RE)
+					._ reduce
+						function 
+							param parts
+							param part
+							set parts += part + '/'
+							var subpath = path.resolve(parts)
+							if !that.exists(subpath)
+								try 
+									_ that.fsimpl.mkdirSync(subpath)
+								catch ex
+									throw 
+										new errors.FileError
+											@ 'Unable to create directory "' + subpath + '" (Error code: ' + ex.code + ').'
+											@ ex
+							return parts
+						@ ''
+
+		vfile/m( exists, statSync )
+
+			$append async
+				_ this.fsimpl.stat
+					@ path_string
+					f_cb_no_err( stats )
+						if err
+							if err.code === 'ENOENT'
+								return
+									_ callback
+										@ null
+										@ false
+							else
+								return
+									_ callback(err)
+						return
+							_ callback
+								@ null
+								@ stats.isDirectory() || stats.isFile()
+			$append sync
+				try
+					var stats = this.fsimpl.statSync(path_string)
+					return stats.isDirectory() || stats.isFile()
+				catch ex
+					if ex.code === 'ENOENT'
+						return false
+					else
+						throw ex
+				return false
+
+		vfile/m( isDirectory, statSync )
+
+			$append async
+				_ this.fsimpl.stat
+					@ path_string
+					f_cb_no_err( stats )
+						if err
+							if err.code === 'ENOENT'
+								return
+									_ callback
+										@ null
+										@ false
+							else
+								return
+									_ callback(err)
+						else
+							r_cb( stats.isDirectory() )
+
+			$append sync
+				try
+					var stat = this.fsimpl.statSync(path_string)
+					return stat.isDirectory()
+				catch ex
+					if ex.code === 'ENOENT'
+						return false
+					else
+						throw ex
+				return false
+    
+		vfile/m( isFile, statSync )
+
+			$append async
+				_ this.fsimpl.stat
+					@ path_string
+					function
+						param err
+						param stats
+						if err
+							if err.code === 'ENOENT'
+								return
+									_ callback
+										@ null
+										@ false
+							else
+								return
+									_ callback(err)
+						return
+							_ callback
+								@ null
+								@ stats.isFile()
+
+			$append sync
+				try
+					var stat = this.fsimpl.statSync(path_string)
+					return stat.isFile()
+				catch ex
+					if ex.code === 'ENOENT'
+						return false
+					else
+						throw ex
+				return false
+		
+		$include vfile/copyMoveUtils
+		$include vfile/copyFile
+		$include vfile/copyFolder
+		$include vfile/moveFile
+		$include vfile/moveFolder
+		$include vfile/deleteFolder
+		$include vfile/json
+		$include vfile/getFiles
+		$include vfile/getFolders
+		$include vfile/glob
+
+	set VFile.prototype.glob = VFile.prototype.getGlobbedFilesEx
+	set VFile.prototype.globAsync = VFile.prototype.getGlobbedFilesEx
+
+
+    function unixifyPath
+        param path_string
+        if win32
+            return path_string.replace(/\\/g, '/')
+        else 
+            return path_string
+
+	# return true if dest is a subdir of src, otherwise false.
+    function isSrcSubdir
+        param src
+        param dest
+        const srcArray = path.resolve(src).split(path.sep)
+        const destArray = path.resolve(dest).split(path.sep)
+        return 
+            _ srcArray.reduce
+                => 
+                    param acc
+                    param current
+                    param i
+                    return acc && destArray[i] === current
+                @ true
+	
+	$include vfile/json_f
+	$include vfile/default_fs
+
+	wzerror( wizzi-utils.fs.vfile )

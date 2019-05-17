@@ -1,0 +1,311 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    +  ids: undefined undefined
+    var assert = require('assert') ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var _ = require('lodash') ids: undefined undefined
+    var verify = require('../util/verify') ids: undefined undefined
+    var errors = require('../errors') ids: undefined undefined
+    var fail = require('../util/fail') ids: undefined undefined
+    var log ids: undefined undefined
+      _ require('../util/log') ids: undefined undefined
+        (  ids: undefined undefined
+          @ module ids: undefined undefined
+    var interpolate = require('../util/interpolate') ids: undefined undefined
+    var ModelInfo = require("../model/modelinfo").ModelInfo ids: undefined undefined
+    +  ids: undefined undefined
+    #  ids: undefined undefined
+      # ArtifactInfo is a wrapper around an <artifact> element ids: undefined undefined
+      # of a <wfjob> WizziModel. ids: undefined undefined
+      # The config parameter has already been preprocessed ids: undefined undefined
+      # by the lib/production/wfjob.js module. ids: undefined undefined
+      # param config:Object { ids: undefined undefined
+      # name:String, ids: undefined undefined
+      # options:Object { ids: undefined undefined
+      # basedir:String // Uri ids: undefined undefined
+      # dotgExtensionPrefix:Boolean ids: undefined undefined
+      # }, ids: undefined undefined
+      # model:Object {  // ModelInfo config object ids: undefined undefined
+      # see lib/production/wfjob.js for creation ids: undefined undefined
+      # see lib/model/modelInfo.js for use ids: undefined undefined
+      # }, ids: undefined undefined
+      # isWfJob:Boolean, ids: undefined undefined
+      # transformers:Array { ids: undefined undefined
+      # name:String ids: undefined undefined
+      # dumpFile:String    // Uri ids: undefined undefined
+      # }, ids: undefined undefined
+      # gen:Object { ids: undefined undefined
+      # generator:String // generator name ids: undefined undefined
+      # }, ids: undefined undefined
+      # dest:Object { ids: undefined undefined
+      # fullpath:String    // Uri ids: undefined undefined
+      # folder:String      // a basepath Uri, may be relative ids: undefined undefined
+      # baseFolder:String  // a basepath Uri (required when folder is relative) ids: undefined undefined
+      # path:String        // relative path ids: undefined undefined
+      # extension:String ids: undefined undefined
+      # } ids: undefined undefined
+      # } ids: undefined undefined
+    +  ids: undefined undefined
+    function logme ids: undefined undefined
+      if false ids: undefined undefined
+        _ console.log.apply(console, arguments) ids: undefined undefined
+    +  ids: undefined undefined
+    wz-class ArtifactInfo ids: undefined undefined
+      ctor  ids: undefined undefined
+        param config ids: undefined undefined
+        set this.name = config.name ids: undefined undefined
+        set this.options = config.options ids: undefined undefined
+        if verify.isObject(config.model) ids: undefined undefined
+          set this.modelInfo = new ModelInfo(config.model) ids: undefined undefined
+          set this.contextInfos = null ids: undefined undefined
+        else  ids: undefined undefined
+          set this.contextInfos = [] ids: undefined undefined
+          foreach item in config.contexts ids: undefined undefined
+            _ this.contextInfos.push ids: undefined undefined
+              new ModelInfo(item) ids: undefined undefined
+          set this.modelInfo = null ids: undefined undefined
+        set this.isWfJob = config.isWfJob ids: undefined undefined
+        set this.transformers = config.transformers ids: undefined undefined
+        set this.gen = config.gen ids: undefined undefined
+        set this.dest = config.dest ids: undefined undefined
+        set this.wfjob = config.wfjob ids: undefined undefined
+        set this.genWriters = [] ids: undefined undefined
+      m initialize ids: undefined undefined
+        param productionManager ids: undefined undefined
+        set this.productionManager = productionManager ids: undefined undefined
+        if this.modelInfo ids: undefined undefined
+          _ this.modelInfo.productionManager ids: undefined undefined
+            @ productionManager ids: undefined undefined
+        else  ids: undefined undefined
+          foreach item in this.contextInfos ids: undefined undefined
+            _ item.productionManager ids: undefined undefined
+              @ productionManager ids: undefined undefined
+        set this.options ids: undefined undefined
+          _ _.merge ids: undefined undefined
+            {  ids: undefined undefined
+            @ productionManager.options || {} ids: undefined undefined
+            @ this.options || {} ids: undefined undefined
+      m addGenWriter ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ this.genWriters.push(ctx) ids: undefined undefined
+      m isWizziFactoryJob ids: undefined undefined
+        return this.modelInfo != null && this.modelInfo.getContextCollectionInfo() == null && this.isWfJob ids: undefined undefined
+      m isWizziModelArtifact ids: undefined undefined
+        return this.modelInfo != null && this.modelInfo.getContextCollectionInfo() == null && verify.isObject(this.gen) && verify.isNotEmpty(this.gen.generator) ids: undefined undefined
+      m isWizziCollectionArtifact ids: undefined undefined
+        return this.modelInfo != null && verify.isObject(this.modelInfo.getContextCollectionInfo()) && verify.isObject(this.gen) ids: undefined undefined
+      m isCodeWriteArtifact ids: undefined undefined
+        return this.modelInfo == null && verify.isObject(this.gen) && verify.isNotEmpty(this.gen.generator) ids: undefined undefined
+      m isFinalArtifact ids: undefined undefined
+        return this.modelInfo != null && (verify.isObject(this.gen) === false || verify.isEmpty(this.gen.generator)) ids: undefined undefined
+      m getItemsToPersistToFile ids: undefined undefined
+        param callback ids: undefined undefined
+        var check ids: undefined undefined
+          {  ids: undefined undefined
+        var items ids: undefined undefined
+          [  ids: undefined undefined
+        foreach genWriter in this.genWriters ids: undefined undefined
+          var srcPath = genWriter.srcPath ids: undefined undefined
+          if this.isWizziCollectionArtifact() ids: undefined undefined
+            var collectionItem = genWriter.model ids: undefined undefined
+            _ assert.strictEqual ids: undefined undefined
+              _ verify.isObject(collectionItem) ids: undefined undefined
+              @ true ids: undefined undefined
+              @ 'genWriter.model must contain an object.' ids: undefined undefined
+            var ipcontext ids: undefined undefined
+              _ this.getInterpolatePathNameContext(collectionItem) ids: undefined undefined
+            if ipcontext && ipcontext.__is_error ids: undefined undefined
+              log '__is_error ', ipcontext ids: undefined undefined
+              return callback(ipcontext) ids: undefined undefined
+            var destUri ids: undefined undefined
+              _ this.getDestinationUri(srcPath) ids: undefined undefined
+            if destUri && destUri.__is_error ids: undefined undefined
+              log '__is_error ', destUri ids: undefined undefined
+              return callback(destUri) ids: undefined undefined
+            var filepath ids: undefined undefined
+              _ interpolate ids: undefined undefined
+                @ destUri ids: undefined undefined
+                @ ipcontext ids: undefined undefined
+                {  ids: undefined undefined
+                  @ delimiter '{}' ids: undefined undefined
+            _ logme('ArtifactInfo.getItemsToPersistToFile.ipcontext', ipcontext, 'filepath', filepath) ids: undefined undefined
+            if check[filepath] ids: undefined undefined
+              return  ids: undefined undefined
+                _ this.error ids: undefined undefined
+                  @ "Duplicated destination filepath: " + filepath ids: undefined undefined
+                  @ "getItemsToPersistToFile" ids: undefined undefined
+            set check[filepath] = true ids: undefined undefined
+            var persisteable ids: undefined undefined
+              {  ids: undefined undefined
+                @ artifactInfo this ids: undefined undefined
+                @ genWriter genWriter ids: undefined undefined
+                @ filepath filepath ids: undefined undefined
+            _ items.push(persisteable) ids: undefined undefined
+          else  ids: undefined undefined
+            var destUri ids: undefined undefined
+              _ this.getDestinationUri(srcPath) ids: undefined undefined
+            if destUri && destUri.__is_error ids: undefined undefined
+              log '__is_error ', destUri ids: undefined undefined
+              return callback(destUri) ids: undefined undefined
+            var persisteable ids: undefined undefined
+              {  ids: undefined undefined
+                @ artifactInfo this ids: undefined undefined
+                @ genWriter genWriter ids: undefined undefined
+                @ filepath destUri ids: undefined undefined
+            _ items.push(persisteable) ids: undefined undefined
+        _ callback(null, items) ids: undefined undefined
+      m getInterpolatePathNameContext ids: undefined undefined
+        param collectionItem ids: undefined undefined
+        if this.isWizziCollectionArtifact() ids: undefined undefined
+          var result ids: undefined undefined
+            {  ids: undefined undefined
+          var info = this.modelInfo.getContextCollectionInfo() ids: undefined undefined
+          foreach templValue in info.pathTemplateValues ids: undefined undefined
+            if templValue.function ids: undefined undefined
+              set result[templValue.token] = collectionItem[templValue.function]() ids: undefined undefined
+              if verify.isEmpty(result[templValue.token]) ids: undefined undefined
+                return  ids: undefined undefined
+                  _ this.error ids: undefined undefined
+                    @ 'the path template value function must return a not empty string for token: "' + templValue.token + '"' ids: undefined undefined
+                    @ 'getInterpolatePathNameContext' ids: undefined undefined
+            elif templValue.attribute ids: undefined undefined
+              set result[templValue.token] = collectionItem[templValue.attribute] ids: undefined undefined
+              _ logme ids: undefined undefined
+                @ 'result[templValue.token]' ids: undefined undefined
+                @ result[templValue.token] ids: undefined undefined
+                _ verify.isEmpty ids: undefined undefined
+                  @ result[templValue.token] ids: undefined undefined
+              if verify.isEmpty(result[templValue.token]) ids: undefined undefined
+                return  ids: undefined undefined
+                  _ this.error ids: undefined undefined
+                    @ 'the path template value attribute "' + templValue.attribute + '" must return a not empty string for token: "' + templValue.token + '"' ids: undefined undefined
+                    @ 'getInterpolatePathNameContext' ids: undefined undefined
+            else  ids: undefined undefined
+              return  ids: undefined undefined
+                _ this.error ids: undefined undefined
+                  @ 'path template value must contain an attribute or a function value for token: "' + templValue.token + '"' ids: undefined undefined
+                  @ 'getInterpolatePathNameContext' ids: undefined undefined
+          return result ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ "Method called on an artifact that is not a wizzi collection artifact." ids: undefined undefined
+              @ 'getInterpolatePathNameContext' ids: undefined undefined
+      m getDestinationUri ids: undefined undefined
+        param srcPath ids: undefined undefined
+        var dest = this.dest ids: undefined undefined
+        var opt = this.options ids: undefined undefined
+        var msg ids: undefined undefined
+          [  ids: undefined undefined
+            @ 'ArtifactInfo.getDestinationUri' ids: undefined undefined
+            @ 'config.dest' ids: undefined undefined
+        if verify.isNotEmpty(dest.fullpath) ids: undefined undefined
+          return dest.fullpath ids: undefined undefined
+        if verify.isEmpty(dest.folder) ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ 'A not empty dest.folder is required' ids: undefined undefined
+              @ 'getDestinationUri' ids: undefined undefined
+        var destpath ids: undefined undefined
+        if dest.path && verify.isAbsolutePath(dest.path) ids: undefined undefined
+          set destpath = path.join(dest.path, srcPath) ids: undefined undefined
+        else  ids: undefined undefined
+          set srcPath = dest.path ? dest.path : srcPath ids: undefined undefined
+          if verify.isEmpty(srcPath) ids: undefined undefined
+            return  ids: undefined undefined
+              _ this.error ids: undefined undefined
+                @ 'A not empty srcPath is required' ids: undefined undefined
+                @ 'getDestinationUri' ids: undefined undefined
+          set destpath = path.join(dest.folder, srcPath) ids: undefined undefined
+        if this.isFinalArtifact() === false ids: undefined undefined
+          var ext ids: undefined undefined
+          if dest.extension === '@@null' ids: undefined undefined
+            set ext = "" ids: undefined undefined
+          else  ids: undefined undefined
+            var ext = (dest.extension || '.js') ids: undefined undefined
+            set ext = verify.startsWith(ext, '.') ? ext : ('.' + ext) ids: undefined undefined
+            if ext.toLowerCase() !== '.ittf' ids: undefined undefined
+              if destpath.substr(- (5), 5).toLowerCase() === '.ittf' ids: undefined undefined
+                set destpath = destpath.substr(0, (destpath.length - 5)) ids: undefined undefined
+            set ext = verify.endsWith(destpath, ext) ? '' : this.options.dotgExtensionPrefix ? ('.g' + ext) : ext ids: undefined undefined
+          set destpath = (destpath + ext) ids: undefined undefined
+        else  ids: undefined undefined
+          if destpath.indexOf('__copy') >= 0 ids: undefined undefined
+            set destpath = verify.replaceAll(destpath, '__copy', '') ids: undefined undefined
+        if verify.isAbsolutePath(destpath) ids: undefined undefined
+          return destpath ids: undefined undefined
+        if verify.isEmpty(dest.baseFolder) ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ 'When dest.folder is a relative path, a not empty dest.baseFolder value is required.' ids: undefined undefined
+              @ 'getDestinationUri' ids: undefined undefined
+        return  ids: undefined undefined
+          _ path.join ids: undefined undefined
+            @ dest.baseFolder ids: undefined undefined
+            @ destpath ids: undefined undefined
+      m error ids: undefined undefined
+        param message ids: undefined undefined
+        param method ids: undefined undefined
+        var err ids: undefined undefined
+          {  ids: undefined undefined
+            @ __is_error true ids: undefined undefined
+            @ message message ids: undefined undefined
+            @ source "wizzi/lib/production/artifactinfo.js/" + method ids: undefined undefined
+            @ modelInfo this.modelInfo ids: undefined undefined
+        _ logme(err) ids: undefined undefined
+        return err ids: undefined undefined
+      m dump ids: undefined undefined
+        throw  ids: undefined undefined
+          new Error('Not implemented') ids: undefined undefined
+      m relPath ids: undefined undefined
+        if this.modelInfo ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.modelInfo.srcFullPath() ids: undefined undefined
+              ._ substr(this.options.basedir.length + 1) ids: undefined undefined
+        else  ids: undefined undefined
+          return 'null' ids: undefined undefined
+      m toString ids: undefined undefined
+        return  ids: undefined undefined
+          [  ids: undefined undefined
+            @ '\n' ids: undefined undefined
+            @ 'ArtifactInfo ' ids: undefined undefined
+            @ 'name:' ids: undefined undefined
+            _ this.name ids: undefined undefined
+            @ 'model.src:' ids: undefined undefined
+            _ this.relPath ids: undefined undefined
+            @ ', gen.generator:' ids: undefined undefined
+            iif this.gen ids: undefined undefined
+              then  ids: undefined undefined
+                set this.gen.generator ids: undefined undefined
+              else 'none' ids: undefined undefined
+            @ '\n' ids: undefined undefined
+            ._ join(' ') ids: undefined undefined
+      m terminate ids: undefined undefined
+        if this.modelInfo ids: undefined undefined
+          _ this.modelInfo.terminate() ids: undefined undefined
+        if this.contextInfos ids: undefined undefined
+          foreach item in this.contextInfos ids: undefined undefined
+            _ item.terminate() ids: undefined undefined
+        if this.genWriters ids: undefined undefined
+          foreach item in this.genWriters ids: undefined undefined
+            _ item.terminate() ids: undefined undefined
+      m isArtifactConfig ids: undefined undefined
+        static  ids: undefined undefined
+        param test ids: undefined undefined
+        if !test ids: undefined undefined
+          return false ids: undefined undefined
+        if !verify.isObject(test.options) ids: undefined undefined
+          return false ids: undefined undefined
+        if !verify.isObject(test.model) && !verify.isObject(test.contexts) ids: undefined undefined
+          return false ids: undefined undefined
+        if !verify.isObject(test.dest) ids: undefined undefined
+          return false ids: undefined undefined
+        if !verify.isObject(test.gen) ids: undefined undefined
+          return false ids: undefined undefined
+        return true ids: undefined undefined
+      m isArtifactInstance ids: undefined undefined
+        static  ids: undefined undefined
+        param test ids: undefined undefined
+        throw  ids: undefined undefined
+          new Error('Not implemented') ids: undefined undefined

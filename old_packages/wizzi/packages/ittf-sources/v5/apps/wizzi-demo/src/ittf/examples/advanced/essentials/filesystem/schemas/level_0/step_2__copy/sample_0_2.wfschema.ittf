@@ -1,0 +1,66 @@
+﻿wfschema sample_0_2
+
+	# Wizzi schema: sample_0_2
+	#
+	# In the second schema we implement a very common pattern
+	# used mainly in language schemas: a tree node structure 
+	# without depth limits. Each node may have comments, 
+	# free elements declared using the tag `<` and sub nodes and
+	# free attributes declared using the tag `@`.
+	#
+	# Example
+	#
+	#   sample_0_2
+	#
+	#       < alfa
+	#           # An alfa node for ...
+	#           @ id 1
+	#           < beta
+	#               @ size 5
+	#           < gamma
+	#               @ id 3
+	#               < sigma
+	#                   @ height 4
+	#                   < tau
+	#                       @ id 5
+	#           < delta
+	#               @ id 6
+	#
+
+	export-to json
+		# This will add the method toJson() on every node object
+		# of the wizzi model that will be generated 
+
+	e comment
+		# The comment `element`.
+		# The `wzName` will contain a comment line.
+		
+		tag #
+
+	e attribute
+		# The attribute `element`.
+		# The attribute name is free.
+		# The `wzName` will contain a name value pair separated by a blank character.
+		
+		tag @
+
+	e node
+		# The node `element`.
+		# We declare a node `element` that may contain many
+		# node elements in a relation `one-to-many` (default).
+		# So any node may contain nodes without depth limits.
+
+		tag <
+
+		r comment/s
+			# Node comment lines. Relation `one-to-many` (default)
+		r attribute/s
+			# Node attributes. Relation `one-to-many` (default)
+		r node/s
+			# Node sub nodes. Relation `one-to-many` (default)
+	
+	e sample_0_2 : node
+		# The `root node` is derived from the node `element`.
+		# So the root too may contain comments, attributes and sub nodes.
+
+		is-root

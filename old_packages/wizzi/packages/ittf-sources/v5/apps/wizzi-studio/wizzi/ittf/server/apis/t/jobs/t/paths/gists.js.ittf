@@ -1,0 +1,235 @@
+﻿$group
+
+	@ gistFolderNameFromKind
+		function
+			param kind
+			param userId
+			if userId
+				if kind === 'gist'
+					return 'gists/' + userId
+				elif kind === 'fragment'
+					return 'gists/' + userId + '/t'
+				elif kind === 'context'
+					return 'contexts/' + userId
+				else
+					return 'snippets/' + userId
+			else
+				if kind === 'gist'
+					return 'gists'
+				elif kind === 'fragment'
+					return 'gists'
+				elif kind === 'context'
+					return 'contexts'
+				else
+					return 'snippets'
+
+	@ gistKindFromFolderPath
+		function
+			param folderParts
+			log 'gistKindFromFolderPath.folderParts', folderParts
+			if folderParts.length == 3
+				return 'fragment'
+			else
+				if folderParts[0] === 'gists'
+					return 'gist'
+				elif folderParts[0] === 'contexts'
+					return 'context'
+				else
+					return 'snippet'
+
+	@ gistKindFromFilePath
+		function
+			param filePath
+			var dirname = path.dirname(filePath)
+			var relFolder
+				_ this.normalize
+					_ dirname.substr(config.jobsBasePath.length + 1)
+			log 'gistKindFromFilePath.relFolder', relFolder
+			return
+				_ this.gistKindFromFolderPath
+					_ relFolder.split('/')
+
+	@ gistsFolderPath
+		function
+			param kind
+			param userId
+			if userId
+				return
+					_ path.join
+						@ config.jobsBasePath
+						@ this.gistFolderNameFromKind(kind, userId)
+			else
+				return
+					_ path.join
+						@ config.jobsBasePath
+						@ this.gistFolderNameFromKind(kind)
+
+	@ gistExecutablesFolderPath
+		function
+			param kind
+			param userId
+			if userId
+				return
+					_ path.join
+						@ config.jobsBasePath
+						@ this.gistFolderNameFromKind(kind, userId) + '_executables'
+			else
+				return
+					_ path.join
+						@ config.jobsBasePath
+						@ this.gistFolderNameFromKind(kind) + '_executables'
+
+	@ gistFilePath
+		function
+			param kind
+			param userId
+			param name
+			return
+				_ path.join
+					_ this.gistsFolderPath
+						@ kind
+						@ userId
+					@ name
+
+	@ gistExecutableFilePath
+		function
+			param kind
+			param userId
+			param name
+			return
+				_ path.join
+					_ this.gistExecutablesFolderPath
+						@ kind
+						@ userId
+					@ name
+
+	@ gistInfoByPath
+		function
+			param filePath
+			return
+				_ this.fileInfoByPath
+					@ filePath
+					_ this.gistsFolderPath
+
+	@ getGistFiles
+		function
+			param kind
+			param userId
+			param callback
+			if kind === 'snippet'
+				return
+					_ this.getFolderFiles
+						_ this.gistsFolderPath
+							@ kind
+							@ userId
+						_ this.gistsFolderPath
+							@ kind
+						@ '/wizzi/' + kind + 's'
+						@ callback
+			else
+				var that = this
+				_ this.getFolderFiles
+					_ this.gistsFolderPath
+						@ 'gist'
+						@ userId
+					_ this.gistsFolderPath
+						@ 'gist'
+					@ '/wizzi/gists'
+					f_cb_api(gists)
+						_ that.getFolderFiles
+							_ that.gistsFolderPath
+								@ 'fragment'
+								@ userId
+							_ that.gistsFolderPath
+								@ 'fragment'
+							@ '/wizzi/fragments'
+							f_cb_api(fragments)
+								_ that.getFolderFiles
+									_ that.gistsFolderPath
+										@ 'context'
+										@ userId
+									_ that.gistsFolderPath
+										@ 'context'
+									@ '/wizzi/contexts'
+									f_cb_api(contexts)
+										r_cb_success_quoted( Got gist files )
+											@ gists gists.data.items
+											@ fragments fragments.data.items
+											@ contexts contexts.data.items
+
+	@ gistFileExists
+		function
+			param kind
+			param userId
+			param name
+			param callback
+			return
+				_ this.fsItemExists
+					_ this.gistFilePath
+						@ kind
+						@ userId
+						@ name
+					@ callback
+
+	@ getGistFile
+		function
+			param kind
+			param userId
+			param name
+			param callback
+			return
+				_ this.getFile
+					_ this.gistFilePath
+						@ kind
+						@ userId
+						@ name
+					@ callback
+
+	@ putGistFile
+		function
+			param kind
+			param userId
+			param name
+			param content
+			param callback
+			var filePath 
+				_ this.gistFilePath
+					@ kind
+					@ userId
+					@ name
+			var that = this
+			_ this.putFile
+				@ filePath
+				@ content
+				f_cb()
+					var gist
+						_ that.gistInfoByPath
+							@ filePath
+					set gist.content = content
+					r_cb_success_quoted( Gist created )
+						@ gist gist
+
+	@ putGistExecutable
+		function
+			param kind
+			param userId
+			param filePath
+			param content
+			param callback
+
+			var name = path.basename(filePath)
+			var executablePath
+				_ this.gistExecutableFilePath
+					@ kind
+					@ userId
+					@ name
+			return
+				_ this.putFile
+					@ executablePath
+					@ content
+					f_cb_api()
+						return
+							_ callback
+								@ null
+								{
+									@ executablePath executablePath

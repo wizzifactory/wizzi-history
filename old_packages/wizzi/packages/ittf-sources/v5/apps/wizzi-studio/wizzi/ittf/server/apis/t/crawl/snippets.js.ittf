@@ -1,0 +1,68 @@
+﻿$group
+
+	function makeSnippetsApi
+		param config
+
+		var paths = makePaths(config)
+
+		return
+			{
+				@ putSnippet
+					function
+						param options
+						param callback
+
+						var userId = options.userId
+						var name = options.name
+						var code = options.code
+						var tags = (options.tags || '').split(' ')
+
+						if options.mime && name.endsWith('.' + options.mime) == false
+							set name += '.' + options.mime
+
+						_ paths.putSnippetFile
+							@ userId
+							@ name
+							@ code
+							f_cb_api(putResult)
+								if options.ittf && options.mime
+									_ paths.putSnippetFile
+										@ userId
+										@ name + '..ttf'
+										@ options.ittf
+										f_cb_api(putResult)
+											r_cb_success_quoted( snippet and ittf created )
+								else
+									r_cb_success_quoted( snippet created )
+
+				@ wizzifySnippet
+					function
+						param options
+						param callback
+
+						var code = options.code
+						var mime = options.mime
+						
+						log 'wizzifySnippet.code', code
+
+						var validMimes
+							[
+								@ 'js'
+								@ 'html'
+								@ 'css'
+								@ 'scss'
+								@ 'json'
+								@ 'xml'
+								@ 'graphql'
+								@ 'svg'
+
+						if validMimes.indexOf(mime) < 0
+							r_cb_error( 'Cannot wizzyfy the mime type ' + mime )
+
+						_ wizziTools.wizzify
+							@ mime
+							@ code
+							f_cb_api( wizzifiedSnippet )
+								log 'wizzifySnippet.wizzifiedSnippet', wizzifiedSnippet
+								r_cb_success_quoted( Code snippet wizzified )
+									@ ittf wizzifiedSnippet

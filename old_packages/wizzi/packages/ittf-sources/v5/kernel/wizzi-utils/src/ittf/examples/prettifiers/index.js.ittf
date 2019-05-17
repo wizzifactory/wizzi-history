@@ -1,0 +1,47 @@
+﻿base_example( prettifiers )
+
+	var rootIndex = require('../../index')
+	var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+	var ittfHtmlPrettifier = require('../../lib/prettifiers/ittfHtmlPrettifier')
+
+	_ step_1
+	
+	function step_1
+		_ ittfMTreeEx.createFrom
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'basic.sample.ittf'
+			{
+			f_cb_test( result )
+				var pretty
+					_ ittfHtmlPrettifier
+						@ result
+						{
+				_ file.write
+					_ path.join
+						@ __dirname
+						@ 'outputs'
+						@ 'basic.sample.pretty.html'
+					@ pretty.prettyLines.join('\n')
+				_ step_2
+
+	function step_2
+		var pretty
+			_ ittfHtmlPrettifier
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'basic.sample.ittf'
+				{
+		log 'step_2', pretty
+		_ step_3
+
+	function step_3
+		_ rootIndex.prettifyFromString
+			[
+				@ 'module'
+				@ '\t$include item'
+				._ join('\n')
+			f_cb_test( pretty )
+				log 'step_3', pretty

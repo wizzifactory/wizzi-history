@@ -1,0 +1,60 @@
+﻿module
+	kind jsfile
+
+	$
+		/* required by examples */
+		var isUpperCaseRequired = false;
+
+	#
+		# Rationale
+		#
+		# Ittf documents are, at the same time, templates and lego brick pieces.
+		# Every node of an ittf document is computable and composable. 
+		# It may contain, be the result of, be the starting point of, a computation
+		# or a composition.
+		# To 'alberize', render in indented tree format, a javascript
+		# source code greatly simplifies the brick composition of a module,
+		# at the cost of a little weird coding style that is easy to get 
+		# acquainted of.
+		# The biggest cost, at the moment, is the lack of syntax highlighting and 
+		# code completion, but Wizzi studio is under way and it will
+		# make up for that. 
+		#
+
+	#
+		# In many cases you can choose how much to 'alberize' a statement.
+	
+	# This statement ...
+	var myLetters
+		_ 'a, b, c'.split
+			@ '.'
+			._ trim
+				._ toUpperCase
+	
+	# ... can be written without indentation
+	var myLetters = 'a, b, c'.split('.').trim().toUpperCase()
+
+	# Sometimes it is a matter of style and personal preference. 
+	# Other times an indentation is required when templating. Imagine that upper case 
+	# be a design choice in differentent scenarios.
+	# You could write ...
+	var myLetters
+		_ 'a, b, c'.split
+			@ '.'
+			._ trim
+				$if isUpperCaseRequired
+					._ toUpperCase
+					
+	# A deep indentation allow a template decision on every node
+	# of the AST.
+
+	$include declarations
+	$include objects
+	$include expressions
+	$include conditionals
+	$include iterations
+	$include exceptions
+	$include functions
+	$include classes
+	$include debug
+	$include test

@@ -1,0 +1,13 @@
+﻿$group
+
+	function makeTasksApi
+		param config
+
+		var paths = makePaths(config)
+
+		return
+			{
+				$include ./babel
+				$include ./eslint
+				$include ./flow
+				$include ./prettier

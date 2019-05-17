@@ -1,0 +1,15 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m exists
+		string itemPath
+		callback
+
+		set itemPath = normalize(path.resolve(itemPath))
+		_ this.fsCommon.getItemByPath
+			@ itemPath
+			f_cb( fsitem )
+				if fsitem
+					r_cb( true )
+				else
+					r_cb( false )

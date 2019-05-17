@@ -1,0 +1,234 @@
+﻿concept Ittf node commands
+
+	summary
+
+		h3 $include
+		ittf
+			- ...
+				- $include fragment-path
+		p The node value (fragment-path) is the relative path to the ittf 
+			+ fragment that must be included. The folder uri of the 
+			+ includer document is the base path for the path resolution
+			+ of composed documents.
+		p The included fragment will be included as is, replacing
+			+ the $include node command, and its nodes will become part of the
+			+ jsWizzi scope of the includer.
+		p An $include node command cannot have children nodes. The included
+			+ fragment cannot have the $params node (cannot have composition parameters).
+
+
+
+		h3 Mix
+		ittf
+			- ...
+				- fragment-path( arg-1 [, arg-2 ... [, arg-n]] )
+					- [ optional child ittf node ]
+		p A mix command is recognized by the ittf parser when a node name 
+			+ ends with an open parenthesis. The chars before the open parenthesis
+			+ are the relative path to the mixed ittf document. The folder uri of 
+			+ the mixer ittf document is the base path.
+			+ No whitechar must separate the mixed fragment path and the open paren.
+		p The mixed fragment is inserted in the mixer document replacing
+			+ the mix node command. If the mix node has children,
+			+ by default they are appended to the root node of the mixed fragment.
+			+ But if the mixed fragment has a descendant node that is a '$hook'
+			+ node command of name 'default', than the children of the mix node
+			+ will replace it.
+
+		p Example of ittf fragment with an $hook node command where children
+			+ of the mix node will be appended. The hook-name is not declared,
+			+ so it is assumed to be 'default').
+		ittf
+			- table
+				- $hook
+
+
+		p The root node of a mixed ittf document can be a mixin inclusion node command.
+			+ A fragment can mix its container and append nodes to its hooks:
+		ittf
+			- mylayout( home )
+				- $append scripts
+					- js dialogs.js
+				- div My content
+
+		h3 $params
+		ittf
+			- rootnode
+				- $params param1 [,param2 [,param-n]]
+		
+		p Ittf fragments designed to be mixed can declare composition parameters.
+			+ The `$params` node must be the first child of the root node.
+
+		p A parameter has format: [&]name[:type][|default]
+		table
+			tr( &    , Optional. A paramater name prededed by `&` means an object passed by reference )
+			tr( name , the name of the parameter to be used in jsWizzi expressions )
+			tr( type , the parameter type
+				p one-of: string(default), integer, float, boolean, date, object (implicit
+					+ when '&' declared), macro (implicit, detected from IttfMacro delimiters
+					+ contained in the default value)
+			tr( default, typed-value | @@null | @@undefined )
+				p warning! `title|null` becomes title = "null" (the quoted string null).
+				+ If you want title to be null then : `title|@@null`
+			tr( string, quotes are optional, example: `title|"my way"` and `title|my way` are the same )
+			tr( boolean, true | false)
+			tr( date, yyyy/mm/dd )
+			tr( macro, 
+				p an IttfMacro can be passed as a parameter to a mixin, when the parameter
+					+ is referenced we have a double macro substitution 
+
+		
+		p This list item fragment, lia.html.ittf, ...
+		ittf
+			- li
+				- $params text, href
+				- a ${'$'}{text}
+					- href ${'$'}{href}
+		p .. can be mixed in this way
+		ittf
+			- ul
+				- lia( my home page, http://hello.it )
+
+		h3 $hook
+		ittf
+			- ...
+				- $hook name
+		p An $hook node command is a named insertion point where node branches can
+			+ be appended. The name is optional, when missing its value is 'default'.
+		p It has to be replaced and must not have children nodes.
+		p See the statements `Mix` and `$Append`, for how to append
+			+ node branches to an $hook node.
+
+		h3 $append
+		ittf
+			- ...
+				- $append hook-name
+					- ... node branch ...
+		p An $append node command is the root of a node branch that will be
+			+ appended to an ancestor $hook of name hook-name.
+			+ The children nodes of $append will replace the $hook node.
+
+		h3 $group
+		ittf
+			- $group empty-value
+				- ... node branch ...
+		p An ittf document must have one and only one root node.
+		p The $group node command is a convenience node that may be used as the root of 
+			+ a fragment that must have more than one root node.
+		p The $group node has no meaningful value. It disappear in the builded mTree.
+
+		h3 $if, $elif, $else
+		p Children nodes of these node commands are included/excluded from the builded mTree
+			+ depending on the value of the expression.
+		ittf
+			- ...
+				- $if jswizzi-expression
+					- ... node branch ...
+				- $elif jswizzi-expression
+					- ... node branch ...           
+				- $else empty-value                    
+					- ... node branch ...           
+
+		h3 $foreach and $backeach
+		ittf
+			- ...
+				- $foreach item-name in collection-name
+					- ... node branch ...
+		p Descendant nodes of this node command are a repeat template; item-name
+			+ is user defined and collection-name is a jswizzi expression that evaluates
+			+ to an iterable javascript object, that must be in scope in the fragment or in the global
+			+ jsWizziContext.
+		p The var statement that declares item-name is auto-generated.
+		p Descendant nodes are repeated having item-name as a value in scope.
+		p The $backeach command iterates the collection backword.
+
+		h3 $break, $continue
+		ittf
+			- ...
+					- $break empty-value
+					- ...
+					- $continue empty-value
+		p This statements have the same meaning than in javascript but operate breaking or continuing
+			+ the template repetition.
+		p A label for continuation is not implemented.
+
+		h3 $while
+		ittf
+			- ...
+				- $while jswizzi-expression
+					- ... node branch ...
+					- $ jswizzi-exit-condition-change
+		p This is a repeat template statement where descendant nodes are repeated 
+			+ until the jswizzi-expression evaluates to false.
+		p $ or $global node commands must be used to modify the context values of the exit condition.
+			+ There is a limit of 10,000 iterations to guard against accidental loops, after that an exception is raised.
+
+		p Example
+		ittf 
+			- ...
+				- $ i = 0
+				- $while i < 256
+					- p Item ${'$'}{i}
+					- $ i++
+
+		h3 $ 
+		p Single line format:
+		ittf
+			- ...
+				- $ jswizzi-statement
+			
+		p Multi-line format:
+			
+		ittf
+			- $
+				- jswizzi-statement
+				- jswizzi-statement
+				- ...
+
+		p Descendant nodes of this command can contain jswizzi statements that,
+			+ during the evaluation step, are executed in the fragment scope 
+			+ to wich the node command belongs.
+		p They may declare and modify variables that have fragment scope, and
+			+ modify variables that have global scope.
+			
+		h3 $global
+		p Single line format:
+		ittf
+			- ...
+				- $global jswizzi-statement
+		p Multi-line format:
+		ittf
+			- $global
+				- jswizzi-statement
+				- jswizzi-statement
+				- ...
+		p Descendant nodes of this command can contain jswizzi statements that,
+			+ during the evaluation step, are executed in the global scope of the jsWizziContext.
+			+ They may declare or modify variables in the global scope.
+
+		h3 ${'$'}.
+		p The text container node
+		ittf
+			- ...
+				- ${'$'}.
+					- free content
+					- free content
+					- ...
+
+		h3 ${'$'}${'$'}
+		p The single line comment
+		ittf
+			- ...
+				- ul
+					- ${'$'}${'$'} <rest-of-line is comment>
+					- li item ${'$'}${'$'} <rest-of-line is comment>
+
+		h3 ${'$'}${'*'} ... ${'*'}${'$'}
+		p The multiline comment
+		ittf
+			- ...
+				- ${'$'}${'*'}
+				- ul
+					- li
+				- ${'*'}${'$'}
+

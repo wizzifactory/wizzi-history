@@ -1,0 +1,40 @@
+﻿wfjob wizzi-docs-docs
+	
+	$
+		var models_folder     = "c:/my/wizzi/v5/apps/wizzi-docs/src/ittf/models/docs";
+		var sections = ['intro', 'ittf', 'jswizzi', 'schemas', 'models', 'artifacts', 'jobs', 'plugins', 'wizzifiers'];
+		var html_folder       = path.join(__dirname, 'html');
+		var dest_folder       = "c:/my/wizzi/v5/github/wizzifactory.github.io/docs";
+		var dest_folder_styles  = "c:/my/wizzi/v5/github/wizzifactory.github.io/styles";
+
+	models-base-folder ${models_folder}
+
+	$foreach section in sections
+		model docs_${section}
+			src docs_${section}.docs.ittf
+			schema docs
+
+	line html
+		cwd-folder ${html_folder}
+
+		$foreach section in sections
+			wfjob/art-wo-html( docs.html.ittf )
+				dest-path ${section}.html
+				model-ref docs_${section}
+					transformer docs/preprint
+
+	line css
+		cwd-folder ${html_folder}
+		dest-folder ${dest_folder_styles}
+
+		$foreach section in sections
+			wfjob/art-wo-css( docs.css.ittf )
+				dest-path documentation-${section}.css
+				model-ref docs_${section}
+					transformer docs/preprint
+
+	production
+		dest-folder ${dest_folder}
+		line-ref html
+		line-ref css
+

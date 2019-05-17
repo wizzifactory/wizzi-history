@@ -1,0 +1,76 @@
+﻿$group
+
+	class BrowseManager
+		ctor
+			param props
+			set this.props = props
+			set this.app = props.app
+			set this.treeView = props.treeView
+			set this.browserControl = null
+			set this.currentItem = null
+
+		m initialize
+			_ this.app.on
+				@ 'result'
+				=>
+					param result
+					param target
+					log 'BrowseManager.result', result, target
+					if target && target.item && target.item.fs
+						_ this.browserControl.setMime(target.item.mime)
+					_ this.setResult
+						@ result
+
+			var editorImpl
+				new AceEditor
+					{
+						@ theme 'github'
+						@ key 'result-browser'
+						@ editorElementId 'browserContainer'
+			
+			set this.browserControl
+				new ResultBrowserControl
+					{
+						@ editorImpl editorImpl
+			_ this.browserControl.initBrowser
+
+		m setResult
+			param result
+			set this.currentResult = result
+			_ this.browserControl.value
+				@ result
+
+		m setFilePath
+			param path
+			_ wz.text
+				@ this.props.ittfBrowserTitle
+				@ path
+		
+	class ResultBrowserControl
+		ctor
+			param options
+			set this.options = options
+			set this.editorImpl = options.editorImpl
+
+		m initBrowser
+			if this.editor
+				return
+			_ this.editorImpl.initialize
+			set this.editor = this.editorImpl
+			_ this.editor.readOnly(true)
+
+		m setMime
+			param value
+			if this.editor
+				_ this.editor.setMime
+					@ value
+		
+		m value
+			param value
+			if this.editor
+				if typeof value === 'undefined'
+					return
+						_ this.editor.getValue
+				else
+					_ this.editor.setValue
+						@ value

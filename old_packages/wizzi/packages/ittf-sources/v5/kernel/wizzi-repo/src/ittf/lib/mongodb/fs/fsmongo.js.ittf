@@ -1,0 +1,86 @@
+﻿module wizzi-repo.mongodb.FsMongo
+	kind jsfile
+
+	import assert
+	import path
+	import util
+	var verify = require('wizzi-utils').verify
+	var MongoClient = null
+
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+
+	#
+		# class FsMongo (Filesystem Db)
+		#
+		# Filesystem item
+		# { fsitem
+		#   ObjectId _id
+		#   string basename
+		#   ObjectId parentId
+		#   string dirname
+		#   string path
+		#   integer kind
+		#     one-of 0 (directory), 1 (file)
+		#
+		# Document
+		# { document
+		#   ObjectId _id
+		#   string content
+		#   ISODate lastModified
+
+	class FsMongo
+		ctor
+			param db
+			set this.db = db
+
+		$include fsmongo/getItem
+		$include fsmongo/insertItem
+		$include fsmongo/updateItem
+		$include fsmongo/deleteItem
+		$include fsmongo/read
+		$include fsmongo/write
+
+		m close
+			if this.db
+				# log '***** wizzi-repo.mongodb.FsMongo start closing'
+				_ this.db.close
+				set this.db = null
+				# log '***** wizzi-repo.mongodb.FsMongo closed'
+
+	#
+		# Creates a FsMongo instance
+	set FsMongo.create
+		function
+			param mongoUri
+			param callback
+			+
+			if verify.isUndefined(callback) && verify.isFunction(mongoUri)
+				set callback = mongoUri
+				set mongoUri = null
+			+
+			if MongoClient == null
+				set MongoClient = require('mongodb').MongoClient
+			set mongoUri = mongoUri || 'mongodb://localhost:27017/test'
+			_ MongoClient.connect
+				@ mongoUri
+				f_cb( mongoDb )
+					return
+						_ callback
+							@ null
+							new FsMongo(mongoDb)
+
+	function error
+		param method
+		param message
+		return
+			{
+				@ __is_error true
+				@ method 'Mongo.FsMongo.' + method
+				@ message message
+
+	function normalize
+		param path
+		return path.trim().replace(/\\/g,'/').toLowerCase()
+					
+	set module.exports = FsMongo

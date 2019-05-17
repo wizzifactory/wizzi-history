@@ -1,0 +1,93 @@
+﻿$group
+
+	@ getGist
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			var gist = paths.gistInfoByPath(filePath)
+			_ paths.getFile
+				@ filePath
+				f_cb_api( result )
+					set gist.content = result
+					if isGistKind(kind)
+						r_cb_success( 'Got ' + kind )
+							@ gist gist
+					else
+						r_cb_success_quoted( Got snippet )
+							@ snippet gist
+
+	@ executeGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var hash = options.hash
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			var fileInfo
+				_ paths.gistInfoByPath
+					@ filePath
+			if fileInfo.isIttfDocument && fileInfo.schema === 'js'
+				var sessionData = {}
+				var modelContext = {}
+				var artifactContext = {}
+				var that = this
+				_ globalApi.wf.loadModelAndGenerateArtifact
+					@ sessionData
+					@ filePath
+					@ modelContext
+					@ 'js/module'
+					@ artifactContext
+					f_cb_api(result)
+						_ paths.putGistExecutable
+							@ kind
+							@ userId
+							@ filePath
+							@ result.data
+							f_cb_api(result)
+								_ that.executeNodeJsGist
+									@ options
+									@ result.executablePath
+									@ callback
+			elif fileInfo.mime === 'js'
+				_ this.executeNodeJsGist
+					@ options
+					@ filePath
+					@ callback
+			else
+				r_cb_error_eventstream( 'Mime not managed ' + fileInfo.mime)
+
+	@ executeNodeJsGist
+		function
+			param options
+			param executablePath
+			param callback
+
+			var res = options.res
+			if res
+				log 'execute nodeJsExecToEventStream'
+				_ scriptManager.nodeJsExecToEventStream
+					{
+						@ scriptPath executablePath
+						[ args
+					@ res
+			else
+				log 'execute nodeJsExec'
+				_ scriptManager.nodeJsExec
+					{
+						@ scriptPath executablePath
+						[ args
+					f_cb_api(result)
+						return
+							_ callback
+								@ null
+								{
+									@ data result
+									@ status
+										_ success
+											@ 'NodeJs script executed'

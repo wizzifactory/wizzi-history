@@ -1,0 +1,13 @@
+﻿$group
+	$params name
+
+	case ${name}
+		log '${name}', 'initial state:', state, 'action', action
+		$hook preprocess
+		var temp
+			{
+				@ ...state
+				$hook
+		log '${name}', 'final state:', temp
+		return temp
+

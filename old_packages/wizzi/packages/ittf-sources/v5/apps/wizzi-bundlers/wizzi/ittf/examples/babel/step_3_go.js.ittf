@@ -1,0 +1,48 @@
+﻿demo_module( babel, 1, 3 )
+
+	$append imports
+		var babelLoader = require('../../lib/babelLoader')
+
+	var file_1
+		_ path.join
+			@ __dirname
+			@ 'step_3'
+			@ 'file_1.js'
+
+	var file_2
+		_ path.join
+			@ __dirname
+			@ 'step_3'
+			@ 'file_2.js'
+
+	_ babelLoader.babelTransformFile
+		@ file_1
+		._ then
+			=>
+				param result
+				_ printValue
+					@ 'babelTransform.file_1'
+					@ result.code
+				_ babelLoader.babelTransformFile
+					@ file_2
+					._ then
+						=>
+							param result
+							_ printValue
+								@ 'babelTransform.file_2'
+								@ result.code
+							_ step_callback
+								@ null
+					._ catch
+						=>
+							param err
+							log 'babelTransform.file_2.err', err
+							_ step_callback
+								@ err
+
+		._ catch
+			=>
+				param err
+				log 'babelTransform.file_1.err', err
+				_ step_callback
+					@ err

@@ -1,0 +1,39 @@
+﻿example-essentials( wizzimodel, 0, 2 )
+
+	# 
+		# DEMO: how to load an IttfDocument into an `html` wizzi model,
+		#       passing a context object to the mTree loader and
+		#       passing a value to the globalContext using the options parameter.
+		#
+		# API   wizzi.model(sourcePathOrModelInfo, context?, options?)
+	+
+	_ wizzi.model
+		_ path.join
+			@ __dirname
+			@ 'step_2'
+			@ 'basic.html.ittf'
+		{
+			@ wf
+				{
+					[ packages
+						{
+							@ name 'wizzi-utils'
+							@ title 'Wizzi factory utility library'
+						{
+							@ name 'wizzi-mTree'
+							@ title 'mTree loader'
+		{
+			@ globalContext
+				{
+					@ infoLine 'If you can see me the global context worked fine.'
+		f_cb_throw( wizziModel )
+			_ printValue
+				@ 'wizziModel'
+				_ stringify
+					@ wizziModel
+					@ null
+					@ 4
+				@ 'dashes'
+			return
+				_ step_callback(null)
+

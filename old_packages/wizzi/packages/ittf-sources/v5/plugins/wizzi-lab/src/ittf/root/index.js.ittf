@@ -1,0 +1,34 @@
+common/index/v3-package-index( wizzi-lab )
+
+	$append model-transform-artifacts
+		# window(s) vars must be declared even if empty
+		var window_modelFactories
+			{
+				@ 'raml' require('./lib/wizzi/models/raml-factory.g')
+				@ 'rdbms' require('./lib/wizzi/models/rdbms-factory.g')
+		var window_artifactGenerators
+			{
+				@ 'raml/document' require('./lib/artifacts/raml/document/gen/main')
+				@ 'rdbms/document' require('./lib/artifacts/rdbms/document/gen/main')
+		var window_transformers
+			{
+				$$ @ 'js/reactComponent' require('./lib/artifacts/js/reactComponent/trans/main')
+		var window_schemaDefinitions
+			{
+
+	@ provides
+		{
+			@ schemas
+				[
+					@ 'temp'
+					@ 'rdbms'
+					@ 'raml'
+			@ modelTransformers
+				[
+			@ artifactGenerators
+				[
+					@ 'rdbms/jsoncrud'
+					@ 'rdbms/html_docs'
+					@ 'raml/html_docs'
+					@ 'raml/nodejs_server'
+					@ 'raml/js_client'

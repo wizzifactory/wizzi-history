@@ -1,0 +1,21 @@
+﻿module
+	$params name
+	kind jsfile
+
+	var util = require('util')
+	var verify = require('wizzi-utils').verify
+	var node = require('wizzi-utils').node
+	var u = require('../util/stm')
+	$hook requires
+	+
+	var myname = 'wizzi-js.artifacts.js.module.gen.codegen.statements.${name}';
+	var md = module.exports = {};
+	+
+	function hasStatements
+		param model
+		return model.statements && model.statements.length > 0 
+	
+	set md.load
+		function
+			param cnt
+			$hook

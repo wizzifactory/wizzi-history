@@ -1,0 +1,52 @@
+$group
+
+	$if node.endNodes
+		$foreach endNode in node.endNodes
+			tr
+				td
+					h4 Relation
+				td
+					table( 100 )
+						tr_prop( label, ${endNode.label}, true )
+						tr_prop( is-root, ${endNode.isRoot} )
+						tr_prop( name, ${endNode.name} )
+						tr_prop( relation-name, ${endNode.relationName} )
+						tr_prop( symmetric-relation, ${endNode.symmetricRelation} )
+						tr_prop( role, ${endNode.role} )
+						
+					table( 100 )
+						tr
+							td Descrizione
+							td
+								table( 100 )
+								$foreach comment in endNode.comments
+									tr
+										td ${comment} &nbsp;
+						tr
+							td
+								h5 keys
+							td
+								table
+									class table table-condensed table-bordered
+									style width:40%
+									$if endNode.pathKeys
+										$foreach k in endNode.pathKeys
+											tr 
+												td path-key
+												td ${k.start}
+												td ${k.end}
+									$if endNode.keys
+										$foreach k in endNode.keys
+											tr 
+												td key
+												td ${k}
+
+						tr
+							td
+								h5 segments
+							td
+								$if endNode.pathSegments
+									table( 100 )
+										$foreach segment in endNode.pathSegments
+											tr 
+												td ${segment}

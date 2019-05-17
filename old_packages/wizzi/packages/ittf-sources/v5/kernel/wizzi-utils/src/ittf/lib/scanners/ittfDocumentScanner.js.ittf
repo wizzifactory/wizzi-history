@@ -1,0 +1,206 @@
+﻿module wizzi-utils.lib.scanners.ittfDocumentScanner
+    kind jsfile
+    
+	var path = require('path')
+	var async = require('async')
+	var stringify = require('json-stringify-safe')
+	var encdec = require('../crypto/encdec')
+	var vfile = require('../fs/vfile')
+	var verify = require('../verify')
+	var IttfMTreeEx = require('../ittfTree/ittfMTreeEx')
+	var IttfDocumentState = require('./ittfDocumentState')
+	var mTreeHtmlPrettifier = require('../prettifiers/mTreeHtmlPrettifier')
+
+	# TODO repository store agnostic (defaults to filesystems)
+
+	var md
+        set module.exports =
+            { 
+
+	set md.scan
+        function
+            string documentPath
+			param options
+			callback
+
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+
+			if options.file
+				_ scanExec
+					@ options.file
+					@ documentPath
+					@ options
+					@ callback
+			else
+				_ vfile
+					f_cb( file )
+						_ scanExec
+							@ file
+							@ documentPath
+							@ options
+							@ callback
+
+    function scanMTree
+		param file
+        param documentPath
+		param options
+		param callback
+
+		_ file.isFile
+			@ documentPath
+			f_cb( result )
+				if result == false
+					return
+						_ callback
+							_ error
+								@ '999'
+								@ 'scan'
+								@ 'Parameter documentPath must be an existing file. Received: ' + documentPath
+
+				_ IttfMTreeEx.createFrom
+					@ documentPath
+					{
+						@ file file
+					f_cb( mTree )
+					
+						_ mTree.analize
+							{
+								@ rootFolder options.rootFolder
+							f_cb()
+
+								# log 'scanMTree.mTree.fragments',  mTree.fragments
+								# log 'scanMTree.mTree.ittfReferences',  mTree.ittfReferences
+								# log 'scanMTree.mTree.errorFragments',  mTree.errorFragments
+					
+								return
+									_ callback
+										@ null
+										{
+											@ mTree mTree
+											@ fragments mTree.fragments
+											@ ittfReferences mTree.ittfReferences
+											@ errorFragments mTree.errorFragments
+
+
+
+	function scanExec
+		param file
+        param documentPath
+		param options
+		param callback
+
+		var idCounter = options.baseIdCounter || 1
+		set options.scanIdCounter = idCounter
+		set documentPath = verify.unixifyPath(documentPath)
+		breadcrumbs(documentPath, documentUri)
+		var ittfDocumentState = new IttfDocumentState(documentPath, documentUri, breadCrumbs, options)
+
+		_ scanMTree
+			@ file
+			@ documentPath
+			@ options
+			f_cb( scanResult )
+				
+				var primary = scanResult.mTree
+				_ ittfDocumentState.setIttfContent(primary.content)
+				
+				var pretty
+					_ mTreeHtmlPrettifier
+						@ primary
+				_ ittfDocumentState.setIttfPretty(pretty.prettyLines.join(''))
+				_ ittfDocumentState.setFromScanResult
+					@ scanResult
+
+				var msg
+					_ stringify
+						@ ittfDocumentState
+						@ null
+						@ 2
+					
+				# log 'related', msg
+
+				var guard = 0
+				function loopNext
+					param done
+					# log 'loopNext', guard
+					if done
+						r_cb(ittfDocumentState)
+					set guard++
+					if guard > 5
+						r_cb(ittfDocumentState)
+					_ scanState
+						f_cb(result)
+							_ loopNext
+								@ result
+				_ loopNext
+					@ false
+					
+				function scanState
+					param callback
+					# log 'scanState.ittfDocumentState.hasUnscanned()', ittfDocumentState.hasUnscanned()
+					if ittfDocumentState.hasUnscanned() == false
+						r_cb(true)
+					_ scanStateFragments
+						f_cb()
+							_ scanStateIttfReferences
+								f_cb()
+									r_cb(false)
+
+				function scanStateFragments
+					param callback
+
+					# log 'scanStateFragments.getUnscannedFragments.length', ittfDocumentState.getUnscannedFragments().length
+						
+					_ async.map
+						@ ittfDocumentState.getUnscannedFragments()
+						function
+							param fragment
+							param callback
+
+							set fragment.hash = encdec.encrypt(fragment.uri)
+								
+							_ scanMTree
+								@ file
+								@ fragment.uri
+								@ options
+								f_cb( scanResult )
+									var primary = scanResult.mTree
+									var msg
+										_ stringify
+											@ scanResult
+											@ null
+											@ 2
+									# log 'scanResult', fragment.uri, msg
+									_ ittfDocumentState.setFromScanResult
+										@ scanResult
+									set fragment.ittfContent = primary.content
+									var pretty
+										_ mTreeHtmlPrettifier
+											@ primary
+									set fragment.ittfPretty = pretty.prettyLines.join('')
+									r_cb()
+						@ callback
+										
+				function scanStateIttfReferences
+					param callback
+
+					# log 'scanStateFragments.getUnscannedIttfReferences.length', ittfDocumentState.getUnscannedIttfReferences()
+						
+					_ async.map
+						@ ittfDocumentState.getUnscannedIttfReferences()
+						function
+							param reference
+							param callback
+
+							_ scanExec
+								@ file
+								@ reference.uri
+								{
+									@ rootFolder options.rootFolder
+									@ baseIdCounter ++idCounter
+								f_cb_test( documentState )
+									set reference.documentState = documentState
+									r_cb()
+						@ callback

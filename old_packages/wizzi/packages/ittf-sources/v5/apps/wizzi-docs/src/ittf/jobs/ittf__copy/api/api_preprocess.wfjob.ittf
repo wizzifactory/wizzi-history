@@ -1,0 +1,40 @@
+﻿wfjob apis
+
+	$
+		var models_folder    = 'c:/my/wizzi/v5/apps/wizzi-docs/src/ittf/models/api';
+		var ittf_lib_folder  = path.join(__dirname, 'dumps', 'api');
+		var dest_folder      = path.join(__dirname, 'preprocess', 'api');
+
+	models-base-folder ${models_folder}
+
+	model wf
+		src wf.api.ittf
+		schema ittf
+
+	line one
+		cwd-folder ${models_folder}
+		dest-folder ${dest_folder}
+
+		artifact wf.api first transformer
+			src wf.api.ittf
+			schema ittf
+			generator ittf/document
+			extension api.ittf
+			transformer api/traverse
+
+	line stop
+		cwd-folder ${ittf_lib_folder}
+		dest-folder ${dest_folder}
+
+		artifact wf.api first transformer
+			src wf.api.ittf
+			schema ittf
+			generator ittf/document
+			extension ittf
+			model-ref wf
+				transformer api/traverse
+				export-name api
+
+	production
+		dest-folder ${dest_folder}
+		line-ref one

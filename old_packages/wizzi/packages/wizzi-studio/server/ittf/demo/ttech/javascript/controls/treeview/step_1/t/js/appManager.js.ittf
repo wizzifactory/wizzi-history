@@ -1,0 +1,192 @@
+﻿$group
+
+	$include app/splash
+
+	class AppManager : wz.EventTarget
+		ctor
+			param props
+			set this.props = props
+			set this.props.rootFolder = props.rootFolder || '/ixdb'
+			set this.props.formsContainerId = props.formsContainerId || 'forms-container'
+			set this.lastTreeNodeUpdate = null
+			set this.resultKind = 'gen'
+			set this.timers = {}
+
+		m start
+
+			set this.editorSplash
+				new SplashControl
+					{
+						@ container 'editor-container'
+						@ className 'splash-editor'
+			_ this.editorSplash.initialize
+
+			set this.resultSplash
+				new SplashControl
+					{
+						@ container 'result-container'
+						@ className 'splash-result'
+			_ this.resultSplash.initialize
+
+			set this.browserFs
+				new BrowserFileSystem
+					{
+						@ rootFolder this.props.rootFolder
+	
+			_ this.browserFs.initialize
+				a_cb_throw()
+				
+					set this.treeFs
+						new TreeFileSystem
+							{
+								@ fsAdapter this.browserFs
+					
+					set this.treeView
+						new TreeView
+							{
+								@ app this
+								@ filesystem this.treeFs
+								@ formsContainerId this.props.formsContainerId
+
+					_ this.treeView.render
+						a_cb_throw( element )
+							
+							_ wz.replaceChildren
+								@ 'tree-view'
+								@ element
+
+							var editManager
+								new EditManager
+									{
+										@ app this
+										@ treeView this.treeView
+										@ ittfEditorTitle 'ittf-editor-title'
+							_ editManager.initialize
+
+							var browseManager
+								new BrowseManager
+									{
+										@ app this
+										@ treeView this.treeView
+										@ resultBrowserTitle 'result-browser-title'
+							_ browseManager.initialize
+							_ this.createCommandBars
+
+							_ this.treeView.on
+								@ 'select'
+								=>
+									param treeNode
+									param target
+									# log 'AppManager.treeView.select', target, treeNode
+									var item = treeNode.item
+									if !!item.isFolder == false
+										_ this.editorSplash.hide
+										_ editManager.setCurrentFile
+											@ treeNode
+
+
+		m createCommandBars
+			set this.resultBar
+				new ResultBar
+			_ wz.element
+				@ 'result-bar'
+				._ appendChild
+					_ this.resultBar.render
+			_ this.resultBar.on
+				@ 'command'
+				=>
+					param name
+					if ['gen', 'mtree', 'debug'].indexOf(name) > -1
+						set this.resultKind = name
+						if this.lastIttfTreeNodeUpdate
+							_ this.onTreeNodeUpdate
+								@ this.lastIttfTreeNodeUpdate
+
+		m onTreeNodeUpdate
+			param treeNode
+			# log 'onTreeNodeUpdate', treeNode.item, this.resultKind
+			
+			_ this.resultBar.setState
+				{
+					@ isIttf (treeNode.item.isIttfDocument && !treeNode.item.isFragment)
+					@ schema treeNode.item.schema
+					@ mime treeNode.item.mime
+
+			if treeNode.item.isIttfDocument && !treeNode.item.isFragment
+				
+				if this.resultKind === 'gen'
+					_ wz.canGen
+						@ treeNode.item.schema
+						a_cb_throw( ok )
+							_ this.resultSplash.hide
+							if ok
+								if this.timers['gen']
+									_ clearTimeout
+										@ this.timers['gen']
+									# log 'AppManager.onTreeNodeUpdate. Cleared previous gen schedule.', new Date()
+								set this.timers['gen']
+									_ setTimeout
+										=>
+											_ wz.gen
+												@ treeNode.item.path
+												a_cb_throw( result )
+													_ this.emit
+														@ 'result'
+														@ result
+														@ treeNode
+													set this.lastIttfTreeNodeUpdate = treeNode
+											# log 'AppManager.onTreeNodeUpdate. gen executed.', new Date()
+										@ 2 * 1000
+							else
+								_ wz.mtree
+									@ treeNode.item.path
+									a_cb_throw( result )
+										_ this.emit
+											@ 'result'
+											@ result.toIttf()
+											@ treeNode
+										set this.lastIttfTreeNodeUpdate = treeNode
+				
+				elif this.resultKind === 'mtree'
+					_ this.resultSplash.hide
+					_ wz.mtree
+						@ treeNode.item.path
+						a_cb_throw( result )
+							_ this.emit
+								@ 'result'
+								@ result.toIttf()
+								@ treeNode
+					set this.lastIttfTreeNodeUpdate = treeNode
+				
+				elif this.resultKind === 'debug'
+					_ this.resultSplash.hide
+					_ wz.mtreeDebug
+						@ treeNode.item.path
+						a_cb_throw( result )
+							_ this.emit
+								@ 'result'
+								@ result.mTreeBuildUpScript
+								@ treeNode
+					set this.lastIttfTreeNodeUpdate = treeNode
+
+				else
+					_ this.resultSplash.show
+
+			elif wz.canWizzify(treeNode.item.mime)
+				_ this.resultSplash.hide
+				_ wz.wizzify
+					@ treeNode.item.mime
+					@ treeNode.item.content
+					a_cb_throw( result )
+						_ this.emit
+							@ 'result'
+							@ result
+							@ treeNode
+			
+			else
+				_ this.resultSplash.show
+
+
+		m generate
+
+		m wizzify

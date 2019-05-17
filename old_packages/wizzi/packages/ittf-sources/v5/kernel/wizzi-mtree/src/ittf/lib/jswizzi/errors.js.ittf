@@ -1,0 +1,87 @@
+﻿module
+	kind jsfile
+
+	import util
+	var wizziUtils = require('wizzi-utils')
+	var f_verify = require('./functions/verify')
+	+
+	var md = module.exports = {}
+	+
+	error( JsWizziRunner, message, node )
+		set this.message = message + util.inspect(node.loc, {depth: null})
+
+	error( InvalidVariableName, message )
+		set this.message = message
+
+	error( JsWizziSynthax, message, node )
+		log 'JsWizziSynthax.message', message
+		if f_verify.isObject(message) && message.lineNumber
+			# In this case node = WizziJS source
+			set this.message = "Synthax error. " + message.description + 
+				\ ' at line ' + message.lineNumber +
+				\ ' column ' + message.column +
+				\ '\n' +
+				\ getEsprimaErrorLines(message, node) +
+				\ '\n'
+			set this.errorLines = getEsprimaErrorLines(message, node, true)
+		else
+			set this.message = message
+	
+	# For
+		# vars or functions undeclared
+		# invalid values
+	error( JsWizziType, message, node )
+		set this.message = message
+
+	set md.esprimaNodeErrorLines
+		function
+			param description
+			param node
+			param source
+			param json
+			return
+				_ wizziUtils.errors.getErrorLines
+					{
+						@ row node.loc.start.line
+						@ col node.loc.start.columns
+						@ description description
+					@ source
+					@ json
+
+	function getEsprimaErrorLines
+        param esprimaException
+		param source
+		param json
+
+		var statements = source.split('\n')
+
+        var start = Math.max(0, (esprimaException.lineNumber - 4))
+        var end
+            _ Math.min
+                @ statements.length
+                @ (esprimaException.lineNumber + 4)
+        var ret
+            [ 
+        
+		for var i = start; i < end; i++
+            _ ret.push(formatLineNumber(i + 1) + ' ' + statements[i])
+            if (i == esprimaException.lineNumber - 1)
+                var col = esprimaException.column
+                _ ret.push(spaces(col + 4) + '^ ' + esprimaException.description)
+        
+		return json ? ret : ret.join('\n')
+
+	function spaces
+        param num
+        return Array(num + 1).join(" ")
+    
+	function formatLineNumber
+        param num
+        if num > 999
+            return num
+        if num > 99
+            return ('0' + num)
+        if num > 9
+            return ('00' + num)
+        return ('000' + num)
+

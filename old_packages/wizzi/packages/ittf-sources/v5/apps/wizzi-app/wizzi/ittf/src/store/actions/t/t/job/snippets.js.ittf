@@ -1,0 +1,22 @@
+﻿$group
+
+	export
+		const wizzifySnippet
+			=>
+				param hash
+				return
+					{
+						@ type WIZZIFY_JOB_SNIPPET
+						@ hash hash
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ WIZZIFY_JOB_SNIPPET_REQUEST
+										@ WIZZIFY_JOB_SNIPPET_SUCCESS
+										@ WIZZIFY_JOB_SNIPPET_FAILURE
+								@ url '/api/jobs/wizzify'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'

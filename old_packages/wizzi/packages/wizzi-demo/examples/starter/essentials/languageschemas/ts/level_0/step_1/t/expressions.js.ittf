@@ -1,0 +1,70 @@
+$group
+
+	+
+	# ========================================
+	# EXPRESSIONS
+	# ========================================
+	+
+
+	# 
+		# The iif conditional statement
+	var name
+		iif sex === 'M'
+			then 'stefi'
+			else 'annie'
+
+	# 
+		# Member access
+	var name
+		_ getCurrentUser
+			. name 
+
+	# 
+		# Member access computed
+	var randomArrayItem
+		_ getItems
+			.[
+				_ Math.floor
+					times
+						_ Math.random()
+						_ getItems
+							. length
+
+	# 
+		# Building templates, various binary expressions can be 
+		# easer to code when written in indented form.
+		# 
+	var r1
+		||
+			+ seen_one
+			_ getNext
+				@ item
+				&& 
+					+ is_ok
+					_ checkName
+						@ name
+	var r2
+		&&
+			+ seen_one
+			+ seen_two
+
+	#
+		# Work in this way
+		# or : ||
+		# and : &&
+		# equal strict : ===
+		# notequal strict : !==
+		# equal : ==
+		# not equal : !=
+		# minus : minus
+		# plus : plus
+		# times : times
+		# divide : divide
+		# power : power
+		# mod : mod
+		# xor : xor
+		# xand : xand
+		# gt : gt
+		# ge : >=
+		# lt : lt
+		# le : <=

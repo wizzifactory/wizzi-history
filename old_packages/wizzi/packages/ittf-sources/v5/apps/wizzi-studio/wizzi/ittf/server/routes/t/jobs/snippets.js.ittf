@@ -1,0 +1,20 @@
+﻿$group
+
+	get( /api/jobs/wizzify )
+
+		check-params()
+			not-empty( query , hash )
+
+		log '/api/jobs/wizzify', hash
+
+		_ api.jobs.wizzifySnippet
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				log '/api/jobs/wizzify', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+

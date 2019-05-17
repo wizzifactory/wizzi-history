@@ -1,0 +1,142 @@
+﻿$group
+
+	m getGlobbedFilesEx
+        param path_string
+        param options
+		param callback
+        var options = options || {}
+        return 
+            _ this.getGlobbedFiles
+                @ path_string
+                @ options.removeRoot
+                @ options
+				@ callback
+	
+	vfile/m( getGlobbedFiles, readdirSync, removeRoot, options )
+
+		if verify.isObject(removeRoot)
+			set options = removeRoot
+			set removeRoot = options.removeRoot
+		else
+            set options = options || {}
+
+		$append async
+
+			var urlRegex
+				new RegExp('^(?:[a-z]+:)?\/\/', 'i')
+			var output
+				[ 
+
+			if verify.isArray(path_string)
+				_ async.map
+					@ path_string
+					function
+						param globPattern
+						param callback
+						_ this.getGlobbedFilesAsync
+							@ globPattern
+							@ removeRoot
+							@ options
+							f_cb( globbed )
+								return
+									_ callback
+										@ null
+										@ globbed
+					f_cb( globbeds )
+						foreach globbed in globbeds
+							_  _.union
+								@ output
+								@ globbed
+						return
+							_ callback
+								@ null
+								@ output
+            elif verify.isString(path_string)
+                if urlRegex.test(path_string)
+					return 
+						_ callback
+							@ null
+							[
+								@ path_string
+                else
+					# log 'wizzi-utils.fs.vfile.glob.path_string, options', path_string, options
+                    _ glob
+						@ path_string
+						@ this
+						@ options
+						f_cb( files )
+							# log 'wizzi-utils.fs.vfile.glob.after_glob.path_string ', path_string, 'files', files.length
+							if removeRoot
+								# log 'wizzi-utils.fs.vfile.glob.after_glob.removeRoot', removeRoot
+								set files =
+									_ files.map
+										function 
+											param file
+											if _.isArray(removeRoot)
+												for var i in removeRoot
+													set file = file.replace(removeRoot[i], '')
+											else 
+												# log unixifyPath(file), removeRoot
+												set file
+													_ unixifyPath
+														@ file
+														._ replace
+															_ unixifyPath
+																@ removeRoot
+															@ ''
+											return file
+								return
+									_ callback
+										@ null
+										@ files
+							else
+								return
+									_ callback
+										@ null
+										@ files
+
+		$append sync
+
+			var urlRegex
+				new RegExp('^(?:[a-z]+:)?\/\/', 'i')
+			var output
+				[ 
+
+			if verify.isArray(path_string)
+				foreach globPattern in path_string
+                    set output
+						_  _.union
+							@ output
+							_ this.getGlobbedFiles
+								@ globPattern
+								@ removeRoot
+								@ options
+            elif verify.isString(path_string)
+                if urlRegex.test(path_string)
+                    _ output.push(path_string)
+                else
+					set options.sync = true
+					# log 'path_string, options', path_string, options
+                    var files = glob(path_string, this, options)
+                    # log 'wizzi-meta.file.path_string ', path_string, 'files', files.length
+					if removeRoot
+						# log 'removeRoot', removeRoot
+                        set files =
+                            _ files.map
+                                function 
+                                    param file
+                                    if _.isArray(removeRoot)
+                                        for var i in removeRoot
+                                            set file = file.replace(removeRoot[i], '')
+                                    else 
+										# log unixifyPath(file), removeRoot
+                                        set file
+											_ unixifyPath
+												@ file
+												._ replace
+													_ unixifyPath
+														@ removeRoot
+													@ ''
+                                    return file
+                    set output = _.union(output, files)
+            return output

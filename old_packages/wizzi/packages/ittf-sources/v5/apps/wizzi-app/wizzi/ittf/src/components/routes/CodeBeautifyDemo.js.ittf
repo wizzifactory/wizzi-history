@@ -1,0 +1,28 @@
+﻿r-simple( CodeBeautifyDemo
+
+	$append imports
+		import CodeBeautify from '../mui/CodeBeautify'
+		const jsSnippet
+			[
+				@ "import Lowlight from 'react-lowlight'"
+				@ ""
+				@ "// Load any languages you want to use"
+				@ "// (see https://github.com/isagalaev/highlight.js/tree/master/src/languages)"
+				@ "import js from 'highlight.js/lib/languages/javascript"
+				@ ""
+				@ "// Then register them with lowlight"
+				@ "Lowlight.registerLanguage('js', js)"
+				@ ""
+				@ "ReactDOM.render(<Lowlight language='js' value='/* Code to highlight */' />,"
+				@ "  document.getElementById('target')"
+				@ ")"
+				._ join('\n')
+		
+	=>
+		(
+			< CodeBeautify 
+				@ language { 'js' }
+				@ codeSnippet { jsSnippet }
+
+
+

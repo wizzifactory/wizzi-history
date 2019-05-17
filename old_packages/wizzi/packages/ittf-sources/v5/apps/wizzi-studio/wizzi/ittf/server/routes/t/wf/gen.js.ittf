@@ -1,0 +1,56 @@
+﻿$group
+
+	get( /api/wf/gen )
+
+		check-params( )
+
+			not-empty( query, uri)
+			not-empty( query, artifact)
+
+		var sessionData = {}
+		var modelContext = {}
+		var artifactContext = {}
+		
+		_ wfApi.loadModelAndGenerateArtifact
+			@ sessionData
+			@ uri
+			@ modelContext
+			@ artifact
+			@ artifactContext
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/wf/gen )
+
+		check-params( )
+
+			not-empty( body, content)
+			not-empty( body, artifactName)
+
+		var sessionData = {}
+		var modelContext = {}
+		var artifactContext = {}
+
+		var ss = artifactName.split('/')
+		var schema = ss[0]
+		var artifact = ss[1]
+		
+		_ wfApi.generateArtifactFromText
+			@ sessionData
+			@ content
+			@ modelContext
+			@ schema
+			@ artifact
+			@ artifactContext
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+
+
+

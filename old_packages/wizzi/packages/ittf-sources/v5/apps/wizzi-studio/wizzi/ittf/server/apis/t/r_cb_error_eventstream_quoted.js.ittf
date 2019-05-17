@@ -1,0 +1,21 @@
+﻿$group
+	$params message
+
+	var xres
+	if typeof res === 'undefined'
+		set xres = options.res
+	else
+		set xres = res
+	if xres
+		_ xres.writeHead
+			@ 200
+			{ 
+				@ "Content-Type" "text/event-stream"
+				@ "Cache-control" "no-cache"
+		_ xres.write('data: ' + '${message}' + "\n\n")
+		_ xres.end('')
+	else
+		return
+			_ callback
+				_ error
+					@ '${message}'

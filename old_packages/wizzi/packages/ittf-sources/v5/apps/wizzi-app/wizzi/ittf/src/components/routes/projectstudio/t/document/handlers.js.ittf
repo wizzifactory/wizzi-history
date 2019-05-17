@@ -1,0 +1,18 @@
+﻿$group
+
+	=> handleSelectProject
+		param project
+		_ this.handleCloseCreateProjectDialog()
+		_ this.props.onSelectProject(project)
+
+	=> handleCreateProjectSubmit
+		param project
+		_ this.handleCloseCreateProjectDialog()
+		_ this.props.onCreateProjectSubmit(project)
+
+	=> handleSplitter1Resize
+		param sizes
+		log 'handleSplitter1Resize', sizes
+		_ this.setState
+			{
+				@ splitter1Sizes sizes

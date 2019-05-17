@@ -1,0 +1,36 @@
+﻿wfschema vue
+
+	# NO export-to json
+
+	# A schema modeling the VUE progressive javaScript framework
+	# https://vuejs.org/
+	#
+	# Includes the wizzi schemas: html, js, css
+
+	e_tag( comment, #
+		r comment/s
+
+	e element : comment
+		# a generic vue element (tag)
+		tag <
+		r element/s
+	
+	e vue : element
+		# The root element
+		is-root
+
+	e htmlInclude : element
+		tag ::template
+		include html
+
+	e jsInclude : element
+		tag ::script
+		include js module
+
+	e cssInclude : element
+		tag ::style
+		include css
+
+
+
+

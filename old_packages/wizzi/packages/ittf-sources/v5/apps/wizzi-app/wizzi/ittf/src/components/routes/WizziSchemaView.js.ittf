@@ -1,0 +1,107 @@
+﻿r-container( WizziSchemaView, false, true
+
+	$append imports
+		import verify from '../../lib/verify'
+		import
+			@ getSchema
+			from '../../store/actions'
+		import AppBar from '@material-ui/core/AppBar'
+		import Tabs from '@material-ui/core/Tabs'
+		import Tab from '@material-ui/core/Tab'
+		import CodeBeautify from '../mui/CodeBeautify'
+
+	style
+		{ root
+			@ flexGrow 1
+			@ backgroundColor theme.palette.background.paper
+
+		{ scrollBox
+			@ overflow 'auto'
+
+	state
+		@ value 0
+
+	did-mount
+		prop match
+		const schemaUri = verify.replaceAll(match.params.schemaUri, '_', '/')
+		prop dispatchGetSchema
+		_ dispatchGetSchema
+			@ schemaUri
+
+    => handleChange
+        param event
+        param value
+        _ this.setState
+            { 
+                @ value value
+
+	render
+
+		prop match
+		prop classes
+		prop ittfDocument
+		prop model
+		prop factory
+		prop jsonDoc
+
+		const {value} = this.state
+
+		return
+			div
+				h1 Schema {match.params.schemaUri}
+                div 
+                    @ className {classes.root}
+                    < AppBar 
+                        @ position "static"
+                        < Tabs 
+                            @ value {value}
+                            @ onChange {this.handleChange}
+                            < Tab 
+                                @ label "Ittf source"
+                            < Tab 
+                                @ label "Model"
+                            < Tab 
+                                @ label "Factory"
+							< Tab 
+								@ label "Json model"
+                    { 
+                        && 
+                            + value === 0
+							pre
+								@ className classes.scrollBox
+								+ {ittfDocument}
+                    { 
+                        && 
+                            + value === 1
+							< CodeBeautify 
+								@ language { 'js' }
+								@ codeSnippet { model }
+                    { 
+                        && 
+                            + value === 2
+							< CodeBeautify 
+								@ language { 'js' }
+								@ codeSnippet { factory }
+                    { 
+                        && 
+                            + value === 3
+							pre
+								@ className classes.scrollBox
+								+ {JSON.stringify(jsonDoc, null, 2)}
+
+	$append state-to-props
+		@ selectedSchemaUri state.schema.selectedSchemaUri
+		@ ittfDocument state.schema.ittfDocument
+		@ model state.schema.model
+		@ factory state.schema.factory
+		@ jsonDoc state.schema.jsonDoc
+
+	$append dispatch-to-props
+
+		@ dispatchGetSchema
+			=>
+				param schemaUri
+				log 'dispatchGetSchema', schemaUri
+				_ dispatch
+					_ getSchema
+						@ schemaUri

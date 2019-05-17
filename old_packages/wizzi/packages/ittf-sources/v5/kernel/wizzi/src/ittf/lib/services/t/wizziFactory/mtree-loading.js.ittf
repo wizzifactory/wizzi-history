@@ -1,0 +1,75 @@
+﻿$group
+
+	#
+		# Async load a wizzi magical tree
+		#
+		# params
+		#  string ittfDocumentUri
+		#  { mTreeBuildUpContext
+		#  callback
+	
+	m loadMTree
+		string ittfDocumentUri
+		{ mTreeBuildUpContext
+		callback
+		+
+		_ this.__loadMTree
+			@ ittfDocumentUri
+			_ this.createLoadContext
+				{
+					@ mTreeBuildUpContext mTreeBuildUpContext
+			@ callback
+
+	#
+		# Async load a raw ittf document
+		#
+		# params
+		#  string ittfDocumentUri
+		#  callback
+
+	m loadMTreeRaw
+		string ittfDocumentUri
+		callback
+		+
+		_ this.__loadMTreeRaw
+			@ ittfDocumentUri
+			_ this.createLoadContext
+				{
+			@ callback
+
+
+	#
+		# Async load the mTree debug info of an ittf document
+		#
+		# params
+		#  string ittfDocumentUri
+		#  callback
+
+	m loadMTreeDebugInfo
+		string ittfDocumentUri
+		{ mTreeBuildUpContext
+		callback
+		+
+		_ this.__loadMTreeDebugInfo
+			@ ittfDocumentUri
+			_ this.createLoadContext
+				{
+					@ mTreeBuildUpContext mTreeBuildUpContext
+			@ callback
+
+	m loadMTreeDebugInfoFromText
+		string ittfContent
+		{ mTreeBuildUpContext
+		callback
+		+
+		# log 'wizzi.wizziFactory.loadMTreeDebugInfoFromText', ittfContent, mTreeBuildUpContext, callback
+		_ this.createSingleTextSourceFactory
+			@ ittfContent
+			@ 'ittf'
+			{
+			f_cb( result )
+				_ result.wizziFactory.loadMTreeDebugInfo
+					@ result.ittfDocumentUri
+					@ mTreeBuildUpContext
+					@ callback
+

@@ -1,0 +1,31 @@
+﻿$group
+
+	@ fragmentIttf
+		function
+			param options
+
+			set options = this.detectOptions(options)
+			
+			var segments
+				[
+					@ config.studioBasePath
+					@ options.userId
+			
+			if options.level === 'folder'
+				_ segments.push(options.projectName)
+				_ segments.push(options.folder)
+			elif options.level === 'project'
+				_ segments.push(options.projectName)
+			else
+				# user level
+			
+			_ segments.push('t')
+			
+			if options.tfolder
+				_ segments.push(options.tfolder)
+			
+			_ segments.push(options.fragmentName + '.' + options.schemaName + '.ittf')
+			
+			return
+				_ this.joinPathFromArray
+					@ segments

@@ -1,0 +1,81 @@
+﻿{
+    [ tables
+        {
+            name "category"
+            Name "Category"
+            names "categories"
+            Names "Categories"
+            [ columns
+                {
+                    name "name"
+                    type "string"
+            { primaryKey
+                autoincrement true
+                [ columns
+                    {
+                        name "id"
+                        type "int"
+            [ indexes
+                {
+                    name "category_name_unique"
+                    type "unique"
+                    get "ByName"
+                    [ columns
+                        {
+                            name "name"
+            [ seed
+                {
+                    name "UI"
+                {
+                    name "Data"
+        {
+            name "option"
+            Name "Option"
+            names "options"
+            Names "Options"
+            [ columns
+                {
+                    name "name"
+                    type "string"
+                {
+                    name "value"
+                    type "string"
+                {
+                    name "type"
+                    type "string"
+                {
+                    name "format"
+                    type "string"
+            { primaryKey
+                autoincrement true
+                [ columns
+                    {
+                        name "id"
+                        type "int"
+            [ indexes
+                {
+                    name "option_name_unique"
+                    type "unique"
+                    get "ByName"
+                    [ columns
+                        {
+                            name "name"
+            [ foreigns
+                {
+                    name "category"
+                    get "ByCategory"
+                    [ columns
+                        {
+                            name "categoryId"
+                            ref "id"
+            [ seed
+                {
+                    name "useReact"
+                    value "true"
+                    type "boolean"
+                    categoryId 1
+                {
+                    name "useMaterial"
+                    value "true"
+                    type "boolean"
+                    categoryId 1

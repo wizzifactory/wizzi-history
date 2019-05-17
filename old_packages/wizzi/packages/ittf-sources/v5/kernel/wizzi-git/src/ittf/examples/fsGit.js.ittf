@@ -1,0 +1,24 @@
+﻿base_example( fsGit )
+	
+	$append imports
+		import os
+
+	var xgit = fsGit()
+	log 'xgit', xgit
+	var fs = xgit.fs
+	var git = xgit.git
+
+	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-'))
+	log 'dir', dir
+
+	_ git.clone
+		{
+			@ fs fs
+			@ dir dir
+			@ url 'https://github.com/isomorphic-git/isomorphic-git'
+			@ ref 'master'
+			@ singleBranch true
+			@ depth 10
+		f_cb_no_err( result )
+			log 'err', err
+			log 'result', result

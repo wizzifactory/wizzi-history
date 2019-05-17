@@ -1,0 +1,19 @@
+﻿$group
+	$params name, arg1|@@null, arg2|@@null, arg3|@@null, arg4|@@null
+
+	# thunk
+	export const ${name} =
+		=>
+			$if arg1 != null
+				param ${arg1}
+			$if arg2 != null
+				param ${arg2}
+			$if arg3 != null
+				param ${arg3}
+			$if arg4 != null
+				param ${arg4}
+			return
+				=>
+					param dispatch
+					param getState
+					$hook

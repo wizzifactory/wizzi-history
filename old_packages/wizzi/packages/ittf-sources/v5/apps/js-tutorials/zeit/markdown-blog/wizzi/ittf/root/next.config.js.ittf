@@ -1,0 +1,17 @@
+module
+    kind react
+    const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+    const {ANALYZE} = process.env
+    set module.exports =
+        { 
+            @ webpack
+                function 
+                    param config
+                    if ANALYZE
+                        _ config.plugins.push
+                            new BundleAnalyzerPlugin
+                                { 
+                                    @ analyzerMode 'server'
+                                    @ analyzerPort 8888
+                                    @ openAnalyzer true
+                    return config

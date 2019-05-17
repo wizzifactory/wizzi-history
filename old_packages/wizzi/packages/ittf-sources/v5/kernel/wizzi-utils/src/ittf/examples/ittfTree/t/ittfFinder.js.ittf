@@ -1,0 +1,31 @@
+﻿$group
+
+	function ittfFinder_step_1
+
+		log 'wizzi-utils.examples.ittfTree.ittfFinder_step_1'
+		var ittfFinder
+			new IttfFinder
+				_ vfile()
+
+		_ ittfFinder.resolvePath
+			{
+				@ ittfDocumentUri
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'basic.sample.ittf'
+			f_cb_no_err( result )
+				log 'ittfFinder_step_1.result.1', err, result
+
+				var callerFullPath
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'basic.sample.ittf'
+
+				_ ittfFinder.resolvePath
+					{
+						@ callerFullPath callerFullPath
+						@ fragmentName 'frag_1'
+					f_cb_no_err( result )
+						log 'ittfFinder_step_1.result.2', err, result

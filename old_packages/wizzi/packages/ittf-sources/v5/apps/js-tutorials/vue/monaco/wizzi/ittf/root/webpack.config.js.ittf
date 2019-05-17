@@ -1,0 +1,42 @@
+﻿module
+	kind es6
+
+	$include app-options
+
+	const path = require('path')
+	const resolve = path.resolve
+	
+	app/webpack/imports(&app)
+
+	set module.exports
+		{
+			[ entry
+				@ './src/main.js'
+
+			{ output
+				@ path path.resolve(__dirname, 'dist')
+				@ filename '${app.name}.js'
+				app/webpack/output(&app)
+			
+			{ module
+				[ rules
+					app/webpack/module.rules(&app)
+
+			{ resolve
+				app/webpack/resolve(&app)
+			
+			{ node
+				@ fs 'empty'
+				@ module 'empty'
+
+			{ devServer
+				app/webpack/devServer(&app)
+
+			[ plugins
+				app/webpack/module.plugins(&app)
+
+			app/webpack/externals(&app)
+			
+			@ devtool 'cheap-module-source-map'
+
+			@ mode 'development'

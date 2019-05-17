@@ -1,0 +1,21 @@
+﻿$group
+
+	# Test mongoDb config
+	#   mongodbUri 'mongodb://localhost:27017/test'
+	#   mongodbBaseFolder `c:/wizzifactory/users`
+	# example
+	#   folder `wizzijob`
+	#   of project `demo`
+	#   of user `stefi`
+	#   has uri
+	#     `db://stefi/demo/wizzijob`
+	#   and maps to internal mongodb filesystem path
+	#     `c:/wizzifactory/users/stefi/demo/wizzijob`
+
+	var testMongodbUri = 'mongodb://localhost:27017/test'
+	var testMongodbBaseFolder = 'c:/wizzifactory/users'
+	var demoUploadMongodbBaseFolder
+		_ path.join
+			@ testMongodbBaseFolder
+			@ 'stefi'
+			@ 'demo'

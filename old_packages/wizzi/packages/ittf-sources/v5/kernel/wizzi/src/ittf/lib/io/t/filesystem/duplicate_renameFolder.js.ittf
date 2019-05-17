@@ -1,0 +1,76 @@
+﻿$group
+
+	set md.duplicateFolder
+		function
+			param userId
+			param projectId
+			param itemPath
+			param newName
+            param callback
+			
+			$include check_mounted
+
+			var duplicatedItemPath = parentPath(itemPath) + '/' + newName
+				
+			# log 'wizzi-io.filesystem.duplicateFolder', userId, projectId, itemPath, duplicatedItemPath
+
+			_ md.exists
+				@ userId
+				@ projectId
+				@ duplicatedItemPath
+				f_cb( result )
+					if result
+						r_cb_fs_err( duplicated folder name already exists )
+					_ md.copyFolder
+						@ userId
+						@ projectId
+						@ itemPath
+						@ projectId
+						@ duplicatedItemPath
+						@ callback
+						f_cb( result )
+							r_cb_fs( file duplicated )
+
+	set md.renameFolder
+		function
+			param userId
+			param projectId
+			param itemPath
+			param newName
+            param callback
+			
+			$include check_mounted
+
+			var renamedItemPath = parentPath(itemPath) + '/' + newName
+				
+			# log 'wizzi-io.filesystem.renameFolder', userId, projectId, itemPath, renamedItemPath
+
+			_ md.exists
+				@ userId
+				@ projectId
+				@ renamedItemPath
+				f_cb( result )
+					if result
+						r_cb_fs_err( renamed folder name already exists )
+
+					var oldPath
+						_ normalize
+							_ path.join
+								@ fsBaseFolderPath
+								@ userId
+								@ projectId
+								@ itemPath
+
+					var newPath
+						_ normalize
+							_ path.join
+								@ fsBaseFolderPath
+								@ userId
+								@ projectId
+								@ renamedItemPath
+
+					_ file.rename
+						@ oldPath
+						@ newPath
+						f_cb( result )
+							r_cb_fs( file renamed )

@@ -1,0 +1,76 @@
+﻿$group
+	$params name, alias, alias2|@@null
+
+	#
+	# params
+	#
+	# string ittfDocumentPath
+	# { context
+	#     optional, used by all methods
+	# { options
+	#   [ plugins?
+	#     string plugin-name 
+	#     optional, used by all methods
+	#   { globalContext?
+	#     optional, used by all methods
+	#   boolean raw?
+	#     optional, used by md.mtree()
+	#     default false
+	#   string artifactName?
+	#     required by md.gen() and md.genFromText()
+	#   { artifactContext?
+	#     optional, used by md.gen() and md.genFromText()
+	#   string outputPackagePath
+	#     required by md.schema()
+	#   string name
+	#     optional, used by md.job()
+	#   number verbose?
+	#     optional, used by md.job()
+	#     default 2
+	#   number indentedSpaces?
+	#     optional, used by md.job()
+	#     default 4
+	#   { jobContext?
+	#     optional, used by md.job()
+	# callback
+	#
+
+	set md.${name}
+		function
+			param ittfDocumentPath
+			param context
+			param options
+			param callback
+
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+
+			if typeof callback === 'undefined'
+				set callback = context
+				set context = {}
+
+			var name, schema
+			if verify.isObject(ittfDocumentPath)
+			else
+				$if alias !== "genFolder"
+					var ittfInfo
+						_ ittfDocumentInfoByPath
+							@ ittfDocumentPath
+
+					if ittfInfo.is_error
+						return
+							_ callback
+								@ ittfInfo
+
+					set name = ittfInfo.name
+					set schema = ittfInfo.schema
+
+			_ md.createFactoryLight
+				@ options
+				f_cb(wf)
+					$hook
+
+	set md.${alias} = md.${name}
+	$if alias2 != null
+		set md.${alias2} = md.${name}

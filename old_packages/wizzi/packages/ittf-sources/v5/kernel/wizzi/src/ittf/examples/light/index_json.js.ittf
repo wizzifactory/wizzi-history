@@ -1,0 +1,21 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	var wizzi = require('../../index')
+
+	var jsIttf
+		[
+			@ 'module'
+			@ '\tkind react'
+			@ '\treact MyComponent'
+			._ join('\n')
+
+	_ wizzi.genFromText
+		@ jsIttf
+		{
+		{
+			@ artifactName 'js/module'
+		f_cb(artifactText)
+			log 'genFromText', '\n', artifactText

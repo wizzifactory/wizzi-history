@@ -1,0 +1,82 @@
+﻿$group
+	$params name, alias
+
+	#
+	# params
+	#
+	# [ documents
+	#   required
+	#   {
+	#     string path
+	#     string content
+	# { context
+	#     optional, used by all methods
+	# { options
+	#   [ plugins?
+	#     string plugin-name 
+	#     optional, used by all methods
+	#   { globalContext?
+	#     optional, used by all methods
+	#   boolean raw?
+	#     optional, used by md.mtree()
+	#     default false
+	#   string artifactName?
+	#     required by md.gen() and md.genFromText()
+	#   { artifactContext?
+	#     optional, used by md.gen() and md.genFromText()
+	#   string outputPackagePath
+	#     required by md.schema()
+	#   string name
+	#     optional, used by md.job()
+	#   number verbose?
+	#     optional, used by md.job()
+	#     default 2
+	#   number indentedSpaces?
+	#     optional, used by md.job()
+	#     default 4
+	#   { jobContext?
+	#     optional, used by md.job()
+	# callback
+	#
+	set md.${name}
+		function
+			param ittfContent
+			param context
+			param options
+			param callback
+
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+
+			if typeof callback === 'undefined'
+				set callback = context
+				set context = {}
+
+			# log 'md.${name}.options', options
+			var schema
+			if verify.isNotEmpty(options.artifactName)
+				var ss = options.artifactName.split('/')
+				set schema = ss[0]
+			else
+				set schema = options.schemaName || options.schema
+
+			# A basefolder is required
+			var tempIttfUri = "c:/basefolder/temp." + schema + '.ittf'
+			var documents
+				[
+					{
+						@ path tempIttfUri
+						@ content ittfContent
+
+			_ md.JsonComponents.createJsonFsData
+				@ documents
+				f_cb( jsonFsData )
+
+					set options.jsonFsData = jsonFsData
+					_ md.createJsonFactoryLight
+						@ options
+						f_cb(wf)
+							$hook
+
+	set md.${alias} = md.${name}

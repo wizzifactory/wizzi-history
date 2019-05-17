@@ -1,0 +1,130 @@
+﻿r-component( OptionsDialog
+
+	$append imports
+		import Dialog from '@material-ui/core/Dialog'
+		import DialogTitle from '@material-ui/core/DialogTitle'
+		import DialogContent from '@material-ui/core/DialogContent'
+		import DialogContentText from '@material-ui/core/DialogContentText'
+		import DialogActions from '@material-ui/core/DialogActions'
+		import Button from '@material-ui/core/Button'
+		import TextField from '@material-ui/core/TextField'
+
+		function isString
+			param test
+			return test !== null && typeof(test) === 'string'
+
+        function isEmpty
+            param test
+            return isString(test) == false || test.length == 0
+
+	style
+
+	state
+		@ initValues {}
+		@ optionValues {}
+		@ errors {}
+
+	did-mount
+		prop options
+		#
+		var initValues = {}
+		foreach o in options
+			set initValues[o.name] = o.defaultValue || null
+		_ this.setState
+			{
+				@ initValues initValues
+				@ optionValues
+					_ Object.assign
+						{
+						@ initValues
+
+	=> validate
+		const errors = {}
+		const {optionValues, initValues} = this.state
+		# _ alert( 'validate: ' + JSON.stringify(optionValues, null, 2))
+		var test, testInit, ok = true
+		foreach o in this.props.options
+			set testInit = initValues[o.name]
+			set test = optionValues[o.name]
+			if o.notEmpty && isEmpty(test)
+				set ok = false
+				set errors[o.name] = 'A value is required.'
+			elif o.mustChange && test == testInit
+				set ok = false
+				set errors[o.name] = 'The value must be changed.'
+			else
+				set errors[o.name] = ''
+		_ this.setState
+			{
+				@ errors errors
+		return ok
+
+	=> handleChange
+		param name
+		return
+			=>
+				param event
+				const values = this.state.optionValues
+				set values[name] = event.target.value
+				_ this.setState
+					{
+						@ optionValues values
+
+	=> handleConfirm
+		# _ alert('validate: ' + this.validate())
+		# _ alert( JSON.stringify(this.state.errors, null, 2))
+		if this.validate()
+			_ this.props.onClose(this.state.optionValues)
+
+	=> handleCancel
+		_ this.props.onClose(null)
+
+	render
+		prop classes
+		prop open
+		prop title
+		prop contentText
+		prop options
+
+		const {errors} = this.state
+
+        return 
+            div 
+                < Dialog 
+                    @ open {open}
+                    @ onClose {this.handleCancel}
+                    @ aria-labelledby "form-dialog-title"
+                    < DialogTitle 
+                        @ id "form-dialog-title"
+                        + {title}
+                    < DialogContent 
+                        < DialogContentText 
+                            + {contentText}
+						{
+							_ options.map
+								=>
+									param o
+									param i
+									const errorText = errors[o.name]
+									return
+										< TextField 
+											@ key {i}
+											@ autoFocus
+											@ margin "dense"
+											@ id {o.name}
+											@ defaultValue {o.value || ''}
+											@ label {o.label || o.name}
+											@ type "text"
+											@ fullWidth
+											@ onChange {this.handleChange(o.name)}
+											@ helperText {errorText}
+											@ error { isEmpty(errorText) == false}
+                    < DialogActions 
+                        < Button 
+                            @ onClick {this.handleCancel}
+                            @ color "primary"
+                            + Cancel
+                        < Button 
+                            @ onClick {this.handleConfirm}
+                            @ color "primary"
+                            + Confirm

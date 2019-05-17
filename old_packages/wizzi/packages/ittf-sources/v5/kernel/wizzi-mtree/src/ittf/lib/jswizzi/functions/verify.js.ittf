@@ -1,0 +1,48 @@
+﻿module 
+    kind jsfile
+
+	set module.exports
+		{
+			@ isEmpty
+				function
+					param text
+					return typeof text === 'string' && text.trim().length === 0
+			@ isNotEmpty
+				function
+					param text
+					return typeof text === 'string' && text.trim().length > 0
+			@ isObject
+				function
+					param obj
+					var type = typeof obj
+					return type === 'function' || type === 'object' && !!obj
+			@ isArray
+				function
+					param obj
+					if Array.isArray
+						return Array.isArray(obj)
+					else
+						return toString.call(obj) === '[object Array]'
+			@ isString
+				function
+					param obj
+					return toString.call(obj) === '[object String]'
+			@ isNumber
+				function
+					param obj
+					return toString.call(obj) === '[object Number]'
+			@ isDate
+				function
+					param obj
+					return toString.call(obj) === '[object Date]'
+			@ isFunction
+				function
+					param obj
+					return toString.call(obj) === '[object Function]'
+
+			@ isUndefined
+				function
+					param obj
+					return obj === void 0
+
+

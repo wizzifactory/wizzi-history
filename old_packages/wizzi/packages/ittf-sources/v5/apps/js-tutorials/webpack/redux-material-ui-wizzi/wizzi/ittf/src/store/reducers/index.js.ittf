@@ -1,0 +1,19 @@
+﻿module
+	kind react
+
+	$include app-options
+	
+	react/store/reducers/index( &app )
+
+		$append imports
+			import appReducer from './appReducer'
+			import snippetReducer from './snippetReducer'
+			import snippetCloudReducer from './snippetCloudReducer'
+			import wizzifyReducer from './wizzifyReducer'
+			import helpBoardReducer from './helpBoardReducer'
+
+		@ app appReducer
+		@ snippet snippetReducer
+		@ snippetCloud snippetCloudReducer
+		@ wizzify wizzifyReducer
+		@ helpBoard helpBoardReducer

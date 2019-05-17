@@ -1,0 +1,81 @@
+  module  ids: 1 82
+    kind jsfile ids: 2 83
+    import util ids: 3 84
+    var wizzi = require('wizzi') ids: 4 85
+    var restParamsCheck = require('./restparamscheck') ids: 5 86
+    var md = module.exports = {} ids: 6 87
+    set md.paramsCheck ids: 7 88
+      function  ids: 8 89
+        param req ids: 9 90
+        return new restParamsCheck.paramsCheck(req) ids: 10 91
+    set md.sendError ids: 11 92
+      function  ids: 12 93
+        param res ids: 13 94
+        param err ids: 14 95
+        param options ids: 15 96
+        set options = options || {} ids: 16 97
+        set code = options.code || 999 ids: 17 98
+        var errEmit = err ids: 18 99
+        delete errEmit.__is_error ids: 19 100
+        if options.format === 'string' ids: 20 101
+          if typeof err !== 'string' ids: 21 102
+            set err = util.inspect(err, { depth: null }) ids: 22 103
+          set errEmit ids: 23 104
+            _ wizzi.verify.replaceAll ids: 24 105
+              @ err ids: 25 106
+              @ '\n' ids: 26 107
+              @ '<br>' ids: 27 108
+        _ res.setHeader('Content-Type', 'application/json') ids: 28 109
+        _ res.send ids: 29 110
+          _ JSON.stringify ids: 30 111
+            {  ids: 31 112
+              @ code code ids: 32 113
+              @ error errEmit ids: 33 114
+            @ null ids: 34 115
+            @ 4 ids: 35 116
+    set md.sendSuccess ids: 36 117
+      function  ids: 37 118
+        param res ids: 38 119
+        param status ids: 39 120
+        param data ids: 40 121
+        param options ids: 41 122
+        set options = options || {} ids: 42 123
+        set code = options.code || 0 ids: 43 124
+        var resultEmit = data ids: 44 125
+        delete status.__is_success ids: 45 126
+        if options.format === 'string' ids: 46 127
+          if result ids: 47 128
+            if typeof result !== 'string' ids: 48 129
+              set result = util.inspect(result, { depth: null }) ids: 49 130
+            set resultEmit ids: 50 131
+              _ wizzi.verify.replaceAll ids: 51 132
+                @ result ids: 52 133
+                @ '\n' ids: 53 134
+                @ '<br>' ids: 54 135
+        _ res.setHeader('Content-Type', 'application/json') ids: 55 136
+        _ res.send ids: 56 137
+          _ JSON.stringify ids: 57 138
+            {  ids: 58 139
+              @ code code ids: 59 140
+              @ status status ids: 60 141
+              @ data resultEmit ids: 61 142
+            @ null ids: 62 143
+            @ 4 ids: 63 144
+    set md.sendResult ids: 64 145
+      function  ids: 65 146
+        param res ids: 66 147
+        param err ids: 67 148
+        param result ids: 68 149
+        param options ids: 69 150
+        if err ids: 70 151
+          return  ids: 71 152
+            _ sendError ids: 72 153
+              @ res ids: 73 154
+              @ err ids: 74 155
+              @ options ids: 75 156
+        else  ids: 76 157
+          return  ids: 77 158
+            _ sendSuccess ids: 78 159
+              @ res ids: 79 160
+              @ result ids: 80 161
+              @ options ids: 81 162

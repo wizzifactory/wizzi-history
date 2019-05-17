@@ -1,0 +1,109 @@
+﻿module wizzi-repo.uriParser
+	kind jsfile
+
+	throw new Error('wizzi-repo.uriParser has been replaced with wizzi-utils.uriParser')
+
+	$if false
+
+		#
+			# params
+			#   string uri
+			# returns
+			#   {
+			#     string originalUri
+			#     string protocol
+			#        one-of 'db', 'ls', drive letter
+			#     string storeKind
+			#        one-of 'mongodb', 'localstorage', 'filesystem'
+			#     string userId
+			#        # if storeKind === 'mongodb'
+			#     string projectId
+			#        # if storeKind === 'mongodb'
+			#     string path
+			#     boolean isIttfDocument
+			#     string basename
+			#     string schema
+			#        # if isIttfDocument === true
+			#     string extension
+			#        # if isIttfDocument === false
+			#
+	
+		import url
+	
+		set module.exports
+			function parse
+				string uri
+				callback
+
+				set uri = uri.toLowerCase()
+			
+				var ret
+					{
+						@ originalUri uri
+
+				var parsedUri = url.parse(uri)
+				if typeof(parsedUri.protocol) !== 'string'
+					r_cb_wz_err( InvalidArgument, parse )
+						@ 'Uri must have a protocol (must be an absolute url). Received: ' + uri
+            
+				var protocol
+					iif parsedUri.protocol.substr(-1, 1) === ':'
+						then 
+							_ parsedUri.protocol.substr(0, (parsedUri.protocol.length - 1))
+						else 
+							set parsedUri.protocol
+            
+				# log 'parseuri.parsedUri', parsedUri
+
+				set ret.protocol = protocol
+			
+				if protocol === 'db'
+					set ret.storeKind = 'mongodb'
+				elif protocol === 'ls'
+					set ret.storeKind = 'localstorage'
+				else
+					if protocol.length === 1
+						set ret.storeKind = 'filesystem'
+					else
+						r_cb_wz_err( InvalidArgument, parse )
+							@ 'Uri protocol must be `db` or `ls` or a filesystem drive letter. Received: ' + protocol
+
+				+
+		
+				var name, parts = parsedUri.pathname ? parsedUri.pathname.split('/') : []
+				if parsedUri.pathname && parsedUri.pathname.length > 0 && parsedUri.pathname[0] == '/'
+					_ parts.shift()
+				set name = parts[parts.length-1]
+				set ret.basename = name
+				var nameparts = name.split('.')
+				if nameparts.length > 2 && nameparts[nameparts.length -1] === 'ittf'
+					set ret.isIttfDocument = true
+					set ret.schema = nameparts[nameparts.length -2]
+				else
+					set ret.isIttfDocument = false
+					set ret.extension = nameparts[nameparts.length -1]
+
+				if ret.storeKind === 'mongodb'
+				
+					if parts.length < 1
+						r_cb_wz_err( InvalidArgument, parse )
+							{
+								@ parameter 'uri'
+								@ message 'A mongodb uri must be in the form `db://userName/projectName/documentPath`. Received: ' + uri
+					# log 'wizzi-repo.fs.uriparser.parsedUri.parts', parts
+					# log 'wizzi-repo.fs.uriparser.parsedUri', parsedUri
+					set ret.userId = parsedUri.host
+					set ret.projectId = parts[0]
+					_ parts.shift();
+					set ret.path = parts.join('/')
+			
+				else
+
+					set ret.path = parts.join('/')
+
+				# log 'parseuri.ret', ret
+
+				return
+					_ callback
+						@ null
+						@ ret

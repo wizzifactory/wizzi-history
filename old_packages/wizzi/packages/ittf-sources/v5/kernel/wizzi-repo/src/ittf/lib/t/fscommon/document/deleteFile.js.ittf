@@ -1,0 +1,26 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m deleteFile
+		string filePath
+		callback
+
+		set filePath = normalize(filePath)
+		var that = this
+
+		_ this.fsCommon.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem == null
+					r_cb_wz_err( ${fsname}RepoError, deleteFolder )
+						@ 'Document delete file error. Item not found: ' + filePath
+				
+				if fsitem.kind == 0
+					r_cb_wz_err( ${fsname}RepoError, deleteFolder )
+						@ 'Document delete file error. Is a folder path, not a file path: ' + filePath
+
+				_ that.fsCommon.deleteItem
+					@ fsitem._id
+					f_cb( r )
+						# log 'wizzi-repo.${source}.document.deleteFile.r', r
+						r_cb( r )

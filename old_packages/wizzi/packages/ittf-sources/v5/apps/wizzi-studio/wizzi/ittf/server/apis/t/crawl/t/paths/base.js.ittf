@@ -1,0 +1,79 @@
+﻿$group
+
+	@ normalize
+		function
+			param filepath
+			return verify.replaceAll(filepath, '\\', '/')
+				
+	@ uriFromPath
+		function
+			param filepath
+			param excludeIttfExtension
+			set filepath = this.normalize(filepath).toLowerCase()
+			if excludeIttfExtension && verify.endsWith(filepath, '.ittf')
+				set filepath = filepath.substr(0, filepath.length - 5)
+			return
+				_ filepath.substr
+					@ config.studioBasePath.length
+				
+	@ pathFromUri
+		function
+			param uri
+			return
+				_ path.join
+					@ config.studioBasePath
+					@ uri
+
+	@ joinPathFromArray
+		function
+			param segments
+			var ret = segments[0]
+			for var i=1; i<segments.length; i++
+				set ret
+					_ path.join
+						@ ret
+						@ segments[i]
+			return ret
+
+	@ fileInfoByPath
+		function
+			param filePath
+			param baseFolder
+			param baseUri
+			set filePath = this.normalize(filePath)
+			set baseFolder = this.normalize(baseFolder)
+			var basename = path.basename(filePath)
+			var dirname = path.dirname(filePath)
+			var relFolder = path.dirname(filePath).length > baseFolder.length ? path.dirname(filePath).substr(baseFolder.length + 1) : ''
+			var fileUri
+				_ filePath.substr
+					@ baseFolder.length
+			var ss = basename.split('.')
+			if ss[ss.length-1] === 'ittf'
+				return 
+					{
+						@ uri (baseUri || '') + fileUri
+						@ name ss.slice(0, ss.length-2).join('.')
+						@ basename basename
+						@ displayName (relFolder.length > 0 ? relFolder + '/' + basename : basename)
+						@ isIttfDocument true
+						@ isFragment filePath.indexOf('/t/') > -1 
+						@ schema ss[ss.length-2]
+						@ mime ss[ss.length-2]
+						@ relFolder relFolder
+						@ fullPath filePath
+						@ hash hashEncrypt(filePath)
+			else
+				return 
+					{
+						@ uri fileUri
+						@ name ss.slice(0, ss.length-1).join('.')
+						@ basename basename
+						@ displayName (relFolder.length > 0 ? relFolder + '/' + basename : basename)
+						@ isIttfDocument false
+						@ schema null
+						@ mime ss[ss.length-1]
+						@ relFolder relFolder
+						@ fullPath filePath
+						@ hash hashEncrypt(filePath)
+						

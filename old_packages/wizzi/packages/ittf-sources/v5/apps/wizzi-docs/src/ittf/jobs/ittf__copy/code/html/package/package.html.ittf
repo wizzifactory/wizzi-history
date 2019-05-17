@@ -1,0 +1,159 @@
+﻿html
+
+	$
+		var currentPage = 'Code';
+		var currentSubPage = wfpackage.wzName;
+		var type = {};
+
+	wizzi-site-layout-compile()
+
+		$append styles
+			css styles.css
+
+		$include folder
+		$include folder_source
+
+		- main content markup
+
+		main
+			id mc-wrapper
+			$if l_hasSubPages
+				class mc-wrapper-layout-sub
+			$else
+				class mc-wrapper-layout
+
+			input
+				type checkbox
+				id mc-toggle-toc
+
+			input
+				type checkbox
+				id mc-toggle-toc-close
+				onchange mc_toggle_toc_Close()
+
+			$global
+				var count = 0;
+				var dcount = 0;
+
+			. mc-frame
+
+				. mc-frame-bar
+					h1 Code
+						class mc-sidebar-left-title
+					h1
+						label &times;
+							for mc-toggle-toc-close
+							class mc-label-toggle-close
+				nav
+					class mc-sidebar-left
+
+
+					h2 ${wfpackage.wzName}
+					. treeview
+						$global
+							dcount = 0;
+						$foreach f in wfpackage.folders
+							$_ buildup_folder
+								$@ f
+								$@ 0
+
+						ul
+							li
+								input
+									type checkbox
+										checked
+									id externalFragments
+								span
+								label external fragments
+									for externalFragments
+								ul
+									$foreach d in wfpackage.documents
+										li
+											a ${d.wzName}
+												href #${d.id}
+
+				. mc-content
+
+					$global
+						dcount = 0;
+
+					$foreach f in wfpackage.folders
+						$_ buildup_folder_source
+							$@ f
+							$@ 0
+
+					$foreach d in wfpackage.documents
+						$global
+							dcount++;
+						. mc-pane mc-pane-code-${d.id}
+							. code-panel
+								@ id ${d.id}
+								. modal-view-container
+									h4 ${d.relUri}
+										class d-h2
+									pre
+										class prettyprint
+										+ ${'\n'}${_.deinline(d.ittf.wzName)}
+
+					. modal
+						id frag-modal
+						. modal-content
+							id frag-modal-content
+							span &times;
+								class modal-close
+
+		script
+			module
+				kind jsfile
+
+				function m_toggleChanged
+					var el_toc = document.querySelector("input[id='mc-toggle-toc']")
+					var el_contents = document.querySelectorAll("input[id^='mc-toggle-code-']")
+					var seenTrue = false
+					foreach el in el_contents
+						if el.checked
+							set seenTrue = true
+					set el_toc.checked = seenTrue
+
+				function mc_toggle_toc_Close
+					var el_toc = document.querySelector("input[id='mc-toggle-toc']")
+					var el_contents = document.querySelectorAll("input[id^='mc-toggle-code-']")
+					foreach el in el_contents
+						set el.checked = false
+					set el_toc.checked = false
+
+
+$*
+
+
+		$global
+			var count = 0;
+			var dcount = 0;
+
+		h3 ${wfpackage.wzName} ittf source code:
+		. treeview
+			$global
+				dcount = 0;
+			$foreach f in wfpackage.folders
+				$_ buildup_folder
+					$@ f
+					$@ 0
+
+		div
+			class main-content
+			$global
+				dcount = 0;
+
+			$foreach f in wfpackage.folders
+				$_ buildup_folder_source
+					$@ f
+					$@ 0
+
+			. modal
+				id frag-modal
+				. modal-content
+					id frag-modal-content
+					span &times;
+						class modal-close
+
+*$

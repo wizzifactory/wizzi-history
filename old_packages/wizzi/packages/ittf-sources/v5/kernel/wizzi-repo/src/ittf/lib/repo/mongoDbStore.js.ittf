@@ -1,0 +1,70 @@
+﻿module wizzi-repo.mongoDbStore
+    kind jsfile
+
+	$if isWebpackTarget	
+		
+		class FileSystemStore
+	
+	$else
+
+		import util
+		var vfile = require('wizzi-utils').vfile
+		var MongoFsImpl = require('../mongodb/mongoFsimpl')
+		var errors = require('./errors')
+
+		class MongoDbStore
+			ctor
+				set this.storeKind = 'mongodb'
+				set this.fsimpl = null
+				set this.file = null
+    
+			m init
+				{ options
+					string mongoUri
+					string mongodbBaseFolder
+				callback
+				var that = this
+				set this.fsimpl
+					new MongoFsImpl
+						@ options.mongoUri
+						@ options.mongodbBaseFolder
+				_ this.fsimpl.open
+					f_cb( notUsed )
+						_ vfile
+							@ that.fsimpl
+							f_cb( file )
+								set that.file = file
+								r_cb( file )
+		
+			m close
+				if this.fsimpl
+					_ this.fsimpl.close
+
+			m documentExists
+				string documentPath
+				callback
+				_ this.file.isFile
+					@ documentPath
+					f_cb_no_err( result )
+						if err
+							r_cb_wz_err( RepoIOError, documentExists, err )
+								{
+									@ parameter 'documentPath'
+									@ message 'Checking existence of document: ' + documentPath
+						return callback(null, result)
+    
+			m getModelContent
+				string documentPath
+				callback
+				_ this.file.read
+					@ documentPath
+					f_cb_no_err( result )
+						if err
+							r_cb_wz_err( RepoIOError, getModelContent, err )
+								{
+									@ parameter 'documentPath'
+									@ message 'Getting content of document: ' + documentPath
+						# log 'getModelContent.received', result
+						return callback(null, result)
+
+	set module.exports = MongoDbStore

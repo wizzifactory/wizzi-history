@@ -1,0 +1,31 @@
+﻿$group
+
+	@ flowSnippet
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var res = options.res
+			var filePath = hashDecrypt(hash)
+
+			var options
+				{
+					@ codePath filePath
+
+			if res
+				_ scriptManager.flowExecToEventStream
+					@ options
+					@ res
+					f_cb_api(result)
+						log 'wizzi-studio.apis.flowSnippet.result', result
+						# no need to callback
+			else
+				_ scriptManager.flowExec
+					@ options
+					f_cb_api(result)
+						r_cb_success_quoted( Got flow analysis )
+							@ transpiled result
+
+
+

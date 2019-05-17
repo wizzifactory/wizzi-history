@@ -1,0 +1,41 @@
+$group
+
+	#
+		# Retrieve a model transformer
+		# Model transformation are searched in the PluginsManager
+		# They are cached
+	m getModelTransformer
+		string transformerName
+		{ globalContext
+			optional
+		+
+		var transformer = this.modelTransformers[transformerName] || null
+		if transformer == null
+			checked_call_r_set( transformer )
+				_ this.pluginsManager.getModelTransformer(transformerName)
+			if verify.isFunction(transformer.setGlobalContext) && globalContext
+				_ transformer.setGlobalContext
+					@ globalContext
+			set this.modelTransformers[transformerName] = transformer
+		return transformer
+
+	#
+		# Async execute a model transformation
+	m transformModel
+		{ model
+		string transformerName
+		{ context
+		callback
+		+
+		check_wz_callback( transformModel )
+		+
+		var transformer = this.getModelTransformer(transformerName)
+        if transformer.__is_error
+			set transformer.ittfDocumentUri = ittfDocumentUri
+            return callback(transformer)
+		+
+		set context.wizziFactory = this
+		_ transformer.trans
+			@ model
+			@ context
+			@ callback

@@ -1,0 +1,105 @@
+﻿$group
+
+	. {classes.contentRoutes}
+		< Route 
+			@ exact
+			@ path "/"
+			@ component {Home}
+		< Route 
+			@ path "/about"
+			@ component {About}
+		< Route 
+			@ path "/topics"
+			@ component {Topics}
+		< Route 
+			@ path "/codehighlight"
+			@ component {CodeHighLightDemo}
+		$*
+		< Route 
+			@ path "/codeprettier"
+			@ component {CodePrettierDemo}
+		*$
+		< Route 
+			@ path "/codebeautify"
+			@ component {CodeBeautifyDemo}
+		< Route 
+			@ path "/codeeditor"
+			@ component {CodeEditorDemo}
+		< Route 
+			@ path "/codeeditsplit2"
+			@ component {CodeEditSplit2}
+		< Route 
+			@ path "/treeview"
+			@ component {TreeViewDemo}
+		< Route 
+			@ path "/foldereditor"
+			@ component {FolderCodeEditor}
+		< Route 
+			@ path "/formdialog"
+			@ component {FormDialog}
+		< Route 
+			@ path "/menus"
+			@ component {Menus}
+		< Route 
+			@ path "/grid"
+			@ component {GridDemo}
+		< Route 
+			@ path "/notifier"
+			@ component {NotifierDemo}
+		< Route 
+			@ path "/wizziprojects"
+			@ component {WizziProjects}
+		< Route 
+			@ path "/wizzischema/:schemaUri"
+			@ component {WizziSchemaView}
+		< Route 
+			@ path "/wizziprojectstudio/:projectId"
+			@ component {WizziProjectStudio}
+		< Route 
+			@ path "/wizzipackages"
+			@ component {WizziPackages}
+		< Route 
+			@ path "/wizzikernelpackage/:packageName"
+			@ component {WizziKernelPackage}
+		< Route 
+			@ path "/wizzi/ittf/:version/kernel/:packageName"
+			@ component {WizziKernelPackage}
+		< Route 
+			@ path "/wizzipluginpackage/:packageName"
+			@ component {WizziPluginPackage}
+		< Route 
+			@ path "/wizzi/ittf/:version/plugin/:packageName"
+			@ component {WizziPluginPackage}
+		< Route 
+			@ path "/wizzischemaeditor/:schemaId"
+			@ component {WizziSchemaEditor}
+		< Route 
+			@ path "/wizziartifacteditor/:artifactId"
+			@ component {WizziArtifactEditor}
+		< Route 
+			@ path "/wizzirepo/:userId"
+			@ component {WizziRepo}
+		< Route 
+			@ path "/wizzijobs/:userId"
+			@ component {WizziJobs}
+		< Route 
+			@ path "/wizzijob/:userId/:hash"
+			@ component {WizziJob}
+		< Route 
+			@ path "/wizzi/jobs/:version/:packageKind/:packageName"
+			@ component {WizziJob}
+		< Route 
+			@ path "/job/gists/:userId"
+			@ component {WizziGists}
+		< Route 
+			@ path "/job/gist/:userId/:hash"
+			@ component {WizziGist}
+		< Route 
+			@ path "/job/snippets/:userId"
+			@ component {WizziSnippets}
+		< Route 
+			@ path "/job/snippet/:userId/:hash"
+			@ component {WizziSnippet}
+		< Route 
+			@ path "/wizzi/system"
+			@ component {WizziSystem}

@@ -1,0 +1,52 @@
+﻿$group
+
+	@ loadModel
+		function
+			param sessionData
+			param ittfDocumentUri
+			param context
+			param formatOptions
+			param callback
+
+			if typeof(callback) != 'function'
+				set callback = formatOptions
+				set formatOptions = {}
+
+			set context = context || {}
+			set context.__formatOptions = formatOptions
+
+			if userAuthRequired
+				_ createWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ null
+					_ loadModel_cb
+						@ ittfDocumentUri 
+						@ context 
+						@ callback
+			else
+				_ createWizziFactory
+					@ null
+					_ loadModel_cb
+						@ ittfDocumentUri 
+						@ context 
+						@ callback
+
+			function loadModel_cb
+				param ittfDocumentUri
+				param context
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.loadModel
+							@ ittfDocumentUri 
+							@ context
+							f_cb_api( result )
+								return
+									_ callback
+										@ null
+										{
+											@ data result
+											@ status
+												_ success
+													@ 'Model on uri ' + ittfDocumentUri + ' loaded'

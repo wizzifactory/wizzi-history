@@ -1,0 +1,54 @@
+﻿base_example()
+
+	$append imports
+		import path
+
+		var codecampPath = 'c:/my/wizzi/v5/codecamps'
+		# var fileBasename = 'index.js'
+		var fileBasename = 'compile.js'
+
+	var options1
+		{
+			@ codePath
+				_ path.join
+					@ codecampPath
+					@ 'react'
+					@ 'src'
+					@ fileBasename
+
+	_ prettier
+		f_cb_test(result)
+			log 'prettier.result', result
+			_ file.write
+				_ path.join
+					@ codecampPath
+					@ 'react'
+					@ 'dist'
+					@ fileBasename + '.prettier.js'
+				@ result
+			#
+				_ prettier
+					f_cb_test(result)
+						log 'prettierToEventStream.result', result
+	
+	function prettier
+		param callback
+
+		_ manager.prettierExec
+			@ options1
+			@ callback
+    
+	function prettierToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.prettierToEventStream
+			@ options1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

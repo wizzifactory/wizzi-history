@@ -1,0 +1,65 @@
+﻿$group
+
+	summary
+
+		p Artifact generators are contained in wizzi plugins and are exposed to
+			+ the wizzi factory implementing the wizzi-plugin.factoryPlugin API.
+
+		p The wizzi-plugin.factoryPlugin.getArtifactGenerator(artifactKey) method
+			+ returns a wizzi-plugin.artifactGenerator interface for generating
+			+ the requested `artifactName`.
+
+		h4 wizzi-plugin.artifactGenerator API
+		ittf
+			- {
+				- func gen
+					- { model
+						- | api-ref wizzi-plugin.wizziModel
+						- | POJO
+					- { ctx
+						- api-ref wizzi.artifact.genContext
+					- callback
+
+		p Plugins authors are free to implement this interface with their
+			+ preferred tools.
+
+		p In this documentation section we describe solutions that the wizzi 
+			+ factory has taken for its own artifact generators.
+
+		h4 Wizzi factory standard artifact generators location
+		p Artifact generators should have a standard location in the
+			+ plugin package.
+		ittf
+			- ...
+				- `package-name`
+					- lib
+						- artifacts
+							- `wfschema-name`
+								- `artifact-name`
+									- gen
+										- main.js
+		
+		p The file 'main.js' is the module that exposes 
+			+ the wizzi-plugin.artifactGenerator interface for the
+			+ artifact of key: `wfschema-name`/`artifact-name`.
+			
+		p This artifact key must be unique in the plugins configuration
+			+ of the wizzi.wizziFactory instance that is executing the generation.
+		
+		h4 Example of 'generator' attribute in a 'wfjob'
+		p The `wfschema-name`/`artifact-name` artifact key
+			+ is the value to be declared in the generator attribute of the 
+			+ artifact element of a 'wfjob' ittf document.
+		ittf
+			- wfjob job-name
+				- ...
+				- line line-name
+					- artifact `artifact-generation-description`
+						- ...
+						- generator `wfschema-name`/`artifact-name`
+						- ...
+
+		p TODO The wizzi-plugin.factoryPlugin API could provide a method for
+			+ assigning aliases to named resources of the plugin allowing to 
+			+ avoid name collisions without modifications to the plugin code.
+

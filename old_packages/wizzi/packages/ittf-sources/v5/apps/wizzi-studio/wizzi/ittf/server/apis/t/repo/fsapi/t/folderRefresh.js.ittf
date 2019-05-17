@@ -1,0 +1,19 @@
+﻿$group
+	$params label
+
+	if itemPath.indexOf('/') > -1
+		const parentFolder = itemPath.substr(0, itemPath.lastIndexOf('/'))
+		_ that.getFolderOrFile
+			@ userId
+			@ projectId
+			@ parentFolder
+			f_cb( getResult )
+				r_cb_success( '${label}: ' + userId + '/'  + projectId + '/'  + itemPath 
+					@ folderRefresh getResult.data
+	else
+		_ that.getProjectRoot
+			@ userId
+			@ projectId
+			f_cb( getResult )
+				r_cb_success( '${label}: ' + userId + '/'  + projectId + '/'  + itemPath 
+					@ folderRefresh getResult.data

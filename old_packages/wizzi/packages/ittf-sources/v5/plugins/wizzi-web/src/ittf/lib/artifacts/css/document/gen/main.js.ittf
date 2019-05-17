@@ -1,0 +1,95 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var async = require('async')
+	
+	var myname = 'css.document.main'
+
+	var md = module.exports = {}
+	set md.stm = {}
+	
+	var rule = require('./rule')
+	_ rule.load(md)
+
+	set md.gen
+		function
+			param model
+			param ctx
+			param callback
+
+			# log 'model', util.inspect(model, { depth: 3 })
+			# log 'enter', myname
+
+			set ctx.__comment_level = 0
+
+			_ md.getGenItem
+				@ ctx
+				(
+					@ model
+					function
+						log 'exit', myname
+						_ callback(null, ctx)
+
+	async/md-gen-item( )
+
+			var stm = md.stm[model.wzElement]
+			if stm
+				_ stm
+					@ model
+					@ ctx
+					function
+						_ callback
+			else 
+				# this is an abnormal end
+				throw ctx.error(myname + '. Unknown tag/element: ' + model.wzTag + '/' + model.wzElement, model)
+
+	async/md-gen-items( )
+		$$ params: items, ctx, options
+
+		var
+			decl opt = options || {}
+			decl from = opt.from || 0
+			decl indent = typeof opt.indent === 'undefined' ? true : opt.indent
+
+		if indent
+			_ ctx.indent()
+
+		var goitems = []
+		for var i = from; i < items.length; i++
+			_ goitems.push(items[i])
+
+		_ async.mapSeries
+			@ goitems
+			_ md.getGenItem
+				@ ctx
+			function
+				if indent
+					_ ctx.deindent()
+				_ process.nextTick
+					@ callback
+
+	async/md-stm( css )
+		
+		# css is container only
+		if model.charset
+			_ ctx.write('@charset "' + model.charset + '";')
+		_ emitResources(model.resources, ctx)
+		_ md.genItems
+			@ model.rules
+			@ ctx
+			{
+				@ indent false
+			function
+				_ callback
+
+	function emitResources
+		param requestedResources
+		param ctx
+
+		if requestedResources.length > 0 && ctx.values.cssResources
+			var resourceRepo = ctx.values.cssResources
+			_ resourceRepo.clearCssDependencies()
+			foreach item in requestedResources
+				_ resourceRepo.addCssDependency(item.wzName)
+			_ resourceRepo.emitCssDependencies(ctx)

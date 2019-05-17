@@ -1,0 +1,164 @@
+﻿module wizzi-repo.ittfDocumentStore
+	kind jsfile
+
+	import util
+	var errors = require('./errors')
+	# var uriParser = require('./uriParser')
+	var uriParser = require('wizzi-utils').uriParser
+	var FileSystemStore = require('./fileSystemStore')
+	$if gctx_useMongo
+		var MongoDbStore = require('./mongoDbStore')
+	$else
+		var MongoDbStore = {}
+	$if isWebpackTarget
+		var BrowserFSStore = require('./browserFSStore')
+	$else
+		var BrowserFSStore = {}
+	var JsonDbStore = require('./jsonDbStore')
+    
+	#
+		#
+		#
+
+	class IttfDocumentStore
+		m parseUri
+			string ittfDocumentUri
+			callback
+
+			_ uriParser
+				@ ittfDocumentUri
+				@ callback
+		#
+			# params
+			#   { storeInfo
+			#     string storeKind
+			#       oneOf filesystem, mongodb, json, browser
+			#     string storeUri
+			#       # when storeKind === 'mongodb'
+			#     string storeBaseFolder
+			#       # when storeKind === 'mongodb'
+			#     string storeJsonFsData
+			#       # when storeKind === 'json'
+		m init
+			{ storeInfo
+				string storeKind
+			callback
+
+			if storeInfo.storeKind === 'filesystem'
+				$if isWebpackTarget	
+					r_cb_wz_err( InvalidArgument, init )
+						{
+							@ parameter 'storeKind'
+							@ message "Invalid storeKind when isWebpackTarget == true : " + storeInfo.storeKind
+				$else
+					set this.storeImpl = new FileSystemStore()
+					set this.storeKind = this.storeImpl.storeKind
+					return
+						_ callback(null)
+			
+			$if gctx_useMongo
+				
+				elif storeInfo.storeKind === 'mongodb'
+					set this.storeImpl = new MongoDbStore()
+					var that = this
+					_ this.storeImpl.init
+						{
+							@ mongoUri storeInfo.storeUri
+							@ mongodbBaseFolder storeInfo.storeBaseFolder
+						f_cb( notUsed )
+							set that.storeKind = that.storeImpl.storeKind
+							return
+								_ callback(null)
+			
+			elif storeInfo.storeKind === 'json'
+                # log 'storeInfo', storeInfo
+				set this.storeImpl = new JsonDbStore()
+				var that = this
+				_ this.storeImpl.init
+					{
+						@ jsonFsData storeInfo.storeJsonFsData
+						@ fsJson storeInfo.storeFsJson
+					f_cb( notUsed )
+						set that.storeKind = that.storeImpl.storeKind
+						return
+							_ callback(null)
+
+			$if isWebpackTarget
+
+				elif storeInfo.storeKind === 'browser'
+					set this.storeImpl = new BrowserFSStore()
+					var that = this
+					_ this.storeImpl.init
+						{
+						f_cb( notUsed )
+							set that.storeKind = that.storeImpl.storeKind
+							return
+								_ callback(null)
+
+			else 
+				r_cb_wz_err( InvalidArgument, init )
+					{
+						@ parameter 'storeKind'
+						@ message "Unknown storeKind: " + storeInfo.storeKind
+            
+		m initSync
+			{ storeInfo
+				string storeKind
+			if storeInfo.storeKind === 'filesystem'
+                set this.storeImpl = new FileSystemStore()
+			else 
+				r_cb_wz_err( InvalidArgument, initSync )
+					{
+						@ parameter 'storeInfo.storeKind'
+						@ message 'Method "initSync" is for storeKind "filesystem" only. ' +
+							\b 'Received: ' + storeInfo.storeKind
+			set this.storeKind = this.storeImpl.storeKind
+
+		m close
+			if this.storeImpl && this.storeImpl.close
+				_ this.storeImpl.close
+		
+		m documentExists
+			string documentUri
+            callback
+            _ this.storeImpl.documentExists(documentUri, callback)
+
+		m getModelContent
+            string documentUri
+            callback
+			_ this.storeImpl.getModelContent(documentUri, callback)
+
+		m folderExistsSync
+			string folderUri
+			if this.storeKind !== 'filesystem'
+				r_cb_wz_err( InvalidRequest, folderExistsSync )
+					@ 'Method "folderExistsSync" is for storeKind "filesystem" only. ' +
+							\b 'Current storeKind is: ' + this.storeKind
+            return this.storeImpl.folderExists(folderUri)
+
+		m getFoldersSync
+			string parentFolderUri
+			{ options
+			if this.storeKind !== 'filesystem'
+				r_cb_wz_err( InvalidRequest, getFoldersSync )
+					@ 'Method "getFoldersSync" is for storeKind "filesystem" only. ' +
+							\b 'Current storeKind is: ' + this.storeKind
+            return this.storeImpl.getFoldersSync(parentFolderUri, options)
+
+		m createFileSystemDocumentStore
+			static
+			var ret = new IttfDocumentStore()
+			_ ret.initSync
+				{
+					@ storeKind "filesystem"
+			return ret
+
+		m getInfo
+			if this.storeImpl.getInfo
+				return this.storeImpl.getInfo()
+			else
+				return
+					{
+						@ storeKind this.storeKind
+
+	set module.exports = IttfDocumentStore

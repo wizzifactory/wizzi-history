@@ -1,0 +1,20 @@
+﻿$group
+	$params pathName, uriName
+
+	var ${uriName} = ''
+	var breadCrumbs = []
+	if options.rootFolder
+		set ${uriName}
+			_ verify.unixifyPath
+				_ ${pathName}.substr
+					@ options.rootFolder.length
+		var parts = ${uriName}.split('/')
+		var partUri = ''
+		foreach item in parts
+			if item.length > 0
+				set partUri += '/' + item
+				_ breadCrumbs.push
+					{
+						@ uri partUri
+						@ name item
+		set breadCrumbs[breadCrumbs.length-1].isLast = true

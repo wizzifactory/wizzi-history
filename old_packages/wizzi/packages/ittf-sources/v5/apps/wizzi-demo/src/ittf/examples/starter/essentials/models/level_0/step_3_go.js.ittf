@@ -1,0 +1,42 @@
+﻿example-essentials( wizzimodel, 0, 3 )
+
+	# 
+		# DEMO: how to load an IttfDocument into an `html` wizzi model,
+		#       passing a modelInfo object to the sourcePathOrModelInfo parameter.
+		#
+		#       The model has a context model described in the modelInfo object.
+		#
+		# API   wizzi.model(sourcePathOrModelInfo, context?, options?)
+	+
+	var modelsComplexPath
+		_ path.join 
+			@ __dirname
+			@ 'step_0'
+			@ 'complex'
+	+
+	_ wizzi.model
+		{
+			@ src
+				_ path.join
+					@ modelsComplexPath
+					@ 'forms.html.ittf'
+			@ schema 'html'
+			[ contexts
+				{
+					@ src
+						_ path.join
+							@ modelsComplexPath
+							@ 'formsData.json.ittf'
+					@ schema 'json'
+					@ exportName 'data'
+		f_cb_test(wizziModel)
+			log 'wizziModel.wzElement', wizziModel.wzElement
+			_ wizzi.gen
+				@ wizziModel
+				f_cb_test(artifactText)
+					log 'artifactText complex forms\n', artifactText
+			return
+				_ step_callback
+					@ null
+					@ 'models example executed'
+

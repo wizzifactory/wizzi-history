@@ -1,0 +1,21 @@
+﻿module
+	kind jsfile
+
+	import util
+	+
+	var md = module.exports = {}
+	+
+	error( NotImplemented, message )
+		log 'message', message
+		set this.message = message
+	+
+	error( InvalidRequest, message, code )
+		log 'message', message
+		set this.message = message
+		set this.code = code
+
+	error( FsItemNotFound, resourceType, uri )
+		set this.message = resourceType + ': ' + uri + ' not found '
+
+    
+

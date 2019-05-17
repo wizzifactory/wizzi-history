@@ -1,0 +1,94 @@
+﻿api wizzi-repo.ittfDocumentStore
+
+	# Kernel api
+	module
+		path wizzi-repo/lib/repo/ittfDocumentStore.js
+
+
+	{
+		# TODO explain everything IMPORTANT !!!
+		m parseUri
+			string ittfDocumentUri
+			cb()
+				$append error-types
+					error InvalidRequest
+				{ parsedUri
+					string storeKind
+						restrict
+							enum filesystem
+							enum mongodb
+							enum localstorage
+					boolean isIttfDocument
+					string schema
+					switch userId
+						on storeKind is filesystem
+							string userId
+								# parsedUri.host
+						on storeKind is mongodb
+							string userId
+								# uri-parts[0]
+					switch projectId
+						on storeKind is filesystem
+							string projectId
+								# uri-parts[0]
+						on storeKind is mongodb
+							string projectId
+								# uri-parts[1]
+					switch uri
+					switch path
+						on storeKind is filesystem
+							string path
+								# uri-parts.join('/')
+						on storeKind is mongodb
+							string path
+								# uri-parts.join('/')
+		m init
+			{ ittfDocumentInfo
+				string storeKind
+					restrict
+						enum filesystem
+						enum mongodb
+						enum localstorage
+			cb()
+				$append error-types
+					error InvalidRequest
+				null
+            
+		m initSync
+			throw-if storeKind !== 'filesystem'
+			{ ittfDocumentInfo
+				string storeKind
+					restrict
+						enum filesystem
+			return void
+
+		m documentExists
+			# Checks the existence of an ittf document in the repository.
+            string documentUri
+			cb()
+				$append error-types
+					error InvalidRequest
+				boolean documentExists
+
+		m folderExistsSync
+			throw-if storeKind !== 'filesystem'
+			string folderUri
+			return
+				boolean folderExists
+
+		m getFoldersSync
+			throw-if storeKind !== 'filesystem'
+			string parentFolderUri
+			{ options
+            return
+				{ this.storeImpl.getFoldersSync(parentFolderUri, options)
+
+		m getModelContent
+			# Retrieves an ittf document from the repository.
+            string ittfDocumentUri
+			cb()
+				$append error-types
+					error InvalidRequest
+					error IttfNotFound
+				string documentContent
+

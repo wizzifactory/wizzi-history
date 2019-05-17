@@ -1,0 +1,22 @@
+﻿demo_module( wizzischema, 0, 1 )
+
+	# 
+		# Wizzi schema
+		# How to generate the artifacts for a new wizzi schema
+		# A simple schema with a `root` and a single `element` 
+		# that could represent a product record information.
+
+	+
+	set globalContext
+		{
+			@ globalContextDummy 'If you see me the global context works fine.'
+	
+	set mTreeBuildupContext
+		{
+			@ modelLoadContextDummy 'If you see me the model load context works fine.'
+	+
+	exec_go( 1, sample_0_1, first )
+		if step_callback
+			_ step_callback
+				@ null
+

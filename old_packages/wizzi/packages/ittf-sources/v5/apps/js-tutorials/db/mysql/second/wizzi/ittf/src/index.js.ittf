@@ -1,0 +1,44 @@
+﻿module
+	kind es6
+
+	$include app-options
+
+    $if app.useBabelNode
+		import '@babel/polyfill'
+	$if app.useDotenv
+		import 'dotenv/config'
+
+    var mysql = require('mysql')
+
+    var connection
+        _ mysql.createConnection
+            { 
+				@ host process.env.HOST
+				@ user process.env.USER
+				@ password process.env.PASSWORD
+				@ database 'todoapp'
+    
+	_ connection.connect
+        function 
+            param err
+            if err
+                log 'error connecting: ' + err.stack
+                return 
+            log 'connected as id ' + connection.threadId
+			_ connection.query
+				@ 'SELECT * FROM `todos`'
+				function 
+					param err
+					param results
+					param fields
+					if err
+						log 'error querying: ' + err.stack
+					else
+						log JSON.stringify(results, null, 2)
+					_ connection.end
+						function
+							param err
+							if err
+								log 'error disconnecting: ' + err.stack
+								return 
+							log 'disconnected'

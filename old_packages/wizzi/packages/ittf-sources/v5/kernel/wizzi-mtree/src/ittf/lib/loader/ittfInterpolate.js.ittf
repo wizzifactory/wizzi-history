@@ -1,0 +1,165 @@
+﻿module wizzi-mtree.loader.interpolate
+	kind jsfile
+
+	var verify = require('wizzi-utils').verify
+	var jsWizziRunner = require('../jswizzi/jsWizziRunner')
+
+	#
+		# rules:
+		#   Macro expressions are enclosed by ${'$'}{ and } delimiters.
+		#   example: ${'$'}{name}.
+		#   A macro expression can be escaped and used as a literal,
+		#   example: \${'$'}\{name}.
+		#   A macro expression may contain paired graphs { },
+		#   example: ${'$'}{ for { var i=0; i<10; i++} ; return i; }.
+		#   An empty macro ${} is treated as a literal, it is not replaced.
+		#   An unclosed delimiter ${ is treated as a literal, it is not an error.
+
+	var state_text = 0
+	var state_tag = 1
+	var state_key = 2
+
+	function interpolate
+		param template
+		param jsWizziContext
+		param options
+		
+		if typeof template === 'undefined' || template === null
+			return ''
+		if typeof options === 'undefined' || options === null
+			set options = {}
+		
+		var isCompile = options.isCompile
+
+		var
+			decl l = template.length
+			decl result = []
+			decl ch
+			decl key
+			decl inside_tags = 0
+			decl state = state_text
+			decl replacer = null
+			decl keyOrCode
+
+		if isCompile
+			_ result.push("'")
+
+		for var i=0; i<l; i++
+
+			set ch = template[i]
+			
+			if ch == '\\'
+				# log 'wizzi-mtree.loader.ittfInterpolate', template[i+1], template[i+2], template[i+3]
+			
+			if state == state_text &&
+				\b ch == '\\' && 
+				\b i+3 < l && 
+				\b template[i+1] == '$' &&
+				\b template[i+2] == '\\' &&
+				\b template[i+3] == '{'
+				_ result.push('${')
+				set i = i +3
+				continue
+			
+			if ch == '$'
+				if state == state_text
+					set state = state_tag
+				elif state == state_key
+					_ key.push(ch)
+				else	
+					# state == state_tag
+					# case double $$, is text
+					_ result.push('$$')
+					set state = state_text
+			
+			elif ch == '{'
+				if state == state_text
+					if isCompile && ch === "'"
+						_ result.push('\\')
+					_ result.push(ch)
+				elif state == state_key
+					# case '{' inside $ { }
+					set inside_tags++
+					_ key.push(ch)
+				else
+					# state == state_tag
+					# case ${
+					set state = state_key
+					set key = []
+					set inside_tags = 0
+			
+			elif ch == '}'
+				if state == state_text
+					if isCompile && ch === "'" 
+						_ result.push('\\')
+					_ result.push(ch)
+				elif state == state_key
+					if inside_tags > 0
+						# case '{}' inside $ { }
+						set inside_tags--
+						_ key.push(ch)
+					else
+						set keyOrCode = key.join('')
+						if keyOrCode.replace(/\s/g,'').length == 0
+							# case empty ${} - is ok do not replace
+							_ result.push('${}')
+						else
+							if isCompile
+								_ result.push("' + " + keyOrCode + " + '")
+							else
+								checked_call_return( replacer, ittf.interpolate )
+									_ evalKeyOrCode(keyOrCode, jsWizziContext)
+								_ result.push(replacer)
+						set state = state_text
+				else
+					# state == state_tag
+					# case strange sequence '$}' but ok
+					_ result.push('$}')
+					set state = state_text
+			
+			else
+				if state == state_text
+					if isCompile && ch === "'"
+						_ result.push('\\')
+					_ result.push(ch)
+				elif state == state_key
+					_ key.push(ch)
+				else
+					# state == state_tag
+					# case sequence '$*' is text
+					_ result.push('$')
+					if isCompile && ch === "'"
+						_ result.push('\\')
+					_ result.push(ch)
+					set state = state_text
+
+		# check for unclosed macros
+		if state == state_key
+			# 16/11/17 _ result.push('${' + verify.replaceAll(key.join(''), "'", "\\'"))
+			_ result.push('${' + key.join(''))
+		elif state == state_tag
+			_ result.push('$')
+
+		if isCompile
+			_ result.push("'")
+
+		return result.join('')
+
+	function evalKeyOrCode
+		param keyOrCode
+		param jsWizziContext
+		# log 'wizzi-mtree.loader.ittfInterpolate.evalKeyOrCode: ', keyOrCode
+		# TODO Is this a week assumption ???
+		var stm
+			iif keyOrCode.indexOf('return ') > -1
+				then 'var _____result = function dummy() { ' + keyOrCode + ' }();'
+				else 'var _____result = ' + keyOrCode + ';'
+		# log 'wizzi-mtree.loader.ittfInterpolate.evalKeyOrCode.previous._____result: ', keyOrCode, jsWizziContext.isDeclared('_____result')
+		checked_call_return( notUsed, ittf.interpolate.evalKeyOrCode )
+			_ jsWizziRunner.run(stm, jsWizziContext)
+		var result = jsWizziContext.getValue('_____result')
+		# log 'wizzi-mtree.loader.ittfInterpolate.evalKeyOrCode: ', keyOrCode, result
+		_ jsWizziContext.setValue('_____result', undefined)
+		return result
+
+	set module.exports = interpolate

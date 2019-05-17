@@ -1,0 +1,63 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m uploadFolder
+		string sourcePath
+		string destPath
+		options-callback
+
+		
+
+		set options.documentContent = true
+
+		var that = this
+
+		set sourcePath = normalize(sourcePath)
+		set destPath = normalize(destPath)
+		
+		# use disk filesystem
+		_ vfile
+			f_cb( file )
+				var documents
+					_ file.getFiles
+						@ sourcePath
+						{
+							@ deep true
+							@ documentContent true
+
+				# log 'wizzi-repo.${source}.document.uploadFolder.documents', sourcePath, options, documents
+
+				var d, destFilePath, len = documents.length
+				var uploaded = []
+
+				function repeater
+					param index
+					if index === len
+						return callback(null, uploaded)
+			
+					set d = documents[index]
+					set destFilePath
+						_ path.join
+							@ destPath
+							@ d.relPath
+
+					if d.content && d.content.length > 0
+						_ that.writeFile
+							@ destFilePath
+							@ d.content
+							f_cb( r )
+								_ uploaded.push
+									{
+										@ relPath d.relPath
+										@ dest destFilePath
+										@ result r
+								_ process.nextTick
+									function 
+										_ repeater(index + 1)
+					else
+						_ repeater(index + 1)
+        
+				_ repeater(0)
+
+
+

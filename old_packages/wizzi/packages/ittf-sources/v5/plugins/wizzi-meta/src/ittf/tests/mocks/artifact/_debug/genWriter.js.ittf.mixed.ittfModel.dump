@@ -1,0 +1,116 @@
+  module  ids: 1 117
+    kind jsfile ids: 2 118
+    var StringWriter = require('../util/stringwriter') ids: 3 119
+    var verify = require('../util/verify') ids: 4 120
+    var block = require('./block') ids: 5 121
+    var interpolate = require('../util/interpolate') ids: 6 122
+    var errors = require('../errors') ids: 7 123
+    class GenWriter ids: 8 124
+      ctor  ids: 9 125
+        param genconfig ids: 10 126
+        if !verify.isObject(genconfig) ids: 11 127
+          throw  ids: 12 128
+            new Error('GenWriter: genconfig argument must be an Object') ids: 13 129
+        if !verify.isObject(genconfig.options) ids: 14 130
+          throw  ids: 15 131
+            new Error('GenWriter: genconfig.options argument must be an Object') ids: 16 132
+        set this.genconfig = genconfig ids: 17 133
+        set this.model = genconfig.model ids: 18 134
+        set this.srcPath = genconfig.srcPath ids: 19 135
+        set this.pman = genconfig.pman ids: 20 136
+        set this.block = new block(this.genconfig.options) ids: 21 137
+        set this.values = this.genconfig.options.data || {} ids: 22 138
+      m forceIndent ids: 23 139
+        param value ids: 24 140
+        return this.block.forceIndent(value) ids: 25 141
+      m indent ids: 26 142
+        param value ids: 27 143
+        _ this.block.indent(value) ids: 28 144
+      m deindent ids: 29 145
+        param value ids: 30 146
+        _ this.block.deindent(value) ids: 31 147
+      m a ids: 32 148
+        param name ids: 33 149
+        param value ids: 34 150
+        set this.values[name] = value ids: 35 151
+      m g ids: 36 152
+        param name ids: 37 153
+        return this.values[name] ids: 38 154
+      m r ids: 39 155
+        param name ids: 40 156
+        if this.values[name] ids: 41 157
+          set delete (this.values[name]) ids: 42 158
+      m w ids: 43 159
+        param text ids: 44 160
+        if verify.isString(text) ids: 45 161
+          _ this.block.w ids: 46 162
+            iif text.indexOf('{') > - (1) ids: 47 163
+              then  ids: 48 164
+                _ interpolate ids: 49 165
+                  @ text ids: 50 166
+                  @ this.values ids: 51 167
+              else text ids: 52 168
+        else  ids: 53 169
+          _ this.block.w('') ids: 54 170
+      m write ids: 55 171
+        param text ids: 56 172
+        if !verify.isString(text) ids: 57 173
+          return  ids: 58 174
+        _ this.block.write ids: 59 175
+          _ interpolate ids: 60 176
+            @ text ids: 61 177
+            @ this.values ids: 62 178
+      m writeFile ids: 63 179
+        param filePath ids: 64 180
+        _ this.block.writeFile ids: 65 181
+          _ interpolate ids: 66 182
+            @ filePath ids: 67 183
+            @ this.values ids: 68 184
+      m toStream ids: 69 185
+        param stream ids: 70 186
+        _ this.block.toStream(stream) ids: 71 187
+      m getContent ids: 72 188
+        var sw = new StringWriter() ids: 73 189
+        _ this.block.toStream(sw) ids: 74 190
+        return sw.toString() ids: 75 191
+      m getContentInLine ids: 76 192
+        return  ids: 77 193
+          _ verify.replaceAll ids: 78 194
+            _ this.getContent() ids: 79 195
+            @ '\n' ids: 80 196
+            @ '__1_2_3__' ids: 81 197
+      m error ids: 82 198
+        param message ids: 83 199
+        param node ids: 84 200
+        return  ids: 85 201
+          new errors.NodeError(message, node) ids: 86 202
+      m artifactGenerationError ids: 87 203
+        param message ids: 88 204
+        param location ids: 89 205
+        param node ids: 90 206
+        _ errors.ArtifactGenerationError(message, location, node) ids: 91 207
+      m terminate ids: 92 208
+        set delete this.pman ids: 93 209
+        set delete this.genconfig.pman ids: 94 210
+        _ this.block.terminate() ids: 95 211
+      m hydrate ids: 96 212
+        param block ids: 97 213
+        param options ids: 98 214
+        set this.block = new block(options) ids: 99 215
+        _ this.block.hydrate ids: 100 216
+          @ block.lines ids: 101 217
+          @ options ids: 102 218
+      m toStringFromJSON ids: 103 219
+        param block ids: 104 220
+        param options ids: 105 221
+        if !block || !block.lines ids: 106 222
+          return 'NO TEXT' ids: 107 223
+        var gw ids: 108 224
+          new GenWriter ids: 109 225
+            {  ids: 110 226
+              @ options options ids: 111 227
+        _ gw.block.hydrate ids: 112 228
+          @ block.lines ids: 113 229
+          @ options ids: 114 230
+        return gw.getContent() ids: 115 231
+    set module.exports = GenWriter ids: 116 232

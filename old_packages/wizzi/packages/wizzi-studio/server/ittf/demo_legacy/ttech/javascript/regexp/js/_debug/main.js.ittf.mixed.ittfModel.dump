@@ -1,0 +1,165 @@
+  module  ids: 1 73
+    kind jsfile ids: 2 74
+    var gRegEditor ids: 3 75
+    ready  ids: 4 76
+      set gRegEditor = new regEditor(examplesData) ids: 5 77
+      _ $('#examples-container').html ids: 6 78
+        _ toHtmlExamples ids: 7 79
+          {  ids: 8 80
+            @ items examplesData ids: 9 81
+      _ $('#btnTest').click ids: 10 82
+        function  ids: 11 83
+          _ gRegEditor.execute('test') ids: 12 84
+      _ $('#btnExec').click ids: 13 85
+        function  ids: 14 86
+          _ gRegEditor.execute('exec') ids: 15 87
+      _ $('#examples-container').click ids: 16 88
+        function  ids: 17 89
+          param ev ids: 18 90
+          _ gRegEditor.setExample ids: 19 91
+            _ ev.target.id.substring (2) ids: 20 92
+    function execute ids: 21 93
+      param reText, reFlags, str, oper ids: 22 94
+      set reFlags = reFlags || "" ids: 23 95
+      var re ids: 24 96
+        new RegExp ids: 25 97
+          @ reText ids: 26 98
+          @ reFlags ids: 27 99
+      log re ids: 28 100
+      if oper === 'exec' ids: 29 101
+        return re.exec(str) ids: 30 102
+      else  ids: 31 103
+        return re.test(str) ids: 32 104
+    function executeFromEditor ids: 33 105
+      param oper ids: 34 106
+      var reText = document.querySelector('#retext').value ids: 35 107
+      var $reTextEscaped = $('#retextEscaped') ids: 36 108
+      var reFlags = document.querySelector('#reflags').value ids: 37 109
+      var reSrc = document.querySelector('#resrc').value ids: 38 110
+      var reTextEscaped = escapeSpecials(reText) ids: 39 111
+      _ $reTextEscaped.val(reTextEscaped) ids: 40 112
+      var match ids: 41 113
+        _ execute ids: 42 114
+          @ reTextEscaped ids: 43 115
+          @ reFlags ids: 44 116
+          @ reSrc ids: 45 117
+          @ oper ids: 46 118
+      log match ids: 47 119
+    function escapeSpecials ids: 48 120
+      param text ids: 49 121
+      var ret = [] ids: 50 122
+      for var i=0; i<text.length; i++ ids: 51 123
+        var ch = text[i] ids: 52 124
+        if ("\ ^ $ . * + ? ( ) [ ] { } | ".indexOf(ch + ' ') > -1) && i > 0 && i < text.length - 1 ids: 53 125
+          _ ret.push('\\' + ch) ids: 55 126
+        else  ids: 56 127
+          _ ret.push(ch) ids: 57 128
+      return ret.join('') ids: 58 129
+    var examplesData ids: 59 130
+      [  ids: 60 131
+        $group  ids: 144 208
+          {  ids: 145 209
+            @ name 'dot' ids: 146 210
+            @ re '.' ids: 147 211
+            @ flags '' ids: 148 212
+            @ src '\\n' ids: 149 213
+            @ desc ids: 150 214
+              [  ids: 151 215
+                @ '. (dot) Matches any JavaScript character (UTF-16 code unit)' ids: 152 216
+                @ 'except line terminators (newline, carriage return, etc.)' ids: 153 217
+          {  ids: 154 218
+            @ name 'sS' ids: 155 219
+            @ re '\\s\\S' ids: 156 220
+            @ flags '' ids: 157 221
+            @ src '\\n' ids: 158 222
+            @ desc ids: 159 223
+              [  ids: 160 224
+                @ 'To really match any character, use [\\s\\S]' ids: 161 225
+          {  ids: 162 226
+            @ name 'meta_cap' ids: 163 227
+            @ re '^Cat' ids: 164 228
+            @ src 'Cat go fast' ids: 165 229
+            @ desc ids: 166 230
+              [  ids: 167 231
+                @ 'must start with Cat' ids: 168 232
+          {  ids: 169 233
+            @ name 'meta_dollar' ids: 170 234
+            @ re 'slow$' ids: 171 235
+            @ src 'Dogs are slow' ids: 172 236
+            @ desc ids: 173 237
+              [  ids: 174 238
+                @ 'must end with slow' ids: 175 239
+          {  ids: 176 240
+            @ name 'meta_aster' ids: 177 241
+            @ re 'bo*' ids: 178 242
+            @ src 'boom and boat and bug' ids: 179 243
+            @ desc ids: 180 244
+              [  ids: 181 245
+                @ 'matches when the preceding o occurs 0 or more times' ids: 182 246
+                @ 'is a quantifier' ids: 183 247
+          {  ids: 184 248
+            @ name 'meta_plus' ids: 185 249
+            @ re 'bo+' ids: 186 250
+            @ src 'boom and boat and bug' ids: 187 251
+            @ desc ids: 188 252
+              [  ids: 189 253
+                @ 'matches when the preceding o occurs 1 or more times' ids: 190 254
+                @ 'is a quantifier' ids: 191 255
+          {  ids: 192 256
+            @ name 'meta_question_mark' ids: 193 257
+            @ re 'bo?' ids: 194 258
+            @ src 'boom and boat and bug' ids: 195 259
+            @ desc ids: 196 260
+              [  ids: 197 261
+                @ 'matches when the preceding o occurs 0 or one time' ids: 198 262
+                @ 'is a quantifier' ids: 199 263
+          {  ids: 200 264
+            @ name 'meta_dot' ids: 201 265
+            @ re '.a' ids: 202 266
+            @ src 'Cats fats rats' ids: 203 267
+            @ desc ids: 204 268
+              [  ids: 205 269
+                @ 'any character followed by an a' ids: 206 270
+                @ 'is a character class' ids: 207 271
+    html_f toHtmlExamples ids: 62 133
+      var tableClass = 'table table-condensed'; ids: 63 134
+      < table ids: 64 135
+        @ class {{ tableClass }} ids: 65 136
+        < tbody ids: 66 137
+          foreach item in ctx.items ids: 67 138
+            < tr ids: 68 139
+              < td {{ item.desc[0] }} ids: 69 140
+                @ id ex{{ item.name }} ids: 70 141
+                @ style cursor:pointer; ids: 71 142
+    $group  ids: 272 304
+      class regEditor ids: 273 305
+        ctor  ids: 274 306
+          param examples ids: 275 307
+          set this.examples = examples ids: 276 308
+          set this.$reText = $('#retext') ids: 277 309
+          set this.$reTextEscaped = $('#retextEscaped') ids: 278 310
+          set this.$reFlags = $('#reflags') ids: 279 311
+          set this.$reSrc = $('#resrc') ids: 280 312
+          set this.$results = $('#results') ids: 281 313
+        m setExample ids: 282 314
+          param itemName ids: 283 315
+          log itemName ids: 284 316
+          foreach item in this.examples ids: 285 317
+            if item.name === itemName ids: 286 318
+              _ this.$reText.val(item.re) ids: 287 319
+              _ this.$reTextEscaped.val(escapeSpecials(item.re)) ids: 288 320
+              _ this.$reFlags.val(item.flags) ids: 289 321
+              _ this.$reSrc.val(item.src) ids: 290 322
+        m execute ids: 291 323
+          param oper ids: 292 324
+          var reText = this.$reText.val() ids: 293 325
+          var reTextEscaped = escapeSpecials(reText) ids: 294 326
+          var reFlags = this.$reFlags.val() ids: 295 327
+          var reSrc = this.$reSrc.val() ids: 296 328
+          var match ids: 297 329
+            _ execute ids: 298 330
+              @ reTextEscaped ids: 299 331
+              @ reFlags ids: 300 332
+              @ reSrc ids: 301 333
+              @ oper ids: 302 334
+          log match ids: 303 335

@@ -1,0 +1,81 @@
+$group
+
+	+
+	# ========================================
+	# FUNCTIONS
+	# ========================================
+	+
+
+	function sayHello
+		log 'Hello'
+
+	function sayHello
+		param name
+		log 'Hello ' + name
+
+	function sayHello
+		string name
+		log 'Hello ' + name
+
+	function sayHello
+		string name
+		callback
+		log 'Hello ' + name
+		r_cb()
+
+	function sayHello
+		string name
+		any greetings
+		callback
+		log 'Hello ' + name + '. ' + greetings
+		r_cb()
+
+	function sayHello
+		string name
+		number age
+		boolean married
+		[ children
+		{ profile
+			string email
+			string weburl
+		any greetings
+		callback
+		return 'Hello ' + name
+		r_cb()
+
+	#
+		# This constraints a param to be a boolean
+	function submit
+		boolean ok
+		number maxValue
+
+	#
+		# This constraints a param to be an object with a required array property.
+		# So the object itself is required.
+	function initialize
+		{ plugins
+			[ items
+			string baseFolder
+		func reset
+			optional
+
+	#
+		# The 'callback' element means the parameter is required and must be a function.
+	function readFile
+		string filePath
+		callback
+			string fileContent
+
+	#
+		# An immediately invoked function expression
+	iife
+		unary-prefix ;
+		string x
+		number y
+
+		return alpha = x + ': ' + y
+		
+		(
+			@ key
+			@ id
+

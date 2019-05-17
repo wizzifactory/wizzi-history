@@ -1,0 +1,51 @@
+﻿$group
+
+	@ getExecFileJobList
+		function
+			param options
+			param callback
+
+			function cb_execFileJobList
+				param callback
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								@ files globalsStore.execFileJobList
+								@ models globalsStore.execFileModelList
+						@ status
+							_ success
+								@ 'Got execFile joblist'
+
+			if globalsStore.execFileJobList && !options.refresh
+				return
+					_ cb_execFileJobList
+						@ callback
+
+			set globalsStore.execFileJobList
+				_ paths.getFileExecJobsIttfDocuments
+
+			_ async.map
+				@ globalsStore.execFileJobList
+				function
+					param file
+					param callback
+					_ api.wf.loadModel
+						@ null
+						@ file.fullPath
+						{
+						f_cb_api( wizziModel )
+							log 'wizziModel', wizziModel
+							return
+								_ callback
+									@ err
+									@ wizziModel.data.toJson()
+				f_cb_api(result)
+					log 'result', result
+					set globalsStore.execFileModelList = result
+					return
+						_ cb_execFileJobList
+							@ callback
+
+

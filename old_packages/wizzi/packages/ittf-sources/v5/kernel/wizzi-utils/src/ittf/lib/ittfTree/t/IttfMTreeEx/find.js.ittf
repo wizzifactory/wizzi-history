@@ -1,0 +1,60 @@
+﻿$group
+	
+	m find
+		param name
+		if verify.isNotEmpty(name)
+			return this._findByName(name)
+		elif verify.isObject(name) && verify.isNumber(name.id)
+			return this._findById(name.id)
+		else
+			throw new Error('wizzi-utils.ittfMTreeEx.find. Invalid argument name: ' + name)
+
+	m _findByName
+		param name
+		if this.name === name
+			return this
+		var found = null
+		foreach item in this.children
+			set found = item._findByName(name)
+			if found
+				break
+		return found
+
+	m _findById
+		param id
+		if this.id === id
+			return this
+		var found = null
+		foreach item in this.children
+			set found = item._findById(id)
+			if found
+				break
+		return found
+
+	m findByRow
+		param row
+		if this.row === row
+			return this
+		var found = null
+		foreach item in this.children
+			set found = item.findByRow(row)
+			if found
+				break
+		return found
+
+	m equals
+		param other
+		# log 'wizzi-utils.ittfMTreeEx.equals', this.name, this.value, other.name, other.value
+		if this.name !== other.name ||
+			\b this.value !== other.value
+			return false
+		if this.children.length !== other.children.length
+			return false
+		var eq = true
+		for var i=0; i<this.children.length; i++
+			set eq = this.children[i].equals(other.children[i])
+			if !eq
+				break
+		return eq
+
+

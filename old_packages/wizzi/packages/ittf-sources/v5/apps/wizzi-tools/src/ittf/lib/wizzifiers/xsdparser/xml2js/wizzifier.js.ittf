@@ -1,0 +1,437 @@
+﻿basewizzifier()
+
+	$append imports
+		var xml2js = require('xml2js')
+		var xml_parser
+			new xml2js.Parser()
+		function parseInternal
+			param xml
+			param options
+			param callback
+            _ xml_parser.parseString
+                @ xml
+				f_cb(result)
+					_ callback(null, result)
+
+	function wizzify
+        param xml
+        param options
+        param callback
+		_ parseInternal
+            @ xml
+			@ options
+			f_cb( result )
+                if options.dumpfile
+                    _ file.write
+                        @ options.dumpfile
+                        _ JSON.stringify(result, null, 2)
+                const wizziTree
+                    { 
+                        @ tag 'xsd'
+						@ name ''
+                        @ attribs
+                            [ 
+                        @ children
+                            [ 
+                for var prop in result
+                    if result.hasOwnProperty(prop)
+						if prop.indexOf('schema') < 0
+							return
+								_ callback
+									new Error("Root is not a schema element. Prop: " + prop + ', root: ' + root)
+                        var root = result[prop]
+                        if verify.isObject(root) === false
+							return
+								_ callback
+									new Error("Root is not an object. Prop: " + prop + ', root: ' + root)
+						var ctx = getNamespaces(root)
+						_ appendXmlNodeToIttfNode
+							@ ctx
+							@ root
+							@ wizziTree
+				return
+					_ callback(null, wizziTree)
+    
+	function appendXmlNodeToIttfNode
+		param ctx
+		param xmlNode
+		param parent
+        if verify.isString(xmlNode)
+			var ss = xmlNode.split('\n')
+			if ss.length > 1
+				log 'ss', ss
+				set parent.name = ss[0]
+				for var j=1; j<ss.length; j++
+					var tag
+						{ 
+							@ tag '#'
+							@ name ss[j]
+							@ children
+								[ 
+					_ parent.children.push(tag)
+            else
+				set parent.name = xmlNode
+		else
+			var parentTag = parent.tag
+			var ac = getAttribsAndChilds(ctx, xmlNode)
+			if parentTag[0] === '#' && ac.n 
+				var ss = ac.n.split(['\n', '\r'])
+				foreach s in ss
+					var tag
+						{ 
+							@ tag parentTag
+							@ name s
+							@ children
+								[ 
+					_ parent.children.push(tag)
+			# log 'parent.tag, ac.n', parent.tag, ac.n
+			if ac.n && !parent.name
+				set parent.name = ac.n
+			var attribs = ac.a, aName, rName, nsn
+            if (attribs.minOccurs || attribs.maxOccurs) && !parent.name
+                set parent.name = occurs(attribs.minOccurs) + '-' + occurs(attribs.maxOccurs)
+                set delete (attribs.minOccurs)
+                set delete (attribs.maxOccurs)
+            for aName in attribs
+				set nsn = nsName(aName)
+				if nsn.prefix === 'xmlns'
+                    _ parent.children.push
+                        { 
+                            @ tag 'xmlns'
+							@ name nsn.local + ' ' + attribs[aName]
+                            @ children
+                                [ 
+					continue
+				set rName = resolveAttrName(aName)
+                if (rName === 'schema-location') && (parentTag === 'include' || parentTag === 'import' || parentTag === 'redefine')
+                    set parent.name = attribs[aName]
+                elif (rName === 'value') && (parentTag === 'enum')
+                    set parent.name = attribs[aName]
+                elif (rName === 'value') && isFacetElementName(parentTag)
+                    set parent.name = attribs[aName]
+                elif rName === 'base' && (parentTag === 'restrict' || parentTag === 'extension') && verify.isEmpty(parent.name)
+                    set parent.name = ': ' + attribs[aName]
+                elif (rName === 'ref') && (parentTag === 'ag')
+                    set parent.tag = 'ag-ref'
+                    set parent.name = attribs[aName]
+                elif (rName === 'ref') && (parentTag === 'e')
+                    set parent.tag = 'e-ref'
+                    set parent.name = attribs[aName]
+                elif (rName === 'ref') && (parentTag === 'a')
+                    set parent.tag = 'a-ref'
+                    set parent.name = attribs[aName]
+                elif (rName === 'ref') && (parentTag === 'group')
+                    set parent.tag = 'group-ref'
+                    set parent.name = attribs[aName]
+				elif (rName === 'item-type') && (parentTag === 'list')
+					set parent.name = attribs[aName]
+				elif (rName === 'member-types') && (parentTag === 'union')
+					set parent.name = attribs[aName]
+                elif isEmitAttrName(rName)
+                    _ parent.children.push
+                        { 
+                            @ tag rName
+                            @ name attribs[aName]
+                            @ children
+                                [ 
+                elif rName === 'use'
+                    _ parent.children.push
+                        { 
+                            @ tag 'is-' + attribs[aName]
+                            @ children
+                                [ 
+                elif rName === 'source' && parentTag === '#'
+                    _ parent.children.push
+                        { 
+                            @ tag '# source'
+							@ name attribs[aName]
+                            @ children
+                                [ 
+                elif rName === 'abstract'
+					if attribs[aName] === 'true'
+						_ parent.children.push
+							{ 
+								@ tag 'is-' + rName
+								@ children
+									[ 
+                else 
+                    _ parent.children.push
+                        { 
+                            @ tag '@'
+                            @ name rName + ' ' + attribs[rName]
+                            @ children
+                                [ 
+            foreach childnode in ac.c
+                if verify.isArray(childnode.value) === false
+                    log "Error: value is not an array: " + childnode.name + ',' + childnode.value
+                else
+					var childXmlNodeName = resolveElementName(childnode.name)
+					if childXmlNodeName === '#'
+						foreach childnodeItem in childnode.value
+							var ac2 = getAttribsAndChilds(ctx, childnodeItem)
+							if !ac2.n && ac2.c.length == 1
+								_ appendParsedChildsToIttfNode
+									@ ctx
+									@ ac2.c
+									@ parent
+							else
+								throw ac2.c
+					elif (childXmlNodeName === 'restrict' || childXmlNodeName === 'extend') &&
+						\b (parent.tag === 'c-content' || parent.tag === 's-content') &&
+						\b childnode.value.length == 1
+						# log 'parent.tag', parent.tag, childXmlNodeName, childnode.value
+						var ac2 = getAttribsAndChilds(ctx, childnode.value[0])
+						set parent.tag = parent.tag + '-' + childXmlNodeName
+						set parent.name = ac2.a.base
+						_ appendParsedChildsToIttfNode
+							@ ctx
+							@ ac2.c
+							@ parent
+					else
+						foreach childnodeItem in childnode.value
+							var tag
+								{ 
+									@ tag childXmlNodeName
+									@ name ''
+									@ children
+										[ 
+							_ parent.children.push(tag)
+							_ appendXmlNodeToIttfNode
+								@ ctx
+								@ childnodeItem
+								@ tag
+    
+	function appendParsedChildsToIttfNode
+		param ctx
+		param parsedChilds
+		param parent
+		foreach childnode in parsedChilds
+			var childXmlNodeName = resolveElementName(childnode.name)
+			foreach childnodeItem in childnode.value
+				var tag
+					{ 
+						@ tag childXmlNodeName
+						@ name ''
+						@ children
+							[ 
+				_ parent.children.push(tag)
+				_ appendXmlNodeToIttfNode
+					@ ctx
+					@ childnodeItem
+					@ tag
+
+	function getAttribsAndChilds
+		param ctx
+        param node
+        var name = null
+        var attribs
+            { 
+        var children
+            [ 
+        for var prop in node
+            if node.hasOwnProperty(prop)
+                if prop === '$'
+                    var attribsObj = node[prop]
+                    # _ log('getAttribsAndChilds.$', attribsObj, true)
+                    for var k in attribsObj
+                        if k === 'name'
+                            set name = attribsObj[k]
+                        else 
+                            set attribs[k] = attribsObj[k]
+                else 
+                    var value = node[prop]
+                    var isArray = verify.isArray(value)
+					if isArray
+						var nsn = nsName(prop)
+						if !nsn.prefix || ctx.xmlSchemaNsPrefix === nsn.prefix
+							_ children.push
+								{ 
+									@ name nsn.local
+									@ value value
+						else
+							_ children.push
+								{ 
+									@ name prop
+									@ value value
+        return 
+            { 
+                @ n name
+                @ a attribs
+                @ c children
+
+	function resolveElementName
+        param name
+        if name === 'enumeration'
+            return 'enum'
+        elif name === 'anyAttribute'
+            return 'any-a'
+        elif name === 'restriction'
+            return 'restrict'
+        elif name === 'extension'
+            return 'extend'
+        elif name === 'simpleType'
+            return 's-type'
+        elif name === 'complexType'
+            return 'c-type'
+        elif name === 'complexContent'
+            return 'c-content'
+        elif name === 'attribute'
+            return 'a'
+        elif name === 'attributeGroup'
+            return 'ag'
+        elif name === 'element'
+            return 'e'
+        elif name === 'elementGroup'
+            return 'eg'
+        elif name === 'annotation' || name === '\n'
+            return '#'
+        elif name === 'documentation'
+            return '#'
+        elif name === 'minLength'
+            return 'min-length'
+		elif name === 'maxLength'
+			return 'max-length'
+		elif name === 'minInclusive'
+			return 'min-inclusive'
+		elif name === 'maxInclusive'
+			return 'max-inclusive'
+		elif name === 'minExclusive'
+			return 'min-exclusive'
+		elif name === 'maxExclusive'
+			return 'max-exclusive'
+		elif name === 'fractionDigits'
+			return 'fraction-digits'
+		elif name === 'totalDigits'
+			return 'total-digits'
+		elif name === 'maxScale'
+			return 'max-scale'
+		elif name === 'minScale'
+			return 'min-scale'
+		elif name === 'explicitTimeZone'
+			return 'explicit-time-zone'
+		else
+			return name
+
+	function isFacetElementName
+		param name
+		var facetNames
+			[
+				@ 'length'
+				@ 'min-length'
+				@ 'max-length'
+				@ 'min-inclusive'
+				@ 'max-inclusive'
+				@ 'min-exclusive'
+				@ 'max-exclusive'
+				@ 'fraction-digits'
+				@ 'total-digits'
+				@ 'max-scale'
+				@ 'min-scale'
+				@ 'pattern'
+				@ 'explicit-time-zone'
+				@ 'whitespace'
+		return facetNames.indexOf(name) > -1
+
+	function isEmitAttrName
+        param name
+		var emitAttrNames
+			[
+				@ 'id'
+				@ 'type'
+				@ 'fixed'
+				@ 'mixed'
+				@ 'default'
+				@ 'attribute-form-default'
+				@ 'element-form-default'
+				@ 'language'
+				@ 'member-types'
+				@ 'min-occurs'
+				@ 'max-occurs'
+				@ 'namespace'
+				@ 'substitution-group'
+				@ 'process-contents'
+				@ 'public'
+				@ 'item-type'
+				@ 'schema-location'
+				@ 'system'
+				@ 'target-namespace'
+				@ 'version'
+				@ 'xmlns'
+				@ 'xpath'
+		return emitAttrNames.indexOf(name) > -1
+
+	function resolveAttrName
+        param name
+        if name === 'attributeFormDefault'
+            return 'attribute-form-default'
+        elif name === 'blockDefault'
+            return 'block-default'
+        elif name === 'elementFormDefault'
+            return 'element-form-default'
+		elif name === 'itemType'
+			return 'item-type'
+		elif name === 'minOccurs'
+			return 'min-occurs'
+		elif name === 'maxOccurs'
+			return 'max-occurs'
+		elif name === 'memberTypes'
+			return 'member-types'
+		elif name === 'processContents'
+            return 'process-contents'
+        elif name === 'schemaLocation'
+			return 'schema-location'
+        elif name === 'substitutionGroup'
+            return 'substitution-group'
+        elif name === 'targetNamespace'
+            return 'target-namespace'
+        elif name === 'xml:lang'
+            return 'language'
+		else
+			return name
+
+	function nsName
+        param name
+		var ss = name.split(':')
+		if ss.length == 2
+			return
+				{
+					@ prefix ss[0]
+					@ local ss[1]
+		else
+			return
+				{
+					@ local name
+
+	function occurs
+        param value
+        return value === '0' ? value : value === 'unbounded' ? 'n' : (value || '')
+
+	function getNamespaces
+		param rootXmlNode
+		var ret
+			{
+				@ targetNs null
+				@ defaultNs null
+				@ namespaces []
+		var ac = getAttribsAndChilds({}, rootXmlNode)
+		for var k in ac.a
+			if k === 'targetNamespace'
+				set ret.targetNs = ac.a[k]
+			elif k === 'xmlns'
+				set ret.defaultNs = ac.a[k]
+			else
+				var nsn = nsName(k)
+				if nsn.prefix === 'xmlns'
+					_ ret.namespaces.push
+						{
+							@ prefix nsn.local
+							@ ns ac.a[k]
+		set ret.xmlSchemaNsIsDefault = ret.defaultNs === 'http://www.w3.org/2001/XMLSchema'
+		set ret.xmlSchemaNsIsTarget = ret.targetNs === 'http://www.w3.org/2001/XMLSchema'
+		foreach item in ret.namespaces
+			if item.ns === ret.targetNs
+				set ret.targetNsPrefix = item.prefix
+			if item.ns === 'http://www.w3.org/2001/XMLSchema'
+				set ret.xmlSchemaNsPrefix = item.prefix
+		log 'getNamespaces', ret
+		return ret

@@ -1,0 +1,33 @@
+﻿concept Xml pseudo schema
+
+	summary
+
+		h4 Sample xml ittf document
+		ittf
+			- profile
+				- @ name ${dollar}{user.name}
+				- @ age ${dollar}{user.age}
+				- friends
+					- $foreach friend in user.friends
+						- friend
+							- @ name ${dollar}{friend.name}
+							- @ age ${dollar}{friend.age}
+				- address
+					- @ street ${dollar}{user.street}
+					- @ city ${dollar}{user.city}
+		
+		ul Rules
+			li Ittf node names may contain
+				ul
+					li element names for elements
+					li simbol @ for attributes
+			li Ittf node values may contain
+				ul
+					li nothing for elements
+					li name and value separated by a blank for attributes
+
+		p ( It is assumed that one knows
+			a xml format rules
+				href https://google.github.io/styleguide/xmlstyle.html
+			span )
+

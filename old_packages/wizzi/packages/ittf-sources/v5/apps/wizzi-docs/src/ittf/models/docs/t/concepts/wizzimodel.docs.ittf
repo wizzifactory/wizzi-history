@@ -1,0 +1,27 @@
+﻿concept Wizzi models
+
+	summary
+
+		p A Wizzi Model is an instance of a Wizzi Model DOM that has been loaded with the tree data structure
+			+ resulting from a processed ITTF Document. 
+
+		p Wizzi models act as context objects during ITTF Document processing, model transformations and artifact generations.
+
+		p Wizzi models are described in terms of elements, attributes
+			+ and relations. An element is a classifier and
+			+ a relation is a relationship between elements.
+
+		ul In a Wizzi Model:
+			li An element may have one super element (abstraction) and many derived elements (specializations),
+				+ may be abstract or concrete and may have a name and attributes. 
+			li Relationships are one-to-many (default) and one-to-one. They
+				+ do not have attributes. Both imply ownership of contained (child) elements:
+				+ arrays (one-to-many) and single child (one-to-one).
+			li An attribute has a name and a value of a primitive type.
+
+		ul The tree structure of a Wizzi Model is mapped to a javascript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript"> class</a>, where:
+			li Elements are classes.
+			li Attributes are properties of element classes.
+			li One-to-many relationships are arrays of element classes on the related element class.
+			li One-to-one relationships are element classes on the related element class.
+			li Attributes and relationships are inherited from super elements.

@@ -1,0 +1,42 @@
+﻿demo_module( plugin_examples, jsonld, 2 )
+
+	# 
+		# DEMO: How to use the `jsonld` plugin to load
+		#       json-ld meta data
+	+
+	#
+		# Commons
+	var wizziFactoryConfig
+		{
+			@ plugins
+				{
+					[ items
+						@ './jsonld/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+							@ '..'
+
+	+
+	loadMTree( 2, wf_overview.jsonld.ittf, raw;print:dump )
+		loadModel_with_config( 2, wf_overview.jsonld.ittf, save )
+			
+			_ printValue
+				@ 'json-ld value'
+				_ stringify
+					@ wizziModel.__jsonld
+					@ null
+					@ 2
+
+			_ printArray
+				@ 'nodesOfType(wf:Package)'
+				@ wizziModel.nodesOfType('wf:Package')
+				@ null
+				@ 'dashes'
+			if step_callback
+				_ step_callback
+					@ null
+ 
+

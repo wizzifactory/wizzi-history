@@ -1,0 +1,60 @@
+﻿base_test( model js )
+
+	$append imports
+		var js_factory = require('../../lib/wizzi/models/js-factory.g')
+		var js_artifact = require('../../lib/artifacts/js/module/gen/main')
+
+	var loadModel
+
+	before
+		set loadModel
+			_ js_factory.createLoadModel
+				_ getWizziObject
+
+	it-async should load a basic js ittf document
+
+		var info 
+			_ getTestModelInfo
+				@ 'js'
+				@ 'basic'
+
+		_ loadModel
+			@ info.ittfPath
+			_ getLoadModelContext
+				{
+			f_cb_test( wizziModel )
+				# log? wizziModel
+				var ctx = new mocks.getGenContext()
+				_ js_artifact.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( result )
+						var artifactText = result.getContent()
+						_ info.writeResult(artifactText)
+						tobe_string_value( artifactText, info.expectedContent )
+						_ done
+
+	it-async should load a mixed js ittf document
+
+		var info 
+			_ getTestModelInfo
+				@ 'js'
+				@ 'mixed'
+
+		_ loadModel
+			@ info.ittfPath
+			_ getLoadModelContext
+				{
+			f_cb_test( wizziModel )
+				# log? wizziModel
+				var ctx = new mocks.getGenContext()
+				_ js_artifact.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( result )
+						var artifactText = result.getContent()
+						_ info.writeResult(artifactText)
+						tobe_string_value( artifactText, info.expectedContent )
+						_ done
+
+						

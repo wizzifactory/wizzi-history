@@ -1,0 +1,106 @@
+﻿r-container( WizziJobs, false, true, withPageInfo;../../utils/withPageInfo
+
+	$append imports
+		import verify from '../../lib/verify'
+		import
+			@ getJobBatches
+			gists/optionsImportActions()
+			from '../../store/actions'
+		
+		import { Route } from "react-router-dom"
+		import AppBar from '@material-ui/core/AppBar'
+		import Toolbar from '@material-ui/core/Toolbar'
+		import Grid from '@material-ui/core/Grid'
+		import Paper from '@material-ui/core/Paper'
+		import Tooltip from '@material-ui/core/Tooltip'
+		import Button from '@material-ui/core/Button'
+		import Typography from '@material-ui/core/Typography'
+		
+		import List from '@material-ui/core/List'
+		import MyLink from '../mui/AppDrawerNavItem'
+		
+		import OptionsDialog from './dialogs/OptionsDialog'
+		import ConfirmDialog from './dialogs/ConfirmDialog'
+
+		const title = 'Wizzi jobs'
+
+	style
+		{ root
+			@ flexGrow 1
+		{ barHead
+			@ marginLeft '15px'
+		{ column
+			@ float 'left'
+			@ padding '20px'
+
+	state
+		@ selectJob null
+
+	did-mount
+		prop dispatchGetJobBatches
+		_ dispatchGetJobBatches
+
+	render
+		prop classes
+		prop match
+		prop batches
+
+		const appbarTitle = this.state.selectJobName 
+			\b ? 'Wizzi ' + this.state.selectJobName + ' job '
+			\b : 'Wizzi jobs'
+
+		return
+			. { classes.root }
+				< AppBar
+					@ position static
+					@ color default
+					< Toolbar
+						< Typography
+							@ variant subheading
+							@ color inherit
+							+ {appbarTitle}
+						< Typography
+							@ className {classes.barHead}
+							@ variant headline
+							@ color inherit
+							+ {this.state.selectJobName}
+				. { classes.column }
+					< List
+						{
+							_ batches.map
+								=>
+									param p
+									param i
+									return
+										div
+											@ key {i}
+											h3 {p.name}
+											{
+												_ p.items.map
+													=>
+														param job
+														param j
+														return
+															< MyLink
+																@ key {j}
+																@ title {job.label}
+																@ to
+																	`lit 
+																		+ /wizzijob/
+																		@ match.params.userId
+																		+ /
+																		@ job.hash
+
+	$append state-to-props
+		@ batches state.job.batches
+
+	$append dispatch-to-props
+
+		@ dispatchGetJobBatches
+			=>
+				param userId
+				log 'dispatchGetJobBatches'
+				_ dispatch
+					_ getJobBatches
+						@ userId
+

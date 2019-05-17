@@ -1,0 +1,107 @@
+﻿module
+	kind jsfile
+
+	import util
+	+
+	var md = module.exports = {}
+	+
+	error( File, message, ex )
+		set this.message = message
+		set this.inner = ex
+
+	error( Node, message, node )
+        var msg
+            [ 
+                @ message
+        if node
+			set this.ittfDocumentUri = 'Unavailable'
+            if node.wzSourceLineInfo
+                var info = node.wzSourceLineInfo
+                if node.wzSourceFilepath
+                    set this.ittfDocumentUri = node.wzSourceFilepath(info.sourceKey)
+				set this.row = info.row
+				set this.col = info.col
+				set this.sourceKey = info.sourceKey
+                _ msg.push((' at row: ' + info.row))
+                _ msg.push((', col: ' + info.col))
+                _ msg.push((', source: ' + info.sourceKey))
+                _ msg.push((', in file: ' + this.ittfDocumentUri))
+            elif node.row
+				set this.row = node.row
+				set this.col = node.col
+                _ msg.push((' at row: ' + node.row))
+                _ msg.push((', col: ' + node.col))
+        set this.message = msg.join('')
+		# log 'NodeError', this.message
+        # VIA set this.node = node
+
+	#
+		# params
+		# { node
+		# @ description
+		#
+	set md.getErrorLinesFromMTreeNode
+		function
+			param node
+			param description
+			var errorData
+				{
+					@ row node.r
+					@ col node.c
+					@ description description
+			while node.parent
+				set node = node.parent
+			var data = node.__mTree.loadHistory.ittfDocumentDatas[node.u]
+			return
+				_ md.getErrorLines
+					@ errorData
+					@ data.content
+					@ true
+	#
+		# params
+		# { errorData
+		#   @ row
+		#   @ col
+		#   @ description
+		# string source
+		# boolean json
+		#
+	set md.getErrorLines
+		function
+			param errorData
+			param source
+			param json
+
+			var statements = source.split('\n')
+
+			var start = Math.max(0, (errorData.row - 4))
+			var end
+				_ Math.min
+					@ statements.length
+					@ (errorData.row + 4)
+			var ret
+				[ 
+        
+			for var i = start; i < end; i++
+				_ ret.push(formatLineNumber(i + 1) + ' ' + statements[i])
+				if (i == errorData.row - 1)
+					var col = errorData.col
+					_ ret.push(spaces(col + 4) + '^ ' + (errorData.description + '  <--- --- --- --- --- ERROR' || ''))
+			return json ? ret : ret.join('\n')
+
+	function spaces
+        param num
+		if num < 1
+			return ''
+		return Array(num + 1).join(" ")
+    
+	function formatLineNumber
+        param num
+        if num > 999
+            return num
+        if num > 99
+            return ('0' + num)
+        if num > 9
+            return ('00' + num)
+        return ('000' + num)
+

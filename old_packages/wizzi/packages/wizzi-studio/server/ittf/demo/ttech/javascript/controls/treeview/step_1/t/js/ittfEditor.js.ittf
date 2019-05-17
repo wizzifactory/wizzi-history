@@ -1,0 +1,88 @@
+﻿$group
+
+	class EditManager
+		ctor
+			param props
+			set this.props = props
+			set this.app = props.app
+			set this.treeView = props.treeView
+			set this.editorControl = null
+			set this.currentItem = null
+
+		m initialize
+
+			var editorImpl
+				new AceEditor
+					{
+						@ key 'ittf-editor'
+						@ editorElementId 'editorContainer'
+			
+			set this.editorControl
+				new IttfEditorControl
+					{
+						@ editorImpl editorImpl
+			
+			set this.editorControl.onChange
+				=>
+					param value
+					_ this.updateCurrentFile
+						@ value
+
+			_ this.editorControl.initEditor
+
+		m setCurrentFile
+			param treeNode
+			set this.currentTreeNode = treeNode
+			set this.currentItem = treeNode.item
+			_ this.setFilePath
+				@ this.currentItem.name
+			_ this.editorControl.value
+				@ this.currentItem.content
+
+		m setFilePath
+			param path
+			_ wz.text
+				@ this.props.ittfEditorTitle
+				@ path
+		
+		m updateCurrentFile
+			param value
+			_ this.treeView.updateFile
+				@ this.currentTreeNode
+				@ value
+			# set this.currentItem.content = value
+
+	class IttfEditorControl
+		ctor
+			param options
+			set this.options = options
+			set this.editorImpl = options.editorImpl
+
+		m onChange
+			param handler
+			set this.onChange = handler
+
+		m initEditor
+			if this.editor
+				return
+			_ this.editorImpl.initialize
+			set this.editor = this.editorImpl
+			var that = this
+
+			_ this.editor.on
+				@ 'change'
+				=>
+					param value
+					if this.onChange
+						_ this.onChange
+							@ value
+
+		m value
+			param value
+			if this.editor
+				if typeof value === 'undefined'
+					return
+						_ this.editor.getValue
+				else
+					_ this.editor.setValue
+						@ value

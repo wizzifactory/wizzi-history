@@ -1,0 +1,85 @@
+﻿module
+	kind jsfile
+	import path
+	var verify = require('../verify')
+	var encdec = require('../crypto/encdec')
+
+	class IttfDocumentState
+		ctor
+			param primaryPath
+			param primaryUri
+			param breadCrumbs
+			param options
+			if typeof options === 'undefined'
+				set options = breadCrumbs
+				set breadCrumbs = []
+			set this.primaryPath = primaryPath
+			set this.primaryUri = primaryUri
+			set this.breadCrumbs = breadCrumbs
+			set this.primaryHash = encdec.encrypt(primaryPath)
+			set this.primaryIttf = {}
+			
+			set this.fragments = []
+			set this.ittfReferences = []
+			set this.scanId = options.scanIdCounter
+			set this.id = 'p_' + this.scanId + '_1'
+			set this.idCounter = 2
+			# log 'wizzi-utils.IttfDocumentState', this.primaryPath, this.primaryUri
+
+		m getFragment
+			param uri
+			foreach item in this.fragments
+				if item.uri === uri
+					return item
+			return null
+
+		m getIttfReference
+			param uri
+			foreach item in this.ittfReferences
+				if item.uri === uri
+					return item
+			return null
+
+		m getUnscannedFragments
+			var ret = []
+			foreach item in this.fragments
+				if !item.ittf
+					_ ret.push(item)
+			return ret
+
+		m getUnscannedIttfReferences
+			var ret = []
+			foreach item in this.ittfReferences
+				if !item.documentState
+					_ ret.push(item)
+			return ret
+
+		m hasUnscanned
+			return this.getUnscannedFragments().length + this.getUnscannedIttfReferences().length > 0
+
+		m setIttfContent
+			param content
+			set this.primaryIttf.content = content
+
+		m setIttfPretty
+			param pretty
+			set this.primaryIttf.pretty = pretty
+
+		m setFromScanResult
+			param scanResult
+			
+			foreach k in Object.keys(scanResult.fragments)
+				var f = scanResult.fragments[k]
+				if this.getFragment(f.uri) == null
+					set f.id = 'f_' + this.scanId + '_' + this.idCounter++
+					_ this.fragments.push(f)
+			
+			foreach k in Object.keys(scanResult.ittfReferences)
+				var r = scanResult.ittfReferences[k]
+				if r.uri !== this.primaryPath
+					if this.getIttfReference(r.uri) == null
+						set r.id = 'r_' + this.scanId + '_' + this.idCounter++
+						_ this.ittfReferences.push(r)
+
+	set module.exports = IttfDocumentState
+

@@ -1,0 +1,107 @@
+﻿$group
+    
+	function modalSetup
+		param ctx
+
+		set ctx.fragModal = wzui.element('#frag-modal')
+		log 'ctx.fragModal', ctx.fragModal
+		set ctx.fragModalClose = wzui.element('#frag-modal .modal-close')
+		log 'ctx.fragModalClose', ctx.fragModalClose
+		set ctx.fragModalContent = wzui.element('#frag-modal-content')
+		set ctx.fragModalClose.onclick
+            function 
+                set ctx.fragModal.style.display = "none"
+		set window.onclick
+            function 
+                param event
+                if event.target == ctx.fragModal
+                    set ctx.fragModal.style.display = "none"
+
+	class ModalManager
+		ctor
+			param ctx
+			set this.ctx = ctx
+			set this.currentContent = null
+			set this.currentContentOriginalParent = null
+			set this.modalStack = []
+		
+		m setup
+
+			var that = this
+
+			set this.fragModal = wzui.element('#frag-modal')
+			log 'this.fragModal', this.fragModal
+
+			set this.fragModalClose = wzui.element('#frag-modal .modal-close')
+			log 'this.fragModalClose', this.fragModalClose
+
+			set this.fragModalContent = wzui.element('#frag-modal-content')
+			set this.fragModalClose.onclick
+				function 
+					_ that.popFragment
+			
+			set window.onclick
+				function 
+					param event
+					if event.target == this.fragModal
+						_ that.popFragment
+
+		m checkClick
+			param target
+			if target == this.fragModal
+				# close all
+				while this.modalStack.length > 0
+					_ this.popFragment()
+				return true
+			else
+				return false
+
+		m pushFragment
+			param fragmentId
+
+			_ this.resetFragment
+
+			var fragContentOriginalParent
+				_ wzui.element
+					@ '#' + fragmentId
+			
+			log 'fragContentOriginalParent', fragmentId, fragContentOriginalParent
+
+			var fragContent
+				_ wzui.element
+					@ '#' + fragmentId + ' div:first-of-type'
+			log 'fragContent', fragContent
+
+					
+			set this.fragModal.style.display = "block"
+			_ this.fragModalContent.appendChild
+				@ fragContent
+
+			_ this.modalStack.push
+				{
+					@ content fragContent
+					@ contentOriginalParent fragContentOriginalParent
+
+			set this.currentContent = fragContent
+			set this.currentContentOriginalParent = fragContentOriginalParent
+
+		m popFragment
+			_ this.resetFragment
+			_ this.modalStack.pop()
+
+			if this.modalStack.length > 0
+				var modalContent = this.modalStack[this.modalStack.length-1]
+				_ this.fragModalContent.appendChild
+					@ modalContent.content
+				set this.currentContent = modalContent.content
+				set this.currentContentOriginalParent = modalContent.contentOriginalParent
+
+			if this.modalStack.length == 0
+				set this.fragModal.style.display = "none"
+
+		m resetFragment
+			if this.currentContent != null
+				_ this.currentContentOriginalParent.appendChild
+					@ this.currentContent
+				set this.currentContent = null
+				set this.currentContentOriginalParent = null

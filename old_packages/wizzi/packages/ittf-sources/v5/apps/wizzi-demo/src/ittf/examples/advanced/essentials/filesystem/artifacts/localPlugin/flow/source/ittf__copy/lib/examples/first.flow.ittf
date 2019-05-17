@@ -1,0 +1,178 @@
+﻿flow
+
+	# Primitive types | https://flow.org/en/docs/types/primitives/
+	# type | object type | maybe type
+	# boolean | Boolean | ?boolean
+	# string | String | ?string
+	# number | Number | ?number
+	# null
+	# void
+	# symbol
+	# mixed | https://flow.org/en/docs/types/mixed/
+	# any | https://flow.org/en/docs/types/any/
+
+	# function method(x: number, y: string, z: boolean) {}
+	function method
+		number x
+		string y
+		boolean z
+
+	# function acceptsMaybeString(value: ?string) {}
+	function acceptsMaybeString
+		?string value
+
+	# { propertyName?: string }
+	{
+		string propertyName?
+
+	# function acceptsObject(value: { foo?: string }) {}
+	function acceptsObject
+		{ value
+			string foo?
+
+	# function acceptsOptionalString(value?: string) {}
+	function acceptsOptionalString
+		string value?
+
+	# function acceptsOptionalString(value: string = "foo") {}
+	function acceptsOptionalString
+		string value
+			default "foo"	
+	
+	# Literal types | https://flow.org/en/docs/types/literals/
+	# function acceptsTwo(value: 2) {}
+	function acceptsTwo
+		lit value 2
+
+	# function getColor(name: "success" | "warning" | "danger") {}
+	function getColor
+		lit name "success" | "warning" | "danger"
+
+	# Function types | https://flow.org/en/docs/types/functions/
+	# function concat(a: string, b: string): string {}
+	function concat
+		string a 
+		string b
+		: string
+
+	#
+	# Object types | https://flow.org/en/docs/types/objects/
+	# var obj1: {
+	#  foo: number,
+	#  bar: boolean,
+	#  baz: string,
+	# } = {
+	#  foo: 1,
+	#  bar: true,
+	#  baz: 'three',
+	# };
+	#
+	var obj1
+		{t
+			number foo
+			boolean bar
+			string baz
+			boolean foo?
+		{
+			@ foo 1
+			@ bar true
+			@ baz 'three'
+
+	# var foo: number  = obj.foo; // Works!
+	var foo: number  = obj.foo
+	# or
+	var foo: number
+		+ obj.foo
+	
+	# Exact object types | https://flow.org/en/docs/types/objects/#toc-exact-object-types
+	# var foo: {| foo: string |} = { foo: "Hello", bar: "World!" }; // Error!
+	var foo
+		{t
+			|
+				string foo
+				boolean baz
+		{
+			@ foo "Hello"
+			@ baz true
+
+	# Object as maps | https://flow.org/en/docs/types/objects/#toc-objects-as-maps
+	# var o: { [string]: number } = {};
+	var o
+		{t
+			number
+				[ string  $$ this is an indexer
+		{
+
+	# var obj: { [user_id: number]: string } = {};
+	var obj
+		{t
+			string
+				[
+					number user_id $$ $$ this is a named indexer
+		{
+	
+	# Array Type
+
+	
+	# let arr: Array<number> = [1, 2, 3];
+	let arr
+		-[ number
+			@ 1
+			@ 2
+			@ 3
+	# `-[` is ArrayType
+	# number is the ArrayItemType
+	# the `@` tag (jsPropertyOrvalue) as first child means a `[` initializer
+	
+	# let arr1: ?number[] = null;
+	let arr1
+		-[? number = null
+	# `-[?` is NullableArrayType
+
+	# let arr1: (?number)[] = [null];
+	# the `=` tag as first child means an inline initializer
+	let arr1
+		[ number?
+			= null
+
+	# const readonlyArray: $ReadOnlyArray<number> = [1, 2, 3]
+	const readonlyArray
+		[ro number
+			@ 1
+			@ 2
+			@ 3
+
+	# const readonlyArray: $ReadOnlyArray<{x: number}> = [{x: 1}];
+	const readonlyArray
+		-[ro
+			-{
+				-@ x number
+			{
+				@ x 1
+
+	# const someOperation = (arr: Array<number | string>) => {
+	const someOperation
+		=>
+			param arr
+				-[ number | string
+
+	# const someOperation = (arr: $ReadOnlyArray<number | string>) => {
+	const someOperation
+		=>
+			param arr
+				-[ro number | string
+
+	# Generic type | https://flow.org/en/docs/types/generics/
+	# function identity<T>(value: T): T {}
+	function identity<T>
+		T value
+		: T
+
+	# type IdentityWrapper = {
+	#   func<T>(T): T
+	# }
+	type IdentityWrapper
+		@ func
+			function <T>
+				param T
+				: T

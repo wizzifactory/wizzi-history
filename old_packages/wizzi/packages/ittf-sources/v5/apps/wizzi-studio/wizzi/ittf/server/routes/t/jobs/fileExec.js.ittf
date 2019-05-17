@@ -1,0 +1,49 @@
+﻿$group
+
+	get( /api/jobs/execfiles )
+
+		check-params( )
+			optional( query , refresh )
+		
+		_ api.globals.getExecFileJobList
+			{
+				@ userId req.user.id
+				@ refresh refresh === 'true'
+			f_cb_rest( result )
+				log '/api/jobs/execfiles', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/execfile )
+
+		check-params( )
+			not-empty( query , name )
+		
+		_ api.globals.getExecFile
+			{
+				@ userId req.user.id
+				@ name name
+			f_cb_rest( result )
+				log '/api/jobs/execfile', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/runexecfile )
+
+		check-params( )
+			not-empty( query , name )
+		
+		_ api.globals.runExecFile
+			{
+				@ userId req.user.id
+				@ name name
+			f_cb_rest( result )
+				log '/api/jobs/runexecfile', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

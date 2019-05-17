@@ -1,0 +1,637 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source https://github.com/isaacs/node-glob/blob/master/glob.js
+	# license (ISC) 
+
+	set module.exports = glob
+    
+    var minimatch = require('./minimatch')
+    var Minimatch = minimatch.Minimatch
+    # VIA var inherits = require('inherits')
+	var EE
+        _ require('events')
+            . EventEmitter
+	var path = require('path')
+    var assert = require('assert')
+    var isAbsolute = require('./path-is-absolute')
+    var common = require('./common.js')
+	var globSync = require('./sync.js')
+    var alphasort = common.alphasort
+    var alphasorti = common.alphasorti
+    var setopts = common.setopts
+    var ownProp = common.ownProp
+    var inflight = require('./inflight')
+    var util = require('util')
+    var childrenIgnored = common.childrenIgnored
+    var isIgnored = common.isIgnored
+    var once = require('./once')
+    
+	function glob
+        param pattern
+		param virtFS
+        param options
+        param cb
+		# log 'wizzi-utils.glob.index.pattern', pattern
+        if typeof(options) === 'function'
+            set cb = options, options = {}
+        if !options
+            set options =
+                { 
+		if options.sync
+			if cb
+				throw new TypeError('callback provided to sync glob')
+			return globSync(pattern, virtFS, options)
+		else
+			return 
+				new Glob(pattern, virtFS, options, cb)
+    
+	class Glob : EE
+		ctor
+			param pattern
+			param virtFS
+			param options
+			param cb
+			
+			if typeof (options) === 'function'
+				set cb = options
+				set options = null
+			if !(this instanceof Glob)
+				return 
+					new Glob(pattern, virtFS, options, cb)
+        
+			set this.virtFS = virtFS
+			
+			# log 'wizzi-utils.Glob.ctor.pattern', pattern
+
+			_ setopts(this, pattern, options)
+        
+			# log 'wizzi-utils.Glob.ctor.this.minimatch', this.minimatch
+			# log 'wizzi-utils.Glob.ctor.this.minimatch.set', this.minimatch.set
+        
+			var n = this.minimatch.set.length
+			set this.matches = new Array(n)
+			if typeof(cb) === 'function'
+				set cb = once(cb)
+				_ this.on('error', cb)
+				_ this.on
+					@ 'end'
+					function 
+						param matches
+						# log 'on.end.cb.matches', matches.length
+						_ cb(null, matches)
+			
+			var self = this
+			set this._processing = 0
+			if this.noprocess
+				return this
+			if n === 0
+				return done()
+			
+			var sync = true
+			for var i = 0; i < n; i++
+				_ this._process
+					@ this.minimatch.set[i]
+					@ i
+					@ false
+					@ done
+			set sync = false
+        
+			function done
+				set --self._processing
+				# log '---------- done self._processing, sync', self._processing, sync
+				if self._processing <= 0
+					if sync
+						_ process.nextTick
+							function 
+								_ self._finish()
+					else 
+						_ self._finish()
+	
+		m _finish
+            
+			_ assert(this instanceof Glob)
+            
+			_ common.finish(this)
+            
+			_ this.emit
+                @ 'end'
+                @ this.found
+    
+		m _mark
+            param p
+            return common.mark(this, p)
+    
+		m _makeAbs
+            param f
+            return common.makeAbs(this, f)
+    
+		m _process
+            param pattern
+            param index
+            param inGlobStar
+            param cbDone
+            
+			_ assert(this instanceof Glob)
+            _ assert(typeof (cbDone) === 'function')
+            
+			set this._processing++
+            # log '_process.pattern.index.inGlobStar', pattern, index, inGlobStar
+			var n = 0
+            while typeof (pattern[n]) === 'string'
+                set n++
+			
+			# log '_process.n', n
+            var prefix
+            switch n
+                case pattern.length
+					# log '_process.prefix.case._processSimple'
+                    _ this._processSimple
+                        _ pattern.join('/')
+                        @ index
+                        @ cbDone
+                    return 
+                case 0
+                    set prefix = null
+					# log '_process.prefix.n=0', prefix
+                    break 
+                default 
+                    set prefix = pattern.slice(0, n).join('/')
+					# log '_process.prefix.default', prefix
+                    break 
+			
+            var remain = pattern.slice(n)
+			# log 'pattern, remain', pattern, '-- / --', remain
+            var read
+            
+			if prefix === null
+                set read = '.'
+            elif isAbsolute(prefix) || isAbsolute(pattern.join('/'))
+                if !prefix || !isAbsolute(prefix)
+                    set prefix = ('/' + prefix)
+                set read = prefix
+            else 
+                set read = prefix
+            
+			var abs = this._makeAbs(read)
+            
+			if childrenIgnored(this, read)
+                return cbDone()
+            
+			var isGlobStar = remain[0] === minimatch.GLOBSTAR
+
+			# log 'read, abs, remain, isGlobStar', read, abs, remain, isGlobStar
+            
+			if isGlobStar
+                _ this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cbDone)
+            else 
+                _ this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cbDone)
+    
+		m _processReaddir
+            param prefix
+            param read
+            param abs
+            param remain
+            param index
+            param inGlobStar
+            param cbDone
+            var self = this
+            _ this._readdir
+                @ abs
+                @ inGlobStar
+                function 
+                    param er
+                    param entries
+                    return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cbDone)
+    
+		m _processReaddir2
+            param prefix
+            param read
+            param abs
+            param remain
+            param index
+            param inGlobStar
+            param entries
+            param cbDone
+            
+			if !entries
+                return cbDone()
+            
+			var pn = remain[0]
+            
+			var negate = !!this.minimatch.negate
+            
+			var rawGlob = pn._glob
+            
+			var dotOk = this.dot || rawGlob.charAt(0) === '.'
+            
+			# log '***** _processReaddir2 pn, negate, rawGlob, dotOk', pn, negate, rawGlob, dotOk
+
+			var matchedEntries
+                [ 
+            
+			for var i = 0; i < entries.length; i++
+                var e = entries[i]
+				# var ePath = e.basename
+				var ePath = e
+                if ePath.charAt(0) !== '.' || dotOk
+                    var m
+                    if negate && !prefix
+                        set m = !ePath.match(pn)
+                    else 
+                        set m = ePath.match(pn)
+                    if m
+                        _ matchedEntries.push(e)
+            
+			var len = matchedEntries.length
+            
+			if len === 0
+                return cbDone()
+            
+			if remain.length === 1 && !this.mark && !this.stat
+                
+				if !this.matches[index]
+                    set this.matches[index] = Object.create(null)
+                
+				for var i = 0; i < len; i++
+                    var e = matchedEntries[i]
+					# var ePath = e.basename
+					var ePath = e
+                    if prefix
+                        if prefix !== '/'
+                            set ePath = prefix + '/' + ePath
+                        else 
+                            set ePath = prefix + ePath
+                    if ePath.charAt(0) === '/' && !this.nomount
+                        set ePath = path.join(this.root, ePath)
+                    _ this._emitMatch(index, ePath, e)
+                
+				return cbDone()
+            
+			_ remain.shift()
+            
+			for var i = 0; i < len; i++
+                # var ePath = matchedEntries[i].basename
+				var ePath = matchedEntries[i]
+                var newPattern
+                if prefix
+                    if prefix !== '/'
+                        set ePath = prefix + '/' + ePath
+                    else 
+                        set ePath = prefix + ePath
+                _ this._process
+                    [ 
+                        @ ePath
+                        ._ concat(remain)
+                    @ index
+                    @ inGlobStar
+                    @ cbDone
+            _ cbDone()
+    
+		m _emitMatch
+            param index
+            param ePath
+			param e
+
+			# log '***** _emitMatch.index,ePath,e', index, ePath, e
+
+			if isIgnored(this, ePath)
+                return 
+            
+			var abs
+                iif isAbsolute(ePath)
+                    then ePath
+                    else 
+                        _ this._makeAbs(ePath)
+            
+			if this.mark
+                set ePath = this._mark(ePath)
+            
+			if this.absolute
+                set ePath = abs
+            
+			if this.matches[index][ePath]
+                return 
+            
+			if this.nodir
+                var c = this.cache[abs]
+                if (c === 'DIR') || Array.isArray(c)
+                    return 
+            
+			set this.matches[index][ePath] = true
+            
+			var st = this.statCache[abs]
+            
+			if st
+                _ this.emit('stat', ePath, e, st)
+            
+			_ this.emit('match', ePath, e)
+    
+		m _readdirInGlobStar
+            param abs
+            param cb
+            
+			if this.follow
+                return this._readdir(abs, false, cb)
+            
+			var lstatkey = ('lstat\0' + abs)
+            var self = this
+            var lstatcb = inflight(lstatkey, lstatcb_)
+            
+			if lstatcb
+				# log 'wizzi-utils.Glob._readdirInGlobStar.abs', abs
+                _ this.virtFS.stat(abs, lstatcb)
+            
+			function lstatcb_
+                param er
+                param lstat
+                if er && er.code === 'ENOENT'
+                    return cb()
+                if lstat && !lstat.isDirectory()
+                    set self.cache[abs] = 'FILE'
+                    _ cb()
+                else 
+                    _ self._readdir(abs, false, cb)
+    
+		m _readdir
+            param abs
+            param inGlobStar
+            param cb
+            
+			set cb = inflight('readdir\0' + abs + '\0' + inGlobStar, cb)
+            
+			if !(cb)
+                return 
+            
+			if inGlobStar 
+                return this._readdirInGlobStar(abs, cb)
+            
+			if ownProp(this.cache, abs)
+                var c = this.cache[abs]
+                if !c || c === 'FILE'
+                    return cb()
+                if Array.isArray(c)
+                    return cb(null, c)
+            
+			var self = this
+            
+			# log 'wizzi-utils.Glob._readdir.abs', abs
+			_ this.virtFS.readdir
+                @ abs
+                _ readdirCb(this, abs, cb)
+    
+			function readdirCb
+				param self
+				param abs
+				param cb
+				return 
+					function 
+						param er
+						param entries
+						if er
+							_ self._readdirError(abs, er, cb)
+						else 
+							_ self._readdirEntries(abs, entries, cb)
+    
+		m _readdirEntries
+            param abs
+            param entries
+            param cb
+            
+			if !(this.mark) && !(this.stat)
+                for var i = 0; i < entries.length; i++
+                    var e = entries[i]
+					# var ePath = e.basename
+					var ePath = e
+                    if abs === '/'
+                        set ePath = abs + ePath
+                    else 
+                        set ePath = abs + '/' + ePath
+                    set this.cache[ePath] = true
+            
+			set this.cache[abs] = entries
+            
+			return cb(null, entries)
+    
+		m _readdirError
+            param f
+            param er
+            param cb
+            
+			switch er.code
+                case 'ENOTSUP'
+                case 'ENOTDIR'
+                    var abs = this._makeAbs(f)
+                    set this.cache[abs] = 'FILE'
+                    if abs === this.cwdAbs
+                        var error
+                            new Error(((er.code + ' invalid cwd ')) + this.cwd)
+                        set error.path = this.cwd
+                        set error.code = er.code
+                        _ this.emit('error', error)
+                        _ this.abort()
+                    break 
+                case 'ENOENT'
+                case 'ELOOP'
+                case 'ENAMETOOLONG'
+                case 'UNKNOWN'
+                    set this.cache[this._makeAbs(f)] = false
+                    break 
+                default 
+                    set this.cache[this._makeAbs(f)] = false
+                    if this.strict
+                        _ this.emit('error', er)
+                        _ this.abort()
+                    if ! (this.silent)
+                        _ console.error('glob error', er)
+                    break 
+            return cb()
+    
+		m _processGlobStar
+            param prefix
+            param read
+            param abs
+            param remain
+            param index
+            param inGlobStar
+            param cbDone
+            var self = this
+			# log '_processGlobStar'
+            _ this._readdir
+                @ abs
+                @ inGlobStar
+                function 
+                    param er
+                    param entries
+                    _ self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cbDone)
+    
+		m _processGlobStar2
+            param prefix
+            param read
+            param abs
+            param remain
+            param index
+            param inGlobStar
+            param entries
+            param cbDone
+			
+			# log '_processGlobStar2.entries', entries
+            
+			if !(entries)
+                return cbDone()
+            
+			var remainWithoutGlobStar = remain.slice(1)
+            var gspref
+                iif prefix
+                    then 
+                        [ 
+                            @ prefix
+                    else 
+                        [ 
+            
+			var noGlobStar = gspref.concat(remainWithoutGlobStar)
+            
+			_ this._process(noGlobStar, index, false, cbDone)
+            var len = entries.length
+            
+			for var i = 0; i < len; i++
+                # var ePath = entries[i].basename
+				var ePath = entries[i]
+                if ePath.charAt(0) === '.' && !this.dot
+                    continue
+                var instead
+                    _ gspref.concat
+                        @ ePath
+                        @ remainWithoutGlobStar
+                _ this._process(instead, index, true, cbDone)
+                var below
+                    _ gspref.concat
+                        @ ePath
+                        @ remain
+                _ this._process(below, index, true, cbDone)
+				# log '_processGlobStar2 e.instead.below', ePath, instead, below
+            
+			_ cbDone()
+    
+		m _processSimple
+            param prefix
+            param index
+            param cbDone
+
+			# log '***** _processSimple', prefix, index
+
+            var self = this
+            _ this._stat
+                @ prefix
+                function 
+                    param er
+                    param exists
+                    _ self._processSimple2(prefix, index, er, exists, cbDone)
+    
+		m _processSimple2
+            param prefix
+            param index
+            param er
+            param exists
+            param cbDone
+            
+			if !this.matches[index]
+                set this.matches[index] = Object.create(null)
+            
+			if !exists
+                return cbDone()
+            
+			if prefix && isAbsolute(prefix) && !this.nomount
+                var trail = /[\/\\]$/.test(prefix)
+                if prefix.charAt(0) === '/'
+                    set prefix = path.join(this.root, prefix)
+                else 
+					# log '***** wizzi-utils.Glob._processSimple2.this.root,prefix', this.root, prefix
+                    set prefix = path.resolve(this.root, prefix)
+					# log '***** wizzi-utils.Glob._processSimple2.prefix', prefix
+                    if trail
+                        set prefix += '/'
+            
+			if process.platform === 'win32'
+                set prefix = prefix.replace(/\\/g, '/')
+            
+			_ this._emitMatch(index, prefix, null)
+            
+			_ cbDone()
+    
+		# from _processSimple
+		m _stat
+            param f
+            param cb
+            
+			var abs = this._makeAbs(f)
+            var needDir = f.slice(-1) === '/'
+            
+			if f.length > this.maxLength
+                return cb()
+            
+			if !this.stat && ownProp(this.cache, abs)
+                var c = this.cache[abs]
+                if Array.isArray(c)
+                    set c = 'DIR'
+                if !needDir || c === 'DIR'
+                    return cb(null, c)
+                if needDir && c === 'FILE'
+                    return cb()
+            
+			var exists
+            var stat = this.statCache[abs]
+            
+			if stat !== undefined
+                if stat === false
+                    return cb(null, stat)
+                else 
+                    var type = stat.isDirectory() ? 'DIR' : 'FILE'
+                    if (needDir && (type === 'FILE'))
+                        return cb()
+                    else 
+                        return cb(null, type, stat)
+            var self = this
+            var statcb = inflight('stat\0' + abs, lstatcb_)
+            
+			if statcb
+				# log 'wizzi-utils.Glob._stat.abs', abs
+                _ this.virtFS.stat(abs, statcb)
+            
+			function lstatcb_
+                param er
+                param lstat
+                _ self._stat2(f, abs, er, lstat, cb)
+    
+		m _stat2
+            param f
+            param abs
+            param er
+            param stat
+            param cb
+            
+			if er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')
+                set this.statCache[abs] = false
+                return cb()
+            
+			var needDir = f.slice(-1) === '/'
+            
+			set this.statCache[abs] = stat
+            
+			if abs.slice(-1) === '/' && stat && !stat.isDirectory()
+                return cb(null, false, stat)
+            
+			var c = true
+            if stat
+                set c = stat.isDirectory() ? 'DIR' : 'FILE'
+            
+			set this.cache[abs] = this.cache[abs] || c
+            
+			if needDir && c === 'FILE'
+                return cb()
+            
+			return cb(null, c, stat)
+	
+	# VIA _ inherits(Glob, EE)

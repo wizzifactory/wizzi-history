@@ -1,0 +1,41 @@
+﻿concept Json pseudo schema
+
+	summary
+
+		h4 Sample json ittf document
+		ittf
+			- {
+				- name "v3-docs"
+				- version "0.0.1"
+				- description  "Wizzi factory documentation."
+				- scripts
+					- {
+						- test "mocha tests/**/*.js"
+						- start "node index"
+				- dependencies
+					- {
+						- async "^2.4.0"
+						- json-stringify-safe "^5.0.1"
+						- ...
+				- sampleArray
+					- [
+						- 'alfa'
+						- 'beta'
+
+		ul Coding rules
+			li The root node must be an open graph.
+			li Ittf node names may contain
+				ul
+					li Property names.
+					li Open graph for start of object.
+					li Open bracket for start of array.
+					li Array elements primitive values.
+			li Ittf node values must contain property values when the node name is 
+				+ a property name, nothing in the other cases.
+
+		p ( It is assumed that one knows
+			a json format rules
+				href http://www.json.org/
+			span )
+
+

@@ -1,0 +1,145 @@
+﻿module
+	kind jsfile
+	+
+	import path
+	import del
+	+
+	var expect = require('expect.js')
+	var genContext = require('../../lib/artifact/genContext')
+	var StringWriter = require('../../lib/util/stringWriter')
+	var mocks = require('../mocks/misc')
+    +
+	describe genContext
+
+		it should write a simple interpolated text
+
+			var ctx
+				new genContext
+					{
+						@ options
+							{
+								@ data
+									{
+								@ indentSpaces 4
+								@ CRLF '\n'
+								@ isDebugLine false
+								@ indent 0
+						@ model null
+						@ srcPath null
+						@ pman null
+
+			_ ctx.write('alfa')
+			_ ctx.w(' beta')
+			_ ctx.a('x', 'gamma')
+			_ ctx.w('{x}')
+			_ ctx.a('YYY', 'tau')
+			_ ctx.w('{YYY}')
+
+			var result = ctx.getContent()
+			tobe_string( result, alfa beta\ngamma\ntau\n )
+
+		it should write an indented interpolated text
+
+			var ctx
+				new genContext
+					{
+						@ options
+							{
+								@ data
+									{
+								@ indentSpaces 4
+								@ CRLF '\n'
+								@ isDebugLine false
+								@ indent 0
+						@ model null
+						@ srcPath null
+						@ pman null
+
+			_ ctx.write('alfa')
+			_ ctx.w(' beta')
+			_ ctx.a('x', 'gamma')
+			_ ctx.indent()
+			_ ctx.w('{x}')
+			_ ctx.a('YYY', 'tau')
+			_ ctx.deindent()
+			_ ctx.w('{YYY}')
+			_ ctx.indent(2)
+			_ ctx.w('sigma')
+			_ ctx.deindent(2)
+			_ ctx.w('lambda')
+
+			var result = ctx.getContent()
+			tobe_string( result, alfa beta\n    gamma\ntau\n        sigma\nlambda\n )
+
+		it should write an indented interpolated text with a file append
+
+			var ctx
+				new genContext
+					{
+						@ options
+							{
+								@ data
+									{
+								@ indentSpaces 4
+								@ CRLF '\n'
+								@ isDebugLine false
+								@ indent 0
+						@ model null
+						@ srcPath null
+						@ pman null
+
+			_ ctx.write('alfa')
+			_ ctx.w(' beta')
+			_ ctx.a('x', 'gamma')
+			_ ctx.indent()
+			_ ctx.w('{x}')
+			_ ctx.a('YYY', 'tau')
+			_ ctx.deindent()
+			_ ctx.w('{YYY}')
+			_ ctx.indent(2)
+			_ ctx.w('sigma')
+			_ ctx.appendFile
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'gc_one.ittf'
+			_ ctx.deindent(2)
+			_ ctx.w('lambda')
+
+			var result = ctx.getContent()
+			tobe_string( result, alfa beta\n    gamma\ntau\n        sigma\n        first one\n            second one\nlambda\n )
+
+
+		it should write a file
+
+			var ctx
+				new genContext
+					{
+						@ options
+							{
+								@ data
+									{
+								@ indentSpaces 4
+								@ CRLF '\n'
+								@ isDebugLine false
+								@ indent 0
+						@ model null
+						@ srcPath null
+						@ pman null
+
+			_ ctx.writeFile
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'gc_one.ittf'
+
+			var sw = new StringWriter()
+			_ ctx.toStream(sw)
+			var result = sw.toString()
+
+			tobe_string( result, first one\n\tsecond one\n )
+
+
+
+
+							

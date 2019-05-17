@@ -1,0 +1,22 @@
+﻿$group
+
+	sample Comments: ${dollar}${dollar} and ${dollar}* .. *${dollar}
+		summary
+
+			p A double dollar, ${dollar}${dollar}, comments out a node until end of line.
+			p ${dollar}* .. any text .. *${dollar} comments out any text on one node or a node branch.
+	
+		ittf my.html.ittf
+			kind primary
+			- div
+				- $ var myFriends = 'Steve,Annie,John'.split(',')
+				- ul
+					- li hello ${dollar}{myFriends[0]}
+					- ${dollar}${dollar} li hello ${dollar}{myFriends[1]}
+					- li hello ${dollar}{myFriends[2]}
+				- ${dollar}* div
+					- a wizzifactory
+						- href http://wizzifactory.org 
+					- *${dollar}
+
+		$include wfschema.html.sample

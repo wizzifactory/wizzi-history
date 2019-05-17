@@ -1,0 +1,17 @@
+﻿$group
+
+	@ userMeta
+		function
+			param options
+
+			var segments
+				[
+					@ config.studioBasePath
+					@ options.userId
+
+			_ segments.push('__')
+			_ segments.push(options.userId + '.meta.json')
+			
+			return
+				_ this.joinPathFromArray
+					@ segments

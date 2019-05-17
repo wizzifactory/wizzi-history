@@ -1,0 +1,124 @@
+﻿$group
+
+	post( /repo/:user/:project/* )
+
+		check-params( )
+			not-undefined( body, kind )
+			optional( body, action )
+			optional( body, content )
+			optional( body, newname )
+
+		if kind == 0
+			if action === 'duplicate'
+				_ repoApi.duplicateFolder
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ newname
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+			elif action === 'rename'
+				_ repoApi.renameFolder
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ newname
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+			else
+				_ repoApi.createFolder
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+		elif kind == 1
+			if action === 'duplicate'
+				_ repoApi.duplicateDocument
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ newname
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+			elif action === 'rename'
+				_ repoApi.renameDocument
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ newname
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+			else
+				_ repoApi.createDocument
+					@ req.params.user
+					@ req.params.project
+					@ req.params['0']
+					@ content
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+		else
+			_ sendError
+				@ "The 'kind' parameter has an invalid value"
+
+	delete( /repo/:user/:project/* )
+
+		check-params( )
+			not-undefined( body, kind )
+
+		if kind == 0
+			_ repoApi.deleteFolder
+				@ req.params.user
+				@ req.params.project
+				@ req.params['0']
+				f_cb_rest( result )
+					_ sendSuccess
+						@ res
+						@ result.status
+						@ result.data
+		elif kind == 1
+			_ repoApi.deleteDocument
+				@ req.params.user
+				@ req.params.project
+				@ req.params['0']
+				f_cb_rest( result )
+					_ sendSuccess
+						@ res
+						@ result.status
+						@ result.data
+		else
+			_ sendError
+				@ "The 'kind' parameter has an invalid value"
+
+	delete( /repo/batch )
+
+		check-params( )
+			not-undefined( body, fsitems )
+			optional( body, currentPath )
+
+		_ repoApi.deleteFsItems
+			@ fsitems
+			@ currentPath
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

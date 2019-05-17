@@ -1,0 +1,65 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m createFolder
+		string folderPath
+		callback
+
+		set folderPath = normalize(folderPath)
+		var parts = folderPath.split('/')
+		var dirname = []
+		var insertedId = null
+		var parentFsItemId = null
+		var lastInserted = null
+		
+		# log 'wizzi-repo.${source}.document.createFolder.parts', parts
+
+		var that = this
+
+		var item, len = parts.length
+		function repeater
+            param index
+            if index === len
+                return callback(null, lastInserted)
+			
+			set item = parts[index]
+			if item.length == 0
+				return
+					_ process.nextTick
+						function 
+							_ repeater(index + 1)
+
+			var dirnameS = dirname.join('/')
+			_ dirname.push(item)
+			var pathS = dirname.join('/')
+
+			# log 'wizzi-repo.${source}.document.createFolder.item,dirnameS,pathS', item , dirnameS, pathS
+
+			_ that.fsCommon.insertItem
+				{
+					@ basename item 
+					@ parentId parentFsItemId
+					@ dirname dirnameS
+					@ path pathS
+					@ kind 0
+				f_cb( r )
+
+					# log 'wizzi-repo.${source}.document.createFolder.r', r
+
+					set lastInserted = r
+
+					if r.code === 'FSITEM_EXISTS'
+						if r.kind == 1
+							throw Error('${fsname} createFolder error: ' + folderPath + ' is or contains a document path')
+						set insertedId = r.item._id
+					else
+						set insertedId = r.insertedId
+					set parentFsItemId = insertedId
+
+                    _ process.nextTick
+                        function 
+                            _ repeater(index + 1)
+
+        _ repeater(0)
+
+

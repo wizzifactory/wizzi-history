@@ -1,0 +1,226 @@
+﻿module 
+    kind react
+	+
+	import_rsf_actions( EXECUTE_WFJOB )
+	import_rsf_actions( GET_JOB_BATCHES )
+	import_rsf_actions( GET_JOB_BATCH )
+	import_rsf_actions( GET_JOB_GISTS )
+	import_rsf_actions( GET_JOB_GIST )
+	import_rsf_actions( CREATE_JOB_GIST )
+	import_rsf_actions( UPDATE_JOB_GIST )
+	import_rsf_actions( DELETE_JOB_GIST )
+	import_rsf_actions( DUPLICATE_JOB_GIST )
+	import_rsf_actions( RENAME_JOB_GIST )
+	import_rsf_actions( WIZZIFY_JOB_SNIPPET )
+	import_action( CHANGED_JOB_GIST )
+	import_action( CLEAR_JOB_NAVIGATIONS )
+	import
+		@ GET_ITTF_REQUEST
+		from '../actions'
+	+
+	const jobInitialState
+		{
+			@ executionResult null
+			@ isLoading false
+			@ isWizzifying false
+			@ executionError null
+			@ loadingError null
+			@ wizzifyingError null
+			@ batches []
+			@ batch null
+			@ gists []
+			@ fragments []
+			@ contexts []
+			@ gists []
+			@ gist null
+			@ snippets []
+			@ snippet null
+			@ toSnippet null
+			@ toGist null
+			@ toWfJob null
+	+
+	r( job, jobInitialState )
+	
+		c( EXECUTE_WFJOB_REQUEST
+			{
+				@ ...state
+				@ isLoading true
+		
+		c( EXECUTE_WFJOB_SUCCESS
+			{
+				@ ...state
+				@ executionResult action.payload.result
+				@ isLoading false
+				@ executionError null
+
+		c( EXECUTE_WFJOB_FAILURE
+			{
+				@ ...state
+				@ executionResult null
+				@ isLoading false
+				@ executionError action.payload.error
+
+		c( GET_ITTF_REQUEST
+			{
+				@ ...state
+				@ executionResult null
+
+		cx( GET_JOB_BATCHES_REQUEST
+			@ isLoading true
+		
+		cx( GET_JOB_BATCHES_SUCCESS
+			@ batches action.payload.batches
+			@ isLoading false
+			@ loadingError null
+
+		cx( GET_JOB_BATCHES_FAILURE
+			@ batches []
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( GET_JOB_BATCH_REQUEST
+			@ isLoading true
+		
+		cx( GET_JOB_BATCH_SUCCESS
+			@ batch action.payload.batch
+			@ isLoading false
+			@ loadingError null
+
+		cx( GET_JOB_BATCH_FAILURE
+			@ batch null
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( GET_JOB_GISTS_REQUEST
+			@ isLoading true
+		
+		cx( GET_JOB_GISTS_SUCCESS
+			@ gists action.payload.gists
+			@ fragments action.payload.fragments
+			@ contexts action.payload.contexts
+			@ snippets action.payload.snippets
+			@ isLoading false
+			@ loadingError null
+
+		cx( GET_JOB_GISTS_FAILURE
+			@ gists []
+			@ snippets []
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( GET_JOB_GIST_REQUEST
+			@ isLoading true
+		
+		cx( GET_JOB_GIST_SUCCESS
+			@ gist action.payload.gist
+			@ snippet action.payload.snippet
+			@ isLoading false
+			@ loadingError null
+
+		cx( GET_JOB_GIST_FAILURE
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( CREATE_JOB_GIST_REQUEST
+			@ isLoading true
+		
+		cx( CREATE_JOB_GIST_SUCCESS
+			@ gist action.payload.gist
+			@ gists action.payload.gists
+			@ fragments action.payload.fragments
+			@ contexts action.payload.contexts
+			@ snippet action.payload.snippet
+			@ snippets action.payload.snippets
+			@ toSnippet action.payload.snippet
+			@ toGist action.payload.gist
+			@ isLoading false
+			@ loadingError null
+
+		cx( CREATE_JOB_GIST_FAILURE
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( UPDATE_JOB_GIST_REQUEST
+			@ isLoading true
+		
+		cx( UPDATE_JOB_GIST_SUCCESS
+			@ isLoading false
+			@ loadingError null
+
+		cx( UPDATE_JOB_GIST_FAILURE
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( CHANGED_JOB_GIST
+			$append preprocess
+				const {gist, snippet} = state
+				if gist
+					set gist.content = action.content
+				if snippet
+					set snippet.content = action.content
+			@ gist gist
+			@ snippet snippet
+		
+		cx( DELETE_JOB_GIST_REQUEST
+			@ isLoading true
+		
+		cx( DELETE_JOB_GIST_SUCCESS
+			@ gists action.payload.gists
+			@ fragments action.payload.fragments
+			@ contexts action.payload.contexts
+			@ snippets action.payload.snippets
+			@ isLoading false
+			@ loadingError null
+
+		cx( DELETE_JOB_GIST_FAILURE
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( DUPLICATE_JOB_GIST_REQUEST
+			@ isLoading true
+		
+		cx( DUPLICATE_JOB_GIST_SUCCESS
+			@ gists action.payload.gists
+			@ fragments action.payload.fragments
+			@ contexts action.payload.contexts
+			@ snippets action.payload.snippets
+			@ isLoading false
+			@ loadingError null
+
+		cx( DUPLICATE_JOB_GIST_FAILURE
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( RENAME_JOB_GIST_REQUEST
+			@ isLoading true
+		
+		cx( RENAME_JOB_GIST_SUCCESS
+			@ gists action.payload.gists
+			@ fragments action.payload.fragments
+			@ contexts action.payload.contexts
+			@ snippets action.payload.snippets
+			@ isLoading false
+			@ loadingError null
+
+		cx( RENAME_JOB_GIST_FAILURE
+			@ isLoading false
+			@ loadingError action.payload.error
+
+		cx( WIZZIFY_JOB_SNIPPET_REQUEST
+			@ isWizzifying true
+		
+		cx( WIZZIFY_JOB_SNIPPET_SUCCESS
+			@ wizzified action.payload.wizzified
+			@ isWizzifying false
+			@ wizzifyingError null
+
+		cx( WIZZIFY_JOB_SNIPPET_FAILURE
+			@ isWizzifying false
+			@ wizzifyingError action.payload.error
+
+		cx( CLEAR_JOB_NAVIGATIONS
+			@ toSnippet null
+			@ toGist null
+			@ toWfJob null
+
+	export default jobReducer

@@ -1,0 +1,136 @@
+﻿$group
+
+	runner( EmptyStatement
+		return 
+			{ 
+    
+	runner( ExpressionStatement
+        # 1/8/2017 _ ctx.beginExpr()
+		var state
+			_ runner
+				@ node.expression
+				@ ctx
+		if state && state.__is_error
+			# _ ctx.abortExpr()
+			return state
+        # _ ctx.endExpr()
+        return 
+            { 
+    
+	runner( IfStatement
+        var 
+            decl ret
+                { 
+            decl savedCurrentBrickKey
+		checked_run( test, IfStatement
+			_ runner(node.test, ctx)
+        if test
+            set savedCurrentBrickKey = ctx.get_currentMTreeBrickKey()
+			checked_run_set( ret, IfStatement node.consequent
+				_ runner(node.consequent, ctx)
+			checked_run( notUsed, IfStatement set_MTreeBrickEvalContext
+	            _ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+        else 
+            if node.alternate
+                set savedCurrentBrickKey = ctx.get_currentMTreeBrickKey()
+				checked_run_set( ret, IfStatement node.alternate
+					_ runner(node.alternate, ctx)
+				checked_run( notUsed, IfStatement set_MTreeBrickEvalContext
+	                _ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+        return ret
+
+    runner( BlockStatement
+        var state
+        for var i = 0; i < node.body.length; i++
+            var statement = node.body[i]
+			checked_run_set( state, BlockStatement
+				_ runner(statement, ctx)
+            if state.result || state.break || state.continue
+                return state
+        return 
+            { 
+    
+	runner( WhileStatement
+        var 
+            decl state
+            decl savedCurrentBrickKey
+			decl iterCheck = 0
+		checked_run( test, WhileStatement node.test
+			_ runner(node.test, ctx)
+        while test
+			if iterCheck > MAX_ITERATIONS
+				return state
+			set iterCheck++
+            set savedCurrentBrickKey = ctx.get_currentMTreeBrickKey()
+			checked_run_set( state, WhileStatement node.body
+				_ runner(node.body, ctx)
+            if state.result
+                return state
+            if state.break
+                break
+            checked_run( notUsed, set_MTreeBrickEvalContext
+				_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+			checked_run_set( test, WhileStatement node.test
+				_ runner(node.test, ctx)
+        return 
+            { 
+
+	runner( DoWhileStatement
+        var 
+			decl test
+            decl state
+            decl savedCurrentBrickKey
+			decl iterCheck = 0
+		
+		set savedCurrentBrickKey = ctx.get_currentMTreeBrickKey()
+		
+		checked_run_set( state, DoWhileStatement node.body
+			_ runner(node.body, ctx)
+		
+		checked_run( notUsed, DoWhileStatement set_MTreeBrickEvalContext
+			_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+   		
+		checked_run_set( test, DoWhileStatement node.test
+			_ runner(node.test, ctx)
+		
+		while test
+
+			set iterCheck++
+			if iterCheck > MAX_ITERATIONS
+				return state
+			
+			checked_run_set( state, DoWhileStatement node.body
+				_ runner(node.body, ctx)
+
+			if state.result
+				return state
+			
+			if state.break
+				break
+
+			checked_run( notUsed, DoWhileStatement set_MTreeBrickEvalContext
+				_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+   			
+			checked_run_set( test, DoWhileStatement node.test
+				_ runner(node.test, ctx)
+        
+		return 
+            { 
+    
+	runner( ReturnStatement
+		if node.argument
+			checked_run( value, ReturnStatement
+				_ runner
+					@ node.argument
+					@ ctx
+			return
+				{ 
+					@ result true
+					@ value value
+		else
+			return 
+				{ 
+					@ result true
+
+    
+

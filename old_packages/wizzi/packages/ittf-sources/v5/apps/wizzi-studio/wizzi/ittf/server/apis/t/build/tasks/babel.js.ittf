@@ -1,0 +1,59 @@
+﻿$group
+
+	@ getSnippetAst
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var res = options.res
+			var filePath = hashDecrypt(hash)
+
+			var options
+				{
+					@ codePath filePath
+					@ removeLocation true
+
+			if res
+				_ scriptManager.babelParseExecToEventStream
+					@ options
+					@ res
+					f_cb_api(result)
+						log 'wizzi-studio.apis.getSnippetAst.result', result
+						# no need to callback
+			else
+				_ scriptManager.babelParseExec
+					@ options
+					f_cb_api(result)
+						r_cb_success_quoted( Got snippet AST )
+							@ ast result
+
+	@ transpileSnippet
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var res = options.res
+			var filePath = hashDecrypt(hash)
+
+			var options
+				{
+					@ codePath filePath
+					@ removeLocation true
+
+			if res
+				_ scriptManager.babelTransformExecToEventStream
+					@ options
+					@ res
+					f_cb_api(result)
+						log 'wizzi-studio.apis.transpileSnippet.result', result
+						# no need to callback
+			else
+				_ scriptManager.babelTransformExec
+					@ options
+					f_cb_api(result)
+						r_cb_success_quoted( Got snippet transpile )
+							@ transpiled result
+
+

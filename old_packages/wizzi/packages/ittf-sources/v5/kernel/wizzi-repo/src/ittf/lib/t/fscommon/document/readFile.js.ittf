@@ -1,0 +1,32 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m readFile
+		string filePath
+		callback
+
+		# log 'wizzi-repo.t.fsCommon.readFile.filePath before', filePath
+		# set filePath = denormalize(filePath)
+		set filePath = normalize(filePath)
+		log 'wizzi-repo.t.fsCommon.readFile.normalized.filePath before', filePath
+		var that = this
+		
+		_ this.fsCommon.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem == null
+					_ that.fsCommon.toJson
+						f_cb( json )
+							# log 'fsJson.readFile not found', JSON.stringify(json, null, 4)
+							r_cb_wz_err( ${fsname}RepoError, readFile )
+								@ 'Document read file error. Not found: ' + filePath
+				elif fsitem.kind == 0
+					r_cb_wz_err( ${fsname}RepoError, readFile )
+						@ 'Document read file error. Cannot read a folder: ' + filePath
+				else
+					_ that.fsCommon.readDocument
+						@ fsitem._id
+						@ callback
+		
+
+

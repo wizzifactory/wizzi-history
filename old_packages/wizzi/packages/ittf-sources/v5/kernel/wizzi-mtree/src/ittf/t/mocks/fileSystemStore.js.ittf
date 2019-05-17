@@ -1,0 +1,56 @@
+﻿module wizzi-mtree.tests.mocks.fileSystemStore
+    kind jsfile
+
+	# Copied from wizzi-repo.fileSystemStore
+
+	var file = require('wizzi-utils').file
+
+    class FileSystemStore
+        ctor
+            set this.storeKind = 'filesystem'
+
+		m documentExists
+            string filepath
+            callback
+            var documentExists
+            try 
+                set documentExists = file.isFile(filepath)
+				_ callback(null, documentExists)
+            catch ex
+				r_cb_wz_err( RepoIOError, documentExists, ex )
+					@ 'Checking the existence of document: ' + filepath + '. Message: ' + ex.message
+
+		m folderExistsSync
+            string folderpath
+            var folderExists
+            try 
+                set folderExists = file.isDirectory(folderpath)
+				return folderExists
+			catch ex
+				r_wz_err( RepoIOError, folderExistsSync, ex )
+					@ 'Checking the existence of folder: ' + folderpath + '. Message: ' + ex.message
+
+		m getFoldersSync
+            string parentFolderPath
+            { options
+            var folders
+            try 
+                set folders = file.getFolders(parentFolderPath, options)
+				return folders
+            catch ex
+				r_wz_err( RepoIOError, getFoldersSync, ex )
+					@ 'Getting folder: ' + parentFolderPath + '. Message: ' + ex.message
+
+		m getModelContent
+            string filepath
+            callback
+            var content
+            try 
+                set content = file.read(filepath)
+				return callback(null, content)
+            catch ex
+				r_cb_wz_err( RepoIOError, getModelContent, ex )
+					@ 'Reading filepath: ' + filepath + '. Message: ' + ex.message
+
+	set module.exports = FileSystemStore
+

@@ -1,0 +1,329 @@
+﻿$group
+	
+	api wizzi.production.productionContext
+		kernel
+		class-instance
+			path wizzi/lib/production/productionContext.js
+
+		# This object is meant to gather infos about generation steps and
+		# intermediate results.
+		# TODO many things not implemented yet.
+
+		{
+			ctor
+				{ dumps
+					# Contains the request for dumps to files of transient objects
+					# for debug purposes.
+					string dumpsBaseFolder
+						# The base folder where dump files are written.
+					{ mTreeBuildUpScript
+						boolean dump
+							# When true dump the script to the `dumpsBaseFolder`.
+						string dumpsBaseFolder
+							# May override the dump folder on the parent object.
+		
+			m setAclStat
+				{ aclstat
+		
+			m addIttfDocument
+				string uri
+				string content
+    
+			m addMTreeBuildUpScript
+				string uri
+				string mTreeBuildUpScript
+    
+			m addMixedMTree
+				string uri
+				{ mixedMTree
+            
+			m addEvaluatedMTree
+				string uri
+				{ evaluatedMTree
+
+			m addMTree
+				string uri
+				{ loadHistory
+					api-ref wizzi-mtree.loader.loadHistory
+    
+			m addWizziModel
+				string uri
+				{ wizziModel
+    
+			m addArtifact
+				string generatedArtifact
+    
+			m raiseIttfEvaluationScriptError
+				string uri
+
+	api wizzi.production.productionManager
+		kernel
+		class-instance
+			path wizzi/lib/production/productionManager.js
+
+		# The productionManager is the executor of a wizzi job. 
+		# For single simple tasks, one can use wizzi.wizziFactory 
+		# instance methods, but for complex tasks a wizzi job
+		# run by the wizzi.production.productionManager is the
+		# right solution.
+		# The 'meat' of a production is the execution of a wizzi.artifact.artifactInfo instance
+		# performed by an instance of a wizzi.production.Runner.
+		# wizzi.artifact.artifactInfo (s) are added to the wizzi.production.productionManager
+		# in three ways:
+		# 1. adding a request for loading a 'wfjob' Wizzi Model. 
+		# 2. adding a wfjobArtifactModel
+		# 3. adding a wizzi.artifact.artifactInfo created programmaticaly.
+		# When the 'run' method is called the production manager:
+		# 1. loads the requested wfjobModels.
+		#    A wfjobModel can contain wfjobArtifactModel(s) and others 'wfjob' requests.
+		#    Every wfjob request is execute until we have wfjobArtifactModel(s) only.
+		# 2  wfjobArtifactModel(s) are transformed in instances of wizzi.artifact.artifactInfo (s)
+		# 3  A wizzi.production.Runner is instantiated and asynchronously executed for each 
+		#    wizzi.artifact.artifactInfo.
+
+
+		{
+			{ wizziFactory
+				api-ref wizzi.wizziFactory
+			{ options
+			[ artifactInfos
+				{ artifactInfo
+			[ wfJobArtifactInfos
+			[ wfJobConfigs
+			{ productionContext
+				api-ref wizzi.production.productionContext
+			{ ___state
+				api-ref wizzi.production.state
+			string productionName
+			{ aclStatObject
+				{ AclStat
+					string userId
+					string subscriptionType
+					{ aclConfig
+					{ statisticsConfig
+					{ acl
+					{ statistics
+			{ globalContextObject
+			
+			ctor
+				{ wizziFactory
+					api-ref wizzi.wizziFactory
+				{ options
+					boolean verbose
+					string basedir
+					boolean isDebug
+					string CRLF
+					integer indentSpaces
+					boolean dotgExtensionPrefix
+					{ dumps
+				info
+					api-create wizzi.productionContext
+
+			m addArtifactInfo
+				# Add an artifact info config declared in an "artifact" element of a "wfjob" Wizzi Model.
+				# It may also be built programmatically and you can pass the instance.
+				alt artifactInfo
+					{ artifactInfoConfig
+					{ artifactInfoInstance
+
+			m addWfJobArtifactInfo
+				# Add a WfJob request declared in an "artifact" element of a "wfjob" Wizzi Model.
+				{ wfJobArtifactInfoConfig
+
+			m addWfJob
+				{ wfJobConfig
+					{ options
+				info
+					merge wfJobConfig.options this.options
+
+			m getLoadModel
+				# This is a facade methods that calls wizzi.wizziFactory.getLoadModel.
+				string schemaName
+				info
+					api-call wizzi.wizziFactory.getLoadModel
+				return
+					function loadModel
+						api-ref wizzi-plugin.modelFactory.loadModel
+
+			m getSchemaDefinition
+				# This is a facade methods that calls wizzi.wizziFactory.getSchemaDefinition.
+				string schemaName
+				return this.wizziFactory.getSchemaDefinition(schemaName)
+
+			m getModelTransformer
+				# This is a facade methods that calls wizzi.wizziFactory.getModelTransformer.
+				string transName
+				return
+					{ modelTransformer
+						api-ref wizzi-plugin.modelTransformer
+
+			m getArtifactGenerator
+				# This is a facade methods that calls wizzi.wizziFactory.getArtifactGenerator.
+				string artifactName
+				return
+					{ artifactGenerator
+						api-ref wizzi-plugin.artifactGenerator
+
+			m initialize
+				cb()
+					null
+
+				info
+					internal-call AsyncInitializeArtifactInfo.run
+			m run
+				cb()
+					{ result
+
+				info
+					internal-call initialize
+					internal-call AsyncRunner.run (wfJobArtifactInfo)
+					internal-call AsyncRunner.run (artifactInfos)
+
+			m persistToFile
+				cb()
+					{ result
+				info 
+					internal-call AsyncPersisterToFile.run (artifactInfos)
+
+			m aclStat
+				# get/set 
+				{ aclStatObject
+
+			m globalContext
+				# get/set 
+				{ globalContextObject
+
+			m setStateModel
+				string key
+				{ model
+
+	api wizzi.production.Runner
+		kernel
+		class-instance
+
+		# A runner instance runs the generations defined
+		# by a single wizzi.artifact.artifactInfo instance.
+		# A wizzi.production.Runner can run many types of artifact generations:
+		# .	a ModelArtifact
+		#   - where one artifact is generated by a wizzi-plugin.artifactGenerator for each model context
+		#     referenced by a wizzi.model.modelInfo instance.
+		# .	a ModelCollectionArtifact
+		#   - where one artifact is generated by a wizzi-plugin.artifactGenerator for each item of
+		#     a collecion property of a model context referenced by a wizzi.model.modelInfo instance.
+		# .	a CodeWriteArtifact
+		#   - where one single artifact is generated by a wizzi-plugin.artifactGenerator without a model context.
+		# .	a FinalArtifact
+		#   - where artifacts, referenced by a wizzi.model.modelInfo instance, are simply
+		#     copyed from a source to a destination folder.
+		# . a wizzi job
+		#   - where generations are defined in a source ittf document of type 'wfjob'
+		# . a Wizzi Model types generation
+		#   - where generations are hard coded in the wizzi.wizziFactory.generatedModelTypes method
+		#     and the model types are defined in a source ittf document of type 'wfschema'.
+
+		{
+			ctor
+				{ artifactInfo
+					api-ref wizzi.artifact.artifactInfo
+					{ modelInfo
+						# The `src` property of this object can contain a glob pattern,
+						# in these way many models can be referenced.
+						api-ref wizzi.model.modelInfo
+			m run
+				cb()
+					enrichedArtifactInfo( many )
+			
+			m runWizziModelArtifact
+				internal
+
+				# A model artifact type generates one artifact for each Wizzi Model
+				# referenced by the `modelInfo` parameter.
+
+				{ modelInfo
+					# The `src` property of this object can contain a glob pattern,
+					# in these way many models can be referenced.
+					api-ref wizzi.model.modelInfo
+				{ gen
+					string generatorName
+				cb()
+					enrichedArtifactInfo( many )
+				
+				info
+					api-call wizzi.model.modelInfo.getArtifactGenerator
+					api-call wizzi.model.asyncModelLoader.loadMany
+					api-call wizzi.artifact.asyncArtifactGenerator.generate
+
+			m runModelCollectionArtifact
+
+				# A model collection artifact type generates one artifact for each item
+				# of a collection property of the wizzi.modelType referenced by
+				# one of the wizzi.model.modelInfo context models.
+				# TODO link to a detailed explanation.
+
+				{ modelInfo
+					api-ref wizzi.model.modelInfo
+				{ gen
+					string generatorName
+				cb()
+					enrichedArtifactInfo( many )
+				info
+					api-call wizzi.model.modelInfo.getArtifactGenerator
+					api-call wizzi.model.asyncModelLoader.loadMany
+					api-call wizzi.artifact.asyncArtifactGenerator.generateFromCollectionContexts
+
+			m runCodeWriteArtifact
+				internal
+				
+				# A code write artifact type has no model context and no 
+				# wizzi.model.modelInfo.
+				# It generates a single artifact.
+				# It can have 0, 1 or many context wizzi.modelType(s).
+				
+				[ contextInfos
+					{ contextInfo
+						api-ref wizzi.model.modelInfo
+				{ gen
+					string generatorName
+				cb()
+					enrichedArtifactInfo( one )
+
+			m runFinalArtifact
+				internal
+				
+				# Final artifacts are simply copied from a source to a destination folder.
+				# This step loads the text content of the artifacts referenced by
+				# the `modelInfo` parameter into the in-memory buffers
+				# of wizzi.artifact.genContext instances.
+				
+				{ modelInfo
+					api-ref wizzi.model.modelInfo
+				cb()
+					enrichedArtifactInfo( many )
+
+			m runWizziFactoryJob
+				internal
+
+				# Wizzi jobs can be nested in artifacts of wizzi job.
+				# This method calls the wizzi.executeWizziJob function
+				# inside the previous call. 
+
+				{ modelInfo
+					api-ref wizzi.model.modelInfo
+				cb()
+					enrichedArtifactInfo( many )
+
+			m runWizziModelTypesArtifact
+				internal
+
+				# This methods runs the generation of a Wizzi Model type
+				# calling the wizzi.generateModelTypes function.
+
+				{ modelInfo
+					api-ref wizzi.model.modelInfo
+				cb()
+					enrichedArtifactInfo( many )
+
+
+
+
+

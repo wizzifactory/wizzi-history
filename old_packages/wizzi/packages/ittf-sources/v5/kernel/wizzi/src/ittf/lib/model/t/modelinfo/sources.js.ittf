@@ -1,0 +1,188 @@
+﻿$group
+
+	m getSource
+		callback
+
+		log 'wizzi.modelinfo.getsource', this.srcFullPath()
+		var fileService = this.getFileService()
+		var that = this
+        _ this.exists
+			f_cb( exists )
+				if !exists
+					r_cb_wz_err( NotFound, getSource )
+						@ "Cannot get source. File not found : " + that.srcFullPath()
+            
+				_ that.isFile
+					f_cb( isFile )
+						if !isFile
+							r_cb_wz_err( InvalidOperation, getSource )
+								@ "Cannot get source. Is not a file : " + that.srcFullPath()
+						
+						_ fileService.read
+							_ that.srcFullPath()
+							@ callback
+    
+	m getSources
+		callback
+		
+		log 'wizzi.modelinfo.getsources', this.srcFullPath()
+		var fileService = this.getFileService()
+		var that = this
+        _ this.exists
+			f_cb( exists )
+				if !exists
+					r_cb_wz_err( NotFound, getSources )
+						@ "Cannot get sources. Directory not found : " + that.srcFullPath()
+								
+				_ that.isDirectory
+					f_cb( isDirectory )
+						if !isDirectory
+							r_cb_wz_err( InvalidOperation, getSources )
+								@ "Cannot get sources. Is not a directory : " + that.srcFullPath()
+						
+						_ that.getFiles
+							{
+							f_cb( fileInfos )
+								_ async.map
+									@ fileInfos
+									function
+										param fileInfo
+										param callback
+										_ fileService.read
+											@ fileInfo.fullpath
+											f_cb( content )
+												return
+													_ callback
+														@ null
+														{ 
+															@ fullpath fileInfo.fullpath
+															@ relpath fileInfo.relpath
+															@ content content
+									f_cb( fileContents )
+										return
+											_ callback
+												@ null
+												@ fileContents
+
+	m getFiles
+        { options
+			boolean final
+				optional
+		callback
+
+		var fileService = this.getFileService()
+		var that = this
+
+        _ this.exists
+			f_cb( exists )
+				if !exists
+					r_cb_wz_err( NotFound, getFiles )
+						@ "Cannot get files. Directory not found : " + that.srcFullPath()
+								
+				_ that.isDirectory
+					f_cb( isDirectory )
+						if !isDirectory
+							r_cb_wz_err( InvalidOperation, getFiles )
+								@ "Cannot get files. Is not a directory : " + that.srcFullPath()
+										
+						var 
+							decl ret
+								[ 
+							decl srcFullPath = that.srcFullPath()
+							decl srcGlobPath = that.srcGlobPath()
+							
+						_ fileService.getGlobbedFiles
+							@ srcGlobPath
+							_ that.srcGlobOptions()
+							f_cb( files )
+        
+								for var i = 0; i < files.length; i++
+									var fileInfo = files[i]
+            
+									# skip "_debug" folder
+									if fileInfo.indexOf('/_debug/') > -1
+										continue 
+                
+									# skip "__copy" and "t" folders
+									if !options.final
+										if fileInfo.indexOf('__copy/') >= 0 || fileInfo.indexOf('/t/') >= 0
+											continue 
+                
+									var fullpath = fileInfo
+									var relpath
+										iif that.config.cwd
+											then
+												_ relPath
+													@ fullpath
+													@ that.config.cwd
+											else
+												set null
+									_ ret.push
+										{ 
+											@ fullpath fullpath
+											@ relpath relpath
+								return
+									_ callback
+										@ null
+										@ ret
+    
+	m readJSON
+		string sourceUri
+		callback
+
+		var fileService = this.getFileService()
+		
+		_ fileService.isFile
+			@ sourceUri
+			f_cb( isFile )
+				if isFile == false
+					r_cb_wz_err( NotFound, readJSON )
+						@ "Cannot find json document : " + sourceUri
+				else
+					_ fileService.readJSON
+						@ sourceUri
+						@ callback
+
+	m readXml
+		string sourceUri
+		callback
+
+		var fileService = this.getFileService()
+		
+		_ fileService.isFile
+			@ sourceUri
+			f_cb( isFile )
+				if isFile == false
+					r_cb_wz_err( NotFound, readXml )
+						@ "Cannot find xml document : " + sourceUri
+				else
+					_ fileService.readXml
+						@ sourceUri
+						@ callback
+
+	m exists
+		callback
+
+		var fileService = this.getFileService()
+		_ fileService.exists
+            _ this.srcFullPath()
+			@ callback
+
+	m isDirectory
+		callback
+		
+		var fileService = this.getFileService()
+		_ fileService.isDirectory
+			_ this.srcFullPath()
+			@ callback
+    
+	m isFile
+		callback
+        
+		var fileService = this.getFileService()
+		_ fileService.isFile
+            _ this.srcFullPath()
+			@ callback
+
+
+

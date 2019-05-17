@@ -1,0 +1,36 @@
+﻿module
+	kind jsfile
+
+	import async
+
+	var examples
+		[
+			_ require('./filesystem/jobs')
+			$*
+			_ require('./filesystem/models')
+			_ require('./filesystem/jobs')
+			_ require('./filesystem/schemas')
+			*$
+
+	function exec
+		param callback
+		_ async.mapSeries
+			@ examples
+			function
+				param example
+				param callback
+				_ example(callback)
+			f_cb_test(results)
+				log 'Advanced-essentials examples results\n', results
+				if callback
+					_ callback
+						@ null
+						@ 'Advanced-essentials examples executed'
+
+	set module.exports
+		function
+			param callback
+			_ exec(callback)
+
+	if require.main === module
+		_ exec

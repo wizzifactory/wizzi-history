@@ -1,0 +1,18 @@
+﻿$group
+
+	m readDocument
+		{ id
+		callback
+			
+		_ this.db.collection(DOCUMENTS).find
+			{
+				@ _id id
+			._ toArray
+				f_cb( r )
+					# log 'wizzi-repo.mongodb.FsMongo.read.r', id, r
+					if r.length == 1
+						r_cb( r[0].content )
+					else
+						r_cb_wz_err( MongoRepoError, readDocument )
+							@ 'Document not found, id: ' + id
+

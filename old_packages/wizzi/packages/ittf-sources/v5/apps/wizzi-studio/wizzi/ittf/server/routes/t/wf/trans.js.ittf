@@ -1,0 +1,24 @@
+﻿$group
+
+	get( /api/wf/trans )
+
+		check-params( )
+
+			not-empty( query, uri)
+			not-empty( query, transform)
+
+		var sessionData = {}
+		var modelContext = {}
+		var artifactContext = {}
+		
+		_ wfApi.transformModel
+			@ sessionData
+			@ uri
+			@ modelContext
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+

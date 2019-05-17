@@ -1,0 +1,52 @@
+﻿concept Xml documents comparision
+
+	summary
+
+		h4 Content model
+		p XML differentiates two types: elements containing only 
+			+ element content (no character data) and mixed content
+			+ (elements that may contain character data, optionally 
+			+ interspersed with child elements). 
+		p Ittf documents have no mixed content. They have ittf nodes only.
+			+ They do not have the concept of element or attribute or
+			+ text. 
+		p Only the application of a wizzi schema to an mTree, when loading a Wizzi Model,
+			+ can trasform an ittf node in an element or attribute or text, depending
+			+ on the schema declarations.
+
+		h4 Document types and document type definitions
+		p A wizzi schema is actually a documemnt type definition, but it applies to loaded mTrees
+			+ not to ittf documents. Ittf documents creators must design their
+			+ documents to obtain a valid mTree after composition and evaluation,
+			+ just before loading it in a Wizzi Model.
+		p An ittf document, when created for composing an mTree for a specific wizzi schema,
+			+ can be considered to have the type of that wizzi schema. The type of an
+			+ ittf document must be recognizable from its name, that must end with
+			+ '.`schema`.ittf'. Example of ittf document of type 'js': 'index.js.ittf'.
+
+		h4 Markup declaration and markup model
+		p In XML a markup declaration is a syntactical construct within a DTD declaring 
+			+ an entity or defining a markup structure.
+		p Wizzi schemas do not need to declare entities, because ittf document can contain
+			+ expressions and template commands. But, like DTDs, they declare an elements and
+			+ attributes structure, and like DTDs they define a model (Wizzi Model) of
+			+ an mTree content.
+		p In the wizzi factory, Wizzi Models are implemented as 
+			+ javascript module, generated from a
+			+ wizzi schema declaration. They can load 
+			+ valid mTrees, and may be used as a context object by the mTree loader,
+			+ model transformers and artifact generators.
+
+		h4 Elements and element types
+		p Wizzi schema elements and XML DTD element types have the same goal.
+			+ Wizzi model elements are such only after the mTree loading of an ittf document.
+			+ In ittf documents we have potential model elements, attributes and texts.
+
+		h4 Valid characters
+		p Ittf documents accept any character. The wizzi factory ignores the content
+			+ of documents and has no concept of data type.
+			+ Wizzi schemas only can constrain node names and values.
+		p When generating the javascript of a Wizzi Model
+			+ the names of classes and attributes are checked and invalid chars for
+			+ javascript names are replaced with the '_' char. Class names colliding
+			+ with javascript keywords are prefixed with the letter 'x'.

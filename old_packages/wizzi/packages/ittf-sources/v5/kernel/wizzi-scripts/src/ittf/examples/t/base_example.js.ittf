@@ -1,0 +1,38 @@
+﻿module
+	kind jsfile
+	import path
+	import util
+	var file = require('wizzi-utils').file
+
+	var packageIndex = require('../../index')
+	$hook imports
+
+	var manager = new packageIndex.Manager()
+	var scriptsConsole = packageIndex.console
+
+	class MockResponse
+		ctor
+			set this.head = null
+			set this.stdout = ''
+			set this.stderr = ''
+			set this.opened = true
+		m writeHead
+			param retcode
+			param headers
+			if this.opened == false
+				throw new Error('Cannot call res.writeHead after end.')
+			set this.head
+				{
+					@ retcode retcode
+					@ headers headers
+		m write
+			param str
+			if this.opened == false
+				throw new Error('Cannot call res.write after end.')
+			set this.stdout += str
+		m end
+			param str
+			if this.opened == false
+				throw new Error('Cannot call res.end after end.')
+			set this.stdout += str
+			set this.opened = false

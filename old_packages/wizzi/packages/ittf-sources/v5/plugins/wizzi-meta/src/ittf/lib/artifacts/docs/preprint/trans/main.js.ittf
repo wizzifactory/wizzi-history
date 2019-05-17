@@ -1,0 +1,309 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var _ = require('lodash')
+	var errors = require('../../../../errors')
+	var html = require('./html')
+
+	var md = module.exports = {}
+	var myname = 'model.transformation.docs.preprint.main'
+
+	set md.trans
+		function
+			param model
+			param ctx
+			param callback
+			if model.wzElement != 'docs'
+				_ errors.NodeError(myname + '.gen. Model wzElement must be docs. Found: ' + model.wzElement, model);
+			set ctx.result = {}
+			set ctx.objectCount = 0
+			set ctx.conceptCount = 0
+			set ctx.sectionCount = 0
+			set ctx.apiObjectCount = 0
+			set ctx.apiMethodCount = 0
+			set ctx.sampleGroupCount = 0
+			set ctx.sampleCount = 0
+			set ctx.ittfCount = 0
+			set ctx.roadmapCount = 0
+			set ctx.milestoneCount = 0
+			set ctx.todoCount = 0
+			set ctx.issueCount = 0
+			_ md.goItem(model, ctx);
+			_ callback(null, ctx.result)
+
+	tagoper( docs )
+		var node
+			{
+				@ type 'docs'
+				@ name model.wzName
+				@ intro
+					{
+						@ summaryLines
+							[
+				@ summaryLines
+					[
+				@ project
+					{
+				@ objects
+					[
+				@ concepts
+					[
+				@ sections
+					[
+				@ sampleGroups
+					[
+		set ctx.result = node
+		_ md.goItems(model.items, ctx, node)
+
+	$include project
+
+	tagoper( intro )
+		var node
+			{
+				@ type 'intro'
+				@ name model.wzName
+				@ id (model.id || 'intro')
+				@ summaryLines
+					[
+		set node.parent = parent
+		set parent.intro = node
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( object )
+		set ctx.objectCount++
+		var node
+			{
+				@ type 'object'
+				@ name model.wzName
+				@ id (model.id || 'object-' + ctx.objectCount)
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.objects.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( concept )
+		set ctx.conceptCount++
+		var node
+			{
+				@ type 'concept'
+				@ name model.wzName
+				@ id (model.id || 'concept-' + ctx.conceptCount)
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.concepts.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( section )
+		set ctx.sectionCount++
+		var node
+			{
+				@ type 'section'
+				@ name model.wzName
+				@ id (model.id || 'section-' + ctx.sectionCount)
+				@ concepts
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.sections.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( apiObject )
+		set ctx.apiObjectCount++
+		var node
+			{
+				@ type 'apiObject'
+				@ name model.wzName
+				@ id (model.id || 'api-object-' + ctx.apiObjectCount)
+				@ apiMethods
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		if !parent.apiObjects 
+			set parent.apiObjects = []
+		_ parent.apiObjects.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( apiMethod )
+		set ctx.apiMethodCount++
+		var node
+			{
+				@ type 'apiMethod'
+				@ name model.wzName
+				@ id (model.id || 'api-method-' + ctx.apiMethodCount)
+				@ apiParams
+					[
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.apiMethods.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( apiParam )
+		var node
+			{
+				@ type 'apiParam'
+				@ name model.wzName
+				@ summaryLines
+					[
+		set node.parent = parent
+		_ parent.apiParams.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( summary )
+		# log 'parent.summaryLines', parent.summaryLines
+		var lines = html.toHtmlLines(model.items, ctx);
+		_ lines.forEach
+			function
+				param v
+				_ parent.summaryLines.push(v)  
+
+	tagoper( sampleGroup )
+		set ctx.sampleGroupCount++
+		var node
+			{
+				@ type 'sampleGroup'
+				@ name model.wzName
+				@ id (model.id || 'sample-group-' + ctx.sampleGroupCount)
+				@ summaryLines
+					[
+				@ samples
+					[
+		set node.parent = parent
+		_ parent.sampleGroups.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( sample )
+		set ctx.sampleCount++
+		var node
+			{
+				@ type 'sample'
+				@ name model.wzName
+				@ id (model.id || 'sample-' + ctx.sampleCount)
+				@ summaryLines
+					[
+				@ primaryIttf
+					{
+						@ summaryLines
+							[
+						@ nodeLines
+							[
+				@ mixins
+					[
+				@ includes
+					[
+				@ schema
+					{
+		set node.parent = parent
+		_ parent.samples.push(node)
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( ittf )
+		set ctx.ittfCount++
+		var node
+			{
+				@ type 'ittf'
+				@ name path.basename(model.wzName)
+				@ path model.wzName
+				@ id (model.id || 'ittf-' + ctx.ittfCount)
+				@ summaryLines
+					[
+				@ nodeLines
+					[
+		set node.parent = parent
+		if model.kind === 'primary'
+			set parent.primaryIttf = node
+		elif model.kind === 'mixin'
+			_ parent.mixins.push(node)
+		elif model.kind === 'include'
+			_ parent.includes.push(node)
+		elif model.kind === 'schema'
+			set parent.schema = node
+		else
+			_ errors.NodeError(myname + '.ittf. Unknown kind: ' + model.kind, model)
+		
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( js )
+		set ctx.jsCount++
+		var node
+			{
+				@ type 'js'
+				@ name path.basename(model.wzName)
+				@ path model.wzName
+				@ id (model.id || 'js-' + ctx.jsCount)
+				@ summaryLines
+					[
+				@ nodeLines
+					[
+		set node.parent = parent
+		_ md.goItems(model.items, ctx, node)
+
+	tagoper( ittfnode )
+		set ctx.__ittfNode
+			{
+				@ level 0
+				@ line 0
+		var lines
+		if parent.type === 'js'
+			set lines = html.toHtmlJsCodeLines(model, ctx);
+		else
+			set lines = html.toHtmlCodeLines(model, ctx);
+		# log 'nodeLines', lines
+		_ lines.forEach
+			function
+				param v
+				_ parent.nodeLines.push(v)  
+
+	tagoper( categories )
+		var items = model.wzName.split(',')
+		foreach item in items
+			var ss = item.split(':')
+			var name = ss.length == 2 ? ss[1] : ss[0]
+			var key = ss.length == 2 ? ss[0] : null
+			var node
+				{
+					@ type 'category'
+					@ name name
+					@ key key
+			if !parent.categories
+				_ errors.NodeError(myname + '.categories. The parent element do not support categories : ' + model.wzElement + '/' + model.wzName, model);
+			_ parent.categories.push(node)
+	
+	tagoper( tags )
+		var items = model.wzName.split(',')
+		foreach item in items
+			var node
+				{
+					@ type 'tag'
+					@ name model.wzName
+			if !parent.tags
+				_ errors.NodeError(myname + '.tags. The parent element do not support categories : ' + model.wzElement + '/' + model.wzName, model);
+			_ parent.tags.push(node)
+
+	tagoper( goItem )
+		var oper = md[model.wzElement]
+		if oper
+			_ oper(model, ctx, parent)
+		else
+			_ errors.NodeError(myname + '.goItem. Unknown wzElement: ' + model.wzTag + '/' + model.wzElement, model);
+
+	set md.goItems
+		function
+			param items
+			param ctx
+			param parent
+			param options
+
+			set options = options || {}
+			set options.from = options.from || 0
+			
+			for var i = options.from; i < items.length; i++
+				var item = items[i]
+				_ md.goItem(item, ctx, parent);
+

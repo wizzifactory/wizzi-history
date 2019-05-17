@@ -1,0 +1,19 @@
+﻿$group
+
+	describe write a document item
+
+		it-async should write a document content
+
+			log 'hellotxt_item', hellotxt_item
+			tobe_object( hellotxt_item._id )
+			set hellotxt_item.basename = 'hello2.txt'
+			_ fsmongo.writeDocument
+				@ hellotxt_item._id
+				@ 'hello world'
+				f_cb_test( r )
+					log 'writeDocument.r', err, r
+					# tobe_number( r.n, 1 )
+					tobe_string( r.code, DOCUMENT_WRITTEN )
+					_ done
+
+

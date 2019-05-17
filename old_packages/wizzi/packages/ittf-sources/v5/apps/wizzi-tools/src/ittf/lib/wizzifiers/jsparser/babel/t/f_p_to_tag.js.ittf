@@ -1,0 +1,12 @@
+﻿$group
+	$params name, tag|@@null, type|string
+
+	# Creates a tag node from an attribute property, when not null
+
+	if typeof(node.${name}) !== 'undefined'
+		var temp${name} 
+			{
+				@ tag '${tag}'
+				[ children
+
+		set temp${name}.name = node.${name}

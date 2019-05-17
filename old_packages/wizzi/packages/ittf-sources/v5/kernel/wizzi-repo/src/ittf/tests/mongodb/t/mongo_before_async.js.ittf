@@ -1,0 +1,25 @@
+﻿before-async
+
+	_ MongoClient.connect
+		@ 'mongodb://localhost:27017/test'
+		f_cb_test( db )
+			set mounted_db = db
+			set fsmongo = new FsMongo(db)
+			set doc = new Document(fsmongo)
+			_ db.collection(FSITEMS).drop
+				function
+					param err
+					param result
+					if err
+						log 'FSITEMS.drop failed'
+					else
+						log 'FSITEMS.drop result', result
+					_ db.collection(DOCUMENTS).drop
+						function
+							param err
+							param result
+							if err
+								log 'DOCUMENTS.drop failed'
+							else
+								log 'DOCUMENTS.drop result', result
+							_ done()

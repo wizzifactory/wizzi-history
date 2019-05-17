@@ -1,0 +1,62 @@
+html/layout( project )
+
+	html/nav_sidebar()
+		section
+			id main-toc
+			class toc
+
+			h3 Contents:
+			ol
+				$foreach roadmap in docs.project.roadmaps
+					li
+						a ${roadmap.name}
+							href #${roadmap.id}
+				li
+					a Current tasks
+						href #project-todos
+				li
+					a Issues
+						href #project-issues
+
+	div
+		class main-content
+		section
+			$foreach roadmap in docs.project.roadmaps
+				h2 ${roadmap.name}
+					id ${roadmap.id}
+				. summary
+					$foreach line in roadmap.summaryLines
+						+ ${line}
+				
+				$foreach milestone in roadmap.milestones
+					section
+						h3 ${milestone.name}
+						. summary
+							$foreach line in milestone.summaryLines
+								+ ${line}
+
+			h2 Current tasks
+				id project-todos
+
+			table
+				class pretty-table
+				$foreach todo in docs.project.todos
+					tr
+						td
+							h4 ${todo.name}
+							. summary
+								$foreach line in todo.summaryLines
+									+ ${line}
+
+			h2 Issues
+				id project-issues
+			table
+				class pretty-table
+				$foreach issue in docs.project.issues
+					tr
+						td
+							h4 ${issue.name}
+							. summary
+								$foreach line in issue.summaryLines
+									+ ${line}
+

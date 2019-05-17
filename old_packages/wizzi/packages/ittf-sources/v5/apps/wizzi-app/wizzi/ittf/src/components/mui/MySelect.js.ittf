@@ -1,0 +1,100 @@
+﻿r-component( MySelect )
+
+	$append imports
+		import InputLabel from '@material-ui/core/InputLabel'
+		import MenuItem from '@material-ui/core/MenuItem'
+		import FormControl from '@material-ui/core/FormControl'
+		import Select from '@material-ui/core/Select'
+
+	prop label
+		string
+		required
+	
+	prop value
+		string
+
+	#
+	# [ items
+	#   string
+	prop items
+		[
+		required
+	
+	prop nameProp
+		string
+
+	prop valueProp
+		string
+
+	prop onChange
+		func
+
+	style
+		{ formControl
+			@ margin theme.spacing.unit
+
+	state
+		@ open false
+		@ value ''
+
+	=> handleOpen
+		param event
+		_ this.setState
+			{
+				@ open true
+
+	=> handleClose
+		_ this.setState
+			{
+				@ open false
+	
+	render
+		prop classes
+		prop label
+		prop items
+		prop value
+		prop nameProp
+		prop valueProp
+		prop onChange
+
+		var selvalue = value
+		if typeof selvalue === 'undefined'
+			if items && items.length > 0 
+				set selvalue = valueProp ? items[0][valueProp] : items[0].value || items[0].name || items[0]
+			else
+				set selvalue = ''
+
+		return
+			form
+				@ autoComplete off
+				< FormControl
+					className {classes.formControl}
+					< InputLabel
+						@ htmlFor 'open-select'
+						+ {label}
+					< Select
+						@ open {this.state.open}
+						@ onClose {this.handleClose}
+						@ onOpen {this.handleOpen}
+						@ value {selvalue}
+						@ onChange {onChange}
+						@ inputProps
+							{
+								@ id 'open-select'
+								@ name 'value'
+						< MenuItem
+							@ value ""
+							em
+								+ None
+						{
+							_ items.map
+								=>
+									param item
+									param i
+									const iname = nameProp ? item[nameProp] : item.name || item
+									const ivalue = valueProp ? item[valueProp] : item.value || item.name || item
+									return
+										< MenuItem
+											@ key {i}
+											@ value {ivalue}
+											+ {iname}

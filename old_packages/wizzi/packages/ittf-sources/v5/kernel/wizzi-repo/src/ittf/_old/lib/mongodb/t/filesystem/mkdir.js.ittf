@@ -1,0 +1,30 @@
+﻿$group
+
+	set md.mkdir
+		function
+			param userId
+			param projectId
+			param path_string
+			param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'Mongodb wizzi repository not mounted. Review your start procedure'
+			var fsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ path_string
+				
+			log 'wizzi-repo.mongodb.filesystem.mkdir.fsPath', fsPath
+
+			_ fsDoc.createFolder
+				@ fsPath
+				f_cb( lastInserted )
+					log 'wizzi-repo.mongodb.filesystem.createFolder.fsPath', fsPath, 'lastInserted', lastInserted
+					return 
+						_ callback(null, lastInserted)

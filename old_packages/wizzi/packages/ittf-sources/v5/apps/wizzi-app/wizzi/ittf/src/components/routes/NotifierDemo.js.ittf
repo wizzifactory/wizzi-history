@@ -1,0 +1,66 @@
+﻿r-component( NotifierDemo
+	
+	$append imports
+		import Button from '@material-ui/core/Button'
+		import TextField from '@material-ui/core/TextField'
+		import Notifier from '../mui/Notifier'
+		var counter = 0
+
+	style
+
+	state
+		@ message null
+	
+    => notify
+		param message
+        _ this.setState
+            { 
+				@ message message + '|' + counter++
+
+	=> checkAnswer
+        param event
+        _ event.preventDefault
+        const answer = this.answerInput && this.answerInput.value || null
+        if this.answerInput && !answer
+            _ this.notify
+				@ 'Empty field. Enter a number.'
+        if answer && parseInt(answer, 10) === 4
+            _ this.notify
+				@ 'Correct answer!'
+        else
+            if answer && parseInt(answer, 10) !== 4
+                _ this.notify
+					@ 'Incorrect answer.'
+	render
+		const {message} = this.state
+		return 
+			div 
+				@ style
+					{ 
+						@ padding '10px 45px'
+				< Notifier 
+					@ message {message}
+					@ vertical top
+					@ horizontal center
+				< form 
+					@ onSubmit {this.checkAnswer}
+					p 
+						+ What is 2+2?
+					< TextField 
+						@ inputRef
+							=> 
+								param elm
+								set this.answerInput = elm
+						@ type "number"
+						@ label "Type your answer"
+						@ style
+							{ 
+								@ font '15px Muli'
+								@ color '#222'
+								@ fontWeight '300'
+					p 
+					< Button 
+						@ variant "raised"
+						@ color "primary"
+						@ type "submit"
+						+ Submit

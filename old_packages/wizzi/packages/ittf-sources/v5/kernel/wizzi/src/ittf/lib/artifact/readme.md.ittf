@@ -1,0 +1,70 @@
+﻿mdx
+
+	h2 Artifact
+		p An artifact is a set of descriptors used to instantiate and 
+			\b execute an artifact production (alias generation process).
+		
+		ul Artifact descriptors
+			li Main source model
+			li Context models
+			li Generation module
+			li Transpilers
+			li Destination path
+
+	h3 Main source model
+	p The main source module can be a wizzi model or a POJO passed to 
+		\b a 'wizzi-plugin.artifactGenerator.gen' method in the 'model' parameter.
+	
+	h3 Context models
+	p Context models are wizzi models or POJO passed to a 
+		\b 'wizzi-plugin.artifactGenerator.gen' method 
+		\b in the 'values' object property of the 'ctx' (api-ref: wizzi.artifact.genContext)
+		\b parameter. The name of each context model, defeined in the 'export-name' attribute
+		\b of the 'modelRef' element of the 'wfjob' model, is a property name of the 'values'
+		\b object.
+	
+	h3 Generation module
+	p Is a nodejs module that implements the 'wizzi-plugin.artifactGenerator' interface.
+		\b It uses the main source model and optionally the context models to generate the 
+		\b textual artifact. The artifact is buffered using the 'write' and 'w' methods of the
+		\b 'wizzi.artifact.genContext' instance, but the code text can be built using the services
+		\b of the wizzi factory and its language schemas and language artifacts. The current
+		\b instance of the wizzi.wizziFactory class can be accessed from 'wizzi-plugin.artifactGenerator'
+		\b implementors in the property 'wizziFactory' of the 'wizzi.artifact.genContext' instance.
+	
+	h3 Transpilers
+	p A transpiler is a nodejs module that implements the wizzi-plugin.transpiler interface.
+	
+	h3 Destination path
+	p A destination path is the location where a generated artifact is persisted.
+	
+	h2 Artifact types
+	ul
+		li Model artifact
+		li Model collection artifact
+		li Code write artifact
+		li Final artifact
+
+	h3 Model artifact
+	p A model artifact is an artifact which main source model is a wizzi model.
+	
+	h3 Model collection artifact
+	p A model collection artifact is a model artifact which source
+		\b model is an item of a collection property of a wizzi model.
+		\b The same artifact is applied to all the items of the collection and generates
+		\b distinct code units, for any of them, which file path is built using a template
+		\b interpolated with the values of the item properties.
+	
+	h3 Code write artifact
+	p A code write artifact do not require a wizzi model as a main source model.
+		\b The artifact generator receive in the 'model' parameter a context object,
+		\b which properties are the items of the context models collection. It
+		\b emits the code using the 'write' and 'w' methods of a
+		\b wizzi.artifact,genContext instance.
+	
+	h3 Native artifact
+	p A native artifact is a source already coded in the synthax
+		\b of a target language. It is not processed by the wizzi factory.
+		\b It can be copied as is in the destination folder or can
+		\b be transpiled before copying.
+

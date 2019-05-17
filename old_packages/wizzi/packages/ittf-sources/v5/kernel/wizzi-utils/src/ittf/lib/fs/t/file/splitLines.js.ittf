@@ -1,0 +1,31 @@
+﻿$group
+
+	set md.splitLines
+		function 
+			param contents
+			var 
+				decl i
+				decl l = contents.length
+				decl result
+					[ 
+				decl line
+					[ 
+				decl ch
+				decl chprev
+			for i = 0; i < l; i++
+				set chprev = ch
+				set ch = contents[i]
+				if (ch === '\n' && chprev !== '\r') || 
+					\b (ch === '\r' && chprev !== '\n')
+					_ result.push
+						_ line.join('')
+					set line = []
+				elif (ch === '\n' && chprev === '\r') || 
+					\b (ch === '\r' && chprev === '\n')
+				else 
+					_ line.push(ch)
+			if line.length > 0
+				_ result.push
+					_ line.join('')
+			return result
+

@@ -1,0 +1,60 @@
+﻿$group
+
+	@ createDocument
+		function
+			param options
+			param callback
+
+			var metaPath
+				_ paths.documentMeta
+					@ options
+
+			check_file_already_exists( metaPath, studioApi.createDocument. Ittf document meta
+
+			var ittfPath
+				_ paths.documentIttf
+					@ options
+
+			check_file_already_exists( ittfPath, studioApi.createDocument. Ittf document
+
+			var ittfContent = options.schemaName + ' ' + options.documentName
+			_ file.write
+				@ ittfPath
+				@ ittfContent
+
+			var documentMeta
+				{
+					@ name options.documentName
+					@ schema options.schemaName
+					@ folder options.folder
+					@ project options.projectName
+					@ user options.userId
+					@ metaPath metaPath
+					@ ittfPath ittfPath
+					@ uri paths.uriFromPath(ittfPath, false)
+					@ created u.now_GMYHMS()
+					@ lastUpdated u.now_GMYHMS()
+					@ contextModels
+						[
+					@ contextValues
+						[
+
+			_ file.writeJSON
+				@ metaPath
+				@ documentMeta
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ name options.documentName
+							@ schema options.schemaName
+							@ folder options.folder
+							@ project options.projectName
+							@ user options.userId
+							@ uri paths.uriFromPath(ittfPath, false)
+							@ ittfContent ittfContent
+					@ status
+						_ success
+							@ 'Ittf document created: "' + paths.uriFromPath(ittfPath, false) + '"'

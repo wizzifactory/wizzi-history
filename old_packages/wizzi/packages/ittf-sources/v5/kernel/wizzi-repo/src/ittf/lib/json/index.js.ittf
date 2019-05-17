@@ -1,0 +1,88 @@
+﻿module
+	kind es6
+
+	var async = require('async')
+	
+	var md = {}
+	set module.exports = md
+
+	var Collection = require('../utils/collection')
+
+	set md.directoryTree = require('./directoryTree')
+	set md.FsJson = require('./fs/fsjson')
+	set md.Document = require('./fs/document')
+
+	#
+		# params
+		#  { jsonFsData
+		#    [ items
+		#    [ documents
+		#    jsonFsData is simply a transport (DTO)
+		#    to get the updated jsonFsData you
+		#    must call the toJson method of the Document instance
+	set md.createDocumentManager
+		function
+			param fsJsonDataOrFsJson
+			if fsJsonDataOrFsJson && fsJsonDataOrFsJson.classType === 'wizzi-repo.json.FsJson'
+				return new md.Document(fsJsonDataOrFsJson)
+			else
+				var jsonFsData = fsJsonDataOrFsJson || {}
+				set jsonFsData.items = jsonFsData.items || []
+				set jsonFsData.documents = jsonFsData.documents || []
+				return
+					new md.Document
+						new md.FsJson(jsonFsData)
+
+	set md.createFsJson
+		function
+			param documents
+			param callback
+			_ md.createJsonFsData
+				@ documents
+				f_cb( jsonFsData )
+					var fsJson = new md.FsJson(jsonFsData)
+					r_cb( fsJson )
+
+	set md.createFsJsonByJsonFsData
+		function
+			param jsonFsData
+			param callback
+			var fsJson = new md.FsJson(jsonFsData)
+			r_cb( fsJson )
+
+	set md.createJsonFsData
+		function
+			param documents
+			param callback
+			const doc = this.createDocumentManager()
+			_ async.map
+				@ documents
+				=>
+					param document
+					param callback
+					_ doc.writeFile
+						@ document.path
+						@ document.content
+						@ callback
+				f_cb()
+					_ doc.toJson
+						@ callback
+
+	set md.addToJsonFsData
+		function
+			param jsonFsData
+			param documents
+			param callback
+			const doc = this.createDocumentManager(jsonFsData)
+			_ async.map
+				@ documents
+				=>
+					param document
+					param callback
+					_ doc.writeFile
+						@ document.path
+						@ document.content
+						@ callback
+				f_cb()
+					_ doc.toJson
+						@ callback

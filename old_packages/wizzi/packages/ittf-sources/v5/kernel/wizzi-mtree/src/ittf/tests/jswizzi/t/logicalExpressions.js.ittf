@@ -1,0 +1,32 @@
+﻿$group
+
+	var logicalExpressions
+		[
+			{
+				@ code 'true && false'
+				@ expected_equal false
+			{
+				@ code 'true || false'
+				@ expected_equal true
+			{
+				@ code '!true'
+				@ expected_equal false
+			{
+				@ code '\'aa\' == \'aa\''
+				@ expected_equal true
+			{
+				@ code '\'aa\' === \'aa\''
+				@ expected_equal true
+			{
+				@ code '3 > 2'
+				@ expected_equal true
+			{
+				@ code '3 >= 3'
+				@ expected_equal true
+			{
+				@ code '3 >= 3 && 4 < 5'
+				@ expected_equal true
+			{
+				@ code '3 >= 3 && 4 <= 4'
+				@ expected_equal true
+

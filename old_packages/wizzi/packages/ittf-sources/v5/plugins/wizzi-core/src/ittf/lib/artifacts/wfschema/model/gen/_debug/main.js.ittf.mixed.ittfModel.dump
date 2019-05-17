@@ -1,0 +1,30 @@
+  module  ids: 1 31
+    kind jsfile ids: 2 32
+    var util = require('util') ids: 3 33
+    var path = require('path') ids: 4 34
+    var legacy = require('../../../../../legacy') ids: 5 35
+    var md = module.exports = {} ids: 6 36
+    var myname = 'wizzischema.model.main' ids: 7 37
+    set md.gen ids: 8 38
+      function  ids: 9 39
+        param model ids: 10 40
+        param ctx ids: 11 41
+        param callback ids: 12 42
+        var ittfDocumentPath = path.join(__dirname, 'ittf', 'wizzischema-model.js.ittf') ids: 13 43
+        _ legacy.jsModule ids: 14 44
+          @ ittfDocumentPath ids: 15 45
+          {  ids: 16 46
+            @ schema model ids: 17 47
+            @ request ids: 18 48
+              {  ids: 19 49
+                @ emitKey ctx.emitKey || null ids: 20 50
+                @ toJson model.exportToJson() ids: 21 51
+                @ toXml model.exportToXml() ids: 22 52
+                @ toPrettify model.exportToPrettify() ids: 23 53
+          function  ids: 24 54
+            param err ids: 25 55
+            param result ids: 26 56
+            if err ids: 27 57
+              throw new Error(err) ids: 28 58
+            _ ctx.w(result) ids: 29 59
+            _ callback(null, ctx) ids: 30 60

@@ -1,0 +1,54 @@
+﻿summary
+
+	p A wizzi schema is a specific Wizzi Model, of type `wfschema`, 
+		\b that can be used to describe and generate the javascript modules that implement a Wizzi Model.
+
+	p It is the core modeling tool of the wizzi factory.
+		
+	p Schemas are modeled using ittf documents like any other Wizzi Model.
+
+	h4 Sample 'rdbms' wizzi schema
+	ittf
+		- wfschema rdbms
+			- e catalog
+				- r table/s
+			- e table
+				- r column/s
+				- r index/es
+			- e column
+				- a type
+				- a caption
+				- a defaultValue
+					- tag default
+			- e index
+				- a primary
+					- type boolean
+				- a unique
+					- type boolean
+				- r column/s
+
+	h4 Sample ittf document conformant to the 'rdbms' wfschema
+		\b that may be loaded in a 'rdbms' Wizzi Model.
+	ittf
+		- rdbms School
+			- table Student
+				- column Id
+					- type integer
+				- column Name
+					- type string
+				- index Student-PK
+					- primary true
+					- column Id
+			- table Course
+				- column Id
+					- type integer
+				- column Title
+					- type string
+				- index Student-PK
+					- primary true
+					- column Id
+
+	p Wizzi schemas are Wizzi Models of type 'wfschema'
+		+ implemented by the wizzi-core plugin.
+		
+

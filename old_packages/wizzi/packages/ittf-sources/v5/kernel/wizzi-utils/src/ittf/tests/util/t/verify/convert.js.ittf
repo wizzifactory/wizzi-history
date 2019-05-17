@@ -1,0 +1,44 @@
+﻿$group
+
+	it should convert string values to types
+		var expected
+		var result = verify.convert('', 'string')
+		log ' "" result', result
+		set expected = ''
+		tobe(result, expected)
+		set result = verify.convert(null, 'string')
+		log ' "" result', result
+		set expected = ''
+		tobe(result, expected)
+		set result = verify.convert('alfa', 'string')
+		set expected = 'alfa'
+		tobe(result, expected)
+		set result = verify.convert('"alfa"', 'string', true)
+		tobe(result, expected)
+		set result = verify.convert('0', 'integer')
+		tobe(result, 0)
+		set result = verify.convert('-10', 'integer')
+		tobe(result, -10)
+		set result = verify.convert('20', 'integer')
+		tobe(result, 20)
+		set result = verify.convert('20.5', 'float')
+		tobe(result, 20.5)
+		set result = verify.convert('0.5', 'float')
+		tobe(result, 0.5)
+		set result = verify.convert('true', 'boolean')
+		tobe(result, true)
+		set result = verify.convert('false', 'boolean')
+		tobe(result, false)
+		set result = verify.convert('1990-5-12', 'date')
+		set expected = new Date(1990, 4, 12)
+		log 'expected', expected
+		tobe_eql(result, expected)
+		set result = verify.convert('1990/5/12', 'date')
+		log 'date 1990/5/12 result', result
+		tobe_true( result.__is_error )
+		set result = verify.convert('yes', 'boolean')
+		tobe_true( result.__is_error )
+		set result = verify.convert('1.10', 'integer')
+		tobe_true( result.__is_error )
+		set result = verify.convert('alfa', 'float')
+		tobe_true( result.__is_error )

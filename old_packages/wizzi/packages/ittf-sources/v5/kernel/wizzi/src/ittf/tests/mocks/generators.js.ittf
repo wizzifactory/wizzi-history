@@ -1,0 +1,24 @@
+﻿module
+	kind jsfile
+
+	var md = module.exports = {}
+	
+	set md.getGenerator
+		function
+			param generationName
+			if generationName === 'tests/gen1'
+				return
+					{
+						@ gen
+							function
+								param model
+								param genContext
+								param callback
+								_ genContext.write
+									@ 'Hello I am ' + model.wzName + ' artifact from {from}'
+								return
+									_ callback
+										@ null
+										@ genContext
+			else 
+				return null

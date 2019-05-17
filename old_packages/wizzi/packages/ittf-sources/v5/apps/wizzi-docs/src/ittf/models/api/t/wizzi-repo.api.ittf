@@ -1,0 +1,49 @@
+﻿$group
+	
+	api wizzi-lightrepo
+
+		# Kernel api
+		module
+			path wizzi-repo/index.js
+
+		iface
+			m createStore
+				# A function, returned by wizzi-repo.createStoreFactory
+				# that can be called many times to obtain an instance of
+				# the wizzi-repo.ittfDocumentStore class for a given
+				# storeKind.
+				cb()
+					{ store
+						api-ref wizzi-repo.ittfDocumentStore
+						# A new instance always is returned.
+						# TODO A cache strategy is not implemented yet,
+						# neither for stores nor documents.
+				info
+					closure storeKind
+
+		{
+			hof createStoreFactory
+				called-by wizzi.wizziFactory.initialize
+				{ options
+					string storeKind
+						restrict
+							enum mongodb
+							enum filesystem
+							enum localstorage
+						default filesystem
+					switch storeUri
+						on storeKind == mongodb
+							string storeUri
+								# The uri of the running mongodb instance,
+								# that must be started before calling this method.
+					switch baseFolder
+						on storeKind is mongodb
+							string storeBaseFolder 
+								# No access is allowed outside of the store base folder.
+				cb()
+					# Returns a function that can be called to obtain an instance
+					# of the wizzi-repo.ittfDocumentStore.
+					function createStore
+						api-ref wizzi-repo.createStore
+
+	$include ./ittfDocumentStore

@@ -1,0 +1,14 @@
+﻿$group
+	$params method
+	_ co
+		function*
+			$hook
+		._ catch
+			function 
+				param err
+				_ console.log
+					@ 'catched in ${method}.co'
+					@ err.message
+					@ err.stack
+				$hook oncatch
+				throw err

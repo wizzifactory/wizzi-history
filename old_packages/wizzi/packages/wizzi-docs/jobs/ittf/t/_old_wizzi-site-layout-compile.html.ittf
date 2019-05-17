@@ -1,0 +1,33 @@
+$group
+
+	$include wizzi-site-meta
+
+	$global
+		var gLinkPrefix = currentSubPage == null ? '' : '../';
+		var gcurrentPage = currentPage;
+		var gcurrentSubPage = currentSubPage;
+
+	head
+
+		@title The Wizzi Factory
+		css https://fonts.googleapis.com/css?family=Roboto
+		css sanitize.css
+		css ${gLinkPrefix}styles/main.css
+		$hook styles
+
+	body
+		$if currentSubPage == null
+			class ${currentPage}
+		$else
+			class ${currentPage}-${currentSubPage}
+		$include wizzi-navigation
+		main 
+			class mainContent
+			$if currentSubPage == null
+				id wrapper
+			$else
+				id wrapper-sub
+			$hook
+		
+		js ${gLinkPrefix}jquery-3.2.1.js
+		js ${gLinkPrefix}wizzifactory.js

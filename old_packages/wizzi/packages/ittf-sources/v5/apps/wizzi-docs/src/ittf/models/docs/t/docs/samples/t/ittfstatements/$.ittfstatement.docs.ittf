@@ -1,0 +1,31 @@
+﻿$group
+
+	sample $
+		summary
+
+			p One can declare context values inside an Ittf document and/or manipulate
+				+ them using Ittf expressions. Context manipulation statements may be 
+				+ single or multi node. The single node format is:
+			ittf
+				-
+					- $ var counter = 0
+					-
+			p The multi node format is:
+			ittf
+				-
+					- $
+						- var x = {};
+						- x.value = 10;
+					-
+			p
+	
+		ittf my.html.ittf
+			kind primary
+			- div
+				- $ var myFriends = "Steve,Annie,John".split(",")
+				- ul
+					- li hello ${dollar}{myFriends[0]}
+					- li hello ${dollar}{myFriends[1]}
+					- li hello ${dollar}{myFriends[2]}
+
+		$include wfschema.html.sample

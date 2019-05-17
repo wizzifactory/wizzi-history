@@ -1,0 +1,29 @@
+﻿h/root/empty_layout()
+
+	$include options-init
+
+	$
+		opt.useMaterialUi = true;
+
+	page(&opt)
+
+		$append imports
+			const {
+				\b Button,
+				\b Paper,
+				\b } = window['material-ui']
+
+		$append components
+			react MyButton
+				render
+					return
+						div
+							< Paper
+								< Button
+									+ Hello button
+
+		render
+			return
+				div
+					h1 Hello world
+					< MyButton

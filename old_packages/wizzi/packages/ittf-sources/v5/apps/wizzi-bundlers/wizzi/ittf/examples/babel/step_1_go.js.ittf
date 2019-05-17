@@ -1,0 +1,49 @@
+﻿demo_module( babel, 1, 1 )
+
+	$append imports
+		var babelLoader = require('../../lib/babelLoader')
+
+	var code_1
+		[
+			@ 'class Circle {}'
+			._ join('\n')
+
+	var code_2
+		[
+			@ 'function a(props) {'
+			@ '  return ('
+			@ '    <div>Hello</div>'
+			@ '  )'
+			@ '}'
+			._ join('\n')
+
+	_ babelLoader.babelTransform
+		@ code_1
+		._ then
+			=>
+				param result
+				_ printValue
+					@ 'babelTransform.code_1'
+					@ result.code
+				_ babelLoader.babelTransform
+					@ code_2
+					._ then
+						=>
+							param result
+							_ printValue
+								@ 'babelTransform.code_2'
+								@ result.code
+							_ step_callback
+								@ null
+					._ catch
+						=>
+							param err
+							log 'babelTransform.code_2.err', err
+							_ step_callback
+								@ err
+		._ catch
+			=>
+				param err
+				log 'babelTransform.code_1.err', err
+				_ step_callback
+					@ err

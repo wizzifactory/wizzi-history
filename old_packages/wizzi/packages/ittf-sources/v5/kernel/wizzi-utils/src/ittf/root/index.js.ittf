@@ -1,0 +1,114 @@
+﻿module 
+    kind jsfile
+
+	$if isWebpackTarget
+		#
+			# This source targets the browser
+			# (isWebpackTarget == true)
+    
+	var ittfMTreeEx = require('./lib/ittfTree/ittfMTreeEx')
+	var asIsLoader = require('./lib/ittfTree/asIsLoader')
+	var ittfWriter = require('./lib/ittfTree/ittfWriter')
+	var folderScanner = require('./lib/scanners/folderScanner')
+	var folderBrowse = require('./lib/scanners/folderBrowse')
+	var ittfDocumentScanner = require('./lib/scanners/ittfDocumentScanner')
+	var textDocumentScanner = require('./lib/scanners/textDocumentScanner')
+	var ittfHtmlPrettifier = require('./lib/prettifiers/ittfHtmlPrettifier')
+	var md
+        set module.exports
+            { 
+	set md.fail = require('./lib/fail')
+	set md.option = require('./lib/option')
+	set md.config = require('./lib/config')
+	set md.verify = require('./lib/verify')
+	set md.node = require('./lib/node')
+	set md.nodeErrors = require('./lib/errors')
+	set md.exampleErrors = require('./lib/exampleErrors')
+	set md.lineparser = require('./lib/lineparser')
+	$if !isWebpackTarget
+		set md.mocks = require('./lib/mocks')
+		set md.requireFromString = require('./lib/requireFromString')
+	set md.Coder = require('./lib/coder')
+	set md.lorem = require('./lib/lorem')
+	set md.encdec = require('./lib/crypto/encdec')
+	set md.errors = require('./lib/errors')
+
+	# fs
+	$if !isWebpackTarget
+		set md.file = require('./lib/fs/file')
+	set md.vfile = require('./lib/fs/vfile')
+	set md.uriParser = require('./lib/fs/uriParser')
+	$if isWebpackTarget
+		# expose nodejs path to the browser
+		set md.path = require('path')
+		# expose the filesystem for browsers
+		set md.BrowserFS = require('browserfs')
+
+	# class IttfMTreeEx
+	set md.IttfMTreeEx = ittfMTreeEx
+	set md.ittfWriter = ittfWriter
+	
+	# function
+	#   string ittfDocumentUri
+	#   { options
+	#     { file?
+	#       api-ref wizzi.utils.file
+	#   callback?
+	set md.asIsLoader = asIsLoader
+	
+	# { folderScanner
+	#   m scan
+	#     string folderPath
+	#     { options
+	#       string name
+	#       string gitPath 
+	#   callback
+	set md.folderScanner = folderScanner
+	
+	# { folderBrowse
+	#   m scan
+	#     string folderPath
+	#     { options
+	#       string baseFolder
+	#   callback
+	set md.folderBrowse = folderBrowse
+
+	# { ittfDocumentScanner
+	#   m scan
+	#     string documentPath
+	#     { options
+	#       string rootFolder
+	#   callback
+	set md.ittfDocumentScanner = ittfDocumentScanner
+
+	# { textDocumentScanner
+	#   m scan
+	#     string documentPath
+	#     { options
+	#       string baseFolder
+	#   callback
+	set md.textDocumentScanner = textDocumentScanner
+
+	# function
+	#   { rootNode
+	#     api-ref wizzi-utils.IttfMTreeEx
+	#   { options
+	#   callback
+	set md.ittfHtmlPrettifier = ittfHtmlPrettifier
+
+	#
+	set md.prettifyFromString
+		function
+			param ittfContent
+			param callback
+			_ ittfMTreeEx.createFrom
+				@ ittfContent
+				{
+					@ fromString true
+				f_cb(mTree)
+					_ ittfHtmlPrettifier
+						@ mTree
+						{
+						f_cb( pretty )
+							r_cb( pretty.prettyLines.join('\n') )
+

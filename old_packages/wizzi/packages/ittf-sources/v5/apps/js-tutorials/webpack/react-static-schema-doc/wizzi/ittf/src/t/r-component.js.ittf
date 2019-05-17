@@ -1,0 +1,16 @@
+﻿module
+	$params name, withWidth:boolean|false, connect:boolean|false, pure:boolean|false
+	kind react
+
+	$include app-options
+
+	$
+		var md = {};
+		md.name = name;
+		md.withWidth = withWidth;
+		md.connect = connect;
+		md.pure = pure;
+	
+	react/component(&md, &app)
+
+		$hook

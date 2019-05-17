@@ -1,0 +1,34 @@
+﻿r-component( counter, connect )
+
+	$append imports
+		import { incrementCount, decrementCount, resetCount } from '../store'
+
+	=> increment
+		prop dispatch
+		_ dispatch(incrementCount())
+
+	=> decrement
+		prop dispatch
+		_ dispatch(decrementCount())
+	=> reset
+		prop dispatch
+		_ dispatch(resetCount())
+	
+	render
+		prop count
+		return
+			div
+				h1 Count:&nbsp;
+					span {count}
+				button
+					@ onClick {this.increment}
+					+ +1
+				button
+					@ onClick {this.decrement}
+					+ -1
+				button
+					@ onClick {this.reset}
+					+ Reset
+
+	$append state-to-props
+		@ count state.count

@@ -1,0 +1,30 @@
+﻿base_test( json.fsimpl )
+	+
+	$append imports
+		var
+			decl JsonFsImpl = require('../../lib/json/jsonFsimpl')
+			decl FsJson = require('../../lib/json/fs/fsjson')
+			decl Document = require('../../lib/json/fs/document')
+			decl fsJson
+			decl doc
+	
+	var fsimpl
+		new JsonFsImpl
+			@ null
+
+	$include json_before_async
+
+	before-async
+		_ fsimpl.open
+			f_cb_test()
+				_ done
+
+	fscommon/fsimpl/writeFile( c: )
+
+	after-async
+		_ fsimpl.close
+		_ done
+
+	$include json_after_async
+
+	

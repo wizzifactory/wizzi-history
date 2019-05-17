@@ -1,0 +1,53 @@
+$group
+
+	$include defs
+
+	. site
+		min-height 100vh
+		overflow hidden
+    
+	. site.nav-displayed
+		height 100vh
+
+	# wrapper
+		position fixed
+		display flex
+		flex-direction row
+		top ${header_H + 10}px
+		height calc(100% - ${header_H + 50}px)
+		margin 0 200px
+		width calc(100% - 400px)
+
+	# wrapper-sub
+		position fixed
+		display flex
+		flex-direction row
+		top ${header_H_sub + 10}px
+		height calc(100% - ${header_H_sub + 50}px)
+		margin 0 200px
+		width calc(100% - 400px)
+
+	. main-sidebar-left
+		width 280px
+		height 100%
+		overflow auto
+		padding 10px
+		flex-grow 1
+		flex-shrink 0
+
+	. main-sidebar-left-top
+		top 200px
+		height calc(100% - 200px)
+		
+	. main-content
+		flex 0 1 auto
+		line-height 1.5em
+		z-index 1
+		overflow auto
+		padding 20px
+
+	. column
+		height 100%
+		display flex
+		flex-direction column
+

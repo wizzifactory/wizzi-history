@@ -1,0 +1,148 @@
+﻿$group
+
+
+	m getSnippetArchivePath
+		param snippetArchiveName
+		# An archive of snippets is owned by current user and current project.
+		return 'snippet/' + this.user + '/' + this.project + '/' + snippetArchiveName
+
+	m getSnippetArchiveDocRef
+		param snippetArchiveName
+		const docPath = this.getSnippetArchivePath(snippetArchiveName)
+		# docRefs are pooled
+		var ret = this.docRefsPool[docPath]
+		if !ret
+			set ret
+				_ this.firestore.doc
+					@ docPath
+			set this.docRefsPool[docPath] = ret
+			log 'FbFsClient.getSnippetArchiveDocRef. Created snippetArchiveDocRef for: ' + docPath
+		return ret
+
+	m getSnippetArchive
+		param snippetArchiveName
+		param callback
+		const docPath = this.getSnippetArchivePath(snippetArchiveName)
+		const snippetArchiveDocRef = this.getSnippetArchiveDocRef(snippetArchiveName)
+		_ snippetArchiveDocRef.get
+			._ then
+				function
+					param doc
+					if doc && doc.exists
+						const dataReceived = doc.data()
+						const message = 'Got snippetArchive data from cloud [' + docPath + ']'
+						log message + ' : ', dataReceived
+						return
+							_ callback
+								@ null
+								{
+									@ data dataReceived
+									@ message message
+					else
+						return
+							_ callback
+								new Error
+									@ 'Doc not found: ' + docPath
+				._ catch
+					function
+						param err
+						const message = 'Got an error loading ' + docPath + ' : ' + err
+						log message
+						return
+							_ callback
+								new Error
+									@ message
+
+	m saveSnippetArchive
+		param snippetArchiveName
+		param payload
+		param callback
+		const docPath = this.getSnippetArchivePath(snippetArchiveName)
+		const snippetArchiveDocRef = this.getSnippetArchiveDocRef(snippetArchiveName)
+		_ snippetArchiveDocRef.set
+			@ payload
+			._ then
+				function
+					const message = 'Saved snippetArchive data to cloud [' + docPath + ']'
+					log message + ' : ', payload
+					return
+						_ callback
+							@ null
+							@ message
+				._ catch
+					function
+						param err
+						const message = 'Got an error saving snippetArchive ' + docPath + ' : ' + err
+						log message
+						return
+							_ callback
+								new Error
+									@ message
+
+	m removeSnippetArchive
+		param schemaName
+		param snippetArchiveName
+		param callback
+		const docPath = this.getSnippetArchivePath(schemaName + '-' + snippetArchiveName)
+		const snippetArchiveDocRef = this.getSnippetArchiveDocRef(schemaName + '-' + snippetArchiveName)
+		_ snippetArchiveDocRef.delete
+			._ then
+				function
+					param result
+					const message = 'Removed snippetArchive data from cloud [' + docPath + ']'
+					log message, result
+					return
+						_ callback
+							@ null
+							@ message
+				._ catch
+					function
+						param err
+						const message = 'Got an error removing snippetArchive ' + docPath + ' : ' + err
+						log message, err
+						return
+							_ callback
+								new Error
+									@ message
+
+	m renameSnippetArchive
+		param schemaName
+		param snippetArchiveOld
+		param snippetArchiveNew
+		param callback
+		const oldDocPath = this.getSnippetArchivePath(schemaName + '-' + snippetArchiveOld)
+		const oldDocRef = this.getSnippetArchiveDocRef(schemaName + '-' + snippetArchiveOld)
+		const newDocPath = this.getSnippetArchivePath(schemaName + '-' + snippetArchiveNew)
+		const newDocRef = this.getSnippetArchiveDocRef(schemaName + '-' + snippetArchiveNew)
+		var transaction
+			_ this.firestore.runTransaction
+				=>
+					param t
+					log 'FbFsClient.renameSnippetArchive.transaction.start', snippetArchiveOld, snippetArchiveNew
+					return
+						_ t.get
+							@ oldDocRef
+							._ then
+								=>
+									param doc
+									log 'FbFsClient.renameSnippetArchive.transaction.got', doc.data()
+									var data = doc.data()
+									_ t.set
+										@ newDocRef
+										@ data
+									_ t.delete
+										@ oldDocRef
+				._ then
+					=>
+						log 'FbFsClient.renameSnippetArchive.transaction.ended.success'
+						_ callback
+							@ null
+							{
+								@ message 'SnippetArchive renamed'
+					._ catch
+						=>
+							param  err
+							log 'FbFsClient.renameSnippetArchive.transaction.ended.failure'
+							_ callback
+								new Error
+									@ 'SnippetArchive rename failed: ' + err

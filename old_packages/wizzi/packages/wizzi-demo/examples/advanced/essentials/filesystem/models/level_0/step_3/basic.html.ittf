@@ -1,0 +1,26 @@
+html
+	head
+		title
+	body
+		h1 The wizzi factory
+		p A Software factory
+		h3 github hosting
+			a https://github.com/wizzifactory
+				href https://github.com/wizzifactory
+		h4 packages
+		table
+			thead
+				tr
+					th description
+					th url
+			$$ data is a property of the mTreeBuildupContext object
+			$$ passed to the loadModel method.
+			$foreach item in data.packages
+				tr
+					td ${item.description}
+					td 
+						a ${item.name}
+							href ${item.uri}
+
+		$include copy
+

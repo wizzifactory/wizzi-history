@@ -1,0 +1,25 @@
+﻿$group
+
+	@ getConsoleScript
+		function
+			param options
+			param callback
+
+			const fileName = options.name
+
+			const ittfPath
+				_ paths.consoleIttfDocument
+					@ fileName
+
+			const ittfContent
+				_ file.read
+					@ ittfPath
+
+			return
+				_ callback
+					@ null
+					{
+						@ data ittfContent
+						@ status
+							_ success
+								@ 'Got console script'

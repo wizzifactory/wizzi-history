@@ -1,0 +1,71 @@
+﻿module
+	kind jsfile
+	+
+	var util = require('util')
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	+
+	var md = module.exports = {}
+	set md.name = 'local'
+	+
+	#
+		# FactoryPlugin class
+	class FactoryPlugin
+		ctor
+			{ wizziPackage
+				{ file
+			{ provides
+			set this.file = wizziPackage.file
+			set this.provides = provides
+			set this.modelFactories = {}
+			set this.modelTransformers = {}
+			set this.artifactGenerators = {}
+			set this.schemaDefinitions = {}
+		m initialize
+			{ options
+			callback
+			# TODO
+			return
+				_ callback(null)
+		m getName
+			return 'local'
+		
+		m getFilename
+			return __filename
+		
+		m getProvides
+			return this.provides
+
+		$include plugin/model-factory
+		$include plugin/model-transformation
+		$include plugin/artifact-generation
+		$include plugin/schema-definition
+	+
+	set module.exports
+		{
+			{ provides
+				[ schemas
+					@ 'sample_0_1'
+				[ artifactGenerators
+				[ modelTransformers
+
+			@ createFactoryPlugin
+				function createFactoryPlugin
+					{ wizziPackage
+					{ options
+					callback
+					var plugin
+						new FactoryPlugin
+							@ wizziPackage
+							@ this.provides
+					_ plugin.initialize
+						@ options
+						f_cb( notUsed )
+							return
+								_ callback
+									@ null
+									@ plugin
+	+
+
+
+

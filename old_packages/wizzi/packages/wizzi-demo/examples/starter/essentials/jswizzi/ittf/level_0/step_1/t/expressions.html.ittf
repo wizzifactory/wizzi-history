@@ -1,0 +1,69 @@
+$group
+	
+	h3 Unary expressions
+	
+	$
+		var utests = [];
+		function ut(label, result) {
+			utests.push({ label: label, result: result });
+		}
+		ut( '+2' , +2 );
+		ut( '-2' , -2 );
+		ut( '!(2 == 2)' , !(2 == 2) );
+		ut( '~2' , ~2 );
+		var a = 0;
+		ut ('a', 0)
+		ut( '++a' , ++a );
+		ut( '--a' , --a );
+		ut( 'typeof 3' , typeof 3 );
+		var b = { id: 1 };
+		//TODO ut( 'delete b.id' , delete b.id );
+
+	$foreach test in utests
+		p ${test.label} = ${test.result}
+	br
+	h4 Not implemented
+	p void operator
+	p void operator
+	br
+	br
+
+	h3 Binary expressions
+	
+	$
+		var tests = [];
+		function t(label, result) {
+			tests.push({ label: label, result: result });
+		}
+		t( '2 + 2' , 2 + 2 );
+		t( '5 - 2' , 5 - 2 );
+		t( '3 * 3' , 3 * 3 );
+		t( '6 / 2' , 6 / 2 );
+		t( '5 % 2' , 5 % 2 );
+		t( '5 == 2' , 5 == 2 );
+		t( '5 != 2' , 5 != 2 );
+		t( '5 > 2' , 5 > 2 );
+		t( '5 >= 5' , 5 >= 5 );
+		t( '5 < 2' , 5 < 2 );
+		t( '5 <= 5' , 5 <= 5 );
+		t( '"a" in { a: 1}' , "a" in { a: 1} );
+		//TODO t( '5 instanceof String' , 5 instanceof String );
+		t( 'String(5)' , String(5) );
+		t( 'Number(\'5.5\')' , Number('5.5') );
+		t( 'Date(2013,6,12)' , Date(2013,6,12) );
+		t( 'String(5) instanceof String' , String(5) instanceof String );
+		t( 'Number(\'5.5\') instanceof Number' , Number('5.5') instanceof Number );
+		t( 'Date(2013,6,12) instanceof Date' , Date(2013,6,12) instanceof Date );
+		t( '5 << 5' , 5 << 5 );
+		t( '5 >> 5' , 5 >> 5 );
+		t( '5 >>> 5' , 5 >>> 5 );
+		t( '5 | 5' , 5 | 5 );
+		t( '5 & 5' , 5 & 5 );
+		t( '5 ^ 5' , 5 ^ 5 );
+
+	$foreach test in tests
+		p ${test.label} = ${test.result}
+	br
+	br
+
+

@@ -1,0 +1,20 @@
+﻿$group
+	
+	class MyLogger
+        ctor
+            param level
+            param stream
+            set this.level = level
+            set this.stream = (stream || process.stdout)
+    
+		m info
+            param id
+            param level
+            param text
+
+            var date = new Date()
+            var seconds = date.getSeconds()
+            var minutes = date.getMinutes()
+            var hour = date.getHours()
+            _ this.stream.write
+				@ hour + ':' + minutes + ':' + seconds + ' ' + id + ' ' + level + ' ' + text + '\n'

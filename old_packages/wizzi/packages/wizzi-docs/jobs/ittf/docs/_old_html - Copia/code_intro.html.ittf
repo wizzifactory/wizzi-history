@@ -1,0 +1,32 @@
+html/layout( code, intro )
+
+	html/nav_sidebar()
+		
+		section
+			id main-toc
+			class toc
+
+			h3 Contents:
+			ol
+				li
+					a Introduction
+						href #source-code
+				$foreach concept in docs.concepts
+					li
+						a ${concept.name}
+							href #${concept.id}
+
+	div
+		class main-content
+		h2 Source code
+			id source-code
+		. summary
+			$foreach line in docs.summaryLines
+				+ ${line}
+		$foreach concept in docs.concepts
+			h2 ${concept.name}
+				id ${concept.id}
+			. summary
+				$foreach line in concept.summaryLines
+					+ ${line}
+
