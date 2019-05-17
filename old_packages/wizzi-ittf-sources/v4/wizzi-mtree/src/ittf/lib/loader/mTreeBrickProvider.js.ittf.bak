@@ -1,0 +1,253 @@
+﻿module wizzi-mtree.loader.mTreeBrickProvider
+	kind jsfile
+
+	import path
+	import url
+	+
+	var errors = require('../errors')
+	var LoadHistory = require('./loadHistory').LoadHistory
+	var MTreeBrick = require('./mTreeBrick').MTreeBrick
+	var IttfDocumentFinder = require('./ittfDocumentFinder')
+
+	#
+		# Each mTree loading requires one instance of the MTreeBrickProvider
+		# To date there is no global cache for mTrees, but only a cache of
+		# mTreeBricks used during a single loading. 
+	class MTreeBrickProvider
+		ctor
+			set this.__type = 'MTreeBrickProvider'
+			set this.bricksCache = {}
+			set this.store = null
+			set this.storeKind = null
+			set this.uri = null
+			set this.schema = null
+			set this.userId = null
+			set this.documentFinder = null
+			set this.primaryMTreeBrickCloned = null
+			set this.loadHistory = null
+			set this.productionContext = null
+			set this.mTreeBuildUpContext = null
+			set this.sourcePreprocessor = null
+
+		# The primary mTreeBrick of an mTree loading
+		m getPrimaryMTreeBrick
+			return this.primaryMTreeBrickCloned
+
+		# The starting point of an mTree loading
+		# Creates the mTree loadHistory
+		# Load the primary mTreeBrick form the primary IttfDocument
+		m init
+			string primaryIttfDocumentUri
+			{ loadContext
+				{ __ittfDocumentStore
+				{ productionContext
+				{ mTreeBuildUpContext
+				func sourcePreprocessor
+					optional
+			callback
+
+			set this.store = loadContext.__ittfDocumentStore
+
+			var that = this
+			# parse the primary IttfDocument Uri and collect
+			# infos from the uri
+			_ this.store.parseUri
+				@ primaryIttfDocumentUri
+				f_cb( parsedUri )
+					# log 'wizzi-mtree.mTreeBrickProvider.parsedUri', parsedUri
+					
+					set that.storeKind = parsedUri.storeKind
+					set that.uri = parsedUri.uri || parsedUri.originalUri
+					set that.userId = parsedUri.userId
+					set that.projectId = parsedUri.projectId
+					set that.schema = parsedUri.schema
+					
+					# load the document text content
+					_ that.store.getModelContent
+						@ that.uri
+						f_cb_no_err( ittfContent )
+							if err
+								set err.documentUri = that.uri
+								set err.MTreeBrickProviderStack = (new Error()).stack
+								r_cb_err()
+							# init helper objects
+							set that.documentFinder
+								new IttfDocumentFinder
+									@ that.store
+									@ that.schema
+							set that.loadHistory = new LoadHistory()
+							set that.productionContext = loadContext.productionContext
+							set that.mTreeBuildUpContext = loadContext.mTreeBuildUpContext
+							set that.sourcePreprocessor = loadContext.sourcePreprocessor
+							# log 'wizzi-mtree.mTreeBrickProvider.ittfContent', ittfContent
+							# load the primary mTreeBrick from the ittf content
+							_ that.loadMTreeBrickFromSource
+								@ that.uri
+								{
+								@ ittfContent
+								f_cb( primaryMTreeBrickCloned )
+									# save the cloned primary mTreeBrick on the mTreeBrickProvider instance
+									set that.primaryMTreeBrickCloned = primaryMTreeBrickCloned
+									# callbacks returning the mTreeBrickProvider instance
+									_ callback(null, that)
+
+		#
+			# Clones, or loads from source, an included or mixed ittf document
+			# params
+			#	{ options
+			#		string ittfDocumentUri
+			#		boolean include
+			#         // If true the mTreeBrick loaded from the IttfDocument will be included in the includer mTreeBrick
+			#         // and its scope will become that of the includer (its brickKey will be that of the includer).
+			#         // A $include command must not have any argument.
+			#         // An included ittf document must not have params (must not have the $params command).
+			#		string includerBrickKey
+			#		string basedir
+			#		string relpath
+			#
+			# called from
+			#	./mtree.load
+			#	./includer
+			#	./mixer
+			#
+
+		m get
+			{ options
+			callback
+			
+			var loadHistory = this.loadHistory
+			var productionContext = this.productionContext
+			var that = this
+			_ this.documentFinder.resolvePath
+				@ options
+				f_cb( uri )
+					# log 'wizzi-mtree.mTreeBrickProvider.path resolved', uri
+					var mTreeBrickCloned = null
+					# check cache
+					# log 'searching in cache', that.bricksCache, uri
+					var cachedMTreeBrick = that.bricksCache[uri]
+					if cachedMTreeBrick
+						# found in cache, clone it
+						set mTreeBrickCloned = cachedMTreeBrick.clone()
+						
+						# this is not superflous
+						# the productionContext counts the cached used
+						_ productionContext.addIttfDocument
+							@ uri
+							@ cachedMTreeBrick.inputContent
+						
+						# adding the mTreeBrickCloned to the loadHistory
+						# generates the sourceKey and brickKey 
+						var mTreeBrickData
+							_ loadHistory.addMTreeBrick
+								@ uri
+								@ that.schema
+								@ mTreeBrickCloned
+								@ options
+						set mTreeBrickCloned.sourceKey = mTreeBrickData.sourceKey
+						set mTreeBrickCloned.brickKey = mTreeBrickData.brickKey
+						set mTreeBrickCloned.$schema = that.schema
+						return callback(null, mTreeBrickCloned)
+					
+					else 
+						
+						# not found in cache, get the content from the store
+						# than load the mTreeBrick from source
+						_ that.store.getModelContent
+							@ uri
+							f_cb( ittfContent )
+								_ that.loadMTreeBrickFromSource
+									@ uri
+									@ options
+									@ ittfContent
+									@ callback
+
+		m loadMTreeBrickFromSource
+			param uri
+			param options
+			param ittfContent
+			param callback
+			
+			_ this.productionContext.addIttfDocument
+				@ uri
+				@ ittfContent
+			
+			_ this.loadHistory.addIttfDocument
+				@ uri
+				@ ittfContent
+
+			if this.sourcePreprocessor
+				# TODO save the preprocessed in productionContext and loadHistory
+				#      or save the sourcePreprocessor function
+				set ittfContent = this.sourcePreprocessor(ittfContent)
+			
+			# Creates the mTreeBrickData object passing
+			# null in the mTreeBrick parameter
+			# it will be added later if the parameter 
+			# options.include is false. 
+			# This because if the mTreeBrick
+			# is included it does not have its own evalContext, its nodes become part
+			# of the includer, and a cloned mTreeBrick is not needed.
+
+			var mTreeBrickData
+				_ this.loadHistory.addMTreeBrick
+					@ uri
+					@ this.schema
+					@ null
+					@ options
+			
+			var newMTreeBrick = new MTreeBrick(uri, this.loadHistory)
+			
+			# parses the ittf document content and loads the mTreeBrick
+			# frome the ittf node tree.
+			checked_call( notUsed )
+				_ newMTreeBrick.load(ittfContent, mTreeBrickData)
+			# log 'wizzi-mtree.mTreeBrickProvider.parsed newMTreeBrick', newMTreeBrick
+			
+			# caches the newMTreeBrick
+			set this.bricksCache[uri] = newMTreeBrick
+			
+			# clone it
+			var mTreeBrickCloned = newMTreeBrick.clone()
+			# set keys
+			set mTreeBrickCloned.sourceKey = mTreeBrickData.sourceKey
+			set mTreeBrickCloned.brickKey = mTreeBrickData.brickKey
+			set mTreeBrickCloned.$schema = this.schema
+			+
+			if !(options.include)
+				set mTreeBrickData.mTreeBrick = mTreeBrickCloned
+			+
+			# log 'cloned newMTreeBrick', mTreeBrickCloned
+			return callback(null, mTreeBrickCloned)
+
+		m enterFragmentCall
+			param mixerUri
+			param mixedUri
+			_ this.loadHistory.enterFragmentCall
+				@ mixerUri
+				@ mixedUri
+		
+		m exitFragmentCall
+			_ this.loadHistory.exitFragmentCall()
+		
+		m checkForRecursion
+			return
+				_ this.loadHistory.checkForRecursion()
+
+	#
+		# Creates an MTreeBrickProvider for loading
+		# an IttfDocucument
+	set MTreeBrickProvider.createFromUri
+		function
+			string primaryIttfDocumentUri
+			{ loadContext
+			callback
+			# log 'wizzi-mtree.mTreeBrickProvider.createFromUri', primaryIttfDocumentUri
+			var provider = new MTreeBrickProvider()
+			_ provider.init
+				@ primaryIttfDocumentUri
+				@ loadContext
+				f_cb( notUsed )
+					_ callback(null, provider)
+
+	set module.exports = MTreeBrickProvider

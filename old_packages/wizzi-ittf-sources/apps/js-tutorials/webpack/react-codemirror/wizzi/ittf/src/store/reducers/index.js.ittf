@@ -1,0 +1,14 @@
+﻿module
+	kind react
+
+	$include app-options
+	
+	react/store/reducers/index( &app )
+
+		$append imports
+			
+			$foreach item in app.reducers
+				import ${item}Reducer from './${item}Reducer'
+
+		$foreach item in app.reducers
+			@ ${item} ${item}Reducer

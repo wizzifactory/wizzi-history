@@ -1,0 +1,22 @@
+﻿$group
+
+	function _walkDirectory
+		param path
+		param obj
+		var dir = fs.readdirSync(path)
+		foreach name in dir
+			var target = path + '/' + name
+			var stats = fs.statSync(target)
+			if stats.isFile()
+				set obj[name] 
+					{
+						@ kind 0
+						@ path target
+			elif stats.isDirectory()
+				set obj[name]
+					{
+						@ kind 1
+						@ path target
+						@ children {}
+				_ _walkDirectory(target, obj[name].children)
+

@@ -1,0 +1,103 @@
+﻿$group
+	+
+	decl_rsf( artifact, generate )
+	+
+	# thunk.withExtraArgument
+	wz-const scheduleGenerateArtifact
+		=>
+			param schemaName
+			param exampleName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					if timers['generateArtifact']
+						_ clearTimeout
+							@ timers['generateArtifact']
+						log 'store.actions.scheduleGenerateArtifact. Cleared previous schedule.', new Date()
+			
+					set timers['generateArtifact']
+						_ setTimeout
+							function
+								_ dispatch
+									_ generateArtifact
+										@ schemaName
+										@ exampleName
+								log 'store.actions.scheduleGenerateArtifact. dispatched.', new Date()
+							@ 2 * 1000
+
+	# thunk.withExtraArgument
+	wz-const generateArtifact
+		=>
+			param schemaName
+			param exampleName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					log '*** store.actions.artifact.generateArtifact'
+					const wizziStore
+						_ extraArgument.WizziStore.getInstance
+							
+					_ dispatch
+						_ requestArtifactGeneration
+							@ schemaName
+							@ exampleName
+					
+					_ wizziStore.generateArtifactAction
+						@ schemaName
+						@ exampleName
+						f_cb_no_err( generatedArtifact )
+							if err
+								return
+									_ dispatch
+										_ failArtifactGeneration
+											@ schemaName
+											@ exampleName
+											@ err
+							_ dispatch
+								_ completeArtifactGeneration
+									@ schemaName
+									@ exampleName
+									@ generatedArtifact
+
+	wz-const requestArtifactGeneration
+		=>
+			param schemaName
+			param exampleName
+			return
+				{
+					@ type GENERATE_ARTIFACT_REQUEST
+					@ schemaName schemaName
+					@ exampleName exampleName
+	
+	wz-const failArtifactGeneration
+		=>
+			param schemaName
+			param exampleName
+			param error
+			return
+				{
+					@ type GENERATE_ARTIFACT_FAILURE
+					@ schemaName schemaName
+					@ exampleName exampleName
+					@ error error
+	
+	wz-const completeArtifactGeneration
+		=>
+			param schemaName
+			param exampleName
+			param text
+			return
+				{
+					@ type GENERATE_ARTIFACT_SUCCESS
+					@ schemaName schemaName
+					@ exampleName exampleName
+					@ text text
+					
+
+	

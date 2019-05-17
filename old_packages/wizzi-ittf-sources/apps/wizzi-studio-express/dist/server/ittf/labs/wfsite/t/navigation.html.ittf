@@ -1,0 +1,18 @@
+﻿$group
+	$params kind
+
+	$
+		var folder = gcurrentSubPage == null ? '' : '../'
+
+	header 
+		class navigation
+		nav 
+			class navigation-links
+			$include ./logo
+			nav_link( concepts, ${folder}concepts, Concepts )
+			nav_link( docs, ${folder}docs/intro, Docs, Docs ) 
+			nav_link( api, ${folder}api, Api )
+			nav_link( code, ${folder}code/intro, Code )
+			nav_link( starters, ${folder}starters, Starters )
+			nav_link( project, ${folder}project, Project )
+

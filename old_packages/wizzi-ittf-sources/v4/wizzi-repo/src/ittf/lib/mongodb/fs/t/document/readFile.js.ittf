@@ -1,0 +1,25 @@
+﻿$group
+
+	m readFile
+		string filePath
+		callback
+
+		set filePath = normalize(path.resolve(filePath))
+		var that = this
+		
+		_ this.fsdb.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem == null
+					r_cb_wz_err( MongoRepoError, readFile )
+						@ 'Document read file error. Not found: ' + filePath
+				elif fsitem.kind == 0
+					r_cb_wz_err( MongoRepoError, readFile )
+						@ 'Document read file error. Cannot read a folder: ' + filePath
+				else
+					_ that.fsdb.readFile
+						@ fsitem._id
+						@ callback
+		
+
+

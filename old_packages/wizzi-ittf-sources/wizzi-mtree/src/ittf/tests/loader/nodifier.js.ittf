@@ -1,0 +1,70 @@
+﻿base_test( nodifier )
+	
+	$append imports
+		var liner = require('../../lib/loader/liner')
+		var nodifier = require('../../lib/loader/nodifier')
+		var MTreeBrick = require('../../lib/loader/mTreeBrick').MTreeBrick
+		var LoadHistory = require('../../lib/loader/loadHistory').LoadHistory
+		var file = require('wizzi-utils').file
+
+	var loadHistory = new LoadHistory()
+    
+	it nodes should have : row and col number, name and value
+
+		var uri
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'liner_1.tests.ittf'
+
+
+        var mTree
+			new MTreeBrick
+				@ uri
+				@ loadHistory
+
+		var lines
+			_ liner
+				_ file.read
+					@ uri
+				{
+					@ sourceKey 'f1'
+
+		var nodes = nodifier(lines, mTree)
+
+		# log 'nodifier nodes', nodes
+
+		tobe_array( nodes, 1 )
+		tobe_array( nodes[0].children, 3 )
+		tobe_array( nodes[0].children[1].children, 1 )
+
+		tobe_number( nodes[0].row, 1 )
+		tobe_number( nodes[0].col, 1 )
+		tobe_string( nodes[0].sourceKey, 'f1' )
+		tobe_string( nodes[0].name, 'alpha' )
+		tobe_undefined( nodes[0].value )
+            
+		tobe_number( nodes[0].children[0].row, 2 )
+		tobe_number( nodes[0].children[0].col, 18 )
+		tobe_string( nodes[0].children[0].sourceKey, 'f1' )
+		tobe_string( nodes[0].children[0].name, 'beta' )
+		tobe_string( nodes[0].children[0].value, '1' )
+
+		tobe_number( nodes[0].children[1].row, 3 )
+		tobe_number( nodes[0].children[1].col, 5 )
+		tobe_string( nodes[0].children[1].sourceKey, 'f1' )
+		tobe_string( nodes[0].children[1].name, 'beta' )
+		tobe_string( nodes[0].children[1].value, '2' )
+
+		tobe_number( nodes[0].children[1].children[0].row, 4 )
+		tobe_number( nodes[0].children[1].children[0].col, 9 )
+		tobe_string( nodes[0].children[1].children[0].sourceKey, 'f1' )
+		tobe_string( nodes[0].children[1].children[0].name, 'gamma' )
+		tobe_string( nodes[0].children[1].children[0].value, '2.1' )
+
+		tobe_number( nodes[0].children[2].children[0].row, 11 )
+		tobe_number( nodes[0].children[2].children[0].col, 9 )
+		tobe_string( nodes[0].children[2].children[0].sourceKey, 'f1' )
+		tobe_string( nodes[0].children[2].children[0].name, 'margin' )
+		tobe_string( nodes[0].children[2].children[0].value, '0' )

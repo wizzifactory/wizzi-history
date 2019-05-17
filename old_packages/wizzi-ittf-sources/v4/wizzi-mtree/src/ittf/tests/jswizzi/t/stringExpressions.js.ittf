@@ -1,0 +1,26 @@
+﻿$group
+
+	var stringExpressions
+		[
+			{
+				@ code 'var x = \'alba\'; x = x.toUpperCase(); return x;'
+				@ expected 'ALBA'
+			{
+				@ code 'var x = \'a,b,c,d\'; x = x.split(\',\'); return x;'
+				@ expected_equal ['a', 'b', 'c', 'd']
+			{
+				@ code 'var x = \'a1,b1,c1,d1\'; x = x.indexOf(\'b1\'); return x;'
+				@ expected_number 3
+			{
+				@ code 'var x = \'a1,b1,c1,d1\'; x = x.substr(-2,2); return x;'
+				@ expected 'd1'
+			{
+				@ code 'var x = \'a1,b1,c1,d1\'; x = x.substring(0,5); return x;'
+				@ expected 'a1,b1'
+			{
+				@ code 'String.fromCodePoint(65, 90)'
+				@ expected 'AZ'
+			{
+				@ code 'String.fromCodePoint(65, 66, 67)'
+				@ expected 'ABC'
+	

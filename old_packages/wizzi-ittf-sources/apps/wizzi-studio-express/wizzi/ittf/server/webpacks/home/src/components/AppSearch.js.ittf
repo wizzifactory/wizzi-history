@@ -1,0 +1,82 @@
+﻿module
+	kind react
+
+	import React from 'react'
+	import compose from 'recompose/compose'
+	import pure from 'recompose/pure'
+	import PropTypes from 'prop-types'
+	import withWidth, { isWidthUp } from 'material-ui/utils/withWidth'
+	import Search from 'material-ui-icons/Search'
+	import { white } from 'material-ui/styles/colors'
+	import { fade } from 'material-ui/styles/colorManipulator'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+
+	let docsearchDisplay = false
+	let searchTimer
+
+	function initDocsearch
+		if docsearchDisplay
+			return
+
+		set docsearchDisplay = true
+
+		set searchTimer
+			_ setInterval
+				=>
+					if window.docsearch && document.querySelector('#docsearch-input')
+						_ clearInterval(searchTimer)
+						_ window.docsearch
+							{
+								@ apiKey '1d8534f83b9b0cfea8f16498d19fbcab'
+								@ indexName 'material-ui'
+								@ inputSelector '#docsearch-input'
+								@ debug false 
+									# Set debug to true if you want to inspect the dropdown
+				@ 100
+
+	function removeDocsearch
+		set docsearchDisplay = false
+		_ clearInterval(searchTimer)
+
+	var styleSheet
+        _ createStyleSheet
+            @ 'AppSearch'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/AppSearch
+
+	function AppSearch
+		param props
+		
+		const { classes, width } = props
+
+		if !isWidthUp('sm', width)
+			_ removeDocsearch()
+			return null
+
+		_ initDocsearch()
+
+		return
+			div
+				@ className {classes.wrapper}
+				div
+					@ className {classes.search}
+					< Search
+				input
+					id docsearch-input
+					@ className {classes.input} 
+
+	set AppSearch.propTypes
+		{
+			@ classes PropTypes.object.isRequired
+			@ width  PropTypes.string.isRequired
+			
+	export default
+		_ compose
+			@ pure
+			@ withStyles(styleSheet)
+			@ withWidth()
+			(
+				@ AppSearch

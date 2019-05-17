@@ -1,0 +1,43 @@
+﻿$group
+	+
+	decl_rsf( projects, get )
+	decl_rsf( project, create )
+	+
+	export
+		const getProjects
+			=>
+				return
+					{
+						@ type GET_PROJECTS
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_PROJECTS_REQUEST
+										@ GET_PROJECTS_SUCCESS
+										@ GET_PROJECTS_FAILURE
+								@ url '/api/studio/projects'
+								@ method 'get'
+								@ queryParams
+									{
+	+
+	export
+		const createProject
+			=>
+				param project
+				return
+					{
+						@ type CREATE_PROJECT
+						@ project project
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ CREATE_PROJECT_REQUEST
+										@ CREATE_PROJECT_SUCCESS
+										@ CREATE_PROJECT_FAILURE
+								@ url '/api/studio/project'
+								@ method 'post'
+								@ payload
+									{
+										@ project project

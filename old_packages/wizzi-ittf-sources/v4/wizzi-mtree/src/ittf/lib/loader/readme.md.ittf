@@ -1,0 +1,150 @@
+﻿mdx
+
+	h2 Glossary
+	
+	table
+		
+		md/glo-item( $append [hook-name] )
+			span Is an ittf node command that declares a node branch that
+				+ must be appended to a related '$hook [hook-name]' node command in 
+				+ a mixed mTree brick.
+
+		md/glo-item( $hook [hook-name] )
+			span Is an ittf node command that declares an insertion point in
+				+ the tree structure of a mixed mTree brick. Node branches,
+				+ children of a 'mix' node command, declared with the
+				+ '$append [hook-name]' node command can be appended to the '$hook' node.
+
+		md/glo-item( $include [path] )
+			span Is an ittf node command that invokes the inclusion of another mTree brick.
+				+ An include node command cannot have children nodes, and it is simply
+				+ replaced by the included brick.
+
+		md/glo-item( ittf document )
+			span Ittf, short for Indented Text Tree Format, is the textual notation format of an mTree. 
+				+ An ittf document is a syntax tree, codified in a text document, 
+				+ where child nodes are indented to their parent.
+				+ Every line is a node consisting of a name-value pair. 
+				+ The name is the first string of chars of the line and is separated 
+				+ from the value by a space or a tab.
+				+ An ittf document is a template and when loaded for building an mTree 
+				+ we can pass a context object to the mTree loader.
+				+ All nodes are templateable and composable. Even the root node may be a command node 
+				+ that invokes the mixup of its container.
+				+ When parsed and nodified an ittf document become an mTree brick.
+		
+		md/glo-item( jsWizzi )
+			span JsWizzi is a subset of the ECMA-262 javascript standard used by the wizzi factory 
+				+ for the buildup of mTrees.
+				+ It is built on the quite efficent esprima parsing infrastructure and is run 
+				+ by a custom, sandboxed, javascript engine. See jsWizziRunner.
+
+		md/glo-item( jsWizziContext )
+			span The evaluation step of an mTree loading uses three types of value contexts.
+			ul
+				li One global context.
+				li One single node structure context, where the mTree is built.
+				li One value context for each mTree brick.
+
+		md/glo-item( jsWizziRunner )
+			span The javascript engine of an mTree buildup. It is run for expressions interpolation, 
+				+ template commands evaluation and mTree final buildup.
+
+		md/glo-item( mix node command )
+			span Is an ittf node command that invokes the mixup of another mTree brick.
+				+ Every node with the node-name ending with an open paren is a mix node command.
+				+ A mix node command may have children nodes, that may declare
+				+ branches to be appended to hooks in the mixed mTree brick. 
+				+ See the $append and $hook command nodes.
+
+		md/glo-item( mTree )
+			span An in-memory tree data structure of name-valued nodes that is built loading and
+				+ processing an ittf document 
+		
+		md/glo-item( mTree brick )
+			span A nodified ittf document.
+				+ mTree bricks are the items that compose an mTree.
+				+ They can mix (or include) other bricks and be mixed (or included). 
+				+ The same brick can be reused in many branches of the mTree, 
+				+ so a brick is loaded once and always cloned.
+
+		md/glo-item( - included mTree brick )
+			span An mTree brick included in an including mTree brick
+				+ using the node command <bold>$include [path]</bold>.
+			p Both the tree structure and the value context are included.
+				+ Context values declared in the included nodes are created in 
+				+ the scope of the includer.
+
+		md/glo-item( - mixed mTree brick )
+			span An mTree brick mixed in a mixing mTree brick
+				+ using the node command <bold>[path]([params])</bold>.
+			p The tree structure is mixed but the value context remain distinct.
+				+ Context values declared in the mixed nodes are created in 
+				+ the scope of the mixed mTree brick and do not interfere with the mixer.
+
+		md/glo-item( mTree loading )
+			span The creation of an mTree from an ittf document.
+			ul Loading steps
+				li line parsing (of a source ittf document)
+				li nodification (produces one mTree brick from every source ittf document)
+				li mix-composition (recursive on mixed and included mTree bricks)
+				li include-composition (recursive on mixed and included mTree bricks)
+				li append-resolution (on the composed mTree piece)
+				li evaluation (on the mixed and appended mTree piece)
+		
+		md/glo-item( - line parsing )
+			span The text of the ittf document is parsed into name-valued lines,
+				+ eliminating comments, resolving line continuations, detecting indentation
+				+ and managing chars that interfere with variable interpolation.
+
+		md/glo-item( - nodification )
+			span The lines parsed in the previous step are transformed in a tree
+				+ structure, an mTree brick, respecting the indentation of the source. 
+				+ One root node only is allowed. 
+
+		md/glo-item( - mix-composition )
+			span The mTree brick, produced by the previous step, is traversed and
+				+ all the 'mix node commands' encountered are recursively resolved.
+				+ The result is an mTree piece composed by one or many bricks.
+
+		md/glo-item( - include-composition )
+			span The mTree piece, produced by the previous step, is traversed and
+				+ all the '$include [path]' node commands encountered are recursively resolved.
+				+ The recursion manages the mix-composition of included bricks too.
+
+		md/glo-item( - append resolution )
+			span The mTree piece resulting from composition is traversed again and
+				+ child branches (of mix node commands), declared with the '$append [hook-name]' 
+				+ node command, are moved, replacing the related '$hook [hook-name]' 
+				+ node command of the mixed mTree brick.
+
+		md/glo-item( - evaluation )
+			span The last step of an mTree loading. From the mTree piece produced
+				+ by the previous steps is created a jsWizzi script that evaluates
+				+ the template commands of its nodes and builds the final mTree.
+		
+		md/glo-item( mTree buildup script )
+			span The jsWizzi script that, once executed, by the
+				+ jsWizziRunner, will give as result the final mTree
+				+ of the source ittf document. 
+
+		md/glo-item( mTreeBuildUpScriptCoder)
+			span A module of the wizzi.mtree package that generates the 
+				+ mTree build up script.
+
+		md/glo-item( path resolution )
+			span Include and mix command nodes declare the path of the ittf document
+				+ that must be mixed or included. At first the path to match is built
+				+ joining the current folder path of the calling document and the name
+				+ of the callee document. If this match fails, then the 't' folder rule is applied,
+				+ starting from the current folder path and going up on the folder tree.
+				+ See 't' folder.
+
+		md/glo-item( 't' folder )
+			span Folders named 't' have special rules for the path resolution
+				+ of mixed and included ittf documents. In the folder structure
+				+ of a wizzi factory package, ittf documents contained in a 't' folder,
+				+ can be referenced with the same rules that apply to nodejs packages
+				+ in 'node_modules' folders. They are searched up on the folder tree, until the  
+				+ relative path of the mixin or include call is matched or the path resolution fails.
+		

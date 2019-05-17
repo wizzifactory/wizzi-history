@@ -1,0 +1,80 @@
+﻿module
+	kind jsfile
+
+	import path
+	var verify = require('wizzi-utils').verify
+	var index = require('../../index')
+
+	function importFile
+		param filePath
+		param baseImportPath
+		param baseExportPath
+		param vfile
+		param callback
+
+		if typeof callback === 'undefined'
+			set callback = vfile
+			# vfile() defaults to local filesystem
+			set vfile = wizziUtils.vfile() 
+
+		const dirname = path.dirname(filePath)
+		const basename = path.basename(filePath)
+		const extension = path.extname(filePath)
+		var schema = extension.substr(1)
+		var name = basename.substr(0, basename.length - extension.length)
+		
+		var filePathNorm = verify.replaceAll(filePath, '\\', '/')
+		var baseImportPathNorm = verify.replaceAll(baseImportPath, '\\', '/')
+		var baseExportPathNorm = verify.replaceAll(baseExportPath, '\\', '/')
+		var folderNorm = dirname.substr(baseImportPathNorm.length + 1)
+
+		log 'importFile', baseImportPath, folderNorm, name, schema
+
+		var source
+			_ vfile.read
+				@ filePath
+
+		if !index.canBeWizzified(schema)
+			if folderNorm.length > 0
+				_ vfile.write
+					_ path.join
+						@ baseExportPathNorm
+						@ folderNorm
+						@ basename
+					@ source
+			else
+				_ vfile.write
+					_ path.join
+						@ baseExportPathNorm
+						@ basename
+					@ source
+		else
+			try
+				_ index.wizzify
+					@ schema
+					@ source
+					f_cb( result )
+						if folderNorm.length > 0
+							_ vfile.write
+								_ path.join
+									@ baseExportPathNorm
+									@ folderNorm
+									@ name + '.' + schema + '.ittf'
+								@ result
+						else
+							_ vfile.write
+								_ path.join
+									@ baseExportPathNorm
+									@ name + '.' + schema + '.ittf'
+								@ result
+						r_cb()
+			catch ex
+				set ex.message += '\n in file: ' + filePath
+				log 'Error ', ex.message
+				_ vfile.write
+					_ path.join
+						@ baseExportPathNorm
+						@ basename
+					@ ex.message
+
+	set module.exports = importFile

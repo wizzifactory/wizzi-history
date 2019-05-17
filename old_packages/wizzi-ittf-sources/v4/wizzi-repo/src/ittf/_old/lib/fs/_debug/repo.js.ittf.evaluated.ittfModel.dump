@@ -1,0 +1,182 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var uriparser = require('./uriparser') ids: undefined undefined
+    var repoFS = null ids: undefined undefined
+    function verifyFS ids: undefined undefined
+      param callback ids: undefined undefined
+      if repoFS == null ids: undefined undefined
+        set repoFS = require('wizzi-mongodb').Filesystem ids: undefined undefined
+      if repoFS && repoFS.isMounted ids: undefined undefined
+        return  ids: undefined undefined
+          _ callback(null) ids: undefined undefined
+      else  ids: undefined undefined
+        _ callback ids: undefined undefined
+          @ 'Module lib/ittf/fs/repo. MongoDB wizzi repo database not mounted. Review your wizzi instance starter.' ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    set md.exists ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.exists ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.isFile ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.isFile ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.isDirectory ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.isFolder ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.mkdir ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.mkdir ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.read ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.readFile ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.getGlobbedFiles ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.glob ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.write ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_path_string ids: undefined undefined
+        param content ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        _ verifyFS ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ repoFS.writeFile ids: undefined undefined
+              @ parsed_path_string.userId ids: undefined undefined
+              @ parsed_path_string.projectId ids: undefined undefined
+              @ parsed_path_string.path ids: undefined undefined
+              @ content ids: undefined undefined
+              @ callback ids: undefined undefined
+    set md.copy ids: undefined undefined
+      function  ids: undefined undefined
+        param parsed_source_path_string ids: undefined undefined
+        param dest_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(dest_path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed_dest_path_string ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed_dest_path_string.storeKind !== 'repo' ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  _ error ids: undefined undefined
+                    @ 'Destination uri must have schema = "repo", instead it is : ' + dest_path_string ids: undefined undefined
+                    @ "copy" ids: undefined undefined
+            elif parsed_dest_path_string.userId !== parsed_source_path_string.userId ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  _ error ids: undefined undefined
+                    @ 'Copy of documents between different users is not implemented : ' + parsed_source_path_string.userId + '/' + parsed_dest_path_string.userId ids: undefined undefined
+                    @ "copy" ids: undefined undefined
+            _ repoFS.copyFile ids: undefined undefined
+              @ parsed_source_path_string.userId ids: undefined undefined
+              @ parsed_source_path_string.projectId ids: undefined undefined
+              @ parsed_source_path_string.path ids: undefined undefined
+              @ parsed_dest_path_string.projectId ids: undefined undefined
+              @ parsed_dest_path_string.path ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param notUsed ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ null ids: undefined undefined
+                    @ true ids: undefined undefined

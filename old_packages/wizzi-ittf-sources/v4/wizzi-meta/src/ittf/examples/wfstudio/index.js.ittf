@@ -1,0 +1,65 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var stringify = require('json-stringify-safe')
+	var mocks = require('../../tests/mocks')
+	var basicLoader = mocks.basicLoader
+	var genContext = mocks.genContext
+	var file = mocks.file
+	var verify = mocks.verify
+	var wfstudiofactory = require('../../lib/wizzi/models/wfstudio-factory.g')
+	+
+	var loadModel
+		_ wfstudiofactory.createLoadModel
+			@ mocks.getFactoryWizziObject()
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath)
+		set item = item.substring(0, item.length - '.wfstudio.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	# _ execute('function')
+	+
+	function execute
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.wfstudio.ittf'
+		var wfstudioOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.wfstudio'
+		_ loadModel
+			@ ittfSource
+			{
+				@ __productionManager
+					_ mocks.getProductionManager
+			f_cb_test( wfstudioWizziModel )
+				log 'wfstudioWizziModel', wfstudioWizziModel
+				_ file.write
+					@ wfstudioOutput
+					_ stringify
+						@ wfstudioWizziModel.toJson()
+						@ null
+						@ 2
+
+	function getFiles
+		param srcpath
+		return
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith(file, '.wfstudio.ittf')

@@ -1,0 +1,23 @@
+﻿$group
+
+	@ updateDocument
+		function
+			param documentUri
+			param ittfContent
+			param callback
+
+			var ittfPath = paths.pathFromUri(documentUri)
+
+			check_file_not_exists( ittfPath, Ittf document
+
+			_ file.write
+				@ ittfPath
+				@ ittfContent
+
+			_ callback
+				@ null
+				{
+					@ data null
+					@ status
+						_ success
+							@ 'Ittf document updated "' + documentUri + '"'

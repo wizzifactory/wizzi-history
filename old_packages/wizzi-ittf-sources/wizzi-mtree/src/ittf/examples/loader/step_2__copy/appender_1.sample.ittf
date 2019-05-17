@@ -1,0 +1,65 @@
+﻿append 1
+
+	$
+		var do = 1;
+
+	$if do = 0
+		repeater(1, items)
+			log 1
+			if a
+				log 2
+				if b
+					log 3
+					repeater(2, items, index_1 + 1)
+						log 4
+						if c
+							log 5
+							repeater_increment(2)
+						$append next
+							log 6
+			log 7
+			if d
+				repeater_increment(1)
+			$append next
+				log 8
+
+	$if do = 1
+        repeater(1, model.statements)
+			log '607 jsArray'
+            if u.isMemberAccessOrCall(item_1)
+                _ ctx.w('')
+                _ ctx.deindent()
+                _ ctx.write(']')
+				log '605 jsArray'
+				return
+					_ cnt.genItem
+						@ item_1
+						@ ctx
+						f_cb()
+							log '603 jsArray'
+							repeater(2, model.statements, index_1 + 1)
+								if u.isCallArgument(item_2)
+									_ ctx.write('.')
+								_ cnt.genItem
+									@ item_2
+									@ ctx
+									f_cb()
+										repeater_increment(2)
+								$append next
+									r_cb()
+            log '606 jsArray'
+			if !first
+                _ ctx.w(', ')
+            set first = false
+            _ cnt.genItem
+				@ item_1
+				@ ctx
+				f_cb()
+					log '604 jsArray'
+					repeater_increment(1)
+			$append next
+				+ ;
+				_ ctx.w('')
+				_ ctx.deindent()
+				_ ctx.write(']')
+				r_cb()

@@ -1,0 +1,728 @@
+﻿xsd 
+    target-namespace http://www.w3.org/2002/xforms
+    xmlns ev http://www.w3.org/2001/xml-events
+    xmlns xsd http://www.w3.org/2001/XMLSchema
+    xmlns xforms http://www.w3.org/2002/xforms
+    element-form-default qualified
+    import http://www.w3.org/MarkUp/SCHEMA/xml-events-attribs-1.xsd
+        namespace http://www.w3.org/2001/xml-events
+    import http://www.w3.org/2001/XMLSchema.xsd
+        namespace http://www.w3.org/2001/XMLSchema
+    ag Common.Attributes
+        # Attributes for _every_ element in XForms
+        a id
+            type xsd:ID
+            is-optional
+        any-a 
+            namespace ##other
+    ag Linking.Attributes
+        a src
+            type xsd:anyURI
+    ag Single.Node.Binding.Attributes
+        a model
+            type xsd:IDREF
+            is-optional
+        a ref
+            type xforms:XPathExpression
+            is-optional
+        a bind
+            type xsd:IDREF
+            is-optional
+    ag Nodeset.Binding.Attributes
+        a model
+            type xsd:IDREF
+            is-optional
+        a nodeset
+            type xforms:XPathExpression
+            is-optional
+        a bind
+            type xsd:IDREF
+            is-optional
+    ag UI.Common.Attrs
+        a appearance
+            type xforms:appearanceType
+            is-optional
+    ag XML.Events
+        a-ref ev:event
+        a-ref ev:observer
+        a-ref ev:target
+        a-ref ev:handler
+        a-ref ev:phase
+        a-ref ev:propagate
+        a-ref ev:defaultAction
+    e model
+        c-type 
+            sequence 0-n
+                choice 
+                    e-ref xforms:instance
+                    e-ref xsd:schema
+                    e-ref xforms:submission
+                    e-ref xforms:bind
+                    group-ref xforms:Action
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a functions
+                type xforms:QNameList
+                is-optional
+            a schema
+                type xforms:anyURIList
+                is-optional
+            a version
+                type xforms:versionList
+                is-optional
+    e instance
+        # instance container.
+        c-type 
+            sequence 
+                any 0-
+                    namespace ##any
+                    process-contents skip
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Linking.Attributes
+    e submission
+        # submit info container.
+        c-type 
+            sequence 0-n
+                group-ref xforms:Action
+            ag-ref xforms:Common.Attributes
+            a ref
+                type xforms:XPathExpression
+                is-optional
+            a bind
+                type xsd:IDREF
+                is-optional
+            a action
+                type xsd:anyURI
+                is-optional
+            a method
+                is-required
+                s-type 
+                    union xforms:QNameButNotNCNAME
+                        s-type 
+                            restrict : xsd:string
+                                enum post
+                                enum put
+                                enum get
+                                enum multipart-post
+                                enum form-data-post
+                                enum urlencoded-post
+            a version
+                type xsd:NMTOKEN
+                is-optional
+            a indent
+                type xsd:boolean
+                is-optional
+            a mediatype
+                type xsd:string
+                is-optional
+            a encoding
+                type xsd:string
+                is-optional
+            a omit-xml-declaration
+                type xsd:boolean
+                is-optional
+            a standalone
+                type xsd:boolean
+                is-optional
+            a cdata-section-elements
+                type xforms:QNameList
+                is-optional
+            a replace
+                is-optional
+                default all
+                s-type 
+                    union xforms:QNameButNotNCNAME
+                        s-type 
+                            restrict : xsd:string
+                                enum all
+                                enum instance
+                                enum none
+            a instance
+                type xsd:IDREF
+                is-optional
+            a separator
+                is-optional
+                default ;
+                s-type 
+                    restrict : xsd:string
+                        enum ;
+                        enum &
+            a includenamespaceprefixes
+                is-optional
+                s-type 
+                    list 
+                        s-type 
+                            union 
+                                s-type 
+                                    restrict : xsd:NCName
+                                s-type 
+                                    restrict : xsd:string
+                                        enum #default
+    e bind
+        # Definition of bind container.
+        c-type 
+            sequence 0-n
+                e-ref xforms:bind
+            ag-ref xforms:Common.Attributes
+            a nodeset
+                type xforms:XPathExpression
+                is-optional
+            a type
+                type xsd:QName
+                is-optional
+            a readonly
+                type xforms:XPathExpression
+                is-optional
+            a required
+                type xforms:XPathExpression
+                is-optional
+            a relevant
+                type xforms:XPathExpression
+                is-optional
+            a constraint
+                type xforms:XPathExpression
+                is-optional
+            a calculate
+                type xforms:XPathExpression
+                is-optional
+            a p3ptype
+                type xsd:string
+                is-optional
+    e label
+        c-type 
+            mixed true
+            group-ref xforms:UI.Inline
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:Linking.Attributes
+    e hint
+        c-type 
+            mixed true
+            group-ref xforms:UI.Inline
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:Linking.Attributes
+    e help
+        c-type 
+            mixed true
+            group-ref xforms:UI.Inline
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:Linking.Attributes
+    e alert
+        c-type 
+            mixed true
+            group-ref xforms:UI.Inline
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:Linking.Attributes
+    e extension
+        c-type 
+            sequence 
+                any 
+                    namespace ##other
+            ag-ref xforms:Common.Attributes
+    e choices
+        c-type 
+            sequence 
+                e-ref xforms:label
+                sequence -n
+                    choice 
+                        e-ref xforms:choices
+                        e-ref xforms:item
+                        e-ref xforms:itemset
+            ag-ref xforms:Common.Attributes
+    e value
+        c-type 
+            mixed true
+            sequence 
+                any 0-n
+                    namespace ##any
+                    process-contents skip
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+    e item
+        c-type 
+            sequence 
+                e-ref xforms:label
+                e-ref xforms:value
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+    e itemset
+        c-type 
+            sequence 
+                e-ref xforms:label
+                choice 
+                    e-ref xforms:value
+                    e-ref xforms:copy
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Nodeset.Binding.Attributes
+    e copy
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+    e filename
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+    e mediatype
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+    e input
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a inputmode
+                type xsd:string
+                is-optional
+            a incremental
+                type xsd:boolean
+                is-optional
+                default false
+    e textarea
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a inputmode
+                type xsd:string
+                is-optional
+            a incremental
+                type xsd:boolean
+                is-optional
+                default false
+    e secret
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a inputmode
+                type xsd:string
+                is-optional
+            a incremental
+                type xsd:boolean
+                is-optional
+                default false
+    e upload
+        c-type 
+            sequence 
+                e-ref xforms:label
+                e-ref xforms:filename
+                e-ref xforms:mediatype
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a mediatype
+                type xsd:string
+                is-optional
+            a incremental
+                type xsd:boolean
+                is-optional
+                default false
+    e select1
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:List.UI.Common
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a selection
+                is-optional
+                default closed
+                s-type 
+                    restrict : xsd:string
+                        enum open
+                        enum closed
+            a incremental
+                type xsd:boolean
+                is-optional
+                default true
+    e select
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:List.UI.Common
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a selection
+                is-optional
+                default closed
+                s-type 
+                    restrict : xsd:string
+                        enum open
+                        enum closed
+            a incremental
+                type xsd:boolean
+                is-optional
+                default true
+    e range
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a start
+                type xsd:string
+                is-optional
+            a end
+                type xsd:string
+                is-optional
+            a step
+                type xsd:string
+                is-optional
+            a incremental
+                type xsd:boolean
+                is-optional
+                default false
+    e trigger
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+    e output
+        c-type 
+            sequence 0-
+                e-ref xforms:label
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            a appearance
+                type xforms:appearanceType
+                is-optional
+            a value
+                type xforms:XPathExpression
+                is-optional
+    e submit
+        c-type 
+            sequence 
+                e-ref xforms:label
+                group-ref xforms:UI.Common
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a submission
+                type xsd:IDREF
+                is-required
+    e action
+        c-type 
+            sequence -n
+                group-ref xforms:Action
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+    e dispatch
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a name
+                type xsd:NMTOKEN
+                is-required
+            a target
+                type xsd:IDREF
+                is-required
+            a bubbles
+                type xsd:boolean
+                is-optional
+                default true
+            a cancelable
+                type xsd:boolean
+                is-optional
+                default true
+    e rebuild
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a model
+                type xsd:IDREF
+                is-optional
+    e revalidate
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a model
+                type xsd:IDREF
+                is-optional
+    e recalculate
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a model
+                type xsd:IDREF
+                is-optional
+    e refresh
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a model
+                type xsd:IDREF
+                is-optional
+    e setfocus
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a control
+                type xsd:IDREF
+                is-required
+    e load
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:XML.Events
+            a resource
+                type xsd:anyURI
+            a show
+                is-optional
+                default replace
+                s-type 
+                    restrict : xsd:string
+                        enum new
+                        enum replace
+    e setvalue
+        c-type 
+            simpleContent 
+                extend 
+                    @ base xsd:string
+                    ag-ref xforms:Common.Attributes
+                    ag-ref xforms:Single.Node.Binding.Attributes
+                    ag-ref xforms:XML.Events
+                    a value
+                        type xforms:XPathExpression
+                        is-optional
+    e send
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a submission
+                type xsd:IDREF
+                is-required
+    e reset
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a model
+                type xsd:IDREF
+                is-optional
+    e insert
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Nodeset.Binding.Attributes
+            ag-ref xforms:XML.Events
+            a at
+                type xforms:XPathExpression
+                is-required
+            a position
+                is-required
+                s-type 
+                    restrict : xsd:string
+                        enum before
+                        enum after
+    e delete
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Nodeset.Binding.Attributes
+            ag-ref xforms:XML.Events
+            a at
+                type xforms:XPathExpression
+                is-required
+    e setindex
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a repeat
+                type xsd:IDREF
+                is-required
+            a index
+                type xforms:XPathExpression
+                is-required
+    e toggle
+        c-type 
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:XML.Events
+            a case
+                type xsd:IDREF
+                is-required
+    e message
+        c-type 
+            mixed true
+            group-ref xforms:UI.Inline
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:Linking.Attributes
+            ag-ref xforms:XML.Events
+            a level
+                is-required
+                s-type 
+                    union xforms:QNameButNotNCNAME
+                        s-type 
+                            restrict : xsd:string
+                                enum ephemeral
+                                enum modeless
+                                enum modal
+    e repeat
+        c-type 
+            sequence 
+                sequence 0-n
+                    choice 
+                        group-ref xforms:Form.Controls
+                        e-ref xforms:group
+                        e-ref xforms:switch
+                        e-ref xforms:repeat
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Nodeset.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+            a startindex
+                type xsd:positiveInteger
+            a number
+                type xsd:nonNegativeInteger
+    e group
+        c-type 
+            sequence 
+                e-ref xforms:label
+                sequence 0-n
+                    choice 
+                        group-ref xforms:UI.Common
+                        group-ref xforms:Form.Controls
+                        e-ref xforms:group
+                        e-ref xforms:switch
+                        e-ref xforms:repeat
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+    e switch
+        c-type 
+            sequence -n
+                e-ref xforms:case
+            ag-ref xforms:Common.Attributes
+            ag-ref xforms:Single.Node.Binding.Attributes
+            ag-ref xforms:UI.Common.Attrs
+    e case
+        c-type 
+            sequence 
+                e-ref xforms:label
+                sequence 0-n
+                    choice 
+                        group-ref xforms:Form.Controls
+                        group-ref xforms:Action
+                        e-ref xforms:group
+                        e-ref xforms:switch
+                        e-ref xforms:repeat
+            a selected
+                type xsd:boolean
+                is-optional
+                default false
+            ag-ref xforms:Common.Attributes
+    group Form.Controls
+        choice 
+            e-ref xforms:input
+            e-ref xforms:textarea
+            e-ref xforms:secret
+            e-ref xforms:output
+            e-ref xforms:upload
+            e-ref xforms:select1
+            e-ref xforms:select
+            e-ref xforms:range
+            e-ref xforms:submit
+            e-ref xforms:trigger
+    group UI.Inline
+        sequence 
+            choice 0-
+                e-ref xforms:output
+    group UI.Common
+        sequence 
+            choice 0-n
+                e-ref xforms:help
+                e-ref xforms:hint
+                e-ref xforms:alert
+                group-ref xforms:Action
+    group List.UI.Common
+        sequence 
+            choice 
+                e-ref xforms:item
+                e-ref xforms:itemset
+                e-ref xforms:choices
+    group Action
+        sequence 
+            choice 0-n
+                e-ref xforms:action
+                e-ref xforms:dispatch
+                e-ref xforms:rebuild
+                e-ref xforms:recalculate
+                e-ref xforms:revalidate
+                e-ref xforms:refresh
+                e-ref xforms:setfocus
+                e-ref xforms:load
+                e-ref xforms:setvalue
+                e-ref xforms:send
+                e-ref xforms:reset
+                e-ref xforms:insert
+                e-ref xforms:delete
+                e-ref xforms:setindex
+                e-ref xforms:toggle
+                e-ref xforms:message
+    a repeat-nodeset
+        type xforms:XPathExpression
+    a repeat-model
+        type xsd:IDREF
+    a repeat-bind
+        type xsd:IDREF
+    a repeat-startindex
+        type xsd:positiveInteger
+    a repeat-number
+        type xsd:nonNegativeInteger
+    s-type versionList
+        list xforms:versionNumber
+    s-type versionNumber
+        restrict : xsd:string
+            pattern [1-9]\d*\.\d+
+    s-type XPathExpression
+        restrict : xsd:string
+    s-type QNameList
+        list xsd:QName
+    s-type anyURIList
+        list xsd:anyURI
+    s-type QNameButNotNCNAME
+        restrict : xsd:QName
+            pattern [^:]+:[^:]+
+    s-type appearanceType
+        union xforms:QNameButNotNCNAME
+            s-type 
+                restrict : xsd:string
+                    enum full
+                    enum compact
+                    enum minimal
+    s-type listItem
+        restrict : xsd:string
+            pattern \S+
+    s-type listItems
+        list xforms:listItem
+    s-type dayTimeDuration
+        restrict : xsd:duration
+            pattern [\-]?P([0-9]+D(T([0-9]+(H([0-9]+(M([0-9]+(\.[0-9]*)?S
+     	 	|\.[0-9]+S)?|(\.[0-9]*)?S)|(\.[0-9]*)?S)?|M([0-9]+
+     	 	(\.[0-9]*)?S|\.[0-9]+S)?|(\.[0-9]*)?S)|\.[0-9]+S))?
+     	 	|T([0-9]+(H([0-9]+(M([0-9]+(\.[0-9]*)?S|\.[0-9]+S)?
+     	 	|(\.[0-9]*)?S)|(\.[0-9]*)?S)?|M([0-9]+(\.[0-9]*)?S|\.[0-9]+S)?
+     	 	|(\.[0-9]*)?S)|\.[0-9]+S))
+    s-type yearMonthDuration
+        restrict : xsd:duration
+            pattern [\-]?P[0-9]+(Y([0-9]+M)?|M)

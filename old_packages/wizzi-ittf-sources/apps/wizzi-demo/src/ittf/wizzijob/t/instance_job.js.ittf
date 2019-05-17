@@ -1,0 +1,35 @@
+﻿_ wizzi.executeWizziJob
+	$params name, jobPath
+	{
+		@ user 'stefi'
+		@ role 'admin'
+		@ storeKind 'filesystem'
+		@ config
+			{
+				@ wfBaseFolder 'c:\my\wizzi\v3\next\sources'
+				@ plugins
+					[
+						@ 'wizzi-core'
+						@ 'wizzi-meta'
+						@ 'wizzi-js'
+						@ 'wizzi-html'
+						@ 'wizzi-docs'
+		@ job
+			{
+				@ name '${name}'
+				@ ittfDocumentUri ${jobPath}
+				@ productionOptions
+					_ wizzi.productionOptions
+						{
+							@ indentSpaces 4
+							@ basedir __dirname
+							@ verbose 2
+				@ globalContext
+					{
+						@ testgc 'stefi from global context' 
+	function
+		param err
+		if err
+			log "Error executing wizzi instance job", err
+		log 'Wizzi instance job SUCCESSFULLY executed'
+		$hook

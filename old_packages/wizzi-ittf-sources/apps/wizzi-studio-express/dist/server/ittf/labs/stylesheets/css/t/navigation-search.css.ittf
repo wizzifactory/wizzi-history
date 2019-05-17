@@ -1,0 +1,72 @@
+﻿$group
+
+    media (min-width: 768px)
+        . navigation__search
+            -webkit-box-flex 0
+            -ms-flex 0 0 auto
+            flex 0 0 auto
+            display -webkit-box
+            display -ms-flexbox
+            display flex
+            -webkit-box-pack end
+            -ms-flex-pack end
+            justify-content flex-end
+            padding 0.8em 0
+        . navigation__search-input
+            padding 0
+            border none
+            background transparent
+            width 0
+            font-size 14px
+            text-indent 0.5em
+            border-bottom 1px solid #465E69
+            margin-right 0
+            color #ffffff
+            text-shadow 0 0 0 #f2f2f2
+            -webkit-transition all 250ms
+            transition all 250ms
+        . navigation__search-input::-webkit-input-placeholder
+            color #5a7988
+            text-shadow none
+            -webkit-text-fill-color initial
+        . navigation__search-icon
+            font-size 1em
+            padding 0
+            border none
+            cursor pointer
+            color #dedede
+            background transparent
+            -webkit-transition color 250ms
+            transition color 250ms
+        . navigation__search-icon.icon-cross
+            display none
+        . navigation__search-icon:hover
+            color #8DD6F9
+        . navigation__search-input:focus
+            + .navigation__search-icon:focus
+            outline none
+        . navigation__icon
+            display block
+            margin-left 1em
+            color #ffffff
+        . navigation__icon:hover
+            color #8DD6F9
+        . navigation__languages
+            margin-left 1em
+            margin-top -4px
+    media (min-width: 768px)
+        . navigation--search-mode .navigation__link
+            pointer-events none
+            overflow hidden
+            white-space nowrap
+            padding 1.5em 0
+            margin-right -35px
+            opacity 0
+        . navigation--search-mode .navigation__search-input
+            margin-right 0.5em
+            width 400px
+        . navigation--search-mode .navigation__search-icon.icon-cross
+            display block
+        . navigation--search-mode .navigation__search-icon.icon-magnifying-glass
+            display none
+

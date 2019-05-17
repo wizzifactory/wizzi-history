@@ -1,0 +1,99 @@
+﻿base_test( ittfMTreeEx )
+
+	$append imports
+		var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+
+	it-async should load an ittf document, as is, into an IttfModelEx instance class
+
+		_ ittfMTreeEx.createFrom
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'basic.tests.ittf'
+			{
+			f_cb_test( result )
+				log? result
+				tobe_object( result )
+				tobe_string( result.name, alfa )
+				tobe_array( result.children, 2 )
+				tobe_string( result.children[0].name, ${'$$'} )
+				tobe_string( result.children[0].value, beta )
+				tobe_string( result.children[1].name, gamma )
+				tobe_array( result.children[1].children, 1 )
+				_ done()
+
+	it-async should load an evaluated mTree object into an IttfMOdelEx instance class
+		_ ittfMTreeEx.createFrom
+			{
+				[ nodes
+					{
+						@ n 'alfa'
+						[ children
+							{
+								@ n '$$'
+								@ v 'beta'
+							{
+								@ n 'gamma'
+								[ children
+									{
+										@ n 'a'
+			f_cb_test( result )
+				log? result
+				tobe_object( result )
+				tobe_string( result.name, alfa )
+				tobe_array( result.children, 2 )
+				tobe_string( result.children[0].name, ${'$$'} )
+				tobe_string( result.children[0].value, beta )
+				tobe_string( result.children[1].name, gamma )
+				tobe_array( result.children[1].children, 1 )
+				_ done()
+
+	it-async should load a tree structure of named-value nodes into an IttfMOdelEx instance class
+		_ ittfMTreeEx.createFrom
+			{
+				@ name 'alfa'
+				[ children
+					{
+						@ name '$$'
+						@ value 'beta'
+					{
+						@ name 'gamma'
+						[ children
+							{
+								@ name 'a'
+			f_cb_test( result )
+				log? result
+				tobe_object( result )
+				tobe_string( result.name, alfa )
+				tobe_array( result.children, 2 )
+				tobe_string( result.children[0].name, ${'$$'} )
+				tobe_string( result.children[0].value, beta )
+				tobe_string( result.children[1].name, gamma )
+				tobe_array( result.children[1].children, 1 )
+				_ done()
+
+	it-async should parse a node value containing an interpolation
+		_ ittfMTreeEx.createFrom
+			{
+				@ name 'alfa'
+				[ children
+					{
+						@ name 'beta'
+						@ value 'i am:${'$'}{name}.'
+			f_cb_test( result )
+				log? result
+				tobe_object( result )
+				tobe_string( result.name, alfa )
+				tobe_array( result.children, 1 )
+				tobe_string( result.children[0].name, beta
+				tobe_array( result.children[0].getValueParsed(), 3 )
+				tobe_number( result.children[0].getValueParsed()[0].t, 0 )
+				tobe_string( result.children[0].getValueParsed()[0].v, i am: )
+				tobe_number( result.children[0].getValueParsed()[1].t, 1 )
+				tobe_string( result.children[0].getValueParsed()[1].v, name )
+				tobe_number( result.children[0].getValueParsed()[2].t, 0 )
+				tobe_string( result.children[0].getValueParsed()[2].v, . )
+				_ done()
+
+
+

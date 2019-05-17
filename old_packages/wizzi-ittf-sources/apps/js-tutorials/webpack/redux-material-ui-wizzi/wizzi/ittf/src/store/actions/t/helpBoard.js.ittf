@@ -1,0 +1,66 @@
+﻿$group
+	+
+	decl( HB_UPDATE_AST )
+	decl( HB_CODE_EDITOR_CURSOR_ACTIVITY )
+	+
+	# thunk.withExtraArgument
+	wz-const updateSnippetAst
+		=>
+			param schemaName
+			param snippetCode
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					var snippetAst = {}
+					if snippetCode && snippetCode.length > 0
+						set snippetAst
+							_ extraArgument.wizzi.getAst
+								@ schemaName
+								@ snippetCode
+					
+					_ dispatch
+						_ completeHbUpdateAst
+							@ snippetAst
+	+
+	wz-const completeHbUpdateAst
+		=>
+			param snippetAst
+			log 'store.actions.completeHbUpdateAst.snippetAst', snippetAst
+			return
+				{
+					@ type HB_UPDATE_AST
+					@ snippetAst snippetAst
+
+	wz-const codeEditorCursorActivity
+		=>
+			param cursor
+			log 'store.actions.codeEditorCursorActivity', cursor
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					var
+						decl snippetAst = getState().helpBoard.snippetAst
+						decl astNode
+						decl schemaElementDoc = null
+
+					# TODO
+						_ dispatch
+							_ completeCodeEditorCursorActivity
+								@ cursor
+								@ astNode
+
+	wz-const completeCodeEditorCursorActivity
+		=>
+			param cursor
+			param astNode
+			return
+				{
+					@ type HB_CODE_EDITOR_CURSOR_ACTIVITY
+					@ cursor cursor
+					@ astNode astNode

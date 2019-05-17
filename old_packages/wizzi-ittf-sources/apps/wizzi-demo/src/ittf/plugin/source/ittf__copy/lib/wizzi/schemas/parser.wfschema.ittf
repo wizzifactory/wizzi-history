@@ -1,0 +1,327 @@
+﻿wfschema parser
+
+	export-to json
+
+	declare
+		var async = require('async')
+
+	e node
+		# A tree node with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag //
+		r node/s
+
+	e parser : node
+		is-root
+
+		m wzInitialize
+			set this.elements = {}
+			set this.symbols = {}
+			set this.extensionParsers = {}
+			set this.tests = []
+			set this.lexerContainer = null
+
+		m getExtensionParser
+			param name
+			var ret = this.extensionParsers[name]
+			return ret ? ret.getParserNode() : null
+		
+		m match
+			param input
+			param callback
+			
+			if verify.isFunction(callback) === false
+				throw new TypeError('The callback parameter must be a function')
+			if verify.isEmpty(input)
+				throw new TypeError('The input parameter must be a not empty string')
+			if this.start === null
+				throw new Error('Missing start symbol')
+			
+			# log 'parser match', input
+			
+			var that = this
+			_ this.lexerContainer.getTokens
+				@ input
+				f_cb( tokens )
+					# log 'parser tokens', tokens
+					var state
+						{
+							@ pos 0
+							@ tokens tokens
+							@ len tokens.length
+					# log 'starting from symbol', that.start.wzElement, that.start.wzName
+					var ret = that.start.match(state)
+					# log 'match result ret, state', ret, state
+					return
+						_ callback
+							@ null
+							{
+								@ state state
+								@ ast ret.ast
+
+		m execTests
+			param callback
+			var that = this
+			# log 'parser execTests'
+			_ async.map
+				@ this.tests
+				function
+					param test
+					param callback
+					# log 'execTests.test', test
+					_ test.exec
+						@ callback
+				function
+					param err
+					param result
+					# log 'execTests.err,result', err,result
+					return
+						_ callback(err, result)
+
+
+	e_tag( parserElement, e, node )
+		# composable element of a parser grammar
+
+		m wzInitialize
+			var root = this.wzRoot()
+			if root.elements[this.wzName]
+				throw new Error('Duplicated parserElement: ' + this.wzName)
+			set root.elements[this.wzName] = this
+			if countParseChildren(this) > 1
+				# default to ampersand
+				var savenodes = getParseChildren(this)
+				var othernodes = getNoParseChildren(this)
+				set this.nodes = []
+				var amp
+					_ this.wzCreateChildColl
+						@ '&'
+						@ ''
+						@ md.ampersand
+						@ this.nodes
+				foreach item in othernodes
+					_ amp.wzAddChildToColl(item, amp.nodes)
+				foreach item in savenodes
+					_ amp.wzAddChildToColl(item, amp.nodes)
+				_ amp.wzInitialize(ctx)
+
+		m match
+			param state
+			if !this.parserNodes
+				set this.parserNodes = getParseChildren(this)
+			if this.parserNodes && this.parserNodes.length === 1
+				return this.parserNodes[0].match(state)
+			else
+				# log 'parserElement. this.nodes', getParseChildren(this)
+				_ this.error
+					@ 'parserElement element node must have one single child'
+					@ this
+
+	e_tag( any, any, node )
+
+		a_flag( keepValue, keep-value )
+
+		m wzInitialize
+			set this.anyValue =  this.wzName.trim().length === 0
+
+		m match
+			param state
+
+			var lexedTk = state.tokens[state.pos]
+
+			if this.anyValue
+				set state.pos++
+				if this.keepValue
+					return 
+						{
+							@ ok true
+							@ ast
+								{
+									@ type 'KEPT'
+									@ content lexedTk.value
+				else
+					return 
+						{
+							@ ok true
+
+			var lexedTk = state.tokens[state.pos]
+			# log 'any', lexedTk.valueCapture, this.wzName, lexedTk.value
+			if lexedTk.valueCapture === this.wzName || lexedTk.value === this.wzName
+				set state.pos++
+				return 
+					{
+						@ ok true
+						@ ast
+							{
+								@ type 'KEPT'
+								@ content this.wzName
+			else
+				return
+					_ setStateError
+						@ state
+						@ 'Expected any: ' + getNodePath(this)
+
+	e_tag( token, tk, node )
+
+		a_flag( keepValue, keep-value )
+
+		m wzInitialize
+			set this.type =  getPunctuationName(this.wzName) || this.wzName
+			# log 'parser token.type', this.wzName, this.type
+
+		m match
+			param state
+			var lexedTk = state.tokens[state.pos]
+			_ logEnter(this, state)
+			if lexedTk.type === this.type
+				set state.pos++
+				if this.keepValue
+					return
+						{
+							@ ok true
+							@ ast
+								{
+									@ type 'KEPT'
+									@ content lexedTk.value
+									@ row lexedTk.row
+									@ col lexedTk.col
+				elif lexedTk.valueCapture.length > 0
+					return
+						{
+							@ ok true
+							@ ast
+								{
+									@ type this.type
+									@ content lexedTk.valueCapture
+									@ row lexedTk.row
+									@ col lexedTk.col
+				else
+					return
+						{
+							@ ok true
+			else
+				return
+					_ setStateError
+						@ state
+						@ 'Expected token: ' +  getNodePath(this)
+
+
+	e_tag( reference, ref, node )
+
+		m match
+			param state
+			var root = this.wzRoot()
+			if !this.refInstance
+				set this.refInstance = root.symbols[this.wzName]
+				if !this.refInstance
+					set this.refInstance = root.elements[this.wzName]
+				if !this.refInstance
+					set this.refInstance = root.getExtensionParser(this.wzName)
+				if !this.refInstance
+					throw new Error('Missing reference: ' + this.wzName)
+			return this.refInstance.match(state)
+
+	e_tag( bar, |, node )
+		# Alternative
+		# At least one item node mmust match
+
+		m match
+			param state
+			if !(state.pos < state.len)
+				return 
+					{
+						@ ok false
+			var cp_pos = state.pos, cur_pos = state.pos, ret
+			_ logEnter(this, state)
+			var children = getParseChildren(this)
+			foreach item in children
+				set ret = item.match(state)
+				if ret.ok
+					_ setStateOk(state)
+					return
+						{
+							@ ok true
+							@ ast ret.ast
+				else
+					# restore pos for retry
+					set state.pos = cp_pos
+			return
+				{
+					@ ok false
+
+	e_tag( ampersand, &, node )
+		# Conjunction
+		# All item nodes mmust match
+
+		m match
+			param state
+			if !(state.pos < state.len)
+				return 
+					{
+						@ ok false
+			var cp_pos = state.pos, cur_pos = state.pos, ret
+			_ logEnter(this, state)
+			var ast = initialAst(this)
+			var children = getParseChildren(this)
+			foreach item in children
+				set ret = item.match(state)
+				if !ret
+					# log 'ampersand !ret.item', item
+				if ret.ok
+					if state.pos > cur_pos
+						_ logFound(this, item, state)
+						set cur_pos = state.pos
+						if !ret.opterr
+							_ setStateOk(state)
+							if ret.ast
+								_ loadAST(ast, ret.ast)
+					else
+						# log 'ampersand.optional not found', item.wzTag, item.wzName
+				else
+					# log 'ampersand', this.wzName, 'not found', item.wzTag, item.wzName
+					# failed
+					# restore pos
+					set state.pos = cp_pos
+					return 
+						{
+							@ ok false
+			set ast.endPos = state.pos
+			return
+				{
+					@ ok true
+					@ ast ast
+
+	$include parser/lexer
+	$include parser/symbol
+	$include parser/quantifiers
+	$include parser/builtins
+	$include parser/test
+
+	m setStateOk
+		param state
+		set state.lasterrmsg = null
+		set state.lasterrpos = null
+	
+	m setStateError
+		param state
+		param msg
+		if !state.lasterrmsg
+			set state.lasterrmsg = msg
+		if !state.lasterrpos
+			set state.lasterrpos = state.pos
+		return
+			{
+				@ ok false
+	m loadAST
+		param parentAst
+		param ast
+		# log 'loadAST', ast.type, verify.isArray(ast.content) ? ast.content.length : ast.content
+		if ast.type === 'TEMP'
+			if verify.isArray(ast.content)
+				foreach item in ast.content
+					_ loadAST(parentAst, item)
+			else
+				_ parentAst.content.push(ast)
+		else
+			_ parentAst.content.push(ast)
+		return parentAst

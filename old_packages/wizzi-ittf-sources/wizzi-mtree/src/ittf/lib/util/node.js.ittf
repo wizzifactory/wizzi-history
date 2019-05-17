@@ -1,0 +1,289 @@
+﻿module 
+    kind jsfile
+
+    var util = require('util')
+	var assert = require('assert')
+	var verify = require('wizzi-utils').verify
+
+    var md
+        set module.exports =
+            { 
+
+    #
+		# Node object {
+		#  name:String
+		#  value:String
+		#  parent:Object of type Node
+		#  children:Array  of items of type Node
+		# }
+	
+	#
+		# IttfCommands are nodes which name 
+		# starts with the char "$"
+		# The search go down to descendants
+	
+	set md.findIttfCommand
+        function 
+            param item
+            param cmdname
+            param cmdtype
+			param startItem
+			
+			if (startItem && item.id === startItem.id) 
+				# \b || (startItem && item.parent && item.parent.id === startItem.parent.id)
+				
+				# searching the hook for an append command
+				# when descending from a parent we encounter startItem
+				# or a sibling we skip it and its descendants
+				return null
+            
+			if item.name === ('$' + cmdtype)
+				if item.value && item.value.trim() === cmdname
+					return item
+				if !item.value && cmdname === 'default'
+					return item
+            
+			var 
+                decl found
+                decl i
+                decl l = item.children.length
+            
+			for i = 0; i < l; i++
+                set found = md.findIttfCommand(item.children[i], cmdname, cmdtype, startItem)
+                if found
+                    return found
+            return null
+    
+	#
+		# Search a $hook node command going down deep
+	set md.findHookExtDeep
+        function 
+            param item
+            param hookname
+			param searchType
+			param startAppendNode
+			param mixedNode
+
+			if typeof mixedNode === 'undefined'
+				# log 'md.findHookExtDeep.enter first', item.name, item.value, item.model.brickKey
+				# this must be the first call for a new mixed node
+				_ assert.ok(typeof(item.model.$mixerBrickKey) !== 'undefined', 'wizzi-mtree.util.node.findHookExtDeep Error. In a first call the paramater item must be the root node of a mixed document. Found: ' + item.model.$mixerBrickKey)
+				set mixedNode = item
+
+
+			if (startAppendNode && item.id === startAppendNode.id) 
+				# \b || (startAppendNode && item.parent && item.parent.id === startAppendNode.parent.id)
+				
+				# searching the hook for an append command
+				# when descending from a parent we encounter startAppendNode
+				# or a sibling we skip it and its descendants
+				return null
+            
+			if searchType == 1
+				if item.model.brickKey == mixedNode.model.brickKey
+					if item.name === ('$hook')
+						if item.value && item.value.trim() === hookname
+							# log 'md.findHookExtDeep.found', item.name, item.value, item.model.brickKey, 'mixedNode', mixedNode.name, mixedNode.value, mixedNode.model.brickKey
+							return item
+						if !item.value && hookname === 'default'
+							# log 'md.findHookExtDeep.found', item.name, item.value, item.model.brickKey, 'mixedNode', mixedNode.name, mixedNode.value, mixedNode.model.brickKey
+							return item
+			else
+				if item.name === ('$hook')
+					if item.value && item.value.trim() === hookname
+						return item
+					if !item.value && hookname === 'default'
+						return item
+            
+			var 
+                decl found
+                decl i
+                decl l = item.children.length
+            
+			for i = 0; i < l; i++
+                set found = md.findHookExtDeep(item.children[i], hookname, searchType, startAppendNode, mixedNode)
+                if found
+                    return found
+            return null
+
+	#
+		# Start the search of a $hook node command from a $append node command. 
+		# The search start going up to ancestor mixed fragments.
+	set md.findHookExt
+        function 
+            param item
+            param hookname
+			param searchType
+			param startAppendNode
+			# log 'md.findHookExt.enter:', item.name, item.value, 'id', item.id, 'brickKey', item.model.brickKey
+			# the startitem (the $append node command) is saved
+			# and will be checked when the search descends, to avoid 
+			# searching descendants of the $append node command itself.
+			if typeof startAppendNode === 'undefined'
+				set startAppendNode = item
+            # var prn = item.parent
+			var prn = md.findParentMixinRoot(item)
+            if !prn
+                return null
+			else
+				# log 'md.findHookExt.parent.mixin', prn.name, prn.value, 'id', prn.id, 'brickKey', prn.model.brickKey, 'mixed by', prn.model.$mixerBrickKey
+				var hook = md.findHookExtDeep(prn, hookname, searchType, startAppendNode)
+				if hook
+					return hook
+				return md.findHookExt(prn, hookname, searchType, startAppendNode)
+    
+	#
+		# find a $virtual command
+		# The search go up to ancestors
+	set md.findVirtual =
+        function 
+            param item
+            param virtname
+            var prn = item.parent
+            if !prn
+                return null
+            var virt = md.findIttfCommand(prn, virtname, 'virtual')
+            if virt
+                return virt
+            return md.findVirtual(prn, virtname)
+    
+	#
+		# find the first parent node that is 
+		# the root of a mixin
+	set md.findParentMixinRoot =
+        function 
+            param item
+			var prn = item.parent
+			# log 'md.findParentMixinRoot', prn.model.$mixerBrickKey
+			while prn != null && typeof(prn.model.$mixerBrickKey) === 'undefined'
+				set prn = prn.parent
+				# log 'md.findParentMixinRoot', prn ? prn.model.$mixerBrickKey : prn
+			return prn
+
+	set md.replace
+        function 
+            param item
+            param replacers
+			if !item.parent
+				# log 'util/node/replace/item', item
+				foreach repl in replacers
+					# log 'util/node/replace/repl', repl
+            var nodes = item.parent.children
+            set item.parent.children = []
+            foreach child in nodes
+                if child === item
+                    foreach replchild in replacers
+                        set replchild.parent = item.parent
+                        _ item.parent.children.push(replchild)
+                else 
+                    _ item.parent.children.push(child)
+    
+	set md.remove
+        function 
+            param item
+            var nodes = item.parent.children
+            set item.parent.children = []
+            foreach child in nodes
+                if child !== item
+                    _ item.parent.children.push(child)
+    
+	#
+		# inline a node hierarchy in a single text line
+		# separated by the "__LS__" sequence
+	set md.nodeToTextLine
+        function 
+            param node
+            var acc
+                [ 
+            if node.children
+                foreach item in node.children
+                    _ textline(item, acc, '')
+            return
+                _ acc.join
+                    @ work.lineSep
+    
+	function textline
+        param node
+        param acc
+        param indent
+        var open = node.tagSuffix == '(' ? '(' : ' '
+        _ acc.push
+			@ indent + node.name + open + (node.value || '')
+        foreach item in node.children
+            _ textline(item, acc, (indent + '  '))
+    
+	set md.inlinedTextToTextLines
+        function 
+            param text
+            if typeof(text) === 'undefined' || text == null
+                return 
+                    { 
+                        @ text text
+                        @ lines null
+            var text
+                _ verify.replaceAll
+                    @ text
+                    @ work.textSep
+                    @ '\n'
+            var ss = text.split('\n')
+            if ss.length == 1
+                return 
+                    { 
+                        @ text ss[0]
+                        @ lines null
+            else 
+                var lines
+                    _ verify.replaceAll
+                        @ ss[1]
+                        @ work.lineSep
+                        @ '\n'
+                        ._ split('\n')
+                return 
+                    { 
+                        @ text ss[0]
+                        @ lines lines
+    
+	set md.isParentOfName
+        function 
+            param parsernode
+            param nameOrArray
+            var test = parsernode.parent
+            while test
+                if verify.isArray(nameOrArray)
+                    var match = false
+                    foreach value in nameOrArray
+						set match = match || test.name === value
+                    if match
+                        return match
+                else 
+                    if test.name === nameOrArray
+                        return true
+                set test = test.parent
+            return false
+    
+	function spaces
+        param num
+        return 
+            _ Array((num + 1))
+                ._ join(" ")
+    
+	function _dumpNodeDeep
+        param node
+        param indent
+        log spaces(indent) + node.name + ' ' + (node.value || '') + ' ids: ' + node.parsedId + ' ' + node.id
+        if (node.$args || node.$params)
+            log spaces(indent) + ' $args: ' + node.$args + ' $params: ' + node.$params
+        set indent++
+        foreach child in node.children
+            _ _dumpNodeDeep(child, indent)
+    
+	set md.dump
+        function 
+            param nodes
+            foreach node in nodes
+                _ _dumpNodeDeep(node, 1)
+    
+	var work
+        { 
+    set work.lineSep = "__LS__"
+    set work.textSep = "__TS__"

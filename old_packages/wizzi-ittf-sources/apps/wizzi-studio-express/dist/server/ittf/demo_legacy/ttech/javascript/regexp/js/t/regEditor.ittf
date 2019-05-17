@@ -1,0 +1,41 @@
+﻿$group
+	
+	class regEditor
+		ctor
+			param examples
+			set this.examples = examples
+			set this.$reText = $('#retext')
+			set this.$reTextEscaped = $('#retextEscaped')
+			set this.$reFlags = $('#reflags')
+			set this.$reSrc = $('#resrc')
+			set this.$results = $('#results')
+
+		m setExample
+			param itemName
+			log itemName
+			foreach item in this.examples
+				if item.name === itemName
+					_ this.$reText.val(item.re)
+					_ this.$reTextEscaped.val(escapeSpecials(item.re))
+					_ this.$reFlags.val(item.flags)
+					_ this.$reSrc.val(item.src)
+
+		m execute
+			param oper
+			
+			var reText = this.$reText.val()
+			var reTextEscaped = escapeSpecials(reText)
+			var reFlags = this.$reFlags.val()
+			var reSrc = this.$reSrc.val()
+
+			var match
+				_ execute
+					@ reTextEscaped
+					@ reFlags
+					@ reSrc
+					@ oper
+
+			log match
+
+
+

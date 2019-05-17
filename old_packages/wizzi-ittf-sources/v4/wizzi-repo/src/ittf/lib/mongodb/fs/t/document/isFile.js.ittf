@@ -1,0 +1,14 @@
+﻿$group
+
+	m isFile
+		string filePath
+		callback
+
+		set filePath = normalize(path.resolve(filePath))
+		_ this.fsdb.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem && fsitem.kind == 1
+					r_cb( true )
+				else
+					r_cb( false )

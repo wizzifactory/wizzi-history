@@ -1,0 +1,34 @@
+﻿$group
+
+	e sampleGroup : item
+		tag sample-group
+
+	e sample : item
+
+		m wzInitialize
+			set this.summary = _.find(this.items, { wzElement: 'summary' })
+		
+		m getPrimaryIttf
+			return _.find(this.items, { kind: 'primary' })
+		
+		m getMixins
+			return _.filter(this.items, { kind: 'mixin' })
+		
+		m getIncludes
+			return _.filter(this.items, { kind: 'include' })
+		
+		m getSchema
+			return _.find(this.items, { kind: 'schema' })
+	
+	e ittf : item
+		a kind 
+			restrict
+				enum primary
+				enum mixin
+				enum include
+				enum schema
+	
+	e js : item
+
+	e ittfnode : item
+		tag -	 

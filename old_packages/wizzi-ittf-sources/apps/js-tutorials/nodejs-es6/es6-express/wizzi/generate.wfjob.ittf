@@ -1,0 +1,40 @@
+﻿wfjob wizzi-studio-nextjs
+	
+	$include app-options
+	
+	$
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var ittf_src          = path.join(__dirname, 'ittf', 'src');
+		var dest_folder       = path.resolve(__dirname, '..', 'app');
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+		$include wfjob/any_html
+
+		$if app.useBabel
+			artifact .babelrc
+				src .babelrc.json.ittf
+				schema json
+				generator json/document
+				dest-path .babelrc
+				extension babelrc
+
+	line src
+		cwd-folder ${ittf_src}
+		dest-folder ${dest_folder}/src
+
+		$include wfjob/any_js
+		$include wfjob/any_json
+		$include wfjob/any_css
+		$include wfjob/any_html
+		$include wfjob/any_svg
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref src

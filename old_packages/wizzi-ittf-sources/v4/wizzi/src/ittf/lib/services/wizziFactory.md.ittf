@@ -1,0 +1,69 @@
+﻿mdx
+
+	h2 The wizzi.WizziFactory class
+	
+	p All wizzi factory operations require an instance of the
+		\b wizzi.WizziFactory class.
+
+	ul A wizzi.WizziFactory instance manages
+		li The store system (filesystem, mongodb or localstorage).
+		li The global context.
+		li The loading of plugins.
+
+	h3 The store system
+	p The store system is set at creation time and cannot be changed.
+	
+	h3 The global context
+	p The global context is set at creation time and cannot be changed.
+	
+	h3 The loading of plugins
+	p Plugins are loaded at creation time and cannot be changed.
+
+	h3 Operations
+	ul
+		li mTree loading
+		li Wizzi model loading
+		li Model transformation
+		li Artifact generation
+		li Wizzi model types generation
+		li Production manager creation
+		li Wizzi job execution
+
+	h3 mTree loading
+	p Executes the loading of an mTree from an ittf document.
+	
+	h3 Wizzi model loading
+	p Executes the loading, initialization and validation of a wizzi model from an ittf document.
+	p TODO the 'modelContext' paramater can contain properties of type wizzi.model.modelInfo.
+		\b wizzi.model.modelInfo(s) will be resolved and replaced with the loaded wizzi models.
+	
+	h3 Model transformation
+	p Executes the transformation of a wizzi model or POJO.
+	
+	h3 Artifact generation
+	p Executes the generation of a single software artifact.
+	
+	h3 Wizzi model types generation
+	p The generation of the javascript modules for loading and implement a wizzi model is a
+		\b fundamental part of a wizzi plugin development.
+	p A wizzi model of type 'wfschema' describes a wizzi model and its constraints.
+		\b The method 'generateModelTypes' of the wizzi.wizziFactory uses a 'wfschema' model
+		\b to generate the javascript artifacts that implement a wizzi model.
+	
+	h3 Wizzi job execution
+	
+	p A wizzi job is described by a wizzi model of schema 'wfjob', that can contain
+		\b artifact production requests and optional references to other 'wfjob' models.
+		\b The 'executeJob' method of the wizzi.wizziFactory triggers the loading of a 'wfjob' model,
+		\b the resolution of the references to other 'wfjob' models and
+		\b the execution of the requested artifact productions. 
+
+	h3 Production manager creation
+	
+	p An instance of a wizzi.production.productionManager class allow a more fine grained control
+		\b on artifact productions. To a wizzi.production.productionManager instance
+		\b we can add wizzi job requests ( 'addJobRequest' method ) and single artifact 
+		\b requests ( 'addArtifactRequest' method ), then we can execute the
+		\b run method and obtain wizzi.artifact.genContexts filled with the artifact ready
+		\b to be persisted, and, at the end, we can execute the 'persistToFile' method. 
+

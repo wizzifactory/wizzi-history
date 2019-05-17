@@ -1,0 +1,318 @@
+﻿wfschema lexer
+
+	export-to json
+
+	declare
+		var Coder = wzutils.Coder
+
+	e node
+		# A tree node with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag //
+		a_flag( ignoreCase, ignore-case )
+		r node/s
+
+		m getIgnoreCase
+			if this.ignoreCase
+				return true
+			elif this.wzParent && this.wzParent.getIgnoreCase
+				return this.wzParent.getIgnoreCase()
+			else
+				return false
+
+	e lexer : node
+		is-root
+		a_tag( commentSL, comment-sl )
+		a_tag( commentMLStart, comment-ml-start )
+		a_tag( commentMLEnd, comment-ml-end )
+
+		m wzInitialize
+			set this.elements = {}
+			set this.tokens = {}
+			set this.punctuationChars = {}
+			set this.counters = {}
+			set this.tests = []
+
+		m getCountedName
+			param type
+			if !this.counters[type]
+				set this.counters[type] = 1
+			var c = this.counters[type]
+			set this.counters[type]++
+			return type + '_' + c
+
+		$include lexer/getCode
+
+		m execTests
+			var results = [], tokens
+			foreach test in this.tests
+				set tokens
+					_ test.exec
+				_ results.push
+					{
+						@ input test.input
+						@ tokens tokens
+			return results
+
+	e_tag( lexerElement, e, node )
+		# composable element of a lexer grammar
+
+		m wzInitialize
+			var root = this.wzRoot()
+			if root.elements[this.wzName]
+				# log 'root', root
+				_ this.error
+					@ 'Duplicated lexerElement: ' + this.wzName
+					@ this
+			set root.elements[this.wzName] = this
+			if countLexChildren(this) > 1
+				# default to ampersand
+				var savenodes = this.nodes
+				set this.nodes = []
+				var amp
+					_ this.wzCreateChildColl
+						@ '&'
+						@ ''
+						@ md.ampersand
+						@ this.nodes
+				foreach item in savenodes
+					_ amp.wzAddChildToColl(item, amp.nodes)
+				_ amp.wzInitialize(ctx)
+
+		m getCanFailMatch
+			return this.nodes[0].getCanFailMatch()
+		m getIsFunction
+			return this.nodes[0].getIsFunction()
+		m getFName
+			return this.nodes[0].getFName()
+
+		m toCode
+			param coder
+			_ coder.pushPath(this.wzName)
+			foreach item in this.nodes
+				if verify.isFunction(item.toCode)
+					_ item.toCode(coder)
+			_ coder.popPath()
+
+		m toFunction
+			param coder
+			_ coder.pushPath(this.wzName)
+			foreach item in this.nodes
+				# log 'toFunction lexerElement.item', item.wzElement
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+			_ coder.popPath()
+
+	e_tag( reference, ref, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.refInstance = root.elements[this.wzName]
+			if !this.refInstance
+				_ this.error
+					@ 'Missing reference: ' + this.wzName
+					@ this
+
+		m getCanFailMatch
+			return this.refInstance.getCanFailMatch()
+		m getIsFunction
+			return this.refInstance.getIsFunction()
+		m getFName
+			return this.refInstance.getFName()
+
+		m toCode
+			param coder
+			var root = this.wzRoot()
+			return this.refInstance.toCode(coder)
+
+		m toFunction
+			param coder
+			var root = this.wzRoot()
+			if verify.isFunction(this.refInstance.toFunction)
+				return this.refInstance.toFunction(coder)
+
+	$include lexer/token
+	$include lexer/quantifiers
+	$include lexer/colon-blank
+
+	e_tag( ampersand, &, node )
+		# Conjunction. All child rules must match.
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The ampersand element must have an empty wzName.', this)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			foreach item in this.nodes
+				if item.wzElement === 'asterisk' || item.wzElement === 'reference'
+					# log 'ampersand.toFunction.item.wzElement', this.fname, item.wzElement, 'isFunction', item.getIsFunction(), item.getFName(), item.getCanFailMatch()
+				if item.getIsFunction()
+					# log 'ampersand.toFunction isFunction', item.getFName(), item.getCanFailMatch()
+					if item.getCanFailMatch()
+						_ coder.w(item.getFName() + '(capture);')
+					else
+						_ coder.write('if (!' + item.getFName() + '(capture))')
+						_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+				else
+					# log 'ampersand.toFunction is not Function', item.wzElement
+					set coder.ctx.onfail = 'reset-return'
+					_ item.toCode(coder)
+					set coder.ctx.onfail = null
+			_ coder.w('return true;')
+			_ coder.deindent
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+	e_tag( paren, (, node )
+		# Capture. All child rules must match. Eaten chars are kept in the value.
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The paren element must have an empty wzName.', this)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			foreach item in this.nodes
+				if item.getIsFunction()
+					# log 'paren.toFunction isFunction', item.getFName(), item.getCanFailMatch()
+					if item.getCanFailMatch()
+						_ coder.w(item.getFName() + '(true);')
+					else
+						_ coder.write('if (!' + item.getFName() + '(true))')
+						_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+				else
+					# log 'paren.toFunction is not Function', item.wzElement
+					set coder.isCapture = true
+					set coder.ctx.onfail = 'reset-return'
+					_ item.toCode(coder)
+					set coder.ctx.onfail = null
+					set coder.isCapture = false
+			_ coder.w('return true;')
+			_ coder.deindent
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+	e_tag( bar, |, node )
+		# alternative
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The bar element must have an empty wzName.', this)
+		
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent();
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			foreach item in this.nodes
+				if item.getIsFunction()
+					_ coder.w('if (' + item.getFName() + '(capture)) { return true }')
+				else
+					set coder.ctx.onsuccess = 'return'
+					_ item.toCode(coder)
+					set coder.ctx.onsuccess = null
+			_ coder.w('return spit(k, false, \'' + this.fname + '\');')
+			_ coder.deindent();
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+
+	$include lexer/charset
+	$include lexer/builtins
+	$include lexer/helpers
+	$include lexer/test

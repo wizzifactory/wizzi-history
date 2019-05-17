@@ -1,0 +1,72 @@
+﻿base_test(productionManager)
+
+	$append imports
+		var wizziFactory = require('../../lib/services/wizziFactory')
+		var mocks = require('../mocks/misc')
+
+	var pman = null
+
+	before-async
+		_ wizziFactory.createFactory
+			{
+				@ repo
+					{
+						@ storeKind 'filesystem'
+				@ plugins
+					{
+						@ items
+							[
+								@ '../mocks/plugin'
+						@ pluginsBaseFolder __dirname
+				@ test
+					{
+						@ testOnlyMockBaseDir __dirname
+			f_cb_test( wf )
+				set pman
+					_ wf.createProductionManager
+						{
+							@ indentSpaces 4
+							@ basedir __dirname
+						{
+							@ myvar1 'inter'
+							@ myvar2 'milan'
+				_ done
+
+	it should retrieve a loadModel function
+		var loadModel
+			_ pman.getLoadModel
+				@ 'tests'
+		# TODO the loadModel should apply the global context passed
+		#      to the wizzi factory constructor.
+		tobe_function( loadModel )
+
+	it should retrieve a schema definition
+		var schemaDefinition
+			_ pman.getSchemaDefinition
+				@ 'tests'
+		tobe_object( schemaDefinition )
+
+	it should retrieve a model transformer
+		var modelTransformer
+			_ pman.getModelTransformer
+				@ 'tests/trans1'
+		tobe_object( modelTransformer )
+		tobe_function( modelTransformer.trans )
+
+	it should retrieve an artifact generator
+		var artifactGenerator
+			_ pman.getArtifactGenerator
+				@ 'tests/gen1'
+		tobe_object( artifactGenerator )
+		tobe_function( artifactGenerator.gen )
+
+	it should load a wfjob
+		_ pman.loadWfjob
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.wfjob.ittf'
+			{
+			f_cb_test( wfjobModel )
+				tobe_object( wfjobModel )
+

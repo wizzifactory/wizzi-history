@@ -1,0 +1,190 @@
+  module  ids: 1 127
+    kind jsfile ids: 2 128
+    var uriparser = require('./uriparser') ids: 3 129
+    var file = require('./file') ids: 4 130
+    var repo = require('./repo') ids: 5 131
+    var md = module.exports = {} ids: 6 132
+    var win32 = process.platform === 'win32' ids: 7 133
+    set md.unixifyPath ids: 8 134
+      function  ids: 9 135
+        param path_string ids: 10 136
+        if win32 ids: 11 137
+          return path_string.replace(/\\/g, '/') ids: 12 138
+        else  ids: 13 139
+          return path_string ids: 14 140
+    set md.exists ids: 15 141
+      function  ids: 16 142
+        param path_string ids: 17 143
+        param callback ids: 18 144
+        _ uriparser ids: 19 145
+          @ String(path_string) ids: 20 146
+          $group  ids: 253 263
+            $args: parsed  $params: result
+            function  ids: 255 264
+              param err ids: 256 265
+              param ${result} ids: 257 266
+              if err ids: 258 267
+                return  ids: 259 268
+                  _ callback ids: 260 269
+                    @ err ids: 261 270
+              if parsed.storeKind === 'repo' ids: 22 148
+                return repo.exists(parsed, callback) ids: 23 149
+              else  ids: 24 150
+                return file.exists(path_string, callback) ids: 25 151
+    set md.isFile ids: 26 152
+      function  ids: 27 153
+        param path_string ids: 28 154
+        param callback ids: 29 155
+        _ uriparser ids: 30 156
+          @ String(path_string) ids: 31 157
+          $group  ids: 253 272
+            $args: parsed  $params: result
+            function  ids: 255 273
+              param err ids: 256 274
+              param ${result} ids: 257 275
+              if err ids: 258 276
+                return  ids: 259 277
+                  _ callback ids: 260 278
+                    @ err ids: 261 279
+              if parsed.storeKind === 'repo' ids: 33 159
+                return repo.isFile(parsed, callback) ids: 34 160
+              else  ids: 35 161
+                return file.isFile(path_string, callback) ids: 36 162
+    set md.isDirectory ids: 37 163
+      function  ids: 38 164
+        param path_string ids: 39 165
+        param callback ids: 40 166
+        _ uriparser ids: 41 167
+          @ String(path_string) ids: 42 168
+          $group  ids: 253 281
+            $args: parsed  $params: result
+            function  ids: 255 282
+              param err ids: 256 283
+              param ${result} ids: 257 284
+              if err ids: 258 285
+                return  ids: 259 286
+                  _ callback ids: 260 287
+                    @ err ids: 261 288
+              if parsed.storeKind === 'repo' ids: 44 170
+                return repo.isDirectory(parsed, callback) ids: 45 171
+              else  ids: 46 172
+                return file.isDirectory(path_string, callback) ids: 47 173
+    set md.read ids: 48 174
+      function  ids: 49 175
+        param path_string ids: 50 176
+        param options ids: 51 177
+        param callback ids: 52 178
+        if typeof (options) === 'function' ids: 53 179
+          set callback = options, options = {} ids: 54 180
+        if !options ids: 55 181
+          set options = ids: 56 182
+            {  ids: 57 183
+        _ uriparser ids: 58 184
+          @ String(path_string) ids: 59 185
+          $group  ids: 253 290
+            $args: parsed  $params: result
+            function  ids: 255 291
+              param err ids: 256 292
+              param ${result} ids: 257 293
+              if err ids: 258 294
+                return  ids: 259 295
+                  _ callback ids: 260 296
+                    @ err ids: 261 297
+              if parsed.storeKind === 'repo' ids: 61 187
+                return repo.read(parsed, options, callback) ids: 62 188
+              else  ids: 63 189
+                return file.read(path_string, options, callback) ids: 64 190
+    set md.getGlobbedFiles ids: 65 191
+      function  ids: 66 192
+        param globPattern ids: 67 193
+        param options ids: 68 194
+        param callback ids: 69 195
+        if typeof (options) === 'function' ids: 70 196
+          set callback = options, options = {} ids: 71 197
+        if !options ids: 72 198
+          set options = ids: 73 199
+            {  ids: 74 200
+        _ uriparser ids: 75 201
+          @ String(globPattern) ids: 76 202
+          $group  ids: 253 299
+            $args: parsed  $params: result
+            function  ids: 255 300
+              param err ids: 256 301
+              param ${result} ids: 257 302
+              if err ids: 258 303
+                return  ids: 259 304
+                  _ callback ids: 260 305
+                    @ err ids: 261 306
+              if parsed.storeKind === 'repo' ids: 78 204
+                return repo.getGlobbedFiles(parsed, options, callback) ids: 79 205
+              else  ids: 80 206
+                return file.getGlobbedFiles(globPattern, options, callback) ids: 81 207
+    set md.write ids: 82 208
+      function  ids: 83 209
+        param path_string ids: 84 210
+        param content ids: 85 211
+        param options ids: 86 212
+        param callback ids: 87 213
+        if typeof (options) === 'function' ids: 88 214
+          set callback = options, options = {} ids: 89 215
+        if !options ids: 90 216
+          set options = ids: 91 217
+            {  ids: 92 218
+        _ uriparser ids: 93 219
+          @ String(path_string) ids: 94 220
+          $group  ids: 253 308
+            $args: parsed  $params: result
+            function  ids: 255 309
+              param err ids: 256 310
+              param ${result} ids: 257 311
+              if err ids: 258 312
+                return  ids: 259 313
+                  _ callback ids: 260 314
+                    @ err ids: 261 315
+              if parsed.storeKind === 'repo' ids: 96 222
+                return repo.write(parsed, content, options, callback) ids: 97 223
+              else  ids: 98 224
+                return file.write(path_string, content, options, callback) ids: 99 225
+    set md.mkdir ids: 100 226
+      function  ids: 101 227
+        param path_string ids: 102 228
+        param mode ids: 103 229
+        param callback ids: 104 230
+        if typeof (mode) === 'function' ids: 105 231
+          set callback = mode, mode = null ids: 106 232
+        _ uriparser ids: 107 233
+          @ String(path_string) ids: 108 234
+          $group  ids: 253 317
+            $args: parsed  $params: result
+            function  ids: 255 318
+              param err ids: 256 319
+              param ${result} ids: 257 320
+              if err ids: 258 321
+                return  ids: 259 322
+                  _ callback ids: 260 323
+                    @ err ids: 261 324
+              if parsed.storeKind === 'repo' ids: 110 236
+                # no mode param for repo.mkdir ids: 111 237
+                return repo.mkdir(parsed, callback) ids: 112 238
+              else  ids: 113 239
+                return file.mkdir(path_string, mode, callback) ids: 114 240
+    set md.copy ids: 115 241
+      function  ids: 116 242
+        param source_path_string ids: 117 243
+        param dest_path_string ids: 118 244
+        param callback ids: 119 245
+        _ uriparser ids: 120 246
+          @ String(source_path_string) ids: 121 247
+          $group  ids: 253 326
+            $args: parsed  $params: result
+            function  ids: 255 327
+              param err ids: 256 328
+              param ${result} ids: 257 329
+              if err ids: 258 330
+                return  ids: 259 331
+                  _ callback ids: 260 332
+                    @ err ids: 261 333
+              if parsed.storeKind === 'repo' ids: 123 249
+                return repo.copy(parsed, dest_path_string, callback) ids: 124 250
+              else  ids: 125 251
+                return file.copy(source_path_string, dest_path_string, callback) ids: 126 252

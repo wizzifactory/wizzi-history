@@ -1,0 +1,86 @@
+﻿route( Test )
+
+	$append imports
+		var cp = require("child_process")
+		var j1 = "c:\\my\\wizzi\\v5\\kernel\\wizzi-utils\\src\\generate_webpack.js"
+
+	get( /test/:user )
+
+		_ res.json
+			{
+				@ route '/test/:user'
+				@ params req.params
+				@ query req.query
+
+		
+	get( /test/:user/:project )
+
+		_ res.json
+			{
+				@ route '/test/:user/:project'
+				@ params req.params
+				@ query req.query
+
+	get( /test/:user/:project/* )
+
+		_ res.json
+			{
+				@ route '/test/:user/:project/*'
+				@ params req.params
+				@ query req.query
+
+	get( /api/test/processes/stdiostream )
+
+        _ res.writeHead
+            @ 200
+            { 
+                @ "Content-Type" "text/event-stream"
+                @ "Cache-control" "no-cache"
+        var 
+            decl spw
+                _ cp.spawn
+                    @ 'node'
+                    [ 
+                        @ path.basename(j1)
+					{
+						@ cwd path.dirname(j1)
+						{ env
+						@ argv0 undefined
+						@ stdio undefined
+						@ detached false
+						@ shell true
+						@ windowsVerbatimArguments false
+						@ windowsHide false
+            decl str = ""
+
+		log "/api/test/processes/stdiostream : spawned"
+
+		_ spw.stdout.on
+            @ 'data'
+            function 
+                param data
+                set str += data.toString()
+                # just so we can see the server is doing something
+                log "data"
+                # Flush out line by line.
+                var lines = str.split("\n")
+                for var i in lines
+                    if i == lines.length - 1
+                        set str = lines[i]
+                    else
+                        # Note: The double-newline is *required*
+                        _ res.write('data: ' + lines[i] + "\n\n")
+        _ spw.on
+            @ 'close'
+            function 
+                param code
+				log "/test/processes/stdiostream : close", "code", code
+				_ res.write('data: ***___CLOSE___***\n\n')
+				_ res.end(str)
+        
+		_ spw.stderr.on
+            @ 'data'
+            function 
+                param data
+				log "/test/processes/stdiostream : stderr data", data
+                _ res.end('stderr: ' + data)

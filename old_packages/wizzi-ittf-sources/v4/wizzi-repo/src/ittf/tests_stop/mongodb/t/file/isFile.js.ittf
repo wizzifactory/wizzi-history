@@ -1,0 +1,30 @@
+﻿$group
+
+	var folderPath = "c:/my/hello"
+	var filePath = "c:/my/hello.txt"
+	var content = 'Hello'
+
+	describe write a file
+		before-async
+			_ doc.createFolder
+				@ folderPath
+				f_cb_test( f )
+					_ doc.writeFile
+						@ filePath
+						@ content
+						f_cb_done( f )
+
+		it-async should be a file item
+			_ doc.isFile
+				@ filePath
+				f_cb_done( r )
+					log 'doc.isFile', r
+					tobe_true( r )
+
+		it-async should be a folder item
+			_ doc.isFolder
+				@ folderPath
+				f_cb_done( r )
+					log 'doc.isFolder', r
+					tobe_true( r )
+

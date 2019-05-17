@@ -1,0 +1,49 @@
+﻿$group
+	$params &opt
+
+	@ split2_wrapper
+		{
+			@ width '100%'
+			@ height '75vh'
+			@ backgroundColor '${opt.gray_4_page}'
+			@ display 'flex'
+			@ flexDirection 'column'
+			@ margin '10px 0'
+
+	$* VIA
+	@ workarea
+		{
+			@ flex '1 auto'
+			@ display 'flex'
+	*$
+
+	@ editorbox
+		{
+			@ margin '.5vw .5vw'
+			@ flex '1 auto'
+			@ display 'flex'
+			@ height '100%'
+			@ flexDirection 'column'
+
+	@ editorHead
+		{
+			@ margin '4px'
+			@ backgroundColor '${opt.gray_3_ehead}'
+			@ height '64px'
+			@ width '100%'
+			$* should be managed by children
+			@ display 'flex'
+			@ justifyContent 'flex-end'
+			*$
+	
+	@ split2_pane1
+		{
+			@ margin '10px 5px'
+			@ height '100%'
+			@ overflow 'auto'
+
+	@ split2_pane2
+		{
+			@ margin '10px 5px'
+			@ height '100%'
+			@ overflow 'auto'

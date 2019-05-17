@@ -1,0 +1,20 @@
+﻿html
+
+	body
+
+		header
+
+		$function viewNode
+			$param node
+			tr
+				td ${node.id}
+				td item: ${node.title}
+			$foreach child in node.children
+				$_ viewNode
+					$@ child
+
+		$_ viewNode
+			$@ tree
+
+		footer
+	

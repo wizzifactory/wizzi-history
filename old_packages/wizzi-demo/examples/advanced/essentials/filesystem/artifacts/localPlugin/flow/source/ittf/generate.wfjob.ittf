@@ -1,0 +1,34 @@
+wfjob demo-plugin
+
+	$
+		console.log('__dirname', __dirname);
+		var ittf_root             = path.join(__dirname, 'root');
+		var ittf_lib              = path.join(__dirname, 'lib');
+		var dest_folder           = path.resolve(__dirname, '..', '..', 'local');
+
+	line ittf-root
+		cwd-folder ${ittf_root}
+		dest-folder ${dest_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+
+	line ittf-lib
+		cwd-folder ${ittf_lib}
+		dest-folder ${dest_folder}/lib
+
+		wfjob/any_js()
+			ignore ${ittf_lib}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_lib}/**/*__copy/**/*.ittf
+			extension ittf
+
+	production
+		dest-folder ${dest_folder}
+		line-ref ittf-root
+		line-ref ittf-lib
+
+	

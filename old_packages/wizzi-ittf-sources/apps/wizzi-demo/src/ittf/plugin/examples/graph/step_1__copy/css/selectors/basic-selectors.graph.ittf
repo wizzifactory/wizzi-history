@@ -1,0 +1,37 @@
+﻿$group
+
+	cat basic-selector
+			cat css-selector
+
+	e type-selector
+		# Selects all elements that match the given node name.
+		# Syntax: eltname
+		# Example: input will match any <input> element.
+		cat basic-selector
+
+	e class-selector
+		# Selects all elements that have the given class attribute.
+		# Syntax: .classname
+		# Example: .index will match any element that has a class of "index".
+		cat basic-selector
+
+	e id-selector
+		# Selects an element based on the value of its id attribute. There should be only one element with a given ID in a document.
+		# Syntax: #idname
+		# Example: #toc will match the element that has the ID "toc".
+		cat basic-selector
+
+	e universal-selector
+		# Selects all elements. Optionally, it may be restricted to a specific namespace or to all namespaces.
+		# Syntax:
+		#   ns|* - matches all elements in namespace ns
+		#   *|*  - matches all elements
+		#   |*    - matches all elements without any declared namespace
+		# Example: * will match all the elements of the document.
+		cat basic-selector
+
+	e attribute-selector
+		# Selects elements based on the value of the given attribute.
+		# Syntax: [attr] [attr=value] [attr~=value] [attr|=value] [attr^=value] [attr$=value] [attr*=value]
+		# Example: [autoplay] will match all elements that have the autoplay attribute set (to any value).
+		cat basic-selector

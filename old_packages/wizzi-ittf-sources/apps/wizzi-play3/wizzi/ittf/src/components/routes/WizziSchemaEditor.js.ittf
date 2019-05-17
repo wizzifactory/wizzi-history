@@ -1,0 +1,123 @@
+﻿r-container( WizziSchemaEditor, false, true
+
+	$
+		var kFolders = ['lib', 'schemasT', 'packageT'];
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		editor/imports()
+		codesplit2/imports()
+		import
+			editor/importActions()
+			from '../../store/actions'
+		import MyLink from '../mui/AppDrawerNavItem'
+		$include wfactions/constants
+
+		common/fsitem_flat_to_tree()
+			set itemPath = item.displayName
+			set hash = item.hash
+			set schema = item.schema
+			set isFragment = item.isFragment
+
+	style
+		{ root
+			@ height '100%'
+			@ width '100%'
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		editor/state()
+		codesplit2/state(&opt)
+
+	editor/handlers()
+	codesplit2/handlers(&opt)
+
+	render
+		prop classes
+		prop loadingError
+		prop match
+		prop pluginSchemas
+		$foreach f in kFolders
+			prop ${f}IttfDocuments
+
+		
+		common/guardLoading( pluginSchemas || pluginSchemas.length == 0 )
+
+		editor/renderPropsAndState()
+		codesplit2/render_prop_state(&opt)
+
+		const { selectedDocumenIsFragment, selectedDocumenSchema } = this.state
+
+		log 'WizziSchemaEditor.match', match
+		
+		const schemaId = match.params.schemaId
+		
+		var schemaItem = null
+		for var k in pluginSchemas
+			if pluginSchemas[k].schemaId === schemaId
+				set schemaItem = pluginSchemas[k]
+
+		$foreach f in kFolders
+			const ${f}IttfDocuments_tree
+				iif ${f}IttfDocuments
+					then
+						_ fsitem_flat_to_tree
+							@ ${f}IttfDocuments
+							@ '${f}'
+					else {}
+			# log '${f}IttfDocuments', ${f}IttfDocuments
+			# log '${f}IttfDocuments_tree', ${f}IttfDocuments_tree
+
+		const itemTIttfDocuments_tree
+			iif schemaItem.tIttfDocuments
+				then
+					_ fsitem_flat_to_tree
+						@ schemaItem.tIttfDocuments
+						@ 't'
+				else {}
+
+		return
+			. { classes.root }
+				editor/renderInfoDialog()
+				h2 {schemaItem.name} schema
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						{
+							&&
+								+ selectedDocumenIsFragment == false
+								< React.Fragment
+									common/tlb-btn( generate, this.handleGenerateDefaultArtifact
+									common/tlb-btn( script, this.handleMTreeDebugInfo
+				codesplit2/render(&opt)
+					$append pane1
+						h4 main document
+						< List
+							< MyLink
+								@ onClick
+									=>
+										_ this.handleSelectIttfDocument(schemaItem.mainDocument.hash)
+								@ title {schemaItem.mainDocument.baseName}
+						editor/docgroup( itemTIttfDocuments_tree
+						$foreach f in kFolders
+							{
+								&&
+									+ ${f}IttfDocuments_tree.children && ${f}IttfDocuments_tree.children.length > 0
+									editor/docgroup( ${f}IttfDocuments_tree
+					$append pane2
+						editor/renderCodeEditor()
+
+	$append state-to-props
+		@ loadingError (state.wizziPackages.loadingError || state.wizziIttf.loadingError)
+		@ pluginSchemas state.wizziPackages.pluginSchemas
+		@ ittfDocument state.wizziIttf.ittfDocument
+		$foreach f in kFolders
+			@ ${f}IttfDocuments state.wizziPackages.${f}IttfDocuments
+
+	$append dispatch-to-props
+
+		editor/dispatchToProps()

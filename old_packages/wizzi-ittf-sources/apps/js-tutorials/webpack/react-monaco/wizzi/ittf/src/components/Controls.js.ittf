@@ -1,0 +1,86 @@
+﻿r-component( Control )
+
+	$include app-options
+	$
+		var md = {
+			uiOptions: ['splitter-maxSize', 'splitter-minSize', 'splitter-defaultSize', 'splitter-split', 'splitter-primary']
+		};
+
+	$append imports
+		import Toggle from './Toggle'
+		import * as actions from '../store/actions'
+
+	=> handleChangeMode
+		param e
+		prop onChangeMode
+		_ onChangeMode
+			@ e.target.value
+
+	=> handleChangeTheme
+		param e
+		prop onChangeTheme
+		_ onChangeTheme
+			@ e.target.value
+
+	=> handleChangeUiOptionName
+		param e
+		prop onChangeUiOptionName
+		_ onChangeUiOptionName
+			@ e.target.value
+
+	=> handleChangeUiOptionValue
+		param e
+		prop onChangeUiOptionValue
+		_ onChangeUiOptionValue
+			@ e.target.value
+
+	render
+		$foreach p in app.Editor.stateProps
+			prop ${p.name}
+		prop onToggleControlled
+
+		return
+		
+			div
+				id controls
+				select 
+					value {theme}
+					@ onChange {this.handleChangeTheme}
+					option
+						@ value material
+						+ material
+					option
+						@ value xq-light
+						+ xq-light
+				select 
+					value {mode}
+					@ onChange {this.handleChangeMode}
+					option
+						@ value xml
+						+ html
+					option
+						@ value javascript
+						+ javascript
+					option
+						@ value strings
+						+ strings
+
+				< Toggle
+					@ className state-control
+					@ left 'CONTROLLED'
+					@ right 'UNCONTROLLED'
+					@ checked {controlled}
+					@ onChange {onToggleControlled}
+
+				select 
+					value {uioptionname}
+					@ onChange {this.handleChangeUiOptionName}
+					$foreach o in md.uiOptions
+						option
+							@ value ${o}
+							+ ${o}
+
+				input
+					type text
+					value {uioptionvalue}
+					@ onChange {this.handleChangeUiOptionValue}

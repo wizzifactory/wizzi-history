@@ -1,0 +1,26 @@
+﻿$group
+
+	get( /api/wf/gen )
+
+		check-params( )
+
+			not-empty( query, uri)
+			not-empty( query, artifact)
+
+		var sessionData = {}
+		var modelContext = {}
+		var artifactContext = {}
+		
+		_ wfApi.loadModelAndGenerateArtifact
+			@ sessionData
+			@ uri
+			@ modelContext
+			@ artifact
+			@ artifactContext
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+

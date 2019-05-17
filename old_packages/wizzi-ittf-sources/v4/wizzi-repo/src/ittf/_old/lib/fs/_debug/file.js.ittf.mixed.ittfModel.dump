@@ -1,0 +1,264 @@
+  module  ids: 1 181
+    kind jsfile ids: 2 182
+    var path = require('path') ids: 3 183
+    var fs = require('fs') ids: 4 184
+    var iconv = require('iconv-lite') ids: 5 185
+    var glob = require('glob') ids: 6 186
+    var md = module.exports = {} ids: 7 187
+    var pathSeparatorRe = /[\/\\]/g ids: 8 188
+    set md.defaultEncoding = 'utf8' ids: 9 189
+    set md.preserveBOM = false ids: 10 190
+    set md.exists ids: 11 191
+      function  ids: 12 192
+        param path_string ids: 13 193
+        param callback ids: 14 194
+        _ fs.lstat ids: 15 195
+          @ String(path_string) ids: 16 196
+          $group  ids: 361 367
+            $args: stat  $params: result
+            function  ids: 363 368
+              param err ids: 364 369
+              param ${result} ids: 365 370
+              if err ids: 18 198
+                if err.code === 'ENOENT' ids: 19 199
+                  return  ids: 20 200
+                    _ callback ids: 21 201
+                      @ null ids: 22 202
+                      @ false ids: 23 203
+                else  ids: 24 204
+                  return  ids: 25 205
+                    _ callback(err) ids: 26 206
+              _ callback ids: 27 207
+                @ null ids: 28 208
+                _ stat.isFile() || stat.isDirectory() ids: 29 209
+    set md.isDirectory ids: 30 210
+      function  ids: 31 211
+        param path_string ids: 32 212
+        param callback ids: 33 213
+        _ fs.lstat ids: 34 214
+          @ String(path_string) ids: 35 215
+          $group  ids: 361 372
+            $args: stat  $params: result
+            function  ids: 363 373
+              param err ids: 364 374
+              param ${result} ids: 365 375
+              if err ids: 37 217
+                if err.code === 'ENOENT' ids: 38 218
+                  return  ids: 39 219
+                    _ callback ids: 40 220
+                      @ null ids: 41 221
+                      @ false ids: 42 222
+                else  ids: 43 223
+                  return  ids: 44 224
+                    _ callback(err) ids: 45 225
+              _ callback ids: 46 226
+                @ null ids: 47 227
+                _ stat.isDirectory() ids: 48 228
+    set md.isFile ids: 49 229
+      function  ids: 50 230
+        param path_string ids: 51 231
+        param callback ids: 52 232
+        _ fs.lstat ids: 53 233
+          @ String(path_string) ids: 54 234
+          $group  ids: 361 377
+            $args: stat  $params: result
+            function  ids: 363 378
+              param err ids: 364 379
+              param ${result} ids: 365 380
+              if err ids: 56 236
+                if err.code === 'ENOENT' ids: 57 237
+                  return  ids: 58 238
+                    _ callback ids: 59 239
+                      @ null ids: 60 240
+                      @ false ids: 61 241
+                else  ids: 62 242
+                  return  ids: 63 243
+                    _ callback(err) ids: 64 244
+              _ callback ids: 65 245
+                @ null ids: 66 246
+                _ stat.isFile() ids: 67 247
+    set md.read ids: 68 248
+      function  ids: 69 249
+        param path_string ids: 70 250
+        param options ids: 71 251
+        param callback ids: 72 252
+        _ fs.readFile ids: 73 253
+          @ String(path_string) ids: 74 254
+          $group  ids: 382 392
+            $args: content  $params: result
+            function  ids: 384 393
+              param err ids: 385 394
+              param ${result} ids: 386 395
+              if err ids: 387 396
+                return  ids: 388 397
+                  _ callback ids: 389 398
+                    @ err ids: 390 399
+              if options.encoding !== null ids: 76 256
+                set content = iconv.decode(content, (options.encoding || md.defaultEncoding)) ids: 77 257
+                if !md.preserveBOM && content.charCodeAt(0) === 0xFEFF ids: 78 258
+                  set content = content.substring(1) ids: 79 259
+              _ callback ids: 80 260
+                @ null ids: 81 261
+                @ content ids: 82 262
+    set md.getGlobbedFiles ids: 83 263
+      function  ids: 84 264
+        param globPattern ids: 85 265
+        param options ids: 86 266
+        param callback ids: 87 267
+        var removeRoot = options.removeRoot ids: 88 268
+        _ glob ids: 89 269
+          @ String(globPattern) ids: 90 270
+          $group  ids: 382 401
+            $args: files  $params: result
+            function  ids: 384 402
+              param err ids: 385 403
+              param ${result} ids: 386 404
+              if err ids: 387 405
+                return  ids: 388 406
+                  _ callback ids: 389 407
+                    @ err ids: 390 408
+              if removeRoot ids: 92 272
+                set files ids: 93 273
+                  _ files.map ids: 94 274
+                    function  ids: 95 275
+                      param file ids: 96 276
+                      return file.replace(removeRoot, '') ids: 97 277
+              log 'file.getGlobbedFiles', files ids: 98 278
+              _ callback ids: 99 279
+                @ null ids: 100 280
+                @ files ids: 101 281
+    set md.write ids: 102 282
+      function  ids: 103 283
+        param path_string ids: 104 284
+        param content ids: 105 285
+        param options ids: 106 286
+        param callback ids: 107 287
+        _ md.mkpath ids: 108 288
+          @ path_string ids: 109 289
+          $group  ids: 382 410
+            $args: notUsed  $params: result
+            function  ids: 384 411
+              param err ids: 385 412
+              param ${result} ids: 386 413
+              if err ids: 387 414
+                return  ids: 388 415
+                  _ callback ids: 389 416
+                    @ err ids: 390 417
+              if !Buffer.isBuffer(content) ids: 111 291
+                set content = iconv.encode(content, (options.encoding || md.defaultEncoding)) ids: 112 292
+              _ fs.writeFile ids: 113 293
+                @ String(path_string) ids: 114 294
+                @ content ids: 115 295
+                $group  ids: 382 419
+                  $args: notUsed  $params: result
+                  function  ids: 384 420
+                    param err ids: 385 421
+                    param ${result} ids: 386 422
+                    if err ids: 387 423
+                      return  ids: 388 424
+                        _ callback ids: 389 425
+                          @ err ids: 390 426
+                    return  ids: 117 297
+                      _ callback ids: 118 298
+                        @ null ids: 119 299
+                        @ true ids: 120 300
+    set md.mkpath ids: 121 301
+      function  ids: 122 302
+        param path_string ids: 123 303
+        param callback ids: 124 304
+        var dir = path.dirname(path_string) ids: 125 305
+        _ md.mkdir(dir, callback) ids: 126 306
+    set md.mkdir ids: 127 307
+      function  ids: 128 308
+        param dirpath ids: 129 309
+        param mode ids: 130 310
+        param callback ids: 131 311
+        if typeof (mode) === 'function' ids: 132 312
+          set callback = mode, mode = null ids: 133 313
+        if mode == null ids: 134 314
+          set mode = parseInt('0777', 8) & ~ (process.umask()) ids: 135 315
+        var part, parts = dirpath.split(pathSeparatorRe) ids: 136 316
+        var len = parts.length ids: 137 317
+        var pathArray = [] ids: 138 318
+        function repeater ids: 139 319
+          param index ids: 140 320
+          if index == len ids: 141 321
+            # we are done, return ids: 142 322
+            return  ids: 143 323
+              _ callback(null) ids: 144 324
+          set part = parts[index] ids: 145 325
+          _ pathArray.push(part) ids: 146 326
+          var subpath = path.resolve(pathArray.join('/')) ids: 147 327
+          _ md.exists ids: 148 328
+            @ subpath ids: 149 329
+            $group  ids: 382 428
+              $args: result  $params: result
+              function  ids: 384 429
+                param err ids: 385 430
+                param ${result} ids: 386 431
+                if err ids: 387 432
+                  return  ids: 388 433
+                    _ callback ids: 389 434
+                      @ err ids: 390 435
+                if result == false ids: 151 331
+                  _ fs.mkdir ids: 152 332
+                    @ subpath ids: 153 333
+                    @ mode ids: 154 334
+                    $group  ids: 382 437
+                      $args: notUsed  $params: result
+                      function  ids: 384 438
+                        param err ids: 385 439
+                        param ${result} ids: 386 440
+                        if err ids: 387 441
+                          return  ids: 388 442
+                            _ callback ids: 389 443
+                              @ err ids: 390 444
+                        _ repeater(index + 1) ids: 156 336
+                else  ids: 157 337
+                  _ repeater(index + 1) ids: 158 338
+        _ repeater(0) ids: 159 339
+    set md.copy ids: 160 340
+      function  ids: 161 341
+        param source_path_string ids: 162 342
+        param dest_path_string ids: 163 343
+        param callback ids: 164 344
+        _ md.mkpath ids: 165 345
+          @ String(dest_path_string) ids: 166 346
+          $group  ids: 382 446
+            $args: notUsed  $params: result
+            function  ids: 384 447
+              param err ids: 385 448
+              param ${result} ids: 386 449
+              if err ids: 387 450
+                return  ids: 388 451
+                  _ callback ids: 389 452
+                    @ err ids: 390 453
+              _ md.read ids: 168 348
+                @ String(source_path_string) ids: 169 349
+                {  ids: 170 350
+                $group  ids: 382 455
+                  $args: content  $params: result
+                  function  ids: 384 456
+                    param err ids: 385 457
+                    param ${result} ids: 386 458
+                    if err ids: 387 459
+                      return  ids: 388 460
+                        _ callback ids: 389 461
+                          @ err ids: 390 462
+                    _ md.write ids: 172 352
+                      @ String(dest_path_string) ids: 173 353
+                      @ content ids: 174 354
+                      {  ids: 175 355
+                      $group  ids: 382 464
+                        $args: notUsed  $params: result
+                        function  ids: 384 465
+                          param err ids: 385 466
+                          param ${result} ids: 386 467
+                          if err ids: 387 468
+                            return  ids: 388 469
+                              _ callback ids: 389 470
+                                @ err ids: 390 471
+                          return  ids: 177 357
+                            _ callback ids: 178 358
+                              @ null ids: 179 359
+                              @ true ids: 180 360

@@ -1,0 +1,24 @@
+﻿r-component( Index, connect )
+
+	$append imports
+		import {startClock, serverRenderClock} from '../store'
+		import Examples from '../components/examples'
+	
+	m getInitialProps
+		static
+		param { reduxStore, req }
+		const isServer = !!req
+		_ reduxStore.dispatch(serverRenderClock(isServer))
+		return {}
+	
+	did-mount
+		prop dispatch
+		log 'index.did-mount'
+		set this.timer = startClock(dispatch)
+
+	will-mount
+		_ clearInterval(this.timer)
+
+	render
+		return
+			< Examples

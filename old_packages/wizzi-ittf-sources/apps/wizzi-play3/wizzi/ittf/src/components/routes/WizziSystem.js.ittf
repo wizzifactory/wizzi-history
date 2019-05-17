@@ -1,0 +1,191 @@
+﻿r-container( WizziSystem, false, true
+
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		codesplit2/imports()
+		import
+			@ getWizziSystemPackages
+			from '../../store/actions'
+		import MySelect from '../mui/MySelect'
+		import CollapseListItem from '../mui/CollapseListItem'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+		function getLinks
+			param items
+			var withLinks = [], newItem
+			foreach item in items
+				if item.children && item.children.length > 0
+					set newItem
+						{
+							@ name item.name
+							@ children
+								_ getLinks
+									@ item.children
+				else
+					set newItem
+						{
+							@ name item.name
+							@ toPackageSource '/wizzi/ittf/' + item.uri
+							@ toPackageJobs '/wizzi/jobs/' + item.uri
+				_ withLinks.push
+					@ newItem
+			return withLinks
+
+		function getPackageTree
+			param version
+			param packages
+			var v = packages[version]
+
+			return
+				{
+					@ name version
+					@ openImmediately true
+					[ children
+						{
+							@ name 'kernel'
+							@ openImmediately true
+							@ children
+								_ getLinks
+									@ v.kernel
+						{
+							@ name 'plugins'
+							@ openImmediately true
+							@ children
+								_ getLinks
+									@ v.plugins
+						{
+							@ name 'apps'
+							@ children
+								_ getLinks
+									_ app_flat_to_tree
+										@ v.apps
+										. children
+
+		# returns node
+		#   { item
+		#     int kind
+		#       oneOf 0,1
+		#     string name
+		#     string itemPath
+		#     [ children
+		function app_flat_to_tree
+			param flatItems
+			var tree
+				{
+					[ children
+
+			var ss, cur, itemPath, hash, schema, isFragment
+			foreach f in flatItems
+				set itemPath = f.appId
+				set ss = itemPath.split('/')
+				set cur = tree
+				foreach s in ss
+					set cur
+						_ app_getCreateChild
+							@ cur
+							@ s
+							@ j < ss.length -1
+				set cur.itemPath = itemPath
+				if cur.kind == 1
+					set cur.uri = f.uri
+			return tree    
+
+		function app_getCreateChild
+			param parent
+			param name
+			param isFolder
+			foreach item in parent.children
+				if item.name === name
+					return item
+			var ret
+				{
+					@ kind isFolder ? 0 : 1
+					@ name name
+					[ children
+			_ parent.children.push(ret)
+			return ret
+
+
+	style
+		{ root
+			@ height '100%'
+			@ width '100%'
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		codesplit2/state(&opt)
+		@ selectedVersion null
+		@ selectedPackage null
+
+	did-mount
+		prop dispatchGetWizziSystemPackages
+		_ dispatchGetWizziSystemPackages
+
+	did-update
+		if !this.state.selectedVersion && this.props.versions && this.props.versions.length > 0
+			_ this.setState
+				{
+					@ selectedVersion this.props.versions[this.props.versions.length-1].name
+
+	=> handleVersionChanged
+		param e
+		_ this.setState
+			{
+				@ selectedVersion e.target.value
+
+	codesplit2/handlers(&opt)
+
+	render
+		prop loadingError
+		prop classes
+		prop versions
+		prop packages
+
+		common/guardLoading( versions || versions.length == 0 )
+
+		codesplit2/render_prop_state(&opt)
+
+		const {selectedVersion, selectedPackage} = this.state
+		const itemTree = selectedVersion ? getPackageTree(selectedVersion, packages) : null
+
+		return
+			. { classes.root }
+				h2 Wizzi packages
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						{
+							&&
+								+ selectedVersion
+								< MySelect
+									@ label '' $$ version
+									@ items {versions}
+									@ value {selectedVersion}
+									@ onChange {this.handleVersionChanged}
+				codesplit2/render(&opt)
+					$append pane1
+						{
+							&&
+								+ itemTree
+								< CollapseListItem
+									@ item {itemTree}
+									@ applySort {false}
+					$append pane2
+						pre
+							+ {JSON.stringify(versions, null, 2)}
+							+ {JSON.stringify(packages, null, 2)}
+
+	$append state-to-props
+		@ loadingError state.wizziSystem.loadingError
+		@ versions state.wizziSystem.versions
+		@ packages state.wizziSystem.packages
+
+	$append dispatch-to-props
+
+		common/dispatch( getWizziSystemPackages )
+

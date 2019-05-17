@@ -1,0 +1,33 @@
+﻿$
+	$include app/options/init
+	
+	app.name = 'webpack-router-redux-firestore';
+	app.description = 'Webpack with router, redux, firestore example of static app';
+	app.useReduxFirestore = true;
+	app.useReduxThunk = false;
+	app.useThunkWithExtraArgument = false;
+	app.initialLoad = true;
+	app.rootContainer = 'AppContainer';
+	app.useMaterialUi = true;
+	app.useCssBaseline = false;
+	app.useMonaco = false;
+	app.useWizziTools = false;
+
+	app.reducers = [
+		'app'
+	];
+
+	app.Editor = {
+		stateProps: [
+			{ reducer: 'app', name: 'theme' }
+		]
+	};
+
+	app.actions = [
+		{ 
+			name: 'change_theme',
+			params: ['theme']
+		}
+	];
+
+	$include app/options/analize

@@ -1,0 +1,38 @@
+﻿$group
+	$params kind|main
+
+	$if kind === 'main'
+		whitespace( sub )
+		escape( sub )
+		string( sub )
+
+	$if kind === 'main' || kind === 'sub'
+		e num
+			|
+				+
+					[ 0-9
+				&
+					*
+						[ 0-9
+					: .
+					+
+						[ 0-9
+
+	$if kind === 'main' || kind === 'tokens'
+		tk Perc
+			pattern
+				&
+					ref num
+					: %
+
+		tk Num
+			pattern
+				ref num
+
+	$if kind === 'main'
+		test 234
+		test .23
+		test 10.05
+		test .50%
+		test 10.2%
+		test 33%

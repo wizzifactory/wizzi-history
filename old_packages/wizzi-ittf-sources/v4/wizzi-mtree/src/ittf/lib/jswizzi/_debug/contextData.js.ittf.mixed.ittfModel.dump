@@ -1,0 +1,111 @@
+  module  ids: 1 112
+    kind jsfile ids: 2 113
+    import util ids: 3 114
+    var errors = require('./errors') ids: 4 115
+    var f_verify = require('./functions/verify') ids: 5 116
+    class ContextData ids: 6 117
+      ctor  ids: 7 118
+        param kind ids: 8 119
+        param modelKey ids: 9 120
+        set this.kind = kind ids: 10 121
+        set this.modelKey = modelKey ids: 11 122
+        set this.$freezed = false ids: 12 123
+        _ this.clear ids: 13 124
+      m clear ids: 14 125
+        set this.$freezed = false ids: 15 126
+        set this.functions = ids: 16 127
+          {  ids: 17 128
+        set this.values = ids: 18 129
+          {  ids: 19 130
+        set this.declares = ids: 20 131
+          {  ids: 21 132
+      m $freeze ids: 22 133
+        set this.$freezed = true ids: 23 134
+      m declare ids: 24 135
+        param name ids: 25 136
+        param init ids: 26 137
+        if name == '$' && this.$freezed ids: 27 138
+          throw new errors.InvalidVariableNameError('The variable "$" cannot be declared on the global context after it has been freezed.') ids: 28 139
+        set this.declares[name] = true ids: 29 140
+        if typeof (init) !== 'undefined' ids: 30 141
+          set this.values[name] = init ids: 31 142
+        # TODO debug only ids: 32 143
+        if f_verify.isObject(init) == false ids: 33 144
+          # log 'ContextData declare', name, init, 'kind', this.kind, this.modelKey ids: 34 145
+      m undeclare ids: 35 146
+        param name ids: 36 147
+        if this.declares[name] == true ids: 37 148
+          delete this.declares[name] ids: 38 149
+        if this.values[name] == true ids: 39 150
+          delete this.values[name] ids: 40 151
+      m isDeclared ids: 41 152
+        param name ids: 42 153
+        # log 'isDeclared', name, this.declares[name] ids: 43 154
+        return this.declares[name] == true ids: 44 155
+      m setValue ids: 45 156
+        param name ids: 46 157
+        param value ids: 47 158
+        if name == '$' && this.$freezed ids: 48 159
+          throw new errors.InvalidVariableNameError('The variable "$" cannot be set on the global context after it has been freezed.') ids: 49 160
+        _ this.declare(name, value) ids: 50 161
+        # TODO debug only ids: 51 162
+        if f_verify.isObject(value) == false ids: 52 163
+          # log 'ContextData setValue', name, value, 'kind', this.kind, this.modelKey ids: 53 164
+      m setValues ids: 54 165
+        param values ids: 55 166
+        set values = (values || {}) ids: 56 167
+        for var k in values ids: 57 168
+          _ this.declare ids: 58 169
+            @ k ids: 59 170
+            @ values[k] ids: 60 171
+      # Set value only if name is declared ids: 61 172
+      m put ids: 62 173
+        param name ids: 63 174
+        param value ids: 64 175
+        if this.declares[name] === true ids: 65 176
+          set this.values[name] = value ids: 66 177
+          return true ids: 67 178
+        else  ids: 68 179
+          return false ids: 69 180
+      m getValue ids: 70 181
+        param name ids: 71 182
+        if this.declares[name] === true ids: 72 183
+          # log 'ContextData getValue found for', name, this.kind, this.modelKey ids: 73 184
+          return this.values[name] ids: 74 185
+        else  ids: 75 186
+          # log 'ContextData getValue not found for', name, this.kind, this.modelKey ids: 76 187
+          return undefined ids: 77 188
+      m getValues ids: 78 189
+        return this.values ids: 79 190
+      m getSettableValues ids: 80 191
+        var ret = {} ids: 81 192
+        for var k in this.values ids: 82 193
+          if k != '$' ids: 83 194
+            set ret[k] = this.values[k] ids: 84 195
+        return ret ids: 85 196
+      m declareFunction ids: 86 197
+        param name ids: 87 198
+        param fn ids: 88 199
+        set this.functions[name] = fn ids: 89 200
+      m getFunction ids: 90 201
+        param name ids: 91 202
+        return this.functions[name] ids: 92 203
+      m dumpValues ids: 93 204
+        log 'Dump context value for debug', this.kind ids: 94 205
+        for var k in this.declares ids: 95 206
+          if f_verify.isObject(this.values[k]) == false ids: 96 207
+            log k, this.values[k] ids: 97 208
+      m getDeclareddumpValues ids: 98 209
+        log 'Dump context value for debug', this.kind ids: 99 210
+        for var k in this.declares ids: 100 211
+          if f_verify.isObject(this.values[k]) == false ids: 101 212
+            log k, this.values[k] ids: 102 213
+      m getDeclaredInfo ids: 103 214
+        var ret = [] ids: 104 215
+        for var k in this.declares ids: 105 216
+          if f_verify.isObject(this.values[k]) == false ids: 106 217
+            _ ret.push(k + '=' + this.values[k]) ids: 107 218
+          else  ids: 108 219
+            _ ret.push(k + '= [object]') ids: 109 220
+        return ret.join(', ') ids: 110 221
+    set module.exports = ContextData ids: 111 222

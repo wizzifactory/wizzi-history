@@ -1,0 +1,39 @@
+﻿$group
+	
+	function tryExists
+		param test
+		param schema
+
+		if file.isFile(test)
+			return 
+				{ 
+					@ found true
+					@ ittfDocumentUri test
+		else 
+			if test.toLowerCase().substr(-5, 5) !== '.ittf'
+				if schema
+					if file.isFile(test + '.' + schema + '.ittf')
+						return 
+							{ 
+								@ found true
+								@ ittfDocumentUri test + '.' + schema + '.ittf'
+					else 
+						if file.isFile(test + '.ittf')
+							return 
+								{ 
+									@ found true
+									@ ittfDocumentUri test + '.ittf'
+						else 
+							return 
+								{ 
+									@ found false
+				else 
+					return 
+						{ 
+							@ found false
+			else 
+				return 
+					{ 
+						@ found false    
+
+

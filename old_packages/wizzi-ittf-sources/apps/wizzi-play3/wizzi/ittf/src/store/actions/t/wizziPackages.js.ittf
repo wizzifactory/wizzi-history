@@ -1,0 +1,137 @@
+﻿$group
+
+	decl_rsf( kernel_Packages, get )
+	decl_rsf( kernel_Package, get )
+	decl_rsf( plugins_Packages, get )
+	decl_rsf( plugin_Package, get )
+	decl_rsf( plugin_Schemas, get )
+	decl_rsf( plugin_Artifacts, get )
+	+
+	export
+		const getKernelPackages
+			=>
+				return
+					{
+						@ type GET_KERNEL_PACKAGES
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_KERNEL_PACKAGES_REQUEST
+										@ GET_KERNEL_PACKAGES_SUCCESS
+										@ GET_KERNEL_PACKAGES_FAILURE
+								@ url '/api/wizzi/kernel/packages'
+								@ method 'get'
+	+
+	export
+		const getKernelPackage
+			=>
+				param packageName
+				param version
+				return
+					{
+						@ type GET_KERNEL_PACKAGE
+						@ packageName packageName
+						@ version version
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_KERNEL_PACKAGE_REQUEST
+										@ GET_KERNEL_PACKAGE_SUCCESS
+										@ GET_KERNEL_PACKAGE_FAILURE
+								@ url '/api/wizzi/kernel/package'
+								@ method 'get'
+								@ queryParams
+									{
+										@ xpackage packageName
+										@ version version
+	+
+	export
+		const getPluginsPackages
+			=>
+				return
+					{
+						@ type GET_PLUGINS_PACKAGES
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_PLUGINS_PACKAGES_REQUEST
+										@ GET_PLUGINS_PACKAGES_SUCCESS
+										@ GET_PLUGINS_PACKAGES_FAILURE
+								@ url '/api/wizzi/plugins/packages'
+								@ method 'get'
+	+
+	export
+		const getPluginPackage
+			=>
+				param packageName
+				param version
+				return
+					{
+						@ type GET_PLUGIN_PACKAGE
+						@ packageName packageName
+						@ version version
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_PLUGIN_PACKAGE_REQUEST
+										@ GET_PLUGIN_PACKAGE_SUCCESS
+										@ GET_PLUGIN_PACKAGE_FAILURE
+								@ url '/api/wizzi/plugin/package'
+								@ method 'get'
+								@ queryParams
+									{
+										@ xpackage packageName
+										@ version version
+	+
+	export
+		const getPluginSchemas
+			=>
+				param packageName
+				param version
+				return
+					{
+						@ type GET_PLUGIN_SCHEMAS
+						@ packageName packageName
+						@ version version
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_PLUGIN_SCHEMAS_REQUEST
+										@ GET_PLUGIN_SCHEMAS_SUCCESS
+										@ GET_PLUGIN_SCHEMAS_FAILURE
+								@ url '/api/wizzi/plugin/schemas'
+								@ method 'get'
+								@ queryParams
+									{
+										@ xpackage packageName
+										@ version version
+	+
+	export
+		const getPluginArtifacts
+			=>
+				param packageName
+				param version
+				return
+					{
+						@ type GET_PLUGIN_ARTIFACTS
+						@ packageName packageName
+						@ version version
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_PLUGIN_ARTIFACTS_REQUEST
+										@ GET_PLUGIN_ARTIFACTS_SUCCESS
+										@ GET_PLUGIN_ARTIFACTS_FAILURE
+								@ url '/api/wizzi/plugin/artifacts'
+								@ method 'get'
+								@ queryParams
+									{
+										@ xpackage packageName
+										@ version version
+	+

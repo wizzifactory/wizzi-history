@@ -1,0 +1,63 @@
+﻿$group
+
+	get( /api/wizzi/plugins/packages )
+
+		_ wizziApi.getPluginsPackages
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/wizzi/plugin/package )
+
+		check-params( )
+			not-empty( query , xpackage )
+			optional( query , version )
+		
+		_ wizziApi.getPluginPackage
+			{
+				@ userId req.user.id
+				@ packageName xpackage
+				@ version version
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/wizzi/plugin/schemas )
+
+		check-params( )
+			not-empty( query , xpackage )
+			optional( query , version )
+		
+		_ wizziApi.getPluginSchemas
+			{
+				@ userId req.user.id
+				@ packageName xpackage
+				@ version version
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+	
+	get( /api/wizzi/plugin/artifacts )
+
+		check-params( )
+			not-empty( query , xpackage )
+			optional( query , version )
+		
+		_ wizziApi.getPluginArtifacts
+			{
+				@ userId req.user.id
+				@ packageName xpackage
+				@ version version
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

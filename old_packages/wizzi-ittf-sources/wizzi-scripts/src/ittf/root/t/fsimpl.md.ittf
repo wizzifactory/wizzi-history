@@ -1,0 +1,40 @@
+﻿$group
+
+	h2 The `fsimpl` - interface
+	p This interface must be implemented by file system objects
+		+ that expose their documents to the wizzi factory.
+	p The `Sync` methods are optional, but a `Sync` call to an
+		+ fsimpl that does not implement it throw an Error.
+
+	h4 stat(path, callback)
+	p The returned `stats` object must implement: stats.isFile()
+		+ stats.isDirectory()
+
+	h4 statSync(path)
+	p The returned `stats` object must implement: stats.isFile()
+		+ stats.isDirectory()
+	
+	h4 lstat(path, callback)
+	p The returned `stats` object must implement: stats.isFile()
+		+ stats.isDirectory()
+	
+	h4 lstatSync(path)
+	p The returned `stats` object must implement: stats.isFile()
+		+ stats.isDirectory()
+	
+	h4 readFile(path[, options], callback)
+	
+	h4 readFileSync(path[, options])
+	
+	h4 writeFile(path, content[, options], callback)
+	
+	h4 writeFileSync(path, content[, options])
+	
+	h4 readdir(path[, options], callback)
+	
+	h4 readdirSync(path[, options])
+	
+	h4 mkdir(path[, options], callback)
+	
+	h4 mkdirSync(path[, options])
+

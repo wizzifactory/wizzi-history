@@ -1,0 +1,47 @@
+﻿$group
+	$params name, ittfDocumentName, step
+	
+	_ wizzi.executeWizziJob
+		{
+			@ user 'stefi'
+			@ role 'admin'
+			@ storeKind 'filesystem'
+			@ config
+				{
+					@ wfBaseFolder __dirname
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+					@ plugins
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+							@ 'wizzi-html'
+							@ 'wizzi-docs'
+							@ './plugin/local/index'
+			@ job
+				{
+					@ name '${name}'
+					@ ittfDocumentUri
+						_ path.join
+							@ __dirname
+							@ 'step_${step}'
+							@ '${ittfDocumentName}'
+					@ productionOptions
+						_ wizzi.productionOptions
+							{
+								@ indentSpaces 4
+								@ basedir __dirname
+								@ verbose 2
+					@ globalContext
+						{
+							@ wfjobGlobalContextCheck 'If you can see mee the wfjob global context works fine.'
+		function
+			param err
+			if err
+				log "Error executing wizzi job ${name}", err
+				return
+			log 'Wizzi job ${name} SUCCESSFULLY executed'
+			$hook

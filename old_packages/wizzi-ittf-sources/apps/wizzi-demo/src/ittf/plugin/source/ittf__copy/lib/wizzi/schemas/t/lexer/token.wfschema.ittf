@@ -1,0 +1,197 @@
+﻿$group
+
+	e_tag( token, tk, node )
+		a_flag( skipped )
+		a_flag( lineBreaks, line-breaks )
+		a comment
+
+		# TODO skipped
+		# TODO lineBreaks
+
+		m wzInitialize
+			var root = this.wzRoot()
+			if root.tokens[this.wzName]
+				_ this.error
+					@ 'Duplicated token: ' + this.wzName
+					@ this
+			set root.tokens[this.wzName] = this
+			
+			set this.text = unescapeText(this.wzName)
+			if verify.isNotEmpty(this.comment)
+				set this.isFunction = true
+			else
+				foreach item in this.nodes
+					if item.wzElement === 'pattern'
+						set this.pattern = item
+						set this.isFunction = true
+				
+				# TODO if !this.isFunction && this.text.length > 1
+					# this could be done for ==, >=, <=, ...
+					# set this.pattern = ... build by code
+					# set this.isFunction = true
+			
+			if !this.isFunction
+				if this.text.length === 1
+					var name = getPunctuationName(this.text)
+					if !name
+						_ this.error
+							@ 'Punctuation name not found for char: ' + this.wzName
+							@ this
+					set root.punctuationChars[this.text] = name
+				else
+					_ this.error
+						@ 'Token punctuator with more than one char not managed yet'
+						@ this
+
+		m wzVerify
+			if verify.isNotEmpty(this.comment)
+				var parts = this.comment.split(/[,| ]/g).filter(function(entry) { return /\S/.test(entry); })
+				if parts.length === 1
+					set this.commentSL = parts[0]
+				elif parts.length === 3
+					set this.commentSL = parts[0]
+					set this.commentMLStart = parts[1]
+					set this.commentMLEnd = parts[2]
+				else
+					_ ctx.addError
+						@ 'The comment attribute must have 1 or 3 comma (or blank) separated items: 1) single line mark, 2) multiline start mark 3) multiline end mark. Received: ' + parts.length + ', ' + parts
+						@ this
+
+		m toCode
+			param coder
+			if !this.isFunction
+				foreach item in this.nodes
+					if verify.isFunction(item.toCode)
+						_ item.toCode(coder)
+			else
+				_ coder.w(coder.ctx.xif + ' (is' + this.wzName + '()) {')
+				if this.skipped
+					_ coder.w('    // skipped')
+				else
+					_ coder.w('    tkPush(tokenTypes.' + this.wzName + ');')
+				if this.lineBreaks
+					_ coder.w('    lineBreaks();');
+					# _ coder.w('    if (value[0]===\'\\r\' || value[0]===\'\\n\') { newLine(); }')
+				_ coder.w('}')
+
+		m toFunction
+			param coder
+			if !this.isFunction
+				return
+			_ coder.w('function is' + this.wzName + '(capture) {')
+			_ coder.indent
+			_ coder.pushPath('tk ' + this.wzName)
+			# _ coder.wEntering
+			_ coder.popPath()
+			_ coder.w('var k = tkStart();')
+			if verify.isNotEmpty(this.comment)
+				_ this.toComment(coder)
+			else
+				_ this.pattern.toCode(coder)
+			_ coder.w('return spit(k, false, \'tk ' + this.wzName + '\');')
+			_ coder.deindent
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+		m toComment
+			param coder
+
+			if this.commentSL
+				var name = unescapeText(this.commentSL)
+				_ coder.write('if (')
+				for var i=0; i<name.length; i++
+					if i > 0
+						_ coder.write(' && ')
+						_ coder.write('input.charAt(pos + ' + i + ') === \'' + escapeText(name[i]) + '\'')
+					else
+						_ coder.write('input.charAt(pos) === \'' + escapeText(name[i]) + '\'')
+				_ coder.w(') {')
+				_ coder.w('    eat(' + name.length + ', true);')
+				_ coder.w('    while (pos < len) {')
+				_ coder.w('        if (input.charAt(pos) === \'\\n\' || input.charAt(pos) === \'\\r\') {')
+				_ coder.w('            break;')
+				_ coder.w('        } else {')
+				_ coder.w('            eat(1, true);')
+				_ coder.w('        }')
+				_ coder.w('    }')
+				_ coder.w('    return true;')
+				_ coder.w('}')
+		
+			if this.commentMLStart
+				var name = unescapeText(this.commentMLStart)
+				_ coder.write('if (')
+				for var i=0; i<name.length; i++
+					if i > 0
+						_ coder.write(' && ')
+						_ coder.write('input.charAt(pos + ' + i + ') === \'' + escapeText(name[i]) + '\'')
+					else
+						_ coder.write('input.charAt(pos) === \'' + escapeText(name[i]) + '\'')
+				_ coder.w(') {')
+				_ coder.w('    eat(' + name.length + ', true);')
+				_ coder.w('    while (pos < len) {')
+				set name = unescapeText(this.commentMLEnd)
+				_ coder.write('        if (')
+				for var i=0; i<name.length; i++
+					if i > 0
+						_ coder.write(' && ')
+						_ coder.write('input.charAt(pos + ' + i + ') === \'' + escapeText(name[i]) + '\'')
+					else
+						_ coder.write('input.charAt(pos) === \'' + escapeText(name[i]) + '\'')
+				_ coder.w(') {')
+				_ coder.w('            eat(2, true);')
+				_ coder.w('            break;')
+				_ coder.w('        } else {')
+				_ coder.w('            eat(1, true);')
+				_ coder.w('        }')
+				_ coder.w('    }')
+				_ coder.w('    return true;')
+				_ coder.w('}')
+
+	e_tag( pattern, pattern, node )
+
+		m wzInitialize
+
+			var count = countLexChildren(this)
+
+			if count > 1
+				# default to ampersand
+				var savenodes = this.nodes
+				set this.nodes = []
+				var amp
+					_ this.wzCreateChildColl
+						@ '&'
+						@ ''
+						@ md.ampersand
+						@ this.nodes
+				foreach item in savenodes
+					_ amp.wzAddChildToColl(item, amp.nodes)
+				_ amp.wzInitialize(ctx)
+			elif count == 0 && this.wzName.length > 0
+				var amp
+					_ this.wzCreateChildColl
+						@ '&'
+						@ ''
+						@ md.ampersand
+						@ this.nodes
+				_ amp.wzCreateChildColl
+					@ ':'
+					@ this.wzName
+					@ md.colon
+					@ amp.nodes
+
+		m toCode
+			param coder
+			foreach item in this.nodes
+				# log 'pattern.item', item.wzElement
+				_ item.toCode(coder)
+
+		m toFunction
+			param coder
+			foreach item in this.nodes
+				# log 'toFunction pattern.item', item.wzElement
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+

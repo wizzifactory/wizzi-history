@@ -1,0 +1,30 @@
+﻿$group
+
+	e nl
+		[
+			: \n
+			: \r
+			: \f
+
+	e space
+		[
+			blank
+			: \t
+			: \r
+			: \n
+			: \f
+
+	e spaces
+		+
+			ref space
+
+	tk Whitespace
+		skipped
+		line-breaks
+		pattern
+			ref spaces
+  
+	tk Comment
+		skipped
+		line-breaks
+		comment //, /*, */

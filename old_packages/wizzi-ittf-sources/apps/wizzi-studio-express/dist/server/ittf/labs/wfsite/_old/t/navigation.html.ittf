@@ -1,0 +1,110 @@
+﻿$group
+	$params kind
+
+	header 
+		class navigation
+		. container navigation__inner
+			nav 
+				class navigation__links
+				$include ./logo
+				$if gcurrentSubPage == null
+					nav_link( concepts, concepts, Concepts )
+					nav_link( docs, docs/intro, Docs, Docs ) 
+					nav_link( api, api, Api )
+					nav_link( code, code/intro, Code )
+					nav_link( starters, starters, Starters )
+					nav_link( project, project, Project )
+				$else
+					nav_link( concepts, ../concepts, Concepts )
+					nav_link( docs, ../docs/intro, Docs, Docs ) 
+					nav_link( api, ../api, Api )
+					nav_link( code, ../code/intro, Code )
+					nav_link( starters, ../starters, Starters )
+					nav_link( project, ../project, Project )
+				
+			. navigation__search
+				span 
+					class algolia-autocomplete
+					style position: relative; display: inline-block; direction: ltr;
+					input 
+						type text
+						class navigation__search-input ds-input
+						placeholder Search documentation…
+						autocomplete off
+						spellcheck false
+						role combobox
+						aria-autocomplete list
+						aria-expanded false
+						aria-owns algolia-autocomplete-listbox-0
+						dir auto
+						style position: relative; vertical-align: top;
+					pre 
+						aria-hidden true
+						style position: absolute; visibility: hidden; white-space: pre; font-family: Arial; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; word-spacing: 0px; letter-spacing: normal; text-indent: 7px; text-rendering: auto; text-transform: none;
+					span 
+						class ds-dropdown-menu
+						role listbox
+						id algolia-autocomplete-listbox-0
+						style position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;
+						. ds-dataset-1
+				button 
+					$$ class navigation__search-icon icon-magnifying-glass
+					class navigation__search-icon icon-search
+				button 
+					class navigation__search-icon icon-cross
+			a 
+				href https://github.com/wizzifactory
+				target _blank
+				class navigation__icon
+				title GitHub Repository
+				i 
+					class sidecar__icon icon-github
+			a 
+				href https://stackoverflow.com/questions/tagged/wizzifactory
+				target _blank
+				class navigation__icon
+				title See Questions on Stack Overflow
+				i 
+					class sidecar__icon icon-stackoverflow
+			a 
+				href #
+				target _blank
+				class navigation__icon
+				title Follow on twitter
+				i 
+					class sidecar__icon icon-twitter
+			a 
+				href #
+				target _blank
+				class navigation__icon
+				title Follow on facebook
+				i 
+					class sidecar__icon icon-facebook
+		
+		$if gcurrentPage == 'code'
+			. navigation__bottom
+				. container navigation__inner
+					nav_child_compile( intro, intro )
+					nav_child_compile( wizzi, wizzi )
+					nav_child_compile( wizzi-mtree, wizzi-mtree, mtree )
+					nav_child_compile( wizzi-repo, wizzi-repo, repo )
+					nav_child_compile( wizzi-utils, wizzi-utils, utils )
+					nav_child_compile( wizzi-core, wizzi-core, core )
+					nav_child_compile( wizzi-meta, wizzi-meta, meta )
+					nav_child_compile( wizzi-docs, wizzi-docs, docs )
+					nav_child_compile( wizzi-documentation, wizzi-documentation, docu )
+					nav_child_compile( wizzi-demo, wizzi-demo, demo )
+
+		$if gcurrentPage == 'docs'
+			. navigation__bottom
+				. container navigation__inner
+					nav_child( intro, intro )
+					nav_child( ittf, ittf )
+					nav_child( jswizzi, jswizzi )
+					nav_child( models, models )
+					nav_child( artifacts, artifacts )
+					nav_child( jobs, jobs )
+					nav_child( plugins, plugins )
+					nav_child( wfschema, wfschema )
+					nav_child( wfjob, wfjob )
+					nav_child( wfpackage, wfpackage )

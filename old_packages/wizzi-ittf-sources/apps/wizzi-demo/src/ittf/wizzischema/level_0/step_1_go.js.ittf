@@ -1,0 +1,57 @@
+﻿demo_module( wizzischema, 0, 1 )
+
+	# 
+		# DEMO: how to generate model types for a new wizzi schema
+		#       first wizzi schema: sample_0_1
+	+
+	# Create a filesystem factory without access control,
+	# requiring the core wizzi plugins and other plugins used by generators.
+	_ wizzi.fsnoaclFactory
+		{
+			@ plugins
+				{
+					@ items
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-meta'
+							@ 'wizzi-js'
+							@ 'wizzi-html'
+							@ './local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+			@ globalContext
+				{
+					@ globalContextDummy 'If you see me the global context works fine.'
+
+		f_cb_throw( wf )
+
+			# Now we can generate the wizzi schema model types.
+			# They will be written in the folder passed as second parameter.
+			_ wf.generateModelTypes
+				_ path.join
+					@ __dirname
+					@ 'step_1'
+					@ 'sample_0_1.wfschema.ittf'
+				_ path.join
+					@ __dirname
+					@ 'local'
+				@ 'sample_0_1'
+				{
+					@ modelLoadContextDummy 'If you see me the model load context works fine.'
+				f_cb_throw( result )
+					# And print the generation result
+					_ wf.loadModel
+						_ path.join
+							@ __dirname
+							@ 'step_1'
+							@ 'first.sample_0_1.ittf'
+						{
+						f_cb_throw( wizziModel )
+							_ printValue
+								@ 'wizziModel'
+								_ stringify
+									@ wizziModel
+									@ null
+									@ 4
+								@ 'dashes'

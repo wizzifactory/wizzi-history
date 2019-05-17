@@ -1,0 +1,25 @@
+﻿module
+	kind jsfile
+
+	var md = module.exports = {}
+	
+	set md.getTransformer
+		function
+			param transformerName
+			if transformerName === 'tests/trans1'
+				return
+					{
+						@ trans
+							function
+								param model
+								param context
+								param callback
+								set model.__transformed = true
+								set model.testsName = model.wzName
+								set model.contextFrom = context.from
+								return
+									_ callback
+										@ null
+										@ model
+			else 
+				return null

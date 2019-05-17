@@ -1,0 +1,21 @@
+﻿base_test( ittfDocumentFinder )
+	
+	$append imports
+		var mocks = require('./mocks/misc')
+		var IttfDocumentFinder = require('../../lib/loader/ittfDocumentFinder')
+	
+	initStore()
+
+	it-async should get an IttfNotFound error
+		var ittfDocumentFinder = new IttfDocumentFinder(store, 'tests')
+		_ ittfDocumentFinder.resolvePath
+			{
+				@ ittfDocumentUri
+					_ path.join
+						@ __dirname
+						@ 'dummy.tests.ittf'
+			f_cb_no_err( result )
+				log 'should get an IttfNotFound error.err', err
+				tobe_string( err.name, IttfNotFound )
+				tobe_true( err.__is_error )
+				_ done

@@ -1,0 +1,37 @@
+﻿base_test( verify )
+	
+	$append imports
+		var verify = require('../../lib/verify')
+	+ 
+	var test
+	+
+	it should check valid email address
+
+		set test
+			_ verify.isEmail('bongo@')
+		tobe_false( test )
+		
+		set test
+			_ verify.isEmail('bongo@it')
+		tobe_false( test )
+
+		set test
+			_ verify.isEmail('stfn.nssl@gmail.com')
+		tobe_true( test )
+
+		set test
+			_ verify.isEmail('stfn@do.com')
+		tobe_true( test )
+
+	it should create a wzError
+		var err1 
+			_ verify.error
+				{
+					@ name 'ArgumentError'
+				@ 'Parameter %s must be a string'
+				@ 'ittfDocumentUri'
+		tobe_string( err1.toString(), ArgumentError: Parameter ittfDocumentUri must be a string )
+		
+	$include verify/convert
+	$include verify/paths
+

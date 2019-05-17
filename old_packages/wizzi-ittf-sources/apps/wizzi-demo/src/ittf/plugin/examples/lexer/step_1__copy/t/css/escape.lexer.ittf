@@ -1,0 +1,56 @@
+﻿$group
+	$params kind|main
+
+	$if kind === 'main'
+		whitespace()
+
+	e h
+		[ 0-9a-f
+
+	e nonascii
+		[ \u0240-\uffff
+
+	e unicode
+		& $$ ampersand_1
+			: \
+			{ 1,6
+				ref h
+	
+	e escape
+		| $$ bar_1
+			ref unicode
+			& $$ ampersand_2
+				: \\
+				[^ $$ bracketCap_1
+					: \r
+					: \n
+					: \f
+					: 0-9
+					: a-f
+
+
+	$if kind === 'main'
+
+  
+		tk EscapeBull
+			pattern
+				: "
+				*
+					|
+						[^ 
+							: \n
+							: "
+						&
+							: \\
+							ref nl
+				: "
+
+		tk Escape
+			pattern
+				ref escape
+
+		tk NonAscii
+			pattern
+				ref nonascii
+
+		test \123 \k \u0745 \'\"\z "" "\'abc\\n" 

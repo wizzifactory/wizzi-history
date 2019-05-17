@@ -1,0 +1,58 @@
+﻿$group
+
+	@ addContextModelToDocument
+		function
+			param documentUri
+			param modelUri
+			param callback
+
+			var docInfo = paths.infoFromUri(documentUri)
+			var modelInfo = paths.infoFromUri(modelUri)
+
+			_ this.getDocumentMeta
+				@ docInfo.project
+				@ docInfo.name
+				@ docInfo.schema
+				f_cb( document )
+					_ document.models.push
+						{
+							@ project modelInfo.project
+							@ name modelInfo.name
+							@ schema modelInfo.schema
+							@ uri modelUri
+					_ file.writeJSON
+						@ document.fullMetaPath
+						@ document
+					_ callback
+						@ null
+						_ success
+							@ 'Model "' + modelUri + '" added to ittf document: "' + documentUri + '"'
+
+	@ removeContextModelFromDocument
+		function
+			param documentUri
+			param modelUri
+			param callback
+
+			var docInfo = path.infoFromUri(documentUri)
+			var modelInfo = path.infoFromUri(modelUri)
+
+			_ this.getDocumentMeta
+				@ docInfo.project
+				@ docInfo.name
+				@ docInfo.schema
+				f_cb( document )
+					set document.models
+						_ _.filter(
+							@ document.models
+							function
+								param item
+								return false = (item.project === modelInfo.project && item.name === modelInfo.name && item.schema === modelInfo.schema)
+					_ file.writeJSON
+						@ document.fullMetaPath
+						@ document
+					_ callback
+						@ null
+						_ success
+							@ 'Model "' + modelUri + '" removed from ittf document: "' + documentUri + '"'
+

@@ -1,0 +1,163 @@
+﻿$group
+
+	$*
+		https://github.com/algolia/autocomplete.js/
+		classes
+		navigation
+		navigation__logo
+		logo
+		navigation__links
+		navigation__link [--active]
+		algolia-autocomplete
+		navigation__search-input 
+		ds-input
+		ds-dropdown-menu
+		icon-magnifying-glass
+		icon-cross
+		navigation__icon
+		sidecar__icon
+		icon-github
+		icon-stack-overflow
+		dropdown__language
+		dropdown__arrow
+	*$
+
+	. site
+		header 
+			class navigation
+			. container navigation__inner
+				div 
+					span W
+						class logo-w
+					span i
+						class logo-i1
+					span z
+						class logo-z1
+					span z
+						class logo-z2
+					span i
+						class logo-i2
+					span &nbsp;
+					span f
+						class logo-f
+					span a
+						class logo-a
+					span c
+						class logo-c
+					span t
+						class logo-t
+					span o
+						class logo-o
+					span r
+						class logo-r
+					span y
+						class logo-y
+				nav 
+					class navigation__links
+					a Concepts
+						href /concepts.html
+						class navigation__link
+					a Docs
+						href /docs.html
+						class navigation__link navigation__link
+					a Api
+						href /api/kernel.html
+						class navigation__link navigation__link
+					a Code
+						href /code/wizzi.html
+						class navigation__link navigation__link--active
+					a Starters
+						href /starters.html
+						class navigation__link
+					a Project
+						href /project.html
+						class navigation__link navigation__link
+				. navigation__search
+					span 
+						class algolia-autocomplete
+						style position: relative; display: inline-block; direction: ltr;
+						input 
+							type text
+							class navigation__search-input ds-input
+							placeholder Search documentation…
+							autocomplete off
+							spellcheck false
+							role combobox
+							aria-autocomplete list
+							aria-expanded false
+							aria-owns algolia-autocomplete-listbox-0
+							dir auto
+							style position: relative; vertical-align: top;
+						pre 
+							aria-hidden true
+							style position: absolute; visibility: hidden; white-space: pre; font-family: Arial; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; word-spacing: 0px; letter-spacing: normal; text-indent: 7px; text-rendering: auto; text-transform: none;
+						span 
+							class ds-dropdown-menu
+							role listbox
+							id algolia-autocomplete-listbox-0
+							style position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;
+							. ds-dataset-1
+					button 
+						class navigation__search-icon icon-magnifying-glass
+					button 
+						class navigation__search-icon icon-cross
+				a 
+					href //github.com/webpack/webpack
+					target _blank
+					class navigation__icon
+					title GitHub Repository
+					i 
+						class sidecar__icon icon-github
+				a 
+					href //stackoverflow.com/questions/tagged/webpack
+					target _blank
+					class navigation__icon
+					title See Questions on Stack Overflow
+					i 
+						class sidecar__icon icon-stack-overflow
+				$*
+				. dropdown navigation__languages
+					tabindex 0
+					img 
+						class dropdown__language
+						alt select language
+						src /ffb234d54a64f189d1e4f4d643cb8bb6.svg
+					i 
+						class dropdown__arrow
+					. dropdown__list
+						ul 
+							li 
+								a 
+									href https://webpack.js.org/
+									span English
+							li 
+								a 
+									href https://doc.webpack-china.org/
+									span 中文
+				*$
+			. navigation__bottom
+				. container navigation__inner
+					a wizzi
+						href code/wizzi
+						class navigation__child
+					a wizzi-mtree
+						href code/wizzi-mtree
+						class navigation__child
+					a wizzi-repo
+						href code/wizzi-repo
+						class navigation__child navigation__child--active
+					a wizzi-mongodb
+						href code/wizzi-mongodb
+						class navigation__child
+					a wizzi-utils
+						href code/wizzi-utils
+						class navigation__child
+					a wizzi-core
+						href code/wizzi-core
+						class navigation__child
+					a wizzi-meta
+						href code/wizzi-meta
+						class navigation__child
+					a wizzi-demo
+						href code/wizzi-demo
+						class navigation__child

@@ -1,0 +1,13 @@
+﻿$group
+	$params varName, errName|loadingError
+
+	if !!(${varName}) == false
+		if ${errName}
+			return
+				div
+					h2 Loading error
+					pre
+						+ {JSON.stringify(verify.replaceAll(${errName}, '\\n', '\n'), null, 2)}
+		else
+			return
+				h2 Loading ...

@@ -1,0 +1,18 @@
+﻿r-simple( Examples, connect )
+
+	$append imports
+		import Clock from './clock'
+		import Counter from './counter'
+
+	=>
+		param { lastUpdate, light }
+		return
+			div
+				< Clock
+					@ lastUpdate {lastUpdate}
+					@ light {light} 
+				< Counter
+
+	$append state-to-props
+		@ lastUpdate state.lastUpdate
+		@ light state.light

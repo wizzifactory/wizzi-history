@@ -1,0 +1,110 @@
+﻿$group
+
+	e attribute : item
+		tag a
+		a type
+			# one-of:
+			#   the children `simpleType` element if present, 
+			#   the simple type definition ·resolved· to by the ·actual value· of the `type` attribute, if present,
+			#   the `simple ur-type definition`
+		a fixed
+			# a fixed (constant value) of the attribute
+		a default
+			# the default value of the attribute
+		a form
+			restrict
+				enum qualified
+				enum unqualified
+		a use
+			default optional
+			restrict
+				enum optional
+				enum prohibited
+				enum required
+		a_flag( isRequired, is-required )
+		a_flag( isOptional, is-optional )
+		a_flag( isProhibited, is-prohibited )
+
+	e attributeRef : attribute
+		tag a-ref
+
+	e attributeGroup : item
+		tag ag
+
+	e attributeGroupRef : item
+		tag ag-ref
+
+
+	$* =============================================
+		WILDCARD
+	============================================= *$
+	e anyAttribute : item
+		tag any-a
+		# Enables any attribute from the specified namespace(s) to appear in 
+		# the containing complexType element or in the containing attributeGroup element.
+		a namespace
+			default ##any
+			# (##any | ##other) | List of (anyURI | (##targetNamespace | ##local)) 
+		a_tag( processContents, process-contents )
+			default strict
+			restrict
+                enum skip
+                enum lax
+                enum strict
+
+	$* =============================================
+		FACETS
+	============================================= *$
+	
+	e facet : item
+		is-abstract
+		a_flag(isFixed, fixed)
+			# prevent a derivation of the type from modifying the value of the facet
+	
+	e enum : facet
+		# xsd element enumeration
+		# Specifies a fixed value that the type must match.
+	
+	e length : facet
+		# Specifies the number of characters in a string-based type, 
+		# the number of octets in a binary-based type, or the number of items in a list-based type.
+
+	e maxLength : facet
+		tag max-length
+		# Specifies the maximum number of characters in a string-based type, 
+		# the maximum number of octets in a binary-based type, 
+		# or the maximum number of items in a list-based type.
+	
+	e minLength : facet
+		tag min-length
+		# Specifies the minimum number of characters in a string-based type, 
+		# the minimum number of octets in a binary-based type, 
+		# or the minimum number of items in a list-based type.
+
+	e maxInclusive : facet
+		tag max-inclusive
+		# Specifies the inclusive upper-bound on the value space of the type.
+
+	e maxExclusive : facet
+		tag max-exclusive
+		# Specifies the exclusive upper-bound on the value space of the type.
+	
+	e minInclusive : facet
+		tag min-inclusive
+		# Specifies the inclusive lower-bound on the value space of the type.
+
+	e minExclusive : facet
+		tag min-exclusive
+		# Specifies the exclusive lower-bound on the value space of the type.
+	
+	e pattern : facet
+		# Specifies a pattern, based on a regular expression, the type must match.
+
+	e fractionDigits : facet
+		# Specifies the maximum number of decimal digits to the right of the decimal point.
+
+	e totalDigits : facet
+		# Specifies the maximum number of decimal digits for types derived from number.
+
+	e whiteSpace : facet
+		# Specifies rules for whitespace normalization.

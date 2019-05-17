@@ -1,0 +1,35 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m copyFile
+		string sourcePath
+		string destPath
+		callback
+
+		var sourcePath = normalize(sourcePath)
+		var destPath = normalize(destPath)
+
+		if sourcePath === destPath
+			r_cb( {} )
+		
+		var that = this
+
+		_ this.readFile
+			@ sourcePath
+			f_cb( source )
+				# log 'wizzi-repo.${source}.document.copyFile.source', source
+				_ that.exists
+					@ destPath
+					f_cb( result )
+						if result === true
+							r_cb_wz_err( ${fsname}RepoError, copyFile )
+								@ 'Document copy file error. The destination path already exists: ' + destPath
+						else
+							_ that.writeFile
+								@ destPath
+								@ source
+								f_cb( r )
+									log 'wizzi-repo.${source}.document.copyFile.r', r
+									r_cb()
+										{
+											@ code "DOCUMENT_COPIED"

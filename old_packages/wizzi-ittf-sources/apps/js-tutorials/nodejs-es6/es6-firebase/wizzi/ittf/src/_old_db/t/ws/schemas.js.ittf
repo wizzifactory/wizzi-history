@@ -1,0 +1,107 @@
+﻿$group
+
+	m getSchemas
+		param callback
+		
+		if this.schemas != null
+			r_cb( this.schemas )
+		
+		const that = this
+		_ this.fb.getCollection
+			_ this.pathNames.examplesCollPath
+			{
+			f_cb( examples )
+				log 'WizziStore.getSchemas', examples
+				set that.schemas = {}, schema
+				foreach item in examples
+					if item.data.schema
+						set schema = that.schemas[item.data.schema]
+						if !schema
+							set schema
+								{
+									@ name item.data.schema
+									[ examples
+									[ fragments
+							set that.schemas[item.data.schema] = schema
+						_ schema.examples.push(item.data.name)
+				log 'WizziStore.getSchemas', that.schemas
+				const schemaNames = Object.keys(that.schemas)
+				const schemaLen = schemaNames.length
+				function set_fragments
+					param count
+					if count == schemaLen
+						r_cb( that.schemas )
+					else
+						var schemaItem = that.schemas[schemaNames[count]]
+						_ that.getFragments
+							@ schemaItem.name
+							f_cb( fragments )
+								for var k in fragments
+									_ schemaItem.fragments.push
+										@ k
+								_ set_fragments(count + 1)
+				_ set_fragments(0)
+
+	m setSchemaExample
+		param schemaName
+		param name
+		const schema = this.getSchemas()[schemaName]
+		const copy = []
+		foreach item in schema.examples
+			if item !== name
+				_ copy.push(item)
+		_ copy.push(name)
+		set schema.examples = items
+		
+	m renameSchemaExample
+		param schemaName
+		param oldName
+		param newName
+		_ this.removeSchemaExample
+			@ schemaName
+			@ oldName
+		_ this.setSchemaExample
+			@ schemaName
+			@ newName
+	
+	m removeSchemaExample
+		param schemaName
+		param name
+		const schema = this.getSchemas()[schemaName]
+		const copy = []
+		foreach item in schema.examples
+			if item !== name
+				_ copy.push(item)
+		set schema.examples = items	
+
+	m setSchemaFragment
+		param schemaName
+		param name
+		const schema = this.getSchemas()[schemaName]
+		const copy = []
+		foreach item in schema.fragments
+			if item !== name
+				_ copy.push(item)
+		_ copy.push(name)
+		set schema.fragments = items
+	
+	m renameSchemaFragment
+		param schemaName
+		param oldName
+		param newName
+		_ this.removeSchemaFragment
+			@ schemaName
+			@ oldName
+		_ this.setSchemaFragment
+			@ schemaName
+			@ newName
+	
+	m removeSchemaFragment
+		param schemaName
+		param name
+		const schema = this.getSchemas()[schemaName]
+		const copy = []
+		foreach item in schema.fragments
+			if item !== name
+				_ copy.push(item)
+		set schema.fragments = items

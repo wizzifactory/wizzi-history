@@ -1,0 +1,22 @@
+﻿$group
+
+	function detectSchema
+		string ittfDocumentUri
+		+
+		var parts = path.basename(ittfDocumentUri).split('.')
+		if parts.length < 3
+			return
+				_ error
+					@ 'InvalidIttfDocumentUri'
+					@ 'detectSchema'
+					@ 'IttfDocumentUri basename must contain at least 3 parts separated by a dot. Received: ' + 
+						\b path.basename(ittfDocumentUri) + ' in IttfDocumentUri: ' + ittfDocumentUri
+		var ittf = parts[parts.length-1]
+		if ittf.toLowerCase() != 'ittf'
+			return
+				_ error
+					@ 'InvalidIttfDocumentUri'
+					@ 'detectSchema'
+					@ 'IttfDocumentUri extension must be ".ittf". Received: ' + ittf + ' in IttfDocumentUri: ' + 
+						\b ittfDocumentUri
+		return parts[parts.length-2]

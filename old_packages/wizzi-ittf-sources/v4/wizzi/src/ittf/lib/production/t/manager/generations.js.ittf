@@ -1,0 +1,71 @@
+﻿$group
+
+	m go_generateArtifact
+		param artifactName
+		param artifactContext
+		param wizziModelInstance
+		param callback
+
+		var self = this 
+
+		var generator = this.getArtifactGenerator(artifactName)
+		if generator == null
+			var msg = 'ProductionManager.go_generateArtifact cannot find generator for artifact: ' + artifactName
+			_ fail.warn(msg)
+			throw new Error(msg)
+
+		var genContext = new GenContext({ options: options(null, { data: artifactContext.__data }) })
+		new generator.gen
+			@ wizziModelInstance
+			@ genContext
+			function
+				param err
+				if err
+					var msg = util.inspect(err, { depth: null})
+					_ fail.warn(msg)
+					throw new Error(msg)
+				var sw = new StringWriter()
+				_ genContext.toStream(sw)
+				_ callback(null, sw.toString())
+
+	m generateArtifact
+		string schemaName
+		string artifactName
+		string ittfDocumentUri
+		{ modelContext
+		{ artifactContext
+		callback
+
+		var self = this 
+
+		var loadModel = this.getLoadModel(schemaName)
+		if loadModel == null
+			var msg = 'ProductionManager.generateArtifact cannot find loadModel for schema: ' + schemaName + ' for artifact ' + ittfDocumentUri
+			_ fail.warn(msg)
+			throw new Error(msg)
+
+		if !loadModel
+			var msg = 'ProductionManager.generateArtifact. Missing load method in loadModel for schema: ' + schemaName + ' for artifact ' + ittfDocumentUri
+			_ fail.warn(msg)
+			throw new Error(msg)
+		else
+			_ loadModel
+				@ ittfDocumentUri
+				@ modelContext
+				function
+					param err
+					param wizziModelInstance
+
+					# log 'ProductionManager.generateArtifact', err
+					if err
+						var msg = 'Error loading IttfDocument: ' + ittfDocumentUri + '\n' + util.inspect(err, { depth: null})
+						_ fail.warn(msg)
+						throw new Error(msg)
+					
+					_ self.go_generateArtifact
+						@ artifactName
+						@ artifactContext
+						@ wizziModelInstance
+						@ callback
+
+				

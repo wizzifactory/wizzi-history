@@ -1,0 +1,22 @@
+﻿$group
+
+	wz-function loadWizziModel
+		param wizzischema
+		param ittfDocumentUri
+		param context
+		param formatOptions
+		param callback
+
+		set context = context || {}
+		set context.__formatOptions = formatOptions
+		
+		_ wizzi.runnerServer.loadWizziModel
+			@ wizzischema 
+			@ ittfDocumentUri 
+			@ context 
+			function
+				param err
+				param wizziModelInstance
+				if err
+					return callback(err)
+				return callback(null, wizziModelInstance)

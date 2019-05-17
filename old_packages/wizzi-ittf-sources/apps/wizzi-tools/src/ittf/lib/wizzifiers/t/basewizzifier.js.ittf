@@ -1,0 +1,69 @@
+﻿module 
+    kind jsfile
+    
+	var util = require('util')
+    
+    var verify = require('wizzi-utils').verify
+	var file = require('wizzi-utils').file
+    var cloner = require('./cloner')
+    var ittfwriter = require("../../../util/ittfwriter")
+
+    var verbose = false
+    function log
+        param label
+        param obj
+        param force
+        if (verbose || force)
+            _ console.log
+                @ label
+                _ util.inspect
+                    @ obj
+                    { 
+                        @ depth null
+	
+	$hook
+
+    var md
+        set module.exports =
+            { 
+    
+	set md.parse =
+        function 
+            param input
+            param callback
+            return 
+                _ parser.parseString
+                    @ input
+                    f_cb( result )
+                        _ callback(null, result)
+    
+	set md.getWizziTree
+        function 
+            param input
+            param options
+            param callback
+            set options = (options || {})
+            if typeof (options.verbose) !== 'undefined'
+                set verbose = options.verbose
+            var startTime = Date.now()
+			# log 'startTime', startTime
+            _ parse
+                @ input
+                @ options
+                f_cb( syntax )
+                    set syntax = cloner(syntax)
+                    # log 'Parsed in ' + Date.now() - startTime + ' ms'
+                    _ callback(null, syntax)
+    
+	set md.getWizziIttf
+        function 
+            param input
+            param options
+            param callback
+            _ md.getWizziTree
+                @ input
+                @ options
+                f_cb( result )
+                    _ callback
+                        @ null
+                        _ ittfwriter.stringify(result, options)

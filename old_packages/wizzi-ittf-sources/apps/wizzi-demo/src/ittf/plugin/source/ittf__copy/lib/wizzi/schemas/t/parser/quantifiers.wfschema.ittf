@@ -1,0 +1,230 @@
+﻿$group
+
+	e_tag( questionMark, ?, node )
+		# Optional match
+		
+		m match
+			param state
+			if !(state.pos < state.len)
+				return 
+					{
+						@ ok true
+						@ opterr true
+			var cp_pos = state.pos, cur_pos = state.pos, ret
+			_ logEnter(this, state)
+			var ast = initialAst(this)
+			# foreach item in this.nodes
+			var children = getParseChildren(this)
+			foreach item in children
+				set ret = item.match(state)
+				if !ret
+					log 'questionMark !ret.item', item
+				if ret.ok
+					if state.pos > cur_pos
+						_ logFound(this, item, state)
+						set cur_pos = state.pos
+						if !ret.opterr
+							_ setStateOk(state)
+							if ret.ast
+								_ loadAST(ast, ret.ast)
+					else
+						# log '? optional not found', item.wzTag
+				else
+					# log '? not found', item.wzTag, item.wzName
+					# restore pos
+					set state.pos = cp_pos
+					# we have no match, but this is optional and we are ok
+					return
+						{
+							@ ok true
+							@ opterr true
+			# ok we have a match
+			return
+				{
+					@ ok true
+					@ ast ast
+
+	e_tag( aster, *, node )
+		# Zero, one or many are all valid match
+
+		m match
+			param state
+			if !(state.pos < state.len)
+				return 
+					{
+						@ ok true
+						@ opterr true
+			var cp_pos = state.pos, cur_match_pos = state.pos, cur_pos = state.pos, ret
+			_ logEnter(this, state)
+			var ast = initialAst(this)
+			while true
+				if !(cur_match_pos < state.len)
+					return
+						{
+							@ ok cur_match_pos > cp_pos
+							@ ast ast
+				var match_ast 
+					{
+						@ type 'TEMP'
+						@ content []
+				# foreach item in this.nodes
+				var children = getParseChildren(this)
+				foreach item in children
+					set ret = item.match(state)
+					if !ret
+						# log 'aster !ret.item', item
+					if ret.ok
+						if state.pos > cur_pos
+							_ logFound(this, item, state)
+							set cur_pos = state.pos
+							if !ret.opterr
+								_ setStateOk(state)
+								if ret.ast
+									_ loadAST(match_ast, ret.ast)
+						else
+							# log '* optional not found', item.wzTag
+					else
+						# log 'aster not found', item.wzTag, item.wzName
+						# restore pos to the last match (or cp_pos if no match)
+						set state.pos = cur_match_pos
+						# match is always true
+						return
+							{
+								@ ok true
+								@ opterr cur_match_pos === cp_pos
+								@ ast ast
+				# we have got a match, append the ast 
+				_ loadAST(ast, match_ast)
+				# advance the cur_match_pos
+				set cur_match_pos = state.pos
+			throw new Error('Invalid operation. Cannot get here.')
+	
+	e_tag( plus, +, node )
+		# One or many matches are valid
+
+		m match
+			param state
+			if !(state.pos < state.len)
+				return 
+					{
+						@ ok false
+			var cp_pos = state.pos, cur_match_pos = state.pos, cur_pos = state.pos, ret
+			_ logEnter(this, state)
+			var ast = initialAst(this)
+			while true
+				if !(cur_match_pos < state.len)
+					return
+						{
+							@ ok cur_match_pos > cp_pos
+							@ ast ast
+				var match_ast 
+					{
+						@ type 'TEMP'
+						@ content []
+				# foreach item in this.nodes
+				var children = getParseChildren(this)
+				foreach item in children
+					set ret = item.match(state)
+					if !ret
+						# log 'plus !ret.item', item
+					if ret.ok
+						if state.pos > cur_pos
+							_ logFound(this, item, state)
+							set cur_pos = state.pos
+							if !ret.opterr
+								_ setStateOk(state)
+								if ret.ast
+									_ loadAST(match_ast, ret.ast)
+						else
+							# log 'plus optional not found', item.wzTag
+					else
+						# log 'plus not found', item.wzTag, item.wzName
+						# restore pos to the last match
+						set state.pos = cur_match_pos
+						# if cur_match_pos === cp_pos it means no items matched
+						return
+							{
+								@ ok cur_match_pos > cp_pos
+								@ ast ast
+				# we have got a match, append the ast 
+				_ loadAST(ast, match_ast)
+				# advance the cur_match_pos
+				set cur_match_pos = state.pos
+			throw new Error('Invalid operation. Cannot get here.')
+
+	e_tag( graph, {, node )
+
+		m wzVerify
+			if verify.isEmpty(this.wzName)
+				_ ctx.addError('The graph element must have a not empty wzName.', this)
+			else
+				set this.minItems = 0, this.maxItems = 9007199254740992
+				var min = [], max = [], seen_comma = false, ch
+				for var i=0; i<this.wzName.length; i++
+					set ch = this.wzName[i]
+					if ch === ','
+						set seen_comma = true
+					elif ch === ' '
+						# skip
+					elif seen_comma
+						_ max.push(ch)
+					else
+						_ min.push(ch)
+				if min.length > 0
+					set this.minItems = parseInt(min.join(''), 10)
+				if max.length > 0
+					set this.maxItems = parseInt(max.join(''), 10)
+
+		m match
+			param state
+			if !(state.pos < state.len)
+				return 
+					{
+						@ ok false
+			var cp_pos = state.pos, cur_match_pos = state.pos, cur_pos = state.pos, ret
+			_ logEnter(this, state)
+			var ast = initialAst(this)
+			var count = 0
+			while true
+				var match_ast 
+					{
+						@ type 'TEMP'
+						@ content []
+				# foreach item in this.nodes
+				var children = getParseChildren(this)
+				foreach item in children
+					set ret = item.match(state)
+					if !ret
+						# log 'graph !ret.item', item
+					if ret.ok
+						if state.pos > cur_pos
+							_ logFound(this, item, state)
+							set cur_pos = state.pos
+							if !ret.opterr
+								_ setStateOk(state)
+								if ret.ast
+									_ loadAST(match_ast, ret.ast)
+						else
+							# log 'plus optional not found', item.wzTag
+					else
+						# log 'plus not found', item.wzTag, item.wzName
+						# restore pos to the last match
+						set state.pos = cur_match_pos
+						# if cur_match_pos === cp_pos it means no items matched
+						if count >= this.minItems && count <= this.maxItems
+							return
+								{
+									@ ok true
+									@ ast ast
+						else
+							return
+								{
+									@ ok false
+				set count++
+				# we have got a match, append the ast 
+				_ loadAST(ast, match_ast)
+				# advance the cur_match_pos
+				set cur_match_pos = state.pos
+			throw new Error('Invalid operation. Cannot get here.')
+
+

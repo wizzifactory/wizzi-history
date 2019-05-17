@@ -1,0 +1,143 @@
+﻿common/artifacts/artifact( v4-wizzi-js, js, module, rootElement=module )
+
+	$append imports
+		var codegen = require('wizzi-codegen')
+		var module_es6 = codegen.js_v4_Module_es6
+		var statement = codegen.js_v4_Statement
+		var wzIife = codegen.js_v4_WzIife
+		var preprocess = require('./preprocess')
+
+	$append main
+		_ preprocess.exec(model, ctx)
+
+		set ctx.__jskind = model.kind
+		set ctx.__ecma = model.ecma
+
+		if model.kind === 'nodejs.bin'
+			_ ctx.w('#!/usr/bin/env node')
+
+		log myname, 'ctx.values', ctx.values
+		_ ctx.w('/*')
+		_ ctx.w('    artifact generator: ' + __filename)
+		_ ctx.w('    primary source IttfDocument: ' + model.wzSourceFilepath('f1'))
+		if (!!ctx.values.isPackageDeploy) == false
+			_ ctx.w('    utc time: ' + new Date().toUTCString())
+		_ ctx.w('*/')
+			
+		_ emitResources(model.resources, ctx)
+
+		if !model.no_strict
+			_ ctx.w("'use strict';")
+
+		_ module_es6.gen(model, ctx)
+
+		if model.hasFeature('argument-check')
+			_ ctx.w("var verify = require('wizzi-utils').verify;")
+
+		if ctx.__wzItems && ctx.__wzItems.length > 0
+			_ emit_Iife_WzModule(model, ctx)
+
+		foreach item in model.statements
+			if item.wzElement === 'wzIife'
+				_ wzIife.gen(item, ctx)
+				_ ctx.w("")
+			else
+				_ statement.gen(item, ctx)
+
+		if ctx.__wzModule && ctx.__wzModule.seen
+			_ emit_top_WzModule(model, ctx)
+
+		if model.hasFeature('argument-check')
+			_ ctx.w('/**')
+			_ ctx.w('  params')
+			_ ctx.w('    string code')
+			_ ctx.w('      # the error name or number')
+			_ ctx.w('    string method')
+			_ ctx.w('    string message')
+			_ ctx.w('      # optional')
+			_ ctx.w('    { innerError')
+			_ ctx.w('      # optional')
+			_ ctx.w('*/')
+			_ ctx.w('function error(code, method, message, innerError) {')
+			_ ctx.w('    var parameter = null;')
+			_ ctx.w('    if (verify.isObject(message)) {')
+			_ ctx.w('        parameter = message.parameter;')
+			_ ctx.w('        message = message.message;')
+			_ ctx.w('    }')
+			_ ctx.w('    innerError = innerError || new Error(\'Error created for trace.\');')
+			_ ctx.w("    return verify.error(innerError, {")
+			_ ctx.w("        name: ( verify.isNumber(code) ? 'Err-' + code : code ),")
+			_ ctx.w("        method: '" + model.wzName + ".' + method,") 
+			_ ctx.w("        parameter: parameter,") 
+			_ ctx.w("        sourcePath: __filename")
+			_ ctx.w("    }, message || 'Error message unavailable');")
+			_ ctx.w('}')
+
+	function emitResources
+		param requestedResources
+		param ctx
+
+		if requestedResources && requestedResources.length > 0 && ctx.values.jsResources
+			var resourceRepo = ctx.values.jsResources
+			_ resourceRepo.clearJsDependencies()
+			foreach item in requestedResources
+				_ resourceRepo.addJsDependency(item.wzName)
+			_ resourceRepo.emitJsDependencies(ctx)
+
+	function emit_top_WzModule
+		param model
+		param ctx
+		_ ctx.w('')
+		_ ctx.w('module.exports = {')
+		_ ctx.indent()
+		
+		var seen = false
+		foreach item in ctx.__wzModule.vars
+			if seen
+				_ ctx.w(',')
+			var ss = item.wzName.split(' ')
+			_ ctx.write(ss[0] + ': ' + ss[0])
+			set seen = true;
+		
+		foreach item in ctx.__wzModule.consts
+			if seen
+				_ ctx.w(',')
+			var ss = item.wzName.split(' ')
+			_ ctx.write(ss[0] + ': ' + ss[0])
+			set seen = true;
+
+		foreach item in ctx.__wzModule.functions
+			if seen
+				_ ctx.w(',')
+			_ ctx.write(item.wzName + ': ' + item.wzName)
+			set seen = true;
+
+		foreach item in ctx.__wzModule.classes
+			if seen
+				_ ctx.w(',')
+			_ ctx.write(item.wzName + ': ' + item.wzName)
+			set seen = true;
+
+		if seen
+			_ ctx.w('')
+
+		_ ctx.deindent()
+		_ ctx.w('};');
+
+	function emit_Iife_WzModule
+		param model
+		param ctx
+		_ ctx.w('var __wz = (function() {')
+		_ ctx.indent()
+		_ ctx.w('var res = {};')
+		foreach item in ctx.__wzItems
+			foreach require in item.requires
+				var from = require.from ? require.from : require.wzName
+				_ ctx.w('res["' + require.wzName + '"] = require("' + from + '");')
+		_ ctx.w('return {');
+		_ ctx.w('    require: function(name) {');
+		_ ctx.w('        return res[name];');
+		_ ctx.w('    }');
+		_ ctx.w('}');
+		_ ctx.deindent()
+		_ ctx.w('})();');

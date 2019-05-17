@@ -1,0 +1,47 @@
+﻿$group
+	$params name, arg1|@@null, arg2|@@null
+
+	m ${name}
+		param documentUri
+		$if arg1 != null
+			param ${arg1}
+		$if arg2 != null
+			param ${arg2}
+		param callback
+
+		# log 'wizzi-repo.mongodb.mongoFsImpl.${name}.documentUri', documentUri
+
+		$if arg1 === 'options' || arg2 === 'options'
+			if typeof(callback) === 'undefined' && verify.isFunction(options) 
+				set callback = options
+				set options = {}
+
+        if verify.isFunction(callback) === false
+			throw
+				new Error
+					_ error
+						@ 'InvalidArgument'
+						@ '${name}'
+						@ 'The callback parameter must be a function. Received: ' + callback
+
+
+		if verify.isNotEmpty(documentUri) === false
+			return
+				_ callback
+					_ error
+						@ 'InvalidArgument'
+						@ '${name}'
+						{
+							@ parameter 'documentUri'
+							@ message 'The documentUri parameter must be a string. Received: ' + documentUri 
+
+		checked_call( parsedUri )
+			_ mongoUriParser
+				@ documentUri
+				@ this.mongodbBaseFolder
+
+		var that = this
+		_ this.db
+			f_cb( mongoDb )
+				$hook
+

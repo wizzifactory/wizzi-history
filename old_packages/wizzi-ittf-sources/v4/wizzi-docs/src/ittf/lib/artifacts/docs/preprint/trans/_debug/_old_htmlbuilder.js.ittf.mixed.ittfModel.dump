@@ -1,0 +1,105 @@
+  module  ids: 1 106
+    kind jsfile ids: 2 107
+    var md = module.exports = {} ids: 3 108
+    var WAIT_ATTR = 1 ids: 4 109
+    var WAIT_TEXT = 2 ids: 5 110
+    class HtmlBuilder ids: 6 111
+      ctor  ids: 7 112
+        set this.stm = [] ids: 8 113
+        set this.indentValue = 0 ids: 9 114
+        set this.length = 0 ids: 10 115
+        set this.line = '' ids: 11 116
+        set this.state = WAIT_TEXT ids: 12 117
+        set this.lfPending = false ids: 13 118
+        set this.noLF = false ids: 14 119
+      m setNoLF ids: 15 120
+        param value ids: 16 121
+        set this.noLF = value ids: 17 122
+      m openTag ids: 18 123
+        param tag ids: 19 124
+        param options ids: 20 125
+        set options = options || {} ids: 21 126
+        if this.state === WAIT_ATTR ids: 22 127
+          _ this.write('>') ids: 23 128
+        if options.inline ids: 24 129
+          _ this.write('<' + tag) ids: 25 130
+        else  ids: 26 131
+          if this.lfPending ids: 27 132
+            _ this.w() ids: 28 133
+          _ this.write('<' + tag) ids: 29 134
+          _ this.indent() ids: 30 135
+        set this.state = WAIT_ATTR ids: 31 136
+      m writeAttribute ids: 32 137
+        param name ids: 33 138
+        param value ids: 34 139
+        if value === null || typeof value === 'undefined' ids: 35 140
+          _ this.write(' ' + name) ids: 36 141
+        else  ids: 37 142
+          _ this.write(' ' + name + '="' + value + '"') ids: 38 143
+      m writeText ids: 39 144
+        param text ids: 40 145
+        if (text || '').length > 0 ids: 41 146
+          if this.state === WAIT_ATTR ids: 42 147
+            _ this.write('>') ids: 43 148
+            set this.state = WAIT_TEXT ids: 44 149
+          _ this.write(text) ids: 45 150
+      m closeTag ids: 46 151
+        param tag ids: 47 152
+        param options ids: 48 153
+        set options = options || {} ids: 49 154
+        if options.inline ids: 50 155
+          if this.state === WAIT_ATTR ids: 51 156
+            _ this.write(' />') ids: 52 157
+          else  ids: 53 158
+            _ this.write('</' + tag + '>') ids: 54 159
+        else  ids: 55 160
+          if this.state === WAIT_ATTR ids: 56 161
+            _ this.write(' />') ids: 57 162
+            set this.lfPending = true ids: 58 163
+          else  ids: 59 164
+            _ this.w() ids: 60 165
+            _ this.deindent() ids: 61 166
+            _ this.w('</' + tag + '>') ids: 62 167
+        set this.state = WAIT_TEXT ids: 63 168
+      m w ids: 64 169
+        param text ids: 65 170
+        if this.noLF ids: 66 171
+          _ this.write(text) ids: 67 172
+          return  ids: 68 173
+        if this.stm.length == 0 ids: 69 174
+          var ind = spaces(this.indentValue * 4) ids: 70 175
+          _ this.stm.push(ind + '') ids: 71 176
+        if this.line == null ids: 72 177
+          var ind = spaces(this.indentValue * 4) ids: 73 178
+          set this.line = ind + '' ids: 74 179
+          _ this.stm.push(this.line) ids: 75 180
+        set this.line += text || '' ids: 76 181
+        var ind = spaces(this.indentValue * 4) ids: 77 182
+        _ this.stm.push(ind + this.line + (text || '')) ids: 78 183
+        set this.line = '' ids: 79 184
+        set this.length++; ids: 80 185
+      m write ids: 81 186
+        param text ids: 82 187
+        if this.stm.length == 0 ids: 83 188
+          var ind = spaces(this.indentValue * 4) ids: 84 189
+          _ this.stm.push(ind + '') ids: 85 190
+        set this.stm[this.stm.length -1] += (text || '') ids: 86 191
+      m indent ids: 87 192
+        set this.indentValue++ ids: 88 193
+      m deindent ids: 89 194
+        set this.indentValue = Math.max(0, this.indentValue -1) ids: 90 195
+      m toLines ids: 91 196
+        if this.line.length > 0 ids: 92 197
+          var save = this.noLF ids: 93 198
+          set this.noLF = false ids: 94 199
+          _ this.w() ids: 95 200
+          set this.noLF = save ids: 96 201
+        return this.stm ids: 97 202
+      m toText ids: 98 203
+        if this.line.length > 0 ids: 99 204
+          _ this.w() ids: 100 205
+        return this.stm.join('\n'); ids: 101 206
+    function spaces ids: 102 207
+      param num ids: 103 208
+      return Array(num + 1).join(" ") ids: 104 209
+    set md.HtmlBuilder = HtmlBuilder ids: 105 210

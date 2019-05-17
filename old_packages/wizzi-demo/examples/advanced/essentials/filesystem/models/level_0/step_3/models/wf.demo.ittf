@@ -1,0 +1,17 @@
+demo wf_overview
+
+	# Sample json-ld description of the wizzi factory components
+
+	context
+		@ xsd http://www.w3.org/2001/XMLSchema#
+		@ foaf http://xmlns.com/foaf/0.1/
+		@ org http://schema.org/
+		@ wf http://wizzifactory.com/0.1/
+
+	graph
+
+		$foreach p in data.packages
+			+ https://github.com/wizzifactory/${p.name}
+				type wf:Package
+				@ org:description ${p.title}
+	

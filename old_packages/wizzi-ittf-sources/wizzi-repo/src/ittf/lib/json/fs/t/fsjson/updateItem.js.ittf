@@ -1,0 +1,59 @@
+﻿$group
+
+	m updateItem
+		{ fsitem
+			{ _id
+		callback
+
+		var upd_item
+			_ Object.assign
+				{
+				@ fsitem
+		set upd_item.path = fsitem.dirname ? normalize(path.join(fsitem.dirname, fsitem.basename)) : fsitem.basename
+
+		_ this.items.replaceOne
+			{
+				@ _id upd_item._id
+			@ upd_item
+			f_cb( r_upd )
+				# log 'wizzi-repo.json.FsJson.updateItem', r_upd.result
+				if r_upd.modifiedCount == 1
+					r_cb()
+						{
+							@ code 'FSITEM_UPDATED'
+							@ updatedCount r_upd.modifiedCount
+							@ item r_upd.ops[0]
+				else
+					r_cb_wz_err( JsonRepoError, updateItem )
+						@ util.inspect( r_upd.result )
+
+	m updateItemLastModified
+		{ id
+		param lastModified
+		callback
+
+		var that = this
+
+		_ this.getItemById
+			@ id
+			f_cb( r )
+				if r != null
+					set r.lastModified = lastModified
+					_ that.items.replaceOne
+						{
+							@ _id id
+						@ r
+						f_cb( r_upd )
+							# log 'wizzi-repo.json.FsJson.updateItemLastModified', r_upd.result
+							if r_upd.modifiedCount == 1
+								r_cb()
+									{
+										@ code 'FSITEM_LASTMODIFIED_UPDATED'
+										@ updatedCount r_upd.modifiedCount
+										@ item r_upd.ops[0]
+							else
+								r_cb_wz_err( JsonRepoError, updateItemLastModified )
+									@ util.inspect( r_upd.result )
+				else
+					r_cb_wz_err( JsonRepoError, updateItemLastModified )
+						@ 'FsJson item not found, id: ' + id

@@ -1,0 +1,37 @@
+﻿wfschema rdbms
+	
+	e comment
+		tag #
+	
+	e item
+		a sqlname
+		r comment/s
+	
+	e rdbms : item
+		is-root
+		r table/s
+	
+	e table : item
+		r column/s
+	
+	e column : item
+		a type
+			restrict
+				enum string
+				enum boolean
+				enum integer
+				enum float
+				enum date
+
+	e index : item
+		a isPrimary
+			type boolean
+			tag primary
+			default false
+			default-when-declared true
+		a isUnique
+			type boolean
+			tag unique
+			default false
+			default-when-declared true
+		r column/s

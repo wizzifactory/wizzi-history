@@ -1,0 +1,50 @@
+﻿common/example/plugin('html examples')
+
+	$append imports
+		var htmlfactory = require('../../lib/wizzi/models/html-factory.g')
+		var htmlgenerator = require('../../lib/artifacts/html/document/gen/main')
+	
+	+
+	var loadModel
+		_ htmlfactory.createLoadModel
+			_ getWizziObject
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath,'html')
+		set item = item.substring(0, item.length - '.html.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	+
+	function execute
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.html.ittf'
+		var htmlOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.html'
+		_ loadModel
+			@ ittfSource
+			{
+				@ __productionManager
+					_ mocks.getProductionManager
+			f_cb_test( htmlWizziModel )
+				log 'htmlWizziModel', htmlWizziModel
+				var ctx
+					_ mocks.getGenContext
+				_ htmlgenerator.gen
+					@ htmlWizziModel
+					@ ctx
+					f_cb_test( ctxout )
+						log 'ctxout', ctxout.getContent()
+						_ file.write
+							@ htmlOutput
+							@ ctxout.getContent()
+

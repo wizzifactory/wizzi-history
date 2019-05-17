@@ -1,0 +1,174 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var uriparser = require('./uriparser') ids: undefined undefined
+    var file = require('./file') ids: undefined undefined
+    var repo = require('./repo') ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    var win32 = process.platform === 'win32' ids: undefined undefined
+    set md.unixifyPath ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        if win32 ids: undefined undefined
+          return path_string.replace(/\\/g, '/') ids: undefined undefined
+        else  ids: undefined undefined
+          return path_string ids: undefined undefined
+    set md.exists ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.exists(parsed, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.exists(path_string, callback) ids: undefined undefined
+    set md.isFile ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.isFile(parsed, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.isFile(path_string, callback) ids: undefined undefined
+    set md.isDirectory ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.isDirectory(parsed, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.isDirectory(path_string, callback) ids: undefined undefined
+    set md.read ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        if typeof (options) === 'function' ids: undefined undefined
+          set callback = options, options = {} ids: undefined undefined
+        if !options ids: undefined undefined
+          set options = ids: undefined undefined
+            {  ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.read(parsed, options, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.read(path_string, options, callback) ids: undefined undefined
+    set md.getGlobbedFiles ids: undefined undefined
+      function  ids: undefined undefined
+        param globPattern ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        if typeof (options) === 'function' ids: undefined undefined
+          set callback = options, options = {} ids: undefined undefined
+        if !options ids: undefined undefined
+          set options = ids: undefined undefined
+            {  ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(globPattern) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.getGlobbedFiles(parsed, options, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.getGlobbedFiles(globPattern, options, callback) ids: undefined undefined
+    set md.write ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param content ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        if typeof (options) === 'function' ids: undefined undefined
+          set callback = options, options = {} ids: undefined undefined
+        if !options ids: undefined undefined
+          set options = ids: undefined undefined
+            {  ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.write(parsed, content, options, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.write(path_string, content, options, callback) ids: undefined undefined
+    set md.mkdir ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param mode ids: undefined undefined
+        param callback ids: undefined undefined
+        if typeof (mode) === 'function' ids: undefined undefined
+          set callback = mode, mode = null ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              # no mode param for repo.mkdir ids: undefined undefined
+              return repo.mkdir(parsed, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.mkdir(path_string, mode, callback) ids: undefined undefined
+    set md.copy ids: undefined undefined
+      function  ids: undefined undefined
+        param source_path_string ids: undefined undefined
+        param dest_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ uriparser ids: undefined undefined
+          @ String(source_path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param parsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if parsed.storeKind === 'repo' ids: undefined undefined
+              return repo.copy(parsed, dest_path_string, callback) ids: undefined undefined
+            else  ids: undefined undefined
+              return file.copy(source_path_string, dest_path_string, callback) ids: undefined undefined

@@ -1,0 +1,199 @@
+﻿module wizzi.productionManager
+	kind jsfile
+
+	var path = require('path')
+	var util = require('util')
+	var assert = require('assert')
+	var async = require('async')
+	var verify = require('wizzi-utils').verify
+	var file = require('wizzi-utils').file
+	var fail = require('wizzi-utils').fail
+	var GenContext = require('../artifact/GenContext')
+	var StringWriter = require('../util/stringwriter')
+	var log = require('../util/log')(module)
+	var options = require('./options')
+	var ProductionContext = require("./context").ProductionContext
+	var ArtifactInfo = require('../artifact/artifactinfo').ArtifactInfo
+	# old VIA var pkgLoader = require('./wfpackageloader')
+	var Runner = require('./runner').Runner
+	# old VIA var WfJob = require('./wfjob')
+	var WfjobLoader = require('./wfjobLoader').WfjobLoader
+	var AsyncRecurseWfjobLoad = require('./wfjobLoader').AsyncRecurseWfjobLoad
+	var ArtifactPersister = require('./persister').ArtifactPersister
+
+	var thisWizziPackage = require('../../index')
+	# var legacy = require('../../legacy')
+	# var Logger = require('../services/logger')
+	#
+		#
+		# The 'meat' of a production is the execution of a wizzi.artifact.artifactInfo instance
+		# performed by an instance of a wizzi.production.Runner.
+		# wizzi.artifact.artifactInfo (s) are added to the wizzi.production.productionManager
+		# in three ways:
+		# 1. adding a request for loading a 'wfjob' wizzi model. 
+		# 2. adding a wfjobArtifactModel
+		# 3. adding a wizzi.artifact.artifactInfo created programmaticaly.
+		# When the 'run' method is called the production manager:
+		# 1. loads the requested wfjobModels.
+		#    A wfjobModel can contain wfjobArtifactModel(s) and others 'wfjob' requests.
+		#    Every wfjob request is execute until we have wfjobArtifactModel(s) only.
+		# 2  wfjobArtifactModel(s) are transformed in instances of wizzi.artifact.artifactInfo (s)
+		# 3  A wizzi.production.Runner is instantiated and asynchronously executed for each 
+		#    wizzi.artifact.artifactInfo.
+		#
+		# addArtifactInfo(artifactInfo)
+		# addWfJob(wfJobConfig)
+		# getLoadModel(schemaName)
+		# getWizziSchemaObject(schemaName)
+		# getModelTransformer(transName)
+		# getArtifactGenerator(artifactName)
+		# run:AsyncMethod
+		# persistToFile:AsyncMethod
+		#
+		# You execute a production 
+		#   adding wfjobs and/or artifact infos
+		#   finally executing the run and persistToFile async methods
+		#
+
+	class ProductionManager
+		#
+			# CTOR_PARAMS
+			# { wizziFactory
+			# { options
+			#   boolean verbose
+			#   boolean trace
+			#   string basedir // uri
+			#   { dumps
+			#     string dumpsBaseFolder
+			# 	  { mTreeBuildUpScript
+			#       boolean dump
+			#       string dumpsBaseFolder
+		ctor
+			{ wizziFactory
+			{ options
+			_ assert.strictEqual(wizziFactory.__type, 'WizziFactory', 'param wizziFactory must be of type WizziFactory')
+			set this.wizziFactory = wizziFactory
+			set this.options = options
+			set this.artifactInfos = []
+			set this.wfJobArtifactInfos = []
+			set this.jobRequests = []
+			set this.productionContext = new ProductionContext(options)
+			set this.wfjobLoadModel = null
+			
+			_ log.setLevel(options.verbose || 0)
+			
+			set this.___state
+				{
+					@ models 
+						{
+					@ pman this
+					@ pcx this.productionContext
+
+			# set this.logger = new Logger()
+			set this.productionName = 'production'
+
+		#
+			# Add an artifact info to be run by a Runner instance.
+			# The artifactInfoConfig parameter can be
+			# .1 An artifact info config declared in a "artifact" element of a "wfjob" wizzi model.
+			# .2 An artifactInfo instance created programmatically.
+		m addArtifactInfo
+			{ artifactInfoConfig
+			if ArtifactInfo.isArtifactConfig(artifactInfoConfig)
+				_ this.artifactInfos.push(new ArtifactInfo(artifactInfoConfig))
+			elif ArtifactInfo.isArtifactInstance(artifactInfoConfig)
+				_ this.artifactInfos.push(artifactInfoConfig)
+			else
+				throw new Error('ProductionManager.addArtifactInfo is not an artifact info: ' + util.inspect(artifactInfoConfig))
+
+		#
+			# Add a WfJob request declared in an "artifact" element of a "wfjob" WizziModel.
+		m addWfJobArtifactInfo
+			{ wfJobArtifactInfoConfig
+			_ this.wfJobArtifactInfos.push(new ArtifactInfo(wfJobArtifactInfoConfig))
+
+		#
+			# Add a WfJob request created programmatically.
+		m addWfJob
+			{ wfJobConfig
+				{ options
+					optional
+			
+			set wfJobConfig.__pman = this
+			set wfJobConfig.options = Object.assign({}, this.options, (wfJobConfig.options || {}))
+			_ this.jobRequests.push(wfJobConfig)
+
+		m initialize
+			callback
+			# VIA _ log.info('wizzi.productionManager.Initialize')
+			
+			_ async.mapSeries
+				@ this.jobRequests
+				@ AsyncInitializeJobRequests.run $$ AsyncInitializeArtifactInfo.run
+				f_cb( notUsed )
+					_ callback(null, null)
+
+		m run
+			callback
+			# VIA _ log.info('Start run')
+
+			var self = this
+			_ this.initialize
+				f_cb( nullResult )
+					_ async.mapSeries
+						@ self.wfJobArtifactInfos
+						@ AsyncRunner.run
+						f_cb( result )
+							_ async.mapSeries
+								@ self.artifactInfos
+								@ AsyncRunner.run
+								function
+									param err
+									param result
+									if err
+										return callback(err);
+									set self.artifactInfos = result
+									# VIA _ log.info('End run')
+									_ callback(null, result)
+
+		m terminate
+			# VIA _ log.info('Terminate')
+			if this.wizziFactory
+				_ this.wizziFactory.terminate
+
+		m persistToFile
+			callback
+			# VIA _ log.info('Start persistToFile')
+			
+			var self = this
+			_ async.mapSeries
+				@ self.artifactInfos
+				@ AsyncPersisterToFile.run
+				function
+					param err
+					param result
+					if err
+						return callback(err);
+					# log 'ProductionManager.persistToFile.persisted artifacts', util.inspect(result, { depth: 1 })
+					foreach ai in self.artifactInfos
+						_ ai.terminate()
+					# VIA_ log.info('End persistToFile')
+					_ callback(null, result)
+
+		m relPath
+			param filepath
+			return filepath.substr(this.options.basedir.length + 1)
+
+		$include manager/requests
+		$include manager/factoryServices
+		$include manager/state
+		$include manager/generations
+
+	$include manager/async_initialize_artifactInfos
+	manager/async_initialize_jobRequests()
+	$include manager/async_runner
+	$include manager/async_persister
+
+	f_error( wizzi.production.productionManager )
+
+	set module.exports = ProductionManager

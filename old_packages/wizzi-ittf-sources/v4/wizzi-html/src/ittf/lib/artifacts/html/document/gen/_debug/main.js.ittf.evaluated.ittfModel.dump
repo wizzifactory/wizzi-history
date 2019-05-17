@@ -1,0 +1,297 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var wizzi = require('../../../../../index'); ids: undefined undefined
+    var css_rule = require('./css_rule') ids: undefined undefined
+    var js_statement = require('./js_statement') ids: undefined undefined
+    var verify = wizzi.verify ids: undefined undefined
+    var utilNode = wizzi.utilNode ids: undefined undefined
+    var lineParser = wizzi.lineParser ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    var myname = 'htm1.document.main' ids: undefined undefined
+    set md.gen ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param callback ids: undefined undefined
+        # log 'model', util.inspect(model, { depth: 1 }) ids: undefined undefined
+        _ this.genItem(model, ctx) ids: undefined undefined
+        _ callback(null, ctx) ids: undefined undefined
+    set md.gen.prototype.genItems ids: undefined undefined
+      function  ids: undefined undefined
+        param items ids: undefined undefined
+        param ctx ids: undefined undefined
+        param options ids: undefined undefined
+        var  ids: undefined undefined
+          decl opt = options || {} ids: undefined undefined
+          decl from = opt.from || 0 ids: undefined undefined
+          decl indent = typeof opt.indent === 'undefined' ? true : opt.indent ids: undefined undefined
+        if indent ids: undefined undefined
+          _ ctx.indent() ids: undefined undefined
+        for var i = from; i < items.length; i++ ids: undefined undefined
+          var item = items[i] ids: undefined undefined
+          _ this.genItem(item, ctx) ids: undefined undefined
+        if indent ids: undefined undefined
+          _ ctx.deindent() ids: undefined undefined
+    set md.gen.prototype.genItem ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if ['_text','_textLF'].indexOf(model.wzElement) >= 0 ids: undefined undefined
+          # model.wzName is a TEXTNODE ids: undefined undefined
+          # preserve a blank first char (coded between single hyphens) ids: undefined undefined
+          var text = verify.startsWith(model.wzName, "' '") ? '&nbsp;' + model.wzName.substr(3) : model.wzName; ids: undefined undefined
+          if ctx.__iscode || model.wzElement === '_textLF' ids: undefined undefined
+            _ ctx.w(text) ids: undefined undefined
+          else  ids: undefined undefined
+            _ ctx.write(text) ids: undefined undefined
+          _ this.genItems(model.elements, ctx) ids: undefined undefined
+          return  ids: undefined undefined
+        if this[model.wzElement] ids: undefined undefined
+          # known element ids: undefined undefined
+          if this[model.wzElement](model, ctx) ids: undefined undefined
+            # ok, processed ids: undefined undefined
+            return  ids: undefined undefined
+        _ this.preprocess(model, ctx) ids: undefined undefined
+        var voidEl = (model.wzTag in voidElements) ids: undefined undefined
+        _ ctx.write('<' + model.wzTag) ids: undefined undefined
+        foreach a in getAttrs(model) ids: undefined undefined
+          if (a.name in attrsneedsvalue) || a.value && a.value.length > 0 ids: undefined undefined
+            _ ctx.write(' ' + a.name + '="' + verify.unquote(a.value || '') + '"') ids: undefined undefined
+          else  ids: undefined undefined
+            _ ctx.write(' ' + a.name) ids: undefined undefined
+        _ ctx.write('>') ids: undefined undefined
+        if voidEl ids: undefined undefined
+          _ ctx.w() ids: undefined undefined
+          _ this.postprocess(model, ctx) ids: undefined undefined
+          return  ids: undefined undefined
+        # check if the element has text line coded as children of the $. ittf command ids: undefined undefined
+        var lt = utilNode.lineToText(model.wzName) ids: undefined undefined
+        if lt.text ids: undefined undefined
+          # preserve a blank first char (coded between single hyphens) ids: undefined undefined
+          var text = verify.startsWith(lt.text, "' '") ? '&nbsp;' + lt.text.substr(3) : lt.text ids: undefined undefined
+          _ ctx.write(text) ids: undefined undefined
+        if lt.lines ids: undefined undefined
+          _ ctx.w() ids: undefined undefined
+          var saveIndent ids: undefined undefined
+          if ctx.__ispre ids: undefined undefined
+            # we are inside a pre element, temporaly reset ids: undefined undefined
+            # to 0 the indentation depending from the node depth ids: undefined undefined
+            set saveIndent = ctx.forceIndent(0) ids: undefined undefined
+          else  ids: undefined undefined
+            _ ctx.indent() ids: undefined undefined
+          foreach line in lt.lines ids: undefined undefined
+            _ ctx.w(line) ids: undefined undefined
+          if ctx.__ispre ids: undefined undefined
+            # restore indentation ids: undefined undefined
+            _ ctx.forceIndent(saveIndent); ids: undefined undefined
+          else  ids: undefined undefined
+            _ ctx.deindent() ids: undefined undefined
+        if model.elements && model.elements.length > 0 ids: undefined undefined
+          if ctx.__ispre && !ctx.__ispre_started ids: undefined undefined
+            _ ctx.w('') ids: undefined undefined
+            set ctx.__ispre_started = true ids: undefined undefined
+            var saveIndent = ctx.forceIndent(0) ids: undefined undefined
+            _ this.genItems(model.elements, ctx) ids: undefined undefined
+            _ ctx.forceIndent(saveIndent) ids: undefined undefined
+            set ctx.__ispre_started = false ids: undefined undefined
+          else  ids: undefined undefined
+            var noinline = inline.indexOf(model.wzTag) < 0 ids: undefined undefined
+            if noinline ids: undefined undefined
+              _ ctx.w('') ids: undefined undefined
+            _ this.genItems(model.elements, ctx, { indent: noinline}) ids: undefined undefined
+        _ ctx.w('</' + model.wzTag + '>') ids: undefined undefined
+        _ this.postprocess(model, ctx) ids: undefined undefined
+    set md.gen.prototype.preprocess ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if model.wzTag == '.' ids: undefined undefined
+          set model.wzTag = 'div' ids: undefined undefined
+          set model.class = model.wzName ids: undefined undefined
+          set model.wzName = null ids: undefined undefined
+        elif model.wzTag == '#' ids: undefined undefined
+          set model.wzTag = 'div' ids: undefined undefined
+          set model.id = model.wzName ids: undefined undefined
+          set model.wzName = null ids: undefined undefined
+        elif model.wzTag == '<' ids: undefined undefined
+          set model.wzTag = model.wzName ids: undefined undefined
+          set model.wzName = null ids: undefined undefined
+        elif model.wzTag == 'js' ids: undefined undefined
+          set model.wzTag = 'script' ids: undefined undefined
+          set model.src = model.wzName ids: undefined undefined
+          set model.wzName = null ids: undefined undefined
+        elif model.wzTag === 'css' ids: undefined undefined
+          set model.wzTag = 'link' ids: undefined undefined
+          set model.href = model.wzName ids: undefined undefined
+          set model.rel = 'stylesheet' ids: undefined undefined
+          set model.wzName = null ids: undefined undefined
+        elif model.wzTag === '@title' ids: undefined undefined
+          set model.wzTag = 'title' ids: undefined undefined
+        elif model.wzTag === '@style' ids: undefined undefined
+          set model.wzTag = 'style' ids: undefined undefined
+        if incode.indexOf(model.wzTag) > -1 ids: undefined undefined
+          set ctx.__iscode = true ids: undefined undefined
+        if ['pre'].indexOf(model.wzTag) > -1 ids: undefined undefined
+          set ctx.__ispre = true ids: undefined undefined
+    set md.gen.prototype.postprocess ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if incode.indexOf(model.wzTag) > -1 ids: undefined undefined
+          set ctx.__iscode = false ids: undefined undefined
+        if ['pre'].indexOf(model.wzTag) > -1 ids: undefined undefined
+          set ctx.__ispre = false ids: undefined undefined
+    set md.gen.prototype.html ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if model.doctype ids: undefined undefined
+          _ ctx.w('<!doctype ' + model.doctype + '>') ids: undefined undefined
+        else  ids: undefined undefined
+          _ ctx.w('<!doctype html>') ids: undefined undefined
+        _ ctx.write('<html') ids: undefined undefined
+        foreach a in getAttrs(model) ids: undefined undefined
+          if a.name != 'doctype' ids: undefined undefined
+            if (a.name in attrsneedsvalue) || a.value && a.value.length > 0 ids: undefined undefined
+              _ ctx.write(' ' + a.name + '="' + verify.unquote(a.value || '') + '"') ids: undefined undefined
+            else  ids: undefined undefined
+              _ ctx.write(' ' + a.name) ids: undefined undefined
+        _ ctx.w('>') ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        _ ctx.w() ids: undefined undefined
+        _ ctx.w('</html>') ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype._css ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if model.rules.length === 0 ids: undefined undefined
+          # is link to a stylesheet not a style element ids: undefined undefined
+          return false ids: undefined undefined
+        _ ctx.w("<style>") ids: undefined undefined
+        _ css_rule.genItems(model.rules, ctx) ids: undefined undefined
+        _ ctx.w("</style>") ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype._js ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if model.statements.length === 0 ids: undefined undefined
+          # is link to a js file not a script element ids: undefined undefined
+          return false ids: undefined undefined
+        _ ctx.w("<script>") ids: undefined undefined
+        _ js_statement.genItems(model.statements, ctx) ids: undefined undefined
+        _ ctx.w("</script>") ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.ready ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("<script>") ids: undefined undefined
+        _ ctx.indent() ids: undefined undefined
+        if model.kind === 'jquery' ids: undefined undefined
+          _ ctx.w('$(function() {') ids: undefined undefined
+          _ js_statement.genItems(model.statements, ctx, { indent: true }) ids: undefined undefined
+          _ ctx.w('});') ids: undefined undefined
+        else  ids: undefined undefined
+          _ ctx.w('window.onload = function() {') ids: undefined undefined
+          _ js_statement.genItems(model.statements, ctx, { indent: true }) ids: undefined undefined
+          _ ctx.w('};') ids: undefined undefined
+        _ ctx.deindent() ids: undefined undefined
+        _ ctx.w("</script>") ids: undefined undefined
+        return true ids: undefined undefined
+    set md.gen.prototype.comment ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if ctx.__iscode ids: undefined undefined
+          _ ctx.w("// " + model.wzName) ids: undefined undefined
+        else  ids: undefined undefined
+          _ ctx.w("<!-- " + model.wzName + " -->") ids: undefined undefined
+        return true; ids: undefined undefined
+    var noattrs ids: undefined undefined
+      [  ids: undefined undefined
+        @ 'wzTag' ids: undefined undefined
+        @ 'wzName' ids: undefined undefined
+        @ 'wzElement' ids: undefined undefined
+        @ 'wzParent' ids: undefined undefined
+        @ 'wzSourceLineInfo' ids: undefined undefined
+        @ '___exportName' ids: undefined undefined
+    function isAttrValue ids: undefined undefined
+      param a ids: undefined undefined
+      param v ids: undefined undefined
+      if noattrs.indexOf(a) > -1 ids: undefined undefined
+        return false ids: undefined undefined
+      if v == null || verify.isArray(v) || verify.isObject(v) || verify.isFunction(v) ids: undefined undefined
+        return false ids: undefined undefined
+      return true ids: undefined undefined
+    function getAttrs ids: undefined undefined
+      param e ids: undefined undefined
+      var retval = [] ids: undefined undefined
+      for var a in e ids: undefined undefined
+        if isAttrValue(a, e[a]) ids: undefined undefined
+          _ retval.push({ name: verify.replaceAll(a, '_', '-'), value: e[a] }) ids: undefined undefined
+        elif a.substr(0, 3) === 'ng-' ids: undefined undefined
+          _ retval.push({ name: a, value: e[a] }) ids: undefined undefined
+        elif a.substr(0, 5) === 'data-' ids: undefined undefined
+          _ retval.push({ name: a, value: e[a] }) ids: undefined undefined
+        elif a.substr(0, 5) === 'aria-' ids: undefined undefined
+          _ retval.push({ name: a, value: e[a] }) ids: undefined undefined
+      if e.attributes ids: undefined undefined
+        foreach a in e.attributes ids: undefined undefined
+          var p = lineParser.parseNameValueRaw(a.wzName, a) ids: undefined undefined
+          if p.hasValue() ids: undefined undefined
+            _ retval.push({ name: p.name(), value: p.value() }) ids: undefined undefined
+          else  ids: undefined undefined
+            _ retval.push({ name: p.name() }) ids: undefined undefined
+      return retval ids: undefined undefined
+    var inline ids: undefined undefined
+      [  ids: undefined undefined
+        @ 'a' ids: undefined undefined
+        @ 'img' ids: undefined undefined
+        @ 'input' ids: undefined undefined
+        @ 'li' ids: undefined undefined
+        @ 'textarea' ids: undefined undefined
+    var incode ids: undefined undefined
+      [  ids: undefined undefined
+        @ 'js' ids: undefined undefined
+        @ 'css' ids: undefined undefined
+        @ 'script' ids: undefined undefined
+        @ 'style' ids: undefined undefined
+        @ 'ready' ids: undefined undefined
+    var attrsneedsvalue ids: undefined undefined
+      {  ids: undefined undefined
+        @ __proto__ null ids: undefined undefined
+    var voidElements ids: undefined undefined
+      {  ids: undefined undefined
+        @ __proto__  null ids: undefined undefined
+        @ area  true ids: undefined undefined
+        @ base  true ids: undefined undefined
+        @ basefont  true ids: undefined undefined
+        @ br  true ids: undefined undefined
+        @ col  true ids: undefined undefined
+        @ command  true ids: undefined undefined
+        @ embed  true ids: undefined undefined
+        @ frame  true ids: undefined undefined
+        @ hr  true ids: undefined undefined
+        @ img  true ids: undefined undefined
+        @ input  true ids: undefined undefined
+        @ isindex  true ids: undefined undefined
+        @ keygen  true ids: undefined undefined
+        @ link  true ids: undefined undefined
+        @ meta  true ids: undefined undefined
+        @ param  true ids: undefined undefined
+        @ source  true ids: undefined undefined
+        @ track  true ids: undefined undefined
+        @ wbr  true ids: undefined undefined
+        # common self closing svg elements ids: undefined undefined
+        @ path  true ids: undefined undefined
+        @ circle  true ids: undefined undefined
+        @ ellipse  true ids: undefined undefined
+        @ line  true ids: undefined undefined
+        @ rect  true ids: undefined undefined
+        @ use  true ids: undefined undefined
+        @ stop  true ids: undefined undefined
+        @ polyline  true ids: undefined undefined
+        @ polygone  true ids: undefined undefined

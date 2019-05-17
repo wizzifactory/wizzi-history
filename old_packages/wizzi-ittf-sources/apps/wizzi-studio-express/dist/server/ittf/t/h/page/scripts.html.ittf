@@ -1,0 +1,33 @@
+﻿$group
+	$params &opt
+
+	$if opt.useReact
+		$if opt.useMinimized
+			j( https://unpkg.com/prop-types@15.6/prop-types.min.js
+		$else
+			j( https://unpkg.com/prop-types@15.6/prop-types.js
+		
+		j( https://cdn.jsdelivr.net/npm/react@16.4.1/umd/react.development.js
+		j( https://cdn.jsdelivr.net/npm/react-dom@16.4.1/umd/react-dom.development.js
+
+	$if opt.useMaterialUi
+		j( https://cdn.jsdelivr.net/npm/material-ui@1.0.0-beta.47/umd/material-ui.development.js
+		
+	$if opt.useReact
+		j( https://cdn.jsdelivr.net/npm/@babel/standalone@7.0.0-beta.51/babel.min.js
+
+	$if opt.useCodemirror
+		j( /static/lib/codemirror/lib/codemirror.js
+		j( /static/lib/codemirror/mode/javascript/javascript.js
+		j( /static/lib/codemirror/mode/xml/xml.js
+		j( /static/lib/codemirror/theme/monokai.css
+		j( /static/lib/codemirror/theme/twilight.css
+
+	$if opt.useMonaco
+		j( /static/lib/monaco-editor/package/min/vs/loader.js
+		$*
+			j( /static/lib/monaco-editor/package/min/vs/editor/editor.main.nls.js
+			j( /static/lib/monaco-editor/package/min/vs/editor/editor.main.js
+			script
+				+ var require = { paths: { 'vs': '/static/lib/monaco-editor/package/min/vs' } }
+		*$

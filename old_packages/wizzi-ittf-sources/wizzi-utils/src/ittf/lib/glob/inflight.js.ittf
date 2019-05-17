@@ -1,0 +1,51 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source https://github.com/npm/inflight/blob/master/inflight.js
+	# license (ISC) 
+    
+	var wrappy = require('wrappy')
+    var reqs = Object.create(null)
+    var once = require('./once')
+    set module.exports = wrappy(inflight)
+    
+	function inflight
+        param key
+        param cb
+        if reqs[key]
+            _ reqs[key].push(cb)
+            return null
+        else 
+            set reqs[key] = [cb]
+            return makeres(key)
+    
+	function makeres
+        param key
+        return 
+            _ once
+                function RES
+                    var cbs = reqs[key]
+                    var len = cbs.length
+                    var args = slice(arguments)
+                    try 
+                        for var i = 0; i < len; i++
+                            _ cbs[i].apply(null, args)
+                    finally 
+                        if cbs.length > len
+                            _ cbs.splice(0, len)
+                            _ process.nextTick
+                                function 
+                                    _ RES.apply(null, args)
+                        else 
+                            set delete (reqs[key])
+    
+	function slice
+        param args
+        var length = args.length
+        var array
+            [ 
+        for var i = 0; i < length; i++
+            set array[i] = args[i]
+        return array

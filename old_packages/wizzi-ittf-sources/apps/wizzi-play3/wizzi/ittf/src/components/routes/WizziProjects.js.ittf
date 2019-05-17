@@ -1,0 +1,59 @@
+﻿r-container( WizziProjects
+
+	$append imports
+		import verify from '../../lib/verify'
+		import { Route } from "react-router-dom"
+		import Topic from './Topic'
+		import List from '@material-ui/core/List'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+	style
+
+	=> handleSelect
+		param item
+		log 'TreeViewDemo.handleSelect.item', item
+
+	render
+
+		prop match
+		prop projects
+		prop schemas
+
+		return
+			div
+				h2 Projects
+				< List
+					{
+						_ projects.map
+							=>
+								param p
+								param i
+								return
+									< MyLink
+										@ key {i}
+										@ to
+											`lit 
+												+ /wizziprojectstudio/
+												@ p.name
+										@ title {p.name}
+
+				h2 Schemas
+				< List
+					{
+						_ schemas.map
+							=>
+								param s
+								param i
+								return
+									< MyLink
+										@ key {i}
+										@ to
+											`lit 
+												+ /wizzischema/
+												@ verify.replaceAll(s.uri, '/', '_')
+										@ title {s.name}
+
+	$append state-to-props
+		@ schemas state.commons.schemas
+		@ projects state.commons.projects
+

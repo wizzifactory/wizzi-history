@@ -1,0 +1,22 @@
+﻿$group
+	$params module
+	
+	function error
+		param code
+		param method
+		param message
+		param innerError
+		var parameter = null
+		if verify.isObject(message)
+			set parameter = message.parameter
+			set message = message.message
+		set innerError = innerError || new Error('Error created for trace.') 
+		return
+			_ verify.error
+				@ innerError
+				{
+					@ name verify.isNumber(code) ? 'Err-' + code : code
+					@ method '${module}.' + method
+					@ parameter parameter
+					@ sourcePath __filename
+				@ message || 'Error message unavailable'

@@ -1,0 +1,63 @@
+﻿$group
+
+	function resolvePackage
+		param pluginsBaseFolder
+		param packagePath
+		param callback
+		+
+		var originalBase = pluginsBaseFolder
+		+
+		if !packagePathCache.hasOwnProperty(pluginsBaseFolder)
+			set packagePathCache[pluginsBaseFolder] =
+				{ 
+		var cache = packagePathCache[pluginsBaseFolder]
+		if cache.hasOwnProperty(packagePath)
+			return 
+				_ callback
+					@ null
+					@ cache[packagePath]
+		
+		if packagePath[0] === "." || packagePath[0] === "/"
+			# local folder plugin module
+			var newPath = path.resolve(pluginsBaseFolder, packagePath)
+			_ exists
+				@ newPath
+				function 
+					param exists
+					if exists
+						_ realpath
+							@ newPath
+							f_cb( newPath )
+								set cache[packagePath] = newPath
+								return callback(null, newPath)
+					else 
+						r_cb_wz_err( ENOENT, resolvePackage )
+							@ "Can't find '" + newPath + "' ('" + packagePath + "' relative to '" + originalBase + "')"
+		else 
+			# npm (node_modules folder) plugin module
+			_ tryNext(pluginsBaseFolder)
+		
+		function tryNext
+			param base
+			if base == "/"
+				r_cb_wz_err( ENOENT, resolvePackage )
+					@ "Can't find '" + packagePath + "' relative to '" + originalBase + "'"
+			
+			var newPath = path.resolve(base, "node_modules", packagePath)
+			
+			_ exists
+				@ newPath
+				function 
+					param exists
+					if exists
+						_ realpath
+							@ newPath
+							f_cb( newPath ) 
+								set cache[packagePath] = newPath
+								return callback(null, newPath)
+					else 
+						var nextBase = path.resolve(base, '..')
+						if nextBase === base
+							_ tryNext("/")
+						else 
+							_ tryNext(nextBase)

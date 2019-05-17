@@ -1,0 +1,102 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var file = require('../util/file') ids: undefined undefined
+    class Line ids: undefined undefined
+      ctor  ids: undefined undefined
+        param textOrPath ids: undefined undefined
+        param indentValue ids: undefined undefined
+        param options ids: undefined undefined
+        param isFilePath ids: undefined undefined
+        set this.containsFilePath = isFilePath ids: undefined undefined
+        set this.text = [] ids: undefined undefined
+        if isFilePath ids: undefined undefined
+          _ this.text.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ k 0 ids: undefined undefined
+              @ t textOrPath ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.text.push(textOrPath) ids: undefined undefined
+        set this.indentValue = indentValue ids: undefined undefined
+        set this.options = options ids: undefined undefined
+      m add ids: undefined undefined
+        param text ids: undefined undefined
+        if this.containsFilePath ids: undefined undefined
+          _ this.text.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ k 1 ids: undefined undefined
+              @ t text ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.text.push(text) ids: undefined undefined
+      m addFile ids: undefined undefined
+        param filePath ids: undefined undefined
+        if this.containsFilePath ids: undefined undefined
+          _ this.text.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ k 0 ids: undefined undefined
+              @ t filePath ids: undefined undefined
+        else  ids: undefined undefined
+          for var i = 0; i < text.length; i++ ids: undefined undefined
+            set text[i] = ids: undefined undefined
+              {  ids: undefined undefined
+                @ k 1 ids: undefined undefined
+                @ t text[i] ids: undefined undefined
+          _ this.text.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ k 0 ids: undefined undefined
+              @ t filePath ids: undefined undefined
+      m toStream ids: undefined undefined
+        param stream ids: undefined undefined
+        param ctx ids: undefined undefined
+        if this.options.isDebugLine && !ctx.isDebug ids: undefined undefined
+          return  ids: undefined undefined
+        if this.containsFilePath ids: undefined undefined
+          var  ids: undefined undefined
+            decl i ids: undefined undefined
+            decl t ids: undefined undefined
+            decl len = this.text.length ids: undefined undefined
+          for i = 0; i < len; i++ ids: undefined undefined
+            var t = this.text[i] ids: undefined undefined
+            if t.k === 1 ids: undefined undefined
+              _ stream.write ids: undefined undefined
+                @ t.t ids: undefined undefined
+            else  ids: undefined undefined
+              _ this._fileToStream ids: undefined undefined
+                @ stream ids: undefined undefined
+                @ t.t ids: undefined undefined
+                @ ctx ids: undefined undefined
+            if i == len - 1 ids: undefined undefined
+              _ stream.write ids: undefined undefined
+                @ this.options.CRLF ids: undefined undefined
+        else  ids: undefined undefined
+          _ stream.write ids: undefined undefined
+            @ spaces(this.indentValue * this.options.indentSpaces) + this.text.join('') + this.options.CRLF ids: undefined undefined
+      m _fileToStream ids: undefined undefined
+        param stream ids: undefined undefined
+        param filePath ids: undefined undefined
+        param ctx ids: undefined undefined
+        var lines = file.readLines(filePath) ids: undefined undefined
+        var indent = spaces(this.indentValue * this.options.indentSpaces) ids: undefined undefined
+        var  ids: undefined undefined
+          decl i ids: undefined undefined
+          decl t ids: undefined undefined
+          decl len = lines.length ids: undefined undefined
+        for i = 0; i < len; i++ ids: undefined undefined
+          if i > 0 ids: undefined undefined
+            _ stream.write(indent) ids: undefined undefined
+          _ stream.write ids: undefined undefined
+            @ lines[i] ids: undefined undefined
+          if i < len - 1 ids: undefined undefined
+            _ stream.write ids: undefined undefined
+              @ this.options.CRLF ids: undefined undefined
+      m terminate ids: undefined undefined
+        set delete (this.options) ids: undefined undefined
+      m hydrate ids: undefined undefined
+        param item ids: undefined undefined
+        set this.text = item.text ids: undefined undefined
+        set this.indentValue = item.indentValue ids: undefined undefined
+    function spaces ids: undefined undefined
+      param num ids: undefined undefined
+      return  ids: undefined undefined
+        _ Array((num + 1)) ids: undefined undefined
+          ._ join(" ") ids: undefined undefined
+    set module.exports = Line ids: undefined undefined

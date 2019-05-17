@@ -1,0 +1,98 @@
+﻿$group
+
+	var nodeUpdates
+		[
+			{
+				@ action 'remove'
+				@ name 'n11'
+				@ original
+					{
+						@ name 'root'
+						[ children
+							{
+								@ name 'n1'
+								@ value 'v1'
+								[ children
+									{
+										@ name 'n11'
+										@ value 'v11'
+										[ children
+											{
+												@ name 'n111'
+									{
+										@ name 'n12'
+										@ value 'v12'
+				@ expected
+					{
+						@ name 'root'
+						[ children
+							{
+								@ name 'n1'
+								@ value 'v1'
+								[ children
+									{
+										@ name 'n12'
+										@ value 'v12'
+			{
+				@ action 'replace'
+				@ name 'n11'
+				@ original
+					{
+						@ name 'root'
+						[ children
+							{
+								@ name 'n1'
+								@ value 'v1'
+								[ children
+									{
+										@ name 'n11'
+										@ value 'v11'
+										[ children
+											{
+												@ name 'n111'
+									{
+										@ name 'n12'
+										@ value 'n12'
+										[ children
+											{
+												@ name 'n121'
+							{
+								@ name 'n2'
+								@ value 'v2'
+								[ children
+									{
+										@ name 'n21'
+				@ replacer
+					{
+						@ name 'n101'
+						[ children
+							{
+								@ name 'n1011'
+								@ value 'v1011'
+
+				@ expected
+					{
+						@ name 'root'
+						[ children
+							{
+								@ name 'n1'
+								@ value 'v1'
+								[ children
+									{
+										@ name 'n101'
+										[ children
+											{
+												@ name 'n1011'
+												@ value 'v1011'
+									{
+										@ name 'n12'
+										@ value 'n12'
+										[ children
+											{
+												@ name 'n121'
+							{
+								@ name 'n2'
+								@ value 'v2'
+								[ children
+									{
+										@ name 'n21'

@@ -1,0 +1,54 @@
+﻿$group
+
+	@ getSchema
+		function
+			param options
+			param callback
+
+			_ this.getCommons
+				@ options
+				f_cb_api( commons )
+					
+					var schemaUri = options.schemaUri
+					var schema
+						_ _.find
+							@ commons.data.schemas
+							{
+								@ 'uri' schemaUri
+			
+					log 'getSchema', schemaUri, schema
+					if !schema
+						return
+							_ callback
+								_ error
+									@ 'Cannot find schema: ' + schemaUri
+
+					try
+				
+						var src = file.read(schema.srcPath)
+						var model = file.read(schema.modelPath)
+						var factory = file.read(schema.factoryPath)
+						var jsonDoc = file.readJSON(schema.jsonDocPath)
+			
+					catch ex
+						return
+							_ callback
+								_ error
+									@ 'Error retrieving files of schema: ' + schemaUri + ' message:' + ex.message
+
+					_ callback
+						@ null
+						{
+							@ data
+								{
+									@ uri schemaUri
+									@ ittfDocument src
+									@ model model
+									@ factory factory
+									@ jsonDoc jsonDoc
+							@ status
+								_ success
+									@ 'Schemas fetched: ' + schemaUri
+
+
+

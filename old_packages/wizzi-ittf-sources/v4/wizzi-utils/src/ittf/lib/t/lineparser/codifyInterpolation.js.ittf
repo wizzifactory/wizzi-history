@@ -1,0 +1,33 @@
+﻿$group
+
+	
+	#
+		# params
+			# string text
+			# string lDel
+				# left delimiter
+			# string rDel
+				# right delimiter
+			# string retType
+				# 'tokens'
+				# 'code'
+	set md.codifyInterpolation
+        function 
+            param template
+            param lDel
+            param rDel
+            if verify.isEmpty(template)
+				return ''
+			var lDelLen = lDel.length
+			var rDelLen = rDel.length
+			set lDel = lDel.replace(regexEscape, "\\$1")
+			set rDel = rDel.replace(regexEscape, "\\$1")
+			var regex = new RegExp(lDel + "[^" + lDel + rDel + "]+" + rDel, "g")
+			return 
+				_ template.replace
+					@ regex
+					function 
+						param placeholder
+						log '==================== codifyInterpolation.placeholder', placeholder
+						var key = placeholder.slice(lDelLen, -rDelLen)
+						return '" + ' + key + ' + "'

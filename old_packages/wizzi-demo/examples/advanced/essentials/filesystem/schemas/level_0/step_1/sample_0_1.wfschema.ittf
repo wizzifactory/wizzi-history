@@ -1,0 +1,117 @@
+wfschema sample_0_1
+
+	# Wizzi schema: sample_0_1
+	#
+	# Our first schema has a `root` and a single `element`
+	# that could represent a product record information.
+	#
+	# Example
+	#
+	#   sample_0_1
+	#
+	#       item AlphaCPU 365
+	#           id 3789
+	#           category hw
+	#           price 140
+	#
+	#       item BetaCPU 528
+	#           id 3891
+	#           category hw
+	#           price 270
+	#
+
+	export-to json
+		# This will add the method toJson() on every node object
+		# of the wizzi model that will be generated 
+
+	e sample_0_1
+
+		# This is the `root element`.
+		# Its a good practice to give to the `root element`
+		# the same name of the `schema`.
+
+		is-root
+			# In this case, this is redundant.
+			# The first element declared in a schema is the root element,
+			# if no other node is marked with the flag `is-root`.
+
+		a currency
+			# The currency `attribute` can be used to declare
+			# the currency of price values. The default is dollar and
+			# is restricted to dollars and euros.
+
+			default $
+
+			restrict
+				enum $
+					# dollar
+				enum €
+					# euro
+		
+		r productItem/s
+
+			#
+			# The `root element` may contain productItem elements.
+			# The relation `one-to-many` is the default. 
+			# The cardinality always is: `one-to-zero-or-many`.
+			# The other possible relation is `one-to-one` (must be declared).
+			#   Example:
+			#     r productItem
+			#         one-to-one
+			# In the generated javascript class of the `root element` this 
+			# declaration will produce the collection property: productItems.
+			#
+
+	e productItem
+		
+		#
+		# The product item `element`.
+		# The `ittf node value` will contain the product name.
+		# This must be said in the `element` comment in this way:
+		# `The wzName is the product name.` 
+		# `wzName` is the name of the `ittf node value` property
+		# in the generated javascript class that rapresent an `element`.
+		#
+		
+		tag item
+
+		# The default `ittf node tag` of an `element` is its name, but is can
+		# be changed declaring a `tag` `attribute.
+		
+		# Example of a productItem:
+		#
+		#   item AlphaCPU 365
+		#       id 3789
+		#       category hw
+		#       price 140
+		#
+
+		a id
+			# The product id (of type integer).
+			# The other types are: string (default), boolean, float, date.
+			
+			type integer
+		
+		a category
+			# The product category, that is restricted to 
+			# hardware or software items.
+			
+			restrict
+				enum sw
+					# software product
+				enum hw
+					# hardware product
+		
+		a price
+			# The item price (of type float). The currency is declared in
+			# the `root node`.
+
+			type float
+
+		a dummy_for_testing context
+			# This attribute is for testing the model load context and
+			# the global context options.
+			# In the generated wizzi model the following comment lines for this attribute
+			# should be replaced by the values of the model and global context parameters.
+			# This line comes from the model load context: ${modelLoadContextDummy}
+			# This line comes from the global context: ${globalContextDummy}

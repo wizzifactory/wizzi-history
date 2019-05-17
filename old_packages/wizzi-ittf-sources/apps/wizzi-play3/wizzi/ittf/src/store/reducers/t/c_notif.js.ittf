@@ -1,0 +1,29 @@
+﻿$group
+	$params name, prefix
+
+	case ${name}_SUCCESS
+		log '${name}', 'initial state:', state, 'action', action
+		$hook preprocess
+		var temp
+			{
+				@ ...state
+				@ ${prefix}Notification action.payload
+				@ ${prefix}Error null
+				$hook
+		log '${name}', 'final state:', temp
+		return temp
+
+	case ${name}_FAILURE
+		log '${name}', 'initial state:', state, 'action', action
+		$hook preprocess
+		var temp
+			{
+				@ ...state
+				@ ${prefix}Notification null
+				@ ${prefix}Error action.payload.error
+				$hook failure
+		log '${name}', 'final state:', temp
+		return temp
+
+
+

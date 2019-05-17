@@ -1,0 +1,44 @@
+﻿loader( template )
+
+    stm( template
+        _ ctx.write('`')
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent false
+			f_cb()
+				_ ctx.w('`')
+				r_cb()
+    
+    stm( taggedTemplate
+        _ ctx.write('`')
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent false
+			f_cb()
+				_ ctx.w('`')
+				r_cb()
+
+	stm( tagFunctionCall
+		_ ctx.w( model.wzName + '`')
+		foreach s in model.statements
+			_ ctx.w( s.wzName )
+		_ ctx.write( '`')
+		if u.isTopStatement(model) && u.isDescendentOf(model, 'iif') == false
+			_ ctx.w(';')
+		r_cb()
+
+	stm( macroExpr
+        _ ctx.write('${' + (model.wzName || ''))
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent false
+			f_cb()
+				_ ctx.write('}')
+				r_cb()
+    

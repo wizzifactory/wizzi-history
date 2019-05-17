@@ -1,0 +1,113 @@
+﻿module wizzi.storePool
+	kind jsfile
+
+	var repo = require('wizzi-repo')
+
+	class StorePool
+		
+		ctor
+			{ wizziFactory
+			set this.wizziFactory = wizziFactory
+			set this.stores = []
+		
+		m initialize
+			{ repoOptions
+			callback
+			+
+			set this.storeKind = repoOptions.storeKind || 'filesystem'
+			+
+			var that = this
+			+
+			_ this._initializeFileService
+				@ repoOptions
+				f_cb( notUsed )
+					_ that._initializeStoreService
+						@ repoOptions
+						f_cb( notUsed )
+							r_cb()
+								{
+									@ fileService that.fileService
+									@ createStore that.getCreateStore_hof()
+		
+		m _initializeFileService
+			param repoOptions
+			param callback
+			var that = this
+			if this.storeKind === 'filesystem'
+				_ repo.fsfile
+					f_cb( file )
+						set that.fileService = file
+						r_cb( null )
+			elif this.storeKind === 'mongodb'
+				_ repo.dbfile
+					{
+						@ mongoUri repoOptions.storeUri
+						@ mongodbBaseFolder repoOptions.storeBaseFolder
+					f_cb( file )
+						set that.fileService = file
+						r_cb( null )
+			elif this.storeKind === 'json'
+				log 'repoOptions', repoOptions
+				_ repo.jsonfile
+					{
+						@ jsonFsData repoOptions.storeJsonFsData
+					f_cb( file )
+						set that.fileService = file
+						r_cb( null )
+			else
+				r_cb_wz_err( NotImplemented, _initializeFileService )
+					@ 'Store kind not implemented yet : ' + this.storeKind
+		
+		m _initializeStoreService
+			param repoOptions
+			param callback
+			+
+			var that = this;
+			+
+			_ repo.createStoreFactory
+				@ repoOptions
+				f_cb( storeFactory )
+					set that.storeFactory = storeFactory
+					r_cb( null )
+
+		m add
+			{ store
+			_ this.stores.push(store)
+		
+		m get
+			callback
+			if this.stores.length > 0
+				return
+					_ callback
+						@ null
+						@ this.stores[0]
+			else
+				var that = this
+				_ this.storeFactory
+					f_cb( store )
+						_ that.add(store)
+						return
+							_ callback
+								@ null
+								@ store
+		
+		m getCreateStore_hof
+			var pool = this
+			return
+				function createStore
+					param callback
+					_ pool.get
+						f_cb( store )
+							return
+								_ callback
+									@ null
+									@ store
+		
+		m close
+			if this.fileService && this.fileService.close
+				_ this.fileService.close
+			foreach store in this.stores
+				if store.close
+					_ store.close
+
+	set module.exports = StorePool

@@ -1,0 +1,162 @@
+﻿$group
+
+	m getLoadModel
+		callback
+
+		if !this.productionManager()
+			r_cb_wz_err( InvalidOperation, getLoadModel )
+				@ "Method called without setting the 'productionManager' object"
+
+		if verify.isEmpty(this.schema) && verify.isEmpty(this.format)
+			r_cb_wz_err( InvalidOperation, getLoadModel )
+				@ "Method called without setting neither the 'schema' nor the 'format' name"
+
+		if verify.isNotEmpty(this.schema)
+			checked_call( loadModel )
+				_ this.productionManager().getLoadModel
+					@ this.schema
+			if loadModel == null
+				var err
+					new errors.NotFoundError
+						@ 'WizziModelFactory'
+						@ this.schema
+						@ this
+				r_cb_wz_err( NotFound, getLoadModel, err )
+					@ 'Cannot retrieve wizzi-plugin.modelFactory.loadModel method for schema: ' + this.schema
+			else
+				_ callback(null, loadModel)
+		else
+			if this.format === 'json'
+				return
+					_ callback
+						@ null
+						_ this._getLoadJsonModel()
+			elif this.format === 'xml'
+				return
+					_ callback
+						@ null
+						_ this._getLoadXmlModel()
+			else
+				return
+					_ callback
+						@ null
+						_ this._getLoadJsModel()
+
+	m _getLoadJsonModel
+		var that = this
+		return 
+			function loadJsonModel
+				string sourceUri
+				{ context
+					optional
+				callback
+				
+				# TODO interpolate object values of type string?
+				#      interpolate property names too?
+				_ that.readJSON
+					@ sourceUri
+					@ callback
+	
+	m _getLoadXmlModel
+		var that = this
+		return
+			function loadXmlModel
+				string sourceUri
+				{ context
+				callback
+				
+				# TODO interpolate object values of type string?
+				#      interpolate property names too?
+				_ that.readXml
+					@ sourceUri
+					@ callback
+	
+	m _getLoadJsModel
+		var that = this
+		return
+			function loadJsModel
+				string sourceUri
+				{ context
+				callback
+				
+				var fileService = that.getFileService()
+				_ fileService.isFile
+					@ sourceUri
+					f_cb( isFile )
+						if isFile == false
+							return
+								_ callback
+									_ error
+										@ 'NotFound'
+										@ 'loadJsModel'
+										@ 'Cannot find javascript module: ' + sourceUri + '. See inner error'
+										new errors.NotFoundError
+											@ 'javascript module'
+											@ sourceUri
+											@ this
+						else
+							try
+								var model = require(sourceUri)
+								if verify.isFunction(model.toModel)
+									return
+										_ callback
+											@ null
+											_ model.toModel
+												@ context
+								else
+									return
+										_ callback
+											@ null
+											_ model
+							catch ex
+								r_cb_wz_err( TypeError, loadJsModel, ex )
+									@ 'Error requiring js module: ' + sourceUri + '. Message: ' + ex.message
+
+	m getModelTransformer
+		string trasformerName
+		callback
+
+		if !this.productionManager()
+			r_cb_wz_err( InvalidOperation, getModelTransformer )
+				@ "Method called without setting the 'productionManager' object"
+
+		checked_call( modelTransformer )
+            _ this.productionManager().getModelTransformer
+                @ trasformerName
+
+		if modelTransformer == null
+			return
+				_ callback
+					new errors.NotFoundError
+						@ 'modelTransformer'
+						@ trasformerName
+						@ this
+		else
+			_ callback(null, modelTransformer)
+
+	m getArtifactGenerator
+		param generatorName
+		param callback
+
+		if !this.productionManager()
+			r_cb_error( 999, getArtifactGenerator
+				@ "Method called without setting the 'productionManager' object"
+
+		checked_call( generator )
+            _ this.productionManager().getArtifactGenerator
+                @ generatorName
+
+		if generator == null
+			return
+				_ callback
+					new errors.NotFoundError
+						@ 'generator'
+						@ generatorName
+						@ this
+		else
+			_ callback(null, generator)
+
+
+
+
+

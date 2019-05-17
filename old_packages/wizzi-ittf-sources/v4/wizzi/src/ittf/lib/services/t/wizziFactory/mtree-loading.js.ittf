@@ -1,0 +1,37 @@
+﻿$group
+
+	#
+		# Async load a wizzi magical tree
+		#
+		# params
+		#  string ittfDocumentUri
+		#  { mTreeBuildUpContext
+		#  callback
+	
+	m loadMTree
+		string ittfDocumentUri
+		{ mTreeBuildUpContext
+		callback
+		+
+		_ this.__loadMTree
+			@ ittfDocumentUri
+			_ this.createLoadContext
+				{
+					@ mTreeBuildUpContext mTreeBuildUpContext
+			@ callback
+
+	#
+		# Async load a raw ittf document
+		#
+		# @param {String} ittfDocumentUri
+		# @param {Function} callback
+
+	m loadMTreeRaw
+		string ittfDocumentUri
+		callback
+		+
+		_ this.__loadMTreeRaw
+			@ ittfDocumentUri
+			_ this.createLoadContext
+				{
+			@ callback

@@ -1,0 +1,222 @@
+﻿module 
+    kind jsfile
+    set 'use strict'
+
+    var pathModule = require('path')
+    var isWindows = process.platform === 'win32'
+    var fs = require('fs')
+    var DEBUG = process.env.NODE_DEBUG && /fs/.test(process.env.NODE_DEBUG)
+    function rethrow
+        var callback
+        if DEBUG
+            var backtrace
+                new Error()
+            set callback = debugCallback
+        else 
+            set callback = missingCallback
+        return callback
+        function debugCallback
+            param err
+            if err
+                set backtrace.message = err.message
+                set err = backtrace
+                _ missingCallback(err)
+        function missingCallback
+            param err
+            if err
+                if process.throwDeprecation
+                    throw err
+                elif ! (process.noDeprecation)
+                    var msg = ('fs: missing callback ' + ((err.stack || err.message)))
+                    if process.traceDeprecation
+                        _ console.trace(msg)
+                    else 
+                        _ console.error(msg)
+    function maybeCallback
+        param cb
+        return 
+            iif typeof (cb) === 'function'
+                then cb
+                else 
+                    _ rethrow()
+    var normalize = pathModule.normalize
+    if isWindows
+        var nextPartRe = /(.*?)(?:[\/\\]+|$)/g
+    else 
+        var nextPartRe = /(.*?)(?:[\/]+|$)/g
+    if isWindows
+        var splitRootRe = /^(?:[a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/][^\\\/]+)?[\\\/]*/
+    else 
+        var splitRootRe = /^[\/]*/
+    set exports.realpathSync =
+        function realpathSync
+            param p
+            param cache
+            set p = pathModule.resolve(p)
+            if cache && Object.prototype.hasOwnProperty.call(cache, p)
+                return cache[p]
+            var 
+                decl original = p
+                decl seenLinks
+                    { 
+                decl knownHard
+                    { 
+            var pos
+            var current
+            var base
+            var previous
+            _ start()
+            function start
+                var m = splitRootRe.exec(p)
+                set pos = m[0].length
+                set current = m[0]
+                set base = m[0]
+                set previous = ''
+                if isWindows && ! (knownHard[base])
+                    _ fs.lstatSync(base)
+                    set knownHard[base] = true
+            while pos < p.length
+                set nextPartRe.lastIndex = pos
+                var result = nextPartRe.exec(p)
+                set previous = current
+                set current += result[0]
+                set base = (previous + result[1])
+                set pos = nextPartRe.lastIndex
+                if (knownHard[base] || ((cache && (cache[base] === base))))
+                    continue 
+                var resolvedLink
+                if cache && Object.prototype.hasOwnProperty.call(cache, base)
+                    set resolvedLink = cache[base]
+                else 
+                    var stat = fs.lstatSync(base)
+                    if ! (stat.isSymbolicLink())
+                        set knownHard[base] = true
+                        if cache
+                            set cache[base] = base
+                        continue 
+                    var linkTarget = null
+                    if ! (isWindows)
+                        var id = (((stat.dev.toString(32) + ':')) + stat.ino.toString(32))
+                        if seenLinks.hasOwnProperty(id)
+                            set linkTarget = seenLinks[id]
+                    if linkTarget === null
+                        _ fs.statSync(base)
+                        set linkTarget = fs.readlinkSync(base)
+                    set resolvedLink = pathModule.resolve(previous, linkTarget)
+                    if cache
+                        set cache[base] = resolvedLink
+                    if ! (isWindows)
+                        set seenLinks[id] = linkTarget
+                set p = pathModule.resolve(resolvedLink, p.slice(pos))
+                _ start()
+            if cache
+                set cache[original] = p
+            return p
+    set exports.realpath =
+        function realpath
+            param p
+            param cache
+            param cb
+            if typeof (cb) !== 'function'
+                set cb = maybeCallback(cache)
+                set cache = null
+            set p = pathModule.resolve(p)
+            if cache && Object.prototype.hasOwnProperty.call(cache, p)
+                return 
+                    _ process.nextTick
+                        _ cb.bind
+                            @ null
+                            @ null
+                            @ cache[p]
+            var 
+                decl original = p
+                decl seenLinks
+                    { 
+                decl knownHard
+                    { 
+            var pos
+            var current
+            var base
+            var previous
+            _ start()
+            function start
+                var m = splitRootRe.exec(p)
+                set pos = m[0].length
+                set current = m[0]
+                set base = m[0]
+                set previous = ''
+                if isWindows && ! (knownHard[base])
+                    _ fs.lstat
+                        @ base
+                        function 
+                            param err
+                            if err
+                                return cb(err)
+                            set knownHard[base] = true
+                            _ LOOP()
+                else 
+                    _ process.nextTick(LOOP)
+            function LOOP
+                if pos >= p.length
+                    if cache
+                        set cache[original] = p
+                    return cb(null, p)
+                set nextPartRe.lastIndex = pos
+                var result = nextPartRe.exec(p)
+                set previous = current
+                set current += result[0]
+                set base = (previous + result[1])
+                set pos = nextPartRe.lastIndex
+                if (knownHard[base] || ((cache && (cache[base] === base))))
+                    return process.nextTick(LOOP)
+                if cache && Object.prototype.hasOwnProperty.call(cache, base)
+                    return 
+                        _ gotResolvedLink
+                            @ cache[base]
+                return fs.lstat(base, gotStat)
+            function gotStat
+                param err
+                param stat
+                if err
+                    return cb(err)
+                if ! (stat.isSymbolicLink())
+                    set knownHard[base] = true
+                    if cache
+                        set cache[base] = base
+                    return process.nextTick(LOOP)
+                if ! (isWindows)
+                    var id = (((stat.dev.toString(32) + ':')) + stat.ino.toString(32))
+                    if seenLinks.hasOwnProperty(id)
+                        return 
+                            _ gotTarget
+                                @ null
+                                @ seenLinks[id]
+                                @ base
+                _ fs.stat
+                    @ base
+                    function 
+                        param err
+                        if err
+                            return cb(err)
+                        _ fs.readlink
+                            @ base
+                            function 
+                                param err
+                                param target
+                                if ! (isWindows)
+                                    set seenLinks[id] = target
+                                _ gotTarget(err, target)
+            function gotTarget
+                param err
+                param target
+                param base
+                if err
+                    return cb(err)
+                var resolvedLink = pathModule.resolve(previous, target)
+                if cache
+                    set cache[base] = resolvedLink
+                _ gotResolvedLink(resolvedLink)
+            function gotResolvedLink
+                param resolvedLink
+                set p = pathModule.resolve(resolvedLink, p.slice(pos))
+                _ start()

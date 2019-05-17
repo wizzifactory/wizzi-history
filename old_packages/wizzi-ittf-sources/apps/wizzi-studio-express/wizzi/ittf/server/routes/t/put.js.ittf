@@ -1,0 +1,10 @@
+﻿_ app.put
+	$params path
+	@ '${path}'
+	function
+		param req
+		param res
+		param next
+		log 'put.body', JSON.stringify(req.body)
+		log 'put.params', JSON.stringify(req.params)
+		$hook

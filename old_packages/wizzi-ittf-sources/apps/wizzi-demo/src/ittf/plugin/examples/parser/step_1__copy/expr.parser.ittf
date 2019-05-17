@@ -1,0 +1,137 @@
+﻿parser expr
+
+	$include expr/lexer
+
+	sym expr
+		start
+		ref expressionList
+		
+	e expressionList
+		ref expression
+		*
+			tk ;
+			ref expression
+		?
+			tk ;
+
+	sym expression
+		ref conditionalOrExpr
+
+	sym conditionalOrExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref conditionalAndExpr
+		*
+			tk LOGICAL_OR
+				keep-value
+			ref conditionalAndExpr
+
+	sym conditionalAndExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref equalityExpr
+		*
+			tk LOGICAL_AND
+				keep-value
+			ref equalityExpr
+
+	sym equalityExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref relationalExpr
+		*
+			|
+				tk OP_EQ
+					keep-value
+				tk OP_NE
+					keep-value
+			ref relationalExpr
+	
+	sym relationalExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref additiveExpr
+		*
+			|
+				tk <
+					keep-value
+				tk >
+					keep-value
+				tk OP_LE
+					keep-value
+				tk OP_GE
+					keep-value
+			ref additiveExpr
+
+	sym additiveExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref factoryExpr
+		*
+			|
+				tk +
+					keep-value
+				tk -
+					keep-value
+			ref factoryExpr
+
+	sym factoryExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref powerExpr
+		*
+			|
+				tk *
+					keep-value
+				tk /
+					keep-value
+			ref powerExpr
+
+	sym powerExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref unaryExpr
+		*
+			tk ^
+				keep-value
+			ref unaryExpr
+
+	sym unaryExpr
+		ast-children 2
+		operator-child 1
+		|
+			&
+				tk +
+					keep-value
+				ref primaryExpr
+			&
+				tk -
+					keep-value
+				ref primaryExpr
+			ref primaryExpr
+
+	e primaryExpr
+		|
+			tk Number
+			ref enclosedExpr
+
+	sym enclosedExpr
+		tk (
+		ref additiveExpr
+		tk )
+
+	test
+		$if false
+			+ -5;
+			+ 5 + 2 * 4 + (3 + 8)^2;
+		$if true
+			+ 5 + 3 > 2 * 4 || 3 <= 7;
+		$if true
+			+ 21 >= 25;

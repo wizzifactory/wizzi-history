@@ -1,0 +1,244 @@
+module 
+    kind jsfile
+
+    var wizziUtils = require('wizzi-utils')
+    
+	var jswizzifier = require('./lib/wizzifiers/jsparser/babel/wizzifier')
+	var xmlwizzifier = require('./lib/wizzifiers/xmlparser/xml2js/wizzifier')
+	var csswizzifier = require('./lib/wizzifiers/cssparser/css/wizzifier')
+	# var scsswizzifier = require('./lib/wizzifiers/scssparser/salesforce/wizzifier')
+	var scsswizzifier = require('./lib/wizzifiers/scssparser/gonzales/wizzifier')
+	var htmlwizzifier = require('./lib/wizzifiers/htmlparser/wizzi/wizzifier')
+	var jsonwizzifier = require('./lib/wizzifiers/jsonparser/wizzi/wizzifier')
+	var xsdwizzifier = require('./lib/wizzifiers/xsdparser/xml2js/wizzifier')
+	var svgwizzifier = require('./lib/wizzifiers/svgparser/xml2js/wizzifier')
+	var graphqlwizzifier = require('./lib/wizzifiers/graphqlparser/graphql/wizzifier')
+	var importFolder = require('./lib/importers').importFolder
+	var importFile = require('./lib/importers').importFile
+	var ittfwriter = require('./lib/util/ittfwriter')
+    
+	var md
+        set module.exports =
+            { 
+    
+	set md.ittfwriter = ittfwriter
+	set md.jswizzifier = jswizzifier
+	set md.xmlwizzifier = xmlwizzifier
+	set md.csswizzifier = csswizzifier
+	set md.scsswizzifier = scsswizzifier
+	set md.htmlwizzifier = htmlwizzifier
+	set md.jsonwizzifier = jsonwizzifier
+	set md.graphqlwizzifier = graphqlwizzifier
+
+	set md.wizzify_js
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options
+					{
+						@ kind 'react'
+						@ babel
+							{
+								@ sourceType 'module'
+						@ syntaxOutFile null
+            log 'wizzi-tools-next.wizzify_js.options', options
+			_ jswizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_xml
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ xmlwizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_xsd
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ xsdwizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_svg
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ svgwizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_css
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ csswizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_scss
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ scsswizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_html
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ htmlwizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_json
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ jsonwizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify_graphql
+        function 
+            param codeSnippet
+            param options
+            param callback
+			if typeof callback === 'undefined'
+				set callback = options
+				set options 
+					{
+						@ syntaxOutFile null
+            _ graphqlwizzifier.getWizziIttf
+                @ codeSnippet
+                @ options
+				@ callback 
+
+	set md.wizzify
+        function 
+			param schemaName
+            param codeSnippet
+            param callback
+
+			try
+				var wizzifier = md['wizzify_' + schemaName.toLowerCase()]
+				log 'wizzi-tools-next.wizzify', schemaName, wizzifier
+				if !wizzifier
+					return
+						_ callback
+							new Error
+								@ "Non wizzifier found for schema: " + schemaName
+				_ wizzifier
+					@ codeSnippet
+					{
+					@ callback
+			catch ex
+				log ex
+				return
+					_ callback(ex)
+
+	set md.canBeWizzified
+        function 
+			param schemaName
+			return wizziUtils.verify.isFunction(md['wizzify_' + schemaName.toLowerCase()])
+
+	set md.getCodeAST
+        function 
+			param schemaName
+            param codeSnippet
+            param callback
+
+			try
+				var wizzifier = md[schemaName.toLowerCase() + 'wizzifier']
+				if !wizzifier
+					return
+						_ callback
+							new Error
+								@ "Non wizzifier found for schema: " + schemaName
+				_ wizzifier.getCodeAST
+					@ codeSnippet
+					{
+					@ callback
+			catch ex
+				return
+					_ callback(ex)
+
+	set md.importFolder
+		function
+			param baseImportPath
+			param baseExportPath
+			param callback
+			try
+				_ importFolder
+					@ baseImportPath
+					@ baseExportPath
+					@ callback
+			catch ex
+				return
+					_ callback(ex)
+
+	set md.toIttfTreeEx =
+        function 
+			param ittfContent
+			return
+				_ wizziUtils.IttfMTreeEx.createFrom
+					@ ittfContent
+					{
+						@ fromString true
+						@ clean true

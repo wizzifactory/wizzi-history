@@ -1,0 +1,24 @@
+﻿$group
+
+	e test : node
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set root.tests.push(this)
+
+			var sb = []
+			if verify.isNotEmpty(this.wzName)
+				_ sb.push(unescapeText(this.wzName))
+			foreach item in this.nodes
+				# skip node (comment) only
+				if item.wzElement != 'node'
+					_ sb.push(unescapeText(item.wzName))
+			set this.input = sb.join('\n')
+			# log 'test.wzInitialize.input', this.input
+			set this.nodes = []
+
+		m exec
+			param callback
+			var root = this.wzRoot()
+			return
+				_ root.match(this.input, callback)

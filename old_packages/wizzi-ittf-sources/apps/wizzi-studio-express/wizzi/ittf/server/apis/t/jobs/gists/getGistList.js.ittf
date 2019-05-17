@@ -1,0 +1,21 @@
+﻿$group
+
+	@ getGistList
+		function
+			param options
+			param callback
+
+			log 'wizzi-studio.apis.getGistList', options
+			var userId = options.userId
+			var kind = options.kind
+
+			_ paths.getGistFiles
+				@ userId
+				@ kind
+				f_cb_api(result)
+					if kind === 'gist'
+						r_cb_success_quoted( Got gist files )
+							@ gists result.data.items
+					else
+						r_cb_success_quoted( Got snippet files )
+							@ snippets result.data.items

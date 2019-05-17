@@ -1,0 +1,110 @@
+﻿module wizzi-repo.index
+    kind jsfile
+	+
+	var chalk = require('chalk')
+	var vfile = require('wizzi-utils').vfile
+	+
+	var md = module.exports = {}
+	+
+	$if gctx_useMongo
+		var MongoDocument = require('./lib/mongodb/fs/document')
+		var MongoFsImpl = require('./lib/mongodb/mongoFsImpl')
+	$else
+		var MongoDocument = {}
+		var MongoFsImpl = {}
+	var JsonFsImpl = require('./lib/json/jsonFsImpl')
+	var IttfDocumentStore = require('./lib/repo/ittfDocumentStore') 
+	set md.ObjectId = require('./lib/utils/objectid') 
+	+
+	set md.MongoFsImpl = MongoFsImpl
+	+
+	#
+		# Filesystem virtual file service
+		# noparams
+	set md.fsfile
+		function fsfile
+			callback
+			# vfile default
+			var fsfile = vfile()
+			return
+				_ callback
+					@ null
+					@ fsfile
+	+
+	$include mongoDb
+	+
+	$include json
+	+
+	set md.JsonComponents = require('./lib/json/index') 
+	+
+	#
+		# params
+		#   { options
+		#     string storeKind
+		#       oneOf filesystem, mongodb, localstorage
+		#     string storeUri
+		#       when storeKind == mongodb
+		#     string storeBaseFolder
+		#       when storeKind == mongodb
+	set md.createStoreFactory
+		function createStoreFactory
+			{ options
+				string storeKind
+					optional
+			callback
+			+
+			# log 'wizzi-repo.index.createStoreFactory.options', options
+			+
+			var storeKind = options.storeKind || 'filesystem'
+			if checkStoreKind(storeKind) == false
+				return
+					_ callback
+						_ error
+							@ 'InvalidArgument'
+							@ 'createStoreFactory'
+							{
+								@ parameter 'storeKind'
+								@ message 'invalid storeKind: ' + storeKind + '. Received: ' + storeKind
+			+
+			if storeKind == 'mongodb'
+				if verify.isNotEmpty(options.storeUri) === false
+					r_cb_wz_err( InvalidArgument, createStoreFactory )
+						@ 'The parameter `options.storeUri` is required and must be a string. Received: ' + options.storeUri
+				if verify.isNotEmpty(options.storeBaseFolder) === false
+					r_cb_wz_err( InvalidArgument, createStoreFactory )
+						@ 'The parameter `options.storeBaseFolder` is required and must be a string. Received: ' + options.storeUri
+			elif storeKind == 'json'
+				if verify.isObject(options.storeJsonFsData) === false
+					r_cb_wz_err( InvalidArgument, createStoreFactory )
+						@ 'The parameter `options.storeJsonFsData` is required and must be an object. Received: ' + options.storeJsonFsData
+			return
+				_ callback
+					@ null
+					_ getCreateStore
+						@ storeKind
+						@ options
+
+	function getCreateStore
+		string storeKind
+		{ options
+		return
+			function createStore
+				param callback
+				var store
+					new IttfDocumentStore()
+				_ store.init
+					{
+						@ storeKind storeKind
+						@ storeUri options.storeUri
+						@ storeBaseFolder options.storeBaseFolder
+						@ storeJsonFsData options.storeJsonFsData
+					f_cb( notUsed )
+						return
+							_ callback
+								@ null
+								@ store
+
+	function checkStoreKind
+		param kind
+		return ['filesystem', 'mongodb', 'json', 'localstorage'].indexOf(kind) > -1
+	

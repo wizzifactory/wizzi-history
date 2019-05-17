@@ -1,0 +1,322 @@
+  module  ids: 1 324
+    kind jsfile ids: 2 325
+    var path = require('path') ids: 3 326
+    var stringify = require('json-stringify-safe') ids: 4 327
+    var wizzi = require('wizzi') ids: 5 328
+    var acl = wizzi.acl ids: 6 329
+    var ProductionManager = wizzi.ProductionManager ids: 7 330
+    var site = require('wizzi-lab-site') ids: 8 331
+    var spa = require('wizzi-lab-spa') ids: 9 332
+    #  ids: 10 333
+      # *.html.ittf     wizzi/htmlDocument ids: 11 334
+      # ?meta=json ids: 12 335
+      # ?meta=html ids: 13 336
+      # ?meta=old_html ids: 14 337
+      # *.bundle.ittf   wizzi-lab-site/bundle ids: 15 338
+      # *.js.ittf       wizzi/jsModule ids: 16 339
+      # *.json.ittf     wizzi/jsonDocument ids: 17 340
+      # *.css.ittf      wizzi/cssDocument ids: 18 341
+      # *.form.ittf     wizzi-lab-site/formJsonizer ids: 19 342
+      # *.html ids: 20 343
+      # *.js ids: 21 344
+      # *.json ids: 22 345
+      # *.css ids: 23 346
+      # *.png | *.jpg |*.gif |*.bmp |*.tiff ids: 24 347
+      # *.woff | *.ttf ids: 25 348
+    set module.exports ids: 26 349
+      function  ids: 27 350
+        param root ids: 28 351
+        param routePath ids: 29 352
+        param options ids: 30 353
+        if !root ids: 31 354
+          throw new TypeError('root path required') ids: 32 355
+        if typeof root !== 'string' ids: 33 356
+          throw new TypeError('root path must be a string') ids: 34 357
+        if !routePath ids: 35 358
+          throw new TypeError('routePath required') ids: 36 359
+        if typeof routePath !== 'string' ids: 37 360
+          throw new TypeError('routePath must be a string') ids: 38 361
+        _ wizzi.option('force', true) ids: 39 362
+        log 'middleware.ittf.root', root ids: 40 363
+        return  ids: 41 364
+          function  ids: 42 365
+            param req ids: 43 366
+            param res ids: 44 367
+            param next ids: 45 368
+            if req.method !== 'GET' && req.method !== 'HEAD' ids: 46 369
+              return next() ids: 47 370
+            var pathname = req._parsedUrl.pathname.substr(routePath.length) ids: 48 371
+            var filePath = path.join(root, pathname); ids: 49 372
+            log 'ittf.pathname, pathname, filePath', req._parsedUrl.pathname, pathname, filePath ids: 50 373
+            if wizzi.file.exists(filePath) === false ids: 51 374
+              return next() ids: 52 375
+            if wizzi.file.isFile(filePath) === false ids: 53 376
+              return next() ids: 54 377
+            var ext3 = filePath.substr(-3, 3) ids: 55 378
+            var ext4 = filePath.substr(-4, 4) ids: 56 379
+            var ext5 = filePath.substr(-5, 5) ids: 57 380
+            if filePath.substr(-10, 10) === '.html.ittf' ids: 58 381
+              if req.query.meta && req.query.meta === 'json' ids: 59 382
+                _ wizzi.html ids: 60 383
+                  @ filePath ids: 61 384
+                  {  ids: 62 385
+                    @ req req ids: 63 386
+                  function  ids: 64 387
+                    param err ids: 65 388
+                    param wizziModelInstance ids: 66 389
+                    if err ids: 67 390
+                      _ return res.send(err) ids: 68 391
+                    return sendJSONStringified(res, wizziModelInstance) ids: 69 392
+              elif req.query.meta && req.query.meta === 'html' ids: 70 393
+                _ wizzi.htmlDocument ids: 71 394
+                  @ wizzi.config.get('meta-html-ittf-path') ids: 72 395
+                  {  ids: 73 396
+                    @ __productionManager ids: 74 397
+                      _ createProductionManager ids: 75 398
+                        @ 'stefi' ids: 76 399
+                        @ 'admin' ids: 77 400
+                        {  ids: 78 401
+                    @ wizzischema 'html' ids: 79 402
+                    @ path filePath ids: 80 403
+                    @ req req ids: 81 404
+                  function  ids: 82 405
+                    param err ids: 83 406
+                    param rendered ids: 84 407
+                    if err ids: 85 408
+                      _ return res.send(err) ids: 86 409
+                    return res.send(rendered) ids: 87 410
+              elif req.query.meta && req.query.meta === 'old_html' ids: 88 411
+                _ wizzi.html ids: 89 412
+                  @ filePath ids: 90 413
+                  {  ids: 91 414
+                    @ __productionManager ids: 92 415
+                      _ createProductionManager ids: 93 416
+                        @ 'stefi' ids: 94 417
+                        @ 'admin' ids: 95 418
+                        {  ids: 96 419
+                    @ req req ids: 97 420
+                  function  ids: 98 421
+                    param err ids: 99 422
+                    param wizziModelInstance ids: 100 423
+                    if err ids: 101 424
+                      _ return res.send(err) ids: 102 425
+                    _ wizzi.htmlDocument ids: 103 426
+                      @ wizzi.config.get('meta-html-ittf-path') ids: 104 427
+                      {  ids: 105 428
+                        @ model wizziModelInstance ids: 106 429
+                        @ req req ids: 107 430
+                      function  ids: 108 431
+                        param err ids: 109 432
+                        param rendered ids: 110 433
+                        if err ids: 111 434
+                          _ return res.send(err) ids: 112 435
+                        return res.send(rendered) ids: 113 436
+              else  ids: 114 437
+                _ wizzi.htmlDocument ids: 115 438
+                  @ filePath ids: 116 439
+                  {  ids: 117 440
+                    @ __productionManager ids: 118 441
+                      _ createProductionManager ids: 119 442
+                        @ 'stefi' ids: 120 443
+                        @ 'admin' ids: 121 444
+                        {  ids: 122 445
+                    @ req req ids: 123 446
+                  function  ids: 124 447
+                    param err ids: 125 448
+                    param rendered ids: 126 449
+                    if err ids: 127 450
+                      _ return res.send(err) ids: 128 451
+                    return res.send(rendered) ids: 129 452
+            elif filePath.substr(-12, 12) === '.bundle.ittf' ids: 130 453
+              _ site.bundle ids: 131 454
+                @ filePath ids: 132 455
+                {  ids: 133 456
+                  @ __productionManager ids: 134 457
+                    _ createProductionManager ids: 135 458
+                      @ 'stefi' ids: 136 459
+                      @ 'admin' ids: 137 460
+                      {  ids: 138 461
+                  @ req req ids: 139 462
+                function  ids: 140 463
+                  param err ids: 141 464
+                  param wizziModel ids: 142 465
+                  if err ids: 143 466
+                    _ return res.send(err) ids: 144 467
+                  var test = [] ids: 145 468
+                  foreach item in wizziModel.items ids: 146 469
+                    _ test.push(item.wzElement) ids: 147 470
+                  var pkg, bundler ids: 148 471
+                  set pkg = wizziModel.getPackage() ids: 149 472
+                  if pkg ids: 150 473
+                    set bundler = pkg.getBundler() ids: 151 474
+                  return res.send('<p>test: ' + test.join('') + '</p><p>package: ' + (pkg || {}).wzName + '</p><p>bundler: ' + (bundler || {}).wzName + '</p>') ids: 152 475
+            elif filePath.substr(-8, 8) === '.js.ittf' ids: 153 476
+              _ wizzi.jsModule ids: 154 477
+                @ filePath ids: 155 478
+                {  ids: 156 479
+                  @ __productionManager ids: 157 480
+                    _ createProductionManager ids: 158 481
+                      @ 'stefi' ids: 159 482
+                      @ 'admin' ids: 160 483
+                      {  ids: 161 484
+                  @ req req ids: 162 485
+                  @ __data ids: 163 486
+                    {  ids: 164 487
+                      @ jsResources options.jsResources ids: 165 488
+                function  ids: 166 489
+                  param err ids: 167 490
+                  param rendered ids: 168 491
+                  if err ids: 169 492
+                    _ return res.send(err) ids: 170 493
+                  _ res.setHeader('content-type', 'text/javascript') ids: 171 494
+                  return res.send(rendered) ids: 172 495
+            elif filePath.substr(-10, 10) === '.json.ittf' ids: 173 496
+              _ wizzi.jsonDocument ids: 174 497
+                @ filePath ids: 175 498
+                {  ids: 176 499
+                  @ __productionManager ids: 177 500
+                    _ createProductionManager ids: 178 501
+                      @ 'stefi' ids: 179 502
+                      @ 'admin' ids: 180 503
+                      {  ids: 181 504
+                  @ req req ids: 182 505
+                function  ids: 183 506
+                  param err ids: 184 507
+                  param rendered ids: 185 508
+                  if err ids: 186 509
+                    _ return res.send(err) ids: 187 510
+                  _ res.setHeader('content-type', 'application/json') ids: 188 511
+                  return res.send(rendered) ids: 189 512
+            elif filePath.substr(-9, 9) === '.css.ittf' ids: 190 513
+              _ wizzi.cssDocument ids: 191 514
+                @ filePath ids: 192 515
+                {  ids: 193 516
+                  @ __productionManager ids: 194 517
+                    _ createProductionManager ids: 195 518
+                      @ 'stefi' ids: 196 519
+                      @ 'admin' ids: 197 520
+                      {  ids: 198 521
+                  @ req req ids: 199 522
+                  @ __data ids: 200 523
+                    {  ids: 201 524
+                      @ cssResources options.cssResources ids: 202 525
+                function  ids: 203 526
+                  param err ids: 204 527
+                  param rendered ids: 205 528
+                  if err ids: 206 529
+                    _ return res.send(err) ids: 207 530
+                  _ res.setHeader('content-type', 'text/css') ids: 208 531
+                  return res.send(rendered) ids: 209 532
+            elif filePath.substr(-10, 10) === '.form.ittf' ids: 210 533
+              _ spa.formJsonizer ids: 211 534
+                @ filePath ids: 212 535
+                {  ids: 213 536
+                  @ __productionManager ids: 214 537
+                    _ createProductionManager ids: 215 538
+                      @ 'stefi' ids: 216 539
+                      @ 'admin' ids: 217 540
+                      {  ids: 218 541
+                  @ req req ids: 219 542
+                  @ __data ids: 220 543
+                    {  ids: 221 544
+                function  ids: 222 545
+                  param err ids: 223 546
+                  param jsonized ids: 224 547
+                  if err ids: 225 548
+                    _ return res.send(err) ids: 226 549
+                  _ res.setHeader('content-type', 'application/json') ids: 227 550
+                  return res.json(jsonized) ids: 228 551
+            elif filePath.substr(-5, 5) == '.html' ids: 229 552
+              var content = wizzi.file.read(filePath) ids: 230 553
+              _ res.end(content) ids: 231 554
+            elif filePath.substr(-3, 3) == '.js' ids: 232 555
+              var content = wizzi.file.read(filePath) ids: 233 556
+              _ res.setHeader('content-type', 'text/javascript') ids: 234 557
+              _ res.end(content) ids: 235 558
+            elif filePath.substr(-5, 5) == '.json' ids: 236 559
+              var content = wizzi.file.read(filePath) ids: 237 560
+              _ res.setHeader('content-type', 'application/json') ids: 238 561
+              _ res.end(content) ids: 239 562
+            elif filePath.substr(-4, 4) == '.css' ids: 240 563
+              var content = wizzi.file.read(filePath) ids: 241 564
+              _ res.setHeader('content-type', 'text/css') ids: 242 565
+              _ res.end(content) ids: 243 566
+            elif ['.png', '.jpg', '.gif', '.bmp'].indexOf(ext4) > -1 || ['.jpeg', '.tiff'].indexOf(ext5) > -1 ids: 244 567
+              _ wizzi.file.readFile ids: 246 568
+                @ filePath ids: 247 569
+                function  ids: 248 570
+                  param err ids: 249 571
+                  param data ids: 250 572
+                  if err ids: 251 573
+                    _ return res.end("Error reading " + filePath + " " + err) ids: 252 574
+                  else  ids: 253 575
+                    _ res.setHeader('content-type', 'image/' + filePath.substr(-3, 3)) ids: 254 576
+                    _ res.setHeader('content-length', data.length) ids: 255 577
+                    _ res.end(data) ids: 256 578
+            elif filePath.substr(-5, 5) == '.woff' || filePath.substr(-4, 4) == '.ttf' ids: 257 579
+              var ctype; ids: 258 580
+              if filePath.substr(-5, 5) == '.woff' ids: 259 581
+                set ctype = 'application/x-font-woff' ids: 260 582
+              if filePath.substr(-4, 4) == '.ttf' ids: 261 583
+                set ctype = 'application/x-font-ttf' ids: 262 584
+              _ wizzi.file.readFile ids: 263 585
+                @ filePath ids: 264 586
+                function  ids: 265 587
+                  param err ids: 266 588
+                  param data ids: 267 589
+                  if err ids: 268 590
+                    return res.end("Error reading " + filePath + " " + err) ids: 269 591
+                  else  ids: 270 592
+                    _ res.setHeader('content-type', ctype) ids: 271 593
+                    _ res.setHeader('content-length', data.length) ids: 272 594
+                    _ res.end(data) ids: 273 595
+            else  ids: 274 596
+              return next() ids: 275 597
+    function createProductionManager ids: 276 598
+      param user ids: 277 599
+      param subscription ids: 278 600
+      param globalContext ids: 279 601
+      var pman ids: 280 602
+        new ProductionManager ids: 281 603
+          {  ids: 282 604
+      _ pman.aclStat ids: 283 605
+        new acl.AclStat(user, subscription) ids: 284 606
+      _ pman.globalContext(globalContext) ids: 285 607
+      return pman ids: 286 608
+    function sendJSONStringified ids: 287 609
+      param res ids: 288 610
+      param wizziModelInstance ids: 289 611
+      _ res.send('<pre>' + stringify(cleanCircular(wizziModelInstance, []), null, 2) + '</pre>') ids: 290 612
+    function cleanCircular ids: 291 613
+      param obj ids: 292 614
+      param stock ids: 293 615
+      if !obj ids: 294 616
+        return  ids: 295 617
+      if stock.indexOf(obj) >= 0 ids: 296 618
+        return  ids: 297 619
+      else  ids: 298 620
+        _ stock.push(obj) ids: 299 621
+      if typeof obj === 'object' ids: 300 622
+        if obj.length ids: 301 623
+          foreach item in obj ids: 302 624
+            _ cleanCircular(item, stock) ids: 303 625
+          return  ids: 304 626
+        if obj.parent ids: 305 627
+          delete obj.parent ids: 306 628
+        if obj.wzParent ids: 307 629
+          delete obj.wzParent ids: 308 630
+        if obj.nodes ids: 309 631
+          delete obj.nodes ids: 310 632
+        if obj.evalContext ids: 311 633
+          delete obj.evalContext ids: 312 634
+        if obj.loadContext && obj.sourceKey ids: 313 635
+          delete obj.loadContext ids: 314 636
+        for var k in obj ids: 315 637
+          var item = obj[k] ids: 316 638
+          if !item ids: 317 639
+            delete obj[k] ids: 318 640
+          elif typeof item === 'object' && item.length && item.length == 0 ids: 319 641
+            delete obj[k] ids: 320 642
+          else  ids: 321 643
+            _ cleanCircular(item, stock) ids: 322 644
+      return obj ids: 323 645

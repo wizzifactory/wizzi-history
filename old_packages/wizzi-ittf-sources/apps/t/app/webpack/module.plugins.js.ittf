@@ -1,0 +1,8 @@
+﻿$group
+	$params &app
+	
+	$if app.useMonaco
+		@ new MonacoWebpackPlugin()
+		_ new webpack.DefinePlugin
+			{
+				@ 'process.browser' true

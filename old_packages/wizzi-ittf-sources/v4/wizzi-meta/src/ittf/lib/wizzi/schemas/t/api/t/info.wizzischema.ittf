@@ -1,0 +1,31 @@
+﻿$group
+
+	e_tag( infoItem, info-item, commentable )
+		is-abstract
+		r infoItem/s
+	
+	e info : commentable
+		r infoItem/s
+	
+	e_tag( apiCall, api-call, infoItem )
+	e_tag( internalCall, internal-call, infoItem )
+	e_tag( apiCreate, api-create, infoItem )
+	e_tag( apiReceive, api-receive, infoItem )
+		a_flag( storeOnThis, store-on-this )
+		r value/s
+	e_tag( apiSend, api-send, infoItem )
+		r value/s
+	e send : infoItem
+		r value/s
+	e receive : infoItem
+		a_flag( storeOnThis, store-on-this )
+		r value/s
+	e create : infoItem
+	e set : infoItem
+	e merge : infoItem
+	e dependency : infoItem
+		a type
+			restrict
+				enum closure
+		a_tag(apiRef, api-ref)
+

@@ -1,0 +1,51 @@
+﻿demo_module( plugin_examples, parser, 2 )
+
+	# 
+		# DEMO: How to use the `parser` wizzi model type to 
+		#       extract from a .scss file an `xittf` wizzi model 
+		#       that targets a `css` wizzi model.
+	+
+	
+	$if true
+
+		# var folder = "C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/wfSite/bootstrap-4-dev/scss/mixins"
+		# var folder = "C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/wfSite/bootstrap-4-dev/scss"
+
+		var ittfWriter = require('wizzi-utils').ittfWriter
+		var scssToXIttf = require('./xittf/scss_to_xittf')
+
+		var source
+			_ fsfile.read
+				_ path.join
+					@ __dirname
+					@ 'step_2'
+					@ 'first.tests.scss'
+
+		_ printValue('scss source', source, 'dashes')
+		
+		loadModel( 2, css.parser.ittf )
+			_ wizziModel.match
+				@ source
+				f_cb_throw( result )
+					log 'result', result
+					var x = result.state.input
+					# { result
+					#   { state
+					#     pos
+					#     tokens
+					#     len
+					#     lasterrmsg
+					#     lasterrpos
+					#   { ast
+					delete result.state.input
+					# _ printValue('test state', result.state, 'dashes')
+					_ printValue('test state', result.state, 'json')
+					_ printValue('test ast', result.ast, 'json')
+					_ scssToXIttf.toXIttf
+						@ result.ast
+						{
+							@ raw false
+						f_cb_throw( xittf )
+							_ printValue('test xittf', xittf, 'json')
+							var ittf = ittfWriter(xittf)
+							_ printValue('ittf', ittf, 'dashes')

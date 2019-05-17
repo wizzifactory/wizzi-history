@@ -1,0 +1,65 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>
+	# source: https://github.com/juliangruber/balanced-match
+	# license (MIT)
+
+	set module.exports = balanced
+    
+	function balanced
+        param a
+        param b
+        param str
+        if a instanceof RegExp
+            set a = maybeMatch(a, str)
+        if b instanceof RegExp
+            set b = maybeMatch(b, str)
+        var r = range(a, b, str)
+        return r && {start: r[0], end: r[1], pre: str.slice(0, r[0]), body: str.slice((r[0] + a.length), r[1]), post: str.slice((r[1] + b.length))}
+    
+	function maybeMatch
+        param reg
+        param str
+        var m = str.match(reg)
+        return 
+            iif m
+                then 
+                    set m[0]
+                else null
+    
+	set balanced.range = range
+    
+	function range
+        param a
+        param b
+        param str
+        var 
+            decl begs
+            decl beg
+            decl left
+            decl right
+            decl result
+        var ai = str.indexOf(a)
+        var bi = str.indexOf(b, (ai + 1))
+        var i = ai
+        if ((ai >= 0) && (bi > 0))
+            set begs = []
+            set left = str.length
+            while ((i >= 0) && ! (result))
+                if i == ai
+                    _ begs.push(i)
+                    set ai = str.indexOf(a, (i + 1))
+                elif begs.length == 1
+                    set result = [begs.pop(), bi]
+                else 
+                    set beg = begs.pop()
+                    if beg < left
+                        set left = beg
+                        set right = bi
+                    set bi = str.indexOf(b, (i + 1))
+                set i = ((ai < bi) && (ai >= 0)) ? ai : bi
+            if begs.length
+                set result = [left, right]
+        return result

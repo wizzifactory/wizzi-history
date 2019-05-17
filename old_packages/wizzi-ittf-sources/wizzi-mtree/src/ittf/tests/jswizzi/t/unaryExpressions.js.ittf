@@ -1,0 +1,31 @@
+﻿$group
+
+	var unaryExpressions
+		[
+			{
+				@ code 'var x = 2; x = -x; return x'
+				@ expected_number -2
+			{
+				@ code 'var x = 2; x = +x; return x'
+				@ expected_number 2
+			{
+				@ code 'var x = 2; x++; return x'
+				@ expected_number 3
+			{
+				@ code 'var x = 2, y = 2; y = x++; return y'
+				@ expected_number 2
+			{
+				@ code 'var x = 2, y = 2; y = ++x; return y'
+				@ expected_number 3
+			{
+				@ code 'var x = 2, y = 2; y = --x; return { x:x, y:y }'
+				@ expected_equal
+					{
+						@ x  1
+						@ y  1
+			{
+				@ code 'var x = 2, y = 2; y = x--; return { x:x, y:y }'
+				@ expected_equal
+					{
+						@ x  1
+						@ y  2

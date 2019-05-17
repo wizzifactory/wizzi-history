@@ -1,0 +1,53 @@
+﻿$group
+
+	< Splitter
+		@ split vertical
+		@ secondaryInitialSize { 800 }
+		@ primaryMinSize {200}
+		@ secondaryMinSize {800}
+		@ onResize { this.handleSplitter1Resize }
+		. {classes.editorbox}
+			. {classes.editorHead}
+				. {classes.toolbar}
+					< Toolbar
+						{
+							&&
+								+ selectedUri !== null
+								< Typography
+									@ type "title"
+									@ color 'inherit'
+									@ noWrap
+									+ {selectedUri}
+						btn( onSaveDocument, Save, Save the document or fragment
+						btn( this.handleOpenCreateDocumentDialog, New, Create a new document or fragment
+			. {classes.editor}
+				< CodeEditor 
+					@ theme 'vs-dark'
+					@ width { splitter1Sizes.primary }
+					@ height { splitter1Sizes.third }
+					@ value { selectedContent }
+					@ options { editOptions }
+					@ onChange { this.handleCodeChange }
+	
+		. {classes.generated}
+			{
+				&&
+					+ artifacts && artifacts.length > 0
+					div
+						< Toolbar
+							< Typography
+								@ type "title"
+								@ color 'inherit'
+								@ noWrap
+								+ Artifact
+							< Select
+								@ items {artifacts}
+								@ selected {artifacts[0]}
+								@ ref {onSelectArtifactRef}
+							btn( onGenerateArtifact, Go, Generate artifact
+						{
+							&&
+								+ generatedContent
+								< CodeBeautify 
+									@ language { 'js' }
+									@ codeSnippet { generatedContent }

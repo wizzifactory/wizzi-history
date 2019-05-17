@@ -1,0 +1,183 @@
+﻿r-container( WizziJob, false, true
+
+	$append imports
+		common/page_imports()
+		import
+			@ getJobBatch
+			@ executeJobBatch
+			from '../../store/actions'
+		import Tabs from '@material-ui/core/Tabs'
+		import Tab from '@material-ui/core/Tab'
+		import { GithubIcon, GitCommit } from '../mui/Icons'
+		import CodeHighLight from '../mui/CodeHighLight'
+		import EventSourceView from '../mui/EventSourceView'
+		$include jobs/optionsImport
+
+		function TabContainer
+			param props
+			return
+				< Typography
+					@ component div
+					style 
+						{
+							@ padding 8 * 3
+					+ {props.children}
+
+		$include jobs/optionsData
+
+	style
+
+	state
+		@ value 0
+		@ execUrl null
+		$include jobs/optionsState
+
+	did-mount
+		prop match
+		prop dispatchGetJobBatch
+		_ dispatchGetJobBatch
+			@ match.params.hash
+			@ match.params.version
+			@ match.params.packageName
+
+	=> executeGitCommit
+		param message
+		prop batch
+		const depCount = batch.dependencies ? batch.dependencies.length : 0
+		_ this.setState
+			{
+				@ execUrl '/api/jobs/batch/gitcommit?hash=' + batch.hash + '&message=' + message
+				@ value depCount + 1
+
+	=> handleGitPush
+		prop batch
+		const depCount = batch.dependencies ? batch.dependencies.length : 0
+		_ this.setState
+			{
+				@ execUrl '/api/jobs/batch/gitpush?hash=' + batch.hash
+				@ value depCount + 1
+
+	=> handleExec
+		prop batch
+		const depCount = batch.dependencies ? batch.dependencies.length : 0
+		_ this.setState
+			{
+				@ execUrl '/api/jobs/batch/exec?hash=' + batch.hash
+				@ value depCount + 1
+
+	=> handleChange
+		param event
+		param value
+		_ this.setState
+			{
+				@ value
+
+	$include jobs/optionsHandlers
+
+	render
+		prop classes
+		prop match
+		prop batch
+		prop loadingError
+
+		common/guardLoading( batch )
+
+		const { value, execUrl } = this.state
+
+		return
+			div
+				h2 Job {batch.label}
+				p cwd: {batch.cwd}
+				p command: {batch.command}
+				p argv0: {batch.argv0}
+				jobs/optionsRender()
+				jobs/tlb()
+					jobs/tlb-btn( Exec, this.handleExec
+					{
+						&&
+							+ batch.git && batch.git.commit
+							jobs/tlb-btn( git Commit, this.handleGitCommit $$ , GitCommit
+					{
+						&&
+							+ batch.git && batch.git.push
+							jobs/tlb-btn( git Push, this.handleGitPush
+					{
+						&&
+							+ batch.git && batch.git.visitUrl
+							< Tooltip
+								@ title GitHub repository
+								@ enterDelay {300}
+								< IconButton
+									@ href {batch.git.visitUrl}
+									@ component a
+									@ color inherit
+									@ aria-label GitHub repository
+									< GithubIcon
+										@ color action
+				< AppBar
+					@ position static
+					< Tabs
+						@ value {value}
+						@ onChange {this.handleChange}
+						< Tab
+							@ label {batch.argv0}
+						{
+							&&
+								+ batch.dependencies && batch.dependencies.length > 0
+								_ batch.dependencies.map
+									=>
+										param p
+										param i
+										return
+											< Tab
+												@ key {i}
+												@ label {p.name}
+						< Tab
+							@ label result
+				{
+					&&
+						+ value === 0 
+						< TabContainer
+							< CodeHighLight
+								@ codeSnippet { batch.fileContent }
+				{
+					&&
+						+ batch.dependencies && batch.dependencies.length > 0
+						_ batch.dependencies.map
+							=>
+								param p
+								param i
+								return
+									div
+										@ key {i}
+										{
+											&&
+												+ value === i + 1
+												< TabContainer
+													< CodeHighLight
+														@ codeSnippet { p.fileContent }
+
+				{
+					&&
+						+ value === batch.dependencies.length + 1
+						< TabContainer
+							< EventSourceView
+								@ url { execUrl }
+
+	$append state-to-props
+		@ batch state.job.batch
+		@ loadingError state.job.loadingError
+
+	$append dispatch-to-props
+
+		common/dispatch( getJobBatch, hash, version, xpackage )
+
+		#
+			@ dispatchGetJobBatch
+				=>
+					param hash
+					log 'dispatchGetJobBatch'
+					_ dispatch
+						_ getJobBatch
+							@ hash
+

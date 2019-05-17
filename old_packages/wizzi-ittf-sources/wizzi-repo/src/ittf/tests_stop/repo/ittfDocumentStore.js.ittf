@@ -1,0 +1,43 @@
+﻿test_base_kernel( IttfDocumentStore )
+
+	$append imports
+		var IttfDocumentStore = require('../../lib/repo/ittfDocumentStore')
+		var IttfDocumentFinder = require('../../lib/repo/ittfDocumentFinder')
+		var errors = require('../../lib/repo/errors')
+	+
+	var store
+		new IttfDocumentStore
+	var finder
+	+
+	before-async
+		_ del.sync
+			@ [__dirname + '/dummydocfinder/**']
+			{
+				@ force true
+		_ store.init
+			{
+				@ storeKind 'filesystem'
+			f_cb_no_err( result )
+				log 'err, result', err, result
+				set finder = new IttfDocumentFinder(store, 'js')
+				_ done()
+
+	it-async should get an ittf model content
+		_ store.getModelContent
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ 'doc2.tests.ittf'
+			f_cb_no_err( content )
+				tobe_string( content, tests School )
+				_ done()
+
+	it-async should get an ittf model content
+		_ store.documentExists
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ 'doc1.tests.ittf'
+			f_cb_no_err( result )
+				tobe_true( result )
+				_ done()

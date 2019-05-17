@@ -1,0 +1,74 @@
+﻿$group
+
+	#
+		# TODO
+		# This method is optimal to implement the
+		# replacement of wizzi.model.modelInfo(s) properties of
+		# 'loadContext' with loaded wizzi models.
+		# But the method must become asynchronous !!!
+	m createLoadContext
+		param loadContext
+		+
+		if verify.isObject(loadContext) && verify.isObject(loadContext.__productionManager)
+			# Already a valid request context
+			return loadContext
+		+
+		var mTreeBuildUpContext
+			_ Object.assign
+				{
+				@ this.globalContext
+				@ loadContext.mTreeBuildUpContext
+		+
+		return
+			{
+				@ __productionManager
+					_ this.createProductionManager
+				@ mTreeBuildUpContext mTreeBuildUpContext
+	
+	#
+		# params
+		# { userProductionOptions
+		#   integer indentSpaces
+		#     default 4
+		#   string basedir
+		# 	integer verbose
+		#     default 2
+		#   { dumps
+		#      ...   
+		# { globalContext
+	m createProductionManager
+		{ userProductionOptions
+			optional
+		{ globalContext
+			optional
+		+
+		var options
+			_ productionOptions
+				@ userProductionOptions || {}
+		if this.__is_test
+			set options
+				_ Object.assign
+					@ options
+					@ this.testOptions
+		# log '*=*=*=*= temporary wizzi.wizziFactory.createProductionManager. options : ', options
+		var ProductionManager = getProductionManager()
+		var pman
+			new ProductionManager
+				@ this
+				@ options
+		+
+		# create and set aclStat
+		var aclStat
+			new acl.AclStat
+				@ this.user
+				@ this.role
+		_ pman.aclStat(aclStat)
+		+
+		# create and set the global context
+		var globalContext
+			_ Object.assign
+				{
+				@ this.globalContext
+				@ globalContext || {}
+		_ pman.globalContext(globalContext)
+		return pman

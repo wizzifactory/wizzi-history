@@ -1,0 +1,41 @@
+﻿$group
+
+	# async run a wizzi job request
+		# from jobRequest
+	var AsyncInitializeJobRequests
+		{
+			@ run
+				function
+					{ jobRequest
+						{ wfjob
+							string ittfDocumentUri
+					callback
+
+					var pman = jobRequest.__pman
+					var wfjobIttfDocumentUri = jobRequest.wfjob.ittfDocumentUri
+					set pman.productionName += '_' + path.basename(wfjobIttfDocumentUri)
+					# log 'wizzi.production.asyncInitializeJobRequests.productionName', pman.productionName
+
+					var wfjobLoader = new WfjobLoader(pman)
+					var wfjobLoadRequest
+						{
+							@ model
+								{
+									@ src wfjobIttfDocumentUri
+							@ wfjobLoader wfjobLoader
+
+					_ AsyncRecurseWfjobLoad
+						@ wfjobLoadRequest
+						f_cb( result )
+							
+							foreach artifactInfoConfig in result.artifactInfoConfigs
+								# log 'wizzi.production.asyncInitializeJobRequests.artifactInfoConfig', util.inspect(artifactInfoConfig, { depth: 2 })
+								set artifactInfoConfig.wfjob = wfjobIttfDocumentUri
+								if pman.options.trace
+									log 'ProductionManager.initialize.artifactInfoConfig', artifactInfoConfig.toString()
+								_ pman.addArtifactRequest(artifactInfoConfig)
+
+							foreach artifactInfo in pman.artifactInfos
+								_ artifactInfo.initialize(pman)
+							
+							_ callback(null, null)

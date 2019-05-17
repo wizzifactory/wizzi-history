@@ -1,0 +1,57 @@
+﻿module 
+    kind jsfile
+
+	var file = require('./file')
+    
+	class IttfTemp
+        ctor 
+            param name
+			param value
+			param parent
+			set this.name = name
+			set this.value = value
+			set this.parent = parent || null
+            set this.children = []
+    
+		m add
+            param name
+			param value
+			if {}.toString.call(name) === '[object Object]' && name.name
+				set name.parent = this
+				_ this.children.push(name)
+				return name
+			else
+				var node = new IttfTemp(name, value, this)
+				_ this.children.push(node)
+				return node
+
+		m write
+			param sb
+			param indent
+			# log 'sb',sb
+			_ sb.push
+				@ indentTabs(indent) + this.name + (this.value && this.value.length > 0 ? ' ' + this.value : '')
+			foreach node in this.children
+				_ node.write(sb, indent + 1)
+
+		m writeFile
+			param string_path
+			param callback
+			var sb = []
+			_ this.write(sb, 0)
+			var that = this
+			_ file.openWrite
+				@ string_path
+				f_cb( stream )
+					_ stream.write(sb.join('\n'))
+					_ stream.end()
+					_ callback(null)
+
+	function indentTabs
+		param num
+		var ret = []
+		for var i=0; i<num; i++
+			_ ret.push('\t')
+		return ret.join('')
+    
+	set module.exports = IttfTemp

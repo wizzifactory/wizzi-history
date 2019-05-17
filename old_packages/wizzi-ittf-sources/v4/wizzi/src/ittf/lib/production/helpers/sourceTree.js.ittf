@@ -1,0 +1,60 @@
+﻿module 
+    kind jsfile
+
+    var util = require('util')
+    var path = require('path')
+	var verify = require('wizzi-utils').verify
+    set module.exports =
+        function 
+            param wzmodel
+            param filepath
+            param wzrepoRootPath
+
+            var filepath_norm
+                iif verify.isString(filepath)
+                    then 
+                        _ verify.replaceAll
+                            _ path.dirname(filepath)
+                            @ '\\'
+                            @ '/'
+                    else null
+            
+			var wzrepoRootPath_norm
+                iif verify.isString(wzrepoRootPath)
+                    then 
+                        _ verify.replaceAll(wzrepoRootPath, '\\', '/')
+                    else null
+            
+			var 
+                decl source
+                decl fullpath
+                decl relpath
+                decl wzpath
+                decl ret
+                    { 
+                        @ kind '$sourcetree'
+                        @ filepath filepath
+                        @ sources
+                            [ 
+            
+			var sources = wzmodel.loadHistory.sources
+            
+			for var k in sources
+                set fullpath = sources[k].filepath
+                
+				if filepath_norm
+                    set fullpath_norm = verify.replaceAll(fullpath, '\\', '/')
+                    set relpath = fullpath_norm.substr(filepath_norm.length + 1)
+                    set wzpath = fullpath_norm.substr(wzrepoRootPath_norm.length + 1)
+                
+				set source =
+                    { 
+                        @ kind '$source'
+                        @ key k
+                        @ filepath fullpath
+                        @ relpath relpath
+                        @ wzpath wzpath
+                
+				_ ret.sources.push(source)
+            
+			return ret

@@ -1,0 +1,19 @@
+﻿$group
+
+	function stringify
+		param obj
+		param options
+		var spaces 
+		var EOL = '\n'
+		if verify.isObject(options)
+			set spaces = options.spaces
+			if options.EOL
+				set EOL = options.EOL
+		
+		var str
+			_ JSON.stringify
+				@ obj
+				@ options ? options.replacer : null
+				@ spaces
+		
+		return str.replace(/\n/g, EOL) + EOL

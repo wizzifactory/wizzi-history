@@ -1,0 +1,64 @@
+﻿$group
+
+	set md.copyFsItem
+		function
+			param userId
+			param action
+			param callback
+			if action.itemKind == 0
+				_ md.copyFolder
+					@ userId
+					@ action.sourceProjectId
+					@ action.sourceItemPath
+					@ action.destProjectId
+					@ action.destItemPath
+					@ callback
+			else
+				_ md.copyFile
+					@ userId
+					@ action.sourceProjectId
+					@ action.sourceItemPath
+					@ action.destProjectId
+					@ action.destItemPath
+					@ callback
+
+	set md.moveFsItem
+		function
+			param userId
+			param action
+			param callback
+			if action.itemKind == 0
+				_ md.moveFolder
+					@ userId
+					@ action.sourceProjectId
+					@ action.sourceItemPath
+					@ action.destProjectId
+					@ action.destItemPath
+					@ callback
+			else
+				_ md.moveFile
+					@ userId
+					@ action.sourceProjectId
+					@ action.sourceItemPath
+					@ action.destProjectId
+					@ action.destItemPath
+					@ callback
+
+	set md.deleteFsItem
+		function
+			param userId
+			param action
+			param callback
+			log 'wizzi.FileSystem.deleteFsItem.action', action
+			if action.itemKind == 0
+				_ md.deleteFolder
+					@ action.userId || userId 
+					@ action.projectId
+					@ action.itemPath
+					@ callback
+			else
+				_ md.deleteFile
+					@ action.userId || userId
+					@ action.projectId
+					@ action.itemPath
+					@ callback

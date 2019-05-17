@@ -1,0 +1,104 @@
+﻿$group
+
+	cat basic-shape-function
+	
+	e inset()
+		# Defines an inset rectangle.
+		is function
+		is[ arg 
+			[
+				: <shape-arg>{1,4}
+					# When all of the first four arguments are supplied they represent the top, right, 
+					# bottom and left offsets from the reference box inward 
+					# that define the positions of the edges of the inset rectangle. 
+					# These arguments follow the syntax of the margin shorthand, 
+					# that let you set all four insets with one, two or four values.
+					# A pair of insets in either dimension that add up to more than the used dimension 
+					# (such as left and right insets of 75% apiece) define a shape enclosing no area. 
+					# For this specification, this results in an empty float area.
+				[?
+					: round
+					: <border-radius>
+					# The optional <border-radius> argument(s) define rounded corners for the inset rectangle 
+					# using the border-radius shorthand syntax.
+		cat basic-shape-function
+
+	e circle()
+		is function
+		is[ arg
+			[
+				:? <shape-radius>
+					# The <shape-radius> argument represents r, the radius of the circle. 
+					# Negative values are invalid. A percentage value here is resolved from 
+					# the used width and height of the reference box as sqrt(width^2+height^2)/sqrt(2).
+					default closest-side
+				[?
+					: at
+					: <position>
+						# The <position> argument defines the center of the circle. 
+					default center
+		cat basic-shape-function
+
+	e ellipse()
+		is function
+		is[ arg
+			[
+				:? <shape-radius>{2}
+					# The <shape-radius> arguments represent rx and ry, the x-axis and y-axis radii 
+					# of the ellipse, in that order. Negative values for either radius are invalid. 
+					# Percentage values here are resolved against the used width 
+					# (for the rx value) and the used height (for the ry value) of the reference box.
+					default closest-side
+				[?
+					: at
+					: <position>
+						# The position argument defines the center of the ellipse. This defaults to center if omitted.
+					default center
+		cat basic-shape-function
+
+	e polygon()
+		is function
+		is[ arg
+			:? <fill-rule>
+				# represents the filling rule used to determine the interior of the polygon.
+				# Possible values are nonzero and evenodd. Default value when omitted is nonzero.
+		is[ arg
+			[#
+				: <shape-arg>
+				: <shape-arg>
+				# Each pair argument in the list represents xi and yi - the x and y axis 
+				# coordinates of the ith vertex of the polygon.
+		cat basic-shape-function
+
+	e <shape-arg>
+		is datatype
+		syntax
+			|
+				: <length>
+				: <percentage>
+
+	e <shape-radius>
+		is datatype
+		syntax
+			|
+				: <length>
+				: <percentage>
+				: closest-side
+				: farthest-side
+		# Defines a radius for a circle or ellipse.	
+		# If omitted it defaults to closest-side. closest-side uses the length from 
+		# the center of the shape to the closest side of the reference box. 
+		# For circles, this is the closest side in any dimension. 
+		# For ellipses, this is the closest side in the radius dimension.
+		# farthest-side uses the length from the center of the shape to the 
+		# farthest side of the reference box. For circles, this is the farthest side
+		# in any dimension. For ellipses, this is the farthest side in the radius dimension.
+
+	e <fill-rule>
+		is datatype
+		is enum
+		syntax
+			|
+				: nonzero
+					default
+				: evenodd

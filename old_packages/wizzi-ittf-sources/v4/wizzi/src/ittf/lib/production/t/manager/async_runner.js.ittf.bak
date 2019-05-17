@@ -1,0 +1,20 @@
+﻿$group
+
+	# async run an artifact production 
+		# from an artifactInfo object
+	var AsyncRunner
+		{
+			@ run
+				function
+					param artifactInfo
+					param callback
+					_ log.info('Started async run artifact: ' + artifactInfo.name)
+					var runner = new Runner(artifactInfo)
+					_ runner.run
+						f_cb_no_err( operResult )
+							if err
+								set err.artifactInfo = artifactInfo.toString()
+								set err.ProfuctionManagerAsyncRunnerStack = (new Error()).stack
+								r_cb_err()
+							_ log.info('Ended async run artifact: ' + artifactInfo.name)
+							_ callback(null, operResult)

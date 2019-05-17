@@ -1,0 +1,105 @@
+﻿module
+	kind jsfile
+
+	var wizziFactory = require('../../lib/services/wizziFactory')
+	var ProductionManager = require('../../lib/production/manager')
+	var acl = require('../../lib/acl')
+	var mockModels = require('./wizziModels')
+
+	var md = module.exports = {}
+	
+	set md.getWizziFactory
+		function
+			param options
+			param callback
+			_ wizziFactory.createFactory
+				@ 'stefi'
+				@ 'admin'
+				{
+					@ repo
+						{
+							@ storeKind (options.storeKind || 'filesystem')
+					@ plugins
+						{
+							@ items
+								[
+									@ './plugin'
+							@ pluginsBaseFolder __dirname
+					@ test
+						{
+							@ testOnlyMockBaseDir options.testOnlyMockBaseDir
+				f_cb_test( wf )
+					return
+						_ callback
+							@ null
+							@ wf
+
+	set md.getProductionManager
+		function
+			param basedir
+			param modelPaths
+			var aclStat = new acl.AclStat('stefi', 'admin')
+			var pman
+				new ProductionManager
+					{
+						@ __type 'WizziFactory'
+					{
+						@ basedir basedir
+			set pman.getLoadModel
+				function
+					param schema
+					return
+						_ md.getLoadModel
+							@ modelPaths
+			_ pman.aclStat(aclStat);
+			_ pman.globalContext
+				{
+			return pman
+
+	set md.getLoadModel
+		function
+			param modelPaths
+			return
+				function
+					param ittfDocumentUri
+					param context
+					param callback
+					if modelPaths[ittfDocumentUri]
+						_ callback
+							@ null
+							{
+								@ wzElement 'source'
+								@ wzName ittfDocumentUri
+					else
+						_ callback
+							{
+								@ __is_error true
+								@ message 'Not found'
+
+	set md.getLoadModel2
+		function
+			param mockBaseDir
+			var models = mockModels.getModels(mockBaseDir)
+			return
+				function
+					param ittfDocumentUri
+					param context
+					param callback
+					if models[ittfDocumentUri]
+						_ callback
+							@ null
+							@ models[ittfDocumentUri]
+					else
+						_ callback
+							{
+								@ __is_error true
+								@ message 'Not found'
+
+	set md.getModelInfo
+		function
+			param mockModelName
+			if mockModelName === 'mock1'
+				return
+					{
+						@ cwd __dirname
+						@ src 'mock1.tests.ittf'

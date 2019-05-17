@@ -1,0 +1,111 @@
+﻿module wizzi-mtree.jswizzi.jsWizziScriptCoder
+    kind jsfile
+    
+	#
+		# Helper class for building JsWizzi scripts
+		#
+	class JsWizziScriptCoder
+        
+		ctor
+            set this.stm = []
+            set this.indentValue = 0
+            set this.length = 0
+            set this.line = ''
+		
+		m for
+			param text
+			param node
+			if this.line.length > 0
+				_ this.w()
+			_ this.w('for (' + text + ') {' + ' //' + node.id)
+			_ this.indent()
+    
+		m if
+            param text
+			param node
+            if this.line.length > 0
+                _ this.w()
+            _ this.w('if (' + text + ') {' + ' //' + node.id)
+            _ this.indent()
+
+		m elif
+            param text
+			param node
+            if this.line.length > 0
+                _ this.w()
+            _ this.w('else if (' + text + ') {' + ' //' + node.id)
+            _ this.indent()
+
+		m else
+            if this.line.length > 0
+                _ this.w()
+            _ this.w('else {')
+            _ this.indent()
+
+		m while
+            param text
+			param node
+            if this.line.length > 0
+                _ this.w()
+            _ this.w('while (' + text + ') {' + ' //' + node.id)
+            _ this.indent()
+
+		m end
+            if this.line.length > 0
+                _ this.w()
+            _ this.deindent()
+            _ this.w('}')
+
+		m w
+            param text
+            var ind = spaces(this.indentValue * 4)
+            _ this.stm.push(ind + this.line + (text || ''))
+            set this.line = ''
+            set this.length++
+    
+		m write
+            param text
+            set this.line += (text || '')
+
+		m indent
+            set this.indentValue++
+    
+		m deindent
+            set this.indentValue = Math.max(0, (this.indentValue - 1))
+    
+		m toCode
+            if this.line.length > 0
+                _ this.w()
+            return this.stm.join('\n')
+    
+		m getErrorLines
+            param esprimaException
+            var start = Math.max(0, (esprimaException.lineNumber - 4))
+            var end
+                _ Math.min
+                    @ this.stm.length
+                    @ (esprimaException.lineNumber + 4)
+            var ret
+                [ 
+            for var i = start; i < end; i++
+                _ ret.push(formatLineNumber(i + 1) + ' ' + this.stm[i])
+                if (i == esprimaException.lineNumber - 1)
+                    var col = esprimaException.column
+                    _ ret.push(spaces(col + 4) + '* ' + esprimaException.description)
+            return ret
+    
+	function spaces
+        param num
+        return Array(num + 1).join(" ")
+    
+	function formatLineNumber
+        param num
+        if num > 999
+            return num
+        if num > 99
+            return ('0' + num)
+        if num > 9
+            return ('00' + num)
+        return ('000' + num)
+
+	set module.exports = JsWizziScriptCoder

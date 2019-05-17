@@ -1,0 +1,67 @@
+  module  ids: 1 68
+    kind jsfile ids: 2 69
+    var util = require('util') ids: 3 70
+    var HtmlWriter = require('./htmlwriter').HtmlWriter ids: 4 71
+    var md = module.exports = {} ids: 5 72
+    class HtmlBuilder ids: 6 73
+      ctor  ids: 7 74
+        param noLF ids: 8 75
+        set this.noLF = noLF ids: 9 76
+        set this.nodes = [] ids: 10 77
+        set this.currentNode = null ids: 11 78
+      m openTag ids: 12 79
+        param tag ids: 13 80
+        param options ids: 14 81
+        set options = options || {} ids: 15 82
+        if this.currentNode == null ids: 16 83
+          set this.currentNode = this.createNode(tag, null, options) ids: 17 84
+          _ this.nodes.push(this.currentNode) ids: 18 85
+        else  ids: 19 86
+          var newTag = this.createNode(tag, this.currentNode, options) ids: 20 87
+          _ this.currentNode.childs.push(newTag) ids: 21 88
+          set this.currentNode = newTag ids: 22 89
+      m closeTag ids: 23 90
+        set this.currentNode = this.currentNode.parent ids: 24 91
+      m writeText ids: 25 92
+        param text ids: 26 93
+        if this.currentNode == null ids: 27 94
+          _ this.nodes.push ids: 28 95
+            {  ids: 29 96
+              @ tag '_text' ids: 30 97
+              @ text text ids: 31 98
+        else  ids: 32 99
+          set this.currentNode.text += (text || '') ids: 33 100
+      m writeAttribute ids: 34 101
+        param name ids: 35 102
+        param value ids: 36 103
+        _ this.currentNode.attribs.push ids: 37 104
+          {  ids: 38 105
+            @ name name ids: 39 106
+            @ value value ids: 40 107
+      m createNode ids: 41 108
+        param tag ids: 42 109
+        param parent ids: 43 110
+        param options ids: 44 111
+        return  ids: 45 112
+          {  ids: 46 113
+            @ parent parent ids: 47 114
+            @ tag tag ids: 48 115
+            @ childs ids: 49 116
+              [  ids: 50 117
+            @ attribs ids: 51 118
+              [  ids: 52 119
+            @ text '' ids: 53 120
+            @ inline options.inline ids: 54 121
+      m toLines ids: 55 122
+        var hw = new HtmlWriter(this.noLF) ids: 56 123
+        foreach node in this.nodes ids: 57 124
+          _ hw.writeElement(node) ids: 58 125
+        return hw.toLines() ids: 59 126
+      m toText ids: 60 127
+        return this.toString() ids: 61 128
+      m toString ids: 62 129
+        var hw = new HtmlWriter(this.noLF) ids: 63 130
+        foreach node in this.nodes ids: 64 131
+          _ hw.writeElement(node) ids: 65 132
+        return hw.toString() ids: 66 133
+    set md.HtmlBuilder = HtmlBuilder ids: 67 134

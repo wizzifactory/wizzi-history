@@ -1,0 +1,15 @@
+$group
+    
+	function pick
+        param obj
+        param fn
+        return 
+            _ Object.keys(obj)
+                ._ reduce
+                    function 
+                        param result
+                        param key
+                        if fn(obj[key])
+                            set result[key] = obj[key]
+                        return result
+                    { 

@@ -1,0 +1,24 @@
+﻿$group
+
+	m setIds
+		set this.id = this.getNewId(this.isDirectory)
+		if this.isDirectory
+			foreach folder in this.folders
+				_ folder.setIds()
+			foreach d in this.documents
+				_ d.setIds()
+
+	m getNewId
+		param isDirectory
+		return this.root().__getNewId(isDirectory)
+	
+	m __getNewId
+		param isDirectory
+		if isDirectory
+			if typeof(this.f_idcount) === 'undefined'
+				set this.f_idcount = 0
+			return 'f' + (++this.f_idcount)
+		else
+			if typeof(this.d_idcount) === 'undefined'
+				set this.d_idcount = 0
+			return 'd' + (++this.d_idcount)

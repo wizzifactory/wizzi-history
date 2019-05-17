@@ -1,0 +1,90 @@
+﻿r-component( EventSourceView )
+
+	$append imports
+		import CodeHighLight from '../mui/CodeHighLight'
+
+	prop url
+		string
+	prop source
+		{
+	prop onEventSourceError
+		func
+
+	style 
+
+	state
+		@ events []
+
+	=> sourceClose
+		if this.source
+			log 'EventSource.source', this.source
+			_ this.source.close
+
+	=> sourceOpen
+		param source
+		param url
+
+		log 'EventSource.sourceOpen', source, url
+
+		prop onEventSourceError
+		
+		set this.source
+			iif source
+				then source
+				else new EventSource(url)
+		
+		set this.source.onmessage
+			=> 
+				param e
+				log 'EventSource.sourceOpen.onmessage', JSON.stringify(e, null, 2)
+				if e.data === "***___CLOSE___***"
+					_ this.sourceClose
+				else
+					_ this.setState
+						=> 
+							param prevState
+							let newEvents = prevState.events.concat(e.data)
+							return 
+								{ 
+									@ events newEvents
+		
+		set this.source.onopen
+			=> 
+				param e
+				log 'EventSource.opened', e
+
+		if onEventSourceError
+			set this.source.onerror = onEventSourceError
+
+	did-mount
+		prop source
+		prop url
+		if source || url
+			_ this.sourceOpen(source, url)
+
+	did-update
+		prop source
+		prop url
+		if (source || url) &&
+			\b (source !== prevProps.source || url !== prevProps.url) 
+			_ this.sourceOpen(source, url)
+	
+	will-unmount
+		_ this.sourceClose
+	
+	render
+		prop classes
+		prop url
+		prop source
+		const {events} = this.state
+		if events.length == 0
+			if url || source
+				return
+					h2 Waiting ...
+			else
+				return
+					h2 No running execution
+		return 
+			div 
+				< CodeHighLight
+					@ codeSnippet {events.join('\n')}

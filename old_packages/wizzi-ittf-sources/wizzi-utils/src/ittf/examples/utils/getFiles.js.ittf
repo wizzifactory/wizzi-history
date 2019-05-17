@@ -1,0 +1,38 @@
+﻿base_example( getFiles )
+	
+	$append imports
+		var file = vfile()
+
+	_ file.getFiles
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'samples'
+		{ 
+			@ deep false
+			@ extension null
+			@ documentContent false
+		f_cb_test( files )
+			log 'utils.getFiles.files', files
+			_ file.getFiles
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'samples'
+				{ 
+					@ deep false
+					@ extension null
+					@ documentContent true
+				f_cb_test( files )
+					log 'utils.getFilesWithContent.files', files
+					_ file.getFiles
+						_ path.join
+							@ __dirname 
+							@ 'ittf'
+							@ 'samples'
+						{ 
+							@ deep true
+							@ extension null
+							@ documentContent true
+						f_cb_test( files )
+							log 'utils.getFilesWithContentDeep.files', files

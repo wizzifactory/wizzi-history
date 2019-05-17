@@ -1,0 +1,283 @@
+﻿$group
+
+	cat css-datatype
+	
+	e <angle>
+		# The <angle> data type consists of a <number> followed by an angle unit. 
+		synthax
+			|
+				: 0
+					# The angle unit is optional after the number 0.
+				[&
+					# There is no space between the unit literal and the number.
+					: <number>
+						# Optionally, it may be preceded by a single + or - sign.
+						# Positive numbers represent clockwise angles, while negative numbers represent counterclockwise angles.
+					: <angle-unit>
+						
+		cat css-datatype
+	
+	e <basic-shape>
+		# The <basic-shape> CSS data type represents a shape used in the clip-path or shape-outside properties.
+		synthax
+			|
+				: <inset()>
+				: <circle()>
+				: <ellipse()>
+				: <polygon()>
+		cat css-datatype
+	
+	e <blend-mode>
+		# The <blend-mode> CSS data type describes how colors should appear when elements overlap.
+		# It is used in the background-blend-mode and mix-blend-mode properties.
+		# For each pixel among the layers to which it is applied, a blend mode 
+		# takes the colors of the foreground and the background, perfoms a calculation on them, 
+		# and returns a new color value.
+		synthax
+			$include blend-modes
+		is enum
+		cat css-datatype
+	
+	e <custom-ident>
+		cat css-datatype
+	
+	e <frequency>
+		# The <frequency> CSS data type represents a frequency dimension, such as the pitch of a speaking voice. 
+		# It is not currently used in any CSS properties.
+		# Syntax: the <frequency> data type consists of a <number> followed by a unit.
+		synthax
+			[&
+				: <number>
+				: <frequency-unit>
+		# Regexp: ^[+-]?[0-9]+.?([0-9]+)?(<frequency-unit>)$/g
+		cat css-datatype
+	
+	e <gradient>
+		synthax
+			|
+				: <linear-gradient()>
+				: <radial-gradient()>
+				: <repeating-linear-gradient()>
+				: <repeating-radial-gradient()>
+		cat css-datatype
+	
+	e <image>
+		# The <image> CSS data type represents a two-dimensional image. There are two kinds of images: 
+		# plain images, referenced with a <url>, and dynamically-generated images, generated with <gradient> or element(). 
+		# Images can be used with numerous CSS properties, such as background-image, border-image, 
+		# content, cursor, and list-style-image.
+		synthax
+			|
+				: <gradient>
+				: <url()>
+				: <element()>
+		cat css-datatype
+	
+	e <integer>
+		# The <integer> CSS data type is a special type of <number> that represents a whole number, 
+		# whether positive or negative. Integers can be used in numerous CSS properties, 
+		# such as column-count, counter-increment, grid-column, grid-row, and z-index.
+		synthax
+			[&
+				[? +|-
+				[+ 0-9
+		cat css-datatype
+	
+	e <length>
+		synthax
+			|
+				: 0
+				[&
+					: <number>
+					: <length-unit>
+		# Regexp: ^(|0)$|^[+-]?[0-9]+.?([0-9]+)?(<length-unit>)$/g
+		cat css-datatype
+	
+	e <number>
+		# The <number> CSS data type represents a number, being either an integer or a number with a fractional component.
+		synthax
+			[&
+				[? +|-
+				[?
+					[+ 0-9
+				[? .
+				[+ 0-9
+				[?
+					[ e|E
+					[? +|-
+					[+ 0-9
+		# Regexp: /^[+-]?([0-9]+)?\.?([0-9]+)([eE][+\-]?[0-9]+)?$/g
+		cat css-datatype
+	
+	e <percentage>
+		# The <percentage> CSS data type represents a percentage value. It is often used to define 
+		# a size as relative to an element's parent object. 
+		# Numerous properties can use percentages, such as width, height, margin, padding, and font-size.
+		# Note: Only calculated values can be inherited. 
+		# Thus, even if a percentage value is used on the parent property, a real value
+		# (such as a width in pixels for a <length> value) will be accessible on 
+		# the inherited property, not the percentage value.
+		# The <percentage> data type consists of a <number> followed by the percentage sign (%). 
+		# Optionally, it may be preceded by a single + or - sign, although negative values 
+		# are not valid for all properties. As with all CSS dimensions, 
+		# there is no space between the symbol and the number.
+		synthax
+			[&
+				: <number>
+				: %
+		# Regexp: /^[+-]?([0-9]+)?\.?([0-9]+)\%$/g
+		cat css-datatype
+	
+	e <ratio>
+		# The <ratio> CSS data type, used for describing aspect ratios in media queries, 
+		# denotes the proportion between two unitless values.
+		synthax
+			[
+				[+ 0-9
+				: /
+				[+ 0-9
+		# Regexp: /^([0-9]+)([ ]+)?\/([ ]+)?([0-9]+)$/g
+		cat css-datatype
+	
+	e <resolution>
+		# The <resolution> CSS data type, used for describing resolutions in media queries, 
+		# denotes the pixel density of an output device, i.e., its resolution.
+		# On screens, the units are related to CSS inches, centimeters, or pixels, not physical values.
+		# Regexp: ^(|0)$|^[0-9]+.?([0-9]+)?(<resolution-unit>)$/g
+		synthax
+			|
+				: 0
+				[&
+					: <number>
+					: <resolution-unit>
+		cat css-datatype
+	
+	e <string>
+		# The <string> CSS data type represents a sequence of characters. 
+		# Strings are used in numerous CSS properties, such as content, font-family, and quotes.
+		# Syntax: the <string> data type is composed of any number of Unicode characters 
+		# surrounded by either double (") or single (') quotes.
+		# Most characters can be represented literally. All characters can also be represented with their 
+		# respective Unicode code points in hexadecimal, in which case they are preceded by a backslash (\). 
+		# For example, \22 represents a double quote, \27 a single quote ('), and \A9 the copyright symbol (©).
+		# Importantly, certain characters which would otherwise be invalid can be escaped with a backslash. 
+		# These include double quotes when used inside a double-quoted string, 
+		# single quotes when used inside a single-quoted string, 
+		# and the backslash itself. For example, \\ will create a single backslash.
+		# To output new lines, you must escape them with a line feed character such as \A or \00000A. 
+		# In your code, however, strings can span multiple lines, in which case each new line 
+		# must be escaped with a \ as the last character of the line.
+		cat css-datatype
+	
+	e <string-unquoted>
+		cat css-datatype
+
+	e <time>
+		# The <time> CSS data type represents a time value expressed in seconds or milliseconds. 
+		# It is used in animation, transition, and related properties.
+		# Syntax: the <time> data type consists of a​ ​​​​​​<number> followed by one of the units listed below. 
+		# Optionally, it may be preceded by a single + or - sign. As with all dimensions, 
+		# there is no space between the unit literal and the number.
+		# The unit may not be omitted; 0 is invalid and does not represent 0s or 0ms.
+		synthax
+			|
+				: 0
+				[&
+					: <number>
+					: <time-unit>
+		# Regexp: ^(|0)$|^[+-]?[0-9]+.?([0-9]+)?(<time-unit>)$/g
+		cat css-datatype
+	
+	e <transform-function>
+		# The <transform-function> data type is specified using one of the transformation functions listed below. 
+		# Each function applies a geometric operation in either 2D or 3D.
+		synthax
+			|
+				: <matrix()>
+				: <matrix3d()>
+				: <perspective()>
+				: <rotate()>
+				: <rotate3d()>
+				: <rotatex()>
+				: <rotatey()>
+				: <rotatez()>
+				: <scale()>
+				: <scale3d()>
+				: <scalex()>
+				: <scaley()>
+				: <scalez()>
+				: <skew()>
+				: <skewx()>
+				: <skewy()>
+				: <translate()>
+				: <translate3d()>
+				: <translatex()>
+				: <translatey()>
+				: <translatez()>
+		cat css-datatype
+	
+	e <url>
+		synthax
+			|
+				: <url()>
+		cat css-datatype
+	
+	e <color>
+		synthax
+			|
+				: <rgb()>
+				: <rgba()>
+				: <hsl()>
+				: <hsla()>
+				: <hex-color>
+				: <named-color>
+				: currentcolor
+		cat css-datatype
+	
+	e <flex>
+		synthax
+			|
+				: none 
+					# means 0 0 auto
+				: auto 
+					# means 1 1 auto
+				: initial 
+					# means 0 1 auto
+				|
+					: <positive-number>
+						# interpreted as <flex-grow>.
+						# means <positive-number> 1 0
+					: <length>
+						# interpreted as <flex-basis>.
+						# means 1 1 <length>
+				[
+					: <positive-number>
+						#  interpreted as <flex-grow>
+					|
+						: <positive-number>
+							#  interpreted as <flex-shrink>
+							# <flex-basis> = 0
+						: <length>
+							#  interpreted as <flex-basis>
+							# <flex-shrink> = 1
+				[
+					: <positive-number>
+						#  interpreted as <flex-grow>
+					: <positive-number>
+						#  interpreted as <flex-shrink>
+					: <length>
+						#  interpreted as <flex-basis>
+		cat css-datatype
+	
+	e <position>
+		# The position CSS property specifies how an element is positioned in a document. 
+		# The top, right, bottom, and left properties determine the final location of positioned elements.
+		is enum
+		synthax
+			|
+				: static
+				: relative
+				: absolute
+				: fixed
+		cat css-datatype
+

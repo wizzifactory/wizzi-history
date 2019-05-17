@@ -1,0 +1,22 @@
+﻿base_example( prettifiers )
+
+	var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+	var ittfHtmlPrettifier = require('../../lib/prettifiers/ittfHtmlPrettifier')
+
+	_ ittfMTreeEx.createFrom
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'basic.sample.ittf'
+		{
+		f_cb_test( result )
+			var pretty
+				_ ittfHtmlPrettifier
+					@ result
+					{
+			_ file.write
+				_ path.join
+					@ __dirname
+					@ 'outputs'
+					@ 'basic.sample.pretty.html'
+				@ pretty.prettyLines.join('\n')

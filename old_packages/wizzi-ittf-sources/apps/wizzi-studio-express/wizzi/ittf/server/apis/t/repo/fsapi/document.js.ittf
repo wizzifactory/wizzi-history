@@ -1,0 +1,120 @@
+﻿$group
+
+	@ createDocument
+		function
+			param userId
+			param projectId
+			param itemPath
+			param content
+			param callback
+
+			var that = this
+			_ repoFS.exists
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result
+						r_cb_error( 'Document already exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.writeFile
+						@ userId
+						@ projectId
+						@ itemPath
+						@ content
+						f_cb( result )
+							folderRefresh( Document created )
+
+	@ updateDocument
+		function
+			param userId
+			param projectId
+			param itemPath
+			param content
+			param callback
+
+			_ repoFS.exists
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Document does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.writeFile
+						@ userId
+						@ projectId
+						@ itemPath
+						@ content
+						f_cb( result )
+							r_cb_success( 'Document updated: ' + userId + '/'  + projectId + '/'  + itemPath )
+
+	@ deleteDocument
+		function
+			param userId
+			param projectId
+			param itemPath
+			param callback
+
+			var that = this
+			_ repoFS.isFile
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Document does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.deleteFile
+						@ userId
+						@ projectId
+						@ itemPath
+						f_cb( result )
+							folderRefresh( Document deleted )
+
+	@ duplicateDocument
+		function
+			param userId
+			param projectId
+			param itemPath
+			param newName
+			param callback
+
+			var that = this
+			_ repoFS.isFile
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Document does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.duplicateFile
+						@ userId
+						@ projectId
+						@ itemPath
+						@ newName
+						f_cb( result )
+							folderRefresh( Document duplicated )
+
+	@ renameDocument
+		function
+			param userId
+			param projectId
+			param itemPath
+			param newName
+			param callback
+
+			var that = this
+			_ repoFS.isFile
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Document does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.renameFile
+						@ userId
+						@ projectId
+						@ itemPath
+						@ newName
+						f_cb( result )
+							folderRefresh( Document renamed )
+
+

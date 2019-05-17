@@ -1,0 +1,220 @@
+﻿basewizzifier()
+
+	$append imports
+		var html_parser = require('./parser')
+		var cloner = require('./cloner')
+		
+		function parseInternal
+			param html
+			param options
+			param callback
+			
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+			set options = (options || {})
+			
+			var wizziTree
+				{ 
+					@ children
+						[ 
+			var parser
+				new html_parser.Parser
+					{ 
+						@ onopentag
+							function 
+								param tagname
+								param attribs
+								_ log("OpenTag " + tagname, attribs)
+								var n
+									{ 
+										@ tag tagname.toLowerCase()
+										@ name ''
+										@ attribs attribs
+										@ children
+											[ 
+								set n.parent = wizziTree
+								_ wizziTree.children.push(n)
+								set wizziTree = n
+						@ ontext
+							function 
+								param text
+								_ log
+									@ "Text"
+									_ text.trim()
+										._ substr(0, 10)
+								var lines
+									_ file.splitLines
+										_ text.trim()
+								if wizziTree.swig
+									log '++++++++++ wizziTree.swig'
+									_ lines.forEach
+										function 
+											param l
+											var n
+												{ 
+													@ tag '+'
+													@ name l
+													@ attribs
+														{ 
+													@ children
+														[ 
+											_ wizziTree.children.push(n)
+								elif lines.length == 1
+									if wizziTree.children.length > 0
+										var n
+											{ 
+												@ tag '+'
+												@ name lines[0]
+												@ attribs
+													{ 
+												@ children
+													[ 
+										_ wizziTree.children.push(n)
+									else 
+										set wizziTree.name += lines[0]
+								else 
+									if ['script', 'style'].indexOf(wizziTree.tag) >= 0
+										var n
+											{ 
+												@ tag '$.'
+												@ name ''
+												@ attribs
+													{ 
+												@ children
+													[ 
+												@ lines
+													[ 
+										_ wizziTree.children.push(n)
+										_ lines.forEach
+											function 
+												param l
+												_ n.lines.push
+													_ l.trim()
+									else 
+										_ lines.forEach
+											function 
+												param l
+												var n
+													{ 
+														@ tag '++'
+														@ name l.trim()
+														@ attribs
+															{ 
+														@ children
+															[ 
+												_ wizziTree.children.push(n)
+						@ onclosetag
+							function 
+								param tagname
+								if wizziTree.parent != null
+									set wizziTree = wizziTree.parent
+								else 
+									_ console.log("WARNING overclose ", tagname)
+						@ onswig
+							function 
+								param text
+								var 
+									decl p
+										_ lineparser.parseNameValue
+											@ text
+											{ 
+									decl tag
+										_ p.name()
+											._ trim()
+											._ toLowerCase()
+									decl text = p.value()
+								log "OpenSwig " + tag, text
+								if ['for', 'if', 'block', 'autoescape', 'filter', 'macro', 'spaceless', 'raw'].indexOf(tag) >= 0
+									var n
+										{ 
+											@ tag tag
+											@ name text
+											@ attribs
+												{ 
+											@ children
+												[ 
+											@ lines
+												[ 
+											@ swig true
+									set n.parent = wizziTree
+									_ wizziTree.children.push(n)
+									set wizziTree = n
+								elif ['endfor', 'endif', 'endblock', 'endautoescape', 'endfilter', 'endmacro', 'endspaceless', 'endraw'].indexOf(tag) >= 0
+									if wizziTree.parent != null
+										set wizziTree = wizziTree.parent
+									else 
+										_ console.log("WARNING overclose ", tagname)
+								elif ['extends', 'include', 'import', 'parent', 'set'].indexOf(tag) >= 0
+									var n
+										{ 
+											@ tag tag
+											@ name text
+											@ attribs
+												{ 
+											@ children
+												[ 
+											@ lines
+												[ 
+											@ swig true
+									_ wizziTree.children.push(n)
+								elif ['else', 'elif', 'elseif'].indexOf(tag) >= 0
+									if wizziTree.parent != null
+										set wizziTree = wizziTree.parent
+									else 
+										_ console.log("WARNING overclose ", tagname)
+									var n
+										{ 
+											@ tag tag
+											@ name text
+											@ attribs
+												{ 
+											@ children
+												[ 
+											@ lines
+												[ 
+											@ swig true
+									set n.parent = wizziTree
+									_ wizziTree.children.push(n)
+									set wizziTree = n
+								else 
+									throw 
+										new Error('Html.Wizzifier. Wizzi parse onswig unknown tag: ' + tag)
+			_ parser.write(html)
+			_ parser.end()
+			while wizziTree.parent != null
+				set wizziTree = wizziTree.parent
+			log 'wizziTree', wizziTree
+			var synthax
+			if wizziTree.children.length > 1 && typeof (options.embedTag) === 'string'
+				set synthax =
+					{ 
+						@ tag options.embedTag
+						@ name ''
+						@ attribs
+							{ 
+						@ children
+							[ 
+				_ wizziTree.children.forEach
+					function 
+						param item
+						_ synthax.children.push(item)
+			else 
+				set synthax = wizziTree.children[0]
+			if !synthax
+				throw 
+					new Error('Html.Wizzifier.Wizzi parse failed. wizziTree: ' + util.inspect(wizziTree, {depth: 2}))
+			r_cb( cloner(synthax) )
+
+	function wizzify
+        param html
+        param options
+        param callback
+		_ parseInternal
+			@ html
+			@ options
+			f_cb( syntax )
+				return
+					_ callback
+						@ null
+						@ syntax

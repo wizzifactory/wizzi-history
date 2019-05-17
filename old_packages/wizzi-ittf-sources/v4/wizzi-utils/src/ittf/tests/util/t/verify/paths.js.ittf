@@ -1,0 +1,8 @@
+﻿$group
+
+	it should strip an extension
+		var expected
+		var result = verify.stripExtension('aaa.bbb.ccc')
+		tobe_string( result, aaa.bbb )
+		var result = verify.replaceExtension('aaa.bbb.ccc', 'ddd')
+		tobe_string( result, aaa.bbb.ddd )

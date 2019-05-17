@@ -1,0 +1,96 @@
+﻿$group
+
+	@ createFolder
+		function
+			param userId
+			param projectId
+			param itemPath
+			param callback
+
+			var that = this
+			_ repoFS.exists
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result
+						r_cb_error( 'Folder already exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.mkdir
+						@ userId
+						@ projectId
+						@ itemPath
+						f_cb( result )
+							folderRefresh( Folder created )
+
+	@ deleteFolder
+		function
+			param userId
+			param projectId
+			param itemPath
+			param callback
+
+			var that = this
+			_ repoFS.isFolder
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Folder does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.deleteFolder
+						@ userId
+						@ projectId
+						@ itemPath
+						f_cb( result )
+							folderRefresh( Folder deleted )
+
+	@ duplicateFolder
+		function
+			param userId
+			param projectId
+			param itemPath
+			param newName
+			param callback
+
+			var that = this
+			_ repoFS.isFolder
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Folder does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.duplicateFolder
+						@ userId
+						@ projectId
+						@ itemPath
+						@ newName
+						f_cb( result )
+							folderRefresh( Folder duplicated )
+
+	@ renameFolder
+		function
+			param userId
+			param projectId
+			param itemPath
+			param newName
+			param callback
+
+			var that = this
+			_ repoFS.isFolder
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( result )
+					if result == false
+						r_cb_error( 'Folder does not exists: ' + userId + '/'  + projectId + '/'  + itemPath )
+					_ repoFS.renameFolder
+						@ userId
+						@ projectId
+						@ itemPath
+						@ newName
+						f_cb( result )
+							folderRefresh( Folder renamed )
+
+
+

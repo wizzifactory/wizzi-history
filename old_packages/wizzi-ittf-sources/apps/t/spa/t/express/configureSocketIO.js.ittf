@@ -1,0 +1,17 @@
+$group
+
+	$if spa.socketIO
+
+		function configureSocketIO
+			param app
+			param db
+
+			var server
+				_ require('./socket.io')
+					( 
+						@ app
+						@ db
+			return server
+
+
+

@@ -1,0 +1,144 @@
+﻿$group
+
+	e_tag( bracket, [, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+			
+		m wzVerify
+			var hasWzName = verify.isNotEmpty(this.wzName)
+			var ch
+			set this.lexChars = ''
+			foreach item in this.nodes
+				if item.wzElement === 'colon'
+					set ch = unescapeText(item.wzName)
+					if ch.length !== 1 && ch.indexOf('-') < 0
+						_ ctx.addError('A colon element, when child of a bracket element, must have a wzName of exactly 1 char or contain a range. Received: ' + item.wzName, this)
+					else
+						set this.lexChars += ch
+				elif item.wzElement === 'blank'
+					set this.lexChars += ' '
+				elif item.wzElement === 'node'
+					# skip comments
+				else
+					_ ctx.addError('A bracket element can contain: colon, blank and node (comment) elements. Found: ' + item.wzElement + ' ' + item.wzName, this)
+			if hasWzName
+				if this.lexChars.length === 0
+					set this.lexChars = unescapeText(this.wzName)
+				else
+					_ ctx.addError('A bracket element cannot contain both a not empty wzName and a colon or blank child node', this)
+			else
+				if this.lexChars.length === 0
+					_ ctx.addError('A bracket element must have or a not empty wzName or at least one colon or blank child node', this)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent
+			_ coder.w('// [ ' + escapeText(this.lexChars) + ']')
+			set coder.ctx.onsuccess = 'return'
+			_ charsetMatch(this.lexChars, coder)
+			set coder.ctx.onsuccess = null
+			_ coder.w('return false;')
+			_ coder.deindent
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+
+	e_tag( bracketCap, [^, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			var hasWzName = verify.isNotEmpty(this.wzName)
+			var ch
+			set this.lexChars = ''
+			foreach item in this.nodes
+				if item.wzElement === 'colon'
+					set ch = unescapeText(item.wzName)
+					if ch.length !== 1 && ch.indexOf('-') < 0
+						_ ctx.addError('A colon element, when child of a bracket element, must have a wzName of exactly 1 char or contain a range. Received: ' + item.wzName, this)
+					else
+						set this.lexChars += ch
+				elif item.wzElement === 'blank'
+					set this.lexChars += ' '
+				elif item.wzElement === 'node'
+					# skip comments
+				else
+					_ ctx.addError('A bracket element can contain: colon, blank and node (comment) elements. Found: ' + item.wzElement + ' ' + item.wzName, this)
+			if hasWzName
+				if this.lexChars.length === 0
+					set this.lexChars = unescapeText(this.wzName)
+				else
+					_ ctx.addError('A bracket element cannot contain both a not empty wzName and a colon or blank child node', this)
+			else
+				if this.lexChars.length === 0
+					_ ctx.addError('A bracket element must have or a not empty wzName or at least one colon or blank child node', this)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent
+			_ coder.w('// [^ ' + escapeText(this.lexChars) + ']')
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			set coder.ctx.onsuccess = 'return'
+			set coder.ctx.failonsuccess = true
+			_ charsetMatch(this.lexChars, coder)
+			set coder.ctx.onsuccess = null
+			set coder.ctx.failonsuccess = null
+			_ coder.w('return eat(1, capture);')
+			_ coder.deindent
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+

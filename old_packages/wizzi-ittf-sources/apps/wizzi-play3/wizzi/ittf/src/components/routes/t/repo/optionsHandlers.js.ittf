@@ -1,0 +1,71 @@
+﻿$group
+
+	=> openOptionsDialog
+		param data
+		if data
+			_ this.setState
+				{
+					@ optionsDialogOpen true
+					@ optionsDialogTitle data.title
+					@ optionsDialogOptions data.options
+					@ optionsDialogHandler data.handler
+
+	=> handleCreateProject
+		_ this.openOptionsDialog
+			_ createProjectData(this, this.props)
+
+	=> handleCreateFolder
+		_ this.openOptionsDialog
+			_ createFolderData(this, this.props)
+
+	=> handleCreateDocument
+		_ this.openOptionsDialog
+			_ createDocumentData(this, this.props)
+
+	=> handleDuplicateFsItem
+		param kind
+		param fullPath
+		param basename
+		_ this.openOptionsDialog
+			_ duplicateFsItemData(this, this.props, kind, fullPath, basename)
+
+	=> handleRenameFsItem
+		param kind
+		param fullPath
+		param basename
+		_ this.openOptionsDialog
+			_ renameFsItemData(this, this.props, kind, fullPath, basename)
+
+	=> openConfirmDialog
+		param data
+		if data
+			_ this.setState
+				{
+					@ confirmDialogOpen true
+					@ confirmDialogTitle data.title
+					@ confirmDialogNamedValues data.namedValues
+					@ confirmDialogItems data.items
+					@ confirmDialogHandler data.handler
+
+	=> handleDeleteFsItems
+		_ this.openConfirmDialog
+			_ confirmDeleteFsItemsData(this, this.props)
+
+	=> handleCopyFsItems
+		_ this.props.dispatchCopyFsItems
+			_ this.getCurrentPath
+			_ getSelectedFsItemsData(this, this.props)
+				. selectedItems
+
+	=> handleCutFsItems
+		_ this.props.dispatchCutFsItems
+			_ this.getCurrentPath
+			_ getSelectedFsItemsData(this, this.props)
+				. selectedItems
+
+	=> handlePasteFsItems
+		_ this.openConfirmDialog
+			_ confirmPasteFsItemsData(this, this.props)
+
+
+

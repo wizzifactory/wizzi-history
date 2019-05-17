@@ -1,0 +1,37 @@
+$group
+
+	function initLocalVariables
+        param app
+
+        set app.locals.title = config.app.title
+
+        set app.locals.description = config.app.description
+
+        if (config.secure && (config.secure.ssl === true))
+            set app.locals.secure = config.secure.ssl
+        
+		if config.app
+			set app.locals.keywords = config.app.keywords
+			set app.locals.googleAnalyticsTrackingID = config.app.googleAnalyticsTrackingID
+
+        if config.facebook
+			set app.locals.facebookAppId = config.facebook.clientID
+
+        if config.files
+			set app.locals.jsFiles = config.files.client.js
+			set app.locals.cssFiles = config.files.client.css
+
+        set app.locals.livereload = config.livereload
+
+        set app.locals.logo = config.logo
+
+        set app.locals.favicon = config.favicon
+
+        _ app.use
+            function 
+                param req
+                param res
+                param next
+                set res.locals.host = req.protocol + '://' + req.hostname
+                set res.locals.url = req.protocol + '://' + req.headers.host + req.originalUrl
+                _ next()

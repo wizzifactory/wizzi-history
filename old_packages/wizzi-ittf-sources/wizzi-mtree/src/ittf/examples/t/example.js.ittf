@@ -1,0 +1,32 @@
+﻿module
+	$params name
+	kind jsfile
+
+	import path
+	import util
+	import async
+	var stringify = require('json-stringify-safe')
+	var inspect = require('object-inspect')
+	var verify = require('wizzi-utils').verify
+	var vfile = require('wizzi-utils').vfile
+	var file = vfile()
+
+	$hook imports
+
+	$hook functions
+
+	var ${name}
+		function
+			param step_callback
+			_ heading1
+				@ 'EXAMPLE'
+			$hook
+
+	set ${name}.__name = '${name}'
+	
+	example_prints( ${name} )
+
+	set module.exports = ${name}
+
+	if typeof require != 'undefined' && require.main === module
+		_ ${name}

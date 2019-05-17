@@ -1,0 +1,29 @@
+﻿$group
+
+	@ getExecFile
+		function
+			param options
+			param callback
+
+			const fileName = options.name
+
+			_ this.getExecFileJobList
+				@ options
+				f_cb_api(list)
+					log 'getExecFile.list', list
+					const jobs = list.data.models
+					foreach job in jobs
+						foreach file in job.execFiles
+							if file.wzName === fileName
+								return
+									_ callback
+										@ null
+										{
+											@ data file
+											@ status
+												_ success
+													@ 'Got execFile'
+					return
+						_ callback
+							_ error
+								@ 'execFile not found: ' + fileName

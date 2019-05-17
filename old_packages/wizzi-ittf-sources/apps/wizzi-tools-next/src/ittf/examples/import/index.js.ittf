@@ -1,0 +1,24 @@
+﻿module
+    kind jsfile
+	
+	import path
+	var importFolder = require('../../lib/importers').importFolder
+
+	# var name = 'material'
+	# var name = 'react-scripts'
+	var name = 'filemanager-client'
+
+	_ importFolder
+		_ path.join
+			@ __dirname
+			@ 'data'
+			@ 'in'
+			@ name
+		_ path.join
+			@ __dirname
+			@ 'data'
+			@ 'out'
+			@ name
+		f_cb_throw()
+			log 'importFolder done'
+

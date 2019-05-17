@@ -1,0 +1,34 @@
+﻿r-container( Snippet )
+
+	$append imports
+		import SnippetComponent from '../components/SnippetComponent'
+
+	style
+		@ root
+			{
+				@ backgrounColor 'yellow'
+
+	render
+
+		prop hello
+		prop snippetCode
+
+		return
+			< SnippetComponent
+				@ hello { hello }
+				@ snippetCode { snippetCode }
+
+	$append state-to-props
+		@ hello state.app.hello || 'not yet available'
+		@ snippetCode state.app.snippetCode || 'not yet available'
+
+	$append dispatch-to-props
+
+		@ dispatchGo
+			=>
+				param p1
+				log 'dispatchGo', p1
+				_ dispatch
+					_ selectSnippetSchema
+						@ schema
+		

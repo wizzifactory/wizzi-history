@@ -1,0 +1,28 @@
+﻿$group
+	$params module, kind|code_method_message
+
+	#
+		# params
+		#   string code 
+		#     # the error name or number
+		#   string method
+		#   string message
+		#     # optional
+		#   { innerError
+		#     # optional
+	function error
+		$if kind === 'code_method_message'
+			param code
+			param method
+			param message
+			param innerError
+		return
+			_ verify.error
+				$if kind === 'code_method_message'
+					@ innerError
+					{
+						@ name ( verify.isNumber(code) ? 'Err-' + code : code )
+						@ method '${module}.' + method
+						@ sourcePath __filename
+					@ message || 'Error message unavailable'
+		

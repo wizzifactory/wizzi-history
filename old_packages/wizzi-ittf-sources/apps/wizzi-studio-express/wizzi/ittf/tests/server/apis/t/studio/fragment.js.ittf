@@ -1,0 +1,74 @@
+﻿$group
+
+	it-async should create a first fragment
+
+		_ studioApi.createFragment
+			{
+				@ userId 'stefi'
+				@ projectName 'test'
+				@ folder 'examples'
+				@ schemaName 'js'
+				@ fragmentName 'libs'
+			f_cb_test( result )
+				log 'create.fragment', err, result
+				tobe_object( result )
+				tobe_string( result.data.uri, /stefi/test/examples/t/libs.js.ittf )
+				set firstFragUri = result.data.uri
+				_ done()
+
+			
+	it-async should update the first fragment
+
+		_ studioApi.updateFragment
+			@ firstFragUri
+			@ 'fragment content'
+			f_cb_test( result )
+				log 'update.fragment', err, result
+				tobe_object( result )
+				_ done()
+
+	it-async should get the first fragment
+
+		_ studioApi.getFragment
+			@ firstFragUri
+			f_cb_test( result )
+				log 'get.fragment', err, result
+				tobe_object( result )
+				tobe_string( result.data, fragment content )
+				_ done()
+
+	it-async should create a second fragment of kind genexplorer
+
+		_ studioApi.createFragment
+			{
+				@ kind 'genexplorer'
+				@ folder 'examples'
+				@ schemaName 'js'
+				@ fragmentName 'aster'
+			f_cb_test( result )
+				log 'create.document', err, result
+				tobe_object( result )
+				tobe_string( result.data.uri, /demo/genexplorer/examples/t/aster.js.ittf )
+				set secondFragUri = result.data.uri
+				_ done()
+
+	it-async should update the second fragment
+
+		_ studioApi.updateFragment
+			@ secondFragUri
+			@ 'second fragment content'
+			f_cb_test( result )
+				log 'update.fragment', err, result
+				tobe_object( result )
+				_ done()
+
+	it-async should get the first fragment
+
+		_ studioApi.getFragment
+			@ secondFragUri
+			f_cb_test( result )
+				log 'get.fragment', err, result
+				tobe_object( result )
+				tobe_string( result.data, second fragment content )
+				_ done()
+

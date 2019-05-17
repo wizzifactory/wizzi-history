@@ -1,0 +1,44 @@
+﻿$group
+
+	m writeFile
+		{ id
+		string content
+			optional
+		callback
+			
+		var that = this
+
+		_ this.readFile
+			@ id
+			f_cb( f )
+				# log 'wizzi-repo.mongodb.FsDb.writeFile.readFile.f', id, f, content === f
+				if f === content
+					# log 'wizzi-repo.mongodb.FsDb.writeFile not modified', f
+					r_cb()
+						{
+							@ code 'DOCUMENT_NOT_MODIFIED'
+						
+				# log 'wizzi-repo.mongodb.FsDb.writeFile.readFile.upsert', id, content, lastModified
+				var lastModified = new Date()
+				_ that.db.collection(DOCUMENTS)
+					._ replaceOne
+						{
+							@ _id id
+						{
+							@ _id id
+							@ content content
+							@ lastModified lastModified
+						{
+							@ upsert true
+						f_cb( r )
+							# log 'wizzi-repo.mongodb.FsDb.writeFile', r.result
+							_ assert.equal(1, r.result.n)
+							_ that.updateItemLastModified
+								@ id
+								@ lastModified
+								f_cb( rUpd )
+									# log 'wizzi-repo.mongodb.FsDb.writeFile upd', rUpd
+									r_cb()
+										{
+											@ code 'DOCUMENT_WRITTEN'
+											@ item r.ops[0]

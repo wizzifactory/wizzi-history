@@ -1,0 +1,42 @@
+$group
+
+    function compose
+		var funcs = argumentsToArray(arguments)
+        
+		return 
+            function 
+                param arg
+                return 
+                    _ funcs.reduceRight
+                        function 
+                            param composed
+                            param f
+							log 'compose.f', f
+                            return f(composed)
+                        @ arg
+
+	function test_compose
+		function a
+			param x
+			log 'func a received', x, 'returned', x*2
+			return x * 2
+		function b
+			param x
+			log 'func b received', x, 'returned', x*3
+			return x * 3
+		var composed = compose(a, b)
+		log 'test_compose', composed(5)
+				
+	function test_compose_state
+		function a
+			param state
+			log 'func a received', state
+			set state.alfa = 'alfa'
+			return state
+		function b
+			param state
+			log 'func b received', state
+			set state.beta = 'beta'
+			return state
+		var composed = compose(a, b)
+		log 'test_compose_state', composed({})

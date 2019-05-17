@@ -1,0 +1,386 @@
+﻿$font-stack: Helvetica, sans-serif;
+$primary-color: #333;
+
+@mixin transform($property) {
+    -webkit-transform: $property;
+    -ms-transform: $property;
+    transform: $property;
+}
+
+.box {
+    @include transform(rotate(30deg));
+}
+
+%message-shared {
+    border: 1px solid #ccc;
+    padding: 10px;
+    color: #333;
+}
+
+.message {
+    @extend %message-shared;
+}
+
+article[role="main"] {
+    float: left;
+    width: 600px / 960px * 100%;
+}
+
+p {
+    width: 1em + (2em * 3);
+}
+
+p {
+    color: hsl(0, 100%, 50%);
+}
+
+// Keyword Arguments Mixins can also be included using explicit keyword arguments. 
+// For instance, the above example could be written as: 
+p {
+    @include sexy-border($color: blue);
+}
+
+h1 {
+    @include sexy-border($color: blue, $width: 2in);
+}
+
+// Interpolation: #{} You can also use SassScript variables in selectors and property names using #{} interpolation syntax: 
+$name: foo;
+$attr: border;
+p.#{$name} {
+    #{$attr}-color: blue;
+}
+
+p {
+    $font-size: 12px;
+    $line-height: 30px;
+    font: #{$font-size}/#{$line-height};
+}
+// Passing Content Blocks to a Mixin 
+// It is possible to pass a block of styles to the mixin for placement within the styles included by the mixin. The styles will appear at the location of any @content directives found within the mixin. This makes it possible to define abstractions relating to the construction of selectors and directives. 
+// For example: 
+
+@mixin apply-to-ie6-only {
+    * html {
+        @content;
+    }
+}
+
+@include apply-to-ie6-only {
+    #logo {
+        background-image: url(/logo.gif);
+    }
+}
+
+// @import
+@import "foo.css";
+@import "foo" screen;
+@import "http://foo.com/bar";
+@import url(foo);
+$family: unquote("Droid+Sans");
+@import url("http://fonts.googleapis.com/css?family=#{$family}");
+
+// Variable Defaults: !default You can assign to variables if they aren't already assigned by adding the !default flag to the end of the value. 
+// This means that if the variable has already been assigned to, it won't be re-assigned, but if it doesn't have a value yet, 
+// it will be given one. For example: 
+
+$content: "First content";
+$content: "Second content?" !default;
+$new_content: "First time reference" !default;
+
+#main {
+    content: $content;
+    new-content: $new_content;
+}
+
+// @media directives in Sass behave just like they do in plain CSS, with one extra capability: they can be nested in CSS rules. 
+// If a @media directive appears within a CSS rule, it will be bubbled up to the top level of the stylesheet, putting all the selectors on the way inside the rule. 
+// This makes it easy to add media-specific styles without having to repeat selectors or break the flow of the stylesheet. For example: 
+.sidebar {
+    width: 300px;
+    @media screen and (orientation: landscape) {
+        width: 500px;
+    }
+}
+
+$media: screen;
+$feature: -webkit-min-device-pixel-ratio;
+$value: 1.5;
+
+@media #{$media} and ($feature: $value) {
+    .sidebar {
+        width: 500px;
+    }
+}
+
+// Multiple Extends A single selector can extend more than one selector. This means that it inherits the styles of all the extended selectors. For example: 
+.error {
+    border: 1px #f00;
+    background-color: #fdd;
+}
+
+.attention {
+    font-size: 3em;
+    background-color: #ff0;
+}
+
+.seriousError {
+    @extend .error;
+    @extend .attention;
+    border-width: 3px;
+}
+
+// @extend-Only Selectors
+#context a%extreme {
+    color: blue;
+    font-weight: bold;
+    font-size: 2em;
+}
+// However, placeholder selectors can be extended, just like classes and ids. The extended selectors will be generated, but the base placeholder selector will not. For example: 
+.notice {
+    @extend %extreme;
+}
+
+// at-root
+@media print {
+    .page {
+        width: 8in;
+
+        @at-root (without: media) {
+            color: red;
+        }
+    }
+}
+
+// @for
+@for $i from 1 through 3 {
+    .item-#{$i} {
+        width: 2em * $i;
+    }
+}
+
+// The @each directive usually has the form @each $var in <list or map > . $var can be any variable name, like $length or $name, and <list or map > is a SassScript expression that returns a list or a map. 
+// The @each rule sets $var to each item in the list or map, then outputs the styles it contains using that value of $var. 
+// @each For example: 
+@each $animal in puma, sea-slug, egret, salamander {
+    .#{$animal}-icon {
+        background-image: url('/images/#{$animal}.png');
+    }
+}
+
+// Multiple Assignment The @each directive can also use multiple variables, as in @each $var1, $var2, ... in <list > . 
+// If <list > is a list of lists, each element of the sub-lists is assigned to the respective variable. For example: 
+@each $animal, $color, $cursor in (puma, black, default),
+(sea-slug, blue, pointer),
+(egret, white, move) {
+    .#{$animal}-icon {
+        background-image: url('/images/#{$animal}.png');
+        border: 2px solid $color;
+        cursor: $cursor;
+    }
+}
+// @while The @while directive takes a SassScript expression and repeatedly outputs the nested styles until the statement evaluates to false. 
+// This can be used to achieve more complex looping than the @for statement is capable of, although this is rarely necessary. 
+// For example: 
+
+$i: 6;
+@while $i > 0 {
+    .item-#{$i} {
+        width: 2em * $i;
+    }
+
+    $i: $i - 2;
+}
+
+// function directives
+
+$grid-width: 40px;
+$gutter-width: 10px;
+
+@function grid-width($n) {
+    @return $n * $grid-width + ($n - 1) * $gutter-width;
+}
+
+@mixin does-parent-exist {
+    @if & {
+        &:hover {
+            color: red;
+        }
+    }
+    @else {
+        a {
+            color: red;
+        }
+    }
+}
+
+#sidebar {
+    width: grid-width(5);
+}
+// .modal-open      - body class for killing the scroll
+// .modal           - container to scroll within
+// .modal-dialog    - positioning shell for the actual modal
+// .modal-content   - actual modal w/ bg and corners and stuff
+
+
+// Kill the scroll on the body
+.modal-open {
+    overflow: hidden;
+}
+
+// Container that the modal scrolls within
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: $zindex-modal;
+    display: none;
+    overflow: hidden;
+    // Prevent Chrome on Windows from adding a focus outline. For details, see
+    // https://github.com/twbs/bootstrap/pull/10951.
+    outline: 0;
+    // We deliberately don't use `-webkit-overflow-scrolling: touch;` due to a
+    // gnarly iOS Safari bug: https://bugs.webkit.org/show_bug.cgi?id=158342
+    // See also https://github.com/twbs/bootstrap/issues/17695
+    .modal-open & {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+}
+
+// Shell div to position the modal with bottom padding
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: $modal-dialog-margin;
+    // allow clicks to pass through for custom click handling to close modal
+    pointer-events: none;
+    // When fading in the modal, animate it to slide down
+    .modal.fade & {
+        @include transition($modal-transition);
+        transform: translate(0, -25%);
+    }
+
+    .modal.show & {
+        transform: translate(0, 0);
+    }
+}
+
+// Actual modal
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    // counteract the pointer-events: none; in the .modal-dialog
+    pointer-events: auto;
+    background-color: $modal-content-bg;
+    background-clip: padding-box;
+    border: $modal-content-border-width solid $modal-content-border-color;
+    @include border-radius($border-radius-lg);
+    @include box-shadow($modal-content-box-shadow-xs);
+    // Remove focus outline from opened modal
+    outline: 0;
+}
+
+// Modal background
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: $zindex-modal-backdrop;
+    background-color: $modal-backdrop-bg;
+    // Fade for backdrop
+    &.fade {
+        opacity: 0;
+    }
+
+    &.show {
+        opacity: $modal-backdrop-opacity;
+    }
+}
+
+// Modal header
+// Top section of the modal w/ title and dismiss
+.modal-header {
+    display: flex;
+    align-items: flex-start; // so the close btn always stays on the upper right corner
+    justify-content: space-between; // Put modal header elements (title and dismiss) on opposite ends
+    padding: $modal-header-padding;
+    border-bottom: $modal-header-border-width solid $modal-header-border-color;
+    @include border-top-radius($border-radius-lg);
+
+    .close {
+        padding: $modal-header-padding;
+        // auto on the left force icon to the right even when there is no .modal-title
+        margin: (-$modal-header-padding) (-$modal-header-padding) (-$modal-header-padding) auto;
+    }
+}
+
+// Title text within header
+.modal-title {
+    margin-bottom: 0;
+    line-height: $modal-title-line-height;
+}
+
+// Modal body
+// Where all modal content resides (sibling of .modal-header and .modal-footer)
+.modal-body {
+    position: relative;
+    // Enable `flex-grow: 1` so that the body take up as much space as possible
+    // when should there be a fixed height on `.modal-dialog`.
+    flex: 1 1 auto;
+    padding: $modal-inner-padding;
+}
+
+// Footer (for actions)
+.modal-footer {
+    display: flex;
+    align-items: center; // vertically center
+    justify-content: flex-end; // Right align buttons with flex property because text-align doesn't work on flex items
+    padding: $modal-inner-padding;
+    border-top: $modal-footer-border-width solid $modal-footer-border-color;
+    // Easily place margin between footer elements
+    > :not(:first-child) {
+        margin-left: .25rem;
+    }
+
+    > :not(:last-child) {
+        margin-right: .25rem;
+    }
+}
+
+// Measure scrollbar width for padding body during modal show/hide
+.modal-scrollbar-measure {
+    position: absolute;
+    top: -9999px;
+    width: 50px;
+    height: 50px;
+    overflow: scroll;
+}
+
+// Scale up the modal
+@include media-breakpoint-up(sm) {
+    // Automatically set modal's width for larger viewports
+    .modal-dialog {
+        max-width: $modal-md;
+        margin: $modal-dialog-margin-y-sm-up auto;
+    }
+
+    .modal-content {
+        @include box-shadow($modal-content-box-shadow-sm-up);
+    }
+
+    .modal-sm {
+        max-width: $modal-sm;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .modal-lg {
+        max-width: $modal-lg;
+    }
+}

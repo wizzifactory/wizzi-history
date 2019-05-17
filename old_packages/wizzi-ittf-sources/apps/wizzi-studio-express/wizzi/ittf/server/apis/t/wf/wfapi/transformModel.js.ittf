@@ -1,0 +1,60 @@
+﻿$group
+
+	@ transformModel
+		function
+			param sessionData
+			param ittfDocumentUri
+			param context
+			param transformName
+			param callback
+
+			if typeof(callback) != 'function'
+				set callback = context
+				set context = {}
+
+			set context = context || {}
+			var transformContext = {}
+
+			if userAuthRequired
+				_ createWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ null
+					_ transformModel_cb
+						@ ittfDocumentUri 
+						@ context 
+						@ transformName
+						@ callback
+			else
+				_ createWizziFactory
+					@ null
+					_ transformModel_cb
+						@ ittfDocumentUri 
+						@ context 
+						@ transformName
+						@ callback
+
+			function transformModel_cb
+				param ittfDocumentUri
+				param context
+				param transformName
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.loadModel
+							@ ittfDocumentUri 
+							@ context
+							f_cb_api( resultModel )
+								_ wizziFactory.transformModel
+									@ transformName
+									@ resultModel
+									@ transformContext
+									f_cb_api( result )
+										return
+											_ callback
+												@ null
+												{
+													@ data result
+													@ status
+														_ success
+															@ 'Model transformation on uri ' + ittfDocumentUri + ' executed'

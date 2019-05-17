@@ -1,0 +1,46 @@
+﻿wfschema docs
+
+	export-to json
+	export-to prettify
+
+	e docs
+		r item/s
+
+	e item
+		is-abstract
+		a id
+		a class
+		a style
+		r item/s
+		m wzInitialize
+			set this.summary = _.find(this.items, { wzElement: 'summary' })
+			set this.attributes = _.filter(this.items, { wzElement: 'attribute' })
+			set this.items = _.reject(this.items, { wzElement: 'attribute' })
+
+	$include docs/project
+	
+	e intro : item
+		m wzInitialize
+			set this.summary = _.find(this.items, { wzElement: 'summary' })
+
+	e section : item
+		m wzInitialize
+			set this.summary = _.find(this.items, { wzElement: 'summary' })
+
+	e summary : item
+
+	e object : item
+		m wzInitialize
+			set this.summary = _.find(this.items, { wzElement: 'summary' })
+
+	e concept : item
+		m wzInitialize
+			set this.summary = _.find(this.items, { wzElement: 'summary' })
+
+
+	e categories : item
+	e tags : item
+
+	$include docs/html
+	$include docs/api
+	$include docs/samples

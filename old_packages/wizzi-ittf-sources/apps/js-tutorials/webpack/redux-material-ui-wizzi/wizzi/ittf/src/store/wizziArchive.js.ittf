@@ -1,0 +1,62 @@
+﻿module
+	kind es6
+
+	import ObjectId from './objectid'
+	import FbFsClient from './fbFsClient'
+
+	function noaction
+
+	#
+		# The WizziArchive class manages the CRUD operations of a json object
+		# representing a map of a filesystem folder.
+		# Each wizzi archive belongs to one user and one project.
+		# The archive and schema names cannot be changed after construction,
+		# you must create an instance for each archiveName+schemaName.
+		# This class mantains a Firebase/Firestore docRef to the archive in the cloud.
+
+	class WizziArchive
+		ctor
+			param name
+			param schema
+			set this.name = name || 'default'
+			set this.schema = schema || "js"
+			set this.snippetItemObject = null
+			_ this.init
+
+		m getPooledSnippetArchive
+			static
+			param schemaName
+			param archiveName
+			if typeof WizziArchive.snippetArchivePool == 'undefined'
+				set WizziArchive.snippetArchivePool = {}
+			if WizziArchive.snippetArchivePool[archiveName+'|'+schemaName]
+				return WizziArchive.snippetArchivePool[archiveName+'|'+schemaName]
+			else
+				const archive = new WizziArchive(archiveName, schemaName)
+				set WizziArchive.snippetArchivePool[archiveName+'|'+schemaName] = archive
+				return archive
+
+		m getFbFsClient
+			static
+			if typeof WizziArchive.fbFs == 'undefined'
+				set WizziArchive.fbFs = FbFsClient.getInstance()
+			return WizziArchive.fbFs
+
+		m init
+
+		m setSnippetCode
+			param name
+			param content
+			if typeof content === 'undefined'
+				set content = name
+				set name = 'index'
+			set this.snippetItemObject
+				{
+					@ path 'w:/' + this.name + '/' + name + '.' + this.schema
+					@ content content
+			log 'WizziArchive.setSnippetCode : ', this.snippetItemObject
+
+
+		$include wizziArchive/cloud
+
+	export default WizziArchive

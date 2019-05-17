@@ -1,0 +1,30 @@
+﻿base_test( file )
+	
+	$append imports
+		var file = require('../../lib/fs/file')
+
+	it should split a text into lines
+
+		var text = 'alfa\nbeta\n\ngamma\n\rtheta\r\nyota\r\rsigma'
+		var lines = file.splitLines(text)
+		tobe_string( lines[0], alfa )
+		tobe_string( lines[1], beta )
+		tobe_string( lines[3], gamma )
+		tobe_string( lines[4], theta )
+		tobe_string( lines[5], yota )
+		tobe_string( lines[7], sigma )
+
+	it should split a text into lines
+
+		var lines
+			_ file.readLines
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'gc_one.ittf'
+
+		log 'file lines', lines
+		tobe_string( lines[0], first one )
+		tobe_string( lines[1], second one )
+
+							

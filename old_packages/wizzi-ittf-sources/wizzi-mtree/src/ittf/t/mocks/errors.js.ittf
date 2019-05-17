@@ -1,0 +1,16 @@
+﻿module
+	kind jsfile
+
+	var md = module.exports = {}
+	+
+
+	error( RepoIO, message, uri, innerEx )
+		set this.message = message + '\nuri: ' + uri
+
+	+
+	error( InvalidRequest, message, code )
+		log 'message', message
+		set this.message = message
+		set this.code = code
+
+

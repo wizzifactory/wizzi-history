@@ -1,0 +1,39 @@
+﻿$group
+
+	describe delete a filesystem item
+
+		before-async
+
+			_ 
+
+		it-async should delete
+
+	m deleteItem
+		param id
+
+		var that = this
+
+		return
+			co_run( FsDb.deleteItem )
+
+				var item
+					yield
+						_ that.getFsItemById
+							@ id
+
+				if item == null
+					throw Error('MongoFS deleteItem error. Not found: ' + id)
+
+				var r
+					yield
+						_ that.db.collection(FSITEMS).remove
+							{
+								@ _id id
+				
+				log 'FsDb.deleteItem,r', r.result.n, r.result.ok
+				
+				return
+					{
+						@ deleted r.result.n == 1 && r.result.ok == 1
+						@ n r.result.n
+						@ ok r.result.ok

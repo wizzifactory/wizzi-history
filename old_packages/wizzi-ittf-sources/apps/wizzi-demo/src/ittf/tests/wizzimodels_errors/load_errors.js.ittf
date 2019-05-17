@@ -1,0 +1,74 @@
+﻿test( wizzimodels - load errors )
+
+	it-async wf.loadModel should get a NotFound error
+		_ wizziFactory.loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'nofile.html.ittf'
+			{
+			f_cb_no_err( wizziModel )
+				log 'wf.loadModel should get a NotFound error. err: ', err
+				tobe_true( err.__is_error )
+				tobe_string( err.name, RepoIOError )
+				_ done
+
+	it-async wf.loadModel should get a $group root not allowed
+		_ wizziFactory.loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'grouproot_error.html.ittf'
+			{
+			f_cb_no_err( wizziModel )
+				log 'wf.loadModel should get a $group root not allowed. err: ', err
+				tobe_true( err.__is_error )
+				_ done
+
+	it-async wf.loadModel should get a bad root error
+		_ wizziFactory.loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'root_error_1.html.ittf'
+			{
+			f_cb_no_err( wizziModel )
+				log 'wf.loadModel should get a bad root error. err: ', err
+				tobe_true( err.__is_error )
+				_ done
+	
+	it-async wf.loadModel should get a more than one root node error
+		_ wizziFactory.loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'root_error_2.html.ittf'
+			{
+			f_cb_no_err( wizziModel )
+				log 'wf.loadModel should get a more than one root node error. err: ', err
+				tobe_true( err.__is_error )
+				_ done
+
+	it-async wf.loadModel should get a recursive include call error
+		_ wizziFactory.loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'recursive_include_1.html.ittf'
+			{
+			f_cb_no_err( wizziModel )
+				log 'wf.loadModel should get a recursive include call error. err: ', err
+				tobe_true( err.__is_error )
+				_ done
+
+	it-async wf.loadModel should get a recursive mixin call error
+		_ wizziFactory.loadModel
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'recursive_mixin_1.html.ittf'
+			{
+			f_cb_no_err( wizziModel )
+				log 'wf.loadModel should get a recursive mixin call error. err: ', err
+				tobe_true( err.__is_error )
+				_ done

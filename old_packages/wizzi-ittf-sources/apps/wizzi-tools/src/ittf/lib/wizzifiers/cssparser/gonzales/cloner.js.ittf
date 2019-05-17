@@ -1,0 +1,33 @@
+﻿module 
+    kind jsfile
+    
+	var verify = require('wizzi-utils').verify
+    
+	function clone
+        param obj
+        if Object.prototype.toString.call(obj) === '[object Array]'
+            var ret
+                [ 
+            for var i = 0; i < obj.length; i++
+                var value
+                    _ clone
+                        @ obj[i]
+                if value !== null
+                    _ ret.push(value)
+            return ret
+        elif typeof (obj) == "object"
+            var ret
+                { 
+            for var prop in obj
+                if obj.hasOwnProperty(prop)
+                    set ret[prop] = clone(obj[prop])
+            return ret
+        else 
+            return obj
+    
+	set module.exports
+        function 
+            param ast
+			# Not implemented
+			# return clone(ast)
+            return ast

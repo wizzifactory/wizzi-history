@@ -1,0 +1,143 @@
+﻿wfschema xittf
+
+	unknown-element-replacer sem
+
+	export-to json
+
+	e statement
+		# A statement line node with unlimited depth.
+		# Is the schema base node.
+		# In itself, when not extended, works as a comment line.
+		tag #
+		r statement/s
+
+	e atStatement
+		# A statement line node with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag @@
+		r atStatement/s
+
+	e xittf : atStatement
+		is-root
+		a_tag( functionProvider, function-provider )
+			default utils
+
+		m wzInitialize
+			set this.functionNames = []
+
+	e sem : atStatement
+		# Semantic element of the preprocessed wizzi schema.
+		# Will be emitted as is.
+		# Every unrecognized ittf node will become a
+		# `sem` element.
+		m getValueComponents
+			var ret = []
+			foreach item in this.atStatements
+				if ['mixinVarRef', 'atFunctionCall', 'op'].indexOf(item.wzElement) > -1
+					_ ret.push(item)
+			return ret
+		m getStatements
+			var ret = []
+			foreach item in this.atStatements
+				if ['mixinVarRef', 'atFunctionCall', 'op'].indexOf(item.wzElement) < 0
+					_ ret.push(item)
+			return ret
+
+	e_tag( mixin, @mixin, atStatement)
+	e_tag( mixinParam, @param, atStatement)
+	
+	e_tag( mixinInclude, @mix, atStatement)
+		m getParams
+			var ret = []
+			foreach item in this.atStatements
+				if item.wzElement === 'mixinVarRef'
+					_ ret.push(item)
+			return ret
+		m getStatements
+			var ret = []
+			foreach item in this.atStatements
+				if item.wzElement !== 'mixinVarRef'
+					_ ret.push(item)
+			return ret
+	
+	e_tag( mixinVarDecl, @var, atStatement)
+		
+		r statement/s
+
+	e_tag( mixinVarRef, @:, atStatement)
+	
+	e_tag( atFunction, @function, atStatement)
+		
+		r statement/s
+		
+		m wzInitialize
+			_ this.wzRoot().functionNames.push(this.wzName)
+		m getParams
+			var ret = []
+			foreach item in this.statements
+				if item.wzElement === 'param'
+					_ ret.push(item)
+			return ret
+		m getParamNames
+			var ret = []
+			foreach item in this.statements
+				if item.wzElement === 'param'
+					_ ret.push(item.wzName)
+			return ret
+		m getStatements
+			var ret = []
+			foreach item in this.statements
+				if item.wzElement !== 'param'
+					_ ret.push(item)
+			return ret
+
+	e_tag( atIf, @if, atStatement)
+
+		m getTest
+			foreach item in this.atStatements
+				if item.wzElement === 'atTrue' || item.wzElement === 'atFalse'
+					return item
+			return null
+
+		m getStatements
+			var ret = []
+			foreach item in this.atStatements
+				if item.wzElement !== 'atTrue' && item.wzElement !== 'atFalse'
+					_ ret.push(item)
+			return ret
+
+	e_tag( atElif, @elif, atStatement)
+
+		m getTest
+			foreach item in this.atStatements
+				if item.wzElement === 'atTrue' || item.wzElement === 'atFalse'
+					return item
+			return null
+
+		m getStatements
+			var ret = []
+			foreach item in this.atStatements
+				if item.wzElement !== 'atTrue' && item.wzElement !== 'atFalse'
+					_ ret.push(item)
+			return ret
+
+	e_tag( atElse, @else, atStatement)
+	e_tag( atTrue, @true, atStatement)
+		r statement/s
+	e_tag( atFalse, @false, atStatement)
+		r statement/s
+	e_tag( atEach, @each, atStatement)
+	e_tag( atForeach, @foreach, atStatement)
+	e_tag( atBackeach, @backeach, atStatement)
+	e_tag( atHook, @hook, atStatement)
+	e_tag( atContent, @content, atStatement)
+	e_tag( atFunctionCall, @_, atStatement)
+	e param : statement
+	e return : statement
+
+	$include xittf/vars
+	$include xittf/calls
+	$include xittf/objects
+	$include xittf/expressions
+	$include xittf/statements

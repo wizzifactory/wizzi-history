@@ -1,0 +1,50 @@
+$group
+
+	#
+		# Retrieve a WizziModelFactory by its wfschema name
+		# searching the loader in this WizziPackage.
+		# No search up in "node_modules" folders.
+	m getModelFactory
+		param schemaName
+		param mockBaseDir
+		log 'wizzi.tests.plugin.getModelFactory: schemaName, mockBaseDir', schemaName, mockBaseDir
+		var factory = this.modelFactories[schemaName] || null
+		if factory == null
+			var models = require('./wizziModels')
+			set factory
+				_ this.getMockFactory
+					@ schemaName
+					@ mockBaseDir
+			set this.modelFactories[schemaName] = factory
+		return factory
+
+	m getMockFactory
+		param schemaName
+		param mockBaseDir
+		return
+			{
+				@ createLoadModel
+					function
+						var mockWizziModels = require('./wizziModels')
+						var models
+							_ mockWizziModels.getModels
+								@ schemaName
+								@ mockBaseDir
+						return
+							function
+								param ittfDocumentUri
+								param context
+								param callback
+								if models[ittfDocumentUri]
+									_ callback
+										@ null
+										@ models[ittfDocumentUri]
+								else
+									log 'wizzi.tests.plugin.createLoadModel', ittfDocumentUri, models
+									_ callback
+										{
+											@ __is_error true
+											@ message 'Wizzi model not found. IttfDocumentUri: ' + ittfDocumentUri
+
+
+

@@ -1,0 +1,92 @@
+﻿module
+	kind es6
+
+	import { createStore, applyMiddleware } from 'redux'
+	import { composeWithDevTools } from 'redux-devtools-extension'
+	import thunkMiddleware from 'redux-thunk'
+
+	const exampleInitialState
+		{
+			@ lastUpdate 0
+			@ light false
+			@ count 0
+
+	export const actionTypes =
+		{
+			@ TICK 'TICK'
+			@ INCREMENT 'INCREMENT'
+			@ DECREMENT 'DECREMENT'
+			@ RESET 'RESET'
+
+	# ACTIONS
+	
+	thunk( serverRenderClock, isServer
+		return
+			_ dispatch
+				{
+					@ type actionTypes.TICK
+					@ light !isServer
+					@ ts Date.now()
+
+	export const startClock =
+		=>
+			param dispatch
+			_ setInterval
+				=>
+					# Dispatch `TICK` every 1 second
+					_ dispatch
+						{
+							@ type actionTypes.TICK
+							@ light true
+							@ ts Date.now()
+						@ 1000
+
+	thunk( incrementCount
+		return
+			_ dispatch
+				{
+					@ type actionTypes.INCREMENT
+
+	thunk( decrementCount
+		return
+			_ dispatch
+				{
+					@ type actionTypes.DECREMENT
+
+	thunk( resetCount
+		return
+			_ dispatch
+				{
+					@ type actionTypes.RESET 
+
+	# REDUCER
+	
+	r( Example, exampleInitialState
+		c( actionTypes.TICK
+			{
+				@ ...state
+				@ lastUpdate action.ts
+				@ light !!action.light
+		c( actionTypes.INCREMENT
+			{
+				@ ...state
+				@ count state.count + 1
+		c( actionTypes.DECREMENT
+			{
+				@ ...state
+				@ count state.count - 1
+		c( actionTypes.RESET
+			{
+				@ ...state
+				@ count exampleInitialState.count
+
+	export
+		function initializeStore
+			param initialState = exampleInitialState
+			return 
+				_ createStore
+					@ ExampleReducer
+					@ initialState
+					_ composeWithDevTools
+						_ applyMiddleware
+							@ thunkMiddleware

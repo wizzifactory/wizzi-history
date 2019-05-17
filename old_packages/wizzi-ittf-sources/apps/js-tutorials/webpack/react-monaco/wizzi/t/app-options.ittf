@@ -1,0 +1,69 @@
+﻿$group
+
+	$include app/options/init
+
+	$
+		app.name = 'webpack-react-monaco';
+		app.description = 'Wizzi factory demos - webpack + react + monaco editor';
+	
+		app.useRedux = true;
+		app.useMonaco = true;
+		app.useSplitter = true;
+		app.useWizziTools = true;
+
+		app.importMainStyles_before = './styles/main.scss';
+
+		app.reducers = [
+			'app'
+		];
+
+		app.Editor = {
+			stateProps: [
+				{ reducer: 'app', name: 'mode' },
+				{ reducer: 'app', name: 'theme' },
+				{ reducer: 'app', name: 'controlled' },
+				{ reducer: 'app', name: 'uioptionname' },
+				{ reducer: 'app', name: 'uioptionvalue' }
+			]
+		};
+
+		app.actions = [
+			{ 
+				name: 'change_theme',
+				params: ['theme']
+			},
+			{
+				name: 'change_mode' ,
+				params: ['mode']
+			},
+			{
+				name: 'toggle_controlled',
+				params: ['controlled']
+ 			}, { name: 'change_ui_option_name' , params: ['uioptionname'] }, {name: 'change_ui_option_value' , params: ['uioptionvalue'] }
+		];
+
+		app.code = {
+			themas: {
+    			prism: [],
+    			monaco: []
+			},
+			schemas: {
+    			js: {
+    				prismjs: { mode : 'javascript' },
+    				monaco: { mode : 'javascript' },
+    				jsbeautify: { mode : 'js' }
+    			},
+   				html: {
+    				prismjs: { mode : 'markup' },
+    				monaco: { mode : 'xml' },
+    				jsbeautify: { mode : 'xml' }
+    			},
+   				css: {
+    				prismjs: { mode : 'css' },
+    				monaco: { mode : 'css' },
+    				jsbeautify: { mode : 'css' }
+    			}
+			}
+		};
+
+	$include app/options/analize

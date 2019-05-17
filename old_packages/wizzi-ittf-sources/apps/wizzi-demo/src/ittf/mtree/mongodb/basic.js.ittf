@@ -1,0 +1,41 @@
+﻿demo_module( mongodb_basic_mtree )
+
+	#
+		# DEMO: how to load an IttfDocument stored
+		# in a mongodb virtual filesystem into an mTree
+	+
+	var wizziRepo = require('wizzi-repo')
+	var mongoUri = 'mongodb://localhost:27017/test'
+	var mongodbBaseFolder = 'c:/wf/demo/users'
+	var db__dirname = 'db://stefi/demoproject'
+	+
+	# Load sample doduments into a mongodb instance
+	_ loadSampleDocuments
+		@ 'basic'
+		f_cb_throw( notUsed )
+			# We need an instance of a WizziFactory class.
+			# Create a mongodb factory without access control
+			_ wizzi.dbnoaclFactory
+				@ mongoUri
+				@ mongodbBaseFolder
+				{
+					{ plugins
+						[ items
+				f_cb_throw( wf )
+					# Now we can load the document
+					_ wf.loadMTree
+						_ path.join
+							@ db__dirname
+							@ 'basic'
+							@ 'doc1.demo.ittf'
+						{
+						f_cb_throw( mTreeModel )
+							# And print the mTree model object
+							log 'mTreeModel', mTreeModel
+							log 'mTreeModel.dump(true)', mTreeModel.dump(true)
+							log 'mTreeModel.toIttf()', mTreeModel.toIttf()
+							log 'mTreeModel.toText()', mTreeModel.toText()
+							_ wf.terminate
+
+	$include loadSampleDocuments
+

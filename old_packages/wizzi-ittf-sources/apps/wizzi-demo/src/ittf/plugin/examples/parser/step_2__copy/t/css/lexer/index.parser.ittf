@@ -1,0 +1,136 @@
+﻿$group
+
+	whitespace()
+	escape( sub )
+	string( sub )
+	uri( sub )
+
+	tk Not
+		pattern not
+	tk And
+		pattern and
+	tk Or
+		pattern or
+	tk Only
+		pattern only
+
+	names( sub )
+	numperc( sub )
+
+	$if false
+		tk Function
+			pattern
+				&
+					(
+						ref ident
+					: (
+
+	tk VariableName
+		pattern
+			&
+				: $
+				(
+					ref ident
+
+	tk Ident
+		pattern
+			ref ident
+
+	tk Cdo
+		pattern <!--
+	tk Cdc
+		// Cdc must be before Minus
+		pattern -->
+	tk Includes
+		pattern ~=
+	tk Dasmatch
+		pattern |=
+	tk Dollarmatch
+		pattern $=
+	tk Astermatch
+		pattern *=
+	tk Capmatch
+		pattern ^=
+	tk Equal
+		pattern ==
+	tk NotEqual
+		pattern !=
+	tk OP_LE
+		pattern <=
+	tk OP_GE
+		pattern >=
+	tk LOGICAL_OR
+		pattern ||
+	tk LOGICAL_AND
+		pattern &&
+	
+	tk &
+	tk !
+	tk .
+	tk {
+	tk }
+	tk [
+	tk ]
+	tk (
+	tk )
+	tk ,
+	tk :
+	tk ;
+	tk =
+	tk *
+	tk +
+	tk -
+	tk >
+	tk <
+	tk /
+
+	string( tokens )
+
+	tk ImportSym
+		pattern @import
+			ignore-case
+	
+	tk PageSym
+		pattern @page
+			ignore-case
+		
+	
+	tk MediaSym
+		pattern @media
+			ignore-case
+	
+	tk CharsetSym
+		pattern @charset
+			ignore-case
+	
+	tk ImportantSym
+		pattern !important
+			ignore-case
+
+	tk DefaultSym
+		pattern !default
+			ignore-case
+
+	dimensions( sub )
+	
+	numperc( tokens )
+
+	tk HexColor
+		pattern
+			&
+				: #
+				(
+					|
+						{ 3
+							ref h
+						{ 6
+							ref h
+
+	tk Hash
+		pattern
+			&
+				: #
+				(
+					ref name
+
+	scss( )

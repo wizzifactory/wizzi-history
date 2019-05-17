@@ -1,0 +1,34 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	+
+    var expect = require('expect.js')
+	var folderScanner = require('../../lib/scanners/folderScanner')
+	var root
+	+
+	describe the folderScanner module
+		+ 
+		it should scan a folder
+
+			var ittfMTreeEx 
+				_ folderScanner.scan
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'first'
+					{
+						@ name 'first'
+						@ gitPath 'c:/blabla'
+
+			tobe_object(ittfMTreeEx)
+
+			_ ittfMTreeEx.writeFile
+				_ path.join
+					@ __dirname
+					@ 'outputs'
+					@ 'first.wfpackage.ittf'
+				f_cb_test( result )
+					log 'err, result', err, result
+

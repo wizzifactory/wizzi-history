@@ -1,0 +1,88 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import util ids: undefined undefined
+    import path ids: undefined undefined
+    import esprima ids: undefined undefined
+    import wizzi ids: undefined undefined
+    var file = wizzi.file ids: undefined undefined
+    var jswizzifier = require('../../jsparser/esprima/wizzifier') ids: undefined undefined
+    _ go('t1') ids: undefined undefined
+    function go ids: undefined undefined
+      param name ids: undefined undefined
+      var src ids: undefined undefined
+        _ path.join ids: undefined undefined
+          @ __dirname ids: undefined undefined
+          @ 'data' ids: undefined undefined
+          @ name + '.js' ids: undefined undefined
+      var out_esprima ids: undefined undefined
+        _ path.join ids: undefined undefined
+          @ __dirname ids: undefined undefined
+          @ 'data' ids: undefined undefined
+          @ name + '.esprima.json' ids: undefined undefined
+      var out_ittf ids: undefined undefined
+        _ path.join ids: undefined undefined
+          @ __dirname ids: undefined undefined
+          @ 'data' ids: undefined undefined
+          @ name + '.js.ittf' ids: undefined undefined
+      var out_ittf_js ids: undefined undefined
+        _ path.join ids: undefined undefined
+          @ __dirname ids: undefined undefined
+          @ 'data' ids: undefined undefined
+          @ name + '.js.ittf.js' ids: undefined undefined
+      var parsed ids: undefined undefined
+        _ esprima.parse ids: undefined undefined
+          _ file.read ids: undefined undefined
+            @ src ids: undefined undefined
+          {  ids: undefined undefined
+            @ sourceType 'module' ids: undefined undefined
+            @ jsx true ids: undefined undefined
+      _ file.write ids: undefined undefined
+        @ out_esprima ids: undefined undefined
+        _ JSON.stringify ids: undefined undefined
+          @ parsed ids: undefined undefined
+          @ null ids: undefined undefined
+          @ 4 ids: undefined undefined
+      _ jswizzifier.getWizziIttf ids: undefined undefined
+        _ file.read ids: undefined undefined
+          @ src ids: undefined undefined
+        {  ids: undefined undefined
+          @ kind 'react' ids: undefined undefined
+          @ esprima ids: undefined undefined
+            {  ids: undefined undefined
+              @ sourceType 'module' ids: undefined undefined
+        function  ids: undefined undefined
+          param err ids: undefined undefined
+          param result ids: undefined undefined
+          if err ids: undefined undefined
+            _ file.write ids: undefined undefined
+              @ out_ittf ids: undefined undefined
+              _ JSON.stringify ids: undefined undefined
+                @ err ids: undefined undefined
+                @ null ids: undefined undefined
+                @ 4 ids: undefined undefined
+          else  ids: undefined undefined
+            var r1 = result.substring(0, 24) ids: undefined undefined
+            var r2 = result.substring(24) ids: undefined undefined
+            log 'r1', r1 ids: undefined undefined
+            set r1 = r1.replace('jsfile', 'react ') ids: undefined undefined
+            log 'r1 after', r1 ids: undefined undefined
+            _ file.write ids: undefined undefined
+              @ out_ittf ids: undefined undefined
+              @ r1+r2 ids: undefined undefined
+      _ wizzi.jsModule ids: undefined undefined
+        @ out_ittf ids: undefined undefined
+        {  ids: undefined undefined
+        function  ids: undefined undefined
+          param err ids: undefined undefined
+          param result ids: undefined undefined
+          if err ids: undefined undefined
+            _ file.write ids: undefined undefined
+              @ out_ittf_js ids: undefined undefined
+              _ JSON.stringify ids: undefined undefined
+                @ err ids: undefined undefined
+                @ null ids: undefined undefined
+                @ 4 ids: undefined undefined
+          else  ids: undefined undefined
+            _ file.write ids: undefined undefined
+              @ out_ittf_js ids: undefined undefined
+              @ result ids: undefined undefined

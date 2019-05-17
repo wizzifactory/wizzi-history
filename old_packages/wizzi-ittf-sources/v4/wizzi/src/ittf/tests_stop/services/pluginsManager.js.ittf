@@ -1,0 +1,44 @@
+﻿base_test( pluginsManager )
+
+	$append imports
+		var pluginsManager = require('../../lib/services/pluginsManager')
+	
+	+
+	var pluginsManagerInstance = null
+	+
+	before-async
+		_ pluginsManager.createManager
+			{
+				@ items
+					[
+						@ '../mocks/plugin'
+				@ pluginsBaseFolder __dirname
+			f_cb_test( pm )
+				set pluginsManagerInstance = pm 
+				_ done
+	+
+	it should retrieve the loadModel function for a 'tests' wizzi model
+		var modelFactory
+			_ pluginsManagerInstance.getModelFactory
+				@ 'tests'
+		tobe_object( modelFactory )
+		tobe_function( modelFactory.createLoadModel )
+
+	it should retrieve a model transformer
+		var transformModel
+			_ pluginsManagerInstance.getModelTransformer
+				@ 'tests/trans1'
+		tobe_function( transformModel.trans )
+
+	it should retrieve an artifact generator
+		var artifactGenerator
+			_ pluginsManagerInstance.getArtifactGenerator
+				@ 'tests/gen1'
+		tobe_function( artifactGenerator.gen )
+
+	it should retrieve the 'tests' schema definition
+		var schemaDefinition
+			_ pluginsManagerInstance.getSchemaDefinition
+				@ 'tests'
+		tobe_object( schemaDefinition )
+		tobe_string( schemaDefinition.name, tests )

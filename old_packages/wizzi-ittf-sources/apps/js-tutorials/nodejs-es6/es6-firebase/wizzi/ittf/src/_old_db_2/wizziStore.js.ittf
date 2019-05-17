@@ -1,0 +1,107 @@
+﻿module
+	kind es6
+
+	import path from 'path'
+	import FbFsClient from './fbFsClient'
+	import UpdatesQueue from './updatesQueue'
+	import PathNames from './pathNames'
+	import { normalizeFile, normalizeFolder, encodeDocName, decodeDocName } from './pathNames'
+	
+	$if appEnvironment === 'browser'
+		import { verify } from '../utils/verify'
+		set window.wizzi = wizziPackage.default
+		set window.wizziJs = wizziJsPlugin.default
+		set window.wizziWeb = wizziWebPlugin.default
+		set window.wizziCore = wizziCorePlugin.default
+	$else
+		import wizzi from 'wizzi'
+		import wizziUtils from 'wizzi-utils'
+	
+	import LRU from 'lru-cache'
+
+	const examplesCache
+		_ LRU
+			{
+				@ max 100
+				@ length function (n, key) { return n.length }
+
+	const fragmentsCache
+		_ LRU
+			{
+				@ max 300
+				@ length function (n, key) { return Object.keys(n).length }
+
+	class WizziStore
+		ctor
+			$if appEnvironment !== 'browser'
+				param vfile
+				set this.vfile = vfile
+				set this.examplesUpload = {}
+				set this.fragmentsUpload = {}
+				set this.fragmentsBatch = null
+			set this.schemas = null
+			set this.fb = new FbFsClient()
+			set this.updatesQueue = new UpdatesQueue()
+			set this.pathNames = new PathNames()
+			set this.uploadDelay = 3 * 1000
+
+		$if appEnvironment === 'browser'
+			m init
+				_ this.fb.init
+
+		$include ws/schemas
+		$include ws/examples
+		$include ws/batch_examples
+		$include ws/fragments
+		$include ws/batch_fragments
+		$include ws/wizzi
+		$include ws/app
+
+		m scheduleCloudUpdate
+			if this.uploadTimer
+				_ clearTimeout(this.uploadTimer)
+				log 'WizziStore.scheduleCloudUpdate. Cleared previous schedule.', new Date()
+			const that = this
+			set this.uploadTimer
+				_ setTimeout
+					function
+						set this.uploadTimer = null
+						_ that.fb.batchFromUpdatesQueue
+							@ that.updatesQueue
+							f_cb()
+								log 'WizziStore.scheduleCloudUpdate. batchFromUpdatesQueue executed.', new Date()
+					@ that.uploadDelay
+
+	$if appEnvironment === 'browser'
+		set WizziStore.createInstance
+			function
+				param user
+				param options
+				param callback
+				if WizziStore.__instance
+					throw
+						new Error
+							@ 'WizziStore.createInstance called more than once. This is a bug.'
+				set user = user || 'default'
+				set options = options || {}
+				set WizziStore.__instance
+					new WizziStore
+						@ user
+						@ options
+				_ WizziStore.__instance.init
+				r_cb( WizziStore.__instance )
+		set WizziStore.getInstance
+			function
+				if typeof WizziStore.__instance === 'undefined'
+					throw
+						new Error
+							@ 'WizziStore.getInstance called before WizziStore.createInstance. This is a bug.'
+				return WizziStore.__instance
+	$else
+		set WizziStore.createForFilesystem
+			function
+				# vfile() defaults to local filesystem
+				const vfile = wizziUtils.vfile() 
+				return new WizziStore(vfile)
+
+	export default WizziStore

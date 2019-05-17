@@ -1,0 +1,121 @@
+﻿module
+    kind react
+	+
+	import_rsf_actions( LOAD_APP )
+	import { 
+		\b SELECT_SNIPPET_SCHEMA,
+		\b SNIPPET_CODE_CHANGED
+		\b } from '../actions'
+	import_rsf_actions( SELECT_SNIPPET )
+	import_rsf_actions( ADD_SNIPPET )
+	import_rsf_actions( RENAME_SNIPPET )
+	import_rsf_actions( REMOVE_SNIPPET )
+	+
+	const snippetInitialState
+		{
+			@ index
+				{
+					@ js
+						{
+							[ snippets
+								{
+									@ name 'declarations'
+									[ code
+										@ 'var obj = {'
+										@ '  items: ['
+										@ '    "one"'
+										@ '    "two"'
+										@ '  ]'
+										@ '}'
+
+			@ selectedSchema 'js'
+			@ selectedSnippet ''
+			@ filteredSnippets []
+			@ isLoadingSnippetCode false
+			@ isUpdating false
+			@ snippetCode ''
+	+
+	r( snippet, snippetInitialState )
+
+		c( LOAD_APP_SUCCESS
+			{
+				@ ...state
+				@ index action.initialData.snippetIndex
+	
+		c( SELECT_SNIPPET_SCHEMA
+			$append preprocess
+				const index = state.index
+				var snippetItemObject
+				if index[action.schema] && index[action.schema].snippets.length > 0 
+					set snippetItemObject = index[action.schema].snippets[0]
+			{
+				@ ...state
+				@ selectedSchema action.schema
+				@ filteredSnippets index[action.schema] ? index[action.schema].snippets : []
+				@ selectedSnippet snippetItemObject ? snippetItemObject.name : 'default'
+				@ snippetCode ''
+
+		c( SELECT_SNIPPET_REQUEST
+			{
+				@ ...state
+				@ isLoadingSnippetCode true
+
+		c( SELECT_SNIPPET_SUCCESS
+			{
+				@ ...state
+				@ selectedSnippet action.snippet
+				@ snippetCode action.snippetCode
+				@ isLoadingSnippetCode false
+
+		c( SNIPPET_CODE_CHANGED )
+			{
+				@ ...state
+				@ snippetCode action.snippetCode
+
+		c( ADD_SNIPPET_REQUEST )
+			{
+				@ ...state
+				@ isUpdating true
+
+		c( ADD_SNIPPET_FAILURE )
+			{
+				@ ...state
+				@ isUpdating false
+
+		c( ADD_SNIPPET_SUCCESS
+			{
+				@ ...state
+				@ index action.snippetIndex
+				@ isUpdating false
+
+		c( RENAME_SNIPPET_REQUEST )
+			{
+				@ ...state
+				@ isUpdating true
+
+		c( RENAME_SNIPPET_FAILURE )
+			{
+				@ ...state
+				@ isUpdating false
+
+		c( RENAME_SNIPPET_SUCCESS
+			{
+				@ ...state
+				@ index action.snippetIndex
+				@ isUpdating false
+
+		c( REMOVE_SNIPPET_REQUEST )
+			{
+				@ ...state
+				@ isUpdating true
+
+		c( REMOVE_SNIPPET_FAILURE )
+			{
+				@ ...state
+				@ isUpdating false
+
+		c( REMOVE_SNIPPET_SUCCESS
+			{
+				@ ...state
+				@ index action.snippetIndex
+				@ isUpdating false

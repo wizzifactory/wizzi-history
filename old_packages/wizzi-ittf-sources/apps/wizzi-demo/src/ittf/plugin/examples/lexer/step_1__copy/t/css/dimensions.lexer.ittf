@@ -1,0 +1,48 @@
+﻿$group
+	$params kind|main
+
+	$if kind === 'main'
+		whitespace( sub )
+		numperc( sub )
+
+	$include datatypes/angle-units
+	$include datatypes/frequency-units
+	$include datatypes/resolution-units
+	$include datatypes/time-units
+	$include datatypes/length-units
+
+	tk Angle
+		pattern
+			&
+				ref num
+				ref angle-unit
+
+	tk Length
+		pattern
+			&
+				ref num
+				ref length-unit
+
+	tk Time
+		pattern
+			&
+				ref num
+				ref time-unit
+
+	tk Resolution
+		pattern
+			&
+				ref num
+				ref resolution-unit
+
+	tk Freq
+		pattern
+			&
+				ref num
+				ref frequency-unit
+
+	$if kind === 'main'
+		test 23rad
+		test .23px
+		test 10ms
+		test .50Hz

@@ -1,0 +1,349 @@
+﻿parser second
+
+	$include css/lexer
+
+	sym stylesheet
+		// [ CHARSET_SYM STRING ';' ]?
+		//   [S|CDO|CDC]* [ import [ CDO S* | CDC S* ]* ]*
+		//   [ [ ruleset | media | page ] [ CDO S* | CDC S* ]* ]*
+		start
+		?
+			ref charsetHeader
+		*
+			ref cdcCdo
+		* 
+			ref import
+			*
+				ref cdcCdo
+		*
+			ref nested_statement
+			*
+				ref cdcCdo
+
+	e nested_statement
+		// See group_rule_body / nested_statement in https://drafts.csswg.org/css-conditional-3/#contents-of
+		|
+			$$ ref nested
+			ref media
+			ref page
+			ref ruleset
+			ref mixinDeclaration
+			ref functionDeclaration
+			ref variableDeclaration
+			ref includeDeclaration
+			ref ifDeclaration
+			ref forDeclaration
+			ref whileDeclaration
+			ref eachDeclaration
+			ref contentStatement
+			$$ ref fontFaceRule
+			$$ ref keyframesRule
+			$$ ref supportsRule
+
+	sym charsetHeader
+		// CHARSET_SYM STRING ';'
+		tk CharsetSym
+		tk StringLiteral
+		tk ;
+
+	e cdcCdo
+		// factor out repeating pattern for cdc/cdo
+		// [S|CDO|CDC]
+		|
+			tk <!--
+			tk -->
+   
+	sym import
+		// IMPORT_SYM S*
+		// [STRING|URI] S* media_list? ';' S*
+		tk @import
+		|
+			tk StringLiteral
+			tk Uri
+		?
+			ref media_list
+		tk ;
+
+	$include css/media
+	$* OLD
+	sym media
+		// MEDIA_SYM S* media_list '{' S* ruleset* '}' S*
+		tk MediaSym
+		ref media_list
+		tk {
+		*
+			ref ruleset
+		tk }
+	*$
+
+	e media_list
+		// medium [ COMMA S* medium]*
+		ref medium
+			*
+				tk ,
+				ref medium
+    
+    sym medium
+		// IDENT S*
+		tk Ident
+    
+	sym page
+		// PAGE_SYM S* pseudo_page?
+		// '{' S* declaration? [ ';' S* declaration? ]* '}' S*
+		tk PageSym
+		?
+			ref pseudo_page
+		ref declarationsGroup
+    
+	e declarationsGroup
+		// '{' S* declaration? [ ';' S* declaration? ]* '}' S*
+		// factored out repeating grammar pattern
+		// Implements group_rule_body in https://drafts.csswg.org/css-conditional-3/#contents-of
+		// and scss declarations
+		tk {
+		*
+			|
+				&
+					ref declaration
+					tk ;
+				ref nested_statement
+		?
+			ref declaration
+		tk }
+
+	sym declaration
+		// property ':' S* expr prio?
+		ref property
+		tk :
+		ref value
+		?
+			ref important
+
+    e property
+		// IDENT S*
+		|
+			tk Ident
+			tk VariableName
+    
+	sym value
+		ref expression
+
+	sym pseudo_page
+		// ':' IDENT S*
+		tk :
+		tk Ident
+
+	sym combinator
+		// '+' S* | '>' S*
+		|
+			tk +
+				keep-value
+			tk >
+				keep-value
+
+
+	sym ruleset
+	    // selector [ ',' S* selector ]*
+		//   '{' S* declaration? [ ';' S* declaration? ]* '}' S*
+		ref selector
+		*
+			tk ,
+			ref selector
+		ref declarationsGroup
+    
+	sym selector
+		// simple_selector [ combinator selector | S+ [ combinator? selector ]? ]?
+		ref simple_selector 
+		? 
+			ref combinator
+			ref selector
+			?
+				?
+					ref combinator
+				ref selector
+
+	e simple_selector
+		// elementName [ HASH | class | attrib | pseudo ]*
+		// | [ HASH | class | attrib | pseudo ]+
+
+		|
+			&
+				|
+					ref elementName
+					tk Ampersand
+						keep-value
+				*
+					ref simple_selector_suffix
+			+
+				ref simple_selector_suffix
+    
+	e simple_selector_suffix
+		// helper grammar rule to avoid repetition
+		// [ HASH | class | attrib | pseudo ]+
+		|
+			tk Hash
+			ref class
+			ref attrib
+			ref pseudo
+
+	sym class
+		// '.' IDENT
+		tk .
+		ref identifier
+
+	sym elementName
+		|
+			ref identifier
+			tk *
+
+	sym attrib
+		// '[' S* IDENT S* [ [ '=' | INCLUDES | DASHMATCH ] S* [ IDENT | STRING ] S* ]? ']'
+		tk [
+		ref identifier
+		?
+			&
+				ref attribOperator
+				|
+					ref identifier
+					tk StringLiteral
+				?
+					ref attribCaseInsensitive
+		tk ]
+
+    sym attribOperator
+		|
+			tk =
+				keep-value
+			tk ~=
+				keep-value
+			tk |=
+				keep-value
+			tk ^=
+				keep-value
+			tk $=
+				keep-value
+			tk *=
+				keep-value
+
+	sym attribCaseInsensitive
+		any i
+
+	sym pseudo
+		// ':' [ IDENT | FUNCTION S* [IDENT S*]? ')' ]
+		tk :
+		|
+			tk Ident
+			ref pseudoFunction
+
+    sym pseudoFunction
+		// FUNCTION S* [IDENT S*]? ')'
+		tk Ident
+		tk (
+		?
+			tk Ident
+		tk )
+	
+	sym important
+		// IMPORTANT_SYM S*
+		tk ImportantSym
+			keep-value
+    
+	$include css/scss
+	$include css/expr
+
+	test
+		$if false
+			+ body { 
+			+   test-length: .23px;
+			+   test-time: 10ms;
+			+   test-freq: 50Hz;
+			+   test-angle: 13rad;
+			+   test-resolution: 300dpi;
+			+ }
+		$if false
+			+ body { 
+			+   test-length: 5px 5;
+			+   test-length-2: 5px 5 10px 2px;
+			+ }
+		
+		$if false
+			+ body { 
+			+   test-angle: 13rad;
+			$$ +   test-function: rgb(10,$axa,10);
+			+   $min: map-get($breakpoints, $name);
+			+   test-time: 10ms;
+			+ }
+		
+		$if false
+			+ .btn .badge > div + tr{ background: #567; }
+		
+		$if false
+			$$ + a[title] { color: purple; }
+			+ a[href="https://example.org" i] { color: green; }
+		
+		$if false
+			+ body { background: red; padding: 10px; radius: 5rad; }
+		
+		$if false
+			+ $white: #fff;
+			+ $black: map-get($breakpoints, $name);
+			+ body { background: red; padding: 10px; radius: 5rad; }
+
+		$if false
+			+ $alfa: beta($min != 0, -1, -$azz);
+		
+		$if false
+			+ @mixin invisible($visibility) {
+			+  visibility: $visibility !important;
+			+ }
+		
+		$if false
+			+ @mixin alert-variant($background) {
+			+   color: $color !important;
+			+   @include gradient-bg($background);
+			+ }
+			+ @include gradient-bg($background);
+		
+		$if false
+			+ @function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+			$$ +   $min: map-get($breakpoints, $name);
+			+   @return if($min != 0, $min, null);
+			$$ +   @return if($min, $min, null);
+			+ }
+		
+		$if false
+			+ @media only screen { color: red; }
+		
+		$if false
+		    + @media screen and (min-width: 900px) { color: $color; }
+		
+		$if false
+		    + @media screen and (min-width: $xwidth) { color: $color; }
+		
+		$if false
+			+ @if $min {
+			+    @media (min-width: $min) {
+			+      @content;
+			+    }
+			+ } @else {
+			+    @content;
+			+ }
+		
+		$if false
+			+ @each $breakpoint, $container-max-width in $max-widths {
+			$if false
+				+   @include media-breakpoint-up($breakpoint, $breakpoints) {
+				+     max-width: $container-max-width;
+				+   }
+			$if true
+				+ @include alert-variant(theme-color-level($color, -10), theme-color-level($color, -9), theme-color-level($color, 6));
+			+ }
+
+		$if false
+			+ $grays: () !default;
+		
+		$if true
+			+ $grays: (
+			+   "100": $gray-100,
+			+   "200": ($gray-200, 30, $ss)
+			+ );

@@ -1,0 +1,97 @@
+﻿demo_module( plugin_examples, demo, 1 )
+
+	#
+		# Commons
+	var wizziFactoryConfig
+		{
+			@ plugins
+				{
+					[ items
+						@ './plugin/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+							@ '..'
+
+
+	# 
+		# DEMO: how to load an demo ittf document into an mTree.
+	+
+	# Create a filesystem factory without access control
+	_ wizzi.fsnoaclFactory
+		f_cb_throw( wf )
+			# Now we can load the mTree
+			_ wf.loadMTree
+				_ path.join
+					@ __dirname
+					@ 'step_1'
+					@ 'w3c.demo.ittf'
+				{
+				f_cb_throw( mTreeModel )
+					# And print the mTree model object
+					log 'mTreeModel', mTreeModel
+					log 'mTreeModel.dump(true)', mTreeModel.dump(true)
+					log 'mTreeModel.toIttf()', mTreeModel.toIttf()
+					log 'mTreeModel.toText()', mTreeModel.toText()
+					_ demo_model
+
+	function demo_model
+		# Create a filesystem factory without access control
+		# requiring the local plugin.
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				# Now we can load the model
+				_ wf.loadModel
+					_ path.join
+						@ __dirname
+						@ 'step_1'
+						@ 'w3c.demo.ittf'
+					{
+					f_cb_throw( wizziModel )
+						# And print the wizzi model object
+						log 'wizziModel', wizziModel
+						log 'wizziModel.toJson()', wizziModel.toJson()
+						var dest
+							_ path.join
+								@ __dirname
+								@ 'outputs'
+								@ 'w3c.demo.json'
+						_ wf.fileService.write
+							@ dest
+							_ stringify
+								_ wizziModel.toJson()
+								@ null
+								@ 4
+						# _ demo_document_artifact
+
+
+	function demo_document_artifact
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				_ wf.loadModelAndGenerateArtifact
+					_ path.join
+						@ __dirname
+						@ 'step_1'
+						@ 'w3c.demo.ittf'
+					{
+						@ modelContext {}
+						@ artifactContext {}
+					@ 'demo/document'
+					f_cb_throw( artifactText )
+						log 'artifactText', artifactText
+						_ wizzi.file.write
+							_ path.join
+								@ __dirname
+								@ 'output'
+								@ 'w3c.demo'
+							@ artifactText
+
+
+
+
+
+

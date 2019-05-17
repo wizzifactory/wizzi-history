@@ -1,0 +1,404 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var async = require('async') ids: undefined undefined
+    var _ = require('lodash') ids: undefined undefined
+    var verify = require('../util/verify') ids: undefined undefined
+    var errors = require('../errors') ids: undefined undefined
+    var fail = require('../util/fail') ids: undefined undefined
+    var file = require('../util/file') ids: undefined undefined
+    var log ids: undefined undefined
+      _ require('../util/log') ids: undefined undefined
+        (  ids: undefined undefined
+          @ module ids: undefined undefined
+    +  ids: undefined undefined
+    function logme ids: undefined undefined
+      if false ids: undefined undefined
+        _ console.log.apply(console, arguments) ids: undefined undefined
+    +  ids: undefined undefined
+    wz-function loadMany ids: undefined undefined
+      param modelInfos ids: undefined undefined
+      param callback ids: undefined undefined
+      if modelInfos.length > 0 ids: undefined undefined
+        _ log.setLevel ids: undefined undefined
+          @ modelInfos[0].productionManager().options.verbose ids: undefined undefined
+      _ async.map ids: undefined undefined
+        @ modelInfos ids: undefined undefined
+        @ _load_item ids: undefined undefined
+        @ callback ids: undefined undefined
+    wz-function load ids: undefined undefined
+      param modelInfo ids: undefined undefined
+      param callback ids: undefined undefined
+      _ log.setLevel ids: undefined undefined
+        @ modelInfo.productionManager().options.verbose ids: undefined undefined
+      _ log.info ids: undefined undefined
+        @ 'Started.async.load.model' ids: undefined undefined
+        _ modelInfo.srcFullPath() ids: undefined undefined
+          ._ substr((modelInfo.productionManager().options.basedir.length + 1)) ids: undefined undefined
+      var modelInfos ids: undefined undefined
+        [  ids: undefined undefined
+          @ modelInfo ids: undefined undefined
+      _ async.map ids: undefined undefined
+        @ modelInfos ids: undefined undefined
+        @ _load_item ids: undefined undefined
+        function  ids: undefined undefined
+          param err ids: undefined undefined
+          param wizziModels ids: undefined undefined
+          if err ids: undefined undefined
+            return callback(err, null) ids: undefined undefined
+          _ log.info ids: undefined undefined
+            @ 'Ended.async.load.model' ids: undefined undefined
+            _ modelInfo.srcFullPath() ids: undefined undefined
+              ._ substr((modelInfo.productionManager().options.basedir.length + 1)) ids: undefined undefined
+          _ callback ids: undefined undefined
+            @ null ids: undefined undefined
+            @ wizziModels[0] ids: undefined undefined
+    #  ids: undefined undefined
+      # Load a single WizziModel using ModelInfo data ids: undefined undefined
+      # The master ModelInfo may contain one or many context ModelInfos ids: undefined undefined
+    wz-function _load_item ids: undefined undefined
+      param masterModelInfo ids: undefined undefined
+      param callback ids: undefined undefined
+      _ logme ids: undefined undefined
+        @ 'AsyncModelLoader._load_item.masterModelInfo.config' ids: undefined undefined
+        _ util.inspect ids: undefined undefined
+          @ masterModelInfo.config ids: undefined undefined
+          {  ids: undefined undefined
+            @ depth 3 ids: undefined undefined
+      if masterModelInfo.contexts && masterModelInfo.contexts.length > 0 ids: undefined undefined
+        # The master modelInfo has context ModelInfos, so it is templated. ids: undefined undefined
+        # First of all load recursively the context models ids: undefined undefined
+        +  ids: undefined undefined
+        # step 1 - set the production state on each contextModelInfo ids: undefined undefined
+        foreach contextModelInfo in masterModelInfo.contexts ids: undefined undefined
+          # set contextModelInfo.___state = masterModelInfo.___state ids: undefined undefined
+          _ logme ids: undefined undefined
+            @ 'AsyncModelLoader._load_item.context' ids: undefined undefined
+            @ contextModelInfo.id ids: undefined undefined
+            _ contextModelInfo.srcFullPath() ids: undefined undefined
+        +  ids: undefined undefined
+        # step 2 - recurse contextModelInfo loading ids: undefined undefined
+        _ async.map ids: undefined undefined
+          @ masterModelInfo.contexts ids: undefined undefined
+          @ _load_item ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param contextWizziModels ids: undefined undefined
+            if err ids: undefined undefined
+              _ log.error ids: undefined undefined
+                @ 'Error.AsyncModelLoader._load_item' ids: undefined undefined
+                _ util.inspect ids: undefined undefined
+                  @ err ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ depth null ids: undefined undefined
+              return callback(err, null) ids: undefined undefined
+            # step 3 - prepare the loaded context model instances for the master model loading ids: undefined undefined
+            # if one context is a collection context, prepare the collection context ids: undefined undefined
+            var  ids: undefined undefined
+              decl wizziModelWithCollection = null ids: undefined undefined
+              decl collectionContextIndex = -1 ids: undefined undefined
+              decl loadingContext ids: undefined undefined
+                {  ids: undefined undefined
+            for var i = 0; i < contextWizziModels.length; i++ ids: undefined undefined
+              var contextWizziModel = contextWizziModels[i] ids: undefined undefined
+              set loadingContext[contextWizziModel.___exportName] = contextWizziModel ids: undefined undefined
+              if contextWizziModel.___coll ids: undefined undefined
+                set wizziModelWithCollection = contextWizziModel ids: undefined undefined
+                set collectionContextIndex = i ids: undefined undefined
+            if collectionContextIndex > -1 ids: undefined undefined
+              # Yes one of the loaded context models is a collection context. ids: undefined undefined
+              # step 3.b - Prepare the collection context. This is quite complex. ids: undefined undefined
+              # . We must have as many context objects as the items in the collection context ids: undefined undefined
+              # . Every context object has all the loaded context plus the ids: undefined undefined
+              # item of the collection context. ids: undefined undefined
+              # So the template of the artifact to be generate will have ids: undefined undefined
+              # available as a context its collection item plus all the other context models. ids: undefined undefined
+              var collectionItemLoadDatas ids: undefined undefined
+                _ prepareCollectionItemLoadDatas ids: undefined undefined
+                  @ masterModelInfo ids: undefined undefined
+                  @ contextWizziModels ids: undefined undefined
+                  @ wizziModelWithCollection ids: undefined undefined
+                  @ loadingContext ids: undefined undefined
+              if collectionItemLoadDatas && collectionItemLoadDatas.__is_error ids: undefined undefined
+                log '__is_error ', collectionItemLoadDatas ids: undefined undefined
+                return callback(collectionItemLoadDatas) ids: undefined undefined
+              if masterModelInfo.generatorRequireContextOnly ids: undefined undefined
+                # There is no source document for the artifact to be generated. ids: undefined undefined
+                # The ArtifactGenerator simply requires a context object. ids: undefined undefined
+                # So collect the loaded contexts in an array and pass them back. ids: undefined undefined
+                var collModelInstances ids: undefined undefined
+                  [  ids: undefined undefined
+                foreach itemLoadData in collectionItemLoadDatas ids: undefined undefined
+                  _ collModelInstances.push ids: undefined undefined
+                    _ _.assign ids: undefined undefined
+                      {  ids: undefined undefined
+                      @ itemLoadData.context ids: undefined undefined
+                      {  ids: undefined undefined
+                        @ ___collItem itemLoadData.itemObject ids: undefined undefined
+                _ callback(null, collModelInstances) ids: undefined undefined
+              else  ids: undefined undefined
+                # step 4.b - load a context for each item of the collection context ids: undefined undefined
+                _ async.map ids: undefined undefined
+                  @ collectionItemLoadDatas ids: undefined undefined
+                  @ load_collection ids: undefined undefined
+                  @ callback ids: undefined undefined
+            else  ids: undefined undefined
+              # step 3.1 - load the context model ids: undefined undefined
+              _ masterModelInfo.getWizziModelFactory ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param wizziModelFactory ids: undefined undefined
+                  if err ids: undefined undefined
+                    return  ids: undefined undefined
+                      _ callback ids: undefined undefined
+                        @ err ids: undefined undefined
+                  var ittfLoadContext ids: undefined undefined
+                    _ _.assign ids: undefined undefined
+                      {  ids: undefined undefined
+                      @ masterModelInfo.productionManager().globalContext || {} ids: undefined undefined
+                      @ loadingContext ids: undefined undefined
+                  set ittfLoadContext.__productionManager = masterModelInfo.productionManager() ids: undefined undefined
+                  _ wizziModelFactory ids: undefined undefined
+                    _ masterModelInfo.srcFullPath() ids: undefined undefined
+                    @ ittfLoadContext ids: undefined undefined
+                    function  ids: undefined undefined
+                      param err ids: undefined undefined
+                      param wizziModel ids: undefined undefined
+                      if err ids: undefined undefined
+                        return  ids: undefined undefined
+                          _ callback ids: undefined undefined
+                            @ err ids: undefined undefined
+                      set wizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema) ids: undefined undefined
+                      if masterModelInfo.coll ids: undefined undefined
+                        set wizziModel.___coll = masterModelInfo.coll ids: undefined undefined
+                      _ logme ids: undefined undefined
+                        @ 'AsyncModelLoader._load_item' ids: undefined undefined
+                        @ 'success with loadingContext no collectionContext, masterModelInfo' ids: undefined undefined
+                        @ masterModelInfo.id ids: undefined undefined
+                        @ 'exportName' ids: undefined undefined
+                        @ wizziModel.___exportName ids: undefined undefined
+                      _ callback(null, wizziModel) ids: undefined undefined
+      else  ids: undefined undefined
+        # The master modelInfo has no context ModelInfos ids: undefined undefined
+        # simply load it ids: undefined undefined
+        var srcFullPath = masterModelInfo.srcFullPath() ids: undefined undefined
+        _ masterModelInfo.getWizziModelFactory ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param wizziModelFactory ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            var ittfLoadContext ids: undefined undefined
+              _ _.assign ids: undefined undefined
+                {  ids: undefined undefined
+                {  ids: undefined undefined
+                @ (masterModelInfo.productionManager().globalContext || {}) ids: undefined undefined
+            set ittfLoadContext.__productionManager = masterModelInfo.productionManager() ids: undefined undefined
+            _ wizziModelFactory ids: undefined undefined
+              @ srcFullPath ids: undefined undefined
+              @ ittfLoadContext ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param wizziModel ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                if masterModelInfo.transformers && masterModelInfo.transformers.length > 0 ids: undefined undefined
+                  _ recurseTransform ids: undefined undefined
+                    @ masterModelInfo.transformers ids: undefined undefined
+                    @ 0 ids: undefined undefined
+                    @ wizziModel ids: undefined undefined
+                    @ masterModelInfo ids: undefined undefined
+                    function  ids: undefined undefined
+                      param err ids: undefined undefined
+                      param transformedWizziModel ids: undefined undefined
+                      if err ids: undefined undefined
+                        return  ids: undefined undefined
+                          _ callback ids: undefined undefined
+                            @ err ids: undefined undefined
+                      set transformedWizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema) ids: undefined undefined
+                      if masterModelInfo.coll ids: undefined undefined
+                        # this wizziModel is a context model from which ids: undefined undefined
+                        # will be extracted a collection context, ids: undefined undefined
+                        # when bubbling up from the recursive loading ids: undefined undefined
+                        set transformedWizziModel.___coll = masterModelInfo.coll ids: undefined undefined
+                      # cache the loaded model, one day, may be, will be useful ids: undefined undefined
+                      set masterModelInfo.productionManager().setStateModel(srcFullPath, transformedWizziModel) ids: undefined undefined
+                      _ logme ids: undefined undefined
+                        @ 'AsyncModelLoader._load_item' ids: undefined undefined
+                        @ 'success after transformation, masterModelInfo' ids: undefined undefined
+                        @ masterModelInfo.id ids: undefined undefined
+                        @ 'exportName' ids: undefined undefined
+                        @ wizziModel.___exportName ids: undefined undefined
+                      _ callback(null, transformedWizziModel) ids: undefined undefined
+                else  ids: undefined undefined
+                  set wizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema) ids: undefined undefined
+                  if masterModelInfo.coll ids: undefined undefined
+                    # this wizziModel is a context model from which ids: undefined undefined
+                    # will be extracted a collection context, ids: undefined undefined
+                    # when bubbling up from the recursive loading ids: undefined undefined
+                    set wizziModel.___coll = masterModelInfo.coll ids: undefined undefined
+                  # cache the loaded model, one day, may be, will be useful ids: undefined undefined
+                  set masterModelInfo.productionManager().setStateModel(srcFullPath, wizziModel) ids: undefined undefined
+                  _ logme ids: undefined undefined
+                    @ 'AsyncModelLoader._load_item' ids: undefined undefined
+                    @ 'success, masterModelInfo' ids: undefined undefined
+                    @ masterModelInfo.id ids: undefined undefined
+                    @ 'exportName' ids: undefined undefined
+                    @ wizziModel.___exportName ids: undefined undefined
+                  _ callback(null, wizziModel) ids: undefined undefined
+    wz-function recurseTransform ids: undefined undefined
+      param modelTransformers ids: undefined undefined
+      param index ids: undefined undefined
+      param instance ids: undefined undefined
+      param modelInfo ids: undefined undefined
+      param callback ids: undefined undefined
+      if index >= modelTransformers.length ids: undefined undefined
+        return callback(null, instance) ids: undefined undefined
+      var transformerConfig = modelTransformers[index] ids: undefined undefined
+      _ modelInfo.getModelTransformer ids: undefined undefined
+        @ transformerConfig.name ids: undefined undefined
+        function  ids: undefined undefined
+          param err ids: undefined undefined
+          param modelTransformer ids: undefined undefined
+          if err ids: undefined undefined
+            return  ids: undefined undefined
+              _ callback ids: undefined undefined
+                @ err ids: undefined undefined
+          _ modelTransformer ids: undefined undefined
+            @ instance ids: undefined undefined
+            {  ids: undefined undefined
+            function  ids: undefined undefined
+              param err ids: undefined undefined
+              param transformedWizziModel ids: undefined undefined
+              if err ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ err ids: undefined undefined
+              if transformerConfig.dumpFile ids: undefined undefined
+                _ file.writeJSON ids: undefined undefined
+                  @ transformerConfig.dumpFile ids: undefined undefined
+                  @ transformedWizziModel ids: undefined undefined
+              _ recurseTransform ids: undefined undefined
+                @ modelTransformers ids: undefined undefined
+                @ index + 1 ids: undefined undefined
+                @ transformedWizziModel ids: undefined undefined
+                @ modelInfo ids: undefined undefined
+                @ callback ids: undefined undefined
+    wz-function prepareCollectionItemLoadDatas ids: undefined undefined
+      param modelInfo ids: undefined undefined
+      param wizziModelContexts ids: undefined undefined
+      param wizziModelWithCollection ids: undefined undefined
+      param loadingContext ids: undefined undefined
+      _ logme ids: undefined undefined
+        @ 'prepareCollectionItemLoadDatas' ids: undefined undefined
+        @ 'modelInfo' ids: undefined undefined
+        @ modelInfo.id ids: undefined undefined
+      var collName = wizziModelWithCollection.___coll.name ids: undefined undefined
+      var collItemExportName = wizziModelWithCollection.___coll.itemName ids: undefined undefined
+      _ logme ids: undefined undefined
+        @ 'prepareCollectionItemLoadDatas' ids: undefined undefined
+        @ 'collName, collItemExportName' ids: undefined undefined
+        @ collName ids: undefined undefined
+        @ collItemExportName ids: undefined undefined
+      var collectionArray = wizziModelWithCollection[collName] ids: undefined undefined
+      if !verify.isArray(collectionArray) ids: undefined undefined
+        return  ids: undefined undefined
+          _ error ids: undefined undefined
+            @ 'Collection is not an array. Name: ' + collName + ', ' + modelInfo.toString() ids: undefined undefined
+            @ 'prepareCollectionItemLoadDatas' ids: undefined undefined
+      var  ids: undefined undefined
+        decl itemLoadDatas ids: undefined undefined
+          [  ids: undefined undefined
+        decl context ids: undefined undefined
+      foreach itemObject in collectionArray ids: undefined undefined
+        set context ids: undefined undefined
+          _ _.assign ids: undefined undefined
+            {  ids: undefined undefined
+            @ loadingContext ids: undefined undefined
+        set context[collItemExportName] = itemObject ids: undefined undefined
+        _ itemLoadDatas.push ids: undefined undefined
+          {  ids: undefined undefined
+            @ modelInfo modelInfo ids: undefined undefined
+            @ itemObject itemObject ids: undefined undefined
+            @ context context ids: undefined undefined
+        if itemLoadDatas.length == 1 ids: undefined undefined
+          for var k in context ids: undefined undefined
+            _ logme('prepareCollectionItemLoadDatas', 'context exportName', k) ids: undefined undefined
+        _ logme ids: undefined undefined
+          @ 'prepareCollectionItemLoadDatas' ids: undefined undefined
+          @ 'itemObject' ids: undefined undefined
+          @ itemObject.wzName ids: undefined undefined
+      return itemLoadDatas ids: undefined undefined
+    #  ids: undefined undefined
+      # Load a single WizziModel using a single collection item as a context. ids: undefined undefined
+      # param collectionLoadData:Object { ids: undefined undefined
+      # modelInfo:Object { ids: undefined undefined
+      # schema:String, ids: undefined undefined
+      # ___state:Object { ids: undefined undefined
+      # pman:Object // ProductionManager ids: undefined undefined
+      # }, ids: undefined undefined
+      # srcFullPath:Function { ids: undefined undefined
+      # }, ids: undefined undefined
+      # context: Object { // prepared by prepareCollectionItemLoadDatas ids: undefined undefined
+      # } ids: undefined undefined
+      # } ids: undefined undefined
+    wz-function load_collection ids: undefined undefined
+      param collectionLoadData ids: undefined undefined
+      param callback ids: undefined undefined
+      var  ids: undefined undefined
+        decl modelInfo = collectionLoadData.modelInfo ids: undefined undefined
+        decl context = collectionLoadData.context ids: undefined undefined
+        decl itemObject = collectionLoadData.itemObject ids: undefined undefined
+      _ modelInfo.getWizziModelFactory ids: undefined undefined
+        function  ids: undefined undefined
+          param err ids: undefined undefined
+          param wizziModelFactory ids: undefined undefined
+          if err ids: undefined undefined
+            return  ids: undefined undefined
+              _ callback ids: undefined undefined
+                @ err ids: undefined undefined
+          _ logme ids: undefined undefined
+            @ "AsyncModelLoader.load_collection" ids: undefined undefined
+            @ "modelInfo" ids: undefined undefined
+            @ modelInfo.id ids: undefined undefined
+            @ "schema" ids: undefined undefined
+            @ modelInfo.schema ids: undefined undefined
+          var ittfLoadContext ids: undefined undefined
+            _ _.assign ids: undefined undefined
+              {  ids: undefined undefined
+              @ modelInfo.productionManager().globalContext || {} ids: undefined undefined
+              @ context ids: undefined undefined
+          set ittfLoadContext.__productionManager = modelInfo.productionManager() ids: undefined undefined
+          log 'asyncModelLoader.load_collection.ittfLoadContext', ittfLoadContext ids: undefined undefined
+          _ wizziModelFactory ids: undefined undefined
+            _ modelInfo.srcFullPath() ids: undefined undefined
+            @ ittfLoadContext ids: undefined undefined
+            function  ids: undefined undefined
+              param err ids: undefined undefined
+              param wizziModel ids: undefined undefined
+              if err ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ err ids: undefined undefined
+              _ logme ids: undefined undefined
+                @ "AsyncCollectionModelLoader.load" ids: undefined undefined
+                @ "success, root" ids: undefined undefined
+                @ wizziModel.wzTag ids: undefined undefined
+                @ wizziModel.wzName ids: undefined undefined
+              set wizziModel.___collItem = itemObject ids: undefined undefined
+              _ callback(null, wizziModel) ids: undefined undefined
+    function error ids: undefined undefined
+      param message ids: undefined undefined
+      param method ids: undefined undefined
+      var err ids: undefined undefined
+        {  ids: undefined undefined
+          @ __is_error true ids: undefined undefined
+          @ message message ids: undefined undefined
+          @ source "wizzi/lib/model/asyncModelLoader/" + method ids: undefined undefined
+      _ logme(err) ids: undefined undefined
+      return err ids: undefined undefined

@@ -1,0 +1,50 @@
+﻿module
+    kind jsfile
+
+	import url
+	import util
+	var mocks = require('./misc')
+	var MTreeBrickProvider = require('../../../lib/loader/mTreeBrickProvider')
+    var mixer = require('../../../lib/loader/mixer')
+	var appender = require('../../../lib/loader/appender')
+	var evaluator = require('../../../lib/loader/evaluator')
+
+	set module.exports
+		function
+			param store
+			param content_filepath
+			param callback
+			var loadContext
+				{
+					@ mTreeBuildUpContext
+						{
+					@ productionContext mocks.ProductionContext
+					@ __ittfDocumentStore store
+            
+			_ MTreeBrickProvider.createFromUri
+				@ content_filepath
+				@ loadContext
+				f_cb_test( provider )
+					var mTree = provider.getPrimaryMTreeBrick()
+					_ mixer
+						@ mTree
+						@ provider
+						f_cb_test( mixedModel )
+							_ appender
+								@ mixedModel
+								f_cb_test( appendedModel )
+									_ evaluator
+										@ appendedModel
+										@ loadContext
+										f_cb_test( result )
+											$*
+											_  console.log
+												@ 'err'
+												@ err
+												@ 'evaluator.result'
+												_ util.inspect
+													@ result
+													{ 
+														@ depth null
+											*$
+											_ callback(null, result)

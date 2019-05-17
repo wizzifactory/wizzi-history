@@ -1,0 +1,45 @@
+$group
+	$params &spa
+	#
+		# Module dependencies.
+	var util = require('util')
+	var path = require('path')
+	
+	var fs = require('fs')
+	var http = require('http')
+
+	var chalk = require('chalk')
+	var _ = require('lodash')
+	var glob = require('glob')
+	
+	$if spa.ssl
+		var https = require('https')
+	$if spa.apisAsync
+		var async = require('async')
+	+
+	var express = require('express')
+	+
+	var morgan = require('morgan')
+	var bodyParser = require('body-parser')
+	
+	$if spa.session
+		var cookieParser = require('cookie-parser')
+		var session = require('express-session')
+		var flash = require('connect-flash')
+	
+	var compress = require('compression')
+	var methodOverride = require('method-override')
+	
+	$if spa.helmet
+		var helmet = require('helmet')
+
+	$if spa.passport
+		var passport = require('passport')
+
+	$if spa.webpack
+		#
+			# webpack middleware
+		var webpack = require('webpack')
+		var webpackDevMiddleware = require('webpack-dev-middleware')
+		var webpackHotMiddleware = require('webpack-hot-middleware')
+

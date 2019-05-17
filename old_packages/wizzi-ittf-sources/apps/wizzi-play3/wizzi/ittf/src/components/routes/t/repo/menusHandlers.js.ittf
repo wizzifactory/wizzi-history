@@ -1,0 +1,23 @@
+﻿$group
+
+	=> openContextMenu
+		param anchorEl
+		param data
+		_ this.setState
+			{
+				@ contextMenuAnchorEl anchorEl
+				@ contextMenuItems data.dynMenuItems
+
+	=> handleFsItemContextMenuOpen
+		param event
+		_ event.preventDefault
+		_ this.openContextMenu
+			@ event.currentTarget
+			_ createFsItemContextMenu(this, this.props)
+
+	=> handleContextMenuClose
+		_ this.setState
+			{
+				@ contextMenuAnchorEl null
+
+

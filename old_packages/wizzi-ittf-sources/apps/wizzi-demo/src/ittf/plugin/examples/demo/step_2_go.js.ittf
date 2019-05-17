@@ -1,0 +1,23 @@
+﻿demo_module( plugin_examples, demo, 2 )
+
+	# 
+		# DEMO: How to use the `demo` plugin to load
+		#       json-ld meta data
+	+
+	loadMTree( 2, wf_overview.demo.ittf, raw;print:dump )
+		loadModel( 2, wf_overview.demo.ittf, save )
+			
+			_ printValue
+				@ 'json-ld value'
+				_ stringify
+					@ wizziModel.__jsonld
+					@ null
+					@ 2
+
+			_ printArray
+				@ 'nodesOfType(wf:Package)'
+				@ wizziModel.nodesOfType('wf:Package')
+				@ null
+				@ 'dashes'
+
+

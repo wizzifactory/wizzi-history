@@ -1,0 +1,513 @@
+﻿module
+	kind jsfile
+
+	var verify = require('wizzi-utils').verify
+
+	var wzSymbols
+		{
+			@ comment '@@'
+			@ functionDecl '@function'
+			@ functionParam 'param'
+			@ functionCall '@_'
+			@ mixinDecl '@mixin'
+			@ mixinParam '@param'
+			@ mixinInclude '@mix'
+			@ mixinIncludeArg '@:'
+			@ mixinTrue '@true'
+			@ variableRef '@:'
+			@ variableDecl '@var'
+			@ content '@content'
+			@ if '@if'
+			@ elif '@elif'
+			@ else '@else'
+			@ f_functionCall '_'
+			@ f_variableRef ':'
+			@ f_variableDecl 'var'
+
+	var operators
+		{
+			@ void 'void'
+			@ '!' 'not'
+			@ or '||'
+			@ and '&&'
+			@ '===' '==='
+			@ '!==' '!=='
+			@ '==' '=='
+			@ '!=' '!='
+			@ '-' 'minus'
+			@ '+' 'plus'
+			@ '*' 'times'
+			@ '/' 'divide'
+			@ '^' 'mod'
+			@ '>' 'gt'
+			@ '<' 'lt'
+			@ '<=' '<='
+			@ '>=' '>='
+
+	class XIttfNode
+		ctor
+			param tag
+			param name
+			param parent
+			set this._tag = tag
+			set this._name = name
+			set this.parent = parent
+			set this.children = []
+			set this.jswizzi_container = false
+
+		$include xittfNode/nodeUtils
+		$include xittfNode/finalize
+
+		m setRawTagNames
+			set this.tag = this._tag
+			set this.name = this._name
+			foreach item in this.children
+				_ item.setRawTagNames()
+		
+		m analize
+			if this.analized
+				return
+			set this.analized = true
+			# log 'analize', this._tag, this._name
+			set this.tag = this._tag
+			set this.name = '*** ' + this._name
+			if this['analize_' + this._tag]
+				_ this['analize_' + this._tag]
+			foreach item in this.children
+				_ item.analize()
+
+		m analize_singlelineComment
+			set this.tag = '@@'
+			set this.name = this._name
+		
+		m analize_multilineComment
+			set this.tag = '@*'
+			set this.name = this._name
+		
+		xittfNode/analize( atrule )
+			if this.children[0]._tag === 'atkeyword'
+				_ this.children[0].analize
+				# log 'analize( atrule ) this.children[0]', this.children[0]
+				if this.name === 'function'
+					set this.tag = '@function-declare'
+					if this.matchChildren(['atkeyword', 'function', 'block'], true)
+						set this.name = this.children[1].name
+						log 'this.children[1].children.length', this.children[1].children.length, this.children[1].children[0]._tag
+						if this.children[1].children.length === 2 && this.children[1].children[1]._tag === 'arguments'
+							foreach item in this.children[1].children[1].children
+								var arg 
+									_ this.addChild('@argument', '')
+								_ item.moveTo(arg)
+							_ this.children[1].delete
+						else
+							set this.tag = '### ' + this._tag + ' not managed'
+						_ this.children[2].moveChildrenTo(this, true)
+					else
+						set this.tag = '### ' + this._tag + ' not managed'
+				elif this.name === 'return'
+					set this.tag = '@return'
+					set this.name = null
+				elif this.name === 'if'
+					set this.tag = '@if'
+					set this.name = null
+				elif this.name === 'else if'
+					set this.tag = '@elif'
+					set this.name = null
+				elif this.name === 'warn'
+					set this.tag = '@warn'
+					set this.name = null
+				else
+					set this.tag = '### ' + this._tag + ' not managed'
+
+		xittfNode/analize( mixin )
+			if this.matchChildren(['atkeyword', 'ident', 'arguments', 'block'], true)
+				set this.tag = '@mixin'
+				_ this.setIdentToName
+				foreach item in this.children[2].children
+					var arg 
+						_ this.addChild('@argument', '')
+					_ item.moveTo(arg)
+				_ this.children[2].delete
+				_ this.children[3].moveChildrenTo(this, true)
+
+		m analize_atkeyword
+			foreach item in this.children
+				if item._tag === 'ident'
+					set this.parent.name = item._name
+			_ this.delete
+	
+		xittfNode/analize( declaration )
+			if this.matchChildren(['property', 'propertyDelimiter', 'value'], true)
+				_ this.children[1].delete
+				if this.parent._tag !== 'arguments'
+					_ this.children[2].moveTo
+						@ this
+						@ true
+					# log 'analize( declaration )', this
+					set this.tag = '@var'
+					_ this.setChildToName2
+						@ 'property'
+				else
+					_ this.children[2].moveTo
+						@ this.children[0]
+						@ true
+					_ this.replaceWith
+						@ this.children[0]
+
+		m analize_declarationDelimiter
+			_ this.delete
+
+		xittfNode/analize( property )
+			if this.matchChildren(['variable'], true)
+				_ this.setChildToName2('@variable')
+				log 'analize( property ).variable', this.children[0].name, this.name
+			elif this.getIdentStrict()
+				return
+
+		xittfNode/analize( value )
+			if this.matchChildren(['variable'], true) ||
+				\b this.matchChildren(['function'], true) ||
+				\b this.matchChildren(['parentheses'], true) ||
+				\b this.matchChildren(['percentage'], true) ||
+				\b this.matchChildren(['dimension'], true)
+				_ this.replaceWith
+					@ this.children[0]
+			elif this.getIdentStrict()
+				set this.tag = '@literal'
+				return
+			elif this.getChildStrict('number') 
+				set this.tag = '@number'
+			elif this.getChildStrict('string') 
+				set this.tag = '@"'
+			elif this.children.length > 1
+				set this.tag =  isExpression(this) ? '@expression' : '@concat'
+
+		xittfNode/analize( variable )
+			if this.getIdentStrict()
+				set this.tag = '@variable'
+				log '*******************analize( variable )', this.name
+
+		xittfNode/analize( percentage )
+			if this.matchChildren(['number'], true) 
+				set this.tag = '@%'
+				set this.name = this.children[0]._name
+				_ this.children[0].delete
+
+		xittfNode/analize( dimension )
+			if this.matchChildren(['number', 'ident'], true) 
+				set this.tag = this.children[0]._name + this.children[1]._name
+				set this.name = null
+				_ this.deleteChildren
+
+		m analize_parentheses
+			if isMap(this)
+				set this.tag = '@{'
+				set this.name = null
+			else
+				set this.tag = '@expression'
+				set this.name = null
+
+		xittfNode/analize( function )
+			if this.parent && this.parent._tag === 'atrule' && this.parent.name === 'function'
+				_ this.setIdentToName
+				if this.children[0]._tag === 'arguments'
+					foreach item in this.children[0].children
+						var arg 
+							_ this.addChild('@argument', '')
+						_ item.moveTo(arg)
+			elif this.matchChildren(['ident', 'arguments'], true)
+				set this.tag = '@function-call'
+				_ this.setIdentToName
+				_ this.children[1].moveChildrenTo
+					@ this
+					@ true
+
+		m analize_ruleset
+			var first = null
+			var block = null
+			var others = []
+			foreach item in this.children
+				if item._tag === 'selector'
+					_ item.analize
+					if first === null
+						set first = item
+					else
+						_ others.push(item)
+				elif item._tag === 'delimiter'
+				elif item._tag === 'block'
+					_ item.analize
+					set block = item
+			if first
+				# log 'first', first
+				_ this.replaceWith
+					@ first
+			_ this.addChildren(others)
+			if block
+				_ block.moveChildrenTo(this)
+
+		xittfNode/analize( selector )
+			log 'this.children.length', this.children.length
+			if this.matchChildren(['class'], true) ||
+				\b this.matchChildren(['typeSelector'], true) ||
+				\b this.matchChildren(['attributeSelector'], true) ||
+				\b this.matchChildren(['pseudoClass'], true)
+				_ this.replaceWith
+					@ this.children[0]
+			elif this.children.length > 1
+				_ this.children[0].analize
+				for var i=1; i<this.children.length; i++
+					var s = this.children[0].addChild('@+')
+					_ this.children[i].analize
+					_ this.children[i].moveTo(s, true)
+				_ this.replaceWith
+					@ this.children[0]
+
+		xittfNode/analize( typeSelector )
+			if this.getIdentStrict()
+				# log 'typeSelector', this
+				set this.tag = '@<'
+
+		xittfNode/analize( attributeSelector )
+			if this.matchChildren(['attributeName'], true)
+				set this.tag = '@['
+				set this.name = this.children[0].name
+				_ this.children[0].delete
+			elif this.matchChildren(['attributeName', 'attributeMatch', 'attributeValue'], true)
+				set this.tag = '@['
+				set this.name = this.children[0].name
+				_ this.children[0].delete
+
+		xittfNode/analize( attributeName )
+			if this.getIdentStrict()
+		
+		m analize_attributeMatch
+			set this.tag = this._name
+
+		xittfNode/analize( attributeValue )
+			if this.matchChildren(['string'], true)
+				set this.tag = '@"'
+				_ this.setChildToName
+					@ 'string'
+
+		m analize_parentSelector
+			set this.tag = '@&'
+			set this.name = null
+
+		m analize_combinator
+			set this.tag = '@>'
+			set this.name = null
+
+		xittfNode/analize( class )
+			if this.getIdentStrict()
+				set this.tag = '@.'
+			elif this.children.length > 1
+				_ this.wrapChildren
+					@ '@expression'
+
+		xittfNode/analize( pseudoClass )
+			if this.getIdentStrict()
+				set this.tag = '@.:'
+			elif this.matchChildren(['ident', 'arguments'], true)
+				set this.tag = '@.:'
+				_ this.setIdentToName
+				foreach item in this.children[1].children
+					_ item.moveTo(this)
+				_ this.children[1].delete
+
+		xittfNode/analize( pseudoElement )
+			if this.getIdentStrict()
+				set this.tag = '@::'
+			elif this.matchChildren(['ident', 'arguments'], true)
+				set this.tag = '@::'
+				_ this.setIdentToName
+				foreach item in this.children[1].children
+					_ item.moveTo(this)
+				_ this.children[1].delete
+
+		xittfNode/analize( include )
+			if this.matchChildren(['atkeyword', 'ident', 'arguments'], true)
+				set this.tag = '@mix'
+				_ this.setIdentToName
+				_ this.children[2].moveChildrenTo(this, true)
+			elif this.matchChildren(['atkeyword', 'ident', 'block'], true)
+				set this.tag = '@mix'
+				_ this.setIdentToName
+				foreach item in this.children[2].children
+					var arg 
+						_ this.addChild('@:', '')
+					_ item.moveTo(arg, true)
+				_ this.children[2].delete
+			elif this.matchChildren(['atkeyword', 'ident', 'arguments', 'block'], true)
+				set this.tag = '@mix'
+				_ this.setIdentToName
+				foreach item in this.children[2].children
+					var arg 
+						_ this.addChild('@:', '')
+					_ item.moveTo(arg, true)
+				_ this.children[2].delete
+				_ this.children[3].moveChildrenTo(this, true)
+
+		m analize_arguments
+			var argGroups = getArguments(this)
+			set this.children = []
+			foreach argGroup in argGroups
+				# log 'argGroup.length', argGroup.length + '/' + argGroups.length
+				if argGroup.length == 1
+					_ this.addChild(argGroup[0], '')
+				else
+					var child = this.addChild('@expression', '')
+					_ child.addChildren(argGroup)
+		
+		xittfNode/analize( conditionalStatement )
+			if this.matchChildren(['condition', 'block'], true)
+				set this.tag = '@' + this.children[0].name
+				if this.children[0].name === 'else'
+					_ this.children[0].delete
+				else
+					set this.children[0].name = null
+				set this.name = null
+				_ this.children[1].moveChildrenTo(this, true)
+
+		m analize_condition
+			set this.tag = '@true'
+			_ this.setChildToName
+				@ 'atkeyword'
+
+		m analize_operator
+			set this.tag = operators[this._name] ? operators[this._name] : 'op'
+			set this.name = operators[this._name] ? '' : this._name
+
+		m analize_number
+			set this.tag = this._name
+			set this.name = null
+
+		m analize_string
+			set this.tag = '"'
+			set this.name = codifyInterpolation(this._name.substr(1,this._name.length-2))
+
+		m analize_ident
+			set this.tag = '@literal'
+			set this.name = this._name
+
+		m getChildStrict
+			param tag
+			if this.matchChildren([tag], true)
+				set this.name = this.children[0]._name
+				_ this.children[0].delete
+				return true
+			else
+				return false
+
+		m setIdentToName
+			_ this.setChildToName
+				@ 'ident'
+
+		m getChildToName
+			param tag
+			foreach item in this.children
+				if item._tag === tag
+					_ item.delete
+					return item._name
+			return null
+
+		m setChildToName
+			param tag
+			foreach item in this.children
+				if item._tag === tag
+					_ item.delete
+					set this.name = item._name
+
+		m setChildToName2
+			param tag
+			foreach item in this.children
+				if item.tag === tag
+					_ item.delete
+					set this.name = item.name
+
+		m getIdentStrict
+			if this.matchChildren(['ident'], true)
+				set this.name = this.children[0]._name
+				_ this.children[0].delete
+				return true
+			else
+				return false
+
+	function isExpression
+		param node
+		foreach item in node.children
+			if item._tag === 'operator'
+				return true
+		return false
+
+	function getLiteral
+		param text
+		if ['true', 'false', 'none', 'null', 'and', 'or'].indexOf(text) > -1
+			return
+				iif text === 'and'
+					then '&&'
+					else
+						iif text === 'or'
+							then '||'
+							else text
+		else
+			return text
+
+	function isMap
+		param node
+		if node._tag !== 'parentheses'
+			return false
+		if node.children.length === 0
+			return true
+		foreach item in node.children
+			if item._tag === 'operator' && item._name === ':'
+				return true
+		return false
+
+	function getArguments
+		param node
+		var ret = []
+		var current = []
+		foreach item in node.children
+			if item._tag === 'space'
+			elif item._tag === 'delimiter'
+				_ ret.push(current)
+				set current = []
+			else
+				_ current.push(item)
+		_ ret.push(current)
+		return ret
+
+	function getValidName
+		param name
+		if !name
+			return name
+		var ss = name.split('-')
+		for var i=1; i<ss.length; i++
+			set ss[i] = ss[i][0].toUpperCase() + ss[i].substr(1)
+		return ss.join('')
+
+	function codifyInterpolation
+        param template
+        param lDel
+        param rDel
+        if verify.isEmpty(template)
+			return ''
+		var regex = new RegExp("#\{[^#\{\}]+\}", "g")
+		return 
+			_ template.replace
+				@ regex
+				function 
+					param placeholder
+					# log '==================== codifyInterpolation.placeholder', placeholder
+					var key = placeholder.slice(2, -1)
+					set key
+						_ key.replace
+							@ /\$\w+/g
+							function 
+								param placeholder
+								# log '==================== codifyInterpolation.placeholder', placeholder
+								return placeholder.substr(1)
+					return '" + ' + key + ' + "'    
+
+
+	set module.exports = XIttfNode

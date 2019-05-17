@@ -1,0 +1,23 @@
+﻿$group
+	$params &opt
+
+	. {classes.split2_wrapper}
+		< Splitter
+			@ split vertical
+			@ secondaryInitialSize { 700 }
+			@ primaryMinSize {200}
+			@ secondaryMinSize {700}
+			@ onResize { this.handleSplitter1Resize }
+			. {classes.editorbox}
+				. {classes.editorHead}
+					common/tlb()
+						$hook split2head1
+				. {classes.split2_pane1}
+					$hook pane1
+			. {classes.editorbox}
+				. {classes.editorHead}
+					$$ span { JSON.stringify(splitter1Sizes) }
+					common/tlb()
+						$hook split2head2
+				. {classes.split2_pane2}
+					$hook pane2

@@ -1,0 +1,37 @@
+﻿$group
+
+	var uploadFolder = "c:/my/starters/upload"
+	var file_1 = "c:/my/starters/upload/f_1.ittf"
+	var file_2 = "c:/my/starters/upload/f_2.ittf"
+	var file_3 = "c:/my/starters/upload/fold/f_3.ittf"
+	var file_4 = "c:/my/starters/upload/fold/f_4.ittf"
+	var file_5 = "c:/my/starters/upload/fold/sub/f_5.ittf"
+	var content = "Hello "
+
+	describe upload a folder
+
+		before-async
+			_ file.write
+				@ file_1
+				@ content + 'file_1'
+			_ file.write
+				@ file_2
+				@ content + 'file_2'
+			_ file.write
+				@ file_3
+				@ content + 'file_3'
+			_ file.write
+				@ file_4
+				@ content + 'file_4'
+			_ file.write
+				@ file_5
+				@ content + 'file_5'
+			_ done()
+
+		it-async should upload c:/my/starters/upload
+			_ doc.uploadFolder
+				@ uploadFolder
+				f_cb_done( r )
+					log 'doc.uploadFolder', r
+					tobe_array( r, 5 )
+

@@ -1,0 +1,206 @@
+﻿module wizzi-mtree.loader.mTreeBrick
+    kind jsfile
+
+	#
+		# An mTreeBrick is a nodified ittf document.
+		# In the build-up of an mTree, the same mTreeBrick can be mixed 
+		# or included many times, so it is created once and always cloned.
+		# { mTreeBrick
+		#     string uri       // The location of the source IttfDocument.
+		#     string schema    // The IttfDocument schema.
+		#     { loadHistory   // The loadHistory object
+		#     [ lines          // parsed lines of source text
+		#     [ nodes          // nodified lines of source text
+		#     string sourceKey // key of the source info of the IttfDocument
+		#     string brickKey  // key of the cloned mTreeBrick
+		#
+		#     ... these are set by the mixer, on the cloned object
+		#     boolean mixed          // true if has been mixed
+		#     string $mixerBrickKey  // the brickKey of the mTreeBrick of the calling node
+		#     string $args           // the node-value of the mixing node
+		#     string $argArray       // the $arg array of the mixing node
+		#
+		#     ... these are set by the nodifier on the original mtree, then cloned
+		#     string $params:        // the node-value of the $params node, if declared
+		#
+		# Method
+		#    load
+		#    setKeys
+		#    clone
+		#    calcParamValues
+		#    toIttf
+		#    toText
+		#    dump
+		
+    var path = require('path')
+	var util = require('util')
+	var verify = require('wizzi-utils').verify
+    var errors = require('../errors')
+    var types = require('../util/types')
+    var liner = require('./liner')
+    var nodifier = require('./nodifier')
+
+    wz-class MTreeBrick
+		ctor
+			param uri
+			param loadHistory
+			set this.uri = uri
+			set this.loadHistory = loadHistory
+    
+		m load
+            string ittfSourceTextContent
+            { ittfDocumentData
+				string sourceKey
+            
+			checked_call_return( lines
+				_ liner(ittfSourceTextContent, ittfDocumentData)
+            
+			checked_call_return( nodes
+				_ nodifier(lines, this)
+			
+			set this.nodes = nodes
+    
+		m setKeys
+            param sourceKey
+            param brickKey
+            set this.sourceKey = sourceKey
+            set this.brickKey = brickKey
+    
+		m clone
+            var clonedModel
+                new MTreeBrick
+                    @ this.uri
+                    @ this.loadHistory
+            if this.$params
+                set clonedModel.$params = this.$params
+            set clonedModel.nodes = this._cloneNodes(this.nodes, null, clonedModel)
+            return clonedModel
+    
+		m _cloneNodes
+            param nodes
+            param parent
+            param clonedModel
+            
+			var self = this
+            var 
+                decl clnode
+                decl clnodes
+                    [ 
+            foreach node in nodes
+                set clnode =
+                    { 
+                        @ id self.loadHistory.getNewNodeId()
+                        @ parsedId node.id
+                        @ name node.name
+                        @ value node.value
+                        @ tagSuffix node.tagSuffix
+                        @ row node.row
+                        @ col node.col
+                        @ sourceKey node.sourceKey
+						@ hasMacro node.hasMacro
+                        @ parent parent
+                        @ model clonedModel
+                set clnode.children = self._cloneNodes(node.children, clnode, clonedModel)
+                _ clnodes.push(clnode)
+            return clnodes
+    
+		$include mtreeBrick/calcParamValues
+    
+		m dump
+            param evaluated
+            var 
+                decl buffer
+                    [ 
+                decl ctx
+                    { 
+                        @ evaluated evaluated
+						@ loadHistory this.loadHistory
+            _ this.nodes.forEach
+                function 
+                    param node
+                    _ _dumpNodeDeep(node, 1, buffer, ctx)
+            return buffer.join('\n')
+    
+		m toIttf
+            var buffer
+                [ 
+            _ this.nodes.forEach
+                function 
+                    param node
+                    _ _toIttfNodeDeep(node, 0, buffer)
+            return buffer.join('\n')
+    
+		m toText
+            var buffer
+                [ 
+            if this.nodes.length == 1
+                var root = this.nodes[0]
+				foreach child in root.children
+					_ _toTextNodeDeep(child, 0, buffer)
+            return buffer.join('\n')
+
+
+	function _dumpNodeDeep
+        param node
+        param indent
+        param buffer
+        param ctx
+        if ctx.evaluated && node.u
+			var sourceUri = ctx.loadHistory.ittfDocumentDatas[node.u].ittfDocumentUri
+			var sourceUriName = path.basename(sourceUri)
+			var sourceUriFolder = path.basename(path.dirname(sourceUri))
+            _ buffer.push
+				@ spaces(indent * 2) + node.n + ' ' + (node.v || '') + '    r' + node.r + ',c' + node.c + '    source:  ' + sourceUriFolder + '/' + sourceUriName
+        else 
+            _ buffer.push
+				@ spaces(indent * 2) + node.name + ' ' + (node.value || '') + '  r' + node.row + ',c' + node.col + '    ids: ' + node.parsedId + ' ' + node.id
+        
+		if node.model
+            if node.model.$args || node.model.$params
+                if !ctx[node.model.brickKey]
+                    set ctx[node.model.brickKey] = node.model
+                    _ buffer.push
+						@ spaces(indent * 2) + '  $args: ' + node.model.$args + ' $params: ' + node.model.$params
+        set indent++
+        _ node.children.forEach
+            function 
+                param n
+                _ _dumpNodeDeep(n, indent, buffer, ctx)
+
+	function _toIttfNodeDeep
+		param node
+		param indent
+		param buffer
+		_ buffer.push
+			@ spaces(indent * 4) + node.n + ' ' + (node.v || '')
+		set indent++
+		foreach child in node.children
+			_ _toIttfNodeDeep(child, indent, buffer)
+
+	function _toTextNodeDeep
+        param node
+        param indent
+        param buffer
+        _ buffer.push
+			@ spaces(indent * 4) + node.n + ' ' + node.v || ''
+        set indent++
+        foreach child in node.children
+			_ _toTextNodeDeep(child, indent, buffer)
+    
+	function spaces
+        param num
+        return 
+            _ Array(num + 1)
+                ._ join(" ")
+
+	function local_error
+		param name
+		param method
+		param message
+		param node
+		param inner
+		if node
+			var nodeError = new errors.NodeError(message, node)
+			set message = nodeError.message
+		r_wz_err( name, method, inner )
+			@ message

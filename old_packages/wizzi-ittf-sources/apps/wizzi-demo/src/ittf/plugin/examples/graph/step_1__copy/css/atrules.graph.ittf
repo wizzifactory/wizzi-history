@@ -1,0 +1,70 @@
+﻿$group
+
+	cat atrule
+		# An at-rule is a CSS statement beginning with an at sign, '@' (U+0040 COMMERCIAL AT), 
+		# followed by an identifier and includes everything up to the next 
+		# semi-colon, ';' (U+003B SEMICOLON), or the next CSS block, whichever comes first.
+
+	e @charset
+		# Defines the character set used by the style sheet.
+		cat atrule
+	
+	e @import
+		# Tells the CSS engine to include an external style sheet.
+		cat atrule
+	
+	e @namespace
+		# Tells the CSS engine that all its content must be considered prefixed with an XML namespace.
+		cat atrule
+	
+	e @media
+		# A conditional group rule which will apply its content if the device meets the criteria of the condition defined using a media query.
+		is nested-atrule
+		is conditional-group-rule
+		cat atrule
+	
+	e @supports
+		# A conditional group rule which will apply its content if the browser meets the criteria of the given condition.
+		is nested-atrule
+		is conditional-group-rule
+		cat atrule
+	
+	e @document
+		# A conditional group rule which will apply its content if the document in which the style sheet is applied meets the criteria of the given condition. (deferred to Level 4 of CSS Spec)
+		is experimental
+		is nested-atrule
+		is conditional-group-rule
+		cat atrule
+	
+	e @page
+		# Describes the aspect of layout changes which will be applied when printing the document.
+		is nested-atrule
+		cat atrule
+	
+	e @font-face
+		# Describes the aspect of an external font to be downloaded.
+		is nested-atrule
+		cat atrule
+	
+	e @keyframes
+		# Describes the aspect of intermediate steps in a CSS animation sequence.
+		is nested-atrule
+		cat atrule
+	
+	e @viewport
+		# Describes the aspects of the viewport for small screen devices. (currently at the Working Draft stage)
+		is nested-atrule
+		cat atrule
+	
+	e @counter-style
+		# Defines specific counter styles that are not part of the predefined set of styles. 
+		# (at the Candidate Recommendation stage, but only implemented in Gecko as of writing)
+		is experimental
+		is nested-atrule
+		cat atrule
+	
+	e @font-feature-values
+		# (plus @swash, @ornaments, @annotation, @stylistic, @styleset and @character-variant)
+		# Define common names in font-variant-alternates for feature activated differently in OpenType. (at the Candidate Recommendation stage, but only implemented in Gekko as of writing)
+		is nested-atrule
+		cat atrule

@@ -1,0 +1,73 @@
+﻿$group
+
+	m getSchemas
+		param callback
+		
+		if this.schemas != null
+			r_cb( this.schemas )
+		
+		const that = this
+		_ this.fb.getCollection
+			_ this.pathNames.examplesCollPath
+			{
+			f_cb( examples )
+				log 'WizziStore.getSchemas. examples: ', examples
+				set that.schemas = {}
+				var schema
+				foreach item in examples
+					if item.data.schema
+						set schema = that.schemas[item.data.schema]
+						if !schema
+							set schema
+								{
+									@ name item.data.schema
+									[ examples
+									[ fragments
+									[ snippets
+							set that.schemas[item.data.schema] = schema
+						_ schema.examples.push
+							{
+								@ name item.data.name
+						log 'WizziStore.getSchemas. schema.examples: ', schema.examples
+				_ that.fb.getCollection
+					_ that.pathNames.snippetsCollPath
+					{
+					f_cb( snippets )
+						log 'WizziStore.getSchemas. snippets: ', snippets
+						foreach item in snippets
+							if item.data.schema
+								set schema = that.schemas[item.data.schema]
+								if !schema
+									set schema
+										{
+											@ name item.data.schema
+											[ examples
+											[ fragments
+											[ snippets
+									set that.schemas[item.data.schema] = schema
+								_ schema.snippets.push
+									{
+										@ name item.data.name
+						log 'WizziStore.getSchemas', that.schemas
+						const schemaNames = Object.keys(that.schemas)
+						const schemaLen = schemaNames.length
+						function set_fragments
+							param count
+							if count == schemaLen
+								r_cb( that.schemas )
+							else
+								var schemaItem = that.schemas[schemaNames[count]]
+								_ that.getFragments
+									@ schemaItem.name
+									f_cb( fragments )
+										log 'WizziStore.getSchemas.schema.fragments', schemaItem.name, fragments
+										for var k in fragments
+											_ schemaItem.fragments.push
+												{
+													@ name k
+										_ set_fragments(count + 1)
+						_ set_fragments(0)
+
+	schema_item_Crud( Example, examples )
+	schema_item_Crud( Fragment, fragments )
+	schema_item_Crud( Snippet, snippets )

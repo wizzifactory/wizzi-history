@@ -1,0 +1,78 @@
+  module  ids: 1 79
+    kind jsfile ids: 2 80
+    var line = require('./line') ids: 3 81
+    class Block ids: 4 82
+      ctor  ids: 5 83
+        param options ids: 6 84
+        set this.lines = [] ids: 7 85
+        set this.options = (options || {}) ids: 8 86
+        set this.indentValue = (this.options.indent || 0) ids: 9 87
+        set this.currentline = null ids: 10 88
+      m forceIndent ids: 11 89
+        param value ids: 12 90
+        var save = this.indentValue ids: 13 91
+        set this.indentValue = value ids: 14 92
+        return save ids: 15 93
+      m indent ids: 16 94
+        param value ids: 17 95
+        set this.indentValue += typeof (value) !== 'undefined' ? value : 1 ids: 18 96
+      m deindent ids: 19 97
+        param value ids: 20 98
+        set this.indentValue -= typeof (value) !== 'undefined' ? value : 1 ids: 21 99
+        set this.indentValue = Math.max(0, this.indentValue) ids: 22 100
+      m w ids: 23 101
+        param text ids: 24 102
+        if this.currentline != null ids: 25 103
+          _ this.currentline.add(text) ids: 26 104
+          _ this.lines.push ids: 27 105
+            @ this.currentline ids: 28 106
+          set this.currentline = null ids: 29 107
+        else  ids: 30 108
+          _ this.lines.push ids: 31 109
+            new line ids: 32 110
+              @ text ids: 33 111
+              @ this.indentValue ids: 34 112
+              @ this.options ids: 35 113
+      m write ids: 36 114
+        param text ids: 37 115
+        if this.currentline != null ids: 38 116
+          _ this.currentline.add(text) ids: 39 117
+        else  ids: 40 118
+          set this.currentline = new line(text, this.indentValue, this.options) ids: 41 119
+      m writeFile ids: 42 120
+        param filePath ids: 43 121
+        if this.currentline != null ids: 44 122
+          _ this.currentline.addFile(filePath) ids: 45 123
+          _ this.lines.push ids: 46 124
+            @ this.currentline ids: 47 125
+          set this.currentline = null ids: 48 126
+        else  ids: 49 127
+          _ this.lines.push ids: 50 128
+            new line ids: 51 129
+              @ filePath ids: 52 130
+              @ this.indentValue ids: 53 131
+              @ this.options ids: 54 132
+              @ true ids: 55 133
+      m toStream ids: 56 134
+        param stream ids: 57 135
+        param ctx ids: 58 136
+        foreach item in this.lines ids: 59 137
+          _ item.toStream(stream, ctx) ids: 60 138
+        if this.currentline != null ids: 61 139
+          _ this.currentline.toStream(stream, ctx) ids: 62 140
+      m terminate ids: 63 141
+        set delete (this.options) ids: 64 142
+        set delete (this.currentline) ids: 65 143
+        foreach item in this.lines ids: 66 144
+          _ item.terminate() ids: 67 145
+      m hydrate ids: 68 146
+        param lines ids: 69 147
+        param options ids: 70 148
+        set this.currentline = null ids: 71 149
+        set this.lines = [] ids: 72 150
+        var l ids: 73 151
+        foreach item in lines ids: 74 152
+          set l = new line('', 0, options) ids: 75 153
+          _ l.hydrate(item) ids: 76 154
+          _ this.lines.push(l) ids: 77 155
+    set module.exports = Block ids: 78 156

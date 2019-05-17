@@ -1,0 +1,259 @@
+﻿module wizzi.model.modelInfo
+    kind jsfile
+
+    var util = require("util")
+	var assert = require("assert")
+    var path = require("path")
+	var async = require("async")
+	var errors = require('../errors')
+	var verify = require('wizzi-utils').verify
+    var ittfs = require('wizzi-repo').Filesystem
+    +
+	#
+		# Is the ModelInfo instance that 
+		# - receive the 'wfjob' data to build a model
+		# - calls the wizzi factory to retrieve model loaders.
+		#
+		# TODO generatorRequireContextOnly ... explain ...
+		#
+		# params
+			# { config
+				# # built from a `wfjob` `artifact` element
+				# string cwd
+				# string src
+				# string ignore
+				# string schema
+				# string format
+				# boolean isCompile
+				# [ contexts
+					# { context 
+						# api-ref wizzi.model.modelInfoConfig
+						# { coll
+							# string name
+							# string itemName
+							# [	pathTemplateValues
+								# { pathTemplateValues
+									# string token
+									# string attribute
+									# function function
+	+
+	function logme
+        if false
+            _ console.log.apply(console, arguments)
+    +
+	var modelInfoCount = 0
+    +
+	wz-class ModelInfo
+        ctor
+            { config
+				string src
+				string cwd
+					optional
+				string ignore
+					optional
+				string schema
+					optional
+				string format
+					optional
+				boolean isCompile
+					optional
+				[ contexts
+					optional
+				[ transformers
+					optional
+				string exportName
+					optional
+				{ coll
+					optional
+
+            set config.id = ('mi_' + ++modelInfoCount)
+            set this.id = config.id
+            set this.config = config
+            set this.schema = config.schema
+			set this.format = config.format
+			set this.isCompile = !!config.isCompile
+            set this.contexts
+                [ 
+            if verify.isArray(config.contexts)
+                foreach item in config.contexts
+                    _ this.contexts.push
+                        new ModelInfo(item)
+            set this.transformers = config.transformers
+            set this.coll = config.coll
+            set this.exportName = config.exportName
+            +
+            set this.generatorRequireContextOnly = false
+            if config.src === 'context'
+                set this.generatorRequireContextOnly = true
+            else 
+                set config.src = verify.unixifyPath(config.src)
+                if verify.isString(config.cwd)
+                    set config.cwd = verify.unixifyPath(config.cwd)
+                var ndx = config.src.indexOf('/*')
+                if ndx > -1
+                    set config.srcPattern = config.src.substr(ndx)
+                    set config.src = config.src.substr(0, ndx)
+            if this.generatorRequireContextOnly == false
+                if verify.isAbsolutePath(config.src) === false && verify.isEmpty(config.cwd) === true
+                    throw 
+						_ error
+							@ 999
+							@ 'ctor'
+							@ "When the parameter config.src is not an absolute path, config.cwd must be a not empty string. Received: " + config.cwd
+    
+		m src
+            string value
+				optional
+            if typeof (value) === 'undefined'
+				if this.generatorRequireContextOnly == true
+					return null
+                else
+					return this.config.src
+            else 
+                set this.config.src = value
+    
+		m srcFullPath
+            if this.generatorRequireContextOnly == true
+                return null
+            return 
+                iif verify.isAbsolutePath(this.config.src)
+                    then 
+                        set this.config.src
+                    else 
+                        _ path.join
+                            @ this.config.cwd
+                            @ this.config.src
+    
+		m ignoreFullPath
+			if this.config.ignore
+				return 
+					iif verify.isAbsolutePath(this.config.ignore)
+						then 
+							set this.config.ignore
+						else 
+							_ path.join
+								@ this.config.cwd
+								@ this.config.ignore
+			else
+				return null
+    
+		m srcGlobPath
+            var globPattern = this.config.srcPattern || '/**/*.*'
+            if globPattern.substr(0, 1) !== '/'
+                set globPattern = ('/' + globPattern)
+            return this.srcFullPath() + globPattern
+    
+		m srcGlobOptions
+            var ret
+                { 
+			# TODO fix or VIA
+			# for now see getFiles skip `*__copy`
+            # if this.config.ignore
+            #    set ret.ignore = [this.ignoreFullPath()]
+            return ret
+    
+		m productionManager
+            { value
+				optional
+            if typeof (value) === 'undefined'
+                return this.productionManagerInstance
+            else 
+                if verify.isObject(value) === false
+                    throw 
+                        new Error("value parameter must be an object. Instead is: " + value)
+				# log 'wizzi.model.modelInfo.set_productionManager.globalContext', value.globalContext()
+                set this.productionManagerInstance = value
+				foreach modelInfo in this.contexts
+					_ modelInfo.productionManager(value)
+   
+		m hasContext
+            return verify.isArray(this.config.contexts) && this.config.contexts.length > 0
+    
+		m getFileService
+			
+			# return ittfs
+			
+			# TODO
+
+			_ assert.ok
+				_ verify.isObject
+					@ this.productionManagerInstance
+				@ 'productionManagerInstance not set. Must call productionManager(productionManagerInstance)'
+			_ assert.ok
+				_ verify.isObject
+					@ this.productionManagerInstance.wizziFactory.fileService
+				@ 'fileService must be set on wizziFactory'
+			return this.productionManagerInstance.wizziFactory.fileService
+
+		m getModelCollectionInfo
+            if this.hasContext()
+				foreach item in this.config.contexts
+                    if verify.isObject(item.coll)
+                        return item.coll
+            return null
+    
+		m getModelInfos
+            param options
+			param callback
+
+			if this.generatorRequireContextOnly == true
+				r_cb([this])
+
+            var that = this
+			_ this.isDirectory
+				f_cb( isDirectory )
+					if isDirectory
+						var ret
+							[ 
+						_ that.getFiles
+							@ options
+							f_cb( files )
+								if files.__is_error
+									return
+										_ callback(files)
+								for var i = 0; i < files.length; i++
+									var fileInfo = files[i]
+									var mi = that.clone()
+									_ mi.src
+										@ fileInfo.relpath
+									_ mi.productionManager
+										@ that.productionManagerInstance
+									_ ret.push(mi)
+								return
+									_ callback
+										@ null
+										@ ret
+					else 
+						return 
+							_ callback
+								@ null
+								[ 
+									@ that
+    
+		m clone
+            var newconfig
+                { 
+                    @ cwd this.config.cwd
+                    @ src this.config.src
+                    @ schema this.config.schema
+					@ format this.config.format
+					@ isCompile this.config.isCompile
+                    @ contexts this.config.contexts
+                    @ transformers this.config.transformers
+                    @ coll this.config.coll
+            var ret
+                new ModelInfo(newconfig)
+            return ret
+    
+		m toString
+            return 'modelInfo.config: ' + util.inspect(this.config, {depth: 2})
+    
+		m terminate
+
+		$include modelinfo/sources
+		$include modelinfo/loading
+    
+	function relPath
+        param fullpath
+        param basedir
+        return fullpath.substr(basedir.length + 1)

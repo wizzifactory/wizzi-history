@@ -1,0 +1,47 @@
+﻿includer first
+
+	child lexer container
+
+		lexer first contained lexer
+
+			e spaces
+				+
+					|
+						blank
+						: \t
+						: \r
+						: \n
+						: \f
+
+			e num
+				? 
+					|
+						: +
+						: -
+				|
+					&
+						* 0-9
+						: .
+						+ 0-9
+					+
+						[ 0-9
+
+			tk Whitespace
+				skipped
+				line-breaks
+				pattern
+					ref spaces
+  
+			tk Number
+				pattern
+					ref num
+
+			tk Bigus
+				pattern
+					&
+						: <
+					*
+						[ a-z
+					&
+						: >
+			tk ;

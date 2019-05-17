@@ -1,0 +1,13 @@
+﻿$group
+	$params browse|true
+
+	$append split2head2
+		common/tlb-btn(Edit, this.handleEditStart, EditIcon)
+	{
+		&&
+			+ ittfDocument
+			< CodeEditor
+				@ browse {${browse}}
+				@ value {ittfDocument}
+				@ width { splitter1Sizes.secondary - 30 }
+				@ height { splitter1Sizes.third - 64}

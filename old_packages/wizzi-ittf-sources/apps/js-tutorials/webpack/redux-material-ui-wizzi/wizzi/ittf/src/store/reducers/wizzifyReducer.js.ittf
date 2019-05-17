@@ -1,0 +1,36 @@
+﻿module
+	kind react
+	+
+	import_rsf_actions( WIZZIFY_SNIPPET )
+	#
+		import { 
+			\b } from '../actions'
+	+
+	const wizzifyInitialState
+		{
+			@ isWizzifing false
+			@ wizzifyError null
+			@ wizzifiedSnippet ''
+	+
+	r( wizzify, wizzifyInitialState )
+
+		c( WIZZIFY_SNIPPET_REQUEST
+			{
+				@ ...state
+				@ isWizzifing true
+				@ wizzifyError null
+		
+		c( WIZZIFY_SNIPPET_SUCCESS
+			{
+				@ ...state
+				@ wizzifiedSnippet action.wizzifiedSnippet
+				@ isWizzifing false
+				@ wizzifyError null
+		
+		c( WIZZIFY_SNIPPET_FAILURE
+			{
+				@ ...state
+				@ wizzifiedSnippet ''
+				@ isWizzifing false
+				@ wizzifyError action.error
+

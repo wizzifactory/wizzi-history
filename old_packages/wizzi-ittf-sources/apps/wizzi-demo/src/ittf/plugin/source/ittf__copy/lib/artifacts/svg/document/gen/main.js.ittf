@@ -1,0 +1,93 @@
+﻿module wizzi-demo.plugin.lib.artifacts.svg.document.gen.main
+	kind jsfile
+
+	# Example of language artifact that targets
+	# the Scalable Vector Graphics (SVG) 1.1 (Second Edition) specification.
+	# It implements a minimal set of elements
+	#
+	# This is a code write based artifact generator.
+	#
+
+	var md = module.exports = {}
+	var myname = 'wizzi-demo.plugins.lib.artifacts.svg.document.main';
+
+	set md.gen
+		function gen
+			{ model
+			{ ctx
+			callback
+			# check the model is a wizzi model of type 'svg'
+			if model.wzElement !== 'svg'
+				return
+					_ callback
+						_ ctx.error
+							@ myname + " error: the model paramater should be an 'svg' wizzi model"
+							@ model
+			_ genItem(model, ctx)
+			_ callback(null, ctx)
+
+	function genItem
+		param item
+		param ctx
+		var st = specialTags[item.wzElement]
+		if st
+			return
+				_ st(item, ctx)
+		_ ctx.write('<' + item.wzTag)
+		_ genAttrs(item, ctx)
+		if item.items.length > 0
+			_ ctx.w('>')
+			if item.wzName && item.wzName.length > 0
+				_ ctx.write(item.wzName)
+			_ genItems(item.items, ctx, { indent: true })
+			_ ctx.w('</' + item.wzTag + '>')
+		else
+			_ ctx.w('>' + (item.wzName && item.wzName.length > 0 ? item.wzName : '') + '</' + item.wzTag + '>')
+
+	function genItems
+		param items
+		param ctx
+		param options
+		if options && options.indent
+			_ ctx.indent()
+		foreach item in items
+			_ genItem(item, ctx)
+		if options && options.indent
+			_ ctx.deindent()
+
+	function genAttrs
+		param item
+		param ctx
+		foreach a in item.getAttributes()
+			_ ctx.write
+				@ ' ' + a.name + '="' + a.value + '"'
+		var styles = item.getStyleAttributes()
+		if styles.length > 0
+			var sb = []
+			foreach style in styles
+				_ sb.push
+					@ style.name + ':' + style.value + ';'
+			_ ctx.write
+				@ ' style="' + sb.join('') + '"'
+
+	var specialTags = {}
+	set specialTags.svg
+		function
+			param item
+			param ctx
+			_ ctx.w('<?xml version="1.0"?>')
+			_ ctx.write('<svg xmlns="http://www.w3.org/2000/svg"')
+			_ genAttrs(item, ctx)
+			_ ctx.w('>')
+			_ genItems(item.items, ctx, { indent: true })
+			_ ctx.w('</svg>')
+	
+	set specialTags.linearGradient
+		function
+			param item
+			param ctx
+			_ ctx.write('<linearGradient')
+			_ genAttrs(item, ctx)
+			_ ctx.w('>')
+			# TODO
+			_ ctx.w('</linearGradient>')

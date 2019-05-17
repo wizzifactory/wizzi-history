@@ -1,0 +1,14 @@
+﻿$group
+	$params formats|html-json
+
+	$if formats == 'html-json'
+
+		if req.accepts('json') || req.query.format === 'json'
+			_ res.set('Content-Type', 'application/json');
+			_ res.send
+				_ jsondata(payload)
+		else
+			_ res.set('Content-Type', 'text/html');
+			_ res.send
+				_ view(payload)
+

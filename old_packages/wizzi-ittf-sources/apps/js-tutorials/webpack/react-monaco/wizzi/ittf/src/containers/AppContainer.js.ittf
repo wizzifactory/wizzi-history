@@ -1,0 +1,53 @@
+﻿r-container( App )
+
+	$append imports
+
+		$include app-options
+
+		import App from '../components/App'
+
+		$foreach a in app.actions
+			import { ${camelCase(a.name)} } from '../store/actions'
+
+	$foreach a in app.actions
+		=> ${camelCase('handle_' + a.name)}
+            $foreach p in a.params
+                param ${p}
+			prop ${camelCase('dispatch_' + a.name)}
+			_ ${camelCase('dispatch_' + a.name)}
+				$foreach p in a.params
+					@ ${p}
+
+	render
+
+		$foreach p in app.Editor.stateProps
+			prop ${p.name}
+		prop uioptions
+
+		return
+			< App
+				$foreach p in app.Editor.stateProps
+					@ ${p.name} { ${p.name} }
+				@ uioptions {uioptions}
+				$foreach a in app.actions
+					@ ${camelCase('on_' + a.name)} { this.${camelCase('handle_' + a.name)} }
+
+	$append state-to-props
+		
+		$foreach p in app.Editor.stateProps
+			@ ${p.name} state.${p.reducer}.${p.name}
+		@ uioptions state.app.uioptions
+
+	$append dispatch-to-props
+
+		$foreach a in app.actions
+
+			@ ${camelCase('dispatch_' + a.name)}
+				=>
+                    $foreach p in a.params
+                        param ${p}
+					log '${camelCase('dispatch_' + a.name)}.arguments', arguments
+					_ dispatch
+						_ ${camelCase(a.name)}
+							$foreach p in a.params
+								@ ${p}

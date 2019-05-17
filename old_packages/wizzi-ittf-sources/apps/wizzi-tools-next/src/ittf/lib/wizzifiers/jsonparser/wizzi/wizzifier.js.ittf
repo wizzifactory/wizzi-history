@@ -1,0 +1,95 @@
+﻿basewizzifier()
+
+	$append imports
+		
+		function parseInternal
+			param json
+			param options
+			param callback
+			
+			if typeof callback === 'undefined'
+				set callback = options
+				set options = {}
+			set options = (options || {})
+			
+			var jsonObject = JSON.parse(json)
+			r_cb( jsonObject )
+
+	function wizzify
+        param json
+        param options
+        param callback
+		_ parseInternal
+			@ json
+			@ options
+			f_cb( syntax )
+				var wizziTree = format(syntax)
+				return
+					_ callback
+						@ null
+						@ wizziTree
+
+	function do_item
+		param parent
+		param item
+		var ret
+			{
+				[ children
+		if verify.isObject(item)
+			set ret.tag = '{'
+			for var k in item
+				_ do_property(ret, k, item[k])
+		elif verify.isArray(item)
+			set ret.tag = '['
+			foreach child in item
+				_ do_item(ret, child)
+		elif verify.isString(item)
+			set ret.tag = '"' + verify.replaceAll(item, '"', '\\"') + '"' 
+		else
+			set ret.tag = value == null ? 'null' : item.toString()
+		_ parent.children.push
+			@ ret
+
+	function do_property
+		param parent
+		param name
+		param value
+		
+		var ret
+			{
+				@ tag name
+				[ children
+		
+		if verify.isObject(value)
+			set ret.name = name
+			set ret.tag = '{'
+			for var k in value
+				_ do_property(ret, k, value[k])
+		elif verify.isArray(value)
+			set ret.name = name
+			set ret.tag = '['
+			foreach child in value
+				_ do_item(ret, child)
+		elif verify.isString(value)
+			set ret.name = '"' + verify.replaceAll(value, '"', '\\"') + '"' 
+		else
+			set ret.name = value == null ? 'null' : value.toString()
+		_ parent.children.push
+			@ ret
+	
+	function format
+		param item
+		var ret
+			{
+				[ children
+		if verify.isObject(item)
+			set ret.tag = '{'
+			for var k in item
+				_ do_property(ret, k, item[k])
+		elif verify.isArray(item)
+			set ret.tag = '['
+			foreach child in item
+				_ transform(ret, child)
+		else
+			throw new Error('Json wizzifier. The json item to wizzify must be an object or an array. Received: ' + item)
+		return ret

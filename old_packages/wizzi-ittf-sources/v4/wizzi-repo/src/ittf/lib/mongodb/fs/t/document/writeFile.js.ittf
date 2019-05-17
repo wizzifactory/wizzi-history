@@ -1,0 +1,85 @@
+﻿$group
+
+	m _createFile
+		param parentId
+		param dirname
+		param basename
+		param content
+		param callback
+		
+		var that = this
+
+		_ this.fsdb.insertItem
+			{
+				@ basename basename 
+				@ parentId parentId
+				@ dirname dirname
+				@ path normalize(path.join(dirname, basename))
+				@ kind 1
+			f_cb( r )
+				# log 'wizzi-repo.mongodb.document.renameFolder._createFile.x1.inserted', r.insertedId
+				_ that.fsdb.writeFile
+					@ r.insertedId
+					@ content
+					@ callback
+
+	m _updateFile
+		param id
+		param content
+		param callback
+		# log 'wizzi-repo.mongodb.document.renameFolder._updateFile', id, content
+		_ this.fsdb.writeFile
+			@ id
+			@ content
+			@ callback
+
+	m writeFile
+		string filePath
+		string content
+			optional
+		callback
+
+		set filePath = normalize(path.resolve(filePath))
+		
+		var that = this
+
+		# log 'wizzi-repo.mongodb.document.renameFolder.writeFile.init', filePath
+
+		_ this.fsdb.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem != null
+					# log 'wizzi-repo.mongodb.document.renameFolder.writeFile.1.exists update', filePath
+					return
+						_ that._updateFile
+							@ fsitem._id
+							@ content
+							@ callback
+				else
+					var dirname = path.dirname(filePath)
+					# log 'wizzi-repo.mongodb.document.renameFolder.writeFile.2.not exists. try get dirname', dirname
+					_ that.fsdb.getItemByPath
+						@ dirname
+						f_cb( fsitem )
+							if fsitem != null
+								# log 'wizzi-repo.mongodb.document.renameFolder.writeFile.3. dirname exists create file', fsitem._id, dirname, path.basename(filePath)
+								return
+									_ that._createFile
+										@ fsitem._id
+										@ dirname
+										@ path.basename(filePath)
+										@ content
+										@ callback
+							else
+								# log 'wizzi-repo.mongodb.document.renameFolder.writeFile.4.dirname not exists.create dirname', dirname
+								_ that.createFolder
+									@ dirname
+									f_cb( fsitem )
+										# log 'wizzi-repo.mongodb.document.renameFolder.writeFile.5.dirname created.create file', fsitem.item._id, dirname, path.basename(filePath)
+										return
+											_ that._createFile
+												@ fsitem.item._id
+												@ dirname
+												@ path.basename(filePath)
+												@ content
+												@ callback

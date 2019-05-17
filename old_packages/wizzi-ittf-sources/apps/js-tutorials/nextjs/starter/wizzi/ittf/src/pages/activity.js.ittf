@@ -1,0 +1,44 @@
+﻿r-component( Activity )
+
+	$append imports
+		import renderHTML from 'react-render-html'
+		import Link from "next/link"
+		import Head from "next/head"
+		import Layout from "../components/Layout"
+
+	m getInitialProps
+		static
+		async
+		return
+			_ Promise.resolve
+				{
+					{ fields
+						@ title 'Hello'
+						@ body '<p>My paragraph</p>'
+	
+	render
+		prop fields
+
+		return
+			< Layout
+				< Head
+					< title
+						+ {fields.title} - React Rauma
+				main
+					h1 {fields.title}
+					+ { renderHTML(fields.body) }
+					$*
+					{
+						&&
+							+ fields.main_image
+							p
+								img
+									@ src {apiRoot + fields.main_image}
+					*$
+				aside
+					nav
+						p
+							< Link
+								@ href /
+								a
+									+ Etusivulle

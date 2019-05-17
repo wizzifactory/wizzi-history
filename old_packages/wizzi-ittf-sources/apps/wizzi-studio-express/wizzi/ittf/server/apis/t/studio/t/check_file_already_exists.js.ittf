@@ -1,0 +1,8 @@
+﻿$group
+	$params filepath, entity|document
+
+	if file.isFile(${filepath})
+		return
+			_ callback
+				_ error
+					@ '${entity} already exists: "' + ${filepath} + '"'

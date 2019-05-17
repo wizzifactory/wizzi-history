@@ -1,0 +1,124 @@
+﻿module 
+    kind jsfile
+
+	var path = require('path')
+	var file = require('../fs/file')
+	var verify = require('../verify')
+	var asisLoader = require('./asisLoader')
+	var ittfFinder = require('./ittfFinder')
+    
+	#
+		#
+		# Simple mTree structure
+		# { mTreeNode
+		#   string name
+		#   string value
+		#   integer id?
+		#   [ children
+		#     { mTreeNode
+		#
+		# That can be used to build or analize an mTree.
+		# Usefull for
+		# - analizing raw mTrees, before composition and evaluation, for
+		#   documentation purposes;
+		# - building mTrees by code.
+		#
+		# can be loaded
+		# - from a source ittf document (loaded as is, no composition and evaluation)
+		# - from a loaded mTree (less usefull)
+		# - calling the 'add' and 'insertAt' methods 
+		#
+		# can be analized to detect
+		# - path of called mixins and includes
+		# - ittf node commands
+		# - nodes with jswizzi statements
+		# - nodes commented out
+		#
+		# can be exported to
+		# - a new mTree
+		# - appended to an existing mTreeNode
+		#
+
+	class IttfMTreeEx
+        ctor 
+            param name
+			param value
+			param parent
+			set this.name = name
+			set this.value = value || ''
+			set this.parent = parent || null
+            set this.children = []
+
+		m root
+			return this.parent == null ? this : this.parent.root()
+    
+		m preAdd
+            param name
+			param value
+			if {}.toString.call(name) === '[object Object]' && name.name
+				set name.parent = this
+				return name
+			else
+				return new IttfMTreeEx(name, value, this)
+
+		m insertAt
+            param name
+			param value
+			param pos
+			var node = this.preAdd(name, value)
+			if pos > this.children.length
+				_ this.children.push(node)
+			else
+				_ this.children.splice(pos, 0, node);
+			return node
+
+		m add
+            param name
+			param value
+			var node = this.preAdd(name, value)
+			_ this.children.push(node)
+			return node
+
+		m write
+			param sb
+			param indent
+			# log 'sb',sb
+			_ sb.push
+				@ indentTabs(indent) + this.name + (this.value && this.value.length > 0 ? ' ' + this.value : '')
+			foreach node in this.children
+				_ node.write(sb, indent + 1)
+
+		m writeFile
+			param string_path
+			param callback
+			var sb = []
+			_ this.write(sb, 0)
+			var that = this
+			# log 'file.openWrite'
+			_ file.openWrite
+				@ string_path
+				f_cb( stream )
+					_ stream.write(sb.join('\n'))
+					_ stream.end()
+					# log 'stream.end()', sb.join('\n')
+					_ callback(null)
+
+		m toString
+			var sb = []
+			_ this.write(sb, 0)
+			return sb.join('\n')
+
+		$include ittfMTreeEx/loadFrom
+		$include ittfMTreeEx/export
+		$include ittfMTreeEx/detect
+		$include ittfMTreeEx/analize
+		$include ittfMTreeEx/find
+
+	function indentTabs
+		param num
+		var ret = []
+		for var i=0; i<num; i++
+			_ ret.push('\t')
+		return ret.join('')
+    
+	set module.exports = IttfMTreeEx

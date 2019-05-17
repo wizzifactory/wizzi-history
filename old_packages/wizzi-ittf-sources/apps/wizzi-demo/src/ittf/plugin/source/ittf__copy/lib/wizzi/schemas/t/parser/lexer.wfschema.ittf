@@ -1,0 +1,38 @@
+﻿$group
+
+	e_tag( lexerContainer, lexer-container, node )
+	
+		m wzInitialize
+			var root = this.wzRoot()
+			set root.lexerContainer = this
+
+		include lexer parserlexer
+
+		m getTokens
+			param input
+			param callback
+			# log 'parser.lexer.getTokens', input
+			_ this.get_lexer
+				function 
+					param err
+					param lexerModel
+					if err
+						return
+							_ callback
+								@ err
+					# log 'parser.lexer.getTokens got lexerModel'
+					var tokens
+						_ lexerModel.getTokens
+							@ input
+					# log 'parser.lexer.tokens', tokens
+					if tokens.__is_error
+						return
+							_ callback
+								@ tokens.ex
+					else
+						return
+							_ callback
+								@ null
+								@ tokens
+		
+		

@@ -1,0 +1,813 @@
+  html  ids: 1033 1084
+    $args:  $params: commands|@@null
+    $  ids: 1035 1085
+      var std_js = true; ids: 1036 1086
+      var std_css = true; ids: 1037 1087
+      var std_sidebar = true; ids: 1038 1088
+      var cmds = commands ? commands.trim().split(';') : [] ids: 1039 1089
+    $foreach cmd in cmds ids: 1040 1090
+      $if cmd.trim() == 'nojs' ids: 1041 1091
+        $ std_js = false; ids: 1042 1092
+      $if cmd.trim() == 'nocss' ids: 1043 1093
+        $ std_css = false; ids: 1044 1094
+      $if cmd.trim() == 'nosidebar' ids: 1045 1095
+        $ std_sidebar = false; ids: 1046 1096
+    head  ids: 1047 1097
+      $if std_css ids: 1048 1098
+        css /static/lib/bootstrap/dist/css/bootstrap.min.css ids: 1049 1099
+      @style  ids: 1050 1100
+        $. body {__LS__  min-height: 2000px;__LS__  padding-top: 101px;__LS__} __LS__.navbar {__LS__  border-radius: 0;__LS__} __LS__.form-control { color: #000; font-weight:bold}__LS__textarea { font-family:  Verdana, Lucida Console, monospace; }__LS__input { font-family: Verdana, Lucida Console, monospace; }__LS__.wz-row { margin-top: 30px; } ids: 1051 1101
+      $hook head-styles-0 ids: 1063 1113
+      $hook head-styles ids: 1064 1114
+      $hook head-styles-2 ids: 1065 1115
+    body  ids: 1066 1116
+      nav  ids: 1198 1264
+        $args: false  $params: isloggedin:boolean|false
+        $  ids: 1200 1265
+          var pagecontext = {}; ids: 1201 1266
+        class navbar navbar-inverse navbar-fixed-top no-margin ids: 1202 1267
+        role navigation ids: 1203 1268
+        . container-fluid ids: 1204 1269
+          . navbar-header ids: 1329 1348
+            $args: WizziMT, /, demo-navbar-collapse-1  $params: label, href, target
+            style margin-left:50px; ids: 1331 1349
+            button  ids: 1332 1350
+              type button ids: 1333 1351
+              class navbar-toggle ids: 1334 1352
+              data-toggle collapse ids: 1335 1353
+              data-target #${target} ids: 1336 1354
+              span Toggle navigation ids: 1337 1355
+                class sr-only ids: 1338 1356
+              span  ids: 1339 1357
+                class icon-bar ids: 1340 1358
+              span  ids: 1341 1359
+                class icon-bar ids: 1342 1360
+              span  ids: 1343 1361
+                class icon-bar ids: 1344 1362
+            a ${label} ids: 1345 1363
+              class navbar-brand ids: 1346 1364
+              href ${href} ids: 1347 1365
+          . collapse navbar-collapse ids: 1206 1271
+            id demo-navbar-collapse-1 ids: 1207 1272
+            form  ids: 1208 1273
+              class navbar-form navbar-left ids: 1209 1274
+              . form-group ids: 1210 1275
+                $hook breadcrumb ids: 1211 1276
+            ul  ids: 1212 1277
+              class nav navbar-nav ids: 1213 1278
+              li  ids: 1214 1279
+                class dropdown ids: 1215 1280
+                a Html, js, css demos <b class="caret"></b> ids: 1216 1281
+                  href # ids: 1217 1282
+                  class dropdown-toggle ids: 1218 1283
+                  data-toggle dropdown ids: 1219 1284
+                ul  ids: 1220 1285
+                  class dropdown-menu ids: 1221 1286
+                  li  ids: 1366 1372
+                    $args: Target technologies, /ittf/demo/ttech/index.html.ittf  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1373
+                    tabindex -1 ids: 1369 1374
+                    a ${text} ids: 1370 1375
+                      href ${href} ids: 1371 1376
+                  li  ids: 1366 1377
+                    $args: Demo apps, /ittf/demo/apps/index.html.ittf  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1378
+                    tabindex -1 ids: 1369 1379
+                    a ${text} ids: 1370 1380
+                      href ${href} ids: 1371 1381
+                  li  ids: 1366 1382
+                    $args: Action three, /ittf/demo/action1/index.html.ittf  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1383
+                    tabindex -1 ids: 1369 1384
+                    a ${text} ids: 1370 1385
+                      href ${href} ids: 1371 1386
+                  li  ids: 1387 1389
+                    class divider ids: 1388 1390
+                  li  ids: 1366 1391
+                    $args: Action four, /ittf/demo/action1/index.html.ittf  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1392
+                    tabindex -1 ids: 1369 1393
+                    a ${text} ids: 1370 1394
+                      href ${href} ids: 1371 1395
+            form  ids: 1227 1292
+              class navbar-form navbar-left ids: 1228 1293
+              role search ids: 1229 1294
+              . form-group ids: 1396 1404
+                $args: navSearch  $params: id, label|@@null, labelclass|@@null
+                $if label ids: 1398 1405
+                  label ${label} ids: 1399 1406
+                    for ${id} ids: 1400 1407
+                    class ${labelclass} ids: 1401 1408
+                . col-sm-10 ids: 1402 1409
+                  input  ids: 1411 1417
+                    $args: fc_nav_search, Search  $params: id, label
+                    type text ids: 1413 1418
+                    class form-control ids: 1414 1419
+                    id ${id} ids: 1415 1420
+                    placeholder ${label} ids: 1416 1421
+              button ${label} ids: 1008 1422
+                $args: Submit  $params: label, kind|default, id|@@null
+                type submit ids: 1010 1423
+                class btn btn-${kind} ids: 1011 1424
+                $if id !== null ids: 1012 1425
+                  id ${id} ids: 1013 1426
+            ul  ids: 1233 1298
+              class nav navbar-nav ids: 1234 1299
+              li  ids: 1235 1300
+                class dropdown ids: 1236 1301
+                a Support <b class="caret"></b> ids: 1237 1302
+                  href # ids: 1238 1303
+                  class dropdown-toggle ids: 1239 1304
+                  data-toggle dropdown ids: 1240 1305
+                ul  ids: 1241 1306
+                  class dropdown-menu ids: 1242 1307
+                  li  ids: 1366 1427
+                    $args: Features, /ittf/demo/features/index.html.ittf  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1428
+                    tabindex -1 ids: 1369 1429
+                    a ${text} ids: 1370 1430
+                      href ${href} ids: 1371 1431
+                  li  ids: 1366 1432
+                    $args: Issues, /ittf/demo/issues/index.html.ittf  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1433
+                    tabindex -1 ids: 1369 1434
+                    a ${text} ids: 1370 1435
+                      href ${href} ids: 1371 1436
+                  li  ids: 1366 1437
+                    $args: Contacts, #  $params: text, href, clazz|@@null
+                    class ${clazz} ids: 1368 1438
+                    tabindex -1 ids: 1369 1439
+                    a ${text} ids: 1370 1440
+                      href ${href} ids: 1371 1441
+              li  ids: 1366 1442
+                $args: Docs, /ittf/docs/index.html.ittf  $params: text, href, clazz|@@null
+                class ${clazz} ids: 1368 1443
+                tabindex -1 ids: 1369 1444
+                a ${text} ids: 1370 1445
+                  href ${href} ids: 1371 1446
+            ul  ids: 1247 1312
+              class nav navbar-nav navbar-right ids: 1248 1313
+              $if isloggedin ids: 1249 1314
+                li  ids: 1366 1447
+                  $args: ${pagecontext.email}, /account/profile?user=${pagecontext.email}  $params: text, href, clazz|@@null
+                  class ${clazz} ids: 1368 1448
+                  tabindex -1 ids: 1369 1449
+                  a ${text} ids: 1370 1450
+                    href ${href} ids: 1371 1451
+                li  ids: 1366 1452
+                  $args: Sign out, /account/logout  $params: text, href, clazz|@@null
+                  class ${clazz} ids: 1368 1453
+                  tabindex -1 ids: 1369 1454
+                  a ${text} ids: 1370 1455
+                    href ${href} ids: 1371 1456
+              $else  ids: 1252 1317
+                li  ids: 1253 1318
+                  class dropdown ids: 1254 1319
+                  a Sign In <strong class="caret"></strong> ids: 1255 1320
+                    class dropdown-toggle ids: 1256 1321
+                    href # ids: 1257 1322
+                    data-toggle dropdown ids: 1258 1323
+                  div  ids: 1259 1324
+                    class dropdown-menu ids: 1260 1325
+                    style padding: 15px; padding-bottom: 0px; ids: 1261 1326
+                    form  ids: 1457 1494
+                      action /account/login ids: 1458 1495
+                      method post ids: 1459 1496
+                      accept-charset UTF-8 ids: 1460 1497
+                      label Email ids: 1461 1498
+                        class string optional ids: 1462 1499
+                        for user_email ids: 1463 1500
+                      input  ids: 1464 1501
+                        id user_email ids: 1465 1502
+                        style margin-bottom: 15px; ids: 1466 1503
+                        type text ids: 1467 1504
+                        name user[email] ids: 1468 1505
+                        size 30 ids: 1469 1506
+                      label Password ids: 1470 1507
+                        class string optional ids: 1471 1508
+                        for user_password ids: 1472 1509
+                      input  ids: 1473 1510
+                        id user_password ids: 1474 1511
+                        style margin-bottom: 15px; ids: 1475 1512
+                        type password ids: 1476 1513
+                        name user[password] ids: 1477 1514
+                        size 30 ids: 1478 1515
+                      input  ids: 1479 1516
+                        id user_remember_me ids: 1480 1517
+                        style float: left; margin-right: 10px; ids: 1481 1518
+                        type checkbox ids: 1482 1519
+                        name user[remember_me] ids: 1483 1520
+                        value 1 ids: 1484 1521
+                      label Remember me ids: 1485 1522
+                        class string optional ids: 1486 1523
+                        for user_remember_me ids: 1487 1524
+                      input  ids: 1488 1525
+                        class btn btn-primary ids: 1489 1526
+                        style clear: left; width: 100%; height: 32px; font-size: 13px; ids: 1490 1527
+                        type submit ids: 1491 1528
+                        name commit ids: 1492 1529
+                        value Sign In ids: 1493 1530
+                li  ids: 1366 1531
+                  $args: Register, /ittf/demo/account/register.html.ittf  $params: text, href, clazz|@@null
+                  class ${clazz} ids: 1368 1532
+                  tabindex -1 ids: 1369 1533
+                  a ${text} ids: 1370 1534
+                    href ${href} ids: 1371 1535
+      . container ids: 1068 1118
+        . row ids: 1069 1119
+          . col-md-2 ids: 1070 1120
+            $hook left-sidebar ids: 1071 1121
+            . wz-row ids: 1072 1122
+              ul  ids: 1178 1536
+                class list-group ids: 1179 1537
+                li  ids: 1182 1538
+                  $args: "Essential js tools", http://www.sitepoint.com/essential-tools-libraries-modern-javascript-developers/  $params: text, href, clazz|list-group-item
+                  class ${clazz} ids: 1184 1539
+                  tabindex -1 ids: 1185 1540
+                  a ${text} ids: 1186 1541
+                    href ${href} ids: 1187 1542
+          . col-md-10 ids: 1075 1125
+            $append breadcrumb ids: 1134 1139
+              ul  ids: 1144 1146
+                class breadcrumb list-inline ids: 1145 1147
+                li  ids: 1148 1155
+                  $args: Wizzi, /ittf/home/index.html.ittf  $params: text, href
+                  tabindex -1 ids: 1150 1156
+                  a ${text} ids: 1151 1157
+                    href ${href} ids: 1152 1158
+                  span  ids: 1153 1159
+                    class divider ids: 1154 1160
+                li  ids: 1148 1161
+                  $args: Target technologies, /ittf/demo/ttech/index.html.ittf  $params: text, href
+                  tabindex -1 ids: 1150 1162
+                  a ${text} ids: 1151 1163
+                    href ${href} ids: 1152 1164
+                  span  ids: 1153 1165
+                    class divider ids: 1154 1166
+                li ${text} ids: 1167 1170
+                  $args: Javascript  $params: text
+                  class list-group-item active ids: 1169 1171
+            $append left-sidebar ids: 840 851
+              $args: Regular expressions $params: title|Title
+              ul  ids: 1178 1180
+                class list-group ids: 1179 1181
+                li  ids: 1182 1188
+                  $args: RegExp, /ittf/demo/ttech/javascript/regexp/index.html.ittf  $params: text, href, clazz|list-group-item
+                  class ${clazz} ids: 1184 1189
+                  tabindex -1 ids: 1185 1190
+                  a ${text} ids: 1186 1191
+                    href ${href} ids: 1187 1192
+                li  ids: 1182 1193
+                  $args: Ecma 6, http://es6-features.org  $params: text, href, clazz|list-group-item
+                  class ${clazz} ids: 1184 1194
+                  tabindex -1 ids: 1185 1195
+                  a ${text} ids: 1186 1196
+                    href ${href} ids: 1187 1197
+            . panel ids: 842 853
+              . panel-header ids: 843 854
+                h3 ${title} ids: 844 855
+              . panel-body ids: 845 856
+                $append body-scripts ids: 2 27
+                  js js/main.js.ittf ids: 3 28
+                p Special characters: ids: 4 29
+                  code \ ^ $ . * + ? ( ) [ ] { } | ids: 5 30
+                li  ids: 860 864
+                  $args: Regular-Expressions.info by Jan Goyvaerts, http://www.regular-expressions.info/  $params: text, href
+                  a ${text} ids: 862 865
+                    href ${href} ids: 863 866
+                li  ids: 860 867
+                  $args: JavaScript Regular Expression Enlightenment by Cody Lindley, http://codylindley.com/techpro/2013_05_14__javascript-regular-expression-/  $params: text, href
+                  a ${text} ids: 862 868
+                    href ${href} ids: 863 869
+                ul  ids: 870 872
+                  class nav nav-tabs ids: 871 873
+                  li  ids: 874 880
+                    $args: "Play", re-play  $params: label, href, active|@@null
+                    class ${active} ids: 876 881
+                    a ${label} ids: 877 882
+                      href #${href} ids: 878 883
+                      data-toggle tab ids: 879 884
+                  li  ids: 874 885
+                    $args: "Flags", re-grammar-flags  $params: label, href, active|@@null
+                    class ${active} ids: 876 886
+                    a ${label} ids: 877 887
+                      href #${href} ids: 878 888
+                      data-toggle tab ids: 879 889
+                  li  ids: 874 890
+                    $args: "Meta", re-grammar-meta  $params: label, href, active|@@null
+                    class ${active} ids: 876 891
+                    a ${label} ids: 877 892
+                      href #${href} ids: 878 893
+                      data-toggle tab ids: 879 894
+                  li  ids: 874 895
+                    $args: "String methods", re-grammar-string-methods  $params: label, href, active|@@null
+                    class ${active} ids: 876 896
+                    a ${label} ids: 877 897
+                      href #${href} ids: 878 898
+                      data-toggle tab ids: 879 899
+                div  ids: 900 902
+                  class tab-content ids: 901 903
+                  div  ids: 904 908
+                    $args: re-play, active  $params: id, active|@@null
+                    class tab-pane ${active} ids: 906 909
+                    id ${id} ids: 907 910
+                    . well ids: 15 40
+                      table  ids: 51 73
+                        class table table-condensed ids: 52 74
+                        tr  ids: 53 75
+                          td  ids: 54 76
+                            . form-group ids: 911 923
+                              $args: retext, reText, ^(ab)$  $params: id, label, value|@@null, haserror:boolean|false, error|@@null
+                              id ${id}_group ids: 913 924
+                              $group  ids: 934 943
+                                $args: ${id}, ${label}, ${haserror}, ${error}  $params: id, label, haserror:boolean|false, error|@@null
+                                label ${label} ids: 936 944
+                                  class control-label ids: 937 945
+                                  for ${id} ids: 938 946
+                                $if haserror ids: 939 947
+                                  div  ids: 940 948
+                                    style color:red; font-size:small; text-align:left; ids: 941 949
+                                    + ${error} ids: 942 950
+                              input  ids: 915 926
+                                type text ids: 916 927
+                                class form-control ids: 917 928
+                                id ${id} ids: 918 929
+                                name ${id} ids: 919 930
+                                placeholder ${label} ids: 920 931
+                                value ${value} ids: 921 932
+                            . form-group ids: 911 951
+                              $args: retextEscaped, reTextEscaped  $params: id, label, value|@@null, haserror:boolean|false, error|@@null
+                              id ${id}_group ids: 913 952
+                              $group  ids: 934 962
+                                $args: ${id}, ${label}, ${haserror}, ${error}  $params: id, label, haserror:boolean|false, error|@@null
+                                label ${label} ids: 936 963
+                                  class control-label ids: 937 964
+                                  for ${id} ids: 938 965
+                                $if haserror ids: 939 966
+                                  div  ids: 940 967
+                                    style color:red; font-size:small; text-align:left; ids: 941 968
+                                    + ${error} ids: 942 969
+                              input  ids: 915 954
+                                type text ids: 916 955
+                                class form-control ids: 917 956
+                                id ${id} ids: 918 957
+                                name ${id} ids: 919 958
+                                placeholder ${label} ids: 920 959
+                                value ${value} ids: 921 960
+                            . form-group ids: 911 970
+                              $args: reflags, reFlags, g  $params: id, label, value|@@null, haserror:boolean|false, error|@@null
+                              id ${id}_group ids: 913 971
+                              $group  ids: 934 981
+                                $args: ${id}, ${label}, ${haserror}, ${error}  $params: id, label, haserror:boolean|false, error|@@null
+                                label ${label} ids: 936 982
+                                  class control-label ids: 937 983
+                                  for ${id} ids: 938 984
+                                $if haserror ids: 939 985
+                                  div  ids: 940 986
+                                    style color:red; font-size:small; text-align:left; ids: 941 987
+                                    + ${error} ids: 942 988
+                              input  ids: 915 973
+                                type text ids: 916 974
+                                class form-control ids: 917 975
+                                id ${id} ids: 918 976
+                                name ${id} ids: 919 977
+                                placeholder ${label} ids: 920 978
+                                value ${value} ids: 921 979
+                            . form-group ids: 911 989
+                              $args: resrc, reSrc, (ab)  $params: id, label, value|@@null, haserror:boolean|false, error|@@null
+                              id ${id}_group ids: 913 990
+                              $group  ids: 934 1000
+                                $args: ${id}, ${label}, ${haserror}, ${error}  $params: id, label, haserror:boolean|false, error|@@null
+                                label ${label} ids: 936 1001
+                                  class control-label ids: 937 1002
+                                  for ${id} ids: 938 1003
+                                $if haserror ids: 939 1004
+                                  div  ids: 940 1005
+                                    style color:red; font-size:small; text-align:left; ids: 941 1006
+                                    + ${error} ids: 942 1007
+                              input  ids: 915 992
+                                type text ids: 916 993
+                                class form-control ids: 917 994
+                                id ${id} ids: 918 995
+                                name ${id} ids: 919 996
+                                placeholder ${label} ids: 920 997
+                                value ${value} ids: 921 998
+                            # result ids: 59 81
+                          td  ids: 60 82
+                            # examples-container ids: 61 83
+                          td  ids: 62 84
+                            table  ids: 63 85
+                              class table table condensed ids: 64 86
+                              tr  ids: 65 87
+                                td  ids: 66 88
+                                  button ${label} ids: 1008 1014
+                                    $args: exec, default, btnExec  $params: label, kind|default, id|@@null
+                                    type submit ids: 1010 1015
+                                    class btn btn-${kind} ids: 1011 1016
+                                    $if id !== null ids: 1012 1017
+                                      id ${id} ids: 1013 1018
+                                    title Executes a search for a match in the string passed to the exec() method. It returns an array of information containing the first matched characters (e.g. /\w+/.exec('foo')[0] === 'foo'), capture groups, the index location of the match in the string (e.g. /\w/.exec('foo').index), and the original inputted string (e.g. `/\w/.exec('foo').input === "foo"`). ids: 68 90
+                              tr  ids: 69 91
+                                td  ids: 70 92
+                                  button ${label} ids: 1008 1019
+                                    $args: test, default, btnTest  $params: label, kind|default, id|@@null
+                                    type submit ids: 1010 1020
+                                    class btn btn-${kind} ids: 1011 1021
+                                    $if id !== null ids: 1012 1022
+                                      id ${id} ids: 1013 1023
+                                    title Tests for a match in a string that is passed to the test() method (e.g. /\w/.test('foo') === true). It returns `true` or `false`. ids: 72 94
+                  div  ids: 904 1024
+                    $args: re-grammar-flags  $params: id, active|@@null
+                    class tab-pane ${active} ids: 906 1025
+                    id ${id} ids: 907 1026
+                    . well ids: 18 43
+                      div  ids: 95 121
+                        p  ids: 96 122
+                          strong Overview Of Flags ids: 97 123
+                        p Flags tell a pattern how to behave.  They are used to control the mode in which the expression is parsed by the regular expression engine.  We have already seen most of these flags in use, but you should be aware of all of them. ids: 98 124
+                        p Javascript supports 3 flags: ids: 99 125
+                        table  ids: 100 126
+                          class table table-bordered ids: 101 127
+                          tr  ids: 102 128
+                            th Flag ids: 103 129
+                            th aka ids: 104 130
+                            th Description ids: 105 131
+                          tr  ids: 106 132
+                            td  ids: 107 133
+                              code g ids: 108 134
+                            td global matching ids: 109 135
+                            td This flag indicates to the regular expression engine that all matches should be found not just the first match. ids: 110 136
+                          tr  ids: 111 137
+                            td  ids: 112 138
+                              code i ids: 113 139
+                            td ignore case ids: 114 140
+                            td This flag indicates to the regular expression engine to ignore case when parsing a string for matches (this overrides meta and shorthand characters) ids: 115 141
+                          tr  ids: 116 142
+                            td  ids: 117 143
+                              code m ids: 118 144
+                            td multiline input ids: 119 145
+                            td This flag indicates to the regular expression engine that the `^`, `$` and the `.` meta characters are aware of new lines (i.e. `\n`) and using these meta characters with the `m` flag will change the default interpretation. ids: 120 146
+                  div  ids: 904 1027
+                    $args: re-grammar-meta  $params: id, active|@@null
+                    class tab-pane ${active} ids: 906 1028
+                    id ${id} ids: 907 1029
+                    . well ids: 21 46
+                      $group  ids: 147 463
+                        div  ids: 148 464
+                          p Below you will find a table covering a majority of the ( ids: 149 465
+                            a for a complete table checkout Mozilla's reference ids: 150 466
+                              href https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Regular_Expressions#special-backslash ids: 151 467
+                            + ) meta characters and shorthand characters used in JavaScript regular expressions.  I am showing this table, not so that you might learn how these characters specifically work in an expression from the table, but so that you are aware of the characters themselves and briefly what they do.  We will be examining many of theses characters in the "Working With Meta &amp; Shorthands Characters" section.  For now, just acquaint yourself with the fact that these characters have a special meaning in regular expression and that the characters can be combined into powerful patterns such as what I demonstrated with the email pattern.  If it helps, you can click on the jsfiddle link to run and edit the pattern example. ids: 152 468
+                        table  ids: 153 469
+                          class table table-bordered ids: 154 470
+                          tr  ids: 155 471
+                            th character(s) ids: 156 472
+                            th Pattern Ex. ids: 157 473
+                              @ width 150 ids: 158 474
+                            th String Ex. (Pattern matches in red) ids: 159 475
+                            th Example Description &amp; Jsfiddle ids: 160 476
+                            th Type ids: 161 477
+                          tr  ids: 162 478
+                            td  ids: 163 479
+                              colspan 5 ids: 164 480
+                              @ align center ids: 165 481
+                              strong Meta Characters ids: 166 482
+                          tr  ids: 167 483
+                            td ^ ids: 168 484
+                            td  ids: 169 485
+                              code /^Cat/ ids: 170 486
+                            td Cat go fast ids: 171 487
+                            td string must start with ids: 172 488
+                              em Cat ids: 173 489
+                              a jsfiddle ids: 174 490
+                                href http://jsfiddle.net/codylindley/N7mkV/embedded/result/ ids: 175 491
+                            td anchor ids: 176 492
+                          tr  ids: 177 493
+                            td $ ids: 178 494
+                            td  ids: 179 495
+                              code /slow$/ ids: 180 496
+                            td Dogs are slow ids: 181 497
+                            td string must end with ids: 182 498
+                              em slow ids: 183 499
+                              a jsfiddle ids: 184 500
+                                href http://jsfiddle.net/codylindley/QCGJ3/embedded/result/ ids: 185 501
+                            td anchor ids: 186 502
+                          tr  ids: 187 503
+                            td * ids: 188 504
+                            td  ids: 189 505
+                              code /bo*/ ids: 190 506
+                            td boom and boat and bug ids: 191 507
+                            td matches when the preceding ids: 192 508
+                              em o ids: 193 509
+                              + occurs 0 or more times ids: 194 510
+                              a jsfiddle ids: 195 511
+                                href http://jsfiddle.net/codylindley/KcaFD/embedded/result/ ids: 196 512
+                            td quantifier ids: 197 513
+                          tr  ids: 198 514
+                            td + ids: 199 515
+                            td  ids: 200 516
+                              code /bo+/ ids: 201 517
+                            td boom and boat and bug ids: 202 518
+                            td matches when the preceding ids: 203 519
+                              em o ids: 204 520
+                              + occurs 1 or more times ids: 205 521
+                              a jsfiddle ids: 206 522
+                                href http://jsfiddle.net/codylindley/Eua42/embedded/result/ ids: 207 523
+                            td quantifier ids: 208 524
+                          tr  ids: 209 525
+                            td ? ids: 210 526
+                            td  ids: 211 527
+                              code /bo?/ ids: 212 528
+                            td boom and boat and bug ids: 213 529
+                            td matches when the preceding ids: 214 530
+                              em o ids: 215 531
+                              + occurs  0 or one time ids: 216 532
+                              a jsfiddle ids: 217 533
+                                href http://jsfiddle.net/codylindley/5bmm2/embedded/result/ ids: 218 534
+                            td quantifier ids: 219 535
+                          tr  ids: 220 536
+                            td . ids: 221 537
+                            td  ids: 222 538
+                              code /.a/ ids: 223 539
+                            td Cats fats rats ids: 224 540
+                            td any character followed by an ids: 225 541
+                              em a ids: 226 542
+                              a jsfiddle ids: 227 543
+                                href http://jsfiddle.net/codylindley/5Yd2y/embedded/result/ ids: 228 544
+                            td character class ids: 229 545
+                          tr  ids: 230 546
+                            tr  ids: 231 547
+                              td \ ids: 232 548
+                              td  ids: 233 549
+                                code /4\.0/ ids: 234 550
+                              td I have a 4.0. ids: 235 551
+                              td escape the next charater ids: 236 552
+                                em  ids: 237 553
+                                a jsfiddle ids: 238 554
+                                  href http://jsfiddle.net/codylindley/5Yd2y/embedded/result/ ids: 239 555
+                              td escape ids: 240 556
+                            tr  ids: 241 557
+                              td (...) ids: 242 558
+                              td  ids: 243 559
+                                code /(bug) \1's/ ids: 244 560
+                              td bug bug's and bug bugs ids: 245 561
+                              td match ids: 246 562
+                                em bug ids: 247 563
+                                + and store it in a variable called \1 which you can use later in the express to reference back to the first capture parentheses ids: 248 564
+                                a jsfiddle ids: 249 565
+                                  href http://jsfiddle.net/codylindley/cW9XW/embedded/result/ ids: 250 566
+                              td group ids: 251 567
+                            tr  ids: 252 568
+                              td (?:...) ids: 253 569
+                              td  ids: 254 570
+                                code /(?:bug) \1's/ ids: 255 571
+                              td bug bug's and bug bugs ids: 256 572
+                              td don't capture ( ids: 257 573
+                                em bug ids: 258 574
+                                + ) into a variable. So no matches because \1 has no value ids: 259 575
+                                a jsfiddle ids: 260 576
+                                  href http://jsfiddle.net/codylindley/2DwnZ/embedded/result/ ids: 261 577
+                              td Groups ids: 262 578
+                            tr  ids: 263 579
+                              td (?=...) ids: 264 580
+                              td  ids: 265 581
+                                code /bug(?='s)/ ids: 266 582
+                              td bug bug's and bug bugs ids: 267 583
+                              td matches ids: 268 584
+                                em bug ids: 269 585
+                                + only if ids: 270 586
+                                em bug ids: 271 587
+                                + is followed by ids: 272 588
+                                em 's ids: 273 589
+                                + . called a lookahead ids: 274 590
+                                a jsfiddle ids: 275 591
+                                  href http://jsfiddle.net/codylindley/zeBpK/embedded/result/ ids: 276 592
+                              td lookaround ids: 277 593
+                            tr  ids: 278 594
+                              td (?!...) ids: 279 595
+                              td  ids: 280 596
+                                code /bug(?!'s)/ ids: 281 597
+                              td bug bug's and bug bugs ids: 282 598
+                              td matches ids: 283 599
+                                em bug ids: 284 600
+                                + only if ids: 285 601
+                                em bug ids: 286 602
+                                + is not followed by ids: 287 603
+                                em 's ids: 288 604
+                                + called a negated lookahead ids: 289 605
+                                a jsfiddle ids: 290 606
+                                  href http://jsfiddle.net/codylindley/TkePa/embedded/result/ ids: 291 607
+                              td lookaround ids: 292 608
+                            tr  ids: 293 609
+                              td ...|... ids: 294 610
+                              td  ids: 295 611
+                                code /foo|bar/ ids: 296 612
+                              td foo and bar is foobar ids: 297 613
+                              td matches either ids: 298 614
+                                em foo ids: 299 615
+                                + or ids: 300 616
+                                em bar ids: 301 617
+                                a jsfiddle ids: 302 618
+                                  href http://jsfiddle.net/codylindley/Amj5e/embedded/result/ ids: 303 619
+                              td alternation ids: 304 620
+                            tr  ids: 305 621
+                              td {...} ids: 306 622
+                              td  ids: 307 623
+                                code /fo{2}/ ids: 308 624
+                              td fooÂ andÂ foooÂ andÂ foooooo and fo ids: 309 625
+                              td matches the previous character exactlyÂ 2Â times ids: 310 626
+                                a jsfiddle ids: 311 627
+                                  href http://jsfiddle.net/codylindley/Ay5Ks/embedded/result/ ids: 312 628
+                              td quantifier ids: 313 629
+                            tr  ids: 314 630
+                              td {...,} ids: 315 631
+                              td  ids: 316 632
+                                code /fo{2,}/ ids: 317 633
+                              td fooÂ andÂ foooÂ andÂ foooooo and fo ids: 318 634
+                              td matches the previous character at leastÂ 2Â times ids: 319 635
+                                a jsfiddle ids: 320 636
+                                  href http://jsfiddle.net/codylindley/2eDPH/embedded/result/ ids: 321 637
+                              td quantifier ids: 322 638
+                            tr  ids: 323 639
+                              td {...,...} ids: 324 640
+                              td  ids: 325 641
+                                code /fo{2,4}/ ids: 326 642
+                              td fooÂ andÂ foooÂ andÂ foooooo and fo ids: 327 643
+                              td matches the previous character at least 2 times, but no more thanÂ 4Â times ids: 328 644
+                                a jsfiddle ids: 329 645
+                                  href http://jsfiddle.net/codylindley/Zn3Ef/embedded/result/ ids: 330 646
+                              td quantifier ids: 331 647
+                            tr  ids: 332 648
+                              td [...] ids: 333 649
+                              td  ids: 334 650
+                                code /[cde]|[456]/ ids: 335 651
+                              td abcdefghijklmnopqrstuvwxyz 0123456789 ids: 336 652
+                              td matches any ids: 337 653
+                                em c ids: 338 654
+                                + , ids: 339 655
+                                em d ids: 340 656
+                                + , ids: 341 657
+                                em e ids: 342 658
+                                + character or ids: 343 659
+                                em 4 ids: 344 660
+                                + , ids: 345 661
+                                em 5 ids: 346 662
+                                + , ids: 347 663
+                                em 6 ids: 348 664
+                                + character ids: 349 665
+                                a jsfiddle ids: 350 666
+                                  href http://jsfiddle.net/codylindley/SAcj8/embedded/result/ ids: 351 667
+                              td character set ids: 352 668
+                            tr  ids: 353 669
+                              td [...-...] ids: 354 670
+                              td  ids: 355 671
+                                code /[c-u]|[4-9]/ ids: 356 672
+                              td abcdefghijklmnopqrstuvwxyz 0123456789 ids: 357 673
+                              td matches any  character in the rangeÂ ids: 358 674
+                                em c ids: 359 675
+                                + to ids: 360 676
+                                em u ids: 361 677
+                                + Â or ids: 362 678
+                                em 4 ids: 363 679
+                                + to ids: 364 680
+                                em 9 ids: 365 681
+                                a jsfiddle ids: 366 682
+                                  href http://jsfiddle.net/codylindley/aUSww/embedded/result/ ids: 367 683
+                              td character set ids: 368 684
+                            tr  ids: 369 685
+                              td [^...] ids: 370 686
+                              td  ids: 371 687
+                                code /[^c-u]/ ids: 372 688
+                              td abcdefghijklmnopqrstuvwxyz 0123456789 ids: 373 689
+                              td matches any single character not in the range of ids: 374 690
+                                em c ids: 375 691
+                                + to ids: 376 692
+                                em u ids: 377 693
+                                a jsfiddle ids: 378 694
+                                  href http://jsfiddle.net/codylindley/DRg23/embedded/result/ ids: 379 695
+                              td character set ids: 380 696
+                            tr  ids: 381 697
+                              td  ids: 382 698
+                                colspan 5 ids: 383 699
+                                @ align center ids: 384 700
+                                p  ids: 385 701
+                                  strong Character Shorthands ids: 386 702
+                            tr  ids: 387 703
+                              td \b ids: 388 704
+                              td  ids: 389 705
+                                code /\bton\b/ ids: 390 706
+                              td tone wantons ton toon ids: 391 707
+                              td match ton if its a word character (ie. [A-Za-z0-9_]) between and start and end boundary ids: 392 708
+                                a jsfiddle ids: 393 709
+                                  href http://jsfiddle.net/codylindley/qEYrC/embedded/result/ ids: 394 710
+                              td anchors ids: 395 711
+                            tr  ids: 396 712
+                              td \B ids: 397 713
+                              td  ids: 398 714
+                                code /ton\B/ ids: 399 715
+                              td tone wantons ton toon ids: 400 716
+                              td match ton if its NOT a word word character (ie. [A-Za-z0-9_]) between and start and end boundary ids: 401 717
+                                a jsfiddle ids: 402 718
+                                  href http://jsfiddle.net/codylindley/FH8zt/embedded/result/ ids: 403 719
+                              td anchors ids: 404 720
+                            tr  ids: 405 721
+                              td \d ids: 406 722
+                              td  ids: 407 723
+                                code /\d/ ids: 408 724
+                              td Match digits 0123456789 ids: 409 725
+                              td matches a digit character. Equivalent toÂ [0-9] ids: 410 726
+                                a jsfiddle ids: 411 727
+                                  href http://jsfiddle.net/codylindley/8WuSV/embedded/result/ ids: 412 728
+                              td character class ids: 413 729
+                            tr  ids: 414 730
+                              td \D ids: 415 731
+                              td  ids: 416 732
+                                code /\D/ ids: 417 733
+                              td Match non-digits 0123456789 ids: 418 734
+                              td matches any non-digit character. Equivalent toÂ [^0-9] ids: 419 735
+                                a jsfiddle ids: 420 736
+                                  href http://jsfiddle.net/codylindley/7jQGR/embedded/result/ ids: 421 737
+                              td character class ids: 422 738
+                            tr  ids: 423 739
+                              td \s ids: 424 740
+                              td  ids: 425 741
+                                code /\s/ ids: 426 742
+                              td  ids: 427 743
+                                ++ spaces&nbsp;inbetween&nbsp; ids: 428 744
+                                ++ these&nbsp;words&nbsp;and&nbsp;line&nbsp;breaks ids: 429 745
+                              td matches a single white space character, including space, tab, form feed, line feed ids: 430 746
+                                a jsfiddle ids: 431 747
+                                  href http://jsfiddle.net/codylindley/xnEk4/embedded/result/ ids: 432 748
+                              td character class ids: 433 749
+                            tr  ids: 434 750
+                              td \S ids: 435 751
+                              td  ids: 436 752
+                                code /\S/ ids: 437 753
+                              td anything ids: 438 754
+                                br  ids: 439 755
+                                + but white space ids: 440 756
+                              td matches a single character other than white space, including space, tab, form feed, line feed ids: 441 757
+                                a jsfiddle ids: 442 758
+                                  href http://jsfiddle.net/codylindley/5e9sC/embedded/result/ ids: 443 759
+                              td character class ids: 444 760
+                            tr  ids: 445 761
+                              td \w ids: 446 762
+                              td  ids: 447 763
+                                code /w/ ids: 448 764
+                              td abc or 123 even _ but not much else ids: 449 765
+                              td matches any alphanumeric character including the underscore. Equivalent toÂ [A-Za-z0-9_] ids: 450 766
+                                a jsfiddle ids: 451 767
+                                  href http://jsfiddle.net/codylindley/3rjtu/embedded/result/ ids: 452 768
+                              td character class ids: 453 769
+                            tr  ids: 454 770
+                              td \W ids: 455 771
+                              td  ids: 456 772
+                                code /\W/ ids: 457 773
+                              td abc&nbsp;or&nbsp;123&nbsp;even&nbsp;_&nbsp;but&nbsp;not&nbsp;much&nbsp;else ids: 458 774
+                              td matches any non-word character. Equivalent toÂ [^A-Za-z0-9_] ids: 459 775
+                                a jsfiddle ids: 460 776
+                                  href http://jsfiddle.net/codylindley/PReRK/embedded/result/ ids: 461 777
+                              td character class ids: 462 778
+                  div  ids: 904 1030
+                    $args: re-grammar-string-methods  $params: id, active|@@null
+                    class tab-pane ${active} ids: 906 1031
+                    id ${id} ids: 907 1032
+                    . well ids: 24 49
+                      div  ids: 779 808
+                        p The following String() methods either requires the usage of a regular expression or can optionally accept a regular expression object value as a parameter typically in place of a string value. ids: 780 809
+                        table  ids: 781 810
+                          class table table-bordered ids: 782 811
+                          tr  ids: 783 812
+                            th Methods ids: 784 813
+                            th Description ids: 785 814
+                          tr  ids: 786 815
+                            td  ids: 787 816
+                              code "".split(//) ids: 788 817
+                            td Break a string into an array of substrings using either a RegExp object or String object ids: 789 818
+                          tr  ids: 790 819
+                            td  ids: 791 820
+                              code "".match(//) ids: 792 821
+                            td Creates an array containing the matches found by a regular experssion or returns ids: 793 822
+                              code null ids: 794 823
+                              + if no matches were found ids: 795 824
+                          tr  ids: 796 825
+                            td  ids: 797 826
+                              code "".replace(//|"",""|function(){}) ids: 798 827
+                            td Produces a new string with some or all matches replaced by a replacement value.  The ids: 799 828
+                              code replace() ids: 800 829
+                              + methods accepts both String objects and RegExp objects to identify what parts of the string should be replaced. ids: 801 830
+                          tr  ids: 802 831
+                            td  ids: 803 832
+                              code "".search(//) ids: 804 833
+                            td Returns  the index of the firxt match, or ids: 805 834
+                              code -1 ids: 806 835
+                              + if the no matches are found ids: 807 836
+            $append head-styles ids: 847 858
+            $append body-scripts ids: 848 859
+      $if std_js ids: 1077 1127
+        js /static/lib/underscore/underscore.js ids: 1078 1128
+        js /static/lib/jquery/dist/jquery.js ids: 1079 1129
+        js /static/lib/bootstrap/dist/js/bootstrap.js ids: 1080 1130
+      $hook body-scripts-0 ids: 1081 1131
+      $hook body-scripts ids: 1082 1132
+      $hook body-scripts-2 ids: 1083 1133

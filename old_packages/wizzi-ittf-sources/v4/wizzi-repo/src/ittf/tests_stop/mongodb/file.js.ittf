@@ -1,0 +1,30 @@
+﻿test_base_kernel( mongodb.document.file )
+	+
+	$append imports
+		var 
+			decl MongoClient
+				_ require('mongodb')
+					. MongoClient
+			decl co = require('co')
+			decl assert = require('assert')
+			decl FsDb = require('../../lib/mongodb/fs/fsdb')
+			decl Document = require('../../lib/mongodb/fs/document')
+
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsdb, doc
+
+	$include mongo_before_async
+	$include file/write_read_File
+	$include file/isFile
+	$include file/copyFile
+	$include file/deleteFile
+	$include file/renameFile
+
+	$*
+	$include file/createFolder
+	$include file/readFile
+	$include file/writeFile
+	*$
+
+	

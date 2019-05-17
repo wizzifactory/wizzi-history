@@ -1,0 +1,3484 @@
+﻿xsd 
+    target-namespace http://www.w3.org/2000/svg
+    xmlns http://www.w3.org/2001/XMLSchema
+    xmlns svg http://www.w3.org/2000/svg
+    xmlns xlink http://www.w3.org/1999/xlink
+    element-form-default unqualified
+    attribute-form-default unqualified
+    language en
+    import xlink.xsd
+        namespace http://www.w3.org/1999/xlink
+    import xml.xsd
+        namespace http://www.w3.org/XML/1998/namespace
+    s-type BaselineShiftValueType
+        # 
+            # The actual definition is
+            # baseline | sub | super | <percentage> | <length> | inherit
+            # not sure that union can do this
+            # 
+        restrict : string
+    s-type ClassListType
+        # Space-separated list of classes
+        list string
+    s-type ClipValueType
+        # <shape> | auto | inherit
+        restrict : string
+    s-type ClipPathValueType
+        # <uri> | none | inherit
+        restrict : string
+    s-type ClipFillRuleType
+        # 'clip-rule' or fill-rule property/attribute value
+        restrict : string
+            enum evenodd
+            enum nonzero
+            enum inherit
+    s-type ContentTypeType
+        # 
+            # source http://www.ietf.org/rfc/rfc2045.txt
+        # media type, as per [RFC2045]
+        restrict : string
+    s-type CoordinateType
+        # 
+            # source http://www.w3.org/TR/SVG/types.html#DataTypeCoordinate
+        # a coordinate, which is a number optionally followed immediately by a unit identifier. Perhaps it is possible to represent this as a union by declaring unit idenifiers as a type?
+        restrict : string
+            pattern ((((\+|\-)?((\d+)))|((\+|\-)?(((((\d+)?\.(\d+))|((\d+)\.))([eE](\+|\-)?(\d+))?)|((\d+)([eE](\+|\-)?(\d+))))))(em|ex|px|pt|pc|cm|mm|in|%)?)
+    s-type CoordinatesType
+        # a space separated list of CoordinateType. Punt to 'string' for now
+        restrict : string
+    s-type ColorType
+        # 
+            # source http://www.w3.org/TR/SVG/types.html#DataTypeColor
+        # Color as defined in CSS2 and XSL 1.0 plus additional recognised color keyword names (the 'X11 colors')
+        restrict : string
+    s-type CursorValueType
+        # 
+            # Value is an optional comma-separated list orf uri references followed by one token from an enumerated list.
+            # 
+        # [ [<uri> ,]* [ auto | crosshair | default | pointer | move | e-resize | ne-resize | nw-resize | n-resize | se-resize | sw-resize | s-resize | w-resize| text | wait | help ] ] | inherit
+        restrict : string
+    s-type EnableBackgroundValueType
+        # accumulate | new [ <x> <y> <width> <height> ] | inherit
+        restrict : string
+    s-type ExtensionListType
+        # extension list specification
+        restrict : string
+    s-type FeatureListType
+        # feature list specification
+        restrict : string
+    s-type FilterValueType
+        # 
+            # <uri> | none | inherit
+            # 
+        restrict : string
+    s-type FontFamilyValueType
+        # [[ <family-name> | <generic-family> ],]* [<family-name> | <generic-family>] | inherit
+        # 'font-family' property/attribute value (i.e., list of fonts)
+        restrict : string
+    s-type FontSizeValueType
+        # 'font-size' property/attribute value
+        # <absolute-size> | <relative-size> | <length> | <percentage> | inherit
+        restrict : string
+    s-type FontSizeAdjustValueType
+        # 'font-size-adjust' property/attribute value
+        # <number> | none | inherit
+        restrict : string
+    s-type GlyphOrientationHorizontalValueType
+        # 'glyph-orientation-horizontal' property/attribute value (e.g., <angle>)
+        # <angle> | inherit
+        restrict : string
+    s-type GlyphOrientationVerticalValueType
+        # 'glyph-orientation-vertical' property/attribute value (e.g., 'auto', <angle>)
+        # auto | <angle> | inherit
+        restrict : string
+    s-type KerningValue
+        # 'kerning' property/attribute value (e.g., auto | <length>)
+        # auto | <length> | inherit
+        restrict : string
+    s-type LanguageCodeType
+        # a language code, as per [RFC3066]
+        # 
+            # source http://www.ietf.org/rfc/rfc3066.txt
+        restrict : string
+    s-type LanguageCodesType
+        # a comma-separated list of language codes, as per [RFC3066]
+        # 
+            # source http://www.ietf.org/rfc/rfc3066.txt
+        restrict : string
+    s-type LengthType
+        # a <length>
+        restrict : string
+            pattern ((((\+|\-)?((\d+)))|((\+|\-)?(((((\d+)?\.(\d+))|((\d+)\.))([eE](\+|\-)?(\d+))?)|((\d+)([eE](\+|\-)?(\d+))))))(em|ex|px|pt|pc|cm|mm|in|%)?)
+    s-type LengthsType
+        # a list of <length>s
+        restrict : string
+    s-type LinkTargetType
+        # link to this target
+        restrict : string
+    s-type MarkerValueType
+        # 'marker' property/attribute value (e.g., 'none', %URI;)
+        restrict : string
+    s-type MaskValueType
+        # 'mask' property/attribute value (e.g., 'none', %URI;)
+        # <uri> | none | inherit
+        restrict : string
+    s-type MediaDescType
+        # comma-separated list of media descriptors.
+        restrict : string
+    s-type NumberOptionalNumberType
+        # list of <number>s, but at least one and at most two
+        restrict : string
+    s-type NumberOrPercentageType
+        # a <number> or a  <percentage>
+        restrict : string
+    s-type NumbersType
+        # list of <number>s
+        restrict : string
+    s-type OpacityValueType
+        # opacity value (e.g., <number>)
+        # <alphavalue> | inherit
+        restrict : string
+    s-type PaintType
+        # a 'fill' or 'stroke' property/attribute value
+        restrict : string
+    s-type PathDataType
+        # a path data specification
+        # 
+            # source http://www.w3.org/TR/SVG/paths.html
+        # Yes, of course this was generated by a program!
+        restrict : string
+    s-type PointsType
+        # a list of points
+        restrict : string
+    s-type PreserveAspectRatioSpecType
+        # 'preserveAspectRatio' attribute specification
+        restrict : string
+            pattern (\s*("none"|x("Min"|"Mid"|"Max")y("Min"|"Mid"|"Max"))\s+("meet"|"slice")?\s*)
+    s-type ScriptType
+        # script expression
+        restrict : string
+    s-type SpacingValueType
+        # 'letter-spacing' or 'word-spacing' property/attribute value (e.g., normal | <length>)
+        restrict : string
+    s-type StrokeDashArrayValueType
+        # 'stroke-dasharray' property/attribute value (e.g., 'none', list of <number>s)
+        restrict : string
+    s-type StrokeDashOffsetValueType
+        # 'stroke-dashoffset' property/attribute value (e.g., 'none', >length>)
+        restrict : string
+    s-type StrokeMiterLimitValueType
+        # 'stroke-miterlimit' property/attribute value (e.g., <number>)
+        restrict : string
+    s-type StrokeWidthValueType
+        # 'stroke-width' property/attribute value (e.g., <length>)
+        restrict : string
+    s-type StyleSheetType
+        # style sheet data
+        restrict : string
+    s-type SVGColorType
+        # An SVG color value (sRGB plus optional ICC)
+        restrict : string
+    s-type TextDecorationValueType
+        # 'text-decoration' property/attribute value (e.g., 'none', 'underline')
+        restrict : string
+    s-type TransformListType
+        # Yes, of course this was generated by a program!
+        # list of transforms
+        restrict : string
+    s-type ViewBoxSpecType
+        # 'viewBox' attribute specification
+        restrict : string
+    ag stdAttrs
+        # All elements have an ID
+        a id
+            type ID
+            is-optional
+        a-ref xml:base
+            type anyURI
+            is-optional
+    ag langSpaceAttrs
+        # Common attributes for elements that might contain character data content
+        a-ref xml:lang
+            is-optional
+        a-ref xml:space
+            is-optional
+    ag testAttrs
+        # Common attributes to check for system capabilities
+        a requiredFeatures
+            type svg:FeatureListType
+            is-optional
+        a requiredExtensions
+            type svg:ExtensionListType
+            is-optional
+        a systemLanguage
+            type svg:LanguageCodesType
+            is-optional
+    ag xlinkRefAttrs
+        # For most uses of URI referencing: standard XLink attributes other than xlink:href
+        a-ref xlink:type
+            fixed simple
+        a-ref xlink:role
+        a-ref xlink:arcrole
+        a-ref xlink:title
+        a-ref xlink:show
+            default other
+        a-ref xlink:actuate
+    ag xlinkRefAttrsEmbed
+        # Standard XLink attributes for uses of URI referencing where xlink:show is 'embed'
+        a-ref xlink:type
+            fixed simple
+        a-ref xlink:role
+        a-ref xlink:arcrole
+        a-ref xlink:title
+        a-ref xlink:show
+        a-ref xlink:actuate
+    ag graphicsElementEvents
+        a onfocusin
+            type svg:ScriptType
+            is-optional
+        a onfocusout
+            type svg:ScriptType
+            is-optional
+        a onactivate
+            type svg:ScriptType
+            is-optional
+        a onclick
+            type svg:ScriptType
+            is-optional
+        a onmousedown
+            type svg:ScriptType
+            is-optional
+        a onmouseup
+            type svg:ScriptType
+            is-optional
+        a onmouseover
+            type svg:ScriptType
+            is-optional
+        a onmousemove
+            type svg:ScriptType
+            is-optional
+        a onmouseout
+            type svg:ScriptType
+            is-optional
+        a onload
+            type svg:ScriptType
+            is-optional
+    ag documentEvents
+        a onunload
+            type svg:ScriptType
+            is-optional
+        a onabort
+            type svg:ScriptType
+            is-optional
+        a onerror
+            type svg:ScriptType
+            is-optional
+        a onresize
+            type svg:ScriptType
+            is-optional
+        a onscroll
+            type svg:ScriptType
+            is-optional
+        a onzoom
+            type svg:ScriptType
+            is-optional
+    ag animationEvents
+        a onbegin
+            type svg:ScriptType
+            is-optional
+        a onend
+            type svg:ScriptType
+            is-optional
+        a onrepeat
+            type svg:ScriptType
+            is-optional
+    ag PresentationAttributes-Color
+        # The following presentation attributes have to do with specifying color.
+        a color
+            type svg:ColorType
+            is-optional
+        a color-interpolation
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum sRGB
+                    enum linearRGB
+                    enum inherit
+        a color-rendering
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum optimizeSpeed
+                    enum optimizeQuality
+                    enum inherit
+    ag PresentationAttributes-Containers
+        # The following presentation attributes apply to container elements
+        a enable-background
+            type svg:EnableBackgroundValueType
+            is-optional
+    ag PresentationAttributes-feFlood
+        # The following presentation attributes apply to 'feFlood' elements
+        a flood-color
+            type svg:SVGColorType
+            is-optional
+        a flood-opacity
+            type svg:OpacityValueType
+            is-optional
+    ag PresentationAttributes-FilterPrimitives
+        # The following presentation attributes apply to filter primitives
+        a color-interpolation-filters
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum sRGB
+                    enum linearRGB
+                    enum inherit
+    ag PresentationAttributes-FillStroke
+        # The following presentation attributes apply to filling and stroking operations
+        a fill
+            type svg:PaintType
+            is-optional
+        a fill-opacity
+            type svg:OpacityValueType
+            is-optional
+        a fill-rule
+            type svg:ClipFillRuleType
+            is-optional
+        a stroke
+            type svg:PaintType
+            is-optional
+        a stroke-dasharray
+            type svg:StrokeDashArrayValueType
+            is-optional
+        a stroke-dashoffset
+            type svg:StrokeDashOffsetValueType
+            is-optional
+        a stroke-linecap
+            is-optional
+            s-type 
+                restrict : string
+                    enum butt
+                    enum round
+                    enum square
+                    enum inherit
+        a stroke-linejoin
+            is-optional
+            s-type 
+                restrict : string
+                    enum miter
+                    enum round
+                    enum bevel
+                    enum inherit
+        a stroke-miterlimit
+            type svg:StrokeMiterLimitValueType
+            is-optional
+        a stroke-opacity
+            type svg:OpacityValueType
+            is-optional
+        a stroke-width
+            type svg:StrokeWidthValueType
+            is-optional
+    ag PresentationAttributes-FontSpecification
+        # The following presentation attributes have to do with selecting a font to use
+        a font-family
+            type svg:FontFamilyValueType
+            is-optional
+        a font-size
+            type svg:FontSizeValueType
+            is-optional
+        a font-size-adjust
+            type svg:FontSizeAdjustValueType
+            is-optional
+        a font-stretch
+            is-optional
+            s-type 
+                restrict : string
+                    enum normal
+                    enum wider
+                    enum narrower
+                    enum ultra-condensed
+                    enum extra-condensed
+                    enum condensed
+                    enum semi-condensed
+                    enum semi-expanded
+                    enum expanded
+                    enum extra-expanded
+                    enum ultra-expanded
+                    enum inherit
+        a font-style
+            is-optional
+            s-type 
+                restrict : string
+                    enum normal
+                    enum italic
+                    enum oblique
+                    enum inherit
+        a font-variant
+            is-optional
+            s-type 
+                restrict : string
+                    enum normal
+                    enum small-caps
+                    enum inherit
+        a font-weight
+            is-optional
+            s-type 
+                restrict : string
+                    enum normal
+                    enum bold
+                    enum bolder
+                    enum lighter
+                    enum 100
+                    enum 200
+                    enum 300
+                    enum 400
+                    enum 500
+                    enum 600
+                    enum 700
+                    enum 800
+                    enum 900
+                    enum inherit
+    ag PresentationAttributes-Gradients
+        # The following presentation attributes apply to gradient 'stop' elements
+        a stop-color
+            type svg:SVGColorType
+            is-optional
+        a stop-opacity
+            type svg:OpacityValueType
+            is-optional
+    ag PresentationAttributes-Graphics
+        # The following presentation attributes apply to graphics elements
+        a clip-path
+            type svg:ClipPathValueType
+            is-optional
+        a clip-rule
+            type svg:ClipFillRuleType
+            is-optional
+        a cursor
+            type svg:CursorValueType
+            is-optional
+        a display
+            is-optional
+            s-type 
+                restrict : string
+                    enum inline
+                    enum block
+                    enum list-item
+                    enum run-in
+                    enum compact
+                    enum marker
+                    enum table
+                    enum inline-table
+                    enum table-row-group
+                    enum table-header-group
+                    enum table-footer-group
+                    enum table-row
+                    enum table-column-group
+                    enum table-column
+                    enum table-cell
+                    enum table-caption
+                    enum none
+                    enum inherit
+        a filter
+            type svg:FilterValueType
+            is-optional
+        a image-rendering
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum optimizeSpeed
+                    enum optimizeQuality
+                    enum inherit
+        a mask
+            type svg:MaskValueType
+            is-optional
+        a opacity
+            type svg:OpacityValueType
+            is-optional
+        a pointer-events
+            is-optional
+            s-type 
+                restrict : string
+                    enum visiblePainted
+                    enum visibleFill
+                    enum visibleStroke
+                    enum visibleFillStroke
+                    enum visible
+                    enum painted
+                    enum fill
+                    enum stroke
+                    enum fillstroke
+                    enum all
+                    enum none
+                    enum inherit
+        a shape-rendering
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum optimizeSpeed
+                    enum crispEdges
+                    enum geometricPrecision
+                    enum inherit
+        a text-rendering
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum optimizeSpeed
+                    enum optimizeLegibility
+                    enum geometricPrecision
+                    enum inherit
+        a visibility
+            is-optional
+            s-type 
+                restrict : string
+                    enum visible
+                    enum hidden
+                    enum inherit
+    ag PresentationAttributes-Images
+        # The following presentation attributes apply to 'image' elements
+        a color-profile
+            is-optional
+    ag PresentationAttributes-LightingEffects
+        # The following presentation attributes apply to 'feDiffuseLighting' and 'feSpecularLighting' elements
+        a lighting-color
+            type svg:SVGColorType
+            is-optional
+    ag PresentationAttributes-Markers
+        # The following presentation attributes apply to marker operations
+        a marker-start
+            type svg:MarkerValueType
+            is-optional
+        a marker-mid
+            type svg:MarkerValueType
+            is-optional
+        a marker-end
+            type svg:MarkerValueType
+            is-optional
+    ag PresentationAttributes-TextContentElements
+        # The following presentation attributes apply to text content elements
+        a alignment-baseline
+            is-optional
+            s-type 
+                restrict : string
+                    enum baseline
+                    enum top
+                    enum before-edge
+                    enum text-top
+                    enum text-before-edge
+                    enum middle
+                    enum bottom
+                    enum after-edge
+                    enum text-bottom
+                    enum text-after-edge
+                    enum ideographic
+                    enum lower
+                    enum hanging
+                    enum mathematical
+                    enum inherit
+        a baseline-shift
+            type svg:BaselineShiftValueType
+            is-optional
+        a direction
+            is-optional
+            s-type 
+                restrict : string
+                    enum ltr
+                    enum rtl
+                    enum inherit
+        a dominant-baseline
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum autosense-script
+                    enum no-change
+                    enum reset
+                    enum ideographic
+                    enum lower
+                    enum hanging
+                    enum mathematical
+                    enum inherit
+        a glyph-orientation-horizontal
+            type svg:GlyphOrientationHorizontalValueType
+            is-optional
+        a glyph-orientation-vertical
+            type svg:GlyphOrientationVerticalValueType
+            is-optional
+        a letter-spacing
+            type svg:SpacingValueType
+            is-optional
+        a text-anchor
+            is-optional
+            s-type 
+                restrict : string
+                    enum start
+                    enum middle
+                    enum end
+                    enum inherit
+        a text-decoration
+            type svg:TextDecorationValueType
+            is-optional
+        a unicode-bidi
+            is-optional
+            s-type 
+                restrict : string
+                    enum normal
+                    enum embed
+                    enum bidi-override
+                    enum inherit
+        a word-spacing
+            type svg:SpacingValueType
+            is-optional
+    ag PresentationAttributes-TextElements
+        # The following presentation attributes apply to 'text' elements
+        a writing-mode
+            is-optional
+            s-type 
+                restrict : string
+                    enum lr-tb
+                    enum rl-tb
+                    enum tb-rl
+                    enum lr
+                    enum rl
+                    enum tb
+                    enum inherit
+    ag PresentationAttributes-Viewports
+        # The following presentation attributes apply to elements that establish viewports
+        a clip
+            type svg:ClipValueType
+            is-optional
+        a overflow
+            is-optional
+            s-type 
+                restrict : string
+                    enum visible
+                    enum hidden
+                    enum scroll
+                    enum auto
+                    enum inherit
+    ag PresentationAttributes-All
+        # The following represents the complete list of presentation attributes
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-Containers
+        ag-ref svg:PresentationAttributes-feFlood
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FilterPrimitives
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Gradients
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-Images
+        ag-ref svg:PresentationAttributes-LightingEffects
+        ag-ref svg:PresentationAttributes-Markers
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:PresentationAttributes-TextElements
+        ag-ref svg:PresentationAttributes-Viewports
+    ag filter_primitive_attributes
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-optional
+        a height
+            type svg:LengthType
+            is-optional
+        a result
+            type string
+            is-optional
+    ag filter_primitive_attributes_with_in
+        ag-ref svg:filter_primitive_attributes
+        a in
+            type string
+            is-optional
+    ag component_transfer_function_attributes
+        a type
+            is-required
+            s-type 
+                restrict : string
+                    enum identity
+                    enum table
+                    enum discrete
+                    enum linear
+                    enum gamma
+        a tableValues
+            type string
+            is-optional
+        a slope
+            type double
+            is-optional
+        a intercept
+            type double
+            is-optional
+        a amplitude
+            type double
+            is-optional
+        a exponent
+            type double
+            is-optional
+        a offset
+            type double
+            is-optional
+    ag animElementAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            type anyURI
+            is-optional
+    ag animAttributeAttrs
+        a attributeName
+            type string
+            is-required
+        a attributeType
+            type string
+            is-optional
+    ag animTargetAttrs
+        ag-ref svg:animElementAttrs
+        ag-ref svg:animAttributeAttrs
+    ag animTimingAttrs
+        a begin
+            type string
+            is-optional
+        a dur
+            type string
+            is-optional
+        a end
+            type string
+            is-optional
+        a min
+            type string
+            is-optional
+        a max
+            type string
+            is-optional
+        a restart
+            default always
+            s-type 
+                restrict : string
+                    enum always
+                    enum never
+                    enum whenNotActive
+        a repeatCount
+            type string
+            is-optional
+        a repeatDur
+            type string
+            is-optional
+        a fill
+            default remove
+            s-type 
+                restrict : string
+                    enum remove
+                    enum freeze
+    ag animValueAttrs
+        a calcMode
+            default linear
+            s-type 
+                restrict : string
+                    enum discrete
+                    enum linear
+                    enum paced
+                    enum spline
+        a values
+            type string
+            is-optional
+        a keyTimes
+            type string
+            is-optional
+        a keySplines
+            type string
+            is-optional
+        a from
+            type string
+            is-optional
+        a to
+            type string
+            is-optional
+        a by
+            type string
+            is-optional
+    ag animAdditionAttrs
+        a additive
+            default replace
+            s-type 
+                restrict : string
+                    enum replace
+                    enum sum
+        a accumulate
+            default none
+            s-type 
+                restrict : string
+                    enum none
+                    enum sum
+    group descTitleMetadata
+        # A bit simpler than the DTD, but see commented-out alternative
+        all 
+            e desc
+                type svg:descType
+                min-occurs 0
+            e title
+                type svg:titleType
+                min-occurs 0
+            e metadata
+                type svg:metadataType
+                min-occurs 0
+    e svg
+        type svg:svgType
+    e g
+        type svg:gType
+    e defs
+        type svg:defsType
+    e desc
+        type svg:descType
+    e title
+        type svg:titleType
+    e symbol
+        type svg:symbolType
+    e use
+        type svg:useType
+    e image
+        type svg:imageType
+    e switch
+        type svg:switchType
+    e style
+        type svg:styleType
+    e path
+        type svg:pathType
+    e rect
+        type svg:rectType
+    e circle
+        type svg:circleType
+    e ellipse
+        type svg:ellipseType
+    e line
+        type svg:lineType
+    e polyline
+        type svg:polylineType
+    e polygon
+        type svg:polygonType
+    e text
+        type svg:textType
+    e tspan
+        type svg:tspanType
+    e tref
+        type svg:trefType
+    e textPath
+        type svg:textPathType
+    e altGlyph
+        type svg:altGlyphType
+    e altGlyphDef
+        type svg:altGlyphDefType
+    e altGlyphItem
+        type svg:altGlyphItemType
+    e glyphRef
+        type svg:glyphRefType
+    e marker
+        type svg:markerType
+    e color-profile
+        type svg:color-profileType
+    e linearGradient
+        type svg:linearGradientType
+    e radialGradient
+        type svg:radialGradientType
+    e stop
+        type svg:stopType
+    e pattern
+        type svg:patternType
+    e clipPath
+        type svg:clipPathType
+    e mask
+        type svg:maskType
+    e filter
+        type svg:filterType
+    e feDistantLight
+        type svg:feDistantLightType
+    e fePointLight
+        type svg:fePointLightType
+    e feSpotLight
+        type svg:feSpotLightType
+    e feBlend
+        type svg:feBlendType
+    e feColorMatrix
+        type svg:feColorMatrixType
+    e feComponentTransfer
+        type svg:feComponentTransferType
+    e feFuncR
+        type svg:feFuncRType
+    e feFuncG
+        type svg:feFuncGType
+    e feFuncB
+        type svg:feFuncBType
+    e feFuncA
+        type svg:feFuncAType
+    e feComposite
+        type svg:feCompositeType
+    e feConvolveMatrix
+        type svg:feConvolveMatrixType
+    e feDiffuseLighting
+        type svg:feDiffuseLightingType
+    e feDisplacementMap
+        type svg:feDisplacementMapType
+    e feFlood
+        type svg:feFloodType
+    e feGaussianBlur
+        type svg:feGaussianBlurType
+    e feImage
+        type svg:feImageType
+    e feMerge
+        type svg:feMergeType
+    e feMergeNode
+        type svg:feMergeNodeType
+    e feMorphology
+        type svg:feMorphologyType
+    e feOffset
+        type svg:feOffsetType
+    e feSpecularLighting
+        type svg:feSpecularLightingType
+    e feTile
+        type svg:feTileType
+    e feTurbulence
+        type svg:feTurbulenceType
+    e cursor
+        type svg:cursorType
+    e a
+        type svg:aType
+    e view
+        type svg:viewType
+    e script
+        type svg:scriptType
+    e animate
+        type svg:animateType
+    e set
+        type svg:setType
+    e animateMotion
+        type svg:animateMotionType
+    e mpath
+        type svg:mpathType
+    e animateColor
+        type svg:animateColorType
+    e animateTransform
+        type svg:animateTransformType
+    e font
+        type svg:fontType
+    e glyph
+        type svg:glyphType
+    e missing-glyph
+        type svg:missing-glyphType
+    e hkern
+        type svg:hkernType
+    e vkern
+        type svg:vkernType
+    e font-face
+        type svg:font-faceType
+    e font-face-src
+        type svg:font-face-srcType
+    e font-face-uri
+        type svg:font-face-uriType
+    e font-face-format
+        type svg:font-face-formatType
+    e font-face-name
+        type svg:font-face-nameType
+    e definition-src
+        type svg:definition-srcType
+    e metadata
+        type svg:metadataType
+    e foreignObject
+        type svg:foreignObjectType
+    c-type svgType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        ag-ref svg:documentEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a viewBox
+            type svg:ViewBoxSpecType
+            is-optional
+        a preserveAspectRatio
+            type svg:PreserveAspectRatioSpecType
+            default xMidYMid meet
+        a zoomAndPan
+            default magnify
+            s-type 
+                restrict : string
+                    enum disable
+                    enum magnify
+                    enum zoom
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-required
+        a height
+            type svg:LengthType
+            is-required
+        a contentScriptType
+            type svg:ContentTypeType
+            default text/ecmascript
+        a contentStyleType
+            type svg:ContentTypeType
+            default text/css
+    c-type gType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+    c-type defsType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+    c-type descType
+        mixed true
+        ag-ref svg:stdAttrs
+        ag-ref svg:langSpaceAttrs
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a content
+            type string
+            fixed structured text
+    c-type titleType
+        mixed true
+        ag-ref svg:stdAttrs
+        ag-ref svg:langSpaceAttrs
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a content
+            type string
+            fixed structured text
+    c-type symbolType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a viewBox
+            type svg:ViewBoxSpecType
+            is-optional
+        a preserveAspectRatio
+            type svg:PreserveAspectRatioSpecType
+            default xMidYMid meet
+    c-type useType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrsEmbed
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a-ref xlink:href
+            is-required
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-optional
+        a height
+            type svg:LengthType
+            is-optional
+    c-type imageType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-Viewports
+        ag-ref svg:graphicsElementEvents
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-required
+        a height
+            type svg:LengthType
+            is-required
+    c-type switchType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:path
+                e-ref svg:text
+                e-ref svg:rect
+                e-ref svg:circle
+                e-ref svg:ellipse
+                e-ref svg:line
+                e-ref svg:polyline
+                e-ref svg:polygon
+                e-ref svg:use
+                e-ref svg:image
+                e-ref svg:svg
+                e-ref svg:g
+                e-ref svg:switch
+                e-ref svg:a
+                e-ref svg:foreignObject
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+    c-type styleType
+        mixed true
+        ag-ref svg:stdAttrs
+        a-ref xml:space
+            fixed preserve
+        a type
+            type svg:ContentTypeType
+            is-required
+        a media
+            type svg:MediaDescType
+            is-optional
+        a title
+            type string
+            is-optional
+    c-type pathType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-Markers
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a d
+            type svg:PathDataType
+            is-required
+        a pathLength
+            type double
+            is-optional
+    c-type rectType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-required
+        a height
+            type svg:LengthType
+            is-required
+        a rx
+            type svg:LengthType
+            is-optional
+        a ry
+            type svg:LengthType
+            is-optional
+    c-type circleType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a cx
+            type svg:CoordinateType
+            is-optional
+        a cy
+            type svg:CoordinateType
+            is-optional
+        a r
+            type svg:LengthType
+            is-required
+    c-type ellipseType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a cx
+            type svg:CoordinateType
+            is-optional
+        a cy
+            type svg:CoordinateType
+            is-optional
+        a rx
+            type svg:LengthType
+            is-required
+        a ry
+            type svg:LengthType
+            is-required
+    c-type lineType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-Markers
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a x1
+            type svg:CoordinateType
+            is-optional
+        a y1
+            type svg:CoordinateType
+            is-optional
+        a x2
+            type svg:CoordinateType
+            is-optional
+        a y2
+            type svg:CoordinateType
+            is-optional
+    c-type polylineType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-Markers
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a points
+            type svg:PointsType
+            is-required
+    c-type polygonType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-Markers
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a points
+            type svg:PointsType
+            is-required
+    c-type textType
+        mixed true
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:tspan
+            e-ref svg:tref
+            e-ref svg:textPath
+            e-ref svg:altGlyph
+            e-ref svg:a
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:PresentationAttributes-TextElements
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a textLength
+            type svg:LengthType
+            is-optional
+        a lengthAdjust
+            is-optional
+            s-type 
+                restrict : string
+                    enum spacing
+                    enum spacingAndGlyphs
+    c-type tspanType
+        mixed true
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:tspan
+            e-ref svg:tref
+            e-ref svg:altGlyph
+            e-ref svg:a
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a x
+            type svg:CoordinatesType
+            is-optional
+        a y
+            type svg:CoordinatesType
+            is-optional
+        a dx
+            type svg:LengthsType
+            is-optional
+        a dy
+            type svg:LengthsType
+            is-optional
+        a rotate
+            type string
+            is-optional
+        a textLength
+            type svg:LengthType
+            is-optional
+        a lengthAdjust
+            is-optional
+            s-type 
+                restrict : string
+                    enum spacing
+                    enum spacingAndGlyphs
+    c-type trefType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:graphicsElementEvents
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a x
+            type svg:CoordinatesType
+            is-optional
+        a y
+            type svg:CoordinatesType
+            is-optional
+        a dx
+            type svg:LengthsType
+            is-optional
+        a dy
+            type svg:LengthsType
+            is-optional
+        a rotate
+            type string
+            is-optional
+        a textLength
+            type svg:LengthType
+            is-optional
+        a lengthAdjust
+            is-optional
+            s-type 
+                restrict : string
+                    enum spacing
+                    enum spacingAndGlyphs
+    c-type textPathType
+        mixed true
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:tspan
+            e-ref svg:tref
+            e-ref svg:altGlyph
+            e-ref svg:a
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:graphicsElementEvents
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a startOffset
+            type string
+            is-optional
+        a textLength
+            type svg:LengthType
+            is-optional
+        a lengthAdjust
+            is-optional
+            s-type 
+                restrict : string
+                    enum spacing
+                    enum spacingAndGlyphs
+        a method
+            is-optional
+            s-type 
+                restrict : string
+                    enum align
+                    enum stretch
+        a spacing
+            is-optional
+            s-type 
+                restrict : string
+                    enum auto
+                    enum exact
+    c-type altGlyphType
+        mixed true
+        sequence 0-n
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-Color
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:graphicsElementEvents
+        a-ref xlink:href
+            is-optional
+        a glyphRef
+            type string
+            is-optional
+        a format
+            type string
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a x
+            type svg:CoordinatesType
+            is-optional
+        a y
+            type svg:CoordinatesType
+            is-optional
+        a dx
+            type svg:LengthsType
+            is-optional
+        a dy
+            type svg:LengthsType
+            is-optional
+        a rotate
+            type string
+            is-optional
+    c-type altGlyphDefType
+        choice -n
+            e-ref svg:altGlyphItem
+            e-ref svg:glyphRef
+        ag-ref svg:stdAttrs
+    c-type altGlyphItemType
+        sequence -n
+            e-ref svg:glyphRef
+        ag-ref svg:stdAttrs
+    c-type glyphRefType
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:PresentationAttributes-FontSpecification
+        a-ref xlink:href
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a glyphRef
+            type string
+            is-required
+        a format
+            type string
+            is-required
+        a x
+            type svg:CoordinatesType
+            is-optional
+        a y
+            type svg:CoordinatesType
+            is-optional
+        a dx
+            type svg:LengthsType
+            is-optional
+        a dy
+            type svg:LengthsType
+            is-optional
+    c-type markerType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a viewBox
+            type svg:ViewBoxSpecType
+            is-optional
+        a preserveAspectRatio
+            type svg:PreserveAspectRatioSpecType
+            default xMidYMid meet
+        a refX
+            type svg:CoordinateType
+            is-optional
+        a refY
+            type svg:CoordinateType
+            is-optional
+        a markerUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum strokeWidth
+                    enum userSpaceOnUse
+                    enum userSpace
+        a markerWidth
+            type svg:LengthType
+            is-optional
+        a markerHeight
+            type svg:LengthType
+            is-optional
+        a orient
+            type string
+            is-optional
+    c-type color-profileType
+        sequence 
+            group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            type anyURI
+            is-optional
+        a local
+            type string
+            is-optional
+        a name
+            type string
+            is-required
+        a rendering-intent
+            default auto
+            s-type 
+                restrict : string
+                    enum auto
+                    enum perceptual
+                    enum relative-colorimetric
+                    enum saturation
+                    enum absolute-colorimetric
+    c-type linearGradientType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:stop
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a gradientUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+        a gradientTransform
+            type svg:TransformListType
+            is-optional
+        a x1
+            type svg:CoordinateType
+            is-optional
+        a y1
+            type svg:CoordinateType
+            is-optional
+        a x2
+            type svg:CoordinateType
+            is-optional
+        a y2
+            type svg:CoordinateType
+            is-optional
+        a spreadMethod
+            default pad
+            s-type 
+                restrict : string
+                    enum pad
+                    enum reflect
+                    enum repeat
+    c-type radialGradientType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:stop
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a gradientUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+        a gradientTransform
+            type svg:TransformListType
+            is-optional
+        a cx
+            type svg:CoordinateType
+            is-optional
+        a cy
+            type svg:CoordinateType
+            is-optional
+        a r
+            type svg:LengthType
+            is-optional
+        a fx
+            type svg:CoordinateType
+            is-optional
+        a fy
+            type svg:CoordinateType
+            is-optional
+        a spreadMethod
+            default pad
+            s-type 
+                restrict : string
+                    enum pad
+                    enum reflect
+                    enum repeat
+    c-type stopType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-Gradients
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a offset
+            type svg:LengthType
+            is-required
+    c-type patternType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a viewBox
+            type svg:ViewBoxSpecType
+            is-optional
+        a preserveAspectRatio
+            type svg:PreserveAspectRatioSpecType
+            default xMidYMid meet
+        a patternUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+        a patternTransform
+            type svg:TransformListType
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-required
+        a height
+            type svg:LengthType
+            is-required
+    c-type clipPathType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:path
+                e-ref svg:text
+                e-ref svg:rect
+                e-ref svg:circle
+                e-ref svg:ellipse
+                e-ref svg:line
+                e-ref svg:polyline
+                e-ref svg:polygon
+                e-ref svg:use
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-FillStroke
+        ag-ref svg:PresentationAttributes-FontSpecification
+        ag-ref svg:PresentationAttributes-Graphics
+        ag-ref svg:PresentationAttributes-TextContentElements
+        ag-ref svg:PresentationAttributes-TextElements
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a clipPathUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+    c-type maskType
+        sequence 
+            choice 0-n
+                e-ref svg:desc
+                e-ref svg:title
+                e-ref svg:metadata
+                e-ref svg:defs
+                e-ref svg:path
+                e-ref svg:text
+                e-ref svg:rect
+                e-ref svg:circle
+                e-ref svg:ellipse
+                e-ref svg:line
+                e-ref svg:polyline
+                e-ref svg:polygon
+                e-ref svg:use
+                e-ref svg:image
+                e-ref svg:svg
+                e-ref svg:g
+                e-ref svg:view
+                e-ref svg:switch
+                e-ref svg:a
+                e-ref svg:altGlyphDef
+                e-ref svg:script
+                e-ref svg:style
+                e-ref svg:symbol
+                e-ref svg:marker
+                e-ref svg:clipPath
+                e-ref svg:mask
+                e-ref svg:linearGradient
+                e-ref svg:radialGradient
+                e-ref svg:pattern
+                e-ref svg:filter
+                e-ref svg:cursor
+                e-ref svg:font
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateMotion
+                e-ref svg:animateColor
+                e-ref svg:animateTransform
+                e-ref svg:color-profile
+                e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a maskUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-optional
+        a height
+            type svg:LengthType
+            is-optional
+    c-type filterType
+        sequence 
+            group-ref svg:descTitleMetadata
+            choice 0-n
+                e-ref svg:feBlend
+                e-ref svg:feFlood
+                e-ref svg:feColorMatrix
+                e-ref svg:feComponentTransfer
+                e-ref svg:feComposite
+                e-ref svg:feConvolveMatrix
+                e-ref svg:feDiffuseLighting
+                e-ref svg:feDisplacementMap
+                e-ref svg:feGaussianBlur
+                e-ref svg:feImage
+                e-ref svg:feMerge
+                e-ref svg:feMorphology
+                e-ref svg:feOffset
+                e-ref svg:feSpecularLighting
+                e-ref svg:feTile
+                e-ref svg:feTurbulence
+                e-ref svg:animate
+                e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a filterUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+        a primitiveUnits
+            is-optional
+            s-type 
+                restrict : string
+                    enum userSpaceOnUse
+                    enum userSpace
+                    enum objectBoundingBox
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-optional
+        a height
+            type svg:LengthType
+            is-optional
+        a filterRes
+            type string
+            is-optional
+    c-type feDistantLightType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        a azimuth
+            type double
+            is-optional
+        a elevation
+            type double
+            is-optional
+    c-type fePointLightType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        a x
+            type double
+            is-optional
+        a y
+            type double
+            is-optional
+        a z
+            type double
+            is-optional
+    c-type feSpotLightType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        a x
+            type double
+            is-optional
+        a y
+            type double
+            is-optional
+        a z
+            type double
+            is-optional
+        a pointsAtX
+            type double
+            is-optional
+        a pointsAtY
+            type double
+            is-optional
+        a pointsAtZ
+            type double
+            is-optional
+        a specularExponent
+            type double
+            is-optional
+        a limitingConeAngle
+            type double
+            is-optional
+    c-type feBlendType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a in2
+            type string
+            is-required
+        a mode
+            default normal
+            s-type 
+                restrict : string
+                    enum normal
+                    enum multiply
+                    enum screen
+                    enum darken
+                    enum lighten
+    c-type feColorMatrixType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a type
+            default matrix
+            s-type 
+                restrict : string
+                    enum matrix
+                    enum saturate
+                    enum hueRotate
+                    enum luminanceToAlpha
+        a values
+            type string
+            is-optional
+    c-type feComponentTransferType
+        sequence 
+            e-ref svg:feFuncR
+            e-ref svg:feFuncG
+            e-ref svg:feFuncB
+            e-ref svg:feFuncA
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+    c-type feFuncRType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:component_transfer_function_attributes
+        a type
+            is-required
+            s-type 
+                restrict : string
+                    enum identity
+                    enum table
+                    enum discrete
+                    enum linear
+                    enum gamma
+    c-type feFuncGType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:component_transfer_function_attributes
+        a type
+            is-required
+            s-type 
+                restrict : string
+                    enum identity
+                    enum table
+                    enum discrete
+                    enum linear
+                    enum gamma
+    c-type feFuncBType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:component_transfer_function_attributes
+        a type
+            is-required
+            s-type 
+                restrict : string
+                    enum identity
+                    enum table
+                    enum discrete
+                    enum linear
+                    enum gamma
+    c-type feFuncAType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:component_transfer_function_attributes
+        a type
+            is-required
+            s-type 
+                restrict : string
+                    enum identity
+                    enum table
+                    enum discrete
+                    enum linear
+                    enum gamma
+    c-type feCompositeType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a in2
+            type string
+            is-required
+        a operator
+            default over
+            s-type 
+                restrict : string
+                    enum over
+                    enum in
+                    enum out
+                    enum atop
+                    enum xor
+                    enum arithmetic
+        a k1
+            type double
+            is-optional
+        a k2
+            type double
+            is-optional
+        a k3
+            type double
+            is-optional
+        a k4
+            type double
+            is-optional
+    c-type feConvolveMatrixType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:filter_primitive_attributes_with_in
+        a order
+            type string
+            is-required
+        a kernelMatrix
+            type string
+            is-required
+        a divisor
+            type double
+            is-optional
+        a bias
+            type double
+            is-optional
+        a targetX
+            type integer
+            is-optional
+        a targetY
+            type integer
+            is-optional
+        a edgeMode
+            default duplicate
+            s-type 
+                restrict : string
+                    enum duplicate
+                    enum wrap
+                    enum none
+        a kernelUnitLength
+            type string
+            is-optional
+        a preserveAlpha
+            type boolean
+            is-optional
+    c-type feDiffuseLightingType
+        sequence 
+            choice 
+                e-ref svg:feDistantLight
+                e-ref svg:fePointLight
+                e-ref svg:feSpotLight
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-LightingEffects
+        ag-ref svg:filter_primitive_attributes_with_in
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a surfaceScale
+            type double
+            is-optional
+        a diffuseConstant
+            type double
+            is-optional
+    c-type feDisplacementMapType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a in2
+            type string
+            is-required
+        a scale
+            type double
+            is-optional
+        a xChannelSelector
+            default A
+            s-type 
+                restrict : string
+                    enum R
+                    enum G
+                    enum B
+                    enum A
+        a yChannelSelector
+            default A
+            s-type 
+                restrict : string
+                    enum R
+                    enum G
+                    enum B
+                    enum A
+    c-type feFloodType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-feFlood
+        ag-ref svg:filter_primitive_attributes_with_in
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+    c-type feGaussianBlurType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a stdDeviation
+            type string
+            is-optional
+    c-type feImageType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateTransform
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:filter_primitive_attributes
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+    c-type feMergeType
+        sequence 0-n
+            e-ref svg:feMergeNode
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes
+    c-type feMergeNodeType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        a in
+            type string
+            is-optional
+    c-type feMorphologyType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a operator
+            default erode
+            s-type 
+                restrict : string
+                    enum erode
+                    enum dilate
+        a radius
+            type svg:LengthType
+            is-optional
+    c-type feOffsetType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+        a dx
+            type svg:LengthType
+            is-optional
+        a dy
+            type svg:LengthType
+            is-optional
+    c-type feSpecularLightingType
+        sequence 
+            choice 
+                e-ref svg:feDistantLight
+                e-ref svg:fePointLight
+                e-ref svg:feSpotLight
+            choice 0-n
+                e-ref svg:animate
+                e-ref svg:set
+                e-ref svg:animateColor
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-LightingEffects
+        ag-ref svg:filter_primitive_attributes_with_in
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a surfaceScale
+            type double
+            is-optional
+        a specularConstant
+            type double
+            is-optional
+        a specularExponent
+            type double
+            is-optional
+    c-type feTileType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes_with_in
+    c-type feTurbulenceType
+        choice 0-n
+            e-ref svg:animate
+            e-ref svg:set
+        ag-ref svg:stdAttrs
+        ag-ref svg:filter_primitive_attributes
+        a baseFrequency
+            type string
+            is-optional
+        a numOctaves
+            type integer
+            is-optional
+        a seed
+            type double
+            is-optional
+        a stitchTiles
+            default noStitch
+            s-type 
+                restrict : string
+                    enum stitch
+                    enum noStitch
+        a type
+            default turbulence
+            s-type 
+                restrict : string
+                    enum fractalNoise
+                    enum turbulence
+    c-type cursorType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        ag-ref svg:testAttrs
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+    c-type aType
+        mixed true
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a-ref xlink:type
+            fixed simple
+        a-ref xlink:role
+        a-ref xlink:arcrole
+        a-ref xlink:title
+        a-ref xlink:show
+        a-ref xlink:actuate
+            fixed onRequest
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a target
+            type NMTOKEN
+            is-optional
+    c-type viewType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a viewBox
+            type svg:ViewBoxSpecType
+            is-optional
+        a preserveAspectRatio
+            type svg:PreserveAspectRatioSpecType
+            default xMidYMid meet
+        a zoomAndPan
+            default magnify
+            s-type 
+                restrict : string
+                    enum disable
+                    enum magnify
+                    enum zoom
+        a viewTarget
+            type string
+            is-optional
+    c-type scriptType
+        mixed true
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a type
+            type svg:ContentTypeType
+            is-required
+    c-type animateType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:animationEvents
+        ag-ref svg:animTargetAttrs
+        ag-ref svg:animTimingAttrs
+        ag-ref svg:animValueAttrs
+        ag-ref svg:animAdditionAttrs
+        a externalResourcesRequired
+            type boolean
+            is-optional
+    c-type setType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:animationEvents
+        ag-ref svg:animTargetAttrs
+        ag-ref svg:animTimingAttrs
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a to
+            type string
+            is-optional
+    c-type animateMotionType
+        sequence 
+            group-ref svg:descTitleMetadata
+            e-ref svg:mpath
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:animationEvents
+        ag-ref svg:animElementAttrs
+        ag-ref svg:animTimingAttrs
+        ag-ref svg:animValueAttrs
+        ag-ref svg:animAdditionAttrs
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a path
+            type string
+            is-optional
+        a keyPoints
+            type string
+            is-optional
+        a rotate
+            type string
+            is-optional
+        a origin
+            type string
+            is-optional
+    c-type mpathType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            is-optional
+        a externalResourcesRequired
+            type boolean
+            is-optional
+    c-type animateColorType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:animationEvents
+        ag-ref svg:animTargetAttrs
+        ag-ref svg:animTimingAttrs
+        ag-ref svg:animValueAttrs
+        ag-ref svg:animAdditionAttrs
+        a externalResourcesRequired
+            type boolean
+            is-optional
+    c-type animateTransformType
+        group-ref svg:descTitleMetadata
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:animationEvents
+        ag-ref svg:animTargetAttrs
+        ag-ref svg:animTimingAttrs
+        ag-ref svg:animValueAttrs
+        ag-ref svg:animAdditionAttrs
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a type
+            default translate
+            s-type 
+                restrict : string
+                    enum translate
+                    enum scale
+                    enum rotate
+                    enum skewX
+                    enum skewY
+    c-type fontType
+        sequence 
+            group-ref svg:descTitleMetadata
+            e-ref svg:font-face
+            e-ref svg:missing-glyph
+            choice 0-n
+                e-ref svg:glyph
+                e-ref svg:hkern
+                e-ref svg:vkern
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-All
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a horiz-origin-x
+            type double
+            is-optional
+        a horiz-origin-y
+            type double
+            is-optional
+        a horiz-adv-x
+            type double
+            is-required
+        a vert-origin-x
+            type double
+            is-optional
+        a vert-origin-y
+            type double
+            is-optional
+        a vert-adv-y
+            type double
+            is-optional
+    c-type glyphType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-All
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a unicode
+            type string
+            is-optional
+        a glyph-name
+            type string
+            is-optional
+        a d
+            type svg:PathDataType
+            is-optional
+        a vert-text-orient
+            type string
+            is-optional
+        a arabic
+            type string
+            is-optional
+        a han
+            type string
+            is-optional
+        a horiz-adv-x
+            type double
+            is-optional
+        a vert-adv-y
+            type double
+            is-optional
+    c-type missing-glyphType
+        choice 0-n
+            e-ref svg:desc
+            e-ref svg:title
+            e-ref svg:metadata
+            e-ref svg:defs
+            e-ref svg:path
+            e-ref svg:text
+            e-ref svg:rect
+            e-ref svg:circle
+            e-ref svg:ellipse
+            e-ref svg:line
+            e-ref svg:polyline
+            e-ref svg:polygon
+            e-ref svg:use
+            e-ref svg:image
+            e-ref svg:svg
+            e-ref svg:g
+            e-ref svg:view
+            e-ref svg:switch
+            e-ref svg:a
+            e-ref svg:altGlyphDef
+            e-ref svg:script
+            e-ref svg:style
+            e-ref svg:symbol
+            e-ref svg:marker
+            e-ref svg:clipPath
+            e-ref svg:mask
+            e-ref svg:linearGradient
+            e-ref svg:radialGradient
+            e-ref svg:pattern
+            e-ref svg:filter
+            e-ref svg:cursor
+            e-ref svg:font
+            e-ref svg:animate
+            e-ref svg:set
+            e-ref svg:animateMotion
+            e-ref svg:animateColor
+            e-ref svg:animateTransform
+            e-ref svg:color-profile
+            e-ref svg:font-face
+        ag-ref svg:stdAttrs
+        ag-ref svg:PresentationAttributes-All
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a d
+            type svg:PathDataType
+            is-optional
+        a horiz-adv-x
+            type double
+            is-optional
+        a vert-adv-y
+            type double
+            is-optional
+    c-type hkernType
+        ag-ref svg:stdAttrs
+        a u1
+            type string
+            is-optional
+        a g1
+            type string
+            is-optional
+        a u2
+            type string
+            is-optional
+        a g2
+            type string
+            is-optional
+        a k
+            type double
+            is-required
+    c-type vkernType
+        ag-ref svg:stdAttrs
+        a u1
+            type string
+            is-optional
+        a g1
+            type string
+            is-optional
+        a u2
+            type string
+            is-optional
+        a g2
+            type string
+            is-optional
+        a k
+            type double
+            is-required
+    c-type font-faceType
+        sequence 
+            group-ref svg:descTitleMetadata
+            e-ref svg:font-face-src
+            e-ref svg:definition-src
+        ag-ref svg:stdAttrs
+        a font-family
+            type svg:FontFamilyValueType
+            is-optional
+        a font-style
+            type string
+            is-optional
+        a font-variant
+            type string
+            is-optional
+        a font-weight
+            type string
+            is-optional
+        a font-stretch
+            type string
+            is-optional
+        a font-size
+            type svg:FontSizeValueType
+            is-optional
+        a unicode-range
+            type string
+            is-optional
+        a units-per-em
+            type double
+            is-optional
+        a panose-1
+            type string
+            is-optional
+        a stemv
+            type double
+            is-optional
+        a stemh
+            type double
+            is-optional
+        a slope
+            type double
+            is-optional
+        a cap-height
+            type double
+            is-optional
+        a x-height
+            type double
+            is-optional
+        a accent-height
+            type double
+            is-optional
+        a ascent
+            type double
+            is-optional
+        a descent
+            type double
+            is-optional
+        a widths
+            type string
+            is-optional
+        a bbox
+            type string
+            is-optional
+        a ideographic
+            type double
+            is-optional
+        a baseline
+            type double
+            is-optional
+        a centerline
+            type double
+            is-optional
+        a mathline
+            type double
+            is-optional
+        a hanging
+            type double
+            is-optional
+        a topline
+            type double
+            is-optional
+        a underline-position
+            type double
+            is-optional
+        a underline-thickness
+            type double
+            is-optional
+        a strikethrough-position
+            type double
+            is-optional
+        a strikethrough-thickness
+            type double
+            is-optional
+        a overline-position
+            type double
+            is-optional
+        a overline-thickness
+            type double
+            is-optional
+    c-type font-face-srcType
+        choice -n
+            e-ref svg:font-face-uri
+            e-ref svg:font-face-name
+        ag-ref svg:stdAttrs
+    c-type font-face-uriType
+        sequence 
+            e-ref svg:font-face-format
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            is-optional
+    c-type font-face-formatType
+        ag-ref svg:stdAttrs
+        a string
+            type string
+            is-optional
+    c-type font-face-nameType
+        ag-ref svg:stdAttrs
+        a name
+            type string
+            is-optional
+    c-type definition-srcType
+        ag-ref svg:stdAttrs
+        ag-ref svg:xlinkRefAttrs
+        a-ref xlink:href
+            is-optional
+    c-type metadataType
+        mixed true
+        sequence 0-n
+        ag-ref svg:stdAttrs
+    c-type foreignObjectType
+        mixed true
+        sequence 0-n
+        ag-ref svg:stdAttrs
+        ag-ref svg:testAttrs
+        ag-ref svg:langSpaceAttrs
+        ag-ref svg:PresentationAttributes-All
+        ag-ref svg:graphicsElementEvents
+        a externalResourcesRequired
+            type boolean
+            is-optional
+        a class
+            type svg:ClassListType
+            is-optional
+        a style
+            type svg:StyleSheetType
+            is-optional
+        a transform
+            type svg:TransformListType
+            is-optional
+        a x
+            type svg:CoordinateType
+            is-optional
+        a y
+            type svg:CoordinateType
+            is-optional
+        a width
+            type svg:LengthType
+            is-required
+        a height
+            type svg:LengthType
+            is-required
+        a content
+            type string
+            fixed structured text

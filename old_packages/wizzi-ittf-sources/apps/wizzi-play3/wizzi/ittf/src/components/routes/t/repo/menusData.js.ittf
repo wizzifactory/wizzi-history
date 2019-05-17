@@ -1,0 +1,34 @@
+﻿$group
+
+	const createFsItemContextMenu
+		=>
+			param owner
+			param props
+			return
+				{
+					@ dynMenuItems
+						[
+							{
+								@ label 'copy'
+								@ onClick
+									=>
+										_ alert('copy')
+										_ owner.handleContextMenuClose
+							{
+								@ label 'cut'
+								@ onClick
+									=>
+										_ alert('cut')
+										_ owner.handleContextMenuClose
+							{
+								@ label 'duplicate'
+								@ onClick
+									=>
+										_ alert('duplicate')
+										_ owner.handleContextMenuClose
+							{
+								@ label 'delete'
+								@ onClick
+									=>
+										_ alert('delete')
+										_ owner.handleContextMenuClose

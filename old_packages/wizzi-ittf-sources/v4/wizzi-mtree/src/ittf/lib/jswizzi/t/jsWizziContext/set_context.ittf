@@ -1,0 +1,90 @@
+﻿$group
+
+	#
+		# The JsWizziRunner is entering a block of statements
+		# with instructions for the buildup 
+		# of the final MTree.
+
+    m set_NodeContext
+		if this.isForInterpolation
+			return
+        if this.ittf_state === ittfStates.nodeContext
+			# we already are in a nodeContext state
+            return
+
+		# log '*** => set_NodeContext'
+
+		set this.ittf_state = ittfStates.nodeContext
+        set this.currentMTreeBrickKey = null
+		set this.brickEvalContext = null
+    
+	#
+		# The JsWizziRunner is entering a block of global statements
+		# declared inside an ittf document.
+		# Example:
+		# 001     $global var message = 'hello';
+
+	m set_GlobalContext
+		param brickKey
+
+		# get_value has scope: global and the current MTreeBrickEvalContext
+		# set_value puts value into global
+
+		if this.isForInterpolation == false && this.currentMTreeBrickKey !== brickKey
+			# added 7/8/17
+			# Must stay before the call to getMTreeBrickEvalContext
+			# to allow debug info about brickKey
+			set this.currentMTreeBrickKey = brickKey
+			checked_call_return_set( this.brickEvalContext
+				 _ this.evalHelper.getMTreeBrickEvalContext(brickKey, -1)
+			_ assert(this.brickEvalContext, 'set_MTreeBrickEvalContext brickEvalContext for key ' + brickKey + ' undefined')
+
+        if this.ittf_state === ittfStates.globalContext
+			# we already are in a globalContext state
+            return 
+
+		# log '*** => set_GlobalContext'
+
+		set this.ittf_state = ittfStates.globalContext
+        # via 7/8/17 set this.currentMTreeBrickKey = null
+		# via 7/8/17 set this.brickEvalContext = null
+    
+	#
+		# The JsWizziRunner is entering a block of statements or
+		# a node expression that are in the scope of an mTreeBrick.
+		# They could be statements declared in a mixed ittf 
+		# document using the $ IttfCommand:
+		#
+		# 001     $ var message = 'hello';
+		#
+		# or it could be a node expression that the JsWizziEvalHelper 
+		# has to interpolate:
+		#
+		# 001     function ${'$'}{functionName}
+		#
+	m set_MTreeBrickEvalContext
+        param brickKey
+        param line
+
+		if this.isForInterpolation
+			return
+
+        set this.ittf_state = ittfStates.brickEvalContext
+
+		if this.currentMTreeBrickKey === brickKey
+            return 
+
+		# Must stay before the call to getMTreeBrickEvalContext
+		# to allow debug info about brickKey
+		set this.currentMTreeBrickKey = brickKey
+
+		checked_call_return_set( this.brickEvalContext
+			 _ this.evalHelper.getMTreeBrickEvalContext(brickKey, line)
+		_ assert(this.brickEvalContext, 'set_MTreeBrickEvalContext brickEvalContext for key ' + brickKey + ' undefined')
+
+		# log '*** => set_MTreeBrickEvalContext', brickKey
+       
+		return this.brickEvalContext
+    
+	m get_currentMTreeBrickKey
+		return this.currentMTreeBrickKey

@@ -1,0 +1,10 @@
+﻿$group
+
+	@ replaceAll
+		function
+			param s
+			param find
+			param replace
+			if typeof s === 'undefined' || s == null
+				return s
+			return s.replace(new RegExp(escapeRegExp(find), 'g'), replace)

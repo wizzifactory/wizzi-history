@@ -1,0 +1,155 @@
+﻿$group
+	$params &app
+
+	$if app.useFirestoreServer
+		@google-cloud/firestore "^0.14.1"	
+	
+	$if app.useMaterialUi || app.useMaterialUiIcons
+		@material-ui/core "^1.1.0"
+		@material-ui/icons "^1.1.0"
+
+	$if app.useBabelRegister
+		@babel/core "latest"
+		@babel/register "latest"
+		@babel/preset-env "latest"
+
+	$if app.useLruCache
+		lru-cache "latest"
+
+	$if app.useApiMiddleware
+		axios "latest"
+		normalizr "latest"
+
+	$if app.useMaterialUi
+		classnames "^2.2.5"
+
+	$if app.useCodemirror
+		codemirror "^5.38.0"
+	
+	$if app.useExpress
+		express "^4.15.2"
+
+	$if app.useFirestoreBrowser
+		firebase-admin "^4.0.3"
+
+	$if app.useFirebase
+		firebase "5.0.3"
+
+	$if app.useFirebaseServer
+		firebase-server "^0.11.0"
+	
+	$if app.useGraphql
+		
+		graphql 'latest'
+
+		$if app.graphql.apolloClient
+			apollo-boost 'latest'
+			react-apollo 'latest'
+		
+		$else
+			
+			graphql-yoga 'latest'
+		
+		$if app.graphql.apolloServer
+			apollo-server "latest"
+		
+		$if app.graphql.github
+			graphql-binding-github "0.3.25"
+		
+		$if app.graphql.prisma
+			prisma "1.8.3"
+			prisma-binding "2.0.0"
+	
+	$if app.useMarkdown
+		highlight.js "^9.12.0"
+		markdown-it "^8.4.1"
+
+	$if app.useMySql
+		mysql "latest"
+
+	$if app.useJsBeautify
+		js-beautify 'latest'
+	
+	$if app.Monaco
+		 monaco-editor "^0.13.1"
+	
+	$if app.useExpress
+		morgan "^1.8.1"
+
+	$if app.useNextjs
+		$$ next "^4.1.0"
+		next "latest"
+
+	$if app.polyfill.objectAssign
+		object-assign "^4.1.1"
+	
+	$if app.usePrettier
+		prettier "^1.14.0"
+	
+	$if app.usePrismjs
+		prismjs "^1.14.0"
+
+	$if app.polyfill.promise
+		promise "^8.0.1"
+
+	$if app.polyfill.raf
+		raf "^3.4.0"
+	
+	$if app.useReact
+		react "^16.0.0"
+		react-dom "^16.0.0"
+		$if app.useReduxAuth
+			redux-auth-wrapper "^1.0.0"
+		$if app.useReduxForm
+			redux-form "^7.3.0"
+			$if app.useMaterialUi
+				redux-form-material-ui "next"
+		$if app.useCodemirror
+			react-codemirror2 "latest"
+		$if app.useJsonView
+			react-json-view "latest"
+		$if app.useReactLowLight
+			react-lowlight "latest"
+			highlight.js "latest"
+		$if app.useMonaco
+			react-monaco-editor "latest"
+		$if app.useRedux
+			redux-devtools-extension "^2.13.2"
+			react-redux "^5.0.1"
+			redux-logger "^3.0.6"
+			redux "^3.6.0"
+			redux-thunk "^2.1.0"
+			$if app.useReduxFirestore
+				react-redux-firebase "latest"
+				redux-firestore "latest"
+		$if app.useReactRouter
+			react-router-dom "^4.3.1"
+		$if app.useServer
+			react-render-html "^0.5.2"
+		$if app.useSplitter
+			react-split-pane "^0.1.77"
+
+		$if app.useCreateReactApp
+			react-scripts "1.1.4"
+	
+	$if app.polyfill.fetch
+		whatwg-fetch "^2.0.4"
+	
+	$if app.useWizzi
+		wizzi 'latest'
+		
+		$if app.wizziPlugins
+			$foreach item in app.wizziPlugins
+				${item} 'latest'
+
+	$if app.useWizziUtils
+		wizzi-utils 'latest'
+
+	$if app.useWizziTools
+		wizzi-tools 'latest'
+		wizzi-tools-next 'latest'
+
+
+
+			 
+

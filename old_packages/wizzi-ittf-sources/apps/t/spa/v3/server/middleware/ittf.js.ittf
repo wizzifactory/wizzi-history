@@ -1,0 +1,138 @@
+$group
+	
+	#
+		# *.html.ittf
+		# *.js.ittf
+		# *.json.ittf
+		# *.css.ittf
+		# *.html
+		# *.js
+		# *.json
+		# *.css
+		# *.png | *.jpg |*.gif |*.bmp |*.tiff
+		# *.woff | *.ttf
+
+	var ittf
+		
+		middle( )
+
+			_ wizzi.option('force', true)
+			
+			var filePath = path.join(__dirname, req._parsedUrl.pathname);
+			
+			log 'ittf.filePath', filePath
+			
+			if wizzi.file.exists(filePath) === false
+				return next()
+			
+			if wizzi.file.isFile(filePath) === false
+				return next()
+			
+			if filePath.substr(-10, 10) === '.html.ittf'
+				_ site.htmlDocument
+					@ filePath
+					{
+						@ req req
+					function
+						param err
+						param rendered
+						if err
+							_ return res.send(err)
+						return res.send(rendered)
+			
+			elif filePath.substr(-8, 8) === '.js.ittf'
+				_ site.jsModule
+					@ filePath
+					{
+						@ req req
+					function
+						param err
+						param rendered
+						if err
+							_ return res.send(err)
+						_ res.setHeader('content-type', 'text/javascript')
+						return res.send(rendered)
+			
+			elif filePath.substr(-10, 10) === '.json.ittf'
+				_ site.jsonDocument
+					@ filePath
+					{
+						@ req req
+					function
+						param err
+						param rendered
+						if err
+							_ return res.send(err)
+						_ res.setHeader('content-type', 'application/json')
+						return res.send(rendered)
+			
+			elif filePath.substr(-9, 9) === '.css.ittf'
+				_ site.cssDocument
+					@ filePath
+					{
+						@ req req
+					function
+						param err
+						param rendered
+						if err
+							_ return res.send(err)
+						_ res.setHeader('content-type', 'text/css')
+						return res.send(rendered)
+			
+			elif filePath.substr(-5, 5) == '.html'
+				var content = wizzi.file.read(filePath)
+				_ res.end(content)
+			
+			elif filePath.substr(-3, 3) == '.js'
+				var content = wizzi.file.read(filePath)
+				_ res.setHeader('content-type', 'text/javascript')
+				_ res.end(content)
+			
+			elif filePath.substr(-5, 5) == '.json'
+				var content = wizzi.file.read(filePath)
+				_ res.setHeader('content-type', 'application/json')
+				_ res.end(content)
+			
+			elif filePath.substr(-4, 4) == '.css'
+				var content = wizzi.file.read(filePath)
+				_ res.setHeader('content-type', 'text/css')
+				_ res.end(content)
+			
+			elif ['.png', '.jpg', '.gif', '.bmp].indexOf(filePath.substr(-4, 4)) > -1
+				\b || ['.jpeg', '.tiff'].indexOf(filePath.substr(-5, 5)) > -1
+				_ wizzi.file.readFile
+					@ filePath
+					function
+						param err
+						param data
+						if err 
+							_ return res.end("Error reading " + filePath + " " + err)
+						else
+							_ res.setHeader('content-type', 'image/' + filePath.substr(-3, 3))
+							_ res.setHeader('content-length', data.length)
+							_ res.end(data)
+			
+			elif filePath.substr(-5, 5) == '.woff' || filePath.substr(-4, 4) == '.ttf'
+				
+				var ctype;
+				
+				if filePath.substr(-5, 5) == '.woff'
+					set ctype = 'application/x-font-woff'
+				
+				if filePath.substr(-4, 4) == '.ttf'
+					set ctype = 'application/x-font-ttf'
+				
+				_ wizzi.file.readFile
+					@ filePath
+					function
+						param err
+						param data
+						if err 
+							return res.end("Error reading " + filePath + " " + err)
+						else
+							_ res.setHeader('content-type', ctype)
+							_ res.setHeader('content-length', data.length)
+							_ res.end(data)
+
+			elif 
+				_ next()

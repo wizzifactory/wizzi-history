@@ -1,0 +1,65 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source: https://github.com/isaacs/fs.realpath/blob/master/index.js
+	# license (ISC) https://github.com/isaacs/fs.realpath/blob/master/LICENSE
+
+    set module.exports = realpath
+    set realpath.realpath = realpath
+    set realpath.sync = realpathSync
+    set realpath.realpathSync = realpathSync
+    set realpath.monkeypatch = monkeypatch
+    set realpath.unmonkeypatch = unmonkeypatch
+    var fs = require('fs')
+    var origRealpath = fs.realpath
+    var origRealpathSync = fs.realpathSync
+    var version = process.version
+    var ok = /^v[0-5]\./.test(version)
+    var old = require('./old.js')
+    
+	function newError
+        param er
+        return (((er && (er.syscall === 'realpath'))) && (((((er.code === 'ELOOP') || (er.code === 'ENOMEM'))) || (er.code === 'ENAMETOOLONG'))))
+    
+	function realpath
+        param p
+        param cache
+        param cb
+        if ok
+            return origRealpath(p, cache, cb)
+        if typeof (cache) === 'function'
+            set cb = cache
+            set cache = null
+        _ origRealpath
+            @ p
+            @ cache
+            function 
+                param er
+                param result
+                if newError(er)
+                    _ old.realpath(p, cache, cb)
+                else 
+                    _ cb(er, result)
+    
+	function realpathSync
+        param p
+        param cache
+        if ok
+            return origRealpathSync(p, cache)
+        try 
+            return origRealpathSync(p, cache)
+        catch er
+            if newError(er)
+                return old.realpathSync(p, cache)
+            else 
+                throw er
+    
+	function monkeypatch
+        set fs.realpath = realpath
+        set fs.realpathSync = realpathSync
+    
+	function unmonkeypatch
+        set fs.realpath = origRealpath
+        set fs.realpathSync = origRealpathSync

@@ -1,0 +1,58 @@
+﻿wfschema graph
+
+	unknown-element-replacer sem
+
+	export-to json
+
+	e node
+		# A tree node with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag #
+		r node/s
+
+	e graph : node
+		is-root
+
+		m wzInitialize
+			set this.elements = {}
+			set this.categories = {}
+
+	e sem : node
+		# Semantic element of the preprocessed wizzi schema.
+		# Will be emitted as is.
+		# Every unrecognized ittf node will become a
+		# `sem` element.
+
+	e_tag( element, e, node)
+	e_tag( category, cat, node)
+	e_tag( tag, tag, node)
+	
+	e_tag( isDef, is-def, node)
+	e_tag( isArrayDef, is[-def, node)
+	e_tag( isOfType, is, node)
+	e_tag( isArrayOfType, is[, node)
+
+	e_tag( openBracket, [, node )
+		# one required group of juxtapositioned components
+	
+	e_tag( openBracketQuestionMark, [?, node )
+		# one optional group of juxtapositioned components
+	
+	e_tag( openBracketPlus, [+, node )
+		# at least one or many groups of juxtapositioned components
+	
+	e_tag( openBracketAmpersand, [&, node )
+		# one required group of joined (no juxtaposition) components
+	
+	e_tag( openBracketHashtag, [#, node )
+		# at least one or many groups of comma separated juxtapositioned components
+	
+	e_tag( colon, :, node )
+	e_tag( colonQuestionMark, :?, node )
+	e_tag( doubleColon, ::, node )
+	e_tag( singleBar, |, node )
+	e_tag( doubleBar, ||, node )
+	e_tag( singleAmpersand, &, node )
+	e_tag( doubleAmpersand, &&, node )
+	

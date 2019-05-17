@@ -1,0 +1,24 @@
+﻿r-component( AppComponent )
+
+	$append imports
+		import classnames from 'classnames'
+		import Typography from '@material-ui/core/Typography'
+		import AppRouter from './AppRouter'
+
+	style
+		
+		@ pageWrapper
+			{
+				@ width '100%'
+				@ height '100vh'
+				@ backgroundColor theme.palette.background.default
+				@ color theme.palette.primary.main
+
+	render
+
+		prop classes
+		
+		return
+			. {classes.pageWrapper}
+				< AppRouter
+

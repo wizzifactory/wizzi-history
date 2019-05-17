@@ -1,0 +1,54 @@
+﻿$group
+
+	@ documentList
+		function
+			param options
+
+			set options = this.detectOptions(options)
+
+			var folderPath
+				_ this.projectPath
+					@ options.userId
+					@ options.projectName
+			
+			log 'documentList.folderPath', folderPath
+
+			var files
+				_ this.getFolderMetaFiles
+					@ folderPath
+
+			var documents = []
+			foreach file in files
+				var nameSchema = this.documentNameAndSchemaFromBaseName(file.baseName)
+				var dirUri = this.uriFromPath(file.dirName)
+				var folder
+					_ dirUri.substr
+						@ ('/' + options.userId + '/' + options.projectName + '/').length
+				_ documents.push
+					{
+						@ name nameSchema.name
+						@ schema nameSchema.schema
+						@ folder folder
+						@ project options.projectName
+						@ user options.userId
+						@ uri
+							_ this.normalize
+								_ path.join
+									@ dirUri
+									@ nameSchema.name + '.' + nameSchema.schema + '.ittf'
+			return documents
+
+	@ documentNameAndSchemaFromBaseName
+		function
+			param basename
+			var suffix = '.meta.json'
+			var docName = basename.substring(0, basename.length - suffix.length)
+			var lastDotPos = docName.lastIndexOf('.')
+			var docSchema = docName.substring(lastDotPos + 1, docName.length)
+			var docNameNoExt = docName.substring(0, lastDotPos)
+			return
+				{
+					@ name docNameNoExt
+					@ schema docSchema
+
+

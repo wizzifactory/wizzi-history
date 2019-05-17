@@ -1,0 +1,21 @@
+﻿module
+	kind jsfile
+
+	var verify = require('wizzi-utils').verify
+
+	var md = module.exports = {}
+
+	set md.cleanAst
+		function
+			param ast
+			delete ast.loc
+			delete ast.start
+			delete ast.end
+			foreach k in Object.keys(ast)
+				if verify.isArray(ast[k])
+					foreach node in ast[k]
+						_ md.cleanAst(node)
+				if verify.isObject(ast[k])
+					_ md.cleanAst(ast[k])
+			return ast
+					

@@ -1,0 +1,25 @@
+﻿wfjob wizzi-repo
+	
+	$
+		var ittf_meta_folder     = path.join(__dirname, 'ittf', 'meta');
+		var ittf_lib_folder      = path.join(__dirname, 'ittf', 'lib');
+		var ittf_root_folder     = path.join(__dirname, 'ittf', 'root');
+		var ittf_examples_folder = path.join(__dirname, 'ittf', 'examples');
+		var ittf_tests_folder    = path.join(__dirname, 'ittf', 'tests');
+		var dest_folder           = path.join(__dirname, '..', 'dist');
+
+	model meta
+		schema json
+		src ${ittf_meta_folder}/index.json.ittf
+
+	$include wfjob/lib
+	$include wfjob/examples
+	$include wfjob/root
+	$include wfjob/tests
+
+	production
+		dest-folder ${dest_folder}
+		line-ref ittf-lib
+		line-ref ittf-root
+		line-ref ittf-examples
+		line-ref ittf-tests

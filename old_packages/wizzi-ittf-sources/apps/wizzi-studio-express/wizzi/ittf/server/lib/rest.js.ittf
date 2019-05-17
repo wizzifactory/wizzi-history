@@ -1,0 +1,103 @@
+﻿module
+	kind jsfile
+
+	import util
+	var stringify = require('json-stringify-safe')
+	var wizzi = require('wizzi')
+	var restParamsCheck = require('./restparamscheck')
+
+	var md = module.exports = {}
+
+	set md.paramsCheck
+		function
+			param req
+			return new restParamsCheck.paramsCheck(req)
+
+	set md.sendError
+		function
+			param res
+			param err
+			param options
+
+			set options = options || {}
+			var code = options.code || 999
+
+			var errEmit = err
+			# delete errEmit.__is_error
+
+			if options.format === 'string'
+
+				if typeof err !== 'string'
+					set err = util.inspect(err, { depth: null })
+				set errEmit
+					_ wizzi.verify.replaceAll
+						@ err
+						@ '\n'
+						@ '<br>'
+
+			_ res.setHeader('Content-Type', 'application/json')
+			_ res.send
+				_ stringify
+					{
+						@ status
+							{
+								@ code code
+								@ error errEmit
+					@ null
+					@ 4
+
+
+	set md.sendSuccess
+		function
+			param res
+			param status
+			param data
+			param options
+
+			set options = options || {}
+			var code = options.code || 0
+
+			var resultEmit = data
+			delete status.__is_success
+			set status.code = code
+
+			if options.format === 'string'
+				
+				if result
+					if typeof result !== 'string'
+						set result = util.inspect(result, { depth: null })
+					set resultEmit
+						_ wizzi.verify.replaceAll
+							@ result
+							@ '\n'
+							@ '<br>'
+
+			_ res.setHeader('Content-Type', 'application/json')
+			_ res.send
+				_ stringify
+					{
+						@ status status
+						@ data resultEmit
+					@ null
+					@ 4
+
+	set md.sendResult
+		function
+			param res
+			param err
+			param result
+			param options
+
+			if err
+				return
+					_ sendError
+						@ res
+						@ err
+						@ options
+			else
+				return
+					_ sendSuccess
+						@ res
+						@ result
+						@ options
+

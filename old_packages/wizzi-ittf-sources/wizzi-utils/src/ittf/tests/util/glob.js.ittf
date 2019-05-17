@@ -1,0 +1,56 @@
+﻿base_test( glob )
+	
+	$append imports
+		var glob = require('../../lib/glob')
+		var vfile = require('../../lib/fs/vfile')
+		var file = vfile()
+
+	it-async should glob a folder
+
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'one'
+				@ 'globbed_2_one.ittf'
+			@ 'globbed 2 one'
+		
+		_ glob
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+			@ file
+			f_cb_test( result )
+				tobe_array(result, 3)
+				_ done
+
+	it should sync glob a folder
+
+		var result
+			_ glob
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'globs2'
+					@ '**/*.ittf'
+				@ file
+				{
+					@ sync true
+		tobe_array(result, 3)

@@ -1,0 +1,16 @@
+﻿$group
+
+	=> openOptionsDialog
+		param data
+		if data
+			_ this.setState
+				{
+					@ optionsDialogOpen true
+					@ optionsDialogTitle data.title
+					@ optionsDialogOptions data.options
+					@ optionsDialogHandler data.handler
+
+	=> handleGitCommit
+		_ this.openOptionsDialog
+			_ createGitCommitData(this, this.props)
+

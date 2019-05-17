@@ -1,0 +1,30 @@
+﻿$group
+
+	@ deleteDocument
+		function
+			param documentUri
+			param callback
+
+			var metaPath = paths.metaPathFromUri(documentUri)
+
+			check_file_not_exists( metaPath, Ittf document meta
+
+			var ittfPath = paths.pathFromUri(documentUri)
+
+			check_file_not_exists( ittfPath, Ittf document
+
+			_ file.delete
+				@ metaPath
+
+			_ file.delete
+				@ ittfPath
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ uri documentUri
+					@ status
+						_ success
+							@ 'Ittf document deleted: "' + documentUri + '"'

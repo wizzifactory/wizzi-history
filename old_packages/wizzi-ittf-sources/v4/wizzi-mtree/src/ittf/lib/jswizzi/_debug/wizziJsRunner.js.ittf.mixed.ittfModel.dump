@@ -1,0 +1,1325 @@
+  module  ids: 1 195
+    kind jsfile ids: 2 196
+    var util = require('util') ids: 3 197
+    var escodegen = require('escodegen') ids: 4 198
+    var esprima = require('esprima') ids: 5 199
+    var file = require('../util/file') ids: 6 200
+    var verify = require('../util/verify') ids: 7 201
+    var errors = require('./errors') ids: 8 202
+    var verbose = false ids: 9 203
+    var defaultOptions ids: 10 204
+      {  ids: 11 205
+        @ verbose true ids: 12 206
+    function log ids: 13 207
+      param label ids: 14 208
+      param node ids: 15 209
+      param force ids: 16 210
+      if (verbose || force) ids: 17 211
+        log escodegen.generate(node) ids: 18 212
+        _ console.log ids: 19 213
+          @ label ids: 20 214
+          _ util.inspect ids: 21 215
+            @ node ids: 22 216
+            {  ids: 23 217
+              @ depth 2 ids: 24 218
+    var runner ids: 25 219
+      function  ids: 26 220
+        param ast ids: 27 221
+        param ctx ids: 28 222
+        param action ids: 29 223
+        param data ids: 30 224
+        var type ids: 31 225
+          iif action ids: 32 226
+            then ast.type + '_' + action ids: 33 227
+            else  ids: 34 228
+              set ast.type ids: 35 229
+        if verbose ids: 36 230
+          _ console.log(('ast.type: ' + type)) ids: 37 231
+        if ast.trailingComments && ast.trailingComments.length == 1 ids: 38 232
+          _ ctx.setRunningNodeId ids: 39 233
+            @ ast.trailingComments[0].value ids: 40 234
+        var trunner = runner[type] ids: 41 235
+        if trunner ids: 42 236
+          return trunner(ast, ctx, data) ids: 43 237
+        else  ids: 44 238
+          return  ids: 45 239
+            _ error ids: 46 240
+              @ ctx ids: 47 241
+              @ 'Missing runner for type: ' + type ids: 48 242
+              @ 'runner' ids: 49 243
+    var runnerSet ids: 50 244
+      function  ids: 51 245
+        param ast ids: 52 246
+        param ctx ids: 53 247
+        param data ids: 54 248
+        return runner(ast, ctx, 'Set', data) ids: 55 249
+    var runnerCall ids: 56 250
+      function  ids: 57 251
+        param ast ids: 58 252
+        param ctx ids: 59 253
+        param data ids: 60 254
+        return runner(ast, ctx, 'Call', data) ids: 61 255
+    $group  ids: 1571 1581
+      $args: Program $params: name, arg1|@@null
+      set runner.${name} ids: 1573 1582
+        function  ids: 1574 1583
+          param node ids: 1575 1584
+          param ctx ids: 1576 1585
+          $if arg1 != null ids: 1577 1586
+            param ${arg1} ids: 1578 1587
+          _ log('${name}.node', node) ids: 1579 1588
+          var state ids: 63 257
+          for var i = 0; i < node.body.length; i++ ids: 64 258
+            var statement = node.body[i] ids: 65 259
+            $group  ids: 1590 1597
+              $args: state, Program $params: varName, message|@@null
+              var ${varName} ids: 1592 1598
+                _ runner(statement, ctx) ids: 67 261
+              if ${varName} && ${varName}.__is_error ids: 1594 1600
+                log '__is_error ${message}', ${varName} ids: 1595 1601
+                return ${varName} ids: 1596 1602
+            if state.return ids: 68 262
+              return state.value ids: 69 263
+    $group  ids: 1571 1603
+      $args: Identifier $params: name, arg1|@@null
+      set runner.${name} ids: 1573 1604
+        function  ids: 1574 1605
+          param node ids: 1575 1606
+          param ctx ids: 1576 1607
+          $if arg1 != null ids: 1577 1608
+            param ${arg1} ids: 1578 1609
+          _ log('${name}.node', node) ids: 1579 1610
+          if node.name == 'undefined' ids: 71 265
+            # log 'Identifier returning node.name = undefined' ids: 72 266
+            return undefined ids: 73 267
+          if ctx.isDeclared(node.name) ids: 74 268
+            return  ids: 75 269
+              _ ctx.getValue ids: 76 270
+                @ node.name ids: 77 271
+          else  ids: 78 272
+            return  ids: 79 273
+              _ error ids: 80 274
+                @ ctx ids: 81 275
+                @ 'Identifier < ' + node.name + ' > not defined, on node < ' + ctx.runningNodeId + ' > ' +ctx.getDeclaredInfo() ids: 82 276
+                @ node ids: 84 277
+                @ node ids: 85 278
+                @ 'Identifier' ids: 86 279
+    $group  ids: 1571 1612
+      $args: Identifier_Set, data $params: name, arg1|@@null
+      set runner.${name} ids: 1573 1613
+        function  ids: 1574 1614
+          param node ids: 1575 1615
+          param ctx ids: 1576 1616
+          $if arg1 != null ids: 1577 1617
+            param ${arg1} ids: 1578 1618
+          _ log('${name}.node', node) ids: 1579 1619
+          _ ctx.put ids: 88 281
+            @ node.name ids: 89 282
+            @ data ids: 90 283
+    $group  ids: 1571 1621
+      $args: Literal $params: name, arg1|@@null
+      set runner.${name} ids: 1573 1622
+        function  ids: 1574 1623
+          param node ids: 1575 1624
+          param ctx ids: 1576 1625
+          $if arg1 != null ids: 1577 1626
+            param ${arg1} ids: 1578 1627
+          _ log('${name}.node', node) ids: 1579 1628
+          return node.value ids: 92 285
+    $group  ids: 1571 1630
+      $args: VariableDeclaration $params: name, arg1|@@null
+      set runner.${name} ids: 1573 1631
+        function  ids: 1574 1632
+          param node ids: 1575 1633
+          param ctx ids: 1576 1634
+          $if arg1 != null ids: 1577 1635
+            param ${arg1} ids: 1578 1636
+          _ log('${name}.node', node) ids: 1579 1637
+          foreach declaration in node.declarations ids: 94 287
+            $group  ids: 1590 1639
+              $args: state, VariableDeclaration $params: varName, message|@@null
+              var ${varName} ids: 1592 1640
+                _ runner(declaration, ctx) ids: 96 289
+              if ${varName} && ${varName}.__is_error ids: 1594 1642
+                log '__is_error ${message}', ${varName} ids: 1595 1643
+                return ${varName} ids: 1596 1644
+          return  ids: 97 290
+            {  ids: 98 291
+    $group  ids: 1571 1645
+      $args: VariableDeclarator $params: name, arg1|@@null
+      set runner.${name} ids: 1573 1646
+        function  ids: 1574 1647
+          param node ids: 1575 1648
+          param ctx ids: 1576 1649
+          $if arg1 != null ids: 1577 1650
+            param ${arg1} ids: 1578 1651
+          _ log('${name}.node', node) ids: 1579 1652
+          if !node.init ids: 100 293
+            _ ctx.declare ids: 101 294
+              @ node.id.name ids: 102 295
+          else  ids: 103 296
+            $group  ids: 1590 1654
+              $args: value, VariableDeclaration $params: varName, message|@@null
+              var ${varName} ids: 1592 1655
+                _ runner ids: 105 298
+                  @ node.init ids: 106 299
+                  @ ctx ids: 107 300
+              if ${varName} && ${varName}.__is_error ids: 1594 1657
+                log '__is_error ${message}', ${varName} ids: 1595 1658
+                return ${varName} ids: 1596 1659
+            _ ctx.declare ids: 108 301
+              @ node.id.name ids: 109 302
+              @ value ids: 110 303
+    $group  ids: 388 484
+      $group  ids: 1571 1660
+        $args: EmptyStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1661
+          function  ids: 1574 1662
+            param node ids: 1575 1663
+            param ctx ids: 1576 1664
+            $if arg1 != null ids: 1577 1665
+              param ${arg1} ids: 1578 1666
+            _ log('${name}.node', node) ids: 1579 1667
+            return  ids: 390 486
+              {  ids: 391 487
+      $group  ids: 1571 1669
+        $args: ExpressionStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1670
+          function  ids: 1574 1671
+            param node ids: 1575 1672
+            param ctx ids: 1576 1673
+            $if arg1 != null ids: 1577 1674
+              param ${arg1} ids: 1578 1675
+            _ log('${name}.node', node) ids: 1579 1676
+            _ ctx.beginExpr() ids: 393 489
+            $group  ids: 1590 1678
+              $args: state, ExpressionStatement $params: varName, message|@@null
+              var ${varName} ids: 1592 1679
+                _ runner ids: 395 491
+                  @ node.expression ids: 396 492
+                  @ ctx ids: 397 493
+              if ${varName} && ${varName}.__is_error ids: 1594 1681
+                log '__is_error ${message}', ${varName} ids: 1595 1682
+                return ${varName} ids: 1596 1683
+            _ ctx.endExpr() ids: 398 494
+            return  ids: 399 495
+              {  ids: 400 496
+      $group  ids: 1571 1684
+        $args: IfStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1685
+          function  ids: 1574 1686
+            param node ids: 1575 1687
+            param ctx ids: 1576 1688
+            $if arg1 != null ids: 1577 1689
+              param ${arg1} ids: 1578 1690
+            _ log('${name}.node', node) ids: 1579 1691
+            var  ids: 402 498
+              decl ret ids: 403 499
+                {  ids: 404 500
+              decl savedCurrentModelKey ids: 405 501
+            $group  ids: 1590 1693
+              $args: test, IfStatement $params: varName, message|@@null
+              var ${varName} ids: 1592 1694
+                _ runner(node.test, ctx) ids: 407 503
+              if ${varName} && ${varName}.__is_error ids: 1594 1696
+                log '__is_error ${message}', ${varName} ids: 1595 1697
+                return ${varName} ids: 1596 1698
+            if test ids: 408 504
+              set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: 409 505
+              $group  ids: 1699 1706
+                $args: ret, IfStatement node.consequent $params: varName, message|@@null
+                set ${varName} ids: 1701 1707
+                  _ runner(node.consequent, ctx) ids: 411 507
+                if ${varName} && ${varName}.__is_error ids: 1703 1709
+                  log '__is_error ${message}', ${varName} ids: 1704 1710
+                  return ${varName} ids: 1705 1711
+              $group  ids: 1590 1712
+                $args: notUsed, IfStatement set_IttfModelEvalContext $params: varName, message|@@null
+                var ${varName} ids: 1592 1713
+                  _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 413 509
+                if ${varName} && ${varName}.__is_error ids: 1594 1715
+                  log '__is_error ${message}', ${varName} ids: 1595 1716
+                  return ${varName} ids: 1596 1717
+            else  ids: 414 510
+              if node.alternate ids: 415 511
+                set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: 416 512
+                $group  ids: 1699 1718
+                  $args: ret, IfStatement node.alternate $params: varName, message|@@null
+                  set ${varName} ids: 1701 1719
+                    _ runner(node.alternate, ctx) ids: 418 514
+                  if ${varName} && ${varName}.__is_error ids: 1703 1721
+                    log '__is_error ${message}', ${varName} ids: 1704 1722
+                    return ${varName} ids: 1705 1723
+                $group  ids: 1590 1724
+                  $args: notUsed, IfStatement set_IttfModelEvalContext $params: varName, message|@@null
+                  var ${varName} ids: 1592 1725
+                    _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 420 516
+                  if ${varName} && ${varName}.__is_error ids: 1594 1727
+                    log '__is_error ${message}', ${varName} ids: 1595 1728
+                    return ${varName} ids: 1596 1729
+            return ret ids: 421 517
+      $group  ids: 1571 1730
+        $args: BlockStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1731
+          function  ids: 1574 1732
+            param node ids: 1575 1733
+            param ctx ids: 1576 1734
+            $if arg1 != null ids: 1577 1735
+              param ${arg1} ids: 1578 1736
+            _ log('${name}.node', node) ids: 1579 1737
+            var state ids: 423 519
+            for var i = 0; i < node.body.length; i++ ids: 424 520
+              var statement = node.body[i] ids: 425 521
+              $group  ids: 1699 1739
+                $args: state, BlockStatement $params: varName, message|@@null
+                set ${varName} ids: 1701 1740
+                  _ runner(statement, ctx) ids: 427 523
+                if ${varName} && ${varName}.__is_error ids: 1703 1742
+                  log '__is_error ${message}', ${varName} ids: 1704 1743
+                  return ${varName} ids: 1705 1744
+              if state.result || state.break || state.continue ids: 428 524
+                return state ids: 429 525
+            return  ids: 430 526
+              {  ids: 431 527
+      $group  ids: 1571 1745
+        $args: WhileStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1746
+          function  ids: 1574 1747
+            param node ids: 1575 1748
+            param ctx ids: 1576 1749
+            $if arg1 != null ids: 1577 1750
+              param ${arg1} ids: 1578 1751
+            _ log('${name}.node', node) ids: 1579 1752
+            var  ids: 433 529
+              decl state ids: 434 530
+              decl savedCurrentModelKey ids: 435 531
+            $group  ids: 1590 1754
+              $args: test, WhileStatement node.test $params: varName, message|@@null
+              var ${varName} ids: 1592 1755
+                _ runner(node.test, ctx) ids: 437 533
+              if ${varName} && ${varName}.__is_error ids: 1594 1757
+                log '__is_error ${message}', ${varName} ids: 1595 1758
+                return ${varName} ids: 1596 1759
+            while test ids: 438 534
+              set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: 439 535
+              $group  ids: 1699 1760
+                $args: state, WhileStatement node.body $params: varName, message|@@null
+                set ${varName} ids: 1701 1761
+                  _ runner(node.body, ctx) ids: 441 537
+                if ${varName} && ${varName}.__is_error ids: 1703 1763
+                  log '__is_error ${message}', ${varName} ids: 1704 1764
+                  return ${varName} ids: 1705 1765
+              if state.result || state.break ids: 442 538
+                return state ids: 443 539
+              $group  ids: 1590 1766
+                $args: notUsed, set_IttfModelEvalContext $params: varName, message|@@null
+                var ${varName} ids: 1592 1767
+                  _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 445 541
+                if ${varName} && ${varName}.__is_error ids: 1594 1769
+                  log '__is_error ${message}', ${varName} ids: 1595 1770
+                  return ${varName} ids: 1596 1771
+              $group  ids: 1699 1772
+                $args: test, WhileStatement node.test $params: varName, message|@@null
+                set ${varName} ids: 1701 1773
+                  _ runner(node.test, ctx) ids: 447 543
+                if ${varName} && ${varName}.__is_error ids: 1703 1775
+                  log '__is_error ${message}', ${varName} ids: 1704 1776
+                  return ${varName} ids: 1705 1777
+            return  ids: 448 544
+              {  ids: 449 545
+      $group  ids: 1571 1778
+        $args: DoWhileStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1779
+          function  ids: 1574 1780
+            param node ids: 1575 1781
+            param ctx ids: 1576 1782
+            $if arg1 != null ids: 1577 1783
+              param ${arg1} ids: 1578 1784
+            _ log('${name}.node', node) ids: 1579 1785
+            var  ids: 451 547
+              decl test ids: 452 548
+              decl state ids: 453 549
+              decl savedCurrentModelKey ids: 454 550
+            set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: 455 551
+            $group  ids: 1699 1787
+              $args: state, DoWhileStatement node.body $params: varName, message|@@null
+              set ${varName} ids: 1701 1788
+                _ runner(node.body, ctx) ids: 457 553
+              if ${varName} && ${varName}.__is_error ids: 1703 1790
+                log '__is_error ${message}', ${varName} ids: 1704 1791
+                return ${varName} ids: 1705 1792
+            if state.result || state.break ids: 458 554
+              return state ids: 459 555
+            $group  ids: 1590 1793
+              $args: notUsed, DoWhileStatement set_IttfModelEvalContext $params: varName, message|@@null
+              var ${varName} ids: 1592 1794
+                _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 461 557
+              if ${varName} && ${varName}.__is_error ids: 1594 1796
+                log '__is_error ${message}', ${varName} ids: 1595 1797
+                return ${varName} ids: 1596 1798
+            $group  ids: 1699 1799
+              $args: test, DoWhileStatement node.test $params: varName, message|@@null
+              set ${varName} ids: 1701 1800
+                _ runner(node.test, ctx) ids: 463 559
+              if ${varName} && ${varName}.__is_error ids: 1703 1802
+                log '__is_error ${message}', ${varName} ids: 1704 1803
+                return ${varName} ids: 1705 1804
+            while test ids: 464 560
+              $group  ids: 1699 1805
+                $args: state, DoWhileStatement node.body $params: varName, message|@@null
+                set ${varName} ids: 1701 1806
+                  _ runner(node.body, ctx) ids: 466 562
+                if ${varName} && ${varName}.__is_error ids: 1703 1808
+                  log '__is_error ${message}', ${varName} ids: 1704 1809
+                  return ${varName} ids: 1705 1810
+              if state.result || state.break ids: 467 563
+                return state ids: 468 564
+              $group  ids: 1590 1811
+                $args: notUsed, DoWhileStatement set_IttfModelEvalContext $params: varName, message|@@null
+                var ${varName} ids: 1592 1812
+                  _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 470 566
+                if ${varName} && ${varName}.__is_error ids: 1594 1814
+                  log '__is_error ${message}', ${varName} ids: 1595 1815
+                  return ${varName} ids: 1596 1816
+              $group  ids: 1699 1817
+                $args: test, DoWhileStatement node.test $params: varName, message|@@null
+                set ${varName} ids: 1701 1818
+                  _ runner(node.test, ctx) ids: 472 568
+                if ${varName} && ${varName}.__is_error ids: 1703 1820
+                  log '__is_error ${message}', ${varName} ids: 1704 1821
+                  return ${varName} ids: 1705 1822
+            return  ids: 473 569
+              {  ids: 474 570
+      $group  ids: 1571 1823
+        $args: ReturnStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1824
+          function  ids: 1574 1825
+            param node ids: 1575 1826
+            param ctx ids: 1576 1827
+            $if arg1 != null ids: 1577 1828
+              param ${arg1} ids: 1578 1829
+            _ log('${name}.node', node) ids: 1579 1830
+            $group  ids: 1590 1832
+              $args: value, ReturnStatement $params: varName, message|@@null
+              var ${varName} ids: 1592 1833
+                _ runner ids: 477 573
+                  @ node.argument ids: 478 574
+                  @ ctx ids: 479 575
+              if ${varName} && ${varName}.__is_error ids: 1594 1835
+                log '__is_error ${message}', ${varName} ids: 1595 1836
+                return ${varName} ids: 1596 1837
+            return  ids: 480 576
+              {  ids: 481 577
+                @ result true ids: 482 578
+                @ value value ids: 483 579
+    $group  ids: 580 653
+      $group  ids: 1571 1838
+        $args: ForStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1839
+          function  ids: 1574 1840
+            param node ids: 1575 1841
+            param ctx ids: 1576 1842
+            $if arg1 != null ids: 1577 1843
+              param ${arg1} ids: 1578 1844
+            _ log('${name}.node', node) ids: 1579 1845
+            var  ids: 582 655
+              decl test ids: 583 656
+              decl state ids: 584 657
+              decl savedCurrentModelKey ids: 585 658
+            set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: 586 659
+            $group  ids: 1590 1847
+              $args: notUsed, ForStatement node.init $params: varName, message|@@null
+              var ${varName} ids: 1592 1848
+                _ runner ids: 588 661
+                  @ node.init ids: 589 662
+                  @ ctx ids: 590 663
+              if ${varName} && ${varName}.__is_error ids: 1594 1850
+                log '__is_error ${message}', ${varName} ids: 1595 1851
+                return ${varName} ids: 1596 1852
+            $group  ids: 1590 1853
+              $args: notUsed, ForStatement set_IttfModelEvalContext $params: varName, message|@@null
+              var ${varName} ids: 1592 1854
+                _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 592 665
+              if ${varName} && ${varName}.__is_error ids: 1594 1856
+                log '__is_error ${message}', ${varName} ids: 1595 1857
+                return ${varName} ids: 1596 1858
+            $group  ids: 1699 1859
+              $args: test, ForStatement node.test $params: varName, message|@@null
+              set ${varName} ids: 1701 1860
+                _ runner(node.test, ctx) ids: 594 667
+              if ${varName} && ${varName}.__is_error ids: 1703 1862
+                log '__is_error ${message}', ${varName} ids: 1704 1863
+                return ${varName} ids: 1705 1864
+            while test ids: 595 668
+              $group  ids: 1699 1865
+                $args: state, ForStatement node.body $params: varName, message|@@null
+                set ${varName} ids: 1701 1866
+                  _ runner(node.body, ctx) ids: 597 670
+                if ${varName} && ${varName}.__is_error ids: 1703 1868
+                  log '__is_error ${message}', ${varName} ids: 1704 1869
+                  return ${varName} ids: 1705 1870
+              if state.result || state.break ids: 598 671
+                return state ids: 599 672
+              $group  ids: 1590 1871
+                $args: notUsed, ForStatement set_IttfModelEvalContext $params: varName, message|@@null
+                var ${varName} ids: 1592 1872
+                  _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 601 674
+                if ${varName} && ${varName}.__is_error ids: 1594 1874
+                  log '__is_error ${message}', ${varName} ids: 1595 1875
+                  return ${varName} ids: 1596 1876
+              $group  ids: 1590 1877
+                $args: notUsed, ForStatement node.update $params: varName, message|@@null
+                var ${varName} ids: 1592 1878
+                  _ runner ids: 603 676
+                    @ node.update ids: 604 677
+                    @ ctx ids: 605 678
+                if ${varName} && ${varName}.__is_error ids: 1594 1880
+                  log '__is_error ${message}', ${varName} ids: 1595 1881
+                  return ${varName} ids: 1596 1882
+              $group  ids: 1590 1883
+                $args: notUsed, ForStatement set_IttfModelEvalContext $params: varName, message|@@null
+                var ${varName} ids: 1592 1884
+                  _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 607 680
+                if ${varName} && ${varName}.__is_error ids: 1594 1886
+                  log '__is_error ${message}', ${varName} ids: 1595 1887
+                  return ${varName} ids: 1596 1888
+              $group  ids: 1699 1889
+                $args: test, ForStatement node.test $params: varName, message|@@null
+                set ${varName} ids: 1701 1890
+                  _ runner(node.test, ctx) ids: 609 682
+                if ${varName} && ${varName}.__is_error ids: 1703 1892
+                  log '__is_error ${message}', ${varName} ids: 1704 1893
+                  return ${varName} ids: 1705 1894
+            return  ids: 610 683
+              {  ids: 611 684
+      $group  ids: 1571 1895
+        $args: ForInStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1896
+          function  ids: 1574 1897
+            param node ids: 1575 1898
+            param ctx ids: 1576 1899
+            $if arg1 != null ids: 1577 1900
+              param ${arg1} ids: 1578 1901
+            _ log('${name}.node', node) ids: 1579 1902
+            var  ids: 613 686
+              decl test ids: 614 687
+              decl state ids: 615 688
+              decl savedCurrentModelKey ids: 616 689
+            set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: 617 690
+            $group  ids: 1590 1904
+              $args: obj, ForInStatement node.right $params: varName, message|@@null
+              var ${varName} ids: 1592 1905
+                _ runner ids: 619 692
+                  @ node.right ids: 620 693
+                  @ ctx ids: 621 694
+              if ${varName} && ${varName}.__is_error ids: 1594 1907
+                log '__is_error ${message}', ${varName} ids: 1595 1908
+                return ${varName} ids: 1596 1909
+            if _.isObject(obj) == false ids: 622 695
+              return  ids: 623 696
+                _ error ids: 624 697
+                  @ ctx ids: 625 698
+                  @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: 626 699
+                  @ node.right ids: 627 700
+                  @ node ids: 628 701
+                  @ 'ForInStatement' ids: 629 702
+            $group  ids: 1590 1910
+              $args: notUsed, ForInStatement set_IttfModelEvalContext $params: varName, message|@@null
+              var ${varName} ids: 1592 1911
+                _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 631 704
+              if ${varName} && ${varName}.__is_error ids: 1594 1913
+                log '__is_error ${message}', ${varName} ids: 1595 1914
+                return ${varName} ids: 1596 1915
+            var left = node.left.name ids: 632 705
+            _ ctx.declare(left) ids: 633 706
+            for k in obj ids: 634 707
+              _ ctx.put(left, k) ids: 635 708
+              $group  ids: 1699 1916
+                $args: state, ForInStatement node.body $params: varName, message|@@null
+                set ${varName} ids: 1701 1917
+                  _ runner(node.body, ctx) ids: 637 710
+                if ${varName} && ${varName}.__is_error ids: 1703 1919
+                  log '__is_error ${message}', ${varName} ids: 1704 1920
+                  return ${varName} ids: 1705 1921
+              if state.result || state.break ids: 638 711
+                return state ids: 639 712
+              $group  ids: 1590 1922
+                $args: notUsed, ForInStatement set_IttfModelEvalContext $params: varName, message|@@null
+                var ${varName} ids: 1592 1923
+                  _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: 641 714
+                if ${varName} && ${varName}.__is_error ids: 1594 1925
+                  log '__is_error ${message}', ${varName} ids: 1595 1926
+                  return ${varName} ids: 1596 1927
+            _ ctx.undeclare(left) ids: 642 715
+            return  ids: 643 716
+              {  ids: 644 717
+      $group  ids: 1571 1928
+        $args: BreakStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1929
+          function  ids: 1574 1930
+            param node ids: 1575 1931
+            param ctx ids: 1576 1932
+            $if arg1 != null ids: 1577 1933
+              param ${arg1} ids: 1578 1934
+            _ log('${name}.node', node) ids: 1579 1935
+            return  ids: 646 719
+              {  ids: 647 720
+                @ break true ids: 648 721
+      $group  ids: 1571 1937
+        $args: ContinueStatement $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1938
+          function  ids: 1574 1939
+            param node ids: 1575 1940
+            param ctx ids: 1576 1941
+            $if arg1 != null ids: 1577 1942
+              param ${arg1} ids: 1578 1943
+            _ log('${name}.node', node) ids: 1579 1944
+            return  ids: 650 723
+              {  ids: 651 724
+                @ continue true ids: 652 725
+    $group  ids: 726 1082
+      $group  ids: 1571 1946
+        $args: UnaryExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1947
+          function  ids: 1574 1948
+            param node ids: 1575 1949
+            param ctx ids: 1576 1950
+            $if arg1 != null ids: 1577 1951
+              param ${arg1} ids: 1578 1952
+            _ log('${name}.node', node) ids: 1579 1953
+            $group  ids: 1590 1955
+              $args: exp, UnaryExpression $params: varName, message|@@null
+              var ${varName} ids: 1592 1956
+                _ runner ids: 729 1085
+                  @ node.argument ids: 730 1086
+                  @ ctx ids: 731 1087
+              if ${varName} && ${varName}.__is_error ids: 1594 1958
+                log '__is_error ${message}', ${varName} ids: 1595 1959
+                return ${varName} ids: 1596 1960
+            if node.prefix ids: 732 1088
+              if node.operator === '!' ids: 733 1089
+                return !exp ids: 734 1090
+              elif node.operator === '-' ids: 735 1091
+                return -exp ids: 736 1092
+              elif node.operator === '+' ids: 737 1093
+                return exp ids: 738 1094
+              else  ids: 739 1095
+                return  ids: 740 1096
+                  _ error ids: 741 1097
+                    @ ctx ids: 742 1098
+                    @ 'Unmanaged unary operator ' + node.operator + ' (prefix: true)' ids: 743 1099
+                    @ node.operator ids: 744 1100
+                    @ node ids: 745 1101
+                    @ 'UnaryExpression' ids: 746 1102
+            else  ids: 747 1103
+              if node.operator === '!' ids: 748 1104
+                return !exp ids: 749 1105
+              else  ids: 750 1106
+                return  ids: 751 1107
+                  _ error ids: 752 1108
+                    @ ctx ids: 753 1109
+                    @ 'Unmanaged unary operator ' + node.operator + ' (prefix: false)' ids: 754 1110
+                    @ node.operator ids: 755 1111
+                    @ node ids: 756 1112
+                    @ 'UnaryExpression' ids: 757 1113
+      $group  ids: 1571 1961
+        $args: BinaryExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1962
+          function  ids: 1574 1963
+            param node ids: 1575 1964
+            param ctx ids: 1576 1965
+            $if arg1 != null ids: 1577 1966
+              param ${arg1} ids: 1578 1967
+            _ log('${name}.node', node) ids: 1579 1968
+            $group  ids: 1590 1970
+              $args: l, BinaryExpression l $params: varName, message|@@null
+              var ${varName} ids: 1592 1971
+                _ runner ids: 760 1116
+                  @ node.left ids: 761 1117
+                  @ ctx ids: 762 1118
+              if ${varName} && ${varName}.__is_error ids: 1594 1973
+                log '__is_error ${message}', ${varName} ids: 1595 1974
+                return ${varName} ids: 1596 1975
+            $group  ids: 1590 1976
+              $args: r, BinaryExpressior $params: varName, message|@@null
+              var ${varName} ids: 1592 1977
+                _ runner ids: 764 1120
+                  @ node.right ids: 765 1121
+                  @ ctx ids: 766 1122
+              if ${varName} && ${varName}.__is_error ids: 1594 1979
+                log '__is_error ${message}', ${varName} ids: 1595 1980
+                return ${varName} ids: 1596 1981
+            _ log ids: 767 1123
+              @ 'BinaryExpression.l,r' ids: 768 1124
+              [  ids: 769 1125
+                @ l ids: 770 1126
+                @ r ids: 771 1127
+            if node.operator === '+' ids: 772 1128
+              return (l + r) ids: 773 1129
+            elif node.operator === '-' ids: 774 1130
+              return (l - r) ids: 775 1131
+            elif node.operator === '*' ids: 776 1132
+              return l * r ids: 777 1133
+            elif node.operator === '/' ids: 778 1134
+              return l / r ids: 779 1135
+            elif node.operator === '==' ids: 780 1136
+              return l == r ids: 781 1137
+            elif node.operator === '===' ids: 782 1138
+              return l === r ids: 783 1139
+            elif node.operator === '!=' ids: 784 1140
+              return l != r ids: 785 1141
+            elif node.operator === '!==' ids: 786 1142
+              return l !== r ids: 787 1143
+            elif node.operator === '>=' ids: 788 1144
+              return l >= r ids: 789 1145
+            elif node.operator === '>' ids: 790 1146
+              return l > r ids: 791 1147
+            elif node.operator === '<=' ids: 792 1148
+              return l <= r ids: 793 1149
+            elif node.operator === '<' ids: 794 1150
+              return l < r ids: 795 1151
+            else  ids: 796 1152
+              return  ids: 797 1153
+                _ error ids: 798 1154
+                  @ ctx ids: 799 1155
+                  @ 'Unmanaged binary operator ' + node.operator ids: 800 1156
+                  @ node.operator ids: 801 1157
+                  @ node ids: 802 1158
+                  @ 'BinaryExpression' ids: 803 1159
+      $group  ids: 1571 1982
+        $args: UpdateExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1983
+          function  ids: 1574 1984
+            param node ids: 1575 1985
+            param ctx ids: 1576 1986
+            $if arg1 != null ids: 1577 1987
+              param ${arg1} ids: 1578 1988
+            _ log('${name}.node', node) ids: 1579 1989
+            var  ids: 805 1161
+              decl v ids: 806 1162
+              decl exp ids: 807 1163
+            $group  ids: 1590 1991
+              $args: exp, UpdateExpression $params: varName, message|@@null
+              var ${varName} ids: 1592 1992
+                _ runner ids: 809 1165
+                  @ node.argument ids: 810 1166
+                  @ ctx ids: 811 1167
+              if ${varName} && ${varName}.__is_error ids: 1594 1994
+                log '__is_error ${message}', ${varName} ids: 1595 1995
+                return ${varName} ids: 1596 1996
+            if node.operator === '++' ids: 812 1168
+              set v = exp + 1 ids: 813 1169
+            elif node.operator === '--' ids: 814 1170
+              set v = exp - 1 ids: 815 1171
+            else  ids: 816 1172
+              return  ids: 817 1173
+                _ error ids: 818 1174
+                  @ ctx ids: 819 1175
+                  @ 'Unmanaged update expression ' + node.operator ids: 820 1176
+                  @ node.operator ids: 821 1177
+                  @ node ids: 822 1178
+                  @ 'UpdateExpression' ids: 823 1179
+            _ ctx.put ids: 824 1180
+              @ node.argument.name ids: 825 1181
+              @ v ids: 826 1182
+            return node.prefix ? v : exp ids: 827 1183
+      $group  ids: 1571 1997
+        $args: LogicalExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 1998
+          function  ids: 1574 1999
+            param node ids: 1575 2000
+            param ctx ids: 1576 2001
+            $if arg1 != null ids: 1577 2002
+              param ${arg1} ids: 1578 2003
+            _ log('${name}.node', node) ids: 1579 2004
+            $group  ids: 1590 2006
+              $args: l, LogicalExpression l $params: varName, message|@@null
+              var ${varName} ids: 1592 2007
+                _ runner ids: 830 1186
+                  @ node.left ids: 831 1187
+                  @ ctx ids: 832 1188
+              if ${varName} && ${varName}.__is_error ids: 1594 2009
+                log '__is_error ${message}', ${varName} ids: 1595 2010
+                return ${varName} ids: 1596 2011
+            if node.operator === '&&' && (l === false || l === null) ids: 833 1189
+              return false ids: 834 1190
+            $group  ids: 1590 2012
+              $args: r, LogicalExpression r $params: varName, message|@@null
+              var ${varName} ids: 1592 2013
+                _ runner ids: 836 1192
+                  @ node.right ids: 837 1193
+                  @ ctx ids: 838 1194
+              if ${varName} && ${varName}.__is_error ids: 1594 2015
+                log '__is_error ${message}', ${varName} ids: 1595 2016
+                return ${varName} ids: 1596 2017
+            _ log ids: 839 1195
+              @ 'LogicalExpression.l,r' ids: 840 1196
+              [  ids: 841 1197
+                @ l ids: 842 1198
+                @ r ids: 843 1199
+            if node.operator === '&&' ids: 844 1200
+              return l && r ids: 845 1201
+            elif node.operator === '||' ids: 846 1202
+              return l || r ids: 847 1203
+            else  ids: 848 1204
+              return  ids: 849 1205
+                _ error ids: 850 1206
+                  @ ctx ids: 851 1207
+                  @ 'Unmanaged logical expression ' + node.operator ids: 852 1208
+                  @ node.operator ids: 853 1209
+                  @ node ids: 854 1210
+                  @ 'LogicalExpression' ids: 855 1211
+      $group  ids: 1571 2018
+        $args: ConditionalExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2019
+          function  ids: 1574 2020
+            param node ids: 1575 2021
+            param ctx ids: 1576 2022
+            $if arg1 != null ids: 1577 2023
+              param ${arg1} ids: 1578 2024
+            _ log('${name}.node', node) ids: 1579 2025
+            $group  ids: 1590 2027
+              $args: test, ConditionalExpression $params: varName, message|@@null
+              var ${varName} ids: 1592 2028
+                _ runner(node.test, ctx) ids: 858 1214
+              if ${varName} && ${varName}.__is_error ids: 1594 2030
+                log '__is_error ${message}', ${varName} ids: 1595 2031
+                return ${varName} ids: 1596 2032
+            if test ids: 859 1215
+              $group  ids: 1590 2033
+                $args: value, ConditionalExpression node.consequent $params: varName, message|@@null
+                var ${varName} ids: 1592 2034
+                  _ runner ids: 861 1217
+                    @ node.consequent ids: 862 1218
+                    @ ctx ids: 863 1219
+                if ${varName} && ${varName}.__is_error ids: 1594 2036
+                  log '__is_error ${message}', ${varName} ids: 1595 2037
+                  return ${varName} ids: 1596 2038
+              return value ids: 864 1220
+            else  ids: 865 1221
+              $group  ids: 1590 2039
+                $args: value, ConditionalExpression node.alternate $params: varName, message|@@null
+                var ${varName} ids: 1592 2040
+                  _ runner ids: 867 1223
+                    @ node.alternate ids: 868 1224
+                    @ ctx ids: 869 1225
+                if ${varName} && ${varName}.__is_error ids: 1594 2042
+                  log '__is_error ${message}', ${varName} ids: 1595 2043
+                  return ${varName} ids: 1596 2044
+              return value ids: 870 1226
+      $group  ids: 1571 2045
+        $args: CallExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2046
+          function  ids: 1574 2047
+            param node ids: 1575 2048
+            param ctx ids: 1576 2049
+            $if arg1 != null ids: 1577 2050
+              param ${arg1} ids: 1578 2051
+            _ log('${name}.node', node) ids: 1579 2052
+            var  ids: 872 1228
+              decl value ids: 873 1229
+              decl args ids: 874 1230
+                [  ids: 875 1231
+              decl property ids: 876 1232
+            foreach item in node.arguments ids: 877 1233
+              $group  ids: 1699 2054
+                $args: value, CallExpression argument $params: varName, message|@@null
+                set ${varName} ids: 1701 2055
+                  _ runner(item, ctx) ids: 879 1235
+                if ${varName} && ${varName}.__is_error ids: 1703 2057
+                  log '__is_error ${message}', ${varName} ids: 1704 2058
+                  return ${varName} ids: 1705 2059
+              _ args.push(value) ids: 880 1236
+            if node.callee.type === 'MemberExpression' ids: 881 1237
+              $group  ids: 1590 2060
+                $args: obj, CallExpression node.callee.object $params: varName, message|@@null
+                var ${varName} ids: 1592 2061
+                  _ runner ids: 883 1239
+                    @ node.callee.object ids: 884 1240
+                    @ ctx ids: 885 1241
+                if ${varName} && ${varName}.__is_error ids: 1594 2063
+                  log '__is_error ${message}', ${varName} ids: 1595 2064
+                  return ${varName} ids: 1596 2065
+              if !obj ids: 886 1242
+                return  ids: 887 1243
+                  _ error ids: 888 1244
+                    @ ctx ids: 889 1245
+                    @ 'The value of callee must be an object. It is "' + getTypeDescription(obj) + '".' ids: 890 1246
+                    @ node.callee.object ids: 891 1247
+                    @ node ids: 892 1248
+                    @ 'CallExpression' ids: 893 1249
+              if node.callee.computed ids: 894 1250
+                $group  ids: 1699 2066
+                  $args: property, CallExpression node.callee.property $params: varName, message|@@null
+                  set ${varName} ids: 1701 2067
+                    _ runner ids: 896 1252
+                      @ node.callee.property ids: 897 1253
+                      @ ctx ids: 898 1254
+                  if ${varName} && ${varName}.__is_error ids: 1703 2069
+                    log '__is_error ${message}', ${varName} ids: 1704 2070
+                    return ${varName} ids: 1705 2071
+              else  ids: 899 1255
+                set property = node.callee.property.name ids: 900 1256
+              if !obj[property] ids: 901 1257
+                return  ids: 902 1258
+                  _ error ids: 903 1259
+                    @ ctx ids: 904 1260
+                    @ 'Missing object property.' ids: 905 1261
+                    @ node.callee.property ids: 906 1262
+                    @ node ids: 907 1263
+                    @ 'CallExpression' ids: 908 1264
+              if verify.isFunction(obj[property]) ids: 909 1265
+                try  ids: 910 1266
+                  var value = obj[property].apply(obj, args) ids: 911 1267
+                  if value && value.__is_error ids: 912 1268
+                    var currentModelInfo = ctx.get_currentIttfModelInfo() ids: 913 1269
+                    log 'error calling ' + property + ', on statement: ' + escodegen.generate(node) ids: 914 1270
+                    set value.message += ' (' + 'error calling ' + property + ', on statement: ' + escodegen.generate(node) + ', currentModel_uri: ' + currentModelInfo.currentModel_uri + ', currentModel_callerUri: ' + currentModelInfo.currentModel_callerUri + ')' ids: 915 1271
+                  return value ids: 919 1272
+                catch ex ids: 920 1273
+                  return  ids: 921 1274
+                    _ error ids: 922 1275
+                      @ ctx ids: 923 1276
+                      @ 'Exception calling function: ' + (ex ? ex.message : 'exception message unavailable') ids: 924 1277
+                      @ node.callee.property ids: 925 1278
+                      @ node ids: 926 1279
+                      @ 'CallExpression' ids: 927 1280
+                      @ ex ids: 928 1281
+              else  ids: 929 1282
+                return  ids: 930 1283
+                  _ error ids: 931 1284
+                    @ ctx ids: 932 1285
+                    @ 'property: "' + property + '" is not a function' ids: 933 1286
+                    @ node.callee.property ids: 934 1287
+                    @ node ids: 935 1288
+                    @ 'CallExpression' ids: 936 1289
+            if node.callee.type === 'Identifier' ids: 937 1290
+              var f ids: 938 1291
+                _ ctx.getFunction ids: 939 1292
+                  @ node.callee.name ids: 940 1293
+              if f == null ids: 941 1294
+                return  ids: 942 1295
+                  _ error ids: 943 1296
+                    @ ctx ids: 944 1297
+                    @ ('Function undeclared ' + node.callee.name) ids: 945 1298
+                    @ node.callee ids: 946 1299
+                    @ node ids: 947 1300
+                    @ 'CallExpression' ids: 948 1301
+              return runnerCall(f, ctx, args) ids: 949 1302
+            return  ids: 950 1303
+              _ error ids: 951 1304
+                @ ctx ids: 952 1305
+                @ 'Not implemented' ids: 953 1306
+                @ null ids: 954 1307
+                @ node ids: 955 1308
+                @ 'CallExpression' ids: 956 1309
+      $group  ids: 1571 2072
+        $args: MemberExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2073
+          function  ids: 1574 2074
+            param node ids: 1575 2075
+            param ctx ids: 1576 2076
+            $if arg1 != null ids: 1577 2077
+              param ${arg1} ids: 1578 2078
+            _ log('${name}.node', node) ids: 1579 2079
+            $group  ids: 1590 2081
+              $args: obj, MemberExpression $params: varName, message|@@null
+              var ${varName} ids: 1592 2082
+                _ runner ids: 959 1312
+                  @ node.object ids: 960 1313
+                  @ ctx ids: 961 1314
+              if ${varName} && ${varName}.__is_error ids: 1594 2084
+                log '__is_error ${message}', ${varName} ids: 1595 2085
+                return ${varName} ids: 1596 2086
+            if !obj ids: 962 1315
+              return  ids: 963 1316
+                _ error ids: 964 1317
+                  @ ctx ids: 965 1318
+                  @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: 966 1319
+                  @ node.object ids: 967 1320
+                  @ node ids: 968 1321
+                  @ 'MemberExpression' ids: 969 1322
+            if node.computed ids: 970 1323
+              $group  ids: 1590 2087
+                $args: property, MemberExpression node.property $params: varName, message|@@null
+                var ${varName} ids: 1592 2088
+                  _ runner ids: 972 1325
+                    @ node.property ids: 973 1326
+                    @ ctx ids: 974 1327
+                if ${varName} && ${varName}.__is_error ids: 1594 2090
+                  log '__is_error ${message}', ${varName} ids: 1595 2091
+                  return ${varName} ids: 1596 2092
+              return obj[property] ids: 975 1328
+            else  ids: 976 1329
+              var property = node.property.name ids: 977 1330
+              return obj[property] ids: 978 1331
+      $group  ids: 1571 2093
+        $args: MemberExpression_Set, data $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2094
+          function  ids: 1574 2095
+            param node ids: 1575 2096
+            param ctx ids: 1576 2097
+            $if arg1 != null ids: 1577 2098
+              param ${arg1} ids: 1578 2099
+            _ log('${name}.node', node) ids: 1579 2100
+            $group  ids: 1590 2102
+              $args: obj, MemberExpression_Set $params: varName, message|@@null
+              var ${varName} ids: 1592 2103
+                _ runner ids: 981 1334
+                  @ node.object ids: 982 1335
+                  @ ctx ids: 983 1336
+              if ${varName} && ${varName}.__is_error ids: 1594 2105
+                log '__is_error ${message}', ${varName} ids: 1595 2106
+                return ${varName} ids: 1596 2107
+            if !obj ids: 984 1337
+              return  ids: 985 1338
+                _ error ids: 986 1339
+                  @ ctx ids: 987 1340
+                  @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: 988 1341
+                  @ node.object ids: 989 1342
+                  @ node ids: 990 1343
+                  @ 'MemberExpression_Set' ids: 991 1344
+            if node.computed ids: 992 1345
+              $group  ids: 1590 2108
+                $args: property, MemberExpression_Set node.property $params: varName, message|@@null
+                var ${varName} ids: 1592 2109
+                  _ runner ids: 994 1347
+                    @ node.property ids: 995 1348
+                    @ ctx ids: 996 1349
+                if ${varName} && ${varName}.__is_error ids: 1594 2111
+                  log '__is_error ${message}', ${varName} ids: 1595 2112
+                  return ${varName} ids: 1596 2113
+              set obj[property] = data ids: 997 1350
+            else  ids: 998 1351
+              var property = node.property.name ids: 999 1352
+              set obj[property] = data ids: 1000 1353
+      $group  ids: 1571 2114
+        $args: AssignmentExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2115
+          function  ids: 1574 2116
+            param node ids: 1575 2117
+            param ctx ids: 1576 2118
+            $if arg1 != null ids: 1577 2119
+              param ${arg1} ids: 1578 2120
+            _ log('${name}.node', node) ids: 1579 2121
+            $group  ids: 1590 2123
+              $args: l, AssignmentExpression l $params: varName, message|@@null
+              var ${varName} ids: 1592 2124
+                _ runner ids: 1003 1356
+                  @ node.left ids: 1004 1357
+                  @ ctx ids: 1005 1358
+              if ${varName} && ${varName}.__is_error ids: 1594 2126
+                log '__is_error ${message}', ${varName} ids: 1595 2127
+                return ${varName} ids: 1596 2128
+            $group  ids: 1590 2129
+              $args: r, AssignmentExpression r $params: varName, message|@@null
+              var ${varName} ids: 1592 2130
+                _ runner ids: 1007 1360
+                  @ node.right ids: 1008 1361
+                  @ ctx ids: 1009 1362
+              if ${varName} && ${varName}.__is_error ids: 1594 2132
+                log '__is_error ${message}', ${varName} ids: 1595 2133
+                return ${varName} ids: 1596 2134
+            var v ids: 1010 1363
+            if node.operator === '=' ids: 1011 1364
+              set v = l = r ids: 1012 1365
+            elif node.operator === '*=' ids: 1013 1366
+              set v = l *= r ids: 1014 1367
+            elif node.operator === '/=' ids: 1015 1368
+              set v = l /= r ids: 1016 1369
+            elif node.operator === '%=' ids: 1017 1370
+              set v = l %= r ids: 1018 1371
+            elif node.operator === '+=' ids: 1019 1372
+              set v = l += r ids: 1020 1373
+            elif node.operator === '-=' ids: 1021 1374
+              set v = l -= r ids: 1022 1375
+            elif node.operator === '<<=' ids: 1023 1376
+              set v = l <<= r ids: 1024 1377
+            elif node.operator === '>>=' ids: 1025 1378
+              set v = l >>= r ids: 1026 1379
+            elif node.operator === '>>>=' ids: 1027 1380
+              set v = l >>>= r ids: 1028 1381
+            elif node.operator === '&=' ids: 1029 1382
+              set v = l &= r ids: 1030 1383
+            elif node.operator === '^=' ids: 1031 1384
+              set v = l ^= r ids: 1032 1385
+            elif node.operator === '|=' ids: 1033 1386
+              set v = l |= r ids: 1034 1387
+            else  ids: 1035 1388
+              return  ids: 1036 1389
+                _ error ids: 1037 1390
+                  @ ctx ids: 1038 1391
+                  @ 'Unmanaged expression operator ' + node.operator ids: 1039 1392
+                  @ node.operator ids: 1040 1393
+                  @ node ids: 1041 1394
+                  @ 'AssignmentExpression' ids: 1042 1395
+            $group  ids: 1590 2135
+              $args: notUsed, AssignmentExpression node.left $params: varName, message|@@null
+              var ${varName} ids: 1592 2136
+                _ runnerSet ids: 1044 1397
+                  @ node.left ids: 1045 1398
+                  @ ctx ids: 1046 1399
+                  @ v ids: 1047 1400
+              if ${varName} && ${varName}.__is_error ids: 1594 2138
+                log '__is_error ${message}', ${varName} ids: 1595 2139
+                return ${varName} ids: 1596 2140
+            return v ids: 1048 1401
+      $group  ids: 1571 2141
+        $args: ArrayExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2142
+          function  ids: 1574 2143
+            param node ids: 1575 2144
+            param ctx ids: 1576 2145
+            $if arg1 != null ids: 1577 2146
+              param ${arg1} ids: 1578 2147
+            _ log('${name}.node', node) ids: 1579 2148
+            var  ids: 1050 1403
+              decl ret ids: 1051 1404
+                [  ids: 1052 1405
+              decl value ids: 1053 1406
+            foreach element in node.elements ids: 1054 1407
+              $group  ids: 1699 2150
+                $args: value, ArrayExpression $params: varName, message|@@null
+                set ${varName} ids: 1701 2151
+                  _ runner(element, ctx) ids: 1056 1409
+                if ${varName} && ${varName}.__is_error ids: 1703 2153
+                  log '__is_error ${message}', ${varName} ids: 1704 2154
+                  return ${varName} ids: 1705 2155
+              _ ret.push(value) ids: 1057 1410
+            return ret ids: 1058 1411
+      $group  ids: 1571 2156
+        $args: ObjectExpression $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2157
+          function  ids: 1574 2158
+            param node ids: 1575 2159
+            param ctx ids: 1576 2160
+            $if arg1 != null ids: 1577 2161
+              param ${arg1} ids: 1578 2162
+            _ log('${name}.node', node) ids: 1579 2163
+            if node.properties.length == 0 ids: 1060 1413
+              return  ids: 1061 1414
+                {  ids: 1062 1415
+            var  ids: 1063 1416
+              decl ret ids: 1064 1417
+                {  ids: 1065 1418
+              decl prop ids: 1066 1419
+            foreach property in node.properties ids: 1067 1420
+              $group  ids: 1699 2165
+                $args: prop, ObjectExpression $params: varName, message|@@null
+                set ${varName} ids: 1701 2166
+                  _ runner(property, ctx) ids: 1069 1422
+                if ${varName} && ${varName}.__is_error ids: 1703 2168
+                  log '__is_error ${message}', ${varName} ids: 1704 2169
+                  return ${varName} ids: 1705 2170
+              set ret[prop.key] = prop.value ids: 1070 1423
+            return ret ids: 1071 1424
+      $group  ids: 1571 2171
+        $args: Property $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2172
+          function  ids: 1574 2173
+            param node ids: 1575 2174
+            param ctx ids: 1576 2175
+            $if arg1 != null ids: 1577 2176
+              param ${arg1} ids: 1578 2177
+            _ log('${name}.node', node) ids: 1579 2178
+            var key = node.key.name ids: 1073 1426
+            $group  ids: 1590 2180
+              $args: value, Property $params: varName, message|@@null
+              var ${varName} ids: 1592 2181
+                _ runner ids: 1075 1428
+                  @ node.value ids: 1076 1429
+                  @ ctx ids: 1077 1430
+              if ${varName} && ${varName}.__is_error ids: 1594 2183
+                log '__is_error ${message}', ${varName} ids: 1595 2184
+                return ${varName} ids: 1596 2185
+            return  ids: 1078 1431
+              {  ids: 1079 1432
+                @ key key ids: 1080 1433
+                @ value value ids: 1081 1434
+    $group  ids: 1435 1503
+      $group  ids: 1571 2186
+        $args: FunctionCall $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2187
+          function  ids: 1574 2188
+            param node ids: 1575 2189
+            param ctx ids: 1576 2190
+            $if arg1 != null ids: 1577 2191
+              param ${arg1} ids: 1578 2192
+            _ log('${name}.node', node) ids: 1579 2193
+            var  ids: 1437 1505
+              decl objbase ids: 1438 1506
+              decl value ids: 1439 1507
+            if node.name.base ids: 1440 1508
+              $group  ids: 1699 2195
+                $args: objbase, FunctionCall node.name.base $params: varName, message|@@null
+                set ${varName} ids: 1701 2196
+                  _ runner ids: 1442 1510
+                    @ node.name.base ids: 1443 1511
+                    @ ctx ids: 1444 1512
+                if ${varName} && ${varName}.__is_error ids: 1703 2198
+                  log '__is_error ${message}', ${varName} ids: 1704 2199
+                  return ${varName} ids: 1705 2200
+            else  ids: 1445 1513
+              set objbase = ctx.values ids: 1446 1514
+            if _.isObject(objbase) == false ids: 1447 1515
+              return  ids: 1448 1516
+                _ error ids: 1449 1517
+                  @ ctx ids: 1450 1518
+                  @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: 1451 1519
+                  @ node.name.base ids: 1452 1520
+                  @ node ids: 1453 1521
+                  @ 'FunctionCall' ids: 1454 1522
+            var args ids: 1455 1523
+              [  ids: 1456 1524
+            if Object.prototype.toString.call(node.arguments) == '[object Array]' ids: 1457 1525
+              foreach item in node.arguments ids: 1458 1526
+                $group  ids: 1699 2201
+                  $args: value, FunctionCall item $params: varName, message|@@null
+                  set ${varName} ids: 1701 2202
+                    _ runner(item, ctx) ids: 1460 1528
+                  if ${varName} && ${varName}.__is_error ids: 1703 2204
+                    log '__is_error ${message}', ${varName} ids: 1704 2205
+                    return ${varName} ids: 1705 2206
+                _ args.push(value) ids: 1461 1529
+            var f = objbase[node.name.name] ids: 1462 1530
+            if !f ids: 1463 1531
+              return  ids: 1464 1532
+                _ error ids: 1465 1533
+                  @ ctx ids: 1466 1534
+                  @ 'Missing function.' ids: 1467 1535
+                  @ node.name.base ids: 1468 1536
+                  @ node ids: 1469 1537
+                  @ 'FunctionCall' ids: 1470 1538
+            if verify.isFunction(f) ids: 1471 1539
+              try  ids: 1472 1540
+                var v = objbase[node.name.name].apply(objbase, args) ids: 1473 1541
+                return v ids: 1474 1542
+              catch ex ids: 1475 1543
+                return  ids: 1476 1544
+                  _ error ids: 1477 1545
+                    @ ctx ids: 1478 1546
+                    @ (ex ? ex.message : 'Error calling function') ids: 1479 1547
+                    @ node.callee.property ids: 1480 1548
+                    @ node ids: 1481 1549
+                    @ 'CallExpression' ids: 1482 1550
+                    @ ex ids: 1483 1551
+      $group  ids: 1571 2207
+        $args: FunctionDeclaration $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2208
+          function  ids: 1574 2209
+            param node ids: 1575 2210
+            param ctx ids: 1576 2211
+            $if arg1 != null ids: 1577 2212
+              param ${arg1} ids: 1578 2213
+            _ log('${name}.node', node) ids: 1579 2214
+            _ ctx.declareFunction ids: 1485 1553
+              @ node.id.name ids: 1486 1554
+              @ node ids: 1487 1555
+            return  ids: 1488 1556
+              {  ids: 1489 1557
+      $group  ids: 1571 2216
+        $args: FunctionDeclaration_Call, data $params: name, arg1|@@null
+        set runner.${name} ids: 1573 2217
+          function  ids: 1574 2218
+            param node ids: 1575 2219
+            param ctx ids: 1576 2220
+            $if arg1 != null ids: 1577 2221
+              param ${arg1} ids: 1578 2222
+            _ log('${name}.node', node) ids: 1579 2223
+            var ctx = ctx.push() ids: 1491 1559
+            for var i = 0; i < node.params.length; i++ ids: 1492 1560
+              if data.length > i ids: 1493 1561
+                _ ctx.declare ids: 1494 1562
+                  @ node.params[i].name ids: 1495 1563
+                  @ data[i] ids: 1496 1564
+            $group  ids: 1590 2225
+              $args: state, FunctionCall node.body $params: varName, message|@@null
+              var ${varName} ids: 1592 2226
+                _ runner ids: 1498 1566
+                  @ node.body ids: 1499 1567
+                  @ ctx ids: 1500 1568
+              if ${varName} && ${varName}.__is_error ids: 1594 2228
+                log '__is_error ${message}', ${varName} ids: 1595 2229
+                return ${varName} ids: 1596 2230
+            _ ctx.pop() ids: 1501 1569
+            return state.value ids: 1502 1570
+    function error ids: 115 308
+      param ctx ids: 116 309
+      param message ids: 117 310
+      param node ids: 118 311
+      param parentnode ids: 119 312
+      param method ids: 120 313
+      param ex ids: 121 314
+      var nodeStm ids: 122 315
+      try  ids: 123 316
+        set nodeStm = node ? escodegen.generate(node) : '' ids: 124 317
+      catch ex ids: 125 318
+        set nodeStm = 'escodegen failed: ' + ex.message ids: 126 319
+      var nodeInsp = node ? util.inspect(node, {depth:2}) : '' ids: 127 320
+      var parentnodeStm ids: 128 321
+      try  ids: 129 322
+        set parentnodeStm = parentnode ? escodegen.generate(parentnode) : '' ids: 130 323
+      catch ex ids: 131 324
+        set parentnodeStm = 'escodegen failed: ' + ex.message ids: 132 325
+      var parentnodeInsp = node ? util.inspect(node, {depth:2}) : '' ids: 133 326
+      var currentModelInfo = ctx.get_currentIttfModelInfo() ids: 134 327
+      var message ids: 135 328
+        [  ids: 136 329
+          @ 'WizziJsRunner Error' ids: 137 330
+          @ 'message: ' + message ids: 138 331
+          @ 'node statement: ' + nodeStm ids: 139 332
+          @ 'node inspected: ' + nodeInsp ids: 140 333
+          @ 'parent node statement: ' + parentnodeStm ids: 141 334
+          @ 'parent node inspected: ' + parentnodeInsp ids: 142 335
+          @ 'currentModel_uri: ' + currentModelInfo.currentModel_uri ids: 143 336
+          @ 'currentModel_callerUri: ' + currentModelInfo.currentModel_callerUri ids: 144 337
+          @ 'method: ' + method ids: 145 338
+      if ex ids: 146 339
+        _ message.push(ex.stack) ids: 147 340
+      return  ids: 148 341
+        {  ids: 149 342
+          @ __is_error true ids: 150 343
+          @ message message.join('\n') ids: 151 344
+    function getTypeDescription ids: 152 345
+      param obj ids: 153 346
+      if obj == null ids: 154 347
+        return 'null' ids: 155 348
+      return typeof(obj) ids: 156 349
+    set module.exports = ids: 157 350
+      {  ids: 158 351
+        @ getParsed ids: 159 352
+          function  ids: 160 353
+            param source ids: 161 354
+            try  ids: 162 355
+              var parsed ids: 163 356
+                _ esprima.parse ids: 164 357
+                  @ source ids: 165 358
+                  {  ids: 166 359
+                    @ attachComment true ids: 167 360
+                    @ loc true ids: 168 361
+                    @ sourceType 'module' ids: 169 362
+              return parsed ids: 170 363
+            catch ex ids: 171 364
+              throw  ids: 172 365
+                new errors.WizziJsSynthaxError(ex, source) ids: 173 366
+        @ run ids: 174 367
+          function  ids: 175 368
+            param source ids: 176 369
+            param ctx ids: 177 370
+            param options ids: 178 371
+            param callback ids: 179 372
+            set options = (options || defaultOptions) ids: 180 373
+            var parsed = this.getParsed(source) ids: 181 374
+            if options.dumpfile ids: 182 375
+              _ file.write ids: 183 376
+                @ options.dumpfile ids: 184 377
+                _ JSON.stringify(parsed, null, 2) ids: 185 378
+            var result = runner(parsed, ctx) ids: 186 379
+            if callback ids: 187 380
+              if result && result.__is_error ids: 188 381
+                set delete (result.__is_error) ids: 189 382
+                _ callback(result) ids: 190 383
+              else  ids: 191 384
+                _ callback(null, result) ids: 192 385
+            else  ids: 193 386
+              return result ids: 194 387

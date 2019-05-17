@@ -1,0 +1,77 @@
+﻿$group
+
+	@ getCommons
+		function
+			param options
+			param callback
+
+			var that = this
+			_ this.getUser
+				@ options
+				f_cb_api(result)
+
+					var userState = result.data
+
+					_ that.getProjects
+						@ options
+						f_cb_api(result)
+
+							var projects = result.data.projects
+
+							var dashboardIttfPath
+								_ paths.dashboardIttfPath
+									@ options
+
+							var sessionData = {}
+							var modelContext = {}
+							var formatOptions = {}
+
+							_ globalApi.wf.loadModel
+								@ sessionData
+								@ dashboardIttfPath
+								@ modelContext
+								@ formatOptions
+								f_cb_api( result )
+									log 'getCommons.result', result.data
+									return
+										_ callback
+											@ null
+											{
+												@ data 
+													{
+														@ userState userState
+														@ projects projects
+														@ schemas result.data.schemas
+														@ packages result.data.packagesEx
+														@ artifacts result.data.artifacts
+														@ transformations result.data.transformations
+												@ status
+													_ success
+														@ 'Commons dashboard data retrieved'
+
+	@ getDefaultArtifacts
+		function
+			param options
+			param callback
+
+			_ this.getCommons
+				@ options
+				f_cb_api( result )
+					var ret = {}
+					foreach s in result.data.schemas
+						foreach a in s.artifacts
+							if a.isDefault
+								set ret[s.name] = a.name
+						if !ret[s.name] && s.artifacts.length > 0
+							set ret[s.name] = s.artifacts[0]
+							
+					return
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ defaultArtifacts ret
+								@ status
+									_ success
+										@ 'Defualt artifact fetched'

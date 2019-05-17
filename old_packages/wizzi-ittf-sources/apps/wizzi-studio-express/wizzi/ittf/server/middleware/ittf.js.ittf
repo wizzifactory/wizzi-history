@@ -1,0 +1,366 @@
+module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var fs = require('fs')
+	var stringify = require('json-stringify-safe')
+	var wizzi = require('wizzi')
+	#
+		# *.html.ittf     wizzi/htmlDocument
+		#     ?meta=json
+		#     ?meta=html
+		#     ?meta=old_html
+		# *.bundle.ittf   wizzi-lab-site/bundle
+		# *.js.ittf       wizzi/jsModule
+		# *.json.ittf     wizzi/jsonDocument
+		# *.css.ittf      wizzi/cssDocument
+		# *.form.ittf     wizzi-lab-site/formJsonizer
+		# *.html
+		# *.js
+		# *.json
+		# *.css
+		# *.png | *.jpg |*.gif |*.bmp |*.tiff
+		# *.svg
+		# *.woff | *.ttf
+
+	set module.exports
+
+		function
+			param root
+			param routePath
+			param options
+			if !root
+				throw new TypeError('root path required')
+			if typeof root !== 'string'
+				throw new TypeError('root path must be a string')
+			if !routePath
+				throw new TypeError('routePath required')
+			if typeof routePath !== 'string'
+				throw new TypeError('routePath must be a string')
+
+			log 'middleware.ittf.root', root
+			
+			return
+	
+				function
+					param req
+					param res
+					param next
+
+					if req.method !== 'GET' && req.method !== 'HEAD'
+						return next()
+
+					var urlPathName = decodeURIComponent(req._parsedUrl.pathname)
+    
+					var pathname = urlPathName.substr(routePath.length)
+					var filePath = path.join(root, pathname);
+			
+					log 'ittf.pathname, pathname, filePath', urlPathName, pathname, filePath 
+			
+					if wizzi.file.exists(filePath) === false
+						return next()
+			
+					if wizzi.file.isFile(filePath) === false
+						return next()
+
+					var ext3 = filePath.substr(-3, 3)
+					var ext4 = filePath.substr(-4, 4)
+					var ext5 = filePath.substr(-5, 5)
+			
+					log 'ext4', ext4
+
+					if filePath.substr(-10, 10) === '.html.ittf'
+						
+						if req.query.meta && req.query.meta === 'json'
+							_ wizzi.html
+								@ filePath
+								{
+									@ req req
+								f_cb_send_err( wizziModelInstance, json )
+									return sendJSONStringified(res, wizziModelInstance)
+						
+						elif req.query.meta && req.query.meta === 'html'
+							_ createWizziFactory
+								@ 'stefi'
+								@ 'admin'
+								{
+								f_cb_send_err( wf, json )
+									_ wf.loadModelAndGenerateArtifact
+										@ wizzi.config.get('meta-html-ittf-path')
+										{
+											@ wizzischema 'html'
+											@ path filePath
+											@ req req
+										@ 'html/document'
+										f_cb_send_err( rendered, json )
+											return res.send(rendered)
+						else
+							log 'wizzi-studio/middleware/ittf creating wizzi factory for ' + filePath
+							_ createWizziFactory
+								@ 'stefi'
+								@ 'admin'
+								{
+								f_cb_send_err( wf, json )
+									log 'wizzi-studio/middleware/ittf created wizzi factory for ' + filePath
+									_ wf.loadModelAndGenerateArtifact
+										@ filePath
+										{
+											@ req req
+										@ 'html/document'
+										f_cb_send_err( rendered, json )
+											return res.send(rendered)
+			
+					elif filePath.substr(-12, 12) === '.bundle.ittf'
+						_ createWizziFactory
+							@ 'stefi'
+							@ 'admin'
+							{
+							f_cb_send_err( wf, json )
+								_ wf.loadModel
+									@ filePath
+									{
+										@ req req
+									f_cb_send_err( wizziModel, json )
+										var test = []
+										foreach item in wizziModel.items
+											_ test.push(item.wzElement)
+										var pkg, bundler
+										set pkg = wizziModel.getPackage()
+										if pkg
+											set bundler = pkg.getBundler()
+										return res.send('<p>test: ' + test.join('') + '</p><p>package: ' + (pkg || {}).wzName + '</p><p>bundler: ' + (bundler || {}).wzName + '</p>')
+
+					elif filePath.substr(-8, 8) === '.js.ittf'
+						_ createWizziFactory
+							@ 'stefi'
+							@ 'admin'
+							{
+							f_cb_send_err( wf, json )
+								_ wf.loadModelAndGenerateArtifact
+									@ filePath
+									{
+										@ req req
+										@ __data  $$ becomes -> genWriter.options.data
+											{
+												@ jsResources options.jsResources
+									@ 'js/module'
+									f_cb_send_err( rendered, json )
+										_ res.setHeader('content-type', 'text/javascript')
+										return res.send(rendered)
+
+					elif filePath.substr(-10, 10) === '.json.ittf'
+						_ createWizziFactory
+							@ 'stefi'
+							@ 'admin'
+							{
+							f_cb_send_err( wf, json )
+								_ wf.loadModelAndGenerateArtifact
+									@ filePath
+									{
+										@ req req
+									@ 'json/document'
+									f_cb_send_err( rendered, json )
+										_ res.setHeader('content-type', 'application/json')
+										return res.send(rendered)
+			
+					elif filePath.substr(-9, 9) === '.css.ittf'
+						_ createWizziFactory
+							@ 'stefi'
+							@ 'admin'
+							{
+							f_cb_send_err( wf, json )
+								_ wf.loadModelAndGenerateArtifact
+									@ filePath
+									{
+										@ req req
+										@ __data  $$ becomes -> genWriter.options.data
+											{
+												@ cssResources options.cssResources
+									@ 'css/document'
+									f_cb_send_err( rendered, json )
+										_ res.setHeader('content-type', 'text/css')
+										return res.send(rendered)
+			
+					elif filePath.substr(-9, 9) === '.svg.ittf'
+						_ createWizziFactory
+							@ 'stefi'
+							@ 'admin'
+							{
+							f_cb_send_err( wf, json )
+								_ wf.loadModelAndGenerateArtifact
+									@ filePath
+									{
+										@ req req
+										@ __data  $$ becomes -> genWriter.options.data
+											{
+									@ 'svg/document'
+									f_cb_send_err( rendered, json )
+										_ res.setHeader('content-type', 'image/svg+xml')
+										return res.send(rendered)
+
+					elif filePath.substr(-10, 10) === '.form.ittf'
+						_ createWizziFactory
+							@ 'stefi'
+							@ 'admin'
+							{
+							f_cb_send_err( wf, json )
+								_ wf.loadModelAndGenerateArtifact
+									@ filePath
+									{
+										@ req req
+										@ __data  $$ becomes -> genWriter.options.data
+											{
+									@ 'form/jsonizer'
+									f_cb_send_err( jsonized, json )
+										_ res.setHeader('content-type', 'application/json')
+										return res.json(jsonized)
+
+					elif filePath.substr(-5, 5) == '.html'
+						var content = wizzi.file.read(filePath)
+						_ res.end(content)
+			
+					elif filePath.substr(-3, 3) == '.js'
+						var content = wizzi.file.read(filePath)
+						_ res.setHeader('content-type', 'text/javascript')
+						_ res.end(content)
+			
+					elif filePath.substr(-5, 5) == '.json'
+						var content = wizzi.file.read(filePath)
+						_ res.setHeader('content-type', 'application/json')
+						_ res.end(content)
+			
+					elif filePath.substr(-4, 4) == '.css'
+						var content = wizzi.file.read(filePath)
+						_ res.setHeader('content-type', 'text/css')
+						_ res.end(content)
+					
+					elif filePath.substr(-4, 4) == '.svg'
+						var content = wizzi.file.read(filePath)
+						_ res.setHeader('content-type', 'image/svg+xml')
+						_ res.end(content)
+
+					elif ['.png', '.jpg', '.gif', '.bmp'].indexOf(ext4) > -1
+						\b || ['.jpeg', '.tiff'].indexOf(ext5) > -1
+						var contentType
+						if ['.png', '.jpg', '.gif', '.bmp'].indexOf(ext4) > -1
+							set contentType = 'image/' + ext4.substr(1)
+						else
+							set contentType = 'image/' + ext5.substr(1)
+						_ fs.readFile
+							@ filePath
+							f_cb_send_err( data, json )
+								_ res.setHeader('content-type', contentType)
+								_ res.setHeader('content-length', data.length)
+								_ res.end(data)
+			
+					elif filePath.substr(-5, 5) == '.woff' || filePath.substr(-4, 4) == '.ttf'
+				
+						var ctype;
+				
+						if filePath.substr(-5, 5) == '.woff'
+							set ctype = 'application/x-font-woff'
+				
+						if filePath.substr(-4, 4) == '.ttf'
+							set ctype = 'application/x-font-ttf'
+				
+						_ wizzi.file.readFile
+							@ filePath
+							f_cb_send_err( data, json )
+								_ res.setHeader('content-type', ctype)
+								_ res.setHeader('content-length', data.length)
+								_ res.end(data)
+
+					elif ['.mp4', '.vob', '.mpg'].indexOf(ext4) > -1
+						var contentType
+						if ['.mp4'].indexOf(ext4) > -1
+							set contentType = 'video/' + ext4.substr(1)
+						else
+							set contentType = 'video/' + ext5.substr(1)
+						_ fs.readFile
+							@ filePath
+							f_cb_send_err( data, json )
+								_ res.setHeader('content-type', contentType)
+								_ res.setHeader('content-length', data.length)
+								_ res.end(data)
+					elif filePath.substr(-5, 5) == '.yaml'
+						var content = wizzi.file.read(filePath)
+						_ res.setHeader('content-type', 'text/yaml')
+						_ res.end(content)
+					elif filePath.substr(-4, 4) == '.yml'
+						var content = wizzi.file.read(filePath)
+						_ res.setHeader('content-type', 'text/yaml')
+						_ res.end(content)
+					else
+						return next()
+
+	function createWizziFactory
+		param user
+		param roleOrSubscription
+		param globalContext
+		param callback
+		_ wizzi.createFactory
+			@ user
+			@ roleOrSubscription
+			{
+				{ repo
+					@ storeKind 'filesystem'
+				{ plugins
+					[ items
+						@ 'wizzi-core'
+						@ 'wizzi-web'
+						@ 'wizzi-js'
+				@ globalContext globalContext || {}
+				{ test
+					{ dumps
+						@ dumpsBaseFolder
+							_ path.join
+								@ __dirname
+								@ 'mTreeBuildUpDumps'
+						{ mTreeBuildupJsWizziScript
+							@ dump true
+			@ callback
+
+	function sendJSONStringified
+		param res
+		param wizziModelInstance
+		_ res.send('<pre>' + stringify(cleanCircular(wizziModelInstance, []), null, 2) + '</pre>')
+
+	function cleanCircular
+		param obj
+		param stock
+
+		if !obj
+			return
+		
+		if stock.indexOf(obj) >= 0
+			return
+		else
+			_ stock.push(obj)
+		
+		if typeof obj === 'object'
+			if obj.length
+				foreach item in obj
+					_ cleanCircular(item, stock)
+				return
+			if obj.parent 
+				delete obj.parent
+			if obj.wzParent 
+				delete obj.wzParent
+			if obj.nodes 
+				delete obj.nodes
+			if obj.evalContext 
+				delete obj.evalContext
+			if obj.loadContext && obj.sourceKey
+				delete obj.loadContext
+			for var k in obj 
+				var item = obj[k]
+				if !item
+					delete obj[k]
+				elif typeof item === 'object' && item.length && item.length == 0
+					delete obj[k]
+				else
+					_ cleanCircular(item, stock)
+		return obj
+
+	$include send_error

@@ -1,0 +1,36 @@
+  module  ids: 1 30
+    kind jsfile ids: 2 31
+    +  ids: 3 32
+    var myname = 'html.document.css_rule' ids: 4 33
+    +  ids: 5 34
+    var rule = require('../../../css/document/gen/rule') ids: 6 35
+    +  ids: 7 36
+    var md = module.exports = {} ids: 8 37
+    set md.stm = {} ids: 9 38
+    +  ids: 10 39
+    _ rule.load(md) ids: 11 40
+    +  ids: 12 41
+    set md.genItem ids: 59 64
+      function  ids: 60 65
+        param model ids: 61 66
+        param ctx ids: 62 67
+        var stm = md.stm[model.wzElement] ids: 14 43
+        if stm ids: 15 44
+          _ stm(model, ctx) ids: 16 45
+        else  ids: 17 46
+          throw ctx.error(myname + '. Unknown tag/element: ' + model.wzTag + '/' + model.wzElement, model) ids: 18 47
+    set md.genItems ids: 69 75
+      function  ids: 70 76
+        param items ids: 71 77
+        param ctx ids: 72 78
+        param options ids: 73 79
+        var  ids: 20 49
+          decl opt = options || {} ids: 21 50
+          decl from = opt.from || 0 ids: 22 51
+          decl indent = typeof opt.indent === 'undefined' ? true : opt.indent ids: 23 52
+        if indent ids: 24 53
+          _ ctx.indent() ids: 25 54
+        foreach item in items ids: 26 55
+          _ md.genItem(item, ctx) ids: 27 56
+        if indent ids: 28 57
+          _ ctx.deindent() ids: 29 58

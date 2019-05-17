@@ -1,0 +1,27 @@
+﻿set md.gen
+    function 
+        param model
+        param ctx
+        param callback
+		if typeof(callback) !== 'function'
+			throw
+				new Error
+					_ error 
+						@ 'InvalidArgument'
+						@ 'gen'
+						@ 'The callback parameter must be a function. Received: ' + callback
+		if verify.isObject(model) == false
+			return
+				_ callback
+					_ error 
+						@ 'InvalidArgument'
+						@ 'gen'
+						@ 'The model parameter must be an object. Received: ' + model
+		$hook
+		if ctx.artifactGenerationErrors.length > 0
+			return
+				_ callback(ctx.artifactGenerationErrors)
+        else
+			return
+				_ callback(null, ctx)
+

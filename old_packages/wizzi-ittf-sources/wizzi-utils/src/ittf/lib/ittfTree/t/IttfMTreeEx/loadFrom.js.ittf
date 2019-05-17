@@ -1,0 +1,88 @@
+﻿$group
+	
+	m loadFromNode
+		param node
+		param $params
+		set this.name = (node.name || node.n) + (node.tagSuffix || '')
+		set this.value = node.value || node.v || ''
+		set this.row = node.row || node.r || ''
+		set this.col = node.col || node.c || ''
+		if node.id
+			set this.id = node.id
+		if $params && $params.length > 0
+			_ this.add('$params', $params, this)
+		_ this.__importChilds(node.children)
+	
+	m __importChilds
+		param children
+		var added
+		if children && children.length
+			foreach node in children
+				set added 
+					_ this.add
+						@ (node.name || node.n) + (node.tagSuffix || '')
+						@ node.value || node.v || ''
+				set added.row = node.row || node.r || ''
+				set added.col = node.col || node.c || ''
+				if node.id
+					set added.id = node.id
+				_ added.__importChilds
+					@ node.children
+
+	m createFrom
+		static
+		param objFrom
+		param options
+		param callback
+		if typeof(callback) === 'undefined' && verify.isFunction(options)
+			set callback = options
+			set options = {}
+		else
+			set options = options || {}
+		var ittf
+		if verify.isObject(objFrom)
+			if verify.isArray(objFrom.nodes) &&
+				\b objFrom.nodes.length == 1
+				set ittf = new IttfMTreeEx()
+				_ ittf.loadFromNode(objFrom.nodes[0], objFrom.$params)
+			elif (objFrom.name || objFrom.n) && objFrom.children
+				set ittf = new IttfMTreeEx()
+				_ ittf.loadFromNode(objFrom, objFrom.$params)
+			else
+				throw new Error('wizzi-utils.ittfMTreeEx.createFrom error. Invalid parameter: objFrom')
+		elif verify.isNotEmpty(objFrom)
+			var asisMTree
+			if options.fromString
+				set asisMTree =  asIsLoader.createFromString(objFrom, {})
+			elif file.exists(objFrom) == false
+				throw new Error('wizzi-utils.ittfMTreeEx.createFrom error. Document not found: ' + objFrom)
+			else
+				set asisMTree = asIsLoader(objFrom, {})
+			set ittf = new IttfMTreeEx()
+			set ittf.model
+				{
+					@ uri (options.fromString ? 'string://' : objFrom)
+			# log 'ittfMTreeEx.asis.loader.asisMTree.nodes.length', asisMTree.nodes.length, !asisMTree.nodes[0]
+			_ ittf.loadFromNode(asisMTree.nodes[0], asisMTree.$params)
+		else
+			throw new Error('wizzi-utils.ittfMTreeEx.createFrom error: Invalid parameter objFrom')
+
+		function clean
+			param node
+			delete node.parent
+			delete node.model
+			if node.children
+				foreach item in node.children
+					_ clean(item)
+			return node
+
+		if options.clean
+			_ clean(ittf)
+		
+		if callback
+			_ callback
+				@ null
+				@ ittf
+		else
+			return ittf
+

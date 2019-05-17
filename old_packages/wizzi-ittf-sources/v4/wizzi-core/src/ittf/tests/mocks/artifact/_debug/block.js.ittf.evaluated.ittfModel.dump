@@ -1,0 +1,78 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var line = require('./line') ids: undefined undefined
+    class Block ids: undefined undefined
+      ctor  ids: undefined undefined
+        param options ids: undefined undefined
+        set this.lines = [] ids: undefined undefined
+        set this.options = (options || {}) ids: undefined undefined
+        set this.indentValue = (this.options.indent || 0) ids: undefined undefined
+        set this.currentline = null ids: undefined undefined
+      m forceIndent ids: undefined undefined
+        param value ids: undefined undefined
+        var save = this.indentValue ids: undefined undefined
+        set this.indentValue = value ids: undefined undefined
+        return save ids: undefined undefined
+      m indent ids: undefined undefined
+        param value ids: undefined undefined
+        set this.indentValue += typeof (value) !== 'undefined' ? value : 1 ids: undefined undefined
+      m deindent ids: undefined undefined
+        param value ids: undefined undefined
+        set this.indentValue -= typeof (value) !== 'undefined' ? value : 1 ids: undefined undefined
+        set this.indentValue = Math.max(0, this.indentValue) ids: undefined undefined
+      m w ids: undefined undefined
+        param text ids: undefined undefined
+        if this.currentline != null ids: undefined undefined
+          _ this.currentline.add(text) ids: undefined undefined
+          _ this.lines.push ids: undefined undefined
+            @ this.currentline ids: undefined undefined
+          set this.currentline = null ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.lines.push ids: undefined undefined
+            new line ids: undefined undefined
+              @ text ids: undefined undefined
+              @ this.indentValue ids: undefined undefined
+              @ this.options ids: undefined undefined
+      m write ids: undefined undefined
+        param text ids: undefined undefined
+        if this.currentline != null ids: undefined undefined
+          _ this.currentline.add(text) ids: undefined undefined
+        else  ids: undefined undefined
+          set this.currentline = new line(text, this.indentValue, this.options) ids: undefined undefined
+      m writeFile ids: undefined undefined
+        param filePath ids: undefined undefined
+        if this.currentline != null ids: undefined undefined
+          _ this.currentline.addFile(filePath) ids: undefined undefined
+          _ this.lines.push ids: undefined undefined
+            @ this.currentline ids: undefined undefined
+          set this.currentline = null ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.lines.push ids: undefined undefined
+            new line ids: undefined undefined
+              @ filePath ids: undefined undefined
+              @ this.indentValue ids: undefined undefined
+              @ this.options ids: undefined undefined
+              @ true ids: undefined undefined
+      m toStream ids: undefined undefined
+        param stream ids: undefined undefined
+        param ctx ids: undefined undefined
+        foreach item in this.lines ids: undefined undefined
+          _ item.toStream(stream, ctx) ids: undefined undefined
+        if this.currentline != null ids: undefined undefined
+          _ this.currentline.toStream(stream, ctx) ids: undefined undefined
+      m terminate ids: undefined undefined
+        set delete (this.options) ids: undefined undefined
+        set delete (this.currentline) ids: undefined undefined
+        foreach item in this.lines ids: undefined undefined
+          _ item.terminate() ids: undefined undefined
+      m hydrate ids: undefined undefined
+        param lines ids: undefined undefined
+        param options ids: undefined undefined
+        set this.currentline = null ids: undefined undefined
+        set this.lines = [] ids: undefined undefined
+        var l ids: undefined undefined
+        foreach item in lines ids: undefined undefined
+          set l = new line('', 0, options) ids: undefined undefined
+          _ l.hydrate(item) ids: undefined undefined
+          _ this.lines.push(l) ids: undefined undefined
+    set module.exports = Block ids: undefined undefined

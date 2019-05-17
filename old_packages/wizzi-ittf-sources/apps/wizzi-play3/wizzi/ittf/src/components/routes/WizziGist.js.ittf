@@ -1,0 +1,121 @@
+﻿r-container( WizziGist, false, true
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		editor/imports()
+		codesplit2/imports()
+		$include common/optionsImport
+		import
+			@ getJobGist
+			editor/importActions()
+			gists/optionsImportActions()
+			from '../../store/actions'
+		import CodeHighLight from '../mui/CodeHighLight'
+		import EventSourceView from '../mui/EventSourceView'
+		
+		gists/optionsData()
+		$include wfactions/constants
+
+	style
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		editor/state()
+		codesplit2/state(&opt)
+		@ execUrl null
+		@ execUrlCounter 1
+		common/optionsState()
+
+	did-mount
+		prop match
+		prop dispatchGetJobGist
+		_ dispatchGetJobGist
+			@ match.params.hash
+
+	codesplit2/handlers(&opt)
+
+	=> handleGistChange
+		param value
+		prop gist
+		prop dispatchUpdateJobGist
+		_ dispatchUpdateJobGist
+			@ gist.hash
+			@ value
+
+	=> handleExec
+		prop gist
+		const {execUrlCounter} = this.state
+		_ this.setState
+			{
+				@ execUrl '/api/jobs/gistexec?hash=' + gist.hash + '&eventstream=true&cpunter=' + execUrlCounter
+				@ execUrlCounter execUrlCounter + 1
+
+	editor/handlers()
+	gists/optionsHandlers()
+
+	render
+		prop classes
+		prop loadingError
+		prop match
+		prop gist
+
+		common/guardLoading( gist )
+
+		editor/renderPropsAndState()
+		codesplit2/render_prop_state(&opt)
+		const { execUrl } = this.state
+
+		return
+			div
+				h2 Gist {gist.basename}
+				$include common/optionsRender
+				editor/renderInfoDialog()
+				common/tlb()
+					common/tlb-btn( Exec, this.handleExec
+					common/tlb-btn( generate, this.handleGenerateDefaultArtifact
+					common/tlb-btn( script, this.handleMTreeDebugInfo
+
+				codesplit2/render(&opt)
+					$append pane1
+						< CodeEditor 
+							@ language { 'js' }
+							@ value { gist.content }
+							@ onChange { this.handleGistChange }
+					$append pane2
+						< EventSourceView
+							@ url { execUrl }
+
+	$append state-to-props
+		editor/stateToProps()
+		@ loadingError state.job.loadingError
+		@ gist state.job.gist
+		@ selectedDocumentHash state.job.gist ? state.job.gist.hash : null
+
+	$append dispatch-to-props
+
+		@ dispatchGetJobGist
+			=>
+				param hash
+				log 'dispatchGetJobGist', hash
+				_ dispatch
+					_ getJobGist
+						@ hash
+
+		@ dispatchUpdateJobGist
+			=>
+				param hash
+				param newcontent
+				log 'dispatchUpdateJobGist', hash
+				_ dispatch
+					_ updateJobGist
+						@ hash
+						@ newcontent
+				_ dispatch
+					_ changedJobGist
+						@ newcontent
+
+		editor/dispatchToProps()
+		gists/optionsDispatchToProps()

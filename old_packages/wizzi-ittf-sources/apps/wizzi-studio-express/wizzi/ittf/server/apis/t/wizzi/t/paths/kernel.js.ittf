@@ -1,0 +1,165 @@
+﻿$group
+
+	@ kernelSrcPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ config.getWizziKernelBasePath
+						@ version
+					@ packageName
+					@ 'src'
+
+	@ kernelSrcIttfPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ config.getWizziKernelBasePath
+						@ version
+					@ packageName
+					@ 'src'
+					@ 'ittf'
+
+	@ kernelGeneratePath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ this.kernelSrcPath
+						@ packageName
+						@ version
+					@ 'generate.js'
+				
+	@ kernelGenerateWfJobPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ this.kernelSrcPath
+						@ packageName
+						@ version
+					@ 'generate.wfjob.ittf'
+	
+	@ kernelRootFolderPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ this.kernelSrcIttfPath
+						@ packageName
+						@ version
+					@ 'root'
+
+	@ kernelLibFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'lib'
+			else
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'lib'
+						@ folder
+
+	@ kernelExamplesFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'examples'
+			else
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'examples'
+						@ folder
+
+	@ kernelMetaFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'meta'
+			else
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'meta'
+						@ folder
+	@ kernelTestsFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'tests'
+			else
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 'tests'
+						@ folder
+	
+	@ kernelTFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 't'
+			else
+				return
+					_ path.join
+						_ this.kernelSrcIttfPath
+							@ packageName
+							@ version
+						@ 't'
+						@ folder

@@ -1,0 +1,19 @@
+﻿$group
+
+	var sourceFilePath = "c:/my/from/hello.txt"
+	var destFilePath = "c:/my/to/hello.txt"
+	var content = 'Hello'
+
+	describe copy a file
+		before-async
+			_ doc.writeFile
+				@ sourceFilePath
+				@ content
+				f_cb_done( f )
+
+		it-async copy hello from to
+			_ doc.copyFile
+				@ sourceFilePath
+				@ destFilePath
+				f_cb_done( r )
+					log 'copy hello from to', r

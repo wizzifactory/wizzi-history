@@ -1,0 +1,43 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    +  ids: undefined undefined
+    import path ids: undefined undefined
+    import util ids: undefined undefined
+    +  ids: undefined undefined
+    var expect = require('expect.js') ids: undefined undefined
+    var studioBasePath ids: undefined undefined
+      _ path.join ids: undefined undefined
+        @ __dirname ids: undefined undefined
+        @ 'studioRepo' ids: undefined undefined
+    var api = {} ids: undefined undefined
+    _ require ids: undefined undefined
+      @ '../../../server/apis/studio' ids: undefined undefined
+      (  ids: undefined undefined
+        @ null ids: undefined undefined
+        {  ids: undefined undefined
+          @ studiosBasePath studioBasePath ids: undefined undefined
+        @ api ids: undefined undefined
+    var studioApi = api.studio ids: undefined undefined
+    log 'studioApi', studioApi ids: undefined undefined
+    describe studio api ids: undefined undefined
+      log 'studio creation' ids: undefined undefined
+      describe creation ids: undefined undefined
+        before-async  ids: undefined undefined
+          _ del ids: undefined undefined
+            [  ids: undefined undefined
+              _ path.join ids: undefined undefined
+                @ studioBasePath ids: undefined undefined
+                @ '/**/.*' ids: undefined undefined
+          _ done() ids: undefined undefined
+        it-async should create a js ittf document ids: undefined undefined
+          log 'should create a js ittf document' ids: undefined undefined
+          _ studioApi.createDocument ids: undefined undefined
+            @ 'examples' ids: undefined undefined
+            @ 'ecma2015' ids: undefined undefined
+            @ 'js' ids: undefined undefined
+            function  ids: undefined undefined
+              param err ids: undefined undefined
+              param result ids: undefined undefined
+              log 'create.artifact', err, result ids: undefined undefined
+              _ expect(result).to.be.an('object') ids: undefined undefined
+              _ done() ids: undefined undefined

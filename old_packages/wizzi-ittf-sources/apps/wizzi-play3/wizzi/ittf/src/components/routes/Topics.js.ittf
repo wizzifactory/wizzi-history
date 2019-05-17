@@ -1,0 +1,49 @@
+﻿r-simple( Topics
+
+	$append imports
+		import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+		import Topic from './Topic'
+		import List from '@material-ui/core/List'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+	=>
+		param { match }
+		(
+			div 
+				h2 
+					+ Topics
+				< List 
+					< MyLink 
+						@ to
+							`lit 
+								@ match.url
+								+ /rendering
+						@ title Rendering with React
+					< MyLink 
+						@ to
+							`lit 
+								@ match.url
+								+ /components
+						@ title Components
+					< MyLink 
+						@ to
+							`lit 
+								@ match.url
+								+ /props-v-state
+						@ title Props v. State
+				
+				< Route 
+					@ path
+						`lit 
+							@ match.url
+							+ /:topicId
+					@ component {Topic}
+				
+				< Route 
+					@ exact
+					@ path {match.url}
+					@ render
+						=> 
+							(
+								h3 
+									+ Please select a topic.

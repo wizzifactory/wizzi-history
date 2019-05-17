@@ -1,0 +1,21 @@
+﻿$group
+
+	m getDir
+		string folderPath
+		options-callback
+		+
+		set folderPath = normalize(path.resolve(folderPath))
+		+
+		var that = this
+		+
+		_ this.fsdb.getItemByPath
+			@ folderPath
+			f_cb( r )
+				if r
+					_ that.fsdb.getItemChildren
+						@ r._id
+						f_cb( fsitems )
+							r_cb( fsitems )
+				else
+					r_cb( [] )
+

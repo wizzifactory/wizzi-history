@@ -1,0 +1,57 @@
+﻿$group
+
+	function loadSampleDocuments
+		param folder
+		param callback
+		
+		var docsRoot
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ folder
+
+		var docs
+			_ fsfile.getGlobbedFilesEx
+				_ path.join
+					@ docsRoot
+					@ '**'
+					@ '*.ittf'
+				{
+					@ removeRoot docsRoot + '/'
+		
+		+
+		log 'wizzi-demo.mtree.mongodb.loadSampleDocuments.docs', docs
+		+
+
+		_ wizziRepo.dbfile
+			{
+				@ mongoUri mongoUri
+				@ mongodbBaseFolder mongodbBaseFolder
+			f_cb_throw( dbfile )
+				_ async.mapSeries
+					@ docs
+					function
+						param item
+						param callback1
+						var content
+							_ fsfile.read
+								_ path.join
+									@ docsRoot
+									@ item
+						log 'wizzi-demo.mtree.mongodb.loadSampleDocuments.content', content
+						_ dbfile.write
+							_ path.join
+								@ db__dirname
+								@ folder
+								@ item
+							@ content
+							f_cb_throw( notUsed )
+								_ callback1(null)
+					f_cb_throw( notUsed )
+						log 'notUsed', notUsed
+						_ dbfile.close()
+						_ callback(null)
+
+
+
+

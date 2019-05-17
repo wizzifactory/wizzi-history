@@ -1,0 +1,19 @@
+﻿$group
+
+	# TODO transform in cache with expiring time
+	var jobsStore = {}
+
+	function makePaths
+		param config
+		return
+			{
+				$include paths/base
+				$include paths/files
+				$include paths/jobs
+				$include paths/batches
+				$include paths/gists
+
+	$include batches/index
+	$include console/index
+	$include gists/index
+	$include snippets/index

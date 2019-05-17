@@ -1,0 +1,62 @@
+﻿$group
+
+	m getItem
+		{ key
+			optional
+		callback
+
+		if key == null
+			return
+				_ this.items.find
+					._ toArray
+						@ callback
+
+		_ this.items.find
+			@ key
+			._ toArray
+				f_cb( r )
+					# log 'wizzi-repo.json.FsJson.getItem.r', key, r
+					if r.length == 1
+						r_cb( r[0] )
+					else
+						r_cb( null )
+	m getItemById
+		{ id
+		callback
+		_ this.getItem
+			{
+				@ _id id
+			@ callback
+
+	m getItemByPath
+		string path
+		callback
+		_ this.getItem
+			{
+				@ path path
+			@ callback
+			
+	m getItemByNameAndParent
+		string basename
+		{ parentId
+			optional
+		callback
+		_ this.getItem
+			{
+				@ basename basename
+				@ parentId parentId
+			@ callback
+
+	m getItemChildren
+		{ parentId
+		callback
+
+		# log 'wizzi-repo.json.FsJson.getItemChildren.enter', parentId
+
+		_ this.items.find
+			{
+				@ parentId parentId
+			._ toArray
+				f_cb( r )
+					# log 'wizzi-repo.json.FsJson.getItemChildren.r', parentId, r
+					r_cb( r )

@@ -1,0 +1,180 @@
+﻿module
+    kind react
+	+
+	import_rsf_actions( GET_REPO_USER )
+	import_rsf_actions( GET_REPO_PROJECT )
+	import_rsf_actions( GET_REPO_FOLDER )
+	import_rsf_actions( GET_REPO_DOCUMENT )
+	import_rsf_actions( CREATE_REPO_PROJECT )
+	import_rsf_actions( CREATE_REPO_FOLDER )
+	import_rsf_actions( CREATE_REPO_DOCUMENT )
+	import_rsf_actions( UPDATE_REPO_DOCUMENT )
+	import_rsf_actions( DELETE_REPO_FOLDER )
+	import_rsf_actions( DELETE_REPO_DOCUMENT )
+	import_rsf_actions( DELETE_REPO_BATCH
+	import_rsf_actions( PASTE_REPO_FSITEMS )
+	import_rsf_actions( DUPLICATE_REPO_FSITEM
+	import_rsf_actions( RENAME_REPO_FSITEM
+	import_action( COPY_CUT_REPO_FSITEMS )
+	+
+	const repoInitialState
+		{
+			@ userId null
+			@ projectId null
+			@ folderPath null
+			@ items null
+			@ document null
+			@ isLoading false
+			@ loadError null
+			@ isExecutingDeleteBatch false
+			@ deleteBatchResult null
+			@ deleteBatchError null
+			@ isExecutingRepoIO false
+			@ repoIOError null
+			@ copyCutType ''
+			@ copyCutPending false
+			@ copyCutSourcePath ''
+			@ copyCutSelectedItems []
+			@ pasteResult null
+			@ isExecutingPaste false
+			@ pasteError null
+	+
+	r( repo, repoInitialState )
+	
+		cx( GET_REPO_USER_REQUEST
+			@ isLoading true
+		
+		cx( GET_REPO_USER_SUCCESS
+			@ userId action.payload.userId
+			@ projectId null
+			@ folderPath null
+			@ items action.payload.items
+			@ document null
+			@ isLoading false
+			@ loadError null
+
+		cx( GET_REPO_USER_FAILURE
+			@ userId null
+			@ projectId null
+			@ folderPath null
+			@ items null
+			@ document null
+			@ isLoading false
+			@ loadError action.payload.error
+
+		cx( GET_REPO_PROJECT_REQUEST
+			@ isLoading true
+		
+		cx( GET_REPO_PROJECT_SUCCESS
+			@ projectId action.payload.projectId
+			@ folderPath action.payload.folderPath
+			@ items action.payload.items
+			@ document null
+			@ isLoading false
+			@ loadError null
+
+		cx( GET_REPO_PROJECT_FAILURE
+			@ projectId null
+			@ folderPath null
+			@ items null
+			@ document null
+			@ isLoading false
+			@ loadError action.payload.error
+
+		cx( GET_REPO_FOLDER_REQUEST
+			@ isLoading true
+		
+		cx( GET_REPO_FOLDER_SUCCESS
+			@ folderPath action.payload.folderPath
+			@ items action.payload.items
+			@ document null
+			@ isLoading false
+			@ loadError null
+
+		cx( GET_REPO_FOLDER_FAILURE
+			@ folderPath null
+			@ items null
+			@ document null
+			@ isLoading false
+			@ loadError action.payload.error
+
+		cx( GET_REPO_DOCUMENT_REQUEST
+			@ isLoading true
+		
+		cx( GET_REPO_DOCUMENT_SUCCESS
+			@ folderPath action.payload.folderPath
+			@ document action.payload
+			@ isLoading false
+			@ loadError null
+
+		cx( GET_REPO_DOCUMENT_FAILURE
+			@ document null
+			@ isLoading false
+			@ loadError action.payload.error
+
+		c_notif( CREATE_REPO_PROJECT, projectCreate
+		c_notif( CREATE_REPO_FOLDER, folderCreate
+			@ items action.payload.folderRefresh.items
+		c_notif( DELETE_REPO_FOLDER, folderDelete
+			@ items action.payload.folderRefresh.items
+		c_notif( CREATE_REPO_DOCUMENT, documentCreate
+			@ items action.payload.folderRefresh.items
+		c_notif( UPDATE_REPO_DOCUMENT, documentUpdate
+		c_notif( DELETE_REPO_DOCUMENT, documentDelete
+			@ items action.payload.folderRefresh.items
+
+		cx(	DELETE_REPO_BATCH_REQUEST
+			@ isExecutingDeleteBatch true
+		
+		cx(	DELETE_REPO_BATCH_FAILURE
+			@ isExecutingDeleteBatch false
+			@ deleteBatchError action.payload.error
+		
+		cx(	DELETE_REPO_BATCH_SUCCESS 
+			@ items action.payload.folderRefresh.items
+			@ deleteBatchResult action.payload.result
+			@ isExecutingDeleteBatch false
+			@ deleteBatchError null
+
+		cx( RENAME_REPO_FSITEM_SUCCESS
+			@ items action.payload.folderRefresh.items
+			@ isExecutingRepoIO false
+			@ repoIOError null
+
+		cx( RENAME_REPO_FSITEM_FAILURE
+			@ isExecutingRepoIO false
+			@ repoIOError action.payload.error
+
+		cx( DUPLICATE_REPO_FSITEM_SUCCESS
+			@ items action.payload.folderRefresh.items
+			@ isExecutingRepoIO false
+			@ repoIOError null
+
+		cx( DUPLICATE_REPO_FSITEM_FAILURE
+			@ isExecutingRepoIO false
+			@ repoIOError action.payload.error
+
+		cx( COPY_CUT_REPO_FSITEMS
+			@ copyCutType action.copyCut
+			@ copyCutPending action.copyCut && action.copyCut.length > 0
+			@ copyCutSourcePath action.sourcePath
+			@ copyCutSelectedItems action.selectedItems
+
+		cx( PASTE_REPO_FSITEMS_REQUEST
+			@ isExecutingPaste true
+		
+		cx( PASTE_REPO_FSITEMS_FAILURE
+			@ isExecutingPaste false
+			@ pasteError action.payload.error
+		
+		cx( PASTE_REPO_FSITEMS_SUCCESS 
+			@ items action.payload.folderRefresh.items
+			@ pasteResult action.payload.result
+			@ isExecutingPaste false
+			@ pasteError null
+			@ copyCutType ''
+			@ copyCutPending false
+			@ copyCutSourcePath ''
+			@ copyCutSelectedItems []
+
+	export default repoReducer

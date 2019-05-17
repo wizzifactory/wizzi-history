@@ -1,0 +1,68 @@
+﻿$group
+
+	var nodeFinds
+		[
+			{
+				@ action 'findCommand'
+				@ name 'hook'
+				@ value 'default'
+				@ expected 5
+				@ original
+					{
+						@ name 'root'
+						@ id 1
+						[ children
+							{
+								@ name 'n1'
+								@ value 'v1'
+								@ id 2
+								[ children
+									{
+										@ name 'n11'
+										@ value 'v11'
+										@ id 3
+										[ children
+											{
+												@ name 'n111'
+												@ id 4
+									{
+										@ name '$hook'
+										@ value 'default'
+										@ id 5
+				
+			{
+				@ action 'findHook'
+				@ startitem 5
+				@ expected 2
+				@ original
+					{
+						@ name 'root'
+						@ id 1
+						[ children
+							{
+								@ name '$hook'
+								@ value 'main'
+								@ id 2
+								[ children
+									{
+										@ name 'n11'
+										@ value 'v11'
+										@ id 3
+										[ children
+											{
+												@ name 'n111'
+												@ id 4
+									{
+										@ name '$append'
+										@ value 'main'
+										@ id 5
+							{
+								@ name 'n2'
+								@ value 'v2'
+								@ id 6
+								[ children
+							{
+								@ name 'n3'
+								@ value 'v3'
+								@ id 7
+								[ children		

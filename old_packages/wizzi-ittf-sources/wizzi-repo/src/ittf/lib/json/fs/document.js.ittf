@@ -1,0 +1,104 @@
+﻿module wizzi-repo.fs.json.Document
+	kind jsfile
+
+	import path
+	import assert
+	import async
+	var vfile = require('wizzi-utils').vfile
+	var verify = require('wizzi-utils').verify
+	var errors = require('../../errors')
+	var FsStream = require('../../utils/fsstream')
+	var file = vfile()
+	var Promise = require('promise')
+	var JSZip = require('jszip')
+	var FsDb = null
+
+	class Document
+		ctor
+			param fsdb
+			_ assert( true, fsdb.classType === 'wizzi-repo.json.FsJson' );
+			_ assert( true, !!fsdb.items && 
+				\b fsdb.items.classType === 'wizzi-repo.utils.Collection');
+			_ assert( true, !!fsdb.documents && 
+				\b fsdb.documents.classType === 'wizzi-repo.utils.Collection');
+			set this.classType = 'wizzi-repo.json.Document'
+			+
+			set this.fsdb = fsdb
+			+
+
+		fscommon/document/upload( fs.json, JsonFS )
+		fscommon/document/createFolder( fs.json, JsonFS )
+		fscommon/document/getFolder( fs.json, JsonFS )
+		fscommon/document/getDir( fs.json, JsonFS )
+		fscommon/document/getFiles( fs.json, JsonFS )
+		fscommon/document/getContent( fs.json, JsonFS )
+		fscommon/document/exists( fs.json, JsonFS )
+		fscommon/document/isFolder( fs.json, JsonFS )
+		fscommon/document/isFile( fs.json, JsonFS )
+		fscommon/document/copyFile( fs.json, JsonFS )
+		fscommon/document/copyFolder( fs.json, JsonFS )
+		fscommon/document/deleteFile( fs.json, JsonFS )
+		fscommon/document/deleteFolder( fs.json, JsonFS )
+		fscommon/document/renameFile( fs.json, JsonFS )
+		fscommon/document/renameFolder( fs.json, JsonFS )
+		fscommon/document/upload( fs.json, JsonFS )
+		fscommon/document/download( fs.json, JsonFS )
+		fscommon/document/writeFile( fs.json, JsonFS )
+		fscommon/document/createWriteStream( fs.json, JsonFS )
+		fscommon/document/readFile( fs.json, JsonFS )
+		fscommon/document/stat( fs.json, JsonFS )
+
+		m toJson
+			param callback
+			return
+				_ this.fsdb.toJson
+					@ callback
+		
+		m close
+			if this.fsdb
+				_ this.fsdb.close
+				set this.fsdb = null
+
+	#
+		# Creates a Document instance
+	set Document.create
+		function
+			param jsonFsData
+			param callback
+			+
+			if verify.isUndefined(callback) && verify.isFunction(jsonFsData)
+				set callback = jsonFsData
+				set jsonFsData = null
+			+
+			if FsDb == null
+				set FsDb = require('./fsjson')
+			return
+				_ callback
+					@ null
+					new Document
+						new FsDb(jsonFsData)
+
+	function error
+		param method
+		param message
+		return
+			{
+				@ __is_error true
+				@ method 'Json.Fs.Document.' + method
+				@ message message
+
+	function normalize
+		param path
+		param stripEndingSlash
+		if stripEndingSlash
+			var ret = path.trim().replace(/\\/g,'/').toLowerCase()
+			return ret.substr(-1) === '/' ? ret.substr(0, ret.length-1) : ret
+		else
+			return path.trim().replace(/\\/g,'/').toLowerCase()
+
+	function denormalize
+		param path
+		return path.trim().replace(/\//g,'\\').toLowerCase()
+
+	set module.exports = Document
+

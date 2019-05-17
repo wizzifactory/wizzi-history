@@ -1,0 +1,104 @@
+﻿$group
+
+	e simpleType : item
+		tag s-type
+		# A set of constraints on strings and information about the values they encode.
+		# Applies to the values of attributes and the text-only content of elements
+		# (items with no element children).
+		# wzName: the 'name' xsd attribute
+		# Parents: attribute, element, list, simpleContentRestrict, schema, union
+		# Content: annotation?, (restriction | list | union)
+		a final
+			# Prevents the specified type of derivation of 
+			# this simpleType element. 
+			restrict
+				enum list
+					# Prevents derivation by list.
+				enum union
+					# Prevents derivation by union.
+				enum restriction
+					# Prevents derivation by restriction.
+				enum #all
+					# Prevents all derivation (list, union, restriction).
+	
+	e simpleContentExtend : item
+		tag s-content-extend
+		# Contains extensions on simpleContent. 
+		# wzName: the 'base' xsd attribute
+		# This extends a simple type or a complex type that has simple
+		# content by adding specified attribute(s), attribute group(s), or anyAttribute.
+		# Content: annotation, attribute, attributeGroup, anyAttribute
+
+	e simpleContentRestrict : item
+		tag s-content-restrict
+		# Contains restriction on simpleContent. 
+		# wzName: the 'base' xsd attribute
+		# Content: annotation, fractionDigits, enumeration, length, maxExclusive, maxInclusive, maxLength, minExclusive, minInclusive, minLength, pattern, simpleType, totalDigits, whiteSpace, attribute, attributeGroup, anyAttribute
+
+	e list : item
+		# Defines a collection of a single simpleType definition.
+		# Parents: simpleType
+		# Content: annotation?, simpleType*
+		a itemType 
+			# type: QNname
+			# The name of a built-in data type or simpleType element.
+			# Not allowed if the content contains a simpleType element. 
+			# Otherwise, required.
+
+	e union : item
+		# Defines a collection of multiple simpleType definitions.
+		# Parents: simpleType
+		# Content: annotation?, simpleType*
+		a memberTypes 
+			# type: QNname-list
+			# The list of names of built-in data types or 
+			# simpleType elements defined
+
+	e complexType : item
+		tag c-type
+		# A complex type defined without any simpleContent or complexContent
+		# is interpreted as shorthand for complex content that restricts anyType
+		# wzName: the 'name' xsd attribute
+		a mixed
+			type boolean
+			# true to enable character data to appear between the child-elements
+		a_flag(isAbstract, is-abstract)
+        a final
+			# Used to constrain derivations
+			restrict
+				enum #all
+					# prevents derivations at all
+				enum restriction
+					# prevents derivations by restriction
+				enum extension
+					# prevents derivations by extension
+		a block
+			# Used to constrain the replacement of the name of the complex type in derivations???
+			restrict
+				enum #all
+					# prevents replacement at all
+				enum restriction
+					# prevents replacement on derivations by restriction
+				enum extension
+					# prevents replacement on derivations by extension
+
+		a_tag(defaultAttributesApply, default-attributes-apply, true)
+			type boolean
+
+	e complexContentExtend : item
+		tag c-content-extend
+		# Contains extensions on complexContent.
+		# wzName: the 'base' xsd attribute
+		# Content: annotation?, 
+		#   (group | all | choice | sequence)?, 
+		#   (attribute | attributeGroup)*, 
+		#   anyAttribute?
+
+	e complexContentRestrict : item
+		tag c-content-restrict
+		# Defines constraints on a complexContent definition.
+		# wzName: the 'name' xsd attribute
+		# Content: annotation?, 
+		#   (group | all | choice | sequence)?,
+		#   (attribute | attributeGroup)*, 
+		#   anyAttribute?

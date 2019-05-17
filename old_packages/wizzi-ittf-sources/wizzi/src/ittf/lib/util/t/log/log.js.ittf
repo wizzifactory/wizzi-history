@@ -1,0 +1,50 @@
+﻿$group
+	
+	class Log
+        ctor
+            param id
+            param logger
+
+            set this.id = id
+            set this.logger = logger
+            set this.level = 2
+    
+		m setLevel
+            param level
+            
+			set this.level = level
+    
+		m info
+            if this.level > 1
+                _ this.logger.info
+                    @ this.id
+                    @ "INFO"
+                    _ buildMessage
+                        @ chalk.white
+                        @ arguments
+    
+		m warn
+            if this.level > 0
+                _ this.logger.info
+                    @ this.id
+                    @ "WARNING"
+                    _ buildMessage
+                        @ chalk.yellow
+                        @ arguments
+    
+		m error
+            _ this.logger.info
+                @ this.id
+                @ "ERROR"
+                _ buildMessage
+                    @ chalk.red
+                    @ arguments
+    
+		m success
+            if this.level > 1
+                _ this.logger.info
+                    @ this.id
+                    @ "SUCCESS"
+                    _ buildMessage
+                        @ chalk.green
+                        @ arguments

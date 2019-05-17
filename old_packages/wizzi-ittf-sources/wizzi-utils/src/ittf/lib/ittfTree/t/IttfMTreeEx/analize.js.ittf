@@ -1,0 +1,58 @@
+﻿$group
+	
+	m analize
+		param ctx
+
+		if this.isMixinCall()
+			if this.root().model.uri.indexOf('__copy') > -1
+				return false
+			set this.fragmentName
+				iif verify.endsWith(this.name, '(')
+					then this.name.substr(0, this.name.length -1)
+					else this.name
+			set this.fragmentPath
+				_ ittfFinder.findFragment
+					@ this.root().model.uri
+					@ this.fragmentName
+			if this.fragmentPath.__is_error
+				log 'wizzi-utils.ittfMTreeEx.analize.this.fragmentPath', this.fragmentPath
+			else
+				var mixinIttfFsNodePath
+					plus
+						+ '/'
+						_ path.relative
+							@ ctx.ittfBasePath
+							@ this.fragmentPath
+				var fragmentDocument = ctx.ittfFsNode.searchDocument(mixinIttfFsNodePath)
+				set ctx.fragments[this.fragmentName]
+					{
+						@ id (fragmentDocument ? fragmentDocument.id : 'unknown')
+						@ uri this.fragmentPath
+
+		elif this.isIncludeCall()
+			if this.root().model.uri.indexOf('__copy') > -1
+				return false
+			set this.fragmentName = this.value
+			set this.fragmentPath
+				_ ittfFinder.findFragment
+					@ this.root().model.uri
+					@ this.fragmentName
+			if this.fragmentPath.__is_error
+				log 'wizzi-utils.ittfMTreeEx.analize.this.fragmentPath', this.fragmentPath
+			else
+				var includeIttfFsNodePath
+					plus
+						+ '/'
+						_ path.relative
+							@ ctx.ittfBasePath
+							@ this.fragmentPath
+				var fragmentDocument = ctx.ittfFsNode.searchDocument(includeIttfFsNodePath)
+				set ctx.fragments[this.fragmentName]
+					{
+						@ id (fragmentDocument ? fragmentDocument.id : 'unknown')
+						@ uri this.fragmentPath
+
+		if this.isCodeDeclare() == false && this.isMultilineDeclare() == false
+			foreach c in this.children
+				_ c.analize(ctx)
+

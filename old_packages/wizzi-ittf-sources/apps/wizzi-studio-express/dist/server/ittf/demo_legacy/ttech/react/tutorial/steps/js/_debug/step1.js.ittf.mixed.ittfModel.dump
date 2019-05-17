@@ -1,0 +1,37 @@
+  module  ids: 1 11
+    kind react ids: 2 12
+    $group  ids: 21 37
+      $args: Hello $params: name
+      var ${name} ids: 23 38
+        _ React.createClass ids: 24 39
+          {  ids: 25 40
+            $hook members ids: 26 41
+            @ render ids: 27 42
+              function  ids: 28 43
+                return  ids: 29 44
+                  _ React.createElement ids: 52 60
+                    $args: null, 'Hello ' + this.props.toWhat $params: p2|@@null, p3|@@null
+                    @ 'div' ids: 54 61
+                    $if p2 != null ids: 55 62
+                      @ ${p2} ids: 56 63
+                    $if p3 != null ids: 57 64
+                      @ ${p3} ids: 58 65
+      set ${name}.propTypes ids: 31 46
+        {  ids: 32 47
+          $hook propTypes ids: 33 48
+      set ${name}.defaultProps ids: 34 49
+        {  ids: 35 50
+          $hook defaultProps ids: 36 51
+    _ ReactDOM.render ids: 5 15
+      _ React.createElement ids: 67 76
+        $args: Hello $params: p1|@@null, p2|@@null, p3|@@null
+        $if p1 != null ids: 69 77
+          @ ${p1} ids: 70 78
+        $if p2 != null ids: 71 79
+          @ ${p2} ids: 72 80
+        $if p3 != null ids: 73 81
+          @ ${p3} ids: 74 82
+        {  ids: 7 17
+          @ toWhat "World" ids: 8 18
+        @ null ids: 9 19
+      _ document.getElementById('container') ids: 10 20

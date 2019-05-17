@@ -1,0 +1,41 @@
+﻿$group
+
+	oper( constraint )
+		if node.name === 'required' || node.name === 'is-required'
+			newnode( is-required )
+		elif node.name === 'default'
+			newnode( default )
+		elif node.name === 'restrict'
+			_ md.restrict(node, ctx, parent)
+		elif ['iface', 'api-ref', 'POJO'].indexOf(node.name) > -1
+			newnode_ref( node.name, node.value, parent )
+		check(node, parent, constraint)
+
+	oper( restrict )
+		newnode_named( nrestrict, restrict )
+		foreach item in node.children
+			if item.name === 'enum'
+				newnode( enum, item.value, nrestrict )
+			check(item, nrestrict, restrict)
+
+	oper( arg_switch )
+		newnode_named( nargument, argument )
+		newnode( type, name_switch, nargument )
+		foreach item in node.children
+			if item.name === 'on'
+				newnode_named( non, on, item.value, nargument )
+				foreach item2 in item.children
+					_ md.value_item(item2, ctx, non)
+			check(item, nswitch, arg_switch)
+
+	oper( object_prop_switch )
+		newnode_named( nproperty, property )
+		newnode( type, name_switch, nproperty )
+		foreach item in node.children
+			if item.name === 'on'
+				newnode_named( non, on, item.value, nproperty )
+				foreach item2 in item.children
+					_ md.value_item(item2, ctx, non)
+			check(item, nswitch, arg_switch)
+
+

@@ -1,0 +1,62 @@
+﻿$group
+	$params kind|main
+
+	$if kind === 'main'
+		whitespace( sub )
+		escape( sub )
+		string( sub )
+
+	e url
+		* 
+			|
+				[
+					: !
+					: #
+					: \
+					: $
+					: %
+					: &
+					: *
+					: -
+					: ~
+				ref nonascii
+				ref escape
+
+	e uriString
+		&
+			: url(
+			?
+				ref space
+			(
+				|
+					ref string1
+					ref string2
+			?
+				ref space
+			: )
+
+	e uriUrl
+		&
+			: url(
+			?
+				ref space
+			(
+				ref url
+			?
+				ref space
+			: )
+
+	tk Uri
+		pattern
+			|
+				ref uriString
+				ref uriUrl
+
+	$if kind === 'main'
+		test url("http://sb.org")
+		$$ test url( "http://sb.org" )
+		$$ test url( )
+		$$ test url()
+		test url( http://sb.org )
+		$$ test url(http://sb.org)
+

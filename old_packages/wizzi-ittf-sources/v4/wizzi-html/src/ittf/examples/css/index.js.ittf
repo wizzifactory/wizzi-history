@@ -1,0 +1,50 @@
+﻿common/example/plugin('css examples')
+
+	$append imports
+		var cssfactory = require('../../lib/wizzi/models/css-factory.g')
+		var cssgenerator = require('../../lib/artifacts/css/document/gen/main')
+	
+	+
+	var loadModel
+		_ cssfactory.createLoadModel
+			_ getWizziObject
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath,'css')
+		set item = item.substring(0, item.length - '.css.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	+
+	function execute
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.css.ittf'
+		var cssOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.css'
+		_ loadModel
+			@ ittfSource
+			{
+				@ __productionManager
+					_ mocks.getProductionManager
+			f_cb_test( wizziModel )
+				log 'css wizziModel', wizziModel
+				var ctx
+					_ mocks.getGenContext
+				_ cssgenerator.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( ctxout )
+						log 'ctxout', ctxout.getContent()
+						_ file.write
+							@ cssOutput
+							@ ctxout.getContent()
+

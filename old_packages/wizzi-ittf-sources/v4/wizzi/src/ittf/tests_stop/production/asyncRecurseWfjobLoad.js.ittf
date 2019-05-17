@@ -1,0 +1,51 @@
+﻿base_test(asyncRecurseWfjobLoad)
+
+	$append imports
+		var WfjobLoader = require('../../lib/production/wfjobLoader').WfjobLoader
+		var AsyncRecurseWfjobLoad = require('../../lib/production/wfjobLoader').AsyncRecurseWfjobLoad
+		var mocks = require('../mocks/misc')
+
+	var _wizziFactory = null
+	var _productionManager = null
+
+	before-async
+		_ mocks.getWizziFactory
+			{
+				@ storeKind 'filesystem'
+				@ testOnlyMockBaseDir __dirname
+			f_cb_test( wf )
+				set _wizziFactory = wf
+				set _productionManager
+					_ wf.createProductionManager
+						{
+							@ indentSpaces 4
+							@ basedir __dirname
+							@ dumps {}
+				_ done
+
+	it-async shoul load a wfjob (AsyncRecurseWfjobLoad)
+		var wfjobLoader 
+			new WfjobLoader
+				@ _productionManager
+		var jobRequest
+			{
+				@ model
+					{
+						@ cwd
+							_ path.join
+								@ __dirname
+								@ 'ittf'
+						@ src 'mock1.wfjob.ittf'
+				@ wfjobLoader wfjobLoader
+		_ AsyncRecurseWfjobLoad
+			@ jobRequest
+			f_cb_test( result )
+				log 'shoul load a wfjob (AsyncRecurseWfjobLoad) : seenWfjobRequests, pendingWfjobRequests, artifactInfoConfigs', result.seenWfjobRequests, result.pendingWfjobRequests, result.artifactInfoConfigs
+				tobe_array( result.pendingWfjobRequests, 0)
+				tobe_array( result.seenWfjobRequests, 2)
+				tobe_array( result.artifactInfoConfigs, 2)
+				tobe_string( result.artifactInfoConfigs[0].name, artifactMock1 )
+				tobe_string( result.artifactInfoConfigs[0].model.src, mock1.tests.ittf )
+				tobe_string( result.artifactInfoConfigs[1].name, artifactMock2 )
+				tobe_string( result.artifactInfoConfigs[1].model.src, mock2.tests.ittf )
+				_ done

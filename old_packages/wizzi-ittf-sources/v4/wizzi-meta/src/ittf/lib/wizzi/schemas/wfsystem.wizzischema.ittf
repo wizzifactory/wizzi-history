@@ -1,0 +1,25 @@
+﻿wfschema wfsystem
+
+	# A schema modeling the macro view of a wizzi factory generated system.
+	# The wizzi factory itself is a generated system.
+
+	export-to json
+
+	$include common/comments
+	
+	e wfsystem : commentable
+		# The root tag of the wfsystem schema.
+		is-root
+		
+		r package/s
+		r api/s
+
+	e package : commentable
+		# The root tag of the wfpackage schema.
+		is-root
+
+		$include package/attributes_relations
+		$include package/methods
+
+	$include package/elements
+	$include api/index

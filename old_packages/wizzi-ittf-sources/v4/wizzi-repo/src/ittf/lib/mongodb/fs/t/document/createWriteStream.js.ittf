@@ -1,0 +1,11 @@
+﻿$group
+
+	m createWriteStream
+		string filePath
+
+		set filePath = normalize(path.resolve(filePath))
+
+		return
+			new MongoStream
+				@ filePath
+				@ this

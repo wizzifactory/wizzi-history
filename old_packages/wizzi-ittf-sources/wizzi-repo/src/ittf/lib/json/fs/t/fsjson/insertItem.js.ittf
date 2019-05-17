@@ -1,0 +1,42 @@
+﻿$group
+
+	m insertItem
+		{ fsItem
+			string basename
+			number kind
+		callback
+
+		# log 'wizzi-repo.json.FsJson.insertItem. fsItem:', fsItem
+
+		var basename = fsItem.basename
+		var dirname = fsItem.dirname
+		var parentId = fsItem.parentId
+		set fsItem.path = dirname ? normalize(path.join(dirname, basename)) : basename
+		
+		const that = this
+
+		_ this.getItemByNameAndParent
+			@ basename
+			@ parentId
+			f_cb( item )
+				if item == null
+					# log 'wizzi-repo.json.FsJson.insertItem. Item does not exists. So insertOne'
+					_ that.items.insertOne
+						@ fsItem
+						f_cb( r )
+							# log 'wizzi-repo.json.FsJson.insertItem.insertOne', r
+							_ assert.equal(1, r.insertedCount)
+							_ assert.equal(1, r.ops.length)
+							r_cb()
+								{
+									@ code 'FSITEM_INSERTED'
+									@ insertedId r.insertedId
+									@ insertedCount r.insertedCount
+									@ item r.ops[0]
+				else
+					# log 'wizzi-repo.json.FsJson.insertItem. Item exists. So return it'
+					r_cb()
+						{
+							@ code 'FSITEM_EXISTS'
+							@ item item
+

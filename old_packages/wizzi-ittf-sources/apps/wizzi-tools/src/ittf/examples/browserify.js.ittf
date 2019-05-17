@@ -1,0 +1,17 @@
+module
+	kind jsfile
+
+	var path = require('path');
+	var index = require('./index')
+
+	_ index.browserify
+		_ path.join
+			@ __dirname
+			@ 'browserify'
+			@ 'example.bundle.ittf'
+		{
+		function
+			param err
+			param result
+			log 'index.browserify.err', err
+			log 'index.browserify.result', result

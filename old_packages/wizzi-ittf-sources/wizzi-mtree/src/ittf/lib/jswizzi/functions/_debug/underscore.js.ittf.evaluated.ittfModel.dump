@@ -1,0 +1,71 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var verify = require('../../util/verify') ids: undefined undefined
+    var inflect = require('i') ids: undefined undefined
+    set String.prototype.capitalize = ids: undefined undefined
+      function  ids: undefined undefined
+        return  ids: undefined undefined
+          _ this.replace ids: undefined undefined
+            @ /(?:^|\s)\S/g ids: undefined undefined
+            function  ids: undefined undefined
+              param a ids: undefined undefined
+              return a.toUpperCase() ids: undefined undefined
+    set String.prototype.pluralize = ids: undefined undefined
+      function  ids: undefined undefined
+        return inflect.pluralize(this) ids: undefined undefined
+    set module.exports ids: undefined undefined
+      {  ids: undefined undefined
+        @ pluralize ids: undefined undefined
+          function  ids: undefined undefined
+            param str ids: undefined undefined
+            return inflect.pluralize(str) ids: undefined undefined
+        @ capitalize ids: undefined undefined
+          function  ids: undefined undefined
+            param str ids: undefined undefined
+            return  ids: undefined undefined
+              _ str.replace ids: undefined undefined
+                @ /(?:^|\s)\S/g ids: undefined undefined
+                function  ids: undefined undefined
+                  param a ids: undefined undefined
+                  return a.toUpperCase() ids: undefined undefined
+        @ escape verify.escapename ids: undefined undefined
+        @ isEmpty ids: undefined undefined
+          function  ids: undefined undefined
+            param text ids: undefined undefined
+            return typeof text === 'string' && text.trim().length === 0 ids: undefined undefined
+        @ isNotEmpty ids: undefined undefined
+          function  ids: undefined undefined
+            param text ids: undefined undefined
+            return typeof text === 'string' && text.trim().length > 0 ids: undefined undefined
+        @ isObject ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            var type = typeof obj ids: undefined undefined
+            return type === 'function' || type === 'object' && !!obj ids: undefined undefined
+        @ isArray ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            if Array.isArray ids: undefined undefined
+              return Array.isArray(obj) ids: undefined undefined
+            else  ids: undefined undefined
+              return toString.call(obj) === '[object Array]' ids: undefined undefined
+        @ isString ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            return toString.call(obj) === '[object String]' ids: undefined undefined
+        @ isNumber ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            return toString.call(obj) === '[object Number]' ids: undefined undefined
+        @ isDate ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            return toString.call(obj) === '[object Date]' ids: undefined undefined
+        @ isFunction ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            return toString.call(obj) === '[object Function]' ids: undefined undefined
+        @ isUndefined ids: undefined undefined
+          function  ids: undefined undefined
+            param obj ids: undefined undefined
+            return obj === void 0 ids: undefined undefined

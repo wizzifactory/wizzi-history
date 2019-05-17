@@ -1,0 +1,124 @@
+module 
+    kind jsfile
+
+    var file
+        _ require('./lib/util/file')
+    
+	var jswizzifier = require('./lib/wizzifiers/jsparser/esprima/wizzifier')
+    var htmlwizzifier = require('./lib/wizzifiers/htmlparser/wizzi/wizzifier')
+    var csswizzifier = require('./lib/wizzifiers/cssparser/css/wizzifier')
+	var cssgonzaleswizzifier = require('./lib/wizzifiers/cssparser/gonzales/wizzifier')
+    var xmlwizzifier = require('./lib/wizzifiers/xmlparser/xml2js/wizzifier')
+	var xsdwizzifier = require('./lib/wizzifiers/xsdparser/xml2js/wizzifier')
+    # var browserifier = require('./lib/bundlers/browserify')
+	var ittfwriter = require('./lib/util/ittfwriter')
+    
+	var md
+        set module.exports =
+            { 
+    
+	set md.ittfwriter = ittfwriter
+	set md.jswizzifier = jswizzifier
+	set md.htmlwizzifier = htmlwizzifier
+	set md.csswizzifier = csswizzifier
+	set md.xmlwizzifier = xmlwizzifier
+	set md.xsdwizzifier = xsdwizzifier
+
+	set md.fsapi = require('./lib/fsapi/index')
+    
+	set md.jsWizzify =
+        function 
+            param input
+            param options
+            param callback
+            var content
+                iif file.exists(input)
+                    then 
+                        _ file.read(input)
+                    else input
+            _ jswizzifier.getWizziIttf
+                @ content
+                @ options
+				@ callback    
+	
+	set md.htmlWizzify =
+        function 
+            param input
+            param options
+            param callback
+            var content
+                iif file.exists(input)
+                    then 
+                        _ file.read(input)
+                    else input
+            _ htmlwizzifier.getWizziIttf
+                @ content
+                @ options
+				@ callback
+    
+	set md.cssWizzify =
+        function 
+            param input
+            param options
+            param callback
+			set options = options || {}
+            var content
+                iif file.exists(input)
+                    then 
+                        _ file.read(input)
+                    else input
+			if options.parser === 'gonzales'
+				_ cssgonzaleswizzifier.getWizziIttf
+					@ content
+					@ options
+					@ callback
+			else
+				_ csswizzifier.getWizziIttf
+					@ content
+					@ options
+					@ callback
+    
+	set md.xmlWizzify =
+        function 
+            param input
+            param options
+            param callback
+            var content
+                iif file.exists(input)
+                    then 
+                        _ file.read(input)
+                    else input
+            _ xmlwizzifier.getWizziIttf
+                @ content
+                @ options
+				@ callback
+    
+	set md.xsdWizzify =
+        function 
+            param input
+            param options
+            param callback
+            var content
+                iif file.exists(input)
+                    then 
+                        _ file.read(input)
+                    else input
+            _ xsdwizzifier.getWizziIttf
+                @ content
+                @ options
+				@ callback
+
+	#
+		set md.browserify =
+			function 
+				param bundleIttfPath
+				param context
+				param callback
+				_ browserifier.bundleifyFromBundleIttf
+					@ bundleIttfPath
+					@ context
+					function 
+						param err
+						param result
+						_ callback(err, result)
+    

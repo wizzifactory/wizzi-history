@@ -1,0 +1,22 @@
+﻿$group
+	$params coll, retval
+
+	var
+		decl ${coll}_item
+		decl ${coll}_len = ${coll}.length
+
+	function repeater
+        param index
+        if index === ${coll}_len
+            return callback(null, ${retval})
+			
+		set ${coll}_item = ${coll}[index]
+		
+		$hook
+        
+		_ process.nextTick
+            function 
+                _ repeater(index + 1)
+        
+	_ repeater(0)
+	

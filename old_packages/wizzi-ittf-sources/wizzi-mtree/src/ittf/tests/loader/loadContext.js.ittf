@@ -1,0 +1,29 @@
+﻿base_test( loadContext )
+	
+	$append imports
+		var LoadHistory = require('../../lib/loader/loadHistory').LoadHistory
+
+	var loadHistory
+
+	it adding a source IttfDocument to the loadHistory should return a key for retreaving the uri
+			
+		set loadHistory = new LoadHistory()
+            
+		var content_filepath
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'lexer_1.tests.ittf'
+                    
+		var sourceData
+            _ loadHistory.addIttfDocument
+                @ content_filepath
+                { 
+            
+		var uri
+            _ loadHistory.getIttfDocumentUri
+                @ sourceData.sourceKey
+			
+		tobe_string( sourceData.sourceKey, f1 )
+		_ expect(uri).to.be(content_filepath)

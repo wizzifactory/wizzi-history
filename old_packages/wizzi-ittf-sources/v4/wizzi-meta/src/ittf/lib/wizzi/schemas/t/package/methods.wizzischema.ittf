@@ -1,0 +1,43 @@
+﻿$group
+
+	m getJobs
+
+		var ret
+			{
+				@ name this.wzName
+				@ title this.title
+				@ srcCwd this.srcCwd
+				@ assetsCwd this.assetsCwd
+				@ buildCwds 
+					[
+				@ schemas
+					[
+				@ jobs 
+					[
+						{
+							@ title 'build ' + this.wzName + ' assets'
+							@ exe 'node'
+							@ cwd this.srcCwd
+							@ args 'index'
+
+		if this.schemas.length > 0
+			
+			_ ret.jobs.push
+				{
+					@ title 'generate ' + this.wzName + ' wizzi model types in the assets folder'
+					@ exe 'node'
+					@ cwd this.assetsCwd
+					@ args 'schemas'
+			
+			foreach item in this.schemas
+				_ ret.schemas.push
+					{
+						@ name item.wzName
+
+		foreach item in this.buildCwds
+			_ ret.buildCwds.push
+				{
+					@ cwd item.wzName
+					@ title item.title
+
+		return ret

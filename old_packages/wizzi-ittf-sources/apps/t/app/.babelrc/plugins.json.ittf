@@ -1,0 +1,17 @@
+﻿$group
+	$params &app
+	
+	
+	plugins
+		[
+			$if app.usePrismjs
+				[
+					"prismjs"
+					{
+						languages
+							[
+								$foreach m in app.prismjsModes
+									"${m}"
+						plugins ["line-numbers"]
+						theme "twilight"
+						css true

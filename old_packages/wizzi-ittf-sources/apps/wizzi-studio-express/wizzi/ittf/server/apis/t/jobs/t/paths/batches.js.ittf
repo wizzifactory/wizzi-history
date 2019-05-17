@@ -1,0 +1,24 @@
+﻿$group
+
+	@ batchesIttfFolderPath
+		function
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'batches'
+					@ 'ittf'
+
+	@ batchesIttfDocumentPath
+		function
+			param name
+			return
+				_ path.join
+					_ this.batchesIttfFolderPath
+					@ name + '.json.ittf'
+
+	@ batchesIttfDocuments
+		function
+			return
+				_ this.getIttfFilesOfSchema
+					_ this.batchesIttfFolderPath
+					@ 'json'

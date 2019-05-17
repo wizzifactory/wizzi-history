@@ -1,0 +1,128 @@
+  module  ids: 1 58
+    kind jsfile ids: 2 59
+    import util ids: 3 60
+    var f_verify = require('./functions/verify') ids: 4 61
+    +  ids: 5 62
+    var md = module.exports = {} ids: 6 63
+    +  ids: 7 64
+    $group  ids: 110 131
+      $args: WizziJsRunner, message, node  $params: name, arg1|@@null, arg2|@@null, arg3|@@null, arg4|@@null
+      function ${name}Error ids: 112 132
+        $if arg1 != null ids: 113 133
+          param ${arg1} ids: 114 134
+        $if arg2 != null ids: 115 135
+          param ${arg2} ids: 116 136
+        $if arg3 != null ids: 117 137
+          param ${arg3} ids: 118 138
+        $if arg4 != null ids: 119 139
+          param ${arg4} ids: 120 140
+        set this.name = '${name}Error' ids: 121 141
+        set this.message = message + util.inspect(node.loc, {depth: null}) ids: 9 66
+        set this.stack = (new Error()).stack ids: 123 143
+      set ${name}Error.prototype.toString ids: 124 144
+        function  ids: 125 145
+          return this.message ids: 126 146
+      set ${name}Error.prototype = Object.create(Error.prototype) ids: 127 147
+      set ${name}Error.prototype.constructor = ${name}Error ids: 128 148
+      set md.${name}Error = ${name}Error ids: 129 149
+      +  ids: 130 150
+    $group  ids: 110 151
+      $args: InvalidVariableName, message  $params: name, arg1|@@null, arg2|@@null, arg3|@@null, arg4|@@null
+      function ${name}Error ids: 112 152
+        $if arg1 != null ids: 113 153
+          param ${arg1} ids: 114 154
+        $if arg2 != null ids: 115 155
+          param ${arg2} ids: 116 156
+        $if arg3 != null ids: 117 157
+          param ${arg3} ids: 118 158
+        $if arg4 != null ids: 119 159
+          param ${arg4} ids: 120 160
+        set this.name = '${name}Error' ids: 121 161
+        set this.message = message ids: 11 68
+        set this.stack = (new Error()).stack ids: 123 163
+      set ${name}Error.prototype.toString ids: 124 164
+        function  ids: 125 165
+          return this.message ids: 126 166
+      set ${name}Error.prototype = Object.create(Error.prototype) ids: 127 167
+      set ${name}Error.prototype.constructor = ${name}Error ids: 128 168
+      set md.${name}Error = ${name}Error ids: 129 169
+      +  ids: 130 170
+    $group  ids: 110 171
+      $args: WizziJsSynthax, message, node  $params: name, arg1|@@null, arg2|@@null, arg3|@@null, arg4|@@null
+      function ${name}Error ids: 112 172
+        $if arg1 != null ids: 113 173
+          param ${arg1} ids: 114 174
+        $if arg2 != null ids: 115 175
+          param ${arg2} ids: 116 176
+        $if arg3 != null ids: 117 177
+          param ${arg3} ids: 118 178
+        $if arg4 != null ids: 119 179
+          param ${arg4} ids: 120 180
+        set this.name = '${name}Error' ids: 121 181
+        log 'WizziJsSynthax.message', message ids: 13 70
+        if f_verify.isObject(message) && message.lineNumber ids: 14 71
+          # In this case node = WizziJS source ids: 15 72
+          set this.message = "Synthax error. " + message.description +' at line ' + message.lineNumber +' column ' + message.column +'\n' +getEsprimaErrorLines(message, node) +'\n' ids: 16 73
+        else  ids: 22 74
+          set this.message = message ids: 23 75
+        set this.stack = (new Error()).stack ids: 123 183
+      set ${name}Error.prototype.toString ids: 124 184
+        function  ids: 125 185
+          return this.message ids: 126 186
+      set ${name}Error.prototype = Object.create(Error.prototype) ids: 127 187
+      set ${name}Error.prototype.constructor = ${name}Error ids: 128 188
+      set md.${name}Error = ${name}Error ids: 129 189
+      +  ids: 130 190
+    # For ids: 24 76
+      # vars or functions undeclared ids: 25 77
+      # invalid values ids: 26 78
+    $group  ids: 110 191
+      $args: WizziJsType, message, node  $params: name, arg1|@@null, arg2|@@null, arg3|@@null, arg4|@@null
+      function ${name}Error ids: 112 192
+        $if arg1 != null ids: 113 193
+          param ${arg1} ids: 114 194
+        $if arg2 != null ids: 115 195
+          param ${arg2} ids: 116 196
+        $if arg3 != null ids: 117 197
+          param ${arg3} ids: 118 198
+        $if arg4 != null ids: 119 199
+          param ${arg4} ids: 120 200
+        set this.name = '${name}Error' ids: 121 201
+        set this.message = message ids: 28 80
+        set this.stack = (new Error()).stack ids: 123 203
+      set ${name}Error.prototype.toString ids: 124 204
+        function  ids: 125 205
+          return this.message ids: 126 206
+      set ${name}Error.prototype = Object.create(Error.prototype) ids: 127 207
+      set ${name}Error.prototype.constructor = ${name}Error ids: 128 208
+      set md.${name}Error = ${name}Error ids: 129 209
+      +  ids: 130 210
+    function getEsprimaErrorLines ids: 29 81
+      param esprimaException ids: 30 82
+      param source ids: 31 83
+      var statements = source.split('\n') ids: 32 84
+      var start = Math.max(0, (esprimaException.lineNumber - 4)) ids: 33 85
+      var end ids: 34 86
+        _ Math.min ids: 35 87
+          @ statements.length ids: 36 88
+          @ (esprimaException.lineNumber + 4) ids: 37 89
+      var ret ids: 38 90
+        [  ids: 39 91
+      for var i = start; i < end; i++ ids: 40 92
+        _ ret.push(formatLineNumber(i + 1) + ' ' + statements[i]) ids: 41 93
+        if (i == esprimaException.lineNumber - 1) ids: 42 94
+          var col = esprimaException.column ids: 43 95
+          _ ret.push(spaces(col + 4) + '^ ' + esprimaException.description) ids: 44 96
+      return ret.join('\n') ids: 45 97
+    function spaces ids: 46 98
+      param num ids: 47 99
+      return Array(num + 1).join(" ") ids: 48 100
+    function formatLineNumber ids: 49 101
+      param num ids: 50 102
+      if num > 999 ids: 51 103
+        return num ids: 52 104
+      if num > 99 ids: 53 105
+        return ('0' + num) ids: 54 106
+      if num > 9 ids: 55 107
+        return ('00' + num) ids: 56 108
+      return ('000' + num) ids: 57 109

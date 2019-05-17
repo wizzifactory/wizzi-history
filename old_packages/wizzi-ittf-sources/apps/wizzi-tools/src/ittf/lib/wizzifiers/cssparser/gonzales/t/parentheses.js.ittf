@@ -1,0 +1,19 @@
+﻿$group
+	$params parent|parent, ctx|ctx
+		
+	elif item.type === 'parentheses'
+		if isMap(item)
+			var ittf_temp
+				_ createIttfNode
+					@ '{'
+					@ ''
+					@ ${parent}
+			_ handlers[item.type + '_map']
+				@ item
+				@ ittf_temp
+				@ ${ctx}
+		else
+			_ handlers[item.type + '_expr']
+				@ item
+				@ ${parent}
+				@ ${ctx}

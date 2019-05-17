@@ -1,0 +1,74 @@
+﻿$group
+
+	#
+		# name = first not (blank or tab) char sequence
+		# value = all remaining chars after name + (blank or tab)
+		# ignore quotes unless the value part is enclosed with double quotes : "
+		# example (with no quotes)
+		#     trip 'to the london bridge'
+		#     name() = trip
+		#     value() = 'to the london bridge'
+		# example (quotes ignored 1)
+		#     trip 'to the ' + city + ' bridge'
+		#     name() = trip
+		#     value() = 'to the ' + city + ' bridge'
+		# example (quotes escaped)
+		#     trip "to the " + city + " bridge"
+		#     name() = trip
+		#     value() = "to the \" + city + \" bridge"
+	set md.parseNameValueRaw
+        function 
+            param text
+            param node
+            
+			var 
+                decl name = ''
+                decl value = []
+				decl quotes = []
+            
+			if verify.isNotEmpty(text)
+                var 
+                    decl ch
+                    decl state = 0
+                    decl l = text.length
+                for var i = 0; i < l; i++
+                    set ch = text[i]
+					if state == 2 && (ch == '"' || ch == "'") && text[i-1] !== '\\'
+						_ quotes.push({ q: ch, p: value.length })
+                    if ch == ' ' || ch == '\t'
+                        if state == 0
+                            + ;
+                        elif state == 1
+                            set state = 2
+                        elif state == 2
+                            _ value.push(ch)
+                    else 
+                        if state == 0
+                            set name = ch
+                            set state = 1
+                        elif state == 1
+                            set name += ch
+                        elif state == 2
+                            _ value.push(ch)
+            return 
+                { 
+                    @ name
+                        function 
+                            return name
+                    @ value
+                        function 
+							if quotes.length > 0
+								# log '*=*=*= temporary wizzi-codegen.lineparser. quotes, value: ', quotes, value.join('')
+								# log quotes[0].q, quotes[quotes.length -1].q
+							if quotes.length > 2 && quotes[0].q === quotes[quotes.length -1].q && quotes[0].q === '"'
+								var q = quotes[0].q
+								for var i = 1; i < quotes.length -1; i ++
+									if quotes[i].q === q
+										set value[quotes[i].p] = '\\' + q
+								# log '*=*=*= temporary wizzi-codegen.lineparser. value: ', value.join('')
+                            return value.join('')
+                    @ hasValue
+                        function 
+                            return value.length > 0
+    
+

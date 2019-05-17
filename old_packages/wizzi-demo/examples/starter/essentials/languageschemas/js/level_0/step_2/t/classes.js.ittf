@@ -1,0 +1,46 @@
+$group
+
+	+
+	# ========================================
+	# CLASSES
+	# ========================================
+	+
+
+	# 
+		# A class example
+
+	class Horse
+		super Animal
+		ctor
+			string name
+			{ options
+				boolean canSpeakLikeAHuman
+			set this.name = name
+			set this.options = options
+		m sayHello
+			if this.options.canSpeakLikeAHuman
+				log 'Hello i am ' + this.name
+			else
+				log 'Hii i am ' + this.name
+		m create
+			static
+			string name
+			{ options
+				boolean canSpeakLikeAHuman
+			return
+				new Horse
+					@ name
+					@ options
+
+	# 
+		# Creating a class instance
+	var instance1
+		new Horse
+			@ name
+			{
+				@ canSpeakLikeAHuman false
+
+
+
+
+

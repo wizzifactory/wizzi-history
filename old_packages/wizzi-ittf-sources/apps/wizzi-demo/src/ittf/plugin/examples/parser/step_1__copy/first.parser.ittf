@@ -1,0 +1,26 @@
+﻿parser first
+
+	lexer-container
+
+		lexer first lexer
+
+			$include whitespace
+			numperc( sub )
+			tk [
+			tk ]
+			tk ,
+			numperc( tokens )
+
+	sym PropertyNum
+		tk [
+		tk Number
+		tk ]
+
+	sym ArrayDef
+		start
+		ref PropertyNum
+		*
+			tk ,
+			ref PropertyNum
+		
+	test [10], [20], [30]

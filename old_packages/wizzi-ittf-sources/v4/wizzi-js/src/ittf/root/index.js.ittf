@@ -1,0 +1,26 @@
+common/index/v3-package-index( wizzi-js )
+
+	$append model-transform-artifacts
+		
+		# window(s) vars must be declared even if empty
+		var window_modelFactories
+			{
+				@ 'js' require('./lib/wizzi/models/js-factory.g')
+		var window_artifactGenerators
+			{
+				@ 'js/module' require('./lib/artifacts/js/module/gen/main')
+		var window_transformers
+			{
+				$$ @ 'js/reactComponent' require('./lib/artifacts/js/reactComponent/trans/main')
+
+	@ provides
+		{
+			@ schemas
+				[
+					@ 'js'
+			@ modelTransformers
+				[
+					$$ @ 'js/reactComponent'
+			@ artifactGenerators
+				[
+					@ 'js/module'

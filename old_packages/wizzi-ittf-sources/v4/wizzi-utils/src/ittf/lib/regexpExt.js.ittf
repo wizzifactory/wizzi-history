@@ -1,0 +1,111 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var chalk = require('chalk')
+    
+	var md
+        set module.exports =
+            { 
+
+	set md.getAllRegExp
+		function
+			param regexp
+
+			var ret
+				new RegExp
+					@ regexp.source
+					@ 'g' +
+						\b (regexp.ignoreCase ? 'i' : '') +
+						\b (regexp.multiline  ? 'm' : '')
+		
+			# override RegExp#exec
+			set ret.exec
+				function
+					param string
+					var results = [], result, checkLoop = -1
+					var result
+						_ RegExp.prototype.exec.call
+							@ this
+							@ string
+					while result !== null
+						if this.lastIndex === checkLoop
+							set result.loop = true
+							break
+						set checkLoop = this.lastIndex
+						_ results.push(result[0])
+						set result
+							_ RegExp.prototype.exec.call
+								@ this
+								@ string
+					return results.length > 0 || results.loop ? results : null
+			return ret
+
+	set md.namedRegExp
+		function
+			param regexp
+		
+			# taken from to https://github.com/cho45/named-regexp.js
+			#            (c) cho45 http://cho45.github.com/mit-license
+			# and adapted
+
+			var names = []
+			var ret
+				new RegExp
+					_ regexp.source.replace
+						@ /\(:<(\w+)>/g
+						function
+							param err
+							param name
+							_ names.push(name)
+							return '('
+					@ (regexp.global     ? 'g' : '') +
+						\b (regexp.ignoreCase ? 'i' : '') +
+						\b (regexp.multiline  ? 'm' : '')
+
+			var captures
+				function
+					param matched
+					if !matched
+						return matched
+					var captures = {}
+					foreach name in names
+						if !captures[name]
+							set captures[name] = []
+						_ captures[name].push
+							@ matched[i + 1]
+					set matched.captures = captures
+					set matched.capture
+						function
+							param name
+							return captures[name][ captures[name].length - 1 ]
+					return matched;
+
+			# override RegExp#exec
+			set ret.exec
+				function
+					param string
+					return 
+						_ captures
+							_ RegExp.prototype.exec.call
+								@ this
+								@ string
+
+			# like String#replace
+			set ret.replace
+				function
+					param string
+					param replace
+					if typeof replace == 'function'
+						return 
+							_ string.replace
+								@ this
+								function
+									return
+										_ replace
+											_ captures
+												_ Array.prototype.slice.call
+													@ arguments
+					else
+						return string.replace(this, replace)
+			return ret

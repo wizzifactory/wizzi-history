@@ -1,0 +1,14 @@
+﻿$group
+
+	m exists
+		string itemPath
+		callback
+
+		set itemPath = normalize(path.resolve(itemPath))
+		_ this.fsdb.getItemByPath
+			@ itemPath
+			f_cb( fsitem )
+				if fsitem
+					r_cb( true )
+				else
+					r_cb( false )

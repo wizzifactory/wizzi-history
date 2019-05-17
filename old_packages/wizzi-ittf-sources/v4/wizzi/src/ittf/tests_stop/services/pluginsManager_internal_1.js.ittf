@@ -1,0 +1,50 @@
+﻿base_test( pluginsManager internals 1 )
+
+	$append imports
+		var pluginsManager = require('../../lib/services/pluginsManager')
+	
+	+
+	var pluginsManagerInstance = null
+	+
+	before
+		set pluginsManagerInstance
+			new pluginsManager.PluginsManager
+	+
+	it-async should resolve a plugin module
+		var pkgPath
+			_ path.resolve
+				@ __dirname
+				@ '../mocks/plugin.js'
+		_ pluginsManager.resolveModule
+			@ __dirname
+			@ '../mocks/plugin'
+			f_cb_test( pmod )
+				# log 'pluginsManager internals 1 pmod', pmod
+				tobe_object( pmod )
+				tobe_function( pmod.createFactoryPlugin )
+				tobe_string_value( pmod.packagePath, pkgPath )
+				_ done
+
+	+
+	it-async should give an error trying to resolve a plugin package
+		_ pluginsManager.resolvePackage
+			@ __dirname
+			@ '../mocks/plugin/package.json'
+			f_cb_no_err( pkg )
+				log 'pluginsManager internals 1 err, pkg', err, pkg
+				tobe_true( err.__is_error )
+				tobe_string( err.name, ENOENT )
+				_ done
+
+	+
+	it-async should resolve a plugin package
+		var pkgPathExpected
+			_ path.resolve
+				@ __dirname
+				@ '../mocks/plugin_ex/package.json'
+		_ pluginsManager.resolvePackage
+			@ __dirname
+			@ '../mocks/plugin_ex/package.json'
+			f_cb_test( pkgpath )
+				tobe_string_value( pkgpath, pkgPathExpected )
+				_ done

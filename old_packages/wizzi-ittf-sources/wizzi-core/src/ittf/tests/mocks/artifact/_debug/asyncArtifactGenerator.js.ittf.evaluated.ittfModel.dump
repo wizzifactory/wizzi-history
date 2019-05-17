@@ -1,0 +1,189 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var async = require('async') ids: undefined undefined
+    var verify = require('../util/verify') ids: undefined undefined
+    var log ids: undefined undefined
+      _ require('../util/log') ids: undefined undefined
+        (  ids: undefined undefined
+          @ module ids: undefined undefined
+    var GenWriter = require('./genWriter') ids: undefined undefined
+    function logme ids: undefined undefined
+      if false ids: undefined undefined
+        _ console.log.apply(console, arguments) ids: undefined undefined
+    +  ids: undefined undefined
+    #  ids: undefined undefined
+      # Generation functions are called by the production/runner. ids: undefined undefined
+      # A generation produces an array of writeContext, ready for persisting the artifact, ids: undefined undefined
+      # that are accumulated into the artifactInfo. ids: undefined undefined
+    +  ids: undefined undefined
+    wz-var AsyncArtifactGenerator ids: undefined undefined
+      {  ids: undefined undefined
+        #  ids: undefined undefined
+          # param artifactInfo:ArtifactInfo ids: undefined undefined
+          # param generator:Object { // retrieved from a WizziPackage ids: undefined undefined
+          # gen:Function   // executes generation ids: undefined undefined
+          # } ids: undefined undefined
+          # param modelInfos:Array of ModelInfo ids: undefined undefined
+          # param contextModelsCollection:Array of Objects (WizziModelInstances or other) ids: undefined undefined
+          # 1 Context object for each ModelInfo ids: undefined undefined
+        @ generate ids: undefined undefined
+          function  ids: undefined undefined
+            param artifactInfo ids: undefined undefined
+            param generator ids: undefined undefined
+            param modelInfos ids: undefined undefined
+            param contextModelsCollection ids: undefined undefined
+            param callback ids: undefined undefined
+            if verify.isObject(generator) == false || verify.isFunction(generator.gen) == false ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  _ error ids: undefined undefined
+                    @ 'The parameter "generator" must be an object and must contain the "gen" function.' ids: undefined undefined
+                    @ 'generate' ids: undefined undefined
+                    @ artifactInfo ids: undefined undefined
+            var genItems ids: undefined undefined
+              [  ids: undefined undefined
+            for var i = 0; i < modelInfos.length; i++ ids: undefined undefined
+              var modelInfo = modelInfos[i] ids: undefined undefined
+              var contextModelItem = contextModelsCollection[i] ids: undefined undefined
+              var genWriter ids: undefined undefined
+                new GenWriter ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ model null ids: undefined undefined
+                    @ srcPath modelInfo.src() ids: undefined undefined
+                    @ srcFullPath modelInfo.srcFullPath() ids: undefined undefined
+                    @ options artifactInfo.options ids: undefined undefined
+                    @ pman artifactInfo.productionManager ids: undefined undefined
+              _ genItems.push ids: undefined undefined
+                {  ids: undefined undefined
+                  @ generator generator ids: undefined undefined
+                  @ genContext contextModelItem ids: undefined undefined
+                  @ genWriter genWriter ids: undefined undefined
+            _ async.map ids: undefined undefined
+              @ genItems ids: undefined undefined
+              @ AsyncArtifactGenerator._gen_item ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param genWriters ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                foreach item in genWriters ids: undefined undefined
+                  _ artifactInfo.addGenWriter(item) ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ null ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ oper 'AsyncArtifactGenerator.generate' ids: undefined undefined
+                    @ status 'success' ids: undefined undefined
+                    @ item 'genWriters.count: ' + genWriters.length ids: undefined undefined
+        @ generateFromCollectionContexts ids: undefined undefined
+          function  ids: undefined undefined
+            param artifactInfo ids: undefined undefined
+            param generator ids: undefined undefined
+            param modelInfos ids: undefined undefined
+            param contextModelsCollectionCollection ids: undefined undefined
+            param callback ids: undefined undefined
+            if verify.isObject(generator) == false || verify.isFunction(generator.gen) == false ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  _ error ids: undefined undefined
+                    @ 'The parameter "generator" must be an object and must contain the "gen" function.' ids: undefined undefined
+                    @ 'generateFromCollectionContexts' ids: undefined undefined
+                    @ artifactInfo ids: undefined undefined
+            var genItems ids: undefined undefined
+              [  ids: undefined undefined
+            for var i = 0; i < modelInfos.length; i++ ids: undefined undefined
+              var modelInfo = modelInfos[i] ids: undefined undefined
+              var contextModelsCollection = contextModelsCollectionCollection[i] ids: undefined undefined
+              for var j = 0; j < contextModelsCollection.length; j++ ids: undefined undefined
+                var contextModelItem = contextModelsCollection[j] ids: undefined undefined
+                _ logme('AsyncArtifactGenerator.generateFromCollectionContexts', 'item', j, contextModelItem) ids: undefined undefined
+                var genWriter ids: undefined undefined
+                  new GenWriter ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ model contextModelItem.___collItem ids: undefined undefined
+                      @ srcPath modelInfo.src() ids: undefined undefined
+                      @ srcFullPath modelInfo.srcFullPath() ids: undefined undefined
+                      @ options artifactInfo.options ids: undefined undefined
+                      @ pman artifactInfo.productionManager ids: undefined undefined
+                _ genItems.push ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ generator generator ids: undefined undefined
+                    @ genContext contextModelItem ids: undefined undefined
+                    @ genWriter genWriter ids: undefined undefined
+            _ async.map ids: undefined undefined
+              @ genItems ids: undefined undefined
+              @ AsyncArtifactGenerator._gen_item ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param genWriters ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                foreach item in genWriters ids: undefined undefined
+                  _ artifactInfo.addGenWriter(item) ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ null ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ oper 'AsyncArtifactGenerator.generate' ids: undefined undefined
+                    @ status 'success' ids: undefined undefined
+                    @ item 'genWriters.count: ' + genWriters.length ids: undefined undefined
+        @ generateCodeWrite ids: undefined undefined
+          function  ids: undefined undefined
+            param artifactInfo ids: undefined undefined
+            param generator ids: undefined undefined
+            param contextModelsCollection ids: undefined undefined
+            param callback ids: undefined undefined
+            if verify.isObject(generator) == false || verify.isFunction(generator.gen) == false ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  _ error ids: undefined undefined
+                    @ 'The parameter "generator" must be an object and must contain the "gen" function.' ids: undefined undefined
+                    @ 'generateCodeWrite' ids: undefined undefined
+                    @ artifactInfo ids: undefined undefined
+            var genContext ids: undefined undefined
+              {  ids: undefined undefined
+            _ contextModelsCollection.forEach ids: undefined undefined
+              function  ids: undefined undefined
+                param item ids: undefined undefined
+                set genContext[item.___exportName] = item ids: undefined undefined
+            var genWriter ids: undefined undefined
+              new GenWriter ids: undefined undefined
+                {  ids: undefined undefined
+                  @ model null ids: undefined undefined
+                  @ srcPath null ids: undefined undefined
+                  @ srcFullPath null ids: undefined undefined
+                  @ options artifactInfo.options ids: undefined undefined
+                  @ pman artifactInfo.productionManager ids: undefined undefined
+            new generator.gen(genContext, genWriter) ids: undefined undefined
+            _ artifactInfo.addGenWriter(genWriter) ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ null ids: undefined undefined
+              {  ids: undefined undefined
+                @ oper 'AsyncArtifactGenerator.generateCodeWrite' ids: undefined undefined
+                @ status 'success' ids: undefined undefined
+        @ _gen_item ids: undefined undefined
+          function  ids: undefined undefined
+            param genInfo ids: undefined undefined
+            param callback ids: undefined undefined
+            _ logme ids: undefined undefined
+              @ 'AsyncArtifactGenerator._gen_item' ids: undefined undefined
+              @ 'genInfo.genContext' ids: undefined undefined
+              @ genInfo.genContext ids: undefined undefined
+            new genInfo.generator.gen ids: undefined undefined
+              @ genInfo.genContext ids: undefined undefined
+              @ genInfo.genWriter ids: undefined undefined
+              @ callback ids: undefined undefined
+    function error ids: undefined undefined
+      param message ids: undefined undefined
+      param method ids: undefined undefined
+      var err ids: undefined undefined
+        {  ids: undefined undefined
+          @ __is_error true ids: undefined undefined
+          @ message message ids: undefined undefined
+          @ source "wizzi/lib/artifact/asyncArtifactGenerator.js/" + method ids: undefined undefined
+      _ logme(err) ids: undefined undefined
+      return err ids: undefined undefined

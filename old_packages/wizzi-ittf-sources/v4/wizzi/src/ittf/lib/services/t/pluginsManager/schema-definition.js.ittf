@@ -1,0 +1,41 @@
+﻿$group
+
+	# 
+		# Retrieve a schema definition searching the factoryPlugins
+		# registered to this plugins manager
+		# params
+		#  string schemaName
+		# returns
+		#  | { jsonSchema
+		#  | wzError NotFound
+		
+	m getSchemaDefinition
+		string schemaName
+		# log 'PluginsManager.getSchemaObject.schemaName: ' + schemaName
+			
+		var
+			decl found = null
+			decl foundInPlugin = null
+			decl result = null
+
+		# all factoryPlugins are searched, last encountered results override the previous.
+
+		foreach item in this.factoryPlugins
+			# log 'searching wizzi schema definition', schemaName, ' in plugin ', item.getName()
+			checked_call_r_set( found )
+				_ item.getSchemaDefinition(schemaName)
+			# log 'found', found
+			if found && verify.isObject(found)
+				set result = found
+				set foundInPlugin = item.getFilename()
+			
+		if !result
+			var msg = 'getSchemaDefinition. Cannot find schema: ' + schemaName + '\n' +
+				\b 'availables schemas: ' + this.availableSchemas().join(', ')
+			_ log.error
+				@ msg
+			r_wz_err( NotFound, getSchemaDefinition )
+				@ msg
+		else
+			_ log.success('getSchemaDefinition. Found schema object: ' + schemaName + ' in plugin ' + foundInPlugin)
+		return result

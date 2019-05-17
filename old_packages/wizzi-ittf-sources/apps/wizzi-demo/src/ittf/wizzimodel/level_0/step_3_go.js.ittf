@@ -1,0 +1,78 @@
+﻿demo_module( wizzimodel, 0, 3 )
+
+	# 
+		# DEMO: how to load an IttfDocument into a Wizzi model.
+	+
+	# Create a filesystem factory without access control
+	# requiring the wizzi-html plugin.
+	_ wizzi.fsnoaclFactory
+		{
+			@ plugins
+				{
+					@ items
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-html'
+							@ './plugin/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+
+		f_cb_throw( wf )
+
+			# Now we can load the model
+			_ wf.loadModelFromConfig
+				{
+					@ src 'basic.html.ittf'
+					@ cwd
+						_ path.join
+							@ __dirname
+							@ 'step_1'
+					[ contexts
+						{
+							@ src 'wf.demo.ittf'
+							@ cwd
+								_ path.join
+									@ __dirname
+									@ 'step_1'
+									@ 'models'
+							@ schema 'demo'
+							@ exportName 'wf'
+							[ contexts
+								{
+									@ src 'wf.json.ittf'
+									@ cwd
+										_ path.join
+											@ __dirname
+											@ 'step_1'
+											@ 'models'
+									@ schema 'json'
+									@ exportName 'data'
+
+					@ schema 'html'
+				{
+				f_cb_throw( wizziModel )
+					# And print the wizzi model object
+					_ printValue
+						@ 'wizziModel'
+						_ stringify
+							@ wizziModel
+							@ null
+							@ 4
+						@ 'dashes'
+					_ wf.generateArtifact
+						@ wizziModel
+						_ path.join
+							@ __dirname
+							@ 'step_1'
+							@ 'basic.html.ittf'
+						@ 'html/document'
+						{
+						f_cb_throw( artifactText )
+							# And print the wizzi model object
+							_ printValue
+								@ 'artifactText'
+								@ artifactText
+								@ 'dashes'

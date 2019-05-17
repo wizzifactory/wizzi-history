@@ -1,0 +1,43 @@
+﻿$group
+	$params section, level, step
+	
+	_ wizzi.executeWizziJob
+		{
+			@ user 'stefi'
+			@ role 'admin'
+			@ storeKind 'mongodb'
+			@ config
+				{
+					@ wfBaseFolder testMongodbBaseFolder
+					@ storeUri testMongodbUri
+					@ storeBaseFolder testMongodbBaseFolder
+					@ plugins
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+							@ 'wizzi-html'
+							@ 'wizzi-docs'
+			@ job
+				{
+					@ name 'mongodb.level_${level}.step_${step}'
+					@ ittfDocumentUri
+						_ path.join
+							@ 'db://stefi/demo/${section}'
+							@ 'level_${level}'
+							@ 'step_${step}'
+							@ 'step_${step}.wfjob.ittf'
+					@ productionOptions
+						_ wizzi.productionOptions
+							{
+								@ indentSpaces 4
+								@ basedir __dirname
+								@ verbose 2
+					@ globalContext
+						{
+		function
+			param err
+			if err
+				log "Error executing wizzi job mongodb.level_${level}.step_${step}", err
+				return
+			log 'Wizzi job mongodb.level_${level}.step_${step} SUCCESSFULLY executed'
+			$hook

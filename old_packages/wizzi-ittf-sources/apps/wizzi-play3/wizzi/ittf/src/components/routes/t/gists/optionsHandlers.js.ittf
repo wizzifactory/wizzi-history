@@ -1,0 +1,60 @@
+﻿$group
+	$params kind|gist
+
+	$
+		var kindCap = _.capitalize(kind)
+
+	=> openOptionsDialog
+		param data
+		if data
+			_ this.setState
+				{
+					@ optionsDialogOpen true
+					@ optionsDialogTitle data.title
+					@ optionsDialogOptions data.options
+					@ optionsDialogHandler data.handler
+
+	=> openConfirmDialog
+		param data
+		if data
+			_ this.setState
+				{
+					@ confirmDialogOpen true
+					@ confirmDialogTitle data.title
+					@ confirmDialogNamedValues data.namedValues
+					@ confirmDialogItems data.items
+					@ confirmDialogHandler data.handler
+
+	=> handleCreateJob${kindCap}
+		_ this.openOptionsDialog
+			_ createJob${kindCap}Data(this, this.props)
+
+	=> handleDuplicateJob${kindCap}
+		param hash
+		param basename
+		_ this.openOptionsDialog
+			_ duplicateJob${kindCap}Data
+				@ this
+				@ this.props
+				@ hash
+				@ basename
+
+	=> handleRenameJob${kindCap}
+		param hash
+		param basename
+		_ this.openOptionsDialog
+			_ renameJob${kindCap}Data
+				@ this
+				@ this.props
+				@ hash
+				@ basename
+
+	=> handleDeleteJob${kindCap}
+		param hash
+		param basename
+		_ this.openConfirmDialog
+			_ confirmDeleteJob${kindCap}Data
+				@ this
+				@ this.props
+				@ hash
+				@ basename

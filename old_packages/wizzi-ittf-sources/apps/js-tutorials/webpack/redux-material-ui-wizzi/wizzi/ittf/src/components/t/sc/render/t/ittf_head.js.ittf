@@ -1,0 +1,33 @@
+﻿$group
+
+	. {classes.editorHeadControls}
+		. {classes.editorHeadControl}
+			< Select
+				@ value {selectedSchema}
+				@ onChange {onSelectSchema}
+				{
+					&& 
+						+ snippetIndex && Object.keys(snippetIndex).length > 0 
+						_ Object.keys(snippetIndex).map
+							=>
+								param item
+								return
+									< MenuItem
+										@ value {item}
+										@ key {item}
+										+ {item}
+		. {classes.editorHeadControl}
+			< Select
+				@ value {selectedSnippet}
+				@ onChange {onSelectSnippet}
+				{
+					&&
+						+ filteredSnippets && filteredSnippets.length > 0 
+						_ filteredSnippets.map
+							=>
+								param item
+								return
+									< MenuItem
+										@ value {item.name}
+										@ key {item.name}
+										+ {item.name}

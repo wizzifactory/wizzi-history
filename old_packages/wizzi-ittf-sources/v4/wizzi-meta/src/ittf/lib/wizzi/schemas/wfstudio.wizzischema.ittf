@@ -1,0 +1,84 @@
+﻿wfstudio/_root( wfstudio )
+	
+	# A schema modeling a Wizzi Studio meta file
+
+	export-to json
+
+	e wfstudio : wfstudioitem
+		# The root element
+
+		is-root
+
+		r project/s
+		r package/s
+
+		m wzinitialize
+
+			set this.packagesEx
+				[
+
+			set this.projectsEx
+				[
+
+			set this.schemas
+				[
+			
+			set this.artifacts
+				[
+			
+			foreach p in this.packages
+				
+				_ this.packagesEx.push
+					{
+						@ name p.wzName
+						@ description p.description
+						@ srcFolder p.srcFolder
+						@ destFolder p.destFolder
+				
+				var schema, artifact
+				foreach s in p.schemas
+					set schema
+						{
+							@ package p.wzName
+							@ name s.wzName
+							@ uri p.wzName + '/' + s.wzName
+							@ srcPath s.srcPath
+							@ modelPath s.modelPath
+							@ factoryPath s.factoryPath
+							@ jsonDocPath s.jsonDocPath
+							@ defaultArtifact s.defaultArtifact
+							@ artifacts
+								[
+					_ this.schemas.push
+						@ schema
+					foreach a in s.artifacts
+						set artifact
+							{
+								@ name s.wzName + '/' + a.wzName
+								@ package p.wzName
+								@ schema s.wzName
+								@ srcPath a.srcPath
+								@ modulePath a.modulePath
+						_ this.artifacts.push
+							@ artifact
+						_ schema.artifacts.push
+							@ artifact
+
+			foreach p in this.projects
+				_ this.projectsEx.push
+					{
+						@ name p.wzName
+						@ description p.description
+						@ srcFolder p.srcFolder
+						@ destFolder p.destFolder
+
+			set this.__jsonProps
+				{
+					@ packagesEx this.packagesEx 
+					@ projectEx this.projectEx 
+					@ schemas this.schemas 
+					@ artifacts this.artifacts 
+
+	$include wfstudio/common
+	$include wfstudio/project
+	$include wfstudio/package

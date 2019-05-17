@@ -1,0 +1,31 @@
+﻿$group
+
+	#
+		# params
+		#   { jobRequest
+		#     { wfjob
+		#       string ittfDocumentUri
+	m addJobRequest
+		{ jobRequest
+			{ wfjob
+				string ittfDocumentUri
+
+		# log 'wizzi.productionManager.addJobRequest.jobRequest', jobRequest
+		set jobRequest.__pman = this
+		_ this.jobRequests.push(jobRequest)
+
+	#
+		# Add an artifact info declared in an "artifact" element of a "wfjob" wizzi model.
+		# It may also be built programmatically.
+		#
+		# params
+		#   { artifactInfoConfig
+	m addArtifactRequest
+		{ artifactInfoConfig
+		if ArtifactInfo.isArtifactConfig(artifactInfoConfig)
+			_ this.artifactInfos.push(new ArtifactInfo(artifactInfoConfig))
+		else
+			throw new Error("wizzi.production.productionManager.addArtifactRequest. The 'artifactInfoConfig' parameter is not a valid artifact info config: " + util.inspect(artifactInfoConfig))
+
+
+

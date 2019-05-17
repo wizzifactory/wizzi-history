@@ -1,0 +1,31 @@
+﻿$group
+	$params name
+
+	$
+		var namelower = name.toLowerCase()
+
+	=> handleAdd${name}
+		param ${namelower}Name
+		prop selectedSchema
+		prop dispatchAdd${name}
+		_ dispatchAdd${name}
+			@ selectedSchema
+			@ ${namelower}Name
+
+	=> handleRename${name}
+		param old${name}
+		param new${name}
+		prop selectedSchema
+		prop dispatchRename${name}
+		_ dispatchRename${name}
+			@ selectedSchema
+			@ old${name}
+			@ new${name}
+
+	=> handleRemove${name}
+		param ${namelower}Name
+		prop selectedSchema
+		prop dispatchRemove${name}
+		_ dispatchRemove${name}
+			@ selectedSchema
+			@ ${namelower}Name

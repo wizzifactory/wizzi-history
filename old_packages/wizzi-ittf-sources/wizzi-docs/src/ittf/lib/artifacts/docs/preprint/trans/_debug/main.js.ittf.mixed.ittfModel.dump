@@ -1,0 +1,468 @@
+  module  ids: 1 285
+    kind jsfile ids: 2 286
+    var util = require('util') ids: 3 287
+    var path = require('path') ids: 4 288
+    var _ = require('lodash') ids: 5 289
+    var log = require('wizzi-core').log(module) ids: 6 290
+    var errors = require('wizzi-core').errors ids: 7 291
+    var html = require('./html') ids: 8 292
+    var md = module.exports = {} ids: 9 293
+    var myname = 'model.transformation.docs.preprint.main' ids: 10 294
+    set md.trans ids: 11 295
+      function  ids: 12 296
+        param model ids: 13 297
+        param ctx ids: 14 298
+        param callback ids: 15 299
+        if model.wzElement != 'docs' ids: 16 300
+          _ errors.NodeError(myname + '.gen. Model wzElement must be docs. Found: ' + model.wzElement, model); ids: 17 301
+        set ctx.result = {} ids: 18 302
+        set ctx.objectCount = 0 ids: 19 303
+        set ctx.conceptCount = 0 ids: 20 304
+        set ctx.sectionCount = 0 ids: 21 305
+        set ctx.apiObjectCount = 0 ids: 22 306
+        set ctx.apiMethodCount = 0 ids: 23 307
+        set ctx.sampleGroupCount = 0 ids: 24 308
+        set ctx.sampleCount = 0 ids: 25 309
+        set ctx.ittfCount = 0 ids: 26 310
+        set ctx.roadmapCount = 0 ids: 27 311
+        set ctx.milestoneCount = 0 ids: 28 312
+        set ctx.todoCount = 0 ids: 29 313
+        set ctx.issueCount = 0 ids: 30 314
+        _ md.goItem(model, ctx); ids: 31 315
+        _ callback(null, ctx.result) ids: 32 316
+    set md.${wzelement} ids: 719 726
+      $args: docs  $params: wzelement
+      function  ids: 721 727
+        param model ids: 722 728
+        param ctx ids: 723 729
+        param parent ids: 724 730
+        var node ids: 34 318
+          {  ids: 35 319
+            @ type 'docs' ids: 36 320
+            @ name model.wzName ids: 37 321
+            @ intro ids: 38 322
+              {  ids: 39 323
+                @ summaryLines ids: 40 324
+                  [  ids: 41 325
+            @ summaryLines ids: 42 326
+              [  ids: 43 327
+            @ project ids: 44 328
+              {  ids: 45 329
+            @ objects ids: 46 330
+              [  ids: 47 331
+            @ concepts ids: 48 332
+              [  ids: 49 333
+            @ sections ids: 50 334
+              [  ids: 51 335
+            @ sampleGroups ids: 52 336
+              [  ids: 53 337
+        set ctx.result = node ids: 54 338
+        _ md.goItems(model.items, ctx, node) ids: 55 339
+    $group  ids: 569 644
+      set md.${wzelement} ids: 719 732
+        $args: project  $params: wzelement
+        function  ids: 721 733
+          param model ids: 722 734
+          param ctx ids: 723 735
+          param parent ids: 724 736
+          var node ids: 571 646
+            {  ids: 572 647
+              @ type 'project' ids: 573 648
+              @ name model.wzName ids: 574 649
+              @ roadmaps ids: 575 650
+                [  ids: 576 651
+              @ todos ids: 577 652
+                [  ids: 578 653
+              @ issues ids: 579 654
+                [  ids: 580 655
+              @ summaryLines ids: 581 656
+                [  ids: 582 657
+          set node.parent = parent ids: 583 658
+          set parent.project = node ids: 584 659
+          _ md.goItems(model.items, ctx, node) ids: 585 660
+      set md.${wzelement} ids: 719 738
+        $args: roadmap  $params: wzelement
+        function  ids: 721 739
+          param model ids: 722 740
+          param ctx ids: 723 741
+          param parent ids: 724 742
+          set ctx.roadmapCount++ ids: 587 662
+          var node ids: 588 663
+            {  ids: 589 664
+              @ type 'roadmap' ids: 590 665
+              @ name model.wzName ids: 591 666
+              @ id 'roadmap-' + ctx.roadmapCount ids: 592 667
+              @ milestones ids: 593 668
+                [  ids: 594 669
+              @ summaryLines ids: 595 670
+                [  ids: 596 671
+          set node.parent = parent ids: 597 672
+          _ parent.roadmaps.push(node) ids: 598 673
+          _ md.goItems(model.items, ctx, node) ids: 599 674
+      set md.${wzelement} ids: 719 744
+        $args: milestone  $params: wzelement
+        function  ids: 721 745
+          param model ids: 722 746
+          param ctx ids: 723 747
+          param parent ids: 724 748
+          set ctx.milestoneCount++ ids: 601 676
+          var node ids: 602 677
+            {  ids: 603 678
+              @ type 'milestone' ids: 604 679
+              @ name model.wzName ids: 605 680
+              @ id 'milestone-' + ctx.milestoneCount ids: 606 681
+              @ summaryLines ids: 607 682
+                [  ids: 608 683
+          set node.parent = parent ids: 609 684
+          _ parent.milestones.push(node) ids: 610 685
+          _ md.goItems(model.items, ctx, node) ids: 611 686
+      set md.${wzelement} ids: 719 750
+        $args: todo  $params: wzelement
+        function  ids: 721 751
+          param model ids: 722 752
+          param ctx ids: 723 753
+          param parent ids: 724 754
+          set ctx.todoCount++ ids: 613 688
+          var node ids: 614 689
+            {  ids: 615 690
+              @ type 'todo' ids: 616 691
+              @ name model.wzName ids: 617 692
+              @ id 'todo-' + ctx.todoCount ids: 618 693
+              @ categories ids: 619 694
+                [  ids: 620 695
+              @ tags ids: 621 696
+                [  ids: 622 697
+              @ summaryLines ids: 623 698
+                [  ids: 624 699
+          set node.parent = parent ids: 625 700
+          _ parent.todos.push(node) ids: 626 701
+          _ md.goItems(model.items, ctx, node) ids: 627 702
+      set md.${wzelement} ids: 719 756
+        $args: issue  $params: wzelement
+        function  ids: 721 757
+          param model ids: 722 758
+          param ctx ids: 723 759
+          param parent ids: 724 760
+          set ctx.issueCount++ ids: 629 704
+          var node ids: 630 705
+            {  ids: 631 706
+              @ type 'issue' ids: 632 707
+              @ name model.wzName ids: 633 708
+              @ id 'issue-' + ctx.issueCount ids: 634 709
+              @ categories ids: 635 710
+                [  ids: 636 711
+              @ tags ids: 637 712
+                [  ids: 638 713
+              @ summaryLines ids: 639 714
+                [  ids: 640 715
+          set node.parent = parent ids: 641 716
+          _ parent.issues.push(node) ids: 642 717
+          _ md.goItems(model.items, ctx, node) ids: 643 718
+    set md.${wzelement} ids: 719 762
+      $args: intro  $params: wzelement
+      function  ids: 721 763
+        param model ids: 722 764
+        param ctx ids: 723 765
+        param parent ids: 724 766
+        var node ids: 58 342
+          {  ids: 59 343
+            @ type 'intro' ids: 60 344
+            @ name model.wzName ids: 61 345
+            @ id (model.id || 'intro') ids: 62 346
+            @ summaryLines ids: 63 347
+              [  ids: 64 348
+        set node.parent = parent ids: 65 349
+        set parent.intro = node ids: 66 350
+        _ md.goItems(model.items, ctx, node) ids: 67 351
+    set md.${wzelement} ids: 719 768
+      $args: object  $params: wzelement
+      function  ids: 721 769
+        param model ids: 722 770
+        param ctx ids: 723 771
+        param parent ids: 724 772
+        set ctx.objectCount++ ids: 69 353
+        var node ids: 70 354
+          {  ids: 71 355
+            @ type 'object' ids: 72 356
+            @ name model.wzName ids: 73 357
+            @ id (model.id || 'object-' + ctx.objectCount) ids: 74 358
+            @ summaryLines ids: 75 359
+              [  ids: 76 360
+        set node.parent = parent ids: 77 361
+        _ parent.objects.push(node) ids: 78 362
+        _ md.goItems(model.items, ctx, node) ids: 79 363
+    set md.${wzelement} ids: 719 774
+      $args: concept  $params: wzelement
+      function  ids: 721 775
+        param model ids: 722 776
+        param ctx ids: 723 777
+        param parent ids: 724 778
+        set ctx.conceptCount++ ids: 81 365
+        var node ids: 82 366
+          {  ids: 83 367
+            @ type 'concept' ids: 84 368
+            @ name model.wzName ids: 85 369
+            @ id (model.id || 'concept-' + ctx.conceptCount) ids: 86 370
+            @ summaryLines ids: 87 371
+              [  ids: 88 372
+        set node.parent = parent ids: 89 373
+        _ parent.concepts.push(node) ids: 90 374
+        _ md.goItems(model.items, ctx, node) ids: 91 375
+    set md.${wzelement} ids: 719 780
+      $args: section  $params: wzelement
+      function  ids: 721 781
+        param model ids: 722 782
+        param ctx ids: 723 783
+        param parent ids: 724 784
+        set ctx.sectionCount++ ids: 93 377
+        var node ids: 94 378
+          {  ids: 95 379
+            @ type 'section' ids: 96 380
+            @ name model.wzName ids: 97 381
+            @ id (model.id || 'section-' + ctx.sectionCount) ids: 98 382
+            @ concepts ids: 99 383
+              [  ids: 100 384
+            @ summaryLines ids: 101 385
+              [  ids: 102 386
+        set node.parent = parent ids: 103 387
+        _ parent.sections.push(node) ids: 104 388
+        _ md.goItems(model.items, ctx, node) ids: 105 389
+    set md.${wzelement} ids: 719 786
+      $args: apiObject  $params: wzelement
+      function  ids: 721 787
+        param model ids: 722 788
+        param ctx ids: 723 789
+        param parent ids: 724 790
+        set ctx.apiObjectCount++ ids: 107 391
+        var node ids: 108 392
+          {  ids: 109 393
+            @ type 'apiObject' ids: 110 394
+            @ name model.wzName ids: 111 395
+            @ id (model.id || 'api-object-' + ctx.apiObjectCount) ids: 112 396
+            @ apiMethods ids: 113 397
+              [  ids: 114 398
+            @ summaryLines ids: 115 399
+              [  ids: 116 400
+        set node.parent = parent ids: 117 401
+        if !parent.apiObjects ids: 118 402
+          set parent.apiObjects = [] ids: 119 403
+        _ parent.apiObjects.push(node) ids: 120 404
+        _ md.goItems(model.items, ctx, node) ids: 121 405
+    set md.${wzelement} ids: 719 792
+      $args: apiMethod  $params: wzelement
+      function  ids: 721 793
+        param model ids: 722 794
+        param ctx ids: 723 795
+        param parent ids: 724 796
+        set ctx.apiMethodCount++ ids: 123 407
+        var node ids: 124 408
+          {  ids: 125 409
+            @ type 'apiMethod' ids: 126 410
+            @ name model.wzName ids: 127 411
+            @ id (model.id || 'api-method-' + ctx.apiMethodCount) ids: 128 412
+            @ apiParams ids: 129 413
+              [  ids: 130 414
+            @ summaryLines ids: 131 415
+              [  ids: 132 416
+        set node.parent = parent ids: 133 417
+        _ parent.apiMethods.push(node) ids: 134 418
+        _ md.goItems(model.items, ctx, node) ids: 135 419
+    set md.${wzelement} ids: 719 798
+      $args: apiParam  $params: wzelement
+      function  ids: 721 799
+        param model ids: 722 800
+        param ctx ids: 723 801
+        param parent ids: 724 802
+        var node ids: 137 421
+          {  ids: 138 422
+            @ type 'apiParam' ids: 139 423
+            @ name model.wzName ids: 140 424
+            @ summaryLines ids: 141 425
+              [  ids: 142 426
+        set node.parent = parent ids: 143 427
+        _ parent.apiParams.push(node) ids: 144 428
+        _ md.goItems(model.items, ctx, node) ids: 145 429
+    set md.${wzelement} ids: 719 804
+      $args: summary  $params: wzelement
+      function  ids: 721 805
+        param model ids: 722 806
+        param ctx ids: 723 807
+        param parent ids: 724 808
+        # log 'parent.summaryLines', parent.summaryLines ids: 147 431
+        var lines = html.toHtmlLines(model.items, ctx); ids: 148 432
+        _ lines.forEach ids: 149 433
+          function  ids: 150 434
+            param v ids: 151 435
+            _ parent.summaryLines.push(v) ids: 152 436
+    set md.${wzelement} ids: 719 810
+      $args: sampleGroup  $params: wzelement
+      function  ids: 721 811
+        param model ids: 722 812
+        param ctx ids: 723 813
+        param parent ids: 724 814
+        set ctx.sampleGroupCount++ ids: 154 438
+        var node ids: 155 439
+          {  ids: 156 440
+            @ type 'sampleGroup' ids: 157 441
+            @ name model.wzName ids: 158 442
+            @ id (model.id || 'sample-group-' + ctx.sampleGroupCount) ids: 159 443
+            @ summaryLines ids: 160 444
+              [  ids: 161 445
+            @ samples ids: 162 446
+              [  ids: 163 447
+        set node.parent = parent ids: 164 448
+        _ parent.sampleGroups.push(node) ids: 165 449
+        _ md.goItems(model.items, ctx, node) ids: 166 450
+    set md.${wzelement} ids: 719 816
+      $args: sample  $params: wzelement
+      function  ids: 721 817
+        param model ids: 722 818
+        param ctx ids: 723 819
+        param parent ids: 724 820
+        set ctx.sampleCount++ ids: 168 452
+        var node ids: 169 453
+          {  ids: 170 454
+            @ type 'sample' ids: 171 455
+            @ name model.wzName ids: 172 456
+            @ id (model.id || 'sample-' + ctx.sampleCount) ids: 173 457
+            @ summaryLines ids: 174 458
+              [  ids: 175 459
+            @ primaryIttf ids: 176 460
+              {  ids: 177 461
+                @ summaryLines ids: 178 462
+                  [  ids: 179 463
+                @ nodeLines ids: 180 464
+                  [  ids: 181 465
+            @ mixins ids: 182 466
+              [  ids: 183 467
+            @ includes ids: 184 468
+              [  ids: 185 469
+            @ schema ids: 186 470
+              {  ids: 187 471
+        set node.parent = parent ids: 188 472
+        _ parent.samples.push(node) ids: 189 473
+        _ md.goItems(model.items, ctx, node) ids: 190 474
+    set md.${wzelement} ids: 719 822
+      $args: ittf  $params: wzelement
+      function  ids: 721 823
+        param model ids: 722 824
+        param ctx ids: 723 825
+        param parent ids: 724 826
+        set ctx.ittfCount++ ids: 192 476
+        var node ids: 193 477
+          {  ids: 194 478
+            @ type 'ittf' ids: 195 479
+            @ name path.basename(model.wzName) ids: 196 480
+            @ path model.wzName ids: 197 481
+            @ id (model.id || 'ittf-' + ctx.ittfCount) ids: 198 482
+            @ summaryLines ids: 199 483
+              [  ids: 200 484
+            @ nodeLines ids: 201 485
+              [  ids: 202 486
+        set node.parent = parent ids: 203 487
+        if model.kind === 'primary' ids: 204 488
+          set parent.primaryIttf = node ids: 205 489
+        elif model.kind === 'mixin' ids: 206 490
+          _ parent.mixins.push(node) ids: 207 491
+        elif model.kind === 'include' ids: 208 492
+          _ parent.includes.push(node) ids: 209 493
+        elif model.kind === 'schema' ids: 210 494
+          set parent.schema = node ids: 211 495
+        else  ids: 212 496
+          _ errors.NodeError(myname + '.ittf. Unknown kind: ' + model.kind, model) ids: 213 497
+        _ md.goItems(model.items, ctx, node) ids: 214 498
+    set md.${wzelement} ids: 719 828
+      $args: js  $params: wzelement
+      function  ids: 721 829
+        param model ids: 722 830
+        param ctx ids: 723 831
+        param parent ids: 724 832
+        set ctx.jsCount++ ids: 216 500
+        var node ids: 217 501
+          {  ids: 218 502
+            @ type 'js' ids: 219 503
+            @ name path.basename(model.wzName) ids: 220 504
+            @ path model.wzName ids: 221 505
+            @ id (model.id || 'js-' + ctx.jsCount) ids: 222 506
+            @ summaryLines ids: 223 507
+              [  ids: 224 508
+            @ nodeLines ids: 225 509
+              [  ids: 226 510
+        set node.parent = parent ids: 227 511
+        _ md.goItems(model.items, ctx, node) ids: 228 512
+    set md.${wzelement} ids: 719 834
+      $args: ittfnode  $params: wzelement
+      function  ids: 721 835
+        param model ids: 722 836
+        param ctx ids: 723 837
+        param parent ids: 724 838
+        set ctx.__ittfNode ids: 230 514
+          {  ids: 231 515
+            @ level 0 ids: 232 516
+            @ line 0 ids: 233 517
+        var lines ids: 234 518
+        if parent.type === 'js' ids: 235 519
+          set lines = html.toHtmlJsCodeLines(model, ctx); ids: 236 520
+        else  ids: 237 521
+          set lines = html.toHtmlCodeLines(model, ctx); ids: 238 522
+        # log.warn('nodeLines', lines) ids: 239 523
+        _ lines.forEach ids: 240 524
+          function  ids: 241 525
+            param v ids: 242 526
+            _ parent.nodeLines.push(v) ids: 243 527
+    set md.${wzelement} ids: 719 840
+      $args: categories  $params: wzelement
+      function  ids: 721 841
+        param model ids: 722 842
+        param ctx ids: 723 843
+        param parent ids: 724 844
+        var items = model.wzName.split(',') ids: 245 529
+        foreach item in items ids: 246 530
+          var ss = item.split(':') ids: 247 531
+          var name = ss.length == 2 ? ss[1] : ss[0] ids: 248 532
+          var key = ss.length == 2 ? ss[0] : null ids: 249 533
+          var node ids: 250 534
+            {  ids: 251 535
+              @ type 'category' ids: 252 536
+              @ name name ids: 253 537
+              @ key key ids: 254 538
+          if !parent.categories ids: 255 539
+            _ errors.NodeError(myname + '.categories. The parent element do not support categories : ' + model.wzElement + '/' + model.wzName, model); ids: 256 540
+          _ parent.categories.push(node) ids: 257 541
+    set md.${wzelement} ids: 719 846
+      $args: tags  $params: wzelement
+      function  ids: 721 847
+        param model ids: 722 848
+        param ctx ids: 723 849
+        param parent ids: 724 850
+        var items = model.wzName.split(',') ids: 259 543
+        foreach item in items ids: 260 544
+          var node ids: 261 545
+            {  ids: 262 546
+              @ type 'tag' ids: 263 547
+              @ name model.wzName ids: 264 548
+          if !parent.tags ids: 265 549
+            _ errors.NodeError(myname + '.tags. The parent element do not support categories : ' + model.wzElement + '/' + model.wzName, model); ids: 266 550
+          _ parent.tags.push(node) ids: 267 551
+    set md.${wzelement} ids: 719 852
+      $args: goItem  $params: wzelement
+      function  ids: 721 853
+        param model ids: 722 854
+        param ctx ids: 723 855
+        param parent ids: 724 856
+        var oper = md[model.wzElement] ids: 269 553
+        if oper ids: 270 554
+          _ oper(model, ctx, parent) ids: 271 555
+        else  ids: 272 556
+          _ errors.NodeError(myname + '.goItem. Unknown wzElement: ' + model.wzTag + '/' + model.wzElement, model); ids: 273 557
+    set md.goItems ids: 274 558
+      function  ids: 275 559
+        param items ids: 276 560
+        param ctx ids: 277 561
+        param parent ids: 278 562
+        param options ids: 279 563
+        set options = options || {} ids: 280 564
+        set options.from = options.from || 0 ids: 281 565
+        for var i = options.from; i < items.length; i++ ids: 282 566
+          var item = items[i] ids: 283 567
+          _ md.goItem(item, ctx, parent); ids: 284 568

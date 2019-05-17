@@ -1,0 +1,105 @@
+﻿$group
+
+	e synthax : node
+
+		m check
+			param state
+			if this.nodes.length === 1 && verify.isFunction(this.nodes[0].check)
+				return this.nodes[0].check(state)
+			else
+				_ this.error
+					@ 'synthax element node must have one single child'
+					@ this
+
+	e_tag( colon, :, node )
+
+	e_tag( category, cat, node )
+
+		m wzInitialize
+			set this.subcategories = {}
+			set this.items = {}
+			foreach item in this.nodes
+				if item.wzElement === 'isOfType'
+					set this['is_' + verify.replaceAll(item.wzName, '-', '_')] = true
+
+			var root = this.wzRoot()
+			if this.wzParent.wzElement === 'parser'
+				if !root.categories
+					set root.categories = {}
+				if root.categories[this.wzName]
+					throw new Error('Duplicated category: ' + this.wzName)
+				set root.categories[this.wzName] = this
+				if this.is_enum
+					if root.extensionParsers[this.wzName]
+						throw new Error('Duplicated extension parser: ' + this.wzName)
+					set root.extensionParsers[this.wzName] = this
+			
+			elif this.wzParent.wzElement === 'parserElement'
+				# _ this.wzParent.wzRemove
+				#	@ this.wzParent.wzParent.nodes
+				var cat = root.categories[this.wzName]
+				if !cat
+					throw new Error('Category reference not found : ' + this.wzName)
+				_ cat.wzCreateChildColl
+					@ 'lit'
+					@ this.wzParent.wzName
+					@ md.literal
+					@ cat.nodes
+
+		m getEnumItems
+			var ret = []
+			foreach item in this.nodes
+				# loaded in this.wzInitialize
+				if item.wzElement === 'literal'
+					_ ret.push(item)
+			for var k in this.subcategories
+				var nodes
+					_ this.subcategories[k].getEnumItems()
+				foreach node in nodes
+					_ ret.push(node)
+			return ret
+
+		m getParserNode
+			
+			if this.parserNode
+				return this.parserNode
+			
+			if this.is_enum
+				set this.parserNode
+					_ this.wzCreateChildColl
+						@ 'e'
+						@ this.wzName
+						@ md.parserElement
+						@ this.nodes
+				var bar
+					_ this.parserNode.wzCreateChildColl
+						@ '|'
+						@ ''
+						@ md.bar
+						@ this.parserNode.nodes
+				var enumitems = this.getEnumItems()
+				foreach item in enumitems
+					_ bar.nodes.push(item)
+				return this.parserNode
+			else
+				return null
+
+	e_tag( super, super, node )
+
+		m wzVerify
+			var root = this.wzRoot()
+			if this.wzParent.wzElement === 'category'
+				var cat = this.wzParent.wzName
+				var supercat = root.categories[this.wzName]
+				if !supercat
+					_ this.error
+						@ 'Missing referenced supercategory: ' + this.wzName
+						@ this
+				if supercat.subcategories[cat]
+					_ this.error
+						@ 'Duplicated subcategory: ' + cat + ' for supercategory: ' + item.wzName
+						@ this
+				set supercat.subcategories[cat] = this.wzParent
+			
+
+	e_tag( isOfType, is, node )

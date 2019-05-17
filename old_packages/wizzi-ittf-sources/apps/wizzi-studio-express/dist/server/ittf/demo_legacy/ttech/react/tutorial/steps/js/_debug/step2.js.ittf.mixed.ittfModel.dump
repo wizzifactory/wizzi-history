@@ -1,0 +1,132 @@
+  module  ids: 1 66
+    kind react ids: 2 67
+    $  ids: 3 68
+      var xnode = { ids: 4 69
+        text: 'brands', ids: 5 70
+        xnodes : [ ids: 6 71
+          {  ids: 7 72
+            text: 'fiat', ids: 8 73
+            xnodes: [] ids: 9 74
+          },  ids: 10 75
+          {  ids: 11 76
+            text: 'ford', ids: 12 77
+            xnodes: [] ids: 13 78
+          },  ids: 14 79
+          {  ids: 15 80
+            text: 'peugeot', ids: 16 81
+            xnodes: [] ids: 17 82
+          },  ids: 18 83
+          {  ids: 19 84
+            text: 'opel', ids: 20 85
+            xnodes: [] ids: 21 86
+          }  ids: 22 87
+        ]  ids: 23 88
+      };  ids: 24 89
+    $group  ids: 131 147
+      $args: TreeNode $params: name
+      var ${name} ids: 133 148
+        _ React.createClass ids: 134 149
+          {  ids: 135 150
+            $hook members ids: 136 151
+            @ render ids: 137 152
+              function  ids: 138 153
+                return  ids: 139 154
+                  _ React.createElement ids: 162 170
+                    $args:  $params: p2|@@null, p3|@@null
+                    @ 'li' ids: 164 171
+                    $if p2 != null ids: 165 172
+                      @ ${p2} ids: 166 173
+                    $if p3 != null ids: 167 174
+                      @ ${p3} ids: 168 175
+                    {  ids: 27 92
+                      @ className 'list-group-item' ids: 28 93
+                    @ this.props.node.text ids: 29 94
+                    @ children ids: 30 95
+                  $append render ids: 31 96
+                    var children = [] ids: 32 97
+                    foreach node in this.props.node.nodes ids: 33 98
+                      _ children.push ids: 34 99
+                        _ React.createElement ids: 177 186
+                          $args: TreeNode $params: p1|@@null, p2|@@null, p3|@@null
+                          $if p1 != null ids: 179 187
+                            @ ${p1} ids: 180 188
+                          $if p2 != null ids: 181 189
+                            @ ${p2} ids: 182 190
+                          $if p3 != null ids: 183 191
+                            @ ${p3} ids: 184 192
+                          {  ids: 36 101
+                            @ node node ids: 37 102
+      set ${name}.propTypes ids: 141 156
+        {  ids: 142 157
+          $hook propTypes ids: 143 158
+      set ${name}.defaultProps ids: 144 159
+        {  ids: 145 160
+          $hook defaultProps ids: 146 161
+    $group  ids: 131 194
+      $args: TreeView $params: name
+      var ${name} ids: 133 195
+        _ React.createClass ids: 134 196
+          {  ids: 135 197
+            $hook members ids: 136 198
+            @ render ids: 137 199
+              function  ids: 138 200
+                return  ids: 139 201
+                  _ React.createElement ids: 209 217
+                    $args:  $params: p2|@@null, p3|@@null
+                    @ 'div' ids: 211 218
+                    $if p2 != null ids: 212 219
+                      @ ${p2} ids: 213 220
+                    $if p3 != null ids: 214 221
+                      @ ${p3} ids: 215 222
+                    {  ids: 40 105
+                      @ id 'treeview' ids: 41 106
+                      @ className 'treeview' ids: 42 107
+                    _ React.createElement ids: 224 232
+                      $args:  $params: p2|@@null, p3|@@null
+                      @ 'ul' ids: 226 233
+                      $if p2 != null ids: 227 234
+                        @ ${p2} ids: 228 235
+                      $if p3 != null ids: 229 236
+                        @ ${p3} ids: 230 237
+                      {  ids: 44 109
+                        @ className 'list-group' ids: 45 110
+                      @ this.props.node ids: 46 111
+      set ${name}.propTypes ids: 141 203
+        {  ids: 142 204
+          $hook propTypes ids: 143 205
+      set ${name}.defaultProps ids: 144 206
+        {  ids: 145 207
+          $hook defaultProps ids: 146 208
+    var node ids: 47 112
+      {  ids: 48 113
+        @ text '${xnode.text}' ids: 49 114
+        @ nodes [] ids: 50 115
+    $foreach xn1 in xnode.xnodes ids: 51 116
+      _ node.nodes.push ids: 52 117
+        {  ids: 53 118
+          @ text '${xn1.text}' ids: 54 119
+          @ nodes [] ids: 55 120
+    var treeNode ids: 56 121
+      _ React.createElement ids: 177 239
+        $args: TreeNode $params: p1|@@null, p2|@@null, p3|@@null
+        $if p1 != null ids: 179 240
+          @ ${p1} ids: 180 241
+        $if p2 != null ids: 181 242
+          @ ${p2} ids: 182 243
+        $if p3 != null ids: 183 244
+          @ ${p3} ids: 184 245
+        {  ids: 58 123
+          @ node node ids: 59 124
+    _ ReactDOM.render ids: 60 125
+      _ React.createElement ids: 177 247
+        $args: TreeView $params: p1|@@null, p2|@@null, p3|@@null
+        $if p1 != null ids: 179 248
+          @ ${p1} ids: 180 249
+        $if p2 != null ids: 181 250
+          @ ${p2} ids: 182 251
+        $if p3 != null ids: 183 252
+          @ ${p3} ids: 184 253
+        {  ids: 62 127
+          @ node treeNode ids: 63 128
+        @ null ids: 64 129
+      _ document.getElementById('container') ids: 65 130

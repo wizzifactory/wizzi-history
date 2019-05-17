@@ -1,0 +1,16 @@
+$group
+	
+	function loggerMiddleware
+		param store
+		log 'entered.logger.storeMinimal(getState, dispatch)', store
+		return
+			function
+				param next
+				log 'entered.logger.next', next
+				return
+					function
+						param action
+						log 'logger.dispatching', action
+						let result = next(action)
+						log 'logger.next state', store.getState()
+						return result

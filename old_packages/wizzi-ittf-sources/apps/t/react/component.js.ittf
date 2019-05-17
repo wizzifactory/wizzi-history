@@ -1,0 +1,82 @@
+﻿$group
+	$params &md, &app
+
+	import React from 'react'
+	import PropTypes from 'prop-types'
+	
+	$if app.useMaterialUi
+		import classNames from 'classnames'
+		import { withStyles } from '@material-ui/core/styles'
+
+	$if app.useNextjs
+		import withRoot from '../lib/withRoot'
+	
+	$if !(app.useNextjs) && (md.withWidth || md.connect || md.pure)
+		import compose from 'recompose/compose'
+	$if md.withWidth
+		import withWidth, { isWidthUp } from 'material-ui/utils/withWidth'
+	$if md.connect
+		import { connect } from 'react-redux'
+	$if md.pure
+		import pure from 'recompose/pure'
+
+	$hook imports
+
+	react ${md.name}
+		$hook
+
+	$if app.useRedux && app.useNextjs && md.connect
+		redux-maps(&app)
+	+
+	$if app.useMaterialUi
+		
+		export default
+			$if md.withWidth || md.connect || md.pure
+				_ compose
+					$if md.pure
+						@ pure
+					_ withStyles
+						@ styles
+					$if md.withWidth
+						_ withWidth()
+					$if md.connect
+						_ connect()
+					( 
+						@ ${md.name}
+			$elif app.useNextjs
+				_ withRoot
+					_ withStyles
+						@ styles
+						( 
+							@ ${md.name}
+			$else
+				_ withStyles
+					@ styles
+					( 
+						@ ${md.name}
+	
+	$elif app.useRedux && app.useNextjs && md.connect
+		
+		export default
+			_ connect
+				@ mapStateToProps
+				@ mapDispatchToProps
+				@ mergeProps
+				(
+					@ ${md.name}
+
+	$else
+		
+		export default
+			$if md.withWidth || md.connect || md.pure
+				_ compose
+					$if md.pure
+						@ pure
+					$if md.withWidth
+						_ withWidth()
+					$if md.connect
+						_ connect()
+					(
+						@ ${md.name}
+			$else
+				+ ${md.name}

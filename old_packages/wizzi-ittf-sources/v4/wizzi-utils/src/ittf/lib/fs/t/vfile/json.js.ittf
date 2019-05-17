@@ -1,0 +1,65 @@
+﻿$group
+
+	vfile/m( readJSON, readFileSync, options )
+		if verify.isString(options) && verify.isNotEmpty(options)
+			set options
+				{
+					@ encoding options
+		else
+			set options = options || {}
+  	
+		$append async
+			_ this.read
+				@ path_string
+				@ options
+				f_cb( contents )
+					var result
+					try 
+						set result = JSON.parse(contents)
+					catch ex
+						return
+							_ callback
+								new errors.FileError
+									@ 'Unable to JSON parse "' + path_string + '" file (' + ex.message + ').'
+									@ ex
+					return
+						_ callback
+							@ null
+							@ result
+		
+		$append sync
+			try 
+				var contents = this.readSync(path_string, options)
+				return JSON.parse(contents, options.reviver)
+			catch ex
+				if shouldThrow
+					throw 
+						new errors.FileError
+							@ 'Unable to JSON parse "' + path_string + '" file (' + ex.message + ').'
+							@ ex
+				else
+					return null
+
+	vfile/m( writeJSON, writeFileSync, obj, options )
+	
+		$append async
+			return
+				_ this.writeAsync
+					@ path_string
+					_ stringify
+						@ obj
+						@ options
+					@ options || {}
+					@ callback
+		
+		$append sync
+			return
+				_ this.writeSync
+					@ path_string
+					_ stringify
+						@ obj
+						@ options
+					@ options || {}
+	
+
+	

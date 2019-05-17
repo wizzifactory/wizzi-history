@@ -1,0 +1,22 @@
+﻿base_test( basicloader )
+
+	$append imports
+		var loader = require('../../lib/basicloader')
+	+
+	var ittfSource
+		_ path.join
+			@ __dirname
+			@ 'data'
+			@ 'doc1.tests.ittf'
+	+
+	it-async should load an ittfdocument with no frills
+			
+		_ loader.loadMTreeBrick
+			@ ittfSource
+			@ null
+			f_cb_test( mTreeBrick )
+				tobe_object( mTreeBrick )
+				tobe_array( mTreeBrick.nodes, 1 )
+				tobe_string( mTreeBrick.nodes[0].n, tests )
+				tobe_string( mTreeBrick.nodes[0].v, School )
+				_ done()

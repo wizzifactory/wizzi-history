@@ -1,0 +1,50 @@
+﻿$group
+
+	$include defs
+
+	. navigation
+		flex 0 0 auto
+        transition background 250ms
+        background ${color3}
+    
+	. navigation__inner
+    
+	. navigation__logo
+        margin auto
+    
+	. navigation__links
+		flex 1 1 auto
+		display flex
+		align-items center
+		justify-content flex-end
+
+	. navigation__link
+		display inline-block
+		font-size ${navLinkFontSize}rem
+		$if navLinkUCase
+			text-transform uppercase
+		color #ffffff
+		transition all 250ms
+		padding 1.5em 0.75em
+
+		& :last-child
+			margin-right 0.75em
+		& :hover
+			color ${color14}
+		& --active
+			color ${color0}
+			background ${color14} 
+			font-weight 700
+			& :hover
+				color ${color0}
+				background ${color14}
+				font-weight 700
+
+	- hide not implemented yet
+	. navigation__search
+		display none
+
+	- hide not implemented yet
+	. navigation__icon
+		display none
+

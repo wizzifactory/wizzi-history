@@ -1,0 +1,570 @@
+﻿basewizzifier()
+
+	var gonzales = require('gonzales-pe')
+	var lineparser = require('wizzi-utils').lineparser
+	var XIttfNode = require('./xittfNode')
+
+	var wizzi_at = ['if', 'else', 'else if', 'each', 'mixin', 'function', 'include', 'return'];
+	var primitive_types = ['string', 'literal', 'number', 'color'];
+	var operators
+		{
+			@ void 'void'
+			@ '!' 'not'
+			@ or '||'
+			@ and '&&'
+			@ '===' '==='
+			@ '!==' '!=='
+			@ '==' '=='
+			@ '!=' '!='
+			@ '-' 'minus'
+			@ '+' 'plus'
+			@ '*' 'times'
+			@ '/' 'divide'
+			@ '^' 'mod'
+			@ '>' 'gt'
+			@ '<' 'lt'
+			@ '<=' '<='
+			@ '>=' '>='
+	#
+		# _$function
+		#   childrenMixed = false
+		# param
+		#   childrenMixed = false
+		# _$call
+		#   childrenMixed = false
+		# _$mixin
+		#   childrenMixed = true
+		# _$param
+		#   childrenMixed = false
+		# _$include
+		#   childrenMixed = true
+		# _$arg
+		#   childrenMixed = false
+		# _$:
+		#   childrenMixed = false
+		# _$var
+		#   childrenMixed = false
+		# _
+		#   childrenMixed = false
+		# :
+		#   childrenMixed = false
+		# var
+		#   childrenMixed = false
+		# _$if, _$elif, _$else, _$each, _$while
+		#   childrenMixed = true
+		# _$true
+		#   childrenMixed = false
+
+	var wzSymbols
+		{
+			@ comment '@@'
+			@ functionDecl '@function'
+			@ functionParam 'param'
+			@ functionCall '@_'
+			@ mixinDecl '@mixin'
+			@ mixinParam '@param'
+			@ mixinInclude '@mix'
+			@ mixinIncludeArg '@:'
+			@ mixinTrue '@true'
+			@ variableRef '@:'
+			@ variableDecl '@var'
+			@ content '@content'
+			@ if '@if'
+			@ elif '@elif'
+			@ else '@else'
+			@ f_functionCall '_'
+			@ f_variableRef ':'
+			@ f_variableDecl 'var'
+			
+	set wzSymbols.functionCallArg = wzSymbols.f_variableRef
+    
+	function parse
+        param css
+        param options
+        param callback
+        
+		set options = options || {}
+		
+		var wizziTree
+			new XIttfNode
+				@ 'xittf'
+				@ 'scss'
+		
+		try
+			var parseTree
+				_ gonzales.parse
+					@ css
+					{
+						@ syntax options.syntax || 'css'
+		catch ex
+			log 'css', css
+			set wizziTree.tag = 'error'
+			_ wizziTree.children.push
+				{
+					@ tag ex.message
+					@ name css
+					@ children
+						[ 
+			return
+				_ callback
+					@ null
+					@ wizziTree
+
+		var ctx
+			{
+				@ property_state []
+
+		try
+			_ wizziTree.load
+				@ parseTree
+			if options.raw
+				_ wizziTree.setRawTagNames
+				return
+					_ callback(null, wizziTree)
+			_ wizziTree.analize
+			_ wizziTree.finalize
+			#
+				foreach node in parseTree.content
+					if node.type === 'space'
+					handle_root( declaration, wizziTree )
+					handle_root( ruleset, wizziTree )
+					handle_root( loop, wizziTree )
+					handle_root( mixin, wizziTree )
+					handle_root( function, wizziTree )
+					handle_root( atrule, wizziTree )
+					elif node.type === 'declarationDelimiter'
+					elif node.type === 'singlelineComment' || node.type === 'multilineComment'
+						_ createIttfNode
+							@ node.type
+							@ node.content
+							@ wizziTree
+					else
+						var msg = node.type + (node.content && node.content.trim ? '/' + node.content : '')
+						_ createIttfNode
+							@ '*** unknown'
+							@ msg + ' from root'
+							@ wizziTree
+			return
+				_ callback(null, wizziTree)
+		catch ex
+			log 'css', css
+			set wizziTree.tag = 'error'
+			_ wizziTree.children.push
+				{
+					@ tag ex.message
+					@ name css
+					@ children
+						[ 
+			return
+				_ callback
+					@ null
+					@ wizziTree
+
+	var handlers = {}
+	
+	$include stylesheet
+	$include commands
+
+	handler( declaration )
+		$append enter
+			set ctx.isDeclaration = true
+		handle( property )
+		elif item.type === 'value'
+			var lit = getLiteral(item)
+			if lit
+				_ createIttfNode
+					@ 'l'
+					@ lit
+					@ ctx.variable
+			else
+				_ handlers[item.type]
+					@ item
+					@ ctx.variable
+					@ ctx
+		elif item.type === 'propertyDelimiter'
+		$append exit
+			set ctx.isDeclaration = false
+
+	handler( property )
+		$append enter
+			_ ctx.property_state.push
+				{
+					@ state 'wait_name'
+		handle( variable )
+		elif item.type === 'propertyDelimiter'
+			set ctx.property_state[ctx.property_state.length].state = 'wait_value'
+		elif item.type === 'ident'
+			var ittfNode
+				_ createIttfNode
+					@ item.content
+					@ ''
+					@ parent
+			set ctx.variable = ittfNode
+		$append exit
+			_ ctx.property_state.pop
+	
+	handler( variable )
+		$append enter
+			# log 'variable.parent.tag', parent.tag
+			var tag = wzSymbols.variableRef
+			if ctx.isDeclaration
+				if ctx.isFunctionArgumentDeclaration || ctx.isMixinArgumentDeclaration || ctx.isMixinInclude
+					if ctx.property_state.length > 0 && ctx.property_state[ctx.property_state.length-1].state === 'wait_name'
+						if ctx.isFunctionArgumentDeclaration
+							set tag = wzSymbols.functionParam
+						elif ctx.isMixinArgumentDeclaration
+							set tag = wzSymbols.mixinParam
+						elif ctx.isMixinInclude
+							set tag = wzSymbols.mixinIncludeArg
+						else
+							set tag = wzSymbols.variableDecl
+					else
+						if ctx.isFunctionDeclaration
+							
+						else
+							set tag = wzSymbols.variableRef
+						set tag = wzSymbols.f_variableRef
+				else
+					if ctx.property_state.length > 0 && ctx.property_state[ctx.property_state.length-1].state === 'wait_name'
+						if ctx.isFunctionDeclaration
+							set tag = wzSymbols.f_variableDecl
+						else
+							set tag = wzSymbols.variableDecl
+					else
+						set tag = wzSymbols.variableRef
+			elif ctx.isFunctionArgumentDeclaration
+				set tag = wzSymbols.functionParam
+			elif ctx.isMixinArgumentDeclaration
+				set tag = wzSymbols.mixinParam
+			elif ctx.isMixinInclude
+				set tag = wzSymbols.mixinIncludeArg
+			elif ctx.isFunctionCall
+				set tag = ':'
+			elif ctx.isFunctionDeclaration
+				set tag = wzSymbols.f_variableDecl
+			elif ctx.isMixinDeclaration
+				set tag = wzSymbols.variableDecl
+			elif ctx.isCondition
+				set tag = ':'
+			var ittfNode
+				_ createIttfNode
+					@ tag
+					@ ''
+					@ parent
+			set ctx.variable = ittfNode
+		elif item.type === 'ident'
+			# log 'variable', item.content, ctx.isDeclaration, ctx.isFunctionDeclaration, ctx.isFunctionArgumentDeclaration
+			set ittfNode.name = getValidName(item.content)
+
+	handler( value )
+		elif item.type === 'space'
+		elif item.type === 'default'
+		handle( operator )
+		ident_literal( )
+		parentheses( )
+		elif primitive_types.indexOf(item.type) > -1
+			_ primitives[item.type]
+				@ item
+				@ parent
+				@ ctx
+		elif ['variable', 'dimension', 'percentage', 'function'].indexOf(item.type) > -1
+			_ handlers[item.type]
+				@ item
+				@ parent
+				@ ctx
+
+	handler( parentheses_map )
+		$append enter
+			set ctx.state = 'wait_name'
+		if ['ident', 'color', 'number', 'string', 'percentage', 'variable', 'parentheses', 'dimension', 'operator'].indexOf(item.type) > -1
+			if ctx.state === 'wait_name'
+				set ctx.name = item.content
+				set ctx.state = 'wait_:'
+			elif ctx.state === 'wait_:'
+				set ctx.state = 'wait_value'
+			elif ctx.state === 'wait_value'
+				var ittfNode
+					_ createIttfNode
+						@ wzSymbols.f_variableRef
+						@ ctx.name
+						@ parent
+				if false
+				parentheses( ittfNode )
+				elif ['variable', 'dimension', 'percentage', 'function'].indexOf(item.type) > -1
+					_ handlers[item.type]
+						@ item
+						@ ittfNode
+						@ ctx
+				elif primitive_types.indexOf(item.type) > -1
+					_ primitives[item.type]
+						@ item
+						@ ittfNode
+						@ ctx
+				else
+					set ittfNode.tag = '*** @'
+					set ittfNode.name = ctx.name + ' ' + item.content + ' from ' + item.type
+				set ctx.state = 'wait_,'
+			elif ctx.state === 'wait_,'
+				set ctx.state = 'wait_name'
+
+	handler( parentheses_expr )
+		$append enter
+			var ittfNode
+				_ createIttfNode
+					@ 'expr'
+					@ ''
+					@ parent
+		elif item.type === 'space'
+		handle( operator, ittfNode )
+		elif primitive_types.indexOf(item.type) > -1
+			_ primitives[item.type]
+				@ item
+				@ ittfNode
+				@ ctx
+		elif ['variable', 'dimension', 'percentage', 'function'].indexOf(item.type) > -1
+			_ handlers[item.type]
+				@ item
+				@ ittfNode
+				@ ctx
+
+	handler( dimension )
+		elif item.type === 'ident'
+			set ctx.name = item.content
+		elif ['number'].indexOf(item.type) > -1
+			set ctx.value = item.content
+		$append exit
+			_ createIttfNode
+				@ ctx.value + ctx.name
+				@ ''
+				@ parent
+			set ctx.name = ctx.value = null
+	
+	handler( percentage )
+		if ['number'].indexOf(item.type) > -1
+			set ctx.value = item.content
+		$append exit
+			_ createIttfNode
+				@ '%'
+				@ ctx.value
+				@ parent
+			set ctx.value = null
+
+	handler( function )
+		$append enter
+			var tag
+				iif ctx.isFunctionDeclaration || ctx.isDeclaration
+					then wzSymbols.f_functionCall
+					else wzSymbols.functionCall
+			set ctx.isFunctionCall = true
+			var ittf_f
+				_ createIttfNode
+						@ tag
+						@ ''
+						@ parent
+		elif item.type === 'ident'
+			set ittf_f.name = getValidName(item.content)
+		elif item.type === 'arguments'
+			_ handlers[item.type]
+				@ item
+				@ ittf_f
+				@ ctx
+		$append exit
+			set ctx.isFunctionCall = false
+
+	handler( params )
+		$append enter
+		elif item.type === 'delimiter'
+		elif ['variable', 'dimension', 'percentage', 'function'].indexOf(item.type) > -1
+			_ handlers[item.type]
+				@ item
+				@ parent
+				@ ctx
+		elif item.type === 'declaration'
+			handle_go( declaration )
+
+	handler( arguments )
+		$append enter
+			var args = getArguments(node)
+			foreach arg in args
+				# log 'arg.length', arg.length + '/' + args.length
+				if arg.length == 1
+					_ handlers['argument']
+						{
+							@ content arg 
+						@ parent
+						@ ctx
+				else
+					var ittfNode
+						_ createIttfNode
+								@ 'expr'
+								@ ''
+								@ parent
+					_ handlers['argument']
+						{
+							@ content arg 
+						@ ittfNode
+						@ ctx
+			return
+
+	handler( argument )
+		parentheses( parent )
+		handle( operator )
+		ident_literal( )
+		elif primitive_types.indexOf(item.type) > -1
+			_ primitives[item.type]
+				@ item
+				@ parent
+				@ ctx
+		elif ['variable', 'dimension', 'percentage', 'function'].indexOf(item.type) > -1
+			_ handlers[item.type]
+				@ item
+				@ parent
+				@ ctx
+		elif item.type === 'interpolation'
+			_ handlers[item.type]
+				@ item
+				@ parent
+				@ ctx
+		elif item.type === 'declaration'
+			handle_go( declaration )
+
+	handler( interpolation )
+		$append enter
+			var ittfNode
+				_ createIttfNode
+					@ '#{'
+					@ ''
+					@ parent
+		handle( variable, ittfNode )
+
+	var primitives = {}
+
+	primitive( string )
+		_ createIttfNode
+			@ '"'
+			@ codifyInterpolation(node.content.substr(1,node.content.length-2))
+			@ parent
+	
+	primitive( literal )
+		if ['true', 'false', 'none', 'null', 'and', 'or'].indexOf(node.content) > -1
+			_ createIttfNode
+				iif node.content === 'and'
+					then '&&'
+					else
+						iif node.content === 'or'
+							then '||'
+							else node.content
+				@ ''
+				@ parent
+		else
+			_ createIttfNode
+				@ 'l'
+				@ node.content
+				@ parent
+	
+	primitive( number )
+		_ createIttfNode
+			@ node.content
+			@ ''
+			@ parent
+	
+	primitive( color )
+		_ createIttfNode
+			@ '#'
+			@ node.content
+			@ parent
+
+	function isMap
+		param node
+		if node.type !== 'parentheses'
+			return false
+		if node.content.length === 0
+			return true
+		foreach item in node.content
+			if item.type === 'operator' && item.content === ':'
+				return true
+		return false
+
+	function getType
+		param name
+		param node
+		foreach item in node.content
+			if item.type === name
+				return item
+		return null
+
+	function getIdent
+		param node
+		foreach item in node.content
+			if item.type === 'ident'
+				return item.content
+		return null
+
+	function getLiteral
+		param node
+		if node.type !== 'value'
+			return null
+		if node.content.length === 0
+			return null
+		var ret = []
+		foreach item in node.content
+			if ['ident', 'string', 'space', 'default'].indexOf(item.type) > -1 || (item.type == 'operator' && item.content === ',')
+				if item.type != 'default'
+					_ ret.push(item.content)
+			else
+				return null
+		return ret.join('')
+
+	function getArguments
+		param node
+		var ret = []
+		var current = []
+		foreach item in node.content
+			if item.type === 'space'
+			elif item.type === 'delimiter'
+				_ ret.push(current)
+				set current = []
+			else
+				_ current.push(item)
+		_ ret.push(current)
+		return ret
+
+	function getValidName
+		param name
+		# return verify.replaceAll(name, '-', '_')
+		var ss = name.split('-')
+		for var i=1; i<ss.length; i++
+			set ss[i] = ss[i][0].toUpperCase() + ss[i].substr(1)
+		return ss.join('')
+
+	function createIttfNode
+		param tag
+		param name
+		param parent
+		return
+			_ parent.addChild
+				@ tag
+				@ name && name.type ? '*** ' + name.type : name
+
+	function codifyInterpolation
+        param template
+        param lDel
+        param rDel
+        if verify.isEmpty(template)
+			return ''
+		var regex = new RegExp("#\{[^#\{\}]+\}", "g")
+		return 
+			_ template.replace
+				@ regex
+				function 
+					param placeholder
+					# log '==================== codifyInterpolation.placeholder', placeholder
+					var key = placeholder.slice(2, -1)
+					set key
+						_ key.replace
+							@ /\$\w+/g
+							function 
+								param placeholder
+								# log '==================== codifyInterpolation.placeholder', placeholder
+								return placeholder.substr(1)
+					return '" + ' + key + ' + "'    

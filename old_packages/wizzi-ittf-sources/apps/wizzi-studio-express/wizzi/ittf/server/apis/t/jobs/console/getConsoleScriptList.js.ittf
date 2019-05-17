@@ -1,0 +1,27 @@
+﻿$group
+
+	@ getConsoleScriptList
+		function
+			param options
+			param callback
+
+			function cb_list
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								@ jsmodels jobsStore.consoleScriptList
+						@ status
+							_ success
+								@ 'Got console script list'
+
+			if jobsStore.consoleScriptList && !options.refresh
+				return
+					_ cb_list
+
+			set jobsStore.consoleScriptList
+				_ paths.getConsoleIttfDocuments
+
+			return
+				_ cb_list

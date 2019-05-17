@@ -1,0 +1,43 @@
+﻿demo_module( wizzi_job_mongodb_level_0_step_1_exec )
+
+	var testMongodbUri = 'mongodb://localhost:27017/test'
+	var testMongodbBaseFolder = 'c:/wizzifactory/users'
+	
+	_ wizzi.executeWizziJob
+		{
+			@ user 'stefi'
+			@ role 'admin'
+			@ storeKind 'mongodb'
+			@ config
+				{
+					@ wfBaseFolder testMongodbBaseFolder
+					@ storeUri testMongodbUri
+					@ storeBaseFolder testMongodbBaseFolder
+					@ plugins
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+							@ 'wizzi-html'
+							@ 'wizzi-docs'
+			@ job
+				{
+					@ name 'mongodb.level_0.step_1'
+					@ ittfDocumentUri
+						_ path.join
+							@ 'db://stefi/demo/wizzijob'
+							@ 'level_0'
+							@ 'step_1'
+							@ 'step_1.wfjob.ittf'
+					@ productionOptions
+						_ wizzi.productionOptions
+							{
+								@ indentSpaces 4
+								@ basedir __dirname
+								@ verbose 2
+					@ globalContext
+						{
+		function
+			param err
+			if err
+				log "Error executing wizzi instance job", err
+			log 'Wizzi instance job mongodb.level_0.step_1 SUCCESSFULLY executed'

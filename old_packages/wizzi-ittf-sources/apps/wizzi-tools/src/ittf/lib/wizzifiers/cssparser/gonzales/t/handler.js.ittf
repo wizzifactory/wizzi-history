@@ -1,0 +1,30 @@
+﻿$group
+	$params name
+
+	set handlers.${name}
+		function
+			param node
+			param parent
+			param ctx
+			# log node.type + (node.content && node.content.trim ? '/' + node.content : ''), parent.tag
+			$hook enter
+			foreach item in node.content
+				# log 'handler.${name}.item.type', item.type, parent.tag, parent.name
+				$hook start_loop
+				if false
+				$hook
+				elif item.type === 'space'
+				elif item.type === 'singlelineComment'
+					_ createIttfNode
+						@ '//'
+						@ item.content
+						@ parent
+				else
+					var msg = item.type + (item.content && item.content.trim ? '/' + item.content : '')
+					# log 'handler.${name}.msg', msg, parent.tag
+					_ createIttfNode
+						@ '*** unknown'
+						@ msg + ' from ${name}, parent.type: ' + node.type + '/ittf: ' + parent.tag
+						@ parent
+			$hook exit
+

@@ -1,0 +1,38 @@
+﻿$group
+
+	var conditionals
+		[
+			{
+				@ code '10 > 9 ? 1 : 0'
+				@ expected_number 1
+			{
+				@ code 'var x = 10, y = 0;
+					\b if ( x > 5 ) {
+					\b     y += 2;
+					\b }
+					\b return y;'
+				@ expected_number 2
+			{
+				@ code 'var x = 10, y = 0;
+					\b if ( x > 15 ) {
+					\b     y += 2;
+					\b } else {
+					\b     y -= 2;
+					\b }
+					\b return y;'
+				@ expected_number -2
+			
+			$*  TODO switch not implemented yet
+			{
+				@ code 'var x = 10, y = 0;
+					\b  switch (x) {
+					\b    case 2:
+					\b      y--;
+					\b    case 4:
+					\b      y++;
+					\b    default:
+					\b      y += 6;
+					\b  }
+					\b return y;'
+				@ expected_number 6
+			*$

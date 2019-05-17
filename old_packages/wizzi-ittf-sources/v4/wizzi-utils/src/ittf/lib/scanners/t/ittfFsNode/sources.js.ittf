@@ -1,0 +1,39 @@
+﻿$group
+
+	m setSourcePaths
+		param options
+		set this.ittfBasePath = options.ittfBasePath
+		set this.jsBaseCodePath = options.jsBaseCodePath
+		log 'wizzi-utils.ittfFsNode.ittfBasePath, jsBaseCodePath', options.ittfBasePath, options.jsBaseCodePath
+	
+	m getIttfSource
+		var r = this.root()
+		# log 'wizzi-utils.ittfFsNode.getIttfSource', r.ittfBasePath, this.parts.join('/')
+		if verify.isNotEmpty(r.ittfBasePath)
+			return
+				_ ittfHtmlPrettifier
+					_ path.join
+						@ r.ittfBasePath
+						@ this.parts.join('/')
+					{
+						@ ittfFsNode this
+						@ ittfBasePath (r.ittfBasePath)
+		else
+			return
+				{
+					@ __is_error true
+	
+	m getJsCode
+		var r = this.root()
+		# cut '.ittf' from basename
+		var name = this.basename.substr(0, this.basename.length - 5)
+		log r.jsBaseCodePath, this.parts.slice(1, this.parts.length -1).join('/'), name
+		if this.schema == 'js'
+			return
+				_ file.read
+					_ path.join
+						@ r.jsBaseCodePath
+						@ this.parts.slice(2, this.parts.length -1).join('/')
+						@ name
+		else
+			return null

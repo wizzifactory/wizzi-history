@@ -1,0 +1,14 @@
+﻿r-component( AstPanel )
+
+	style
+		@ root
+			{
+
+	render
+		prop codeAst
+
+		set codeAst = codeAst || {}
+
+		div
+			pre
+				+ { JSON.stringify(codeAst, null, 2) }

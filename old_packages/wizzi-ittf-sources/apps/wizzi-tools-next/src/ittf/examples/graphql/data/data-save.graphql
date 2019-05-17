@@ -1,0 +1,247 @@
+﻿{
+  user(id: 4) {
+    name
+  }
+}
+
+mutation {
+  likeStory(storyID: 12345) {
+    story {
+      likeCount
+    }
+  }
+}
+
+{
+  user(id: 4) {
+    id
+    name
+    profilePic(width: 100, height: 50)
+  }
+}
+
+{
+  user(id: 4) {
+    id
+    name
+    smallPic: profilePic(size: 64)
+    bigPic: profilePic(size: 1024)
+  }
+}
+
+{
+  zuck: user(id: 4) {
+    id
+    name
+  }
+}
+
+query withFragments {
+  user(id: 4) {
+    friends(first: 10) {
+      ...friendFields
+    }
+    mutualFriends(first: 10) {
+      ...friendFields
+    }
+  }
+}
+
+fragment friendFields on User {
+  id
+  name
+  profilePic(size: 50)
+}
+
+query FragmentTyping {
+  profiles(handles: ["zuck", "cocacola"]) {
+    handle
+    ...userFragment
+    ...pageFragment
+  }
+}
+
+fragment userFragment on User {
+  friends {
+    count
+  }
+}
+
+fragment pageFragment on Page {
+  likers {
+    count
+  }
+}
+
+query inlineFragmentTyping {
+  profiles(handles: ["zuck", "cocacola"]) {
+    handle
+    ... on User {
+      friends {
+        count
+      }
+    }
+    ... on Page {
+      likers {
+        count
+      }
+    }
+  }
+}
+
+query inlineFragmentNoType($expandedInfo: Boolean) {
+  user(handle: "zuck") {
+    id
+    name
+    ... @include(if: $expandedInfo) {
+      firstName
+      lastName
+      birthday
+    }
+  }
+}
+
+mutation {
+  sendEmail(message: """
+    Hello,
+      World!
+
+    Yours,
+      GraphQL.
+  """)
+}
+
+{
+  field(arg: null)
+  field
+}
+
+{
+  nearestThing(location: { lat: -53.211, lon: 12.43 })
+}
+
+query getZuckProfile($devicePicSize: Int) {
+  user(id: 4) {
+    id
+    name
+    profilePic(size: $devicePicSize)
+  }
+}
+
+type Tweet {
+    id: ID ! # The tweet text. No more than 140 characters! body: String # When the tweet was published date: Date # Who published the tweet Author: User # Views, retweets, likes, etc Stats: Stat
+}
+
+type User {
+    id: ID ! username: String first_name: String last_name: String full_name: String name: String @deprecated avatar_url: Url
+}
+
+type Stat {
+    views: Int likes: Int retweets: Int responses: Int
+}
+
+type Notification {
+    id: ID date: Date type: String
+}
+
+type Meta {
+    count: Int
+}
+
+extend type Story {
+  isHiddenLocally: Boolean
+}
+
+interface NamedEntity {
+  name: String
+}
+
+interface ValuedEntity {
+  value: Int
+}
+
+extend interface NamedEntity {
+  nickname: String
+}
+
+type Person implements NamedEntity {
+  name: String
+  age: Int
+}
+
+type Business implements NamedEntity & ValuedEntity {
+  name: String
+  value: Int
+  employeeCount: Int
+}
+
+scalar Url scalar Date type Query {
+    Tweet(id: ID!): Tweet Tweets(limit: Int, skip: Int, sort_field: String, sort_order: String): [Tweet]
+    TweetsMeta: Meta
+    User(id: ID!): User
+    Notifications(limit: Int): [Notification]
+    NotificationsMeta: Meta
+}
+
+type Mutation {
+    createTweet (
+        body: String
+    ): Tweet deleteTweet(id: ID!): Tweet markTweetRead(id: ID!): Boolean
+}
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+
+input Point2D {
+  x: Float
+  y: Float
+}
+
+directive @example on
+  | FIELD
+  | FRAGMENT_SPREAD
+  | INLINE_FRAGMENT
+
+  directive @example on FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+type SomeType {
+  field(arg: Int @example): String @example
+}
+
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+query myQuery($someTest: Boolean) {
+  experimentalField @skip(if: $someTest)
+}
+
+directive @deprecated(
+  reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE
+type ExampleType {
+  newField: String
+  oldField: String @deprecated(reason: "Use `newField`.")
+}
+
+input ExampleInputObject {
+  a: String
+  b: Int!
+}
+
+union SearchResult =
+  | Photo
+  | Person
+
+schema {
+  query: MyQueryRootType
+  mutation: MyMutationRootType
+}
+
+type MyQueryRootType {
+  someField: String
+}
+
+type MyMutationRootType {
+  setSomeField(to: String): String
+}

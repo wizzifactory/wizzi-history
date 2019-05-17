@@ -1,0 +1,21 @@
+﻿{
+	$include app-options
+
+	name "${app.name}"
+	version "${app.version}"
+	description "${app.description}"
+	author "${app.author}"
+	license "${app.license}"
+	
+	main "index.js"
+
+	proxy "http://localhost:3014/"
+	
+	{ scripts
+		app/package/scripts(&app)
+	
+	{ dependencies
+		app/package/dependencies(&app)
+
+	{ devDependencies
+		app/package/devDependencies(&app)

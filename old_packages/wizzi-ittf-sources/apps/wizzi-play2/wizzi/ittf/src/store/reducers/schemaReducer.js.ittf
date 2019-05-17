@@ -1,0 +1,132 @@
+﻿module
+    kind react
+	+
+	import_rsf_actions( LOAD_APP )
+	import { 
+		\b SCHEMA_SELECTION,
+		\b EXAMPLE_ITTF_CONTENT_CHANGED,
+		\b FRAGMENT_ITTF_CONTENT_CHANGED,
+		\b SNIPPET_CODE_CONTENT_CHANGED,
+		\b SELECT_ITTF_KIND
+		\b } from '../actions'
+	import_rsf_actions( SELECT_EXAMPLE )
+	import_rsf_actions( ADD_EXAMPLE )
+	import_rsf_actions( RENAME_EXAMPLE )
+	import_rsf_actions( REMOVE_EXAMPLE )
+	import_rsf_actions( SELECT_FRAGMENT )
+	import_rsf_actions( ADD_FRAGMENT )
+	import_rsf_actions( RENAME_FRAGMENT )
+	import_rsf_actions( REMOVE_FRAGMENT )
+	import_rsf_actions( SELECT_SNIPPET )
+	import_rsf_actions( ADD_SNIPPET )
+	import_rsf_actions( RENAME_SNIPPET )
+	import_rsf_actions( REMOVE_SNIPPET )
+	+
+	const schemaInitialState
+		{
+			@ schemas
+				{ 
+					{ js
+						[ examples
+						[ fragments
+						[ snippets
+			@ selectedIttfKind 'examples'
+			@ selectedSchema 'js'
+			@ filteredExamples []
+			@ filteredFragments []
+			@ filteredSnippets []
+			@ isLoadingContent false
+			@ selectedExample ''
+			@ selectedFragment ''
+			@ selectedSnippet ''
+			@ ittfContent ''
+			@ codeContent ''
+	+
+	r( schema, schemaInitialState )
+
+		c( LOAD_APP_SUCCESS
+			{
+				@ ...state
+				@ schemas action.initialData.schemas
+	
+		c( SCHEMA_SELECTION
+			$append preprocess
+				var exampleObject, fragmentObject, snippetObject
+				const s = state.schemas[action.schema]
+				if s
+					if s.examples && s.examples.length > 0 
+						set exampleObject = s.examples[0]
+					if s.fragments && s.fragments.length > 0
+						set fragmentObject = s.fragments[0]
+					if s.snippets && s.snippets.length > 0
+						set snippetObject = s.snippets[0]
+			{
+				@ ...state
+				@ selectedSchema action.schema
+				@ filteredExamples s ? s.examples : []
+				@ selectedExample exampleObject ? exampleObject.name : 'default'
+				@ filteredFragments s ? s.fragments : []
+				@ selectedFragment fragmentObject ? fragmentObject.name : 'default'
+				@ filteredSnippets s ? s.snippets : []
+				@ selectedSnippet snippetObject ? snippetObject.name : 'default'
+				@ ittfContent ''
+
+		c( SELECT_ITTF_KIND
+			{
+				@ ...state
+				@ selectedIttfKind action.selectedIttfKind
+		
+		c( SELECT_EXAMPLE_REQUEST
+			{
+				@ ...state
+				@ isLoadingContent true
+
+		c( SELECT_EXAMPLE_SUCCESS
+			{
+				@ ...state
+				@ selectedExample action.example
+				@ ittfContent action.ittfContent
+				@ isLoadingContent false
+
+		c( EXAMPLE_ITTF_CONTENT_CHANGED )
+			{
+				@ ...state
+				@ ittfContent action.ittfContent
+		
+		c( SELECT_FRAGMENT_REQUEST
+			{
+				@ ...state
+				@ isLoadingContent true
+
+		c( SELECT_FRAGMENT_SUCCESS
+			{
+				@ ...state
+				@ selectedSnippet action.fragment
+				@ ittfContent action.ittfContent
+				@ isLoadingContent false
+
+		c( FRAGMENT_ITTF_CONTENT_CHANGED )
+			{
+				@ ...state
+				@ ittfContent action.ittfContent
+
+		c( SELECT_SNIPPET_REQUEST
+			{
+				@ ...state
+				@ isLoadingContent true
+
+		c( SELECT_SNIPPET_SUCCESS
+			{
+				@ ...state
+				@ selectedSnippet action.snippet
+				@ codeContent action.codeContent
+				@ isLoadingContent false
+
+		c( SNIPPET_CODE_CONTENT_CHANGED )
+			{
+				@ ...state
+				@ codeContent action.codeContent
+
+		listCrud( Example )
+		listCrud( Fragment )
+		listCrud( Snippet )

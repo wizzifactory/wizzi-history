@@ -1,0 +1,64 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    +  ids: undefined undefined
+    var myname = 'html.document.js_statement' ids: undefined undefined
+    +  ids: undefined undefined
+    var zvar = require('../../../js/module/gen/statements/var') ids: undefined undefined
+    var objects = require('../../../js/module/gen/statements/objects') ids: undefined undefined
+    var zfunction = require('../../../js/module/gen/statements/function') ids: undefined undefined
+    var zclass = require('../../../js/module/gen/statements/class') ids: undefined undefined
+    var ifswitch = require('../../../js/module/gen/statements/if-switch') ids: undefined undefined
+    var statements = require('../../../js/module/gen/statements/statements') ids: undefined undefined
+    var expressions = require('../../../js/module/gen/statements/expressions') ids: undefined undefined
+    var call = require('../../../js/module/gen/statements/call') ids: undefined undefined
+    var loops = require('../../../js/module/gen/statements/loops') ids: undefined undefined
+    var exceptions = require('../../../js/module/gen/statements/exceptions') ids: undefined undefined
+    var html = require('../../../js/module/gen/statements/html') ids: undefined undefined
+    var debug = require('../../../js/module/gen/statements/debug') ids: undefined undefined
+    +  ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    set md.stm = {} ids: undefined undefined
+    +  ids: undefined undefined
+    _ zvar.load(md) ids: undefined undefined
+    _ objects.load(md) ids: undefined undefined
+    _ zfunction.load(md) ids: undefined undefined
+    _ zclass.load(md) ids: undefined undefined
+    _ ifswitch.load(md) ids: undefined undefined
+    _ statements.load(md) ids: undefined undefined
+    _ expressions.load(md) ids: undefined undefined
+    _ call.load(md) ids: undefined undefined
+    _ loops.load(md) ids: undefined undefined
+    _ exceptions.load(md) ids: undefined undefined
+    _ html.load(md) ids: undefined undefined
+    _ debug.load(md) ids: undefined undefined
+    +  ids: undefined undefined
+    set md.genItem ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        var stm = md.stm[model.wzElement] ids: undefined undefined
+        if stm ids: undefined undefined
+          _ stm(model, ctx) ids: undefined undefined
+        else  ids: undefined undefined
+          throw ctx.error(myname + '. Unknown statement tag/element: ' + model.wzTag + '/' + model.wzElement, model) ids: undefined undefined
+    set md.genItems ids: undefined undefined
+      function  ids: undefined undefined
+        param items ids: undefined undefined
+        param ctx ids: undefined undefined
+        param options ids: undefined undefined
+        var  ids: undefined undefined
+          decl opt = options || {} ids: undefined undefined
+          decl from = opt.from || 0 ids: undefined undefined
+          decl indent = typeof opt.indent === 'undefined' ? true : opt.indent ids: undefined undefined
+        if indent ids: undefined undefined
+          _ ctx.indent() ids: undefined undefined
+        foreach item in items ids: undefined undefined
+          _ md.genItem(item, ctx) ids: undefined undefined
+        if indent ids: undefined undefined
+          _ ctx.deindent() ids: undefined undefined
+    set md.stm.codeline ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w(model.wzName) ids: undefined undefined
+        _ md.genItems(model.items, ctx) ids: undefined undefined

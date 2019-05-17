@@ -1,0 +1,20 @@
+﻿$group
+
+	@ xmlWizzify
+		function
+			param source
+			param callback
+
+			_ tools.xmlWizzify
+				@ source
+				{
+				f_cb_api( result )
+					_ callback
+						@ null
+						{
+							@ data
+								{
+									@ wizzified result
+							@ status
+								_ success
+									@ 'Xml code wizzified'

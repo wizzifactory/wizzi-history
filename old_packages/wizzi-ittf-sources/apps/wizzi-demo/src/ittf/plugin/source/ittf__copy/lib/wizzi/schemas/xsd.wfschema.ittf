@@ -1,0 +1,119 @@
+﻿wfschema xsd
+
+	# Example of core schema that targets
+	# the XML Schema Definition Language (XSD) 1.1.
+
+	export-to json
+
+	e comment
+		# element annotation
+		# element documentation
+		# element appinfo
+		tag #
+		r comment/s
+	
+	e item
+		a id
+		a name
+		a ref
+		r comment/s
+		r item/s
+
+	e xsd : item
+		is-root
+		# Content: (include | import | redefine)*,
+		#  (simpleType | complexType | group | attributeGroup) | element | attribute | notation)*
+		a_tag( targetNamespace, target-namespace )
+			# type anyURI
+		a version
+		a language
+			# type xml:lang
+		a xmlns
+		a_tag( attributeFormDefault, attribute-form-default )
+			default unqualified
+			restrict
+				enum qualified 
+				enum unqualified
+		a_tag( elementFormDefault, element-form-default )
+			default unqualified
+			restrict
+				enum qualified 
+				enum unqualified
+		a final
+			# Used to constrain derivations on any type of the schema
+			restrict
+				enum #all
+					# prevents derivations at all
+				enum restriction
+					# prevents derivations by restriction
+				enum extension
+					# prevents derivations by extension
+				enum list
+					# prevents derivations by list
+				enum union
+					# prevents derivations by union
+		a blockDefault
+			tag block-default
+			# Used to constrain the replacement of the name of the complex type in derivations???
+			restrict
+				enum #all
+					# prevents replacement at all
+				enum restriction
+					# prevents replacement on derivations by restriction
+				enum extension
+					# prevents replacement on derivations by extension
+				enum substitution
+					# prevents replacement on derivations by substitution
+
+	e xmlns : item
+
+	e include : item
+		# Includes the specified schema document in the target namespace
+		# of the containing schema.
+		a_tag( schemaLocation, schema-location )
+			# The URI reference to the location of a schema document 
+			# to include in the target namespace of the containing schema.
+	
+	e import : item
+		
+		a namespace
+			# The URI reference to the namespace to import.
+			# The containing schema document may contain qualified references 
+			# to schema components in that namespace (through one or more prefixes declared 
+			# with xmlns attributes).
+			# If absent the containing schema can contain unqualified references
+			# to components in the imported namespace.
+		
+		a_tag( schemaLocation, schema-location )
+			# The URI reference to the location of a schema document for the imported namespace.
+			# If absent, the identification of the schema
+			# for the imported namespace will be determined by the XML document that 
+			# is an instance of the containing schema or by the user or application that is processing it.
+	
+	e redefine : item
+
+		# Allows items obtained from external schemas
+		# to be redefined in the current schema.
+		# Content: (simpleType | complexType | group | attributeGroup)*
+
+		a_tag( schemaLocation, schema-location )
+			# A URI reference to the location of a schema document.
+
+	e notation : item
+
+		# Describe the format of non-XML data within an XML document. 
+		# Is a reconstruction of XML 1.0 NOTATION declarations.
+		a public
+			# A URI reference corresponding to the public identifier. 
+			# The identifier in the document prolog that gives the name of a DTD or external entity.
+		a system
+			# A URI reference corresponding to the system identifier. 
+			# A local, system-dependent identifier for a document, 
+			# DTD, or external entity. The name must be a URI.
+
+	e restrict : item
+	e extend : item
+
+	$include xsd/attributes
+	$include xsd/elements
+	$include xsd/types

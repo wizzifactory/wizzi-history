@@ -1,0 +1,38 @@
+﻿module
+	kind es6
+
+	$include app-options
+
+	const path = require('path');
+
+	set module.exports
+		{
+			[ entry
+				@ './src/index.js'
+			
+			{ module
+				[ rules
+					app/webpack/module.rules(&app)
+
+			{ resolve
+				[ extensions
+					@ '*'
+					@ '.js'
+					$if app.useReact
+						@ '.jsx'
+			
+			{ output
+				@ path path.resolve(__dirname, 'dist')
+				@ filename '${app.name}.js'
+				$if app.isLibrary
+					@ library '${app.libraryName}'
+					@ libraryTarget 'var'
+			
+			{ node
+				@ fs 'empty'
+				@ module 'empty'
+
+			[ plugins
+			
+			{ devServer
+				@ contentBase './dist'

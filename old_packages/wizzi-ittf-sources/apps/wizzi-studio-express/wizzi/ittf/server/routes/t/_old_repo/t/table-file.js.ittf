@@ -1,0 +1,35 @@
+﻿$group
+
+	function sortFiles
+		param left, right
+		if left.kind != right.kind
+			return left.kind - right.kind
+		return left.basename.localeCompare(right.basename)
+	
+	var items = ctx.items.sort(sortFiles)
+
+	table
+		thead
+			tr
+				th
+				th basename
+				th _id
+		tbody
+			foreach item in items
+				tr
+					td
+						if item.kind == 0
+							svg-folder()
+						else
+							svg-file()
+					td
+						if ctx.folderId
+							a {{ item.basename }}
+								href /repo/{{ ctx.userId }}/{{ ctx.projectId }}/{{ ctx.folderId }}/{{ item.basename }}
+						elif ctx.projectId
+							a {{ item.basename }}
+								href /repo/{{ ctx.userId }}/{{ ctx.projectId }}/{{ item.basename }}
+						else
+							a {{ item.basename }}
+								href /repo/{{ ctx.userId }}/{{ item.basename }}
+					td {{ item._id }}

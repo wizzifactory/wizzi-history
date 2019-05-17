@@ -1,0 +1,145 @@
+﻿$group
+
+	#
+		# Helper method
+		# called by jswizzi.jsWizziContext.set_MTreeBrickEvalContext
+		# for retrieving the evaluation context of 
+		# an mTreeBrick by its brickKey.
+
+	m getMTreeBrickEvalContext
+		param brickKey
+		param line
+        
+		# mTreeBrick eval contexts are stored in the mTreeBrickDatas 
+		# map of the wizzi-mtree.loader.loadHistory
+		var mTreeBrickData = this.loadHistory.getMTreeBrickData(brickKey)
+        
+		var mTreeBrick_EvalContext
+			
+		if mTreeBrickData.evalContext != null
+				
+			# An eval context object has already been created for this mTreeBrickData
+			set mTreeBrick_EvalContext = mTreeBrickData.evalContext
+			checked_call_return( notUsed
+				_ this._updateEvalContext
+					@ mTreeBrickData
+					@ mTreeBrick_EvalContext
+			
+		else
+			
+			set mTreeBrick_EvalContext = new ContextData(1, brickKey)
+			# log 'JsWizziEvalHelper created mTreeBrick_EvalContext for', brickKey, 'id', mTreeBrickData.mTreeBrick.id, mTreeBrickData.evalContext, mTreeBrickData.ittfDocumentUri
+        
+			_ mTreeBrick_EvalContext.setValue
+				@ '__dirname'
+				@ path.dirname(mTreeBrickData.ittfDocumentUri)
+			_ mTreeBrick_EvalContext.setValue
+				@ '__filename'
+				@ mTreeBrickData.ittfDocumentUri
+
+			checked_call_return( notUsed
+				_ this._updateEvalContext
+					@ mTreeBrickData
+					@ mTreeBrick_EvalContext
+
+			set mTreeBrickData.evalContext = mTreeBrick_EvalContext
+			
+		return mTreeBrick_EvalContext
+
+	#
+		# A refresh could be need for these reasons
+		# 
+	m _updateEvalContext
+		param mTreeBrickData
+		param mTreeBrick_EvalContext
+			
+		# If the mTreeBrick do not receives parameters
+		# a refresh of the eval context is not required 
+		
+		if verify.isEmpty(mTreeBrickData.mTreeBrick.$params)
+			return
+				
+		var args = mTreeBrickData.mTreeBrick.$args 
+				
+		if args && args.indexOf('${') > -1
+					
+			# Mixin call arguments may contain IttfMacros, 
+				# in that case they must be interpolated.
+				# mTreeBrickData.mTreeBrick.$mixerBrickKey is the brickKey of the 
+				# mixer mTreeBrick. We need its eval context for interpolation.
+			checked_call_return( mixer_mTreeBrick_EvalContext
+				_ this.getMTreeBrickEvalContext
+					@ mTreeBrickData.mTreeBrick.$mixerBrickKey
+					
+			try 
+				# Then we create a temporary JsWizziContext and load it with the
+				# context values of both the global context and the mixer mTreeBrick
+				# eval context.
+				if JsWizziContext == null
+					set JsWizziContext = require('./jsWizziContext')
+				var interpolateArgsContext = new JsWizziContext()
+				_ interpolateArgsContext.setValues(this.jsWizziContext.globalContext.getSettableValues())
+				_ interpolateArgsContext.setValues(mixer_mTreeBrick_EvalContext.getValues())
+				
+				# TODO the values of the mixer can be modified by the mixed during interpolation
+				#      if so, what does it means? Needs investigation.
+
+				# then we interpolate the arguments passed to the mixed mTree brick
+				set args = interpolate(args, interpolateArgsContext)
+				
+				# log 'JsWizziEvalHelper interpolateArgs', mTreeBrickData.mTreeBrick.$args, args
+					
+			catch ex
+				var mixerMTreeBrickData = this.loadHistory.getMTreeBrickData(mTreeBrickData.mTreeBrick.$mixerBrickKey)
+				var mixerUri = mixerMTreeBrickData ? mixerMTreeBrickData.ittfDocumentUri : 'root model';
+				var exMessage = ex ? ex.message : 'not available'
+				var exStack = ex ? ex.stack : 'not available'
+				return 
+					_ error
+						@ 'InterpolationError'
+						@ '_updateEvalContext'
+						@ 'Exception interpolating mixer args: ' + args +
+							\b ', mTreeBrick uri: ' + mTreeBrickData.ittfDocumentUri +
+							\b ', mixerMTreeBrick uri: ' + mixerUri +
+							\b ', ex message: ' + exMessage +
+							\b ', stack: ' + exStack
+						@ ex
+        
+		#
+			# With the interpolated values of the arguments we may now calculate the 
+			# parameters received  by the mixed mTreeBrick, applying type conversions and default values
+		
+		checked_call_return( calculatedParamValues
+			_ mTreeBrickData.mTreeBrick.calcParamValues
+				@ args
+            
+		# We have to load the calculated parameters on the eval context
+		# of the mixed mTreeBrick brick
+		
+		foreach item in calculatedParamValues
+					
+			if item.isByRef
+				
+				# The argument is passed by reference, so the parameter
+				# value must be retrieved from the eval context of the mixer mTreeBrick 
+				# and then added to the mixed one.
+				
+				checked_call_return( mixer_mTreeBrick_EvalContext
+					_ this.getMTreeBrickEvalContext
+						@ mTreeBrickData.mTreeBrick.$mixerBrickKey
+				_ mTreeBrick_EvalContext.setValue
+					@ item.name
+					@ mixer_mTreeBrick_EvalContext.getValue(item.name)
+						
+				# VIA set mTreeBrickData.byRefParams = (mTreeBrickData.byRefParams || [])
+				# VIA _ mTreeBrickData.byRefParams.push
+				# VIA 	@ item.name
+					
+			else 
+				
+				# The argument is passed by value, so the calculated
+				# parameter can be added to the eval context of the mixed mTreeBrick
+				
+				_ mTreeBrick_EvalContext.setValue
+					@ item.name
+					@ item.value

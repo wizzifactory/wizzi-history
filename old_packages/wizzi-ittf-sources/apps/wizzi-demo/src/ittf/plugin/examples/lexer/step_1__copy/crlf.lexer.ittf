@@ -1,0 +1,42 @@
+﻿lexer second
+
+	e spaces
+		+
+			[
+				blank
+				: \t
+				: \r
+				: \n
+				: \f
+
+	e nl
+		[
+			: \n
+			: \r
+			: \f
+
+	e alfa
+		[ a-zA-Z
+
+	e nonascii
+		[ \u0240-\uffff
+
+	tk Whitespace
+		skipped
+		line-breaks
+		pattern
+			+
+				ref spaces
+
+	tk Alfa
+		pattern
+			+
+				ref alfa
+
+	tk Orient
+		pattern
+			+
+				ref nonascii
+
+	test aa\tbb\ncc
+		+ \u03A9\u03A9\u03A9 biblos

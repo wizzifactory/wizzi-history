@@ -1,0 +1,161 @@
+﻿$group
+
+	m getProjects
+		param userName
+		param callback
+		# returns
+		# { projects
+		
+		var projects = projectsCache.get(userName)
+		
+		if projects
+			r_cb( projects )
+		
+		_ this.fb.getDocument
+			_ this.pathNames.projectsPath
+				@ userName
+			f_cb( projects )
+				log 'WizziStore.getProjects', projects
+				if projects
+					_ projectsCache.set(userName, projects)
+				r_cb( projects || {} )
+
+	m getProject
+		param userName
+		param name
+		param callback
+		
+		_ this.getProjects
+			@ userName
+			f_cb( projects )
+				const item = projects[name]
+				log 'WizziStore.getProject', 'got', item
+				r_cb( item )
+
+	m setProject
+		param userName
+		param name
+		param content
+		param callback
+		
+		const that = this
+		_ this.getProjects
+			@ userName
+			f_cb( projects )
+				
+				var updated, inserted
+				if projects[name]
+					set projects[name] = content
+					set updated++
+				else
+					set projects[name] = content
+					set inserted++
+				
+				_ projectsCache.set(userName, projects)
+				
+				_ that.setSchemaProject
+					@ userName
+					@ name
+
+				_ that.updatesQueue.set
+					_ that.pathNames.projectsPath
+						@ userName
+					@ projects
+				
+				_ that.scheduleCloudUpdate
+				
+				const message = 'setProject successfull ' + userName + '/' + name
+				log 'message', message
+				const result
+					{
+						@ inserted inserted
+						@ updated updated
+						@ item projects[name]
+						@ schemas that.schemas
+						@ message message
+				r_cb( result )
+
+	m deleteProject
+		param userName
+		param name
+		param callback
+		
+		const that = this
+		_ this.getProjects
+			@ userName
+			f_cb( projects )
+				
+				if !projects[name]
+					r_cb_error( Error
+						@ 'Delete error. Project does not exists: ' + userName + '/' + name
+				
+				const dataItem = projects[name]
+				delete projects[name]
+				
+				_ projectsCache.set(userName, projects)
+				
+				_ that.removeSchemaProject
+					@ userName
+					@ name
+
+				_ that.updatesQueue.set
+					_ that.pathNames.projectsPath
+						@ userName
+					@ projects
+				
+				_ that.scheduleCloudUpdate
+				
+				const message = 'deleteProject successfull ' + userName + '/' + name
+				log message
+				const result
+					{
+						@ deleted 1
+						@ item dataItem
+						@ schemas that.schemas
+						@ message message
+				r_cb( result )
+
+	m renameProject
+		param userName
+		param oldName
+		param newName
+		param callback
+		
+		const that = this
+		_ this.getProjects
+			@ userName
+			f_cb( projects )
+				
+				if !projects[oldName]
+					r_cb_error( Error
+						@ 'Rename error. Project old name does not exists: ' + userName + '/' + oldName
+				
+				if projects[newName]
+					r_cb_error( Error
+						@ 'Rename error. Project new name already exists: ' + userName + '/' + newName
+				
+				set projects[newName] = projects[oldName]
+				
+				delete projects[oldName]
+				
+				_ projectsCache.set(userName, projects)
+				
+				_ that.renameSchemaProject
+					@ userName
+					@ oldName
+					@ newName
+
+				_ that.updatesQueue.set
+					_ that.pathNames.projectsPath
+						@ userName
+					@ projects
+				
+				_ that.scheduleCloudUpdate
+				
+				const message = 'renameProject successfull ' + userName + '/' + oldName + '/' + newName
+				log message
+				const result
+					{
+						@ schemas that.schemas
+						@ message message
+				r_cb( result )

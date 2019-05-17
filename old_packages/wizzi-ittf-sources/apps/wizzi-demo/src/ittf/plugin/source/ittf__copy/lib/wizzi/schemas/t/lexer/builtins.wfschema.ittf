@@ -1,0 +1,141 @@
+﻿$group
+
+	declare
+		var punctuationNames
+			{
+				@ ' '  'Space'
+				@ '\n' 'Newline'
+				@ '\r' 'Newline'
+				@ '\t' 'Tab'
+				@ '\f' 'FormFeed'
+				@ '!'  'ExclamationMark'
+				@ '"'  'QuotationMark'
+				@ '#'  'NumberSign'
+				@ '*'  'Asterisk'
+				@ '§'  'SectionSign'
+				@ '$'  'DollarSign'
+				@ '£'  'PoundSign'
+				@ '%'  'PercentSign'
+				@ '&'  'Ampersand'
+				@ '\'' 'Apostrophe'
+				@ '('  'LeftParenthesis'
+				@ ')'  'RightParenthesis'
+				@ '*'  'Asterisk'
+				@ '+'  'PlusSign'
+				@ ','  'Comma'
+				@ '-'  'HyphenMinus'
+				@ '.'  'FullStop'
+				@ '/'  'Solidus'
+				@ ':'  'Colon'
+				@ ';'  'Semicolon'
+				@ '<'  'LessThanSign'
+				@ '='  'EqualsSign'
+				@ '>'  'GreaterThanSign'
+				@ '?'  'QuestionMark'
+				@ '@'  'CommercialAt'
+				@ '['  'LeftSquareBracket'
+				@ ']'  'RightSquareBracket'
+				@ '^'  'CircumflexAccent'
+				@ '_'  'LowLine'
+				@ '{'  'LeftCurlyBracket'
+				@ '|'  'VerticalLine'
+				@ '}'  'RightCurlyBracket'
+				@ '~'  'Tilde'
+				@ '`'  'Backtick'
+
+	m getPunctuationName
+		param ch
+		if ch === 'blank'
+			return punctuationNames[' ']
+		else
+			return punctuationNames[ch]
+
+	declare
+		var unicodeRe = /\\u([\d\w]{4})/gi
+
+	m unescapeText
+		param text
+		if !text
+			return text
+		var hasUnicode = false
+		var sb = []
+		for var i=0; i<text.length; i++
+			if text[i] === '\\'
+				if text[i+1] === 'n'
+					_ sb.push('\n')
+					set i++
+				elif text[i+1] === 'r'
+					_ sb.push('\r')
+					set i++
+				elif text[i+1] === 't'
+					_ sb.push('\t')
+					set i++
+				elif text[i+1] === 'f'
+					_ sb.push('\f')
+					set i++
+				elif text[i+1] === '\\'
+					_ sb.push('\\')
+					set i++
+				elif text[i+1] === 'u'
+					set hasUnicode = true
+					_ sb.push('\\u')
+					set i++
+				else
+					_ sb.push(text[i])
+			else
+				_ sb.push(text[i])
+		if hasUnicode
+			return
+				_ sb.join('').replace
+					@ unicodeRe
+					function
+						param match
+						param grp
+						return
+							_ String.fromCharCode
+								_ parseInt
+									@ grp
+									@ 16
+		else
+			return sb.join('')
+
+	m escapeText
+		param text
+		if !text
+			return text
+		var sb = []
+		for var i=0; i<text.length; i++
+			if text[i] === '\n'
+				_ sb.push('\\n')
+			elif text[i] === '\r'
+				_ sb.push('\\r')
+			elif text[i] === '\t'
+				_ sb.push('\\t')
+			elif text[i] === '\f'
+				_ sb.push('\\f')
+			elif text[i] === '\\'
+				_ sb.push('\\\\')
+			elif text[i] === '\''
+				_ sb.push("\\\'")
+			elif text[i] === '\"'
+				_ sb.push('\\"')
+			else
+				if text[i].codePointAt(0) > 239
+					_ sb.push
+						_ unicodeEscape
+							@ text[i]
+				else
+					_ sb.push
+						@ text[i]
+		return sb.join('')
+
+	m unicodeEscape
+		param str
+		return
+			_ str.replace
+				@ /[\s\S]/g
+				function
+					param character
+					var escape = character.charCodeAt().toString(16)
+					var longhand = escape.length > 2
+					return '\\' + (longhand ? 'u' : 'x') + ('0000' + escape).slice(longhand ? -4 : -2)

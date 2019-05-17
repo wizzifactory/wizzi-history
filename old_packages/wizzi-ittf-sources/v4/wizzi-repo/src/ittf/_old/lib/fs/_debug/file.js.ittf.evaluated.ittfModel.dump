@@ -1,0 +1,240 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var fs = require('fs') ids: undefined undefined
+    var iconv = require('iconv-lite') ids: undefined undefined
+    var glob = require('glob') ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    var pathSeparatorRe = /[\/\\]/g ids: undefined undefined
+    set md.defaultEncoding = 'utf8' ids: undefined undefined
+    set md.preserveBOM = false ids: undefined undefined
+    set md.exists ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ fs.lstat ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param stat ids: undefined undefined
+            if err ids: undefined undefined
+              if err.code === 'ENOENT' ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ null ids: undefined undefined
+                    @ false ids: undefined undefined
+              else  ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback(err) ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ null ids: undefined undefined
+              _ stat.isFile() || stat.isDirectory() ids: undefined undefined
+    set md.isDirectory ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ fs.lstat ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param stat ids: undefined undefined
+            if err ids: undefined undefined
+              if err.code === 'ENOENT' ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ null ids: undefined undefined
+                    @ false ids: undefined undefined
+              else  ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback(err) ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ null ids: undefined undefined
+              _ stat.isDirectory() ids: undefined undefined
+    set md.isFile ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ fs.lstat ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param stat ids: undefined undefined
+            if err ids: undefined undefined
+              if err.code === 'ENOENT' ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ null ids: undefined undefined
+                    @ false ids: undefined undefined
+              else  ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback(err) ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ null ids: undefined undefined
+              _ stat.isFile() ids: undefined undefined
+    set md.read ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        _ fs.readFile ids: undefined undefined
+          @ String(path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param content ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if options.encoding !== null ids: undefined undefined
+              set content = iconv.decode(content, (options.encoding || md.defaultEncoding)) ids: undefined undefined
+              if !md.preserveBOM && content.charCodeAt(0) === 0xFEFF ids: undefined undefined
+                set content = content.substring(1) ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ null ids: undefined undefined
+              @ content ids: undefined undefined
+    set md.getGlobbedFiles ids: undefined undefined
+      function  ids: undefined undefined
+        param globPattern ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        var removeRoot = options.removeRoot ids: undefined undefined
+        _ glob ids: undefined undefined
+          @ String(globPattern) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param files ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if removeRoot ids: undefined undefined
+              set files ids: undefined undefined
+                _ files.map ids: undefined undefined
+                  function  ids: undefined undefined
+                    param file ids: undefined undefined
+                    return file.replace(removeRoot, '') ids: undefined undefined
+            log 'file.getGlobbedFiles', files ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ null ids: undefined undefined
+              @ files ids: undefined undefined
+    set md.write ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param content ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        _ md.mkpath ids: undefined undefined
+          @ path_string ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if !Buffer.isBuffer(content) ids: undefined undefined
+              set content = iconv.encode(content, (options.encoding || md.defaultEncoding)) ids: undefined undefined
+            _ fs.writeFile ids: undefined undefined
+              @ String(path_string) ids: undefined undefined
+              @ content ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param notUsed ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ null ids: undefined undefined
+                    @ true ids: undefined undefined
+    set md.mkpath ids: undefined undefined
+      function  ids: undefined undefined
+        param path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        var dir = path.dirname(path_string) ids: undefined undefined
+        _ md.mkdir(dir, callback) ids: undefined undefined
+    set md.mkdir ids: undefined undefined
+      function  ids: undefined undefined
+        param dirpath ids: undefined undefined
+        param mode ids: undefined undefined
+        param callback ids: undefined undefined
+        if typeof (mode) === 'function' ids: undefined undefined
+          set callback = mode, mode = null ids: undefined undefined
+        if mode == null ids: undefined undefined
+          set mode = parseInt('0777', 8) & ~ (process.umask()) ids: undefined undefined
+        var part, parts = dirpath.split(pathSeparatorRe) ids: undefined undefined
+        var len = parts.length ids: undefined undefined
+        var pathArray = [] ids: undefined undefined
+        function repeater ids: undefined undefined
+          param index ids: undefined undefined
+          if index == len ids: undefined undefined
+            # we are done, return ids: undefined undefined
+            return  ids: undefined undefined
+              _ callback(null) ids: undefined undefined
+          set part = parts[index] ids: undefined undefined
+          _ pathArray.push(part) ids: undefined undefined
+          var subpath = path.resolve(pathArray.join('/')) ids: undefined undefined
+          _ md.exists ids: undefined undefined
+            @ subpath ids: undefined undefined
+            function  ids: undefined undefined
+              param err ids: undefined undefined
+              param result ids: undefined undefined
+              if err ids: undefined undefined
+                return  ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    @ err ids: undefined undefined
+              if result == false ids: undefined undefined
+                _ fs.mkdir ids: undefined undefined
+                  @ subpath ids: undefined undefined
+                  @ mode ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param notUsed ids: undefined undefined
+                    if err ids: undefined undefined
+                      return  ids: undefined undefined
+                        _ callback ids: undefined undefined
+                          @ err ids: undefined undefined
+                    _ repeater(index + 1) ids: undefined undefined
+              else  ids: undefined undefined
+                _ repeater(index + 1) ids: undefined undefined
+        _ repeater(0) ids: undefined undefined
+    set md.copy ids: undefined undefined
+      function  ids: undefined undefined
+        param source_path_string ids: undefined undefined
+        param dest_path_string ids: undefined undefined
+        param callback ids: undefined undefined
+        _ md.mkpath ids: undefined undefined
+          @ String(dest_path_string) ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param notUsed ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            _ md.read ids: undefined undefined
+              @ String(source_path_string) ids: undefined undefined
+              {  ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param content ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                _ md.write ids: undefined undefined
+                  @ String(dest_path_string) ids: undefined undefined
+                  @ content ids: undefined undefined
+                  {  ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param notUsed ids: undefined undefined
+                    if err ids: undefined undefined
+                      return  ids: undefined undefined
+                        _ callback ids: undefined undefined
+                          @ err ids: undefined undefined
+                    return  ids: undefined undefined
+                      _ callback ids: undefined undefined
+                        @ null ids: undefined undefined
+                        @ true ids: undefined undefined

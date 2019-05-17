@@ -1,0 +1,86 @@
+﻿module wizzi-repo.mongodb.Document
+	kind jsfile
+
+	import path
+	import assert
+	import async
+	var vfile = require('wizzi-utils').vfile
+	var verify = require('wizzi-utils').verify
+	var errors = require('../errors')
+	var MongoStream = require('./stream')
+	var file = vfile()
+	var Promise = require('promise')
+	var JSZip = require('jszip')
+	var MongoClient = null
+	var FsDb = null
+
+	class Document
+		ctor
+			param fsdb
+			set this.fsdb = fsdb
+
+		$include document/upload
+		$include document/createFolder
+		$include document/getFolder
+		$include document/getDir
+		$include document/getFiles
+		$include document/getContent
+		$include document/exists
+		$include document/isFolder
+		$include document/isFile
+		$include document/copyFile
+		$include document/copyFolder
+		$include document/deleteFile
+		$include document/deleteFolder
+		$include document/renameFile
+		$include document/renameFolder
+		$include document/upload
+		$include document/download
+		$include document/writeFile
+		$include document/createWriteStream
+		$include document/readFile
+		$include document/stat
+
+		m close
+			if this.fsdb
+				_ this.fsdb.close
+				set this.fsdb = null
+
+	#
+		# Creates a Document instance
+	set Document.create
+		function
+			param mongoUri
+			param callback
+			+
+			if verify.isUndefined(callback) && verify.isFunction(mongoUri)
+				set callback = mongoUri
+				set mongoUri = null
+			+
+			if MongoClient == null
+				set MongoClient = require('mongodb').MongoClient
+				set FsDb = require('./fsdb')
+			set mongoUri = mongoUri || 'mongodb://localhost:27017/test'
+			_ MongoClient.connect
+				@ mongoUri
+				f_cb( mongoDb )
+					return
+						_ callback
+							@ null
+							new Document
+								new FsDb(mongoDb)
+	function error
+		param method
+		param message
+		return
+			{
+				@ __is_error true
+				@ method 'Mongo.Document.' + method
+				@ message message
+
+	function normalize
+		param path
+		return path.trim().replace(/\\/g,'/').toLowerCase()
+	
+	set module.exports = Document
+

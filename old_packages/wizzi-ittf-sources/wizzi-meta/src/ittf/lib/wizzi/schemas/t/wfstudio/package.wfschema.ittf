@@ -1,0 +1,193 @@
+﻿$group
+
+	e package : wfstudioitem
+
+		a kind
+			default kernel
+			restrict
+				enum kernel
+				enum plugin
+				enum app
+				enum demo
+		
+		a_tag( pluginName, plugin-name )
+		a_tag( baseFolderUri, base-folder-uri )
+		a_tag( srcFolder, src-folder )
+		a_tag( destFolder, dest-folder )
+		a_tag( ittfFolder, ittf-folder )
+		a description
+		
+		r folder/s
+		r aspect/s
+		r schema/s
+
+		m wzinitialize
+			foreach f in this.folders
+				foreach a in f.aspects
+					if a.wzName === 'package-src'
+						set this.srcFolder = path.join(this.baseFolderUri, f.wzName)
+					elif a.wzName === 'package-build'
+						set this.destFolder = path.join(this.baseFolderUri, f.wzName)
+					elif a.wzName === 'package-ittf'
+						set this.ittfFolder = path.join(this.baseFolderUri, f.wzName)
+
+		m wzverify
+			if this.kind === 'plugin' && verify.isEmpty(this.pluginName)
+				_ ctx.addError
+					@ 'When the package kind is "plugin", the plugin-name attribute is required.'
+			if verify.isEmpty(this.baseFolderUri)
+				_ ctx.addError
+					@ 'The attribute "base-folder-uri" is required.'
+			_ this.getSrcFolder()
+			if verify.isEmpty(this.srcFolder)
+				_ ctx.addError
+					@ 'A folder with aspect "package-src" is required.'
+			_ this.getDestFolder()
+			if verify.isEmpty(this.destFolder)
+				_ ctx.addError
+					@ 'A folder with aspect "package-build" is required.'
+
+		m getSrcFolder
+			if verify.isEmpty(this.srcFolder)
+				foreach f in this.folders
+					foreach a in f.aspects
+						if a.wzName === 'package-src'
+							set this.srcFolder = path.join(this.baseFolderUri, f.wzName)
+			return this.srcFolder
+
+		m getDestFolder
+			if verify.isEmpty(this.destFolder)
+				foreach f in this.folders
+					foreach a in f.aspects
+						if a.wzName === 'package-build'
+							set this.destFolder = path.join(this.baseFolderUri, f.wzName)
+			return this.destFolder
+
+	e schema : wfstudioitem
+		
+		a srcPath
+		a modelPath
+		a factoryPath
+		a jsonDocPath
+		a htmlDocPath
+		a defaultArtifact
+		a defaultTransform
+		a_flag( isPseudo, is-pseudo )
+		
+		r artifact/s
+		r transform/s
+
+		m wzinitialize
+
+			foreach a in this.artifacts
+				if a.isDefault
+					set this.defaultArtifact = this.wzName + '/' + a.wzName
+			
+			foreach t in this.transforms
+				if t.isDefault
+					set this.defaultTransform = this.wzName + '/' + t.wzName
+			
+			var srcFolder
+				_ path.join
+					@ this.wzParent.getSrcFolder()
+					@ 'ittf'
+					@ 'lib'
+					@ 'wizzi'
+					@ 'schemas'
+					
+			var destFolder
+				_ path.join
+					@ this.wzParent.getDestFolder()
+					@ 'lib'
+					@ 'wizzi'
+					@ 'models'
+
+			set this.srcPath
+				_ path.join
+					@ srcFolder
+					@ this.wzName + '.wfschema.ittf'
+			set this.modelPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-model.g.js'
+			set this.factoryPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-factory.g.js'
+			set this.jsonDocPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-schema.g.json'
+			set this.htmlDocPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-schema.g.html'
+
+	e artifact : wfstudioitem
+		a_tag( targetLanguage, language )
+		a_flag( isDefault, is-default )
+		a name
+		a srcPath
+		a modulePath
+
+		m wzinitialize
+
+			var s = this.wzParent
+			var p = s.wzParent
+
+			set this.name = s.wzName + '/' + this.wzName
+			set this.srcPath
+				_ path.join
+					@ p.getSrcFolder()
+					@ 'ittf'
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'gen'
+					@ 'main.js.ittf'
+					
+			set this.modulePath
+				_ path.join
+					@ p.getDestFolder()
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'gen'
+					@ 'main.js'
+
+	e transform : wfstudioitem
+		a_tag( targetLanguage, language )
+		a_flag( isDefault, is-default )
+		a name
+		a srcPath
+		a modulePath
+
+		m wzinitialize
+
+			var s = this.wzParent
+			var p = s.wzParent
+
+			set this.name = s.wzName + '/' + this.wzName
+			set this.srcPath
+				_ path.join
+					@ p.getSrcFolder()
+					@ 'ittf'
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'trans'
+					@ 'main.js.ittf'
+					
+			set this.modulePath
+				_ path.join
+					@ p.getDestFolder()
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'trans'
+					@ 'main.js'
+

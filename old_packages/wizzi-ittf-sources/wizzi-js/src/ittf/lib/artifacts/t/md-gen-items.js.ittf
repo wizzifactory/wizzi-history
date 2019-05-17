@@ -1,0 +1,18 @@
+﻿set md.genItems
+	function
+		param items
+		param ctx
+		param options
+		param callback
+		if typeof callback === 'undefined'
+			set callback = options
+			set options = {}
+		if typeof callback === 'undefined'
+			throw
+				new Error
+					@ 'Missing callback parameter in ' + myname + '.gen'
+		if typeof callback !== 'function'
+			throw
+				new Error
+					@ 'The callback parameter must be a function. In ' + myname + '.genItems. Got: ' + callback
+		$hook

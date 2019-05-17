@@ -1,0 +1,42 @@
+﻿r-component( TreeViewDemo
+
+	$append imports
+		import CollapseListItem from '../mui/CollapseListItem'
+		const item_data
+			{
+				@ name 'root'
+				[ children
+					{
+						@ name 'leaf 1'
+					{
+						@ name 'leaf 2'
+					{
+						@ name 'branch 1'
+						[ children
+							{
+								@ name 'leaf 1.1'
+							{
+								@ name 'leaf 1.2'
+					{
+						@ name 'branch 2'
+						[ children
+							{
+								@ name 'leaf 2.1'
+							{
+								@ name 'leaf 2.2'
+							{
+								@ name 'leaf 2.3'
+
+	style
+
+	=> handleSelect
+		param item
+		log 'TreeViewDemo.handleSelect.item', item
+
+	render
+
+		return
+			ul
+				< CollapseListItem
+					@ item {item_data}
+					@ onSelect {this.handleSelect}

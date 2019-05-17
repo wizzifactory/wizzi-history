@@ -1,0 +1,415 @@
+  module  ids: 1 37
+    kind jsfile ids: 2 38
+    $group  ids: 73 264
+      class StyleBuilder ids: 74 265
+        ctor  ids: 75 266
+          param styleObject ids: 76 267
+          set this.styleObject = styleObject ids: 77 268
+        m getWidth ids: 78 269
+          var ret = 0 ids: 79 270
+          for var k in this.styleObject ids: 80 271
+            if k === 'margin' || k === 'padding' ids: 81 272
+              set ret += this.getLeftWidth(this.styleObject[k]) ids: 82 273
+              set ret += this.getRightWidth(this.styleObject[k]) ids: 83 274
+            elif k === 'width' ids: 84 275
+              set ret += this.styleObject[k] ids: 85 276
+            elif k === 'border' ids: 86 277
+              set ret += (this._getSize(this.styleObject[k]) * 2) ids: 87 278
+            elif k === 'borderLeft' || k === 'borderRight' ids: 88 279
+              set ret += this._getSize(this.styleObject[k]) ids: 89 280
+          return ret ids: 90 281
+        m getHeight ids: 91 282
+          var ret = 0 ids: 92 283
+          for var k in this.styleObject ids: 93 284
+            if k === 'margin' || k === 'padding' ids: 94 285
+              set ret += this.getTopWidth(this.styleObject[k]) ids: 95 286
+              set ret += this.getBottomWidth(this.styleObject[k]) ids: 96 287
+            elif k === 'height' ids: 97 288
+              set ret += this.styleObject[k] ids: 98 289
+            elif k === 'border' ids: 99 290
+              set ret += (this._getSize(this.styleObject[k]) * 2) ids: 100 291
+            elif k === 'borderTop' || k === 'borderBottom' ids: 101 292
+              set ret += this._getSize(this.styleObject[k]) ids: 102 293
+          return ret ids: 103 294
+        m getPadMarginBorderWidth ids: 104 295
+          var ret = 0 ids: 105 296
+          var seenBorder = 0 ids: 106 297
+          for var k in this.styleObject ids: 107 298
+            if k === 'margin' || k === 'padding' ids: 108 299
+              set ret += this.getLeftWidth(this.styleObject[k]) ids: 109 300
+              set ret += this.getRightWidth(this.styleObject[k]) ids: 110 301
+            elif k === 'border' && seenBorder == 0 ids: 111 302
+              set ret += (this._getSize(this.styleObject[k]) * 2) ids: 112 303
+              set seenBorder = 1 ids: 113 304
+            elif (k === 'borderLeft' || k === 'borderRight') && seenBorder != 1 ids: 114 305
+              set ret += this._getSize(this.styleObject[k]) ids: 115 306
+              set seenBorder = 2 ids: 116 307
+          log 'StyleBuilder.width', ret ids: 117 308
+          return ret ids: 118 309
+        m getPadMarginBorderHeight ids: 119 310
+          var ret = 0 ids: 120 311
+          for var k in this.styleObject ids: 121 312
+            if k === 'margin' || k === 'padding' ids: 122 313
+              set ret += this.getTopWidth(this.styleObject[k]) ids: 123 314
+              set ret += this.getBottomWidth(this.styleObject[k]) ids: 124 315
+            elif k === 'border' && seenBorder == 0 ids: 125 316
+              set ret += (this._getSize(this.styleObject[k]) * 2) ids: 126 317
+              set seenBorder = 1 ids: 127 318
+            elif (k === 'borderTop' || k === 'borderBottom') && seenBorder != 1 ids: 128 319
+              set ret += this._getSize(this.styleObject[k]) ids: 129 320
+              set seenBorder = 2 ids: 130 321
+          return ret ids: 131 322
+        m getLeftWidth ids: 132 323
+          param value ids: 133 324
+          if isNumeric(value.left) ids: 134 325
+            return value.left ids: 135 326
+          elif isNumeric(value.horizontal) ids: 136 327
+            return value.horizontal ids: 137 328
+          elif isNumeric(value) ids: 138 329
+            return value ids: 139 330
+          else  ids: 140 331
+            return 0 ids: 141 332
+        m getTopWidth ids: 142 333
+          param value ids: 143 334
+          if isNumeric(value.top) ids: 144 335
+            return value.top ids: 145 336
+          elif isNumeric(value.vertical) ids: 146 337
+            return value.vertical ids: 147 338
+          elif isNumeric(value) ids: 148 339
+            return value ids: 149 340
+          else  ids: 150 341
+            return 0 ids: 151 342
+        m getRightWidth ids: 152 343
+          param value ids: 153 344
+          if isNumeric(value.right) ids: 154 345
+            return value.right ids: 155 346
+          elif isNumeric(value.horizontal) ids: 156 347
+            return value.horizontal ids: 157 348
+          elif isNumeric(value) ids: 158 349
+            return value ids: 159 350
+          else  ids: 160 351
+            return 0 ids: 161 352
+        m getBottomWidth ids: 162 353
+          param value ids: 163 354
+          if isNumeric(value.bottom) ids: 164 355
+            return value.bottom ids: 165 356
+          elif isNumeric(value.vertical) ids: 166 357
+            return value.vertical ids: 167 358
+          elif isNumeric(value) ids: 168 359
+            return value ids: 169 360
+          else  ids: 170 361
+            return 0 ids: 171 362
+        m _getSize ids: 172 363
+          param value ids: 173 364
+          if isNumeric(value.size) ids: 174 365
+            return value.size ids: 175 366
+          else  ids: 176 367
+            return 0 ids: 177 368
+        m toStyle ids: 178 369
+          var ret = [] ids: 179 370
+          for var k in this.styleObject ids: 180 371
+            if k === 'margin' ids: 181 372
+              _ ret.push('margin: ' + this.toLength14(this.styleObject[k])) ids: 182 373
+            elif k === 'padding' ids: 183 374
+              _ ret.push('padding: ' + this.toLength14(this.styleObject[k])) ids: 184 375
+            elif k === 'width' ids: 185 376
+              _ ret.push('width: ' + this.toLength(this.styleObject[k])) ids: 186 377
+            elif k === 'border' ids: 187 378
+              _ ret.push('border: ' + this.toBorder(this.styleObject[k])) ids: 188 379
+            elif k === 'borderTop' ids: 189 380
+              _ ret.push('border-top: ' + this.toBorder(this.styleObject[k])) ids: 190 381
+            elif k === 'borderLeft' ids: 191 382
+              _ ret.push('border-left: ' + this.toBorder(this.styleObject[k])) ids: 192 383
+            elif k === 'borderBottom' ids: 193 384
+              _ ret.push('border-bottom: ' + this.toBorder(this.styleObject[k])) ids: 194 385
+            elif k === 'borderRight' ids: 195 386
+              _ ret.push('border-right: ' + this.toBorder(this.styleObject[k])) ids: 196 387
+            elif k === 'color' ids: 197 388
+              _ ret.push('color: ' + this.toColor(this.styleObject[k])) ids: 198 389
+            elif k === 'backgroundColor' ids: 199 390
+              _ ret.push('background-color: ' + this.toColor(this.styleObject[k])) ids: 200 391
+            else  ids: 201 392
+              _ ret.push(k + ': ' + this.styleObject[k]) ids: 202 393
+          return ret.join('') ids: 203 394
+        m toStyleObject ids: 204 395
+          var ret = {} ids: 205 396
+          for var k in this.styleObject ids: 206 397
+            if k === 'margin' ids: 207 398
+              set ret.margin = this.toLength14(this.styleObject[k]) ids: 208 399
+            elif k === 'padding' ids: 209 400
+              set ret.padding = this.toLength14(this.styleObject[k]) ids: 210 401
+            elif k === 'width' ids: 211 402
+              set ret.width = this.toLength(this.styleObject[k]) ids: 212 403
+            elif k === 'border' ids: 213 404
+              set ret.border = this.toBorder(this.styleObject[k]) ids: 214 405
+            elif k === 'borderTop' || k === 'borderLeft' || k === 'borderRight' || k === 'borderBottom' ids: 215 406
+              set ret[k] = this.toBorder(this.styleObject[k]) ids: 216 407
+            elif k === 'color' ids: 217 408
+              set ret.color = this.toColor(this.styleObject[k]) ids: 218 409
+            elif k === 'backgroundColor' ids: 219 410
+              set ret.backgroundColor = this.toColor(this.styleObject[k]) ids: 220 411
+            else  ids: 221 412
+              set ret[k] = this.styleObject[k] ids: 222 413
+          return ret ids: 223 414
+        m toLength ids: 224 415
+          param value ids: 225 416
+          if isNumeric(value) ids: 226 417
+            return value + 'px' ids: 227 418
+          return '0' ids: 228 419
+        m toLength14 ids: 229 420
+          param value ids: 230 421
+          if isNumeric(value) ids: 231 422
+            return value + 'px' ids: 232 423
+          elif isNumeric(value.top) ids: 233 424
+            return value.left + 'px 0 0 0' ids: 234 425
+          elif isNumeric(value.right) ids: 235 426
+            return '0 ' + value.right + 'px 0 0' ids: 236 427
+          elif isNumeric(value.bottom) ids: 237 428
+            return '0 0 ' + value.bottom + 'px 0' ids: 238 429
+          elif isNumeric(value.left) ids: 239 430
+            return '0 0 0 ' + value.left + 'px' ids: 240 431
+          elif isNumeric(value.horizontal) ids: 241 432
+            return '0 ' + value.left + 'px' ids: 242 433
+          elif isNumeric(value.vertical) ids: 243 434
+            return value.left + 'px 0' ids: 244 435
+          return 0 ids: 245 436
+        m toBorder ids: 246 437
+          param value ids: 247 438
+          var ret = [] ids: 248 439
+          if isNumeric(value) ids: 249 440
+            return value + 'px' ids: 250 441
+          if isNumeric(value.size) ids: 251 442
+            _ ret.push(value.size + 'px') ids: 252 443
+          if value.style ids: 253 444
+            _ ret.push(value.style) ids: 254 445
+          if value.color ids: 255 446
+            _ ret.push(this.toColor(value.color)) ids: 256 447
+          return ret.join(' ') ids: 257 448
+        m toColor ids: 258 449
+          param value ids: 259 450
+          return value ids: 260 451
+      function isNumeric ids: 261 452
+        param n ids: 262 453
+        return !isNaN(parseFloat(n)) && isFinite(n) ids: 263 454
+    $group  ids: 455 572
+      var win = typeof window != 'undefined' && window ids: 456 573
+      var doc = typeof document != 'undefined' && document ids: 457 574
+      var docElem = doc && doc.documentElement ids: 458 575
+      var matchMedia = win['matchMedia'] || win['msMatchMedia'] ids: 459 576
+      var mq ids: 460 577
+        iif matchMedia ids: 461 578
+          then  ids: 462 579
+            function  ids: 463 580
+              param q ids: 464 581
+              return !!matchMedia.call(win, q).matches ids: 465 582
+          else  ids: 466 583
+            function  ids: 467 584
+              return false ids: 468 585
+      log 'win', win ids: 469 586
+      log 'doc', doc ids: 470 587
+      log 'docElem', docElem ids: 471 588
+      class ElementPosition ids: 472 589
+        ctor  ids: 473 590
+          param element ids: 474 591
+          set this.$element = $(element) ids: 475 592
+        m getPositionData ids: 476 593
+          var elem = this.$element[0] ids: 477 594
+          var win = elem.ownerDocument.defaultView ids: 478 595
+          var rect = elem.getBoundingClientRect() ids: 479 596
+          log 'rect', rect ids: 480 597
+          #  ids: 481 598
+            return  ids: 482 599
+              {  ids: 483 600
+                @ top rect.top + win.pageYOffset ids: 484 601
+                @ left rect.left + win.pageXOffset ids: 485 602
+          var ret ids: 486 603
+            {  ids: 487 604
+              @ winLeft win.screenX || win.screenLeft ids: 488 605
+              @ winTop win.screenY || win.screenTop ids: 489 606
+              @ winScreenWidth win.screen.width ids: 490 607
+              @ winScreenHeight win.screen.height ids: 491 608
+              @ winScreenAvailWidth win.screen.availWidth ids: 492 609
+              @ winScreenAvailHeight win.screen.availHeight ids: 493 610
+              @ winInnerWidth win.innerWidth ids: 494 611
+              @ winInnerHeight win.innerHeight ids: 495 612
+              @ winOuterWidth win.outerWidth ids: 496 613
+              @ winOuterHeight win.outerHeight ids: 497 614
+              @ winScrollX win.pageXOffset || docElem.scrollLeft ids: 498 615
+              @ winScrollY win.pageYOffset || docElem.scrollTop ids: 499 616
+              @ docBodyClientWidth doc.body.clientWidth ids: 500 617
+              @ docBodyClientHeight doc.body.clientHeight ids: 501 618
+              @ docBodyOffsetWidth doc.body.offsetWidth ids: 502 619
+              @ docBodyOffsetHeight doc.body.offsetHeight ids: 503 620
+              @ docBodyScrollWidth doc.body.scrollWidth ids: 504 621
+              @ docBodyScrollHeight doc.body.scrollHeight ids: 505 622
+              @ docElemClientWidth docElem.clientWidth ids: 506 623
+              @ docElemClientHeight docElem.clientHeight ids: 507 624
+              @ docElemOffsetWidth docElem.offsetWidth ids: 508 625
+              @ docElemOffsetHeight docElem.offsetHeight ids: 509 626
+              @ docElemScrollWidth docElem.scrollWidth ids: 510 627
+              @ docElemScrollHeight docElem.scrollHeight ids: 511 628
+              @ docInnerWidth docElem.innerWidth ids: 512 629
+              @ docInnerHeight docElem.innerHeight ids: 513 630
+              @ offset ids: 514 631
+                {  ids: 515 632
+                  @ left elem.offsetLeft ids: 516 633
+                  @ top elem.offsetTop ids: 517 634
+              @ elemRectLeft rect.left ids: 518 635
+              @ elemRectTop rect.top ids: 519 636
+              @ elemRectRight rect.right ids: 520 637
+              @ elemRectBottom rect.bottom ids: 521 638
+              @ elemRectWidth rect.width ids: 522 639
+              @ elemRectHeight rect.height ids: 523 640
+              @ documentRect document.body.getBoundingClientRect() ids: 524 641
+          return ret ids: 525 642
+        m popupStyle ids: 526 643
+          param options ids: 527 644
+          var width = options.width || (16 * 30) ids: 528 645
+          var padMarginWidth = options.padMarginWidth || 0 ids: 529 646
+          var height = options.height || (9 * 30) ids: 530 647
+          var event = options.event ids: 531 648
+          if event ids: 532 649
+            log event ids: 533 650
+            return  ids: 534 651
+              {  ids: 535 652
+                @ position "absolute" ids: 536 653
+                @ display "inline" ids: 537 654
+                @ top Math.max(event.pageY - (height / 2), 0) ids: 538 655
+                @ left this.leftCheckedFromEvent(event, width + padMarginWidth) ids: 539 656
+                @ width (width + "px") ids: 540 657
+                @ height (height + "px") ids: 541 658
+          else  ids: 542 659
+            return  ids: 543 660
+              {  ids: 544 661
+                @ position "absolute" ids: 545 662
+                @ top "50%" ids: 546 663
+                @ left "50%" ids: 547 664
+                @ width (width + "px") ids: 548 665
+                @ height (height + "px") ids: 549 666
+                @ marginLeft ((-1 * width/2) + "px") ids: 550 667
+                @ marginTop ((-1 * height/2) + "px") ids: 551 668
+        m topCheckedFromEvent ids: 552 669
+          param event ids: 553 670
+          param height ids: 554 671
+          var top = event.pageY - (height / 2) ids: 555 672
+          if top < 0 ids: 556 673
+            return 0 ids: 557 674
+          elif (top + height) > win.innerHeight ids: 558 675
+            return win.innerHeight - height ids: 559 676
+          else  ids: 560 677
+            return top ids: 561 678
+        m leftCheckedFromEvent ids: 562 679
+          param event ids: 563 680
+          param width ids: 564 681
+          var left = event.pageX - (width / 2) ids: 565 682
+          if left < 0 ids: 566 683
+            return 0 ids: 567 684
+          elif (left + width) > doc.body.clientWidth ids: 568 685
+            return doc.body.clientWidth - width ids: 569 686
+          else  ids: 570 687
+            return left ids: 571 688
+    $group  ids: 689 737
+      class RichDiv ids: 690 738
+        ctor  ids: 691 739
+          param element ids: 692 740
+          param style ids: 693 741
+          set this.$element = $(element) ids: 694 742
+          set this.styleBuilder = new StyleBuilder(style) ids: 695 743
+          set this.elementPosition = new ElementPosition(element) ids: 696 744
+        m beaPopup ids: 697 745
+          param options ids: 698 746
+          var onClickElement = $(options.onClickElement) ids: 699 747
+          var onClickElementPosition = new ElementPosition(options.onClickElement) ids: 700 748
+          var that = this ids: 701 749
+          _ onClickElement.bind ids: 702 750
+            @ 'click' ids: 703 751
+            function  ids: 704 752
+              param event ids: 705 753
+              _ that.$element.css ids: 706 754
+                _ objUtils.extends ids: 707 755
+                  _ that.styleBuilder.toStyleObject() ids: 708 756
+                  _ that.elementPosition.popupStyle ids: 709 757
+                    {  ids: 710 758
+                      @ event event ids: 711 759
+                      @ width options.width ids: 712 760
+                      @ padMarginWidth that.styleBuilder.getPadMarginBorderWidth() ids: 713 761
+                      @ height options.height ids: 714 762
+              _ that.$element.html ids: 715 763
+                _ JSON.stringify ids: 716 764
+                  {  ids: 717 765
+                    @ eventInfo ids: 718 766
+                      _ posUtils.getEventInfo ids: 719 767
+                        @ event ids: 720 768
+                    @ mystyle ids: 721 769
+                      _ that.elementPosition.popupStyle ids: 722 770
+                        {  ids: 723 771
+                          @ event event ids: 724 772
+                          @ width options.width ids: 725 773
+                          @ padMarginWidth that.styleBuilder.getPadMarginBorderWidth() ids: 726 774
+                          @ height options.height ids: 727 775
+                    @ elementInfo ids: 728 776
+                      _ onClickElementPosition.getPositionData() ids: 729 777
+                  @ null ids: 730 778
+                  @ 2 ids: 731 779
+              _ that.$element.show() ids: 732 780
+          _ this.$element.bind ids: 733 781
+            @ 'click' ids: 734 782
+            function  ids: 735 783
+              _ that.$element.hide() ids: 736 784
+    $group  ids: 785 812
+      var objUtils ids: 786 813
+        {  ids: 787 814
+          @ extends ids: 788 815
+            function  ids: 789 816
+              param objsink ids: 790 817
+              param objsource ids: 791 818
+              for var k in objsource ids: 792 819
+                set objsink[k] = objsource[k] ids: 793 820
+              log 'objsink, objsource', objsink, objsource ids: 794 821
+              return objsink ids: 795 822
+      var posUtils ids: 796 823
+        {  ids: 797 824
+          @ getEventInfo ids: 798 825
+            function  ids: 799 826
+              param event ids: 800 827
+              return  ids: 801 828
+                {  ids: 802 829
+                  @ kind 'event' ids: 803 830
+                  @ clientX event.clientX ids: 804 831
+                  @ clientY event.clientY ids: 805 832
+                  @ offsetX event.offsetX ids: 806 833
+                  @ offsetY event.offsetY ids: 807 834
+                  @ pageX event.pageX ids: 808 835
+                  @ pageY event.pageY ids: 809 836
+                  @ screenX event.screenX ids: 810 837
+                  @ screenY event.screenY ids: 811 838
+    ready  ids: 7 43
+      var bodyPos = new ElementPosition(document.body) ids: 8 44
+      log 'bodyPos', bodyPos.getPositionData() ids: 9 45
+      var headrPos = new ElementPosition('#header') ids: 10 46
+      log 'headrPos', headrPos.getPositionData() ids: 11 47
+      var mainContentPos = new ElementPosition('#main-content') ids: 12 48
+      log 'mainContentPos', mainContentPos.getPositionData() ids: 13 49
+      var mainContentPopLayoutInfo = new RichDiv('#mainContentPopLayoutInfo', popupStyle()) ids: 14 50
+      _ mainContentPopLayoutInfo.beaPopup ids: 15 51
+        {  ids: 16 52
+          @ onClickElement '#main-content' ids: 17 53
+          @ width (20 * 16) ids: 18 54
+          @ height (20 * 9) ids: 19 55
+      var headerPopLayoutInfo = new RichDiv('#headerPopLayoutInfo', popupStyle()) ids: 20 56
+      _ headerPopLayoutInfo.beaPopup ids: 21 57
+        {  ids: 22 58
+          @ onClickElement '#header' ids: 23 59
+          @ width (20 * 16) ids: 24 60
+          @ height (20 * 9) ids: 25 61
+    function popupStyle ids: 26 62
+      return  ids: 27 63
+        {  ids: 28 64
+          @ padding 5 ids: 29 65
+          @ border ids: 30 66
+            {  ids: 31 67
+              @ size 5 ids: 32 68
+              @ color '#2288AA' ids: 33 69
+              @ style 'solid' ids: 34 70
+          @ backgroundColor '#DDEEFF' ids: 35 71
+          @ overflow 'auto' ids: 36 72

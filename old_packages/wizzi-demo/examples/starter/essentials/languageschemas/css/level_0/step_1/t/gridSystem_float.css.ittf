@@ -1,0 +1,72 @@
+$group
+
+	- thanks to http://j4n.co/blog/Creating-your-own-css-grid-system
+
+	$
+		var columns = 6
+		var percWidth = 100
+		var maxWidth = 1200
+		var gutter = 12
+
+	- The basic grid contains just a few elements
+	- . container
+	- . rows
+	- . columns
+	- . gutters (the space between columns)
+
+	- The width of the container is generally 100%,
+	- but you might want to set a max-width for larger displays.
+	. gsf-grid-container
+		width ${percWidth}%
+		max-width ${maxWidth}px 
+
+	- Using the 'border-box' model, we can create gutters with ease.
+	- setting border box on all elements inside the grid 
+	. gsf-grid-container *
+		box-sizing border-box 
+
+	- cleafix hack -  to make sure everything inside
+	- the row stays inside the row.
+    . gsf-row:before
+		+ .gsf-row:after
+		content ""
+		display table
+		clear both
+
+	- To prevent that empty columns will stack on top of each other
+	- we'll give our columns a min-height of 1px as well as float them.
+	< [class*='gsf-col-']
+		float left
+		min-height 1px
+        - our gutter
+        padding ${gutter}px
+
+	- To find the width of one column, all we have to do is divide 
+	- the total number of columns by the width of the container. 
+	- In our case, the width of the container is ${percWidth}%, 
+	- and we want ${columns} columns, so ${percWidth}/${columns} = ${percWidth/columns}%.
+
+	< [class*='gsf-col-']
+		width ${percWidth/columns}%
+
+	$for var i=1; i<columns+1; i++
+		. gsf-col-${i}
+			width ${(percWidth/columns)*i}%
+
+	$for var i=0; i<columns; i++
+		. gsf-sm-${i}
+			margin-left ${(percWidth/columns)*i}%
+			$if i > 0
+				@ *margin-left ${(percWidth/columns)*i-0.005}%
+
+	. gsf-outline
+		+ .gsf-outline *
+		outline 1px solid #F6A1A1
+
+	- some extra column content styling
+	< [class*='gsf-col-'] > p
+		background-color #FFC2C2
+		padding 0
+		margin 0
+		text-align center
+		color white

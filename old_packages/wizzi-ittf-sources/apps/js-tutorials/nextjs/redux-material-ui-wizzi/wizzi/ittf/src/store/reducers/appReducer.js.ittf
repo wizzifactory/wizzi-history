@@ -1,0 +1,35 @@
+﻿module
+    kind react
+	+
+	import_rsf_actions( LOAD_APP )
+	+
+	const appInitialState
+		{
+			@ hello 'stefi'
+	+
+	r( app, appInitialState )
+	
+		c( LOAD_APP_REQUEST
+			{
+				@ ...state
+				@ isLoading true
+				@ loadError null
+
+		c( LOAD_APP_SUCCESS
+			$append preprocess
+				# preprocess code goes here
+			{
+				@ ...state
+				@ hello action.initialData.hello || {}
+				@ snippetCode action.initialData.snippetCode || {}
+				@ ittf action.initialData.ittf || {}
+				@ err action.initialData.err || {}
+				@ isLoading false
+
+		c( LOAD_APP_FAILURE
+			{
+				@ ...state
+				@ isLoading false
+				@ loadError action.error
+
+

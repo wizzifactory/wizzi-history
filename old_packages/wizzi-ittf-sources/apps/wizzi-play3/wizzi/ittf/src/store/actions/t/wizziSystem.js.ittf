@@ -1,0 +1,20 @@
+﻿$group
+
+	decl_rsf( wizzi_system_packages, get )
+	+
+	export
+		const getWizziSystemPackages
+			=>
+				return
+					{
+						@ type GET_WIZZI_SYSTEM_PACKAGES
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_WIZZI_SYSTEM_PACKAGES_REQUEST
+										@ GET_WIZZI_SYSTEM_PACKAGES_SUCCESS
+										@ GET_WIZZI_SYSTEM_PACKAGES_FAILURE
+								@ url '/api/wizzi/system/packages'
+								@ method 'get'
+	+

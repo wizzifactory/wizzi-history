@@ -1,0 +1,133 @@
+﻿module 
+    kind jsfile
+
+	import util
+	var verify = require('wizzi-utils').verify
+	var inflect = require('i')
+    
+    set String.prototype.capitalize =
+        function 
+            return 
+                _ this.replace
+                    @ /(?:^|\s)\S/g
+                    function 
+                        param a
+                        return a.toUpperCase()
+
+    set String.prototype.pluralize =
+        function 
+            return inflect.pluralize(this)
+
+    set module.exports
+		{ 
+			@ pluralize
+				function 
+					param str
+					return inflect.pluralize(str)
+			@ capitalize
+				function 
+					param str
+					return 
+						_ str.replace
+							@ /(?:^|\s)\S/g
+							function 
+								param a
+								return a.toUpperCase()
+			@ dashToCamelCase
+				function 
+					param str
+					return verify.dashToCamelCase(str)
+			@ escape verify.escapename
+			@ isEmpty
+				function
+					param text
+					return typeof text === 'string' && text.trim().length === 0
+			@ isNotEmpty
+				function
+					param text
+					return typeof text === 'string' && text.trim().length > 0
+			@ isObject
+				function
+					param obj
+					var type = typeof obj
+					return type === 'function' || type === 'object' && !!obj
+			@ isArray
+				function
+					param obj
+					if Array.isArray
+						return Array.isArray(obj)
+					else
+						return toString.call(obj) === '[object Array]'
+			@ isString
+				function
+					param obj
+					return toString.call(obj) === '[object String]'
+			@ isNumber
+				function
+					param obj
+					return toString.call(obj) === '[object Number]'
+			@ isDate
+				function
+					param obj
+					return toString.call(obj) === '[object Date]'
+			@ isFunction
+				function
+					param obj
+					return toString.call(obj) === '[object Function]'
+
+			@ isUndefined
+				function
+					param obj
+					return obj === void 0
+			@ deinline
+				function
+					param text
+					if this.isNotEmpty(text) == false
+						return ''
+					var
+						decl len = text.length
+						decl ch
+						decl i
+						decl ret = []
+					for i=0; i<len; i++
+						set ch = text[i]
+						if ch === '¥'
+							_ ret.push('\n')
+						elif ch === '┐'
+							_ ret.push('\r')
+						elif ch === '└'
+							_ ret.push('$')
+						elif ch === '\t'
+							_ ret.push('    ')
+						else
+							_ ret.push(ch)
+					return ret.join('')				
+
+			@ log
+				function
+					var args
+						_ Array.prototype.slice.call
+							@ arguments
+							@ 0
+					_ args.splice
+						@ 0
+						@ 0
+						@ "=== jsWizzi:log => "
+					_ console.log.apply
+						@ null
+						@ args
+
+			@ inspect
+				function
+					param obj
+					return util.inspect(obj, { depth: null})
+			@ replace
+				function
+					param text
+					param from
+					param to
+					return verify.replaceAll(text, from, to)
+
+
+
+

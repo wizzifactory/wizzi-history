@@ -1,0 +1,12 @@
+﻿var Comments
+	=>
+		param { comments: c }
+		if !c || !c.length
+			return null
+		else
+			const mdText = c.join('\n')
+			return
+				div
+					@ className hb-sch-doc-comments-box
+					< Markdown
+						@ mdText {mdText}

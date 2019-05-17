@@ -1,0 +1,55 @@
+  module  ids: 1 56
+    kind jsfile ids: 2 57
+    var md = module.exports = {} ids: 3 58
+    class Texter ids: 4 59
+      ctor  ids: 5 60
+        param text ids: 6 61
+        set this.text = text ids: 7 62
+      m toString ids: 8 63
+        if typeof this.text !== 'string' ids: 9 64
+          return '' ids: 10 65
+        var ret = '' ids: 11 66
+        var cmd = '' ids: 12 67
+        var value = '' ids: 13 68
+        var i, ch, l = this.text.length, state = 0 ids: 14 69
+        for i=0; i<l; i++ ids: 15 70
+          set ch = this.text[i] ids: 16 71
+          if ch === '{' && state == 0 ids: 17 72
+            set state = 1 ids: 18 73
+          elif ch === ' ' ids: 19 74
+            if state == 1 ids: 20 75
+              if this.isCmd(cmd) ids: 21 76
+                set state = 2 ids: 22 77
+              else  ids: 23 78
+                set ret += '{' + cmd + ' ' ids: 24 79
+                set state = 0 ids: 25 80
+            elif state == 2 ids: 26 81
+              set value += ch ids: 27 82
+            else  ids: 28 83
+              set ret += ch ids: 29 84
+          elif ch === '}' ids: 30 85
+            if state == 2 ids: 31 86
+              set ret += this.get(cmd, value) ids: 32 87
+            else  ids: 33 88
+              set ret += "{" + cmd + "}" ids: 34 89
+            set cmd = value = '' ids: 35 90
+            set state = 0 ids: 36 91
+          else  ids: 37 92
+            if state == 1 ids: 38 93
+              set cmd += ch ids: 39 94
+            elif state == 2 ids: 40 95
+              set value += ch ids: 41 96
+            else  ids: 42 97
+              set ret += ch ids: 43 98
+        return ret ids: 44 99
+      m isCmd ids: 45 100
+        param cmd ids: 46 101
+        return ['label'].indexOf(cmd) >= 0 ids: 47 102
+      m get ids: 48 103
+        param cmd ids: 49 104
+        param value ids: 50 105
+        if cmd === 'label' ids: 51 106
+          return '<span class="label">' + value + '</span>' ids: 52 107
+        else  ids: 53 108
+          return '<span class="default">' + value + '</span>' ids: 54 109
+    set md.Texter = Texter ids: 55 110

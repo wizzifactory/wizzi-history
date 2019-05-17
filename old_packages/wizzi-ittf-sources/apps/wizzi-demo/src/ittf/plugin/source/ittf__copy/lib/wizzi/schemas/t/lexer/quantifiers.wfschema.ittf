@@ -1,0 +1,244 @@
+﻿$group
+
+	e_tag( questionMark, ?, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The questionMark element must have an empty wzName. Received: ' + this.wzName, this)
+
+		m getCanFailMatch
+			return true
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w('{ return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			foreach item in this.nodes
+				if item.getIsFunction()
+					_ coder.write('if (!' + item.getFName() + '(capture))')
+					_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+				else
+					set coder.ctx.onfail = 'reset-return-true'
+					_ item.toCode(coder)
+					set coder.ctx.onfail = null
+			_ coder.w('return true;')
+			_ coder.deindent
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+	e_tag( plus, +, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The plus element must have an empty wzName. Received: ' + this.wzName, this)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+	
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent();
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			_ coder.w('var count = 0;')
+			_ coder.w('while (pos < len) {')
+			_ coder.indent();
+			foreach item in this.nodes
+				if item.getIsFunction()
+					_ coder.w('if (!' + item.getFName() + '(capture)) { break; }')
+				else
+					set coder.ctx.onfail = 'break'
+					_ item.toCode(coder)
+					set coder.ctx.onfail = null
+			_ coder.w('count++;')
+			_ coder.deindent();
+			_ coder.w('}')
+			_ coder.w('if (count > 0) { return true; }')
+			_ coder.w('else { return spit(k, false, \'' + this.fname + '\'); }')
+			_ coder.deindent();
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+	e_tag( asterisk, *, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The asterisk element must have an empty wzName. Received: ' + this.wzName, this)
+
+		m getCanFailMatch
+			return true
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture)) ')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent();
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('while (pos < len) {')
+			_ coder.indent();
+			foreach item in this.nodes
+				if item.getIsFunction()
+					_ coder.w('if (!' + item.getFName() + '(capture)) { break; }')
+				else
+					set coder.ctx.onfail = 'break'
+					_ item.toCode(coder)
+					set coder.ctx.onfail = null
+			_ coder.deindent();
+			_ coder.w('}')
+			_ coder.deindent();
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+
+	e_tag( graph, {, node )
+
+		m wzInitialize
+			var root = this.wzRoot()
+			set this.fname = root.getCountedName(this.wzElement)
+
+		m wzVerify
+			if verify.isEmpty(this.wzName)
+				_ ctx.addError('The graph element must have a not empty wzName.', this)
+			else
+				set this.minItems = 0, this.maxItems = 9007199254740992
+				var min = [], max = [], seen_comma = false, ch
+				for var i=0; i<this.wzName.length; i++
+					set ch = this.wzName[i]
+					if ch === ','
+						set seen_comma = true
+					elif ch === ' '
+						# skip
+					elif seen_comma
+						_ max.push(ch)
+					else
+						_ min.push(ch)
+				if min.length > 0
+					set this.minItems = parseInt(min.join(''), 10)
+				if max.length > 0
+					set this.maxItems = parseInt(max.join(''), 10)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return true
+		m getFName
+			return this.fname
+		
+		m toCode
+			param coder
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.write('if (!' + this.fname + '(capture))')
+				_ coder.w(' { return spit(k, false, \'' + this.fname + '\'); }')
+			elif coder.ctx.onfail === 'break'
+				_ coder.w('if (!' + this.fname + '(capture)) { break; }')
+			else
+				_ coder.w('if (' + this.fname + '(capture)) { return true; }')
+	
+		m toFunction
+			param coder
+			if this.functionWritten
+				return
+			set this.functionWritten = true
+			_ coder.w('function ' + this.fname + '(capture) {')
+			_ coder.indent();
+			_ coder.wPath('//')
+			# _ coder.wEntering(this.fname)
+			_ coder.w('var k = cp();')
+			_ coder.w('var count = 0;')
+			_ coder.w('while (pos < len) {')
+			_ coder.indent();
+			foreach item in this.nodes
+				if item.getIsFunction()
+					_ coder.w('if (!' + item.getFName() + '(capture)) { break; }')
+				else
+					set coder.ctx.onfail = 'break'
+					_ item.toCode(coder)
+					set coder.ctx.onfail = null
+			_ coder.w('count++;')
+			_ coder.deindent();
+			_ coder.w('}')
+			_ coder.w('if (count >= ' + this.minItems + ' && count <= ' + this.maxItems + ') { return true; }')
+			_ coder.w('else { return spit(k, false, \'' + this.fname + '\'); }')
+			_ coder.deindent();
+			_ coder.w('}')
+
+			foreach item in this.nodes
+				if verify.isFunction(item.toFunction)
+					_ item.toFunction(coder)
+

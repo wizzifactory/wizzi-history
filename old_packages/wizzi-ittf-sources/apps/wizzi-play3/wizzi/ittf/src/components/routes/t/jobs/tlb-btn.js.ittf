@@ -1,0 +1,21 @@
+﻿$group
+	$params title, onClick, icon|@@null
+
+    < Grid 
+        @ item
+        < Paper 
+            @ className {classes.buttonPaper}
+			$if icon == null
+				< Button
+					@ className {classes.button}
+					@ onClick { ${onClick} }
+					+ ${title}
+			$else
+				< Tooltip
+					@ title ${title}
+					@ enterDelay {300}
+					< IconButton
+						@ color inherit
+						@ onClick { ${onClick} }
+						< ${icon}
+							@ color action

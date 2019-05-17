@@ -1,0 +1,278 @@
+  module  ids: 1 256
+    kind jsfile ids: 2 257
+    import util ids: 3 258
+    import path ids: 4 259
+    import assert ids: 5 260
+    var runnerServer = require('../../runtime/runnerServer').instance ids: 6 261
+    var ContextData = require('./ContextData') ids: 7 262
+    var WizziJsContext = null ids: 8 263
+    var interpolate = require('../ittf/ittfInterpolate') ids: 9 264
+    var types = require('../util/types') ids: 10 265
+    var work ids: 11 266
+      {  ids: 12 267
+    set work.lineSep = "__LS__" ids: 13 268
+    set work.textSep = "__TS__" ids: 14 269
+    #  ids: 15 270
+      # properties ids: 16 271
+      # wizziJsContext:Object ids: 17 272
+      # primaryModel:Object ids: 18 273
+      # loadContext:Object ids: 19 274
+      # callApi:Function ids: 20 275
+      # loadWizziModel:Function ids: 21 276
+    class WizziJsEvalHelper ids: 22 277
+      ctor  ids: 23 278
+        param wizziJsContext ids: 24 279
+        param primaryModel ids: 25 280
+        set this.wizziJsContext = wizziJsContext ids: 26 281
+        set this.primaryModel = primaryModel ids: 27 282
+        set this.loadContext = primaryModel.loadContext ids: 28 283
+        set this.textSep = work.textSep ids: 29 284
+        if runnerServer ids: 30 285
+          set this.callApi = runnerServer.callApi ids: 31 286
+          set this.loadWizziModel = runnerServer.loadWizziModel ids: 32 287
+      #  ids: 33 288
+        # node tree buildup method ids: 34 289
+        # supershort method name ids: 35 290
+        # means set the WizziJsContext state to IttfModelEvalContext ids: 36 291
+      m s ids: 37 292
+        param modelKey ids: 38 293
+        # log 'WizziJsEvalHelper called $.s(' + modelKey +')' ids: 39 294
+        $group  ids: 498 504
+          $args: notUsed $params: varName
+          var ${varName} ids: 500 505
+            _ this.wizziJsContext.set_IttfModelEvalContext(modelKey) ids: 41 296
+          if ${varName} && ${varName}.__is_error ids: 502 507
+            return ${varName} ids: 503 508
+      #  ids: 42 297
+        # node tree buildup method ids: 43 298
+        # supershort method name ids: 44 299
+        # means set the WizziJsContext state to NodeContext ids: 45 300
+      m n ids: 46 301
+        # log 'WizziJsEvalHelper called $.n()' ids: 47 302
+        _ this.wizziJsContext.set_NodeContext() ids: 48 303
+      #  ids: 49 304
+        # node tree buildup method ids: 50 305
+        # supershort method name ids: 51 306
+        # means set the WizziJsContext state to GlobalContext ids: 52 307
+      m g ids: 53 308
+        # log 'WizziJsEvalHelper called $.g()' ids: 54 309
+        _ this.wizziJsContext.set_GlobalContext() ids: 55 310
+      #  ids: 56 311
+        # node tree buildup method ids: 57 312
+        # supershort method name ids: 58 313
+        # means append a child node to a parent node ids: 59 314
+      m a ids: 60 315
+        param parent ids: 61 316
+        param node ids: 62 317
+        param line ids: 63 318
+        # log 'WizziJsEvalHelper called $.a(' + node.n + ',' + node.v + ')' ids: 64 319
+        _ assert(parent, "Error evalHelper. Parent undefined in add. At line " + line) ids: 65 320
+        set node.parent = parent ids: 66 321
+        if typeof (parent.childs) === 'undefined' ids: 67 322
+          set parent.childs = [] ids: 68 323
+        set node.childs = [] ids: 69 324
+        _ parent.childs.push(node) ids: 70 325
+      #  ids: 71 326
+        # Interpolate a templated node value ids: 72 327
+      m ip ids: 73 328
+        param modelKey ids: 74 329
+        param templatedValue ids: 75 330
+        param type ids: 76 331
+        param line ids: 77 332
+        param hasMacro ids: 78 333
+        var ret ids: 79 334
+        try  ids: 80 335
+          var save = this.wizziJsContext.get_currentIttfModelKey() ids: 81 336
+          $group  ids: 498 509
+            $args: notUsed $params: varName
+            var ${varName} ids: 500 510
+              _ this.wizziJsContext.set_IttfModelEvalContext(modelKey, line) ids: 83 338
+            if ${varName} && ${varName}.__is_error ids: 502 512
+              return ${varName} ids: 503 513
+          # log ' *** WizziJsEvalHelper.ip templatedValue', templatedValue, 'modelKey', modelKey ids: 84 339
+          $group  ids: 498 514
+            $args: ret, WizziJsEvalHelper.ip  $params: varName
+            var ${varName} ids: 500 515
+              _ interpolate(templatedValue, this.wizziJsContext, {delimiter: '${}'}) ids: 86 341
+            if ${varName} && ${varName}.__is_error ids: 502 517
+              return ${varName} ids: 503 518
+          # log 'interpolated result', ret ids: 87 342
+          if hasMacro ids: 88 343
+            set ret = remacro(ret) ids: 89 344
+          if save === null ids: 90 345
+            _ this.wizziJsContext.set_NodeContext(modelKey) ids: 91 346
+          else  ids: 92 347
+            $group  ids: 498 519
+              $args: notUsed $params: varName
+              var ${varName} ids: 500 520
+                _ this.wizziJsContext.set_IttfModelEvalContext(save) ids: 94 349
+              if ${varName} && ${varName}.__is_error ids: 502 522
+                return ${varName} ids: 503 523
+        catch ex ids: 95 350
+          var ittfModelData = this.loadContext.getIttfModelData(modelKey) ids: 96 351
+          var callerIttfModelData = this.loadContext.getIttfModelData(ittfModelData.ittfModel.$mixerModelKey) ids: 97 352
+          var callerUri = callerIttfModelData ? callerIttfModelData.ittfDocumentUri : 'root model'; ids: 98 353
+          # log 'saved ip.currentIttfModelKey', save, 'ittfModelData.evalContext', ittfModelData.evalContext ids: 99 354
+          # 'values.' + util.inspect(this.wizziJsContext.getValues(), {depth: 2})) ids: 100 355
+          var exMessage = ex ? ex.message : 'not available' ids: 101 356
+          var exStack = ex ? ex.stack : 'not available' ids: 102 357
+          return  ids: 103 358
+            _ this.error ids: 104 359
+              @ 'Exception interpolating: ' + templatedValue + ', line:' + line + ', type:' + type + ', modelKey:' + modelKey + ', ittfModel uri: ' + ittfModelData.ittfDocumentUri + ', callerIttfModel uri: ' + callerUri + ', ex message: ' + exMessage + ', stack: ' + exStack ids: 105 360
+              @ null ids: 113 361
+              @ 'ip' ids: 114 362
+        var retObject ids: 115 363
+          _ types.objectify ids: 116 364
+            @ ret ids: 117 365
+            @ type ids: 118 366
+            {  ids: 119 367
+              @ row line ids: 120 368
+        if retObject && retObject.__is_error ids: 121 369
+          var ittfModelData = this.loadContext.getIttfModelData(modelKey) ids: 122 370
+          var error ids: 123 371
+            _ this.error ids: 124 372
+              @ 'Error interpolating: ' + templatedValue + ', line:' + line + ', ittfModel uri: ' + ittfModelData.ittfDocumentUri + ', callerIttfModel uri: ' + callerUri ids: 125 373
+              @ null ids: 128 374
+              @ 'ip' ids: 129 375
+          set error.inner = retObject ids: 130 376
+          return error ids: 131 377
+        else  ids: 132 378
+          return retObject ids: 133 379
+      m api ids: 134 380
+        if this.callApi ids: 135 381
+          return  ids: 136 382
+            _ this.callApi.apply ids: 137 383
+              @ runnerServer ids: 138 384
+              @ arguments ids: 139 385
+        else  ids: 140 386
+          return  ids: 141 387
+            _ this.error ids: 142 388
+              @ 'A RunnerServer has not been started. You must create a wizzifile.js.' ids: 143 389
+              @ null ids: 144 390
+              @ 'api' ids: 145 391
+      m model ids: 146 392
+        if this.loadWizziModel ids: 147 393
+          return  ids: 148 394
+            _ this.loadWizziModel.apply ids: 149 395
+              @ runnerServer ids: 150 396
+              @ arguments ids: 151 397
+        else  ids: 152 398
+          return  ids: 153 399
+            _ this.error ids: 154 400
+              @ 'A wizzi.RunnerServer has not been started. You must create a wizzifile.js.' ids: 155 401
+              @ null ids: 156 402
+              @ 'model' ids: 157 403
+      #  ids: 158 404
+        # called by set_IttfModelEvalContext ids: 159 405
+        # called by WizziJsRunner ids: 160 406
+      m getIttfModelEvalContext ids: 161 407
+        param modelKey ids: 162 408
+        param line ids: 163 409
+        # retrieve the ittfModelData for the given modelKey ids: 164 410
+        # from the loadContext ids: 165 411
+        var ittfModelData = this.loadContext.getIttfModelData(modelKey) ids: 166 412
+        var evalContext ids: 167 413
+        if ittfModelData.evalContext != null ids: 168 414
+          # An evalContext object has already been created for this ittfModelData ids: 169 415
+          set evalContext = ittfModelData.evalContext ids: 170 416
+          $group  ids: 498 524
+            $args: notUsed $params: varName
+            var ${varName} ids: 500 525
+              _ this._refreshEvalContext ids: 172 418
+                @ ittfModelData ids: 173 419
+                @ evalContext ids: 174 420
+            if ${varName} && ${varName}.__is_error ids: 502 527
+              return ${varName} ids: 503 528
+        else  ids: 175 421
+          set evalContext = new ContextData(1, modelKey) ids: 176 422
+          # log 'WizziJsEvalHelper created evalContext for', modelKey, 'id', ittfModelData.ittfModel.id, ittfModelData.evalContext, ittfModelData.ittfDocumentUri ids: 177 423
+          _ evalContext.setValue ids: 178 424
+            @ '__dirname' ids: 179 425
+            @ path.dirname(ittfModelData.ittfDocumentUri) ids: 180 426
+          _ evalContext.setValue ids: 181 427
+            @ '__filename' ids: 182 428
+            @ ittfModelData.ittfDocumentUri ids: 183 429
+          $group  ids: 498 529
+            $args: notUsed $params: varName
+            var ${varName} ids: 500 530
+              _ this._refreshEvalContext ids: 185 431
+                @ ittfModelData ids: 186 432
+                @ evalContext ids: 187 433
+            if ${varName} && ${varName}.__is_error ids: 502 532
+              return ${varName} ids: 503 533
+          set ittfModelData.evalContext = evalContext ids: 188 434
+        return evalContext ids: 189 435
+      m _refreshEvalContext ids: 190 436
+        param ittfModelData ids: 191 437
+        param evalContext ids: 192 438
+        if ittfModelData.ittfModel.$params ids: 193 439
+          var args = ittfModelData.ittfModel.$args ids: 194 440
+          if args && args.indexOf('${') > -1 ids: 195 441
+            # mixin call arguments must be interpolated ids: 196 442
+              # ittfModelData.ittfModel.$mixerModelKey is the modelKey of the ids: 197 443
+              # calling node that mixed the ittfModelData.ittfModel ids: 198 444
+              # we must retrieve the calling node model context ids: 199 445
+            $group  ids: 498 534
+              $args: callingNode_ModelContext $params: varName
+              var ${varName} ids: 500 535
+                _ this.getIttfModelEvalContext ids: 201 447
+                  @ ittfModelData.ittfModel.$mixerModelKey ids: 202 448
+              if ${varName} && ${varName}.__is_error ids: 502 537
+                return ${varName} ids: 503 538
+            try  ids: 203 449
+              if WizziJsContext == null ids: 204 450
+                set WizziJsContext = require('./wizziJsContext') ids: 205 451
+              var interpolateArgsContext = new WizziJsContext() ids: 206 452
+              _ interpolateArgsContext.setValues(this.wizziJsContext.globalContext.getSettableValues()) ids: 207 453
+              _ interpolateArgsContext.setValues(callingNode_ModelContext.getValues()) ids: 208 454
+              set args = interpolate(args, interpolateArgsContext, {delimiter: '${}'}) ids: 209 455
+              # log 'WizziJsEvalHelper interpolateArgs', ittfModelData.ittfModel.$args, args ids: 210 456
+            catch ex ids: 211 457
+              var callerIttfModelData = this.loadContext.getIttfModelData(ittfModelData.ittfModel.$mixerModelKey) ids: 212 458
+              var callerUri = callerIttfModelData ? callerIttfModelData.ittfDocumentUri : 'root model'; ids: 213 459
+              var exMessage = ex ? ex.message : 'not available' ids: 214 460
+              var exStack = ex ? ex.stack : 'not available' ids: 215 461
+              return  ids: 216 462
+                _ this.error ids: 217 463
+                  @ 'Exception interpolating args: ' + args + ', ittfModel uri: ' + ittfModelData.ittfDocumentUri + ', callerIttfModel uri: ' + callerUri + ', ex message: ' + exMessage + ', stack: ' + exStack ids: 218 464
+                  @ null ids: 223 465
+                  @ '_refreshEvalContext' ids: 224 466
+          $group  ids: 498 539
+            $args: paramValues $params: varName
+            var ${varName} ids: 500 540
+              _ ittfModelData.ittfModel.getParamValues ids: 226 468
+                @ args ids: 227 469
+            if ${varName} && ${varName}.__is_error ids: 502 542
+              return ${varName} ids: 503 543
+          foreach item in paramValues ids: 228 470
+            if item.isByRef ids: 229 471
+              $group  ids: 498 544
+                $args: callingNode_ModelContext $params: varName
+                var ${varName} ids: 500 545
+                  _ this.getIttfModelEvalContext ids: 231 473
+                    @ ittfModelData.ittfModel.$mixerModelKey ids: 232 474
+                if ${varName} && ${varName}.__is_error ids: 502 547
+                  return ${varName} ids: 503 548
+              _ evalContext.setValue ids: 233 475
+                @ item.name ids: 234 476
+                @ callingNode_ModelContext.getValue(item.name) ids: 235 477
+              set ittfModelData.byRefParams = (ittfModelData.byRefParams || []) ids: 236 478
+              _ ittfModelData.byRefParams.push ids: 237 479
+                @ item.name ids: 238 480
+            else  ids: 239 481
+              _ evalContext.setValue ids: 240 482
+                @ item.name ids: 241 483
+                @ item.value ids: 242 484
+      m error ids: 243 485
+        param message ids: 244 486
+        param extra ids: 245 487
+        param method ids: 246 488
+        return  ids: 247 489
+          {  ids: 248 490
+            @ __is_error true ids: 249 491
+            @ message message ids: 250 492
+            @ source 'lib/esprima/wizziJsEvalHelper/' + method ids: 251 493
+    function remacro ids: 252 494
+      param value ids: 253 495
+      return verify.replaceAll(value, "#{", "${") ids: 254 496
+    set module.exports = WizziJsEvalHelper ids: 255 497

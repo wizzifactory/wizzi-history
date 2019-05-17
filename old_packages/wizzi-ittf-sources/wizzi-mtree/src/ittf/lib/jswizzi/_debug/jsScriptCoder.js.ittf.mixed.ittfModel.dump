@@ -1,0 +1,91 @@
+  module  ids: 1 92
+    kind jsfile ids: 2 93
+    class JsScriptCoder ids: 3 94
+      ctor  ids: 4 95
+        set this.stm = [] ids: 5 96
+        set this.indentValue = 0 ids: 6 97
+        set this.length = 0 ids: 7 98
+        set this.line = '' ids: 8 99
+      m for ids: 9 100
+        param text ids: 10 101
+        param node ids: 11 102
+        if this.line.length > 0 ids: 12 103
+          _ this.w() ids: 13 104
+        _ this.w('for (' + text + ') {' + ' //' + node.id) ids: 14 105
+        _ this.indent() ids: 15 106
+      m if ids: 16 107
+        param text ids: 17 108
+        param node ids: 18 109
+        if this.line.length > 0 ids: 19 110
+          _ this.w() ids: 20 111
+        _ this.w('if (' + text + ') {' + ' //' + node.id) ids: 21 112
+        _ this.indent() ids: 22 113
+      m elif ids: 23 114
+        param text ids: 24 115
+        param node ids: 25 116
+        if this.line.length > 0 ids: 26 117
+          _ this.w() ids: 27 118
+        _ this.w('else if (' + text + ') {' + ' //' + node.id) ids: 28 119
+        _ this.indent() ids: 29 120
+      m else ids: 30 121
+        if this.line.length > 0 ids: 31 122
+          _ this.w() ids: 32 123
+        _ this.w('else {') ids: 33 124
+        _ this.indent() ids: 34 125
+      m while ids: 35 126
+        param text ids: 36 127
+        param node ids: 37 128
+        if this.line.length > 0 ids: 38 129
+          _ this.w() ids: 39 130
+        _ this.w('while (' + text + ') {' + ' //' + node.id) ids: 40 131
+        _ this.indent() ids: 41 132
+      m end ids: 42 133
+        if this.line.length > 0 ids: 43 134
+          _ this.w() ids: 44 135
+        _ this.deindent() ids: 45 136
+        _ this.w('}') ids: 46 137
+      m w ids: 47 138
+        param text ids: 48 139
+        var ind = spaces(this.indentValue * 4) ids: 49 140
+        _ this.stm.push(ind + this.line + (text || '')) ids: 50 141
+        set this.line = '' ids: 51 142
+        set this.length++ ids: 52 143
+      m write ids: 53 144
+        param text ids: 54 145
+        set this.line += (text || '') ids: 55 146
+      m indent ids: 56 147
+        set this.indentValue++ ids: 57 148
+      m deindent ids: 58 149
+        set this.indentValue = Math.max(0, (this.indentValue - 1)) ids: 59 150
+      m toCode ids: 60 151
+        if this.line.length > 0 ids: 61 152
+          _ this.w() ids: 62 153
+        return this.stm.join('\n') ids: 63 154
+      m getErrorLines ids: 64 155
+        param esprimaException ids: 65 156
+        var start = Math.max(0, (esprimaException.lineNumber - 4)) ids: 66 157
+        var end ids: 67 158
+          _ Math.min ids: 68 159
+            @ this.stm.length ids: 69 160
+            @ (esprimaException.lineNumber + 4) ids: 70 161
+        var ret ids: 71 162
+          [  ids: 72 163
+        for var i = start; i < end; i++ ids: 73 164
+          _ ret.push(formatLineNumber(i + 1) + ' ' + this.stm[i]) ids: 74 165
+          if (i == esprimaException.lineNumber - 1) ids: 75 166
+            var col = esprimaException.column ids: 76 167
+            _ ret.push(spaces(col + 4) + '* ' + esprimaException.description) ids: 77 168
+        return ret ids: 78 169
+    function spaces ids: 79 170
+      param num ids: 80 171
+      return Array(num + 1).join(" ") ids: 81 172
+    function formatLineNumber ids: 82 173
+      param num ids: 83 174
+      if num > 999 ids: 84 175
+        return num ids: 85 176
+      if num > 99 ids: 86 177
+        return ('0' + num) ids: 87 178
+      if num > 9 ids: 88 179
+        return ('00' + num) ids: 89 180
+      return ('000' + num) ids: 90 181
+    set module.exports = JsScriptCoder ids: 91 182

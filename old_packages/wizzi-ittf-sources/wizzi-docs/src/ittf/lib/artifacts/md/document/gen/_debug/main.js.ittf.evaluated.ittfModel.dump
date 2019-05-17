@@ -1,0 +1,146 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var wizzi = require('wizzi') ids: undefined undefined
+    var verify = wizzi.verify ids: undefined undefined
+    var utilnode = wizzi.utilnode ids: undefined undefined
+    var lineParser = wizzi.lineParser ids: undefined undefined
+    var md = module.exports = {} ids: undefined undefined
+    var myname = 'mdx.document.main' ids: undefined undefined
+    set md.gen ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        param callback ids: undefined undefined
+        # log 'model', util.inspect(model, { depth: 1 }) ids: undefined undefined
+        _ this.genItem(model, ctx) ids: undefined undefined
+        _ callback(null, ctx) ids: undefined undefined
+    set md.gen.prototype.genItems ids: undefined undefined
+      function  ids: undefined undefined
+        param items ids: undefined undefined
+        param ctx ids: undefined undefined
+        param options ids: undefined undefined
+        var  ids: undefined undefined
+          decl opt = options || {} ids: undefined undefined
+          decl from = opt.from || 0 ids: undefined undefined
+        for var i = from; i < items.length; i++ ids: undefined undefined
+          var item = items[i] ids: undefined undefined
+          _ this.genItem(item, ctx) ids: undefined undefined
+    set md.gen.prototype.genItem ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        if this[model.wzElement] ids: undefined undefined
+          # known element ids: undefined undefined
+          if this[model.wzElement](model, ctx) ids: undefined undefined
+            # ok, processed ids: undefined undefined
+            return  ids: undefined undefined
+    set md.gen.prototype.mdx ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.h1 ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("# " + model.wzName) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.h2 ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("## " + model.wzName) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.h3 ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("### " + model.wzName) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.h4 ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("#### " + model.wzName) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.h5 ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("##### " + model.wzName) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.h6 ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("##### " + model.wzName) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.p ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w(model.wzName) ids: undefined undefined
+        if ctx.isCode ids: undefined undefined
+          _ ctx.indent() ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        if ctx.isCode ids: undefined undefined
+          _ ctx.deindent() ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.br ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w() ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.i ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.write('*' + model.wzName) ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        _ ctx.write('*') ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.b ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.write('**' + model.wzName) ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        _ ctx.write('**') ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.span ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.write(model.wzName) ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.blank ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.write(' ' + model.wzName) ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.code ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("`" + model.wzName + "`") ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.gen.prototype.js ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ ctx.w("```javascript") ids: undefined undefined
+        set ctx.isCode = true ids: undefined undefined
+        _ this.genItems(model.elements, ctx) ids: undefined undefined
+        set ctx.isCode = false ids: undefined undefined
+        _ ctx.w("```") ids: undefined undefined
+        return true; ids: undefined undefined
+    set md.isLineTag ids: undefined undefined
+      function  ids: undefined undefined
+        param model ids: undefined undefined
+        return ['p', 'br'].indexOf(model.wzElement) > -1; ids: undefined undefined

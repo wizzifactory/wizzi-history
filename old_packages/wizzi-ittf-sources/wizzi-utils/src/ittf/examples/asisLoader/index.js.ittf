@@ -1,0 +1,49 @@
+﻿base_example( asIsLoader )
+
+	var asIsLoader = require('../../lib/ittfTree/asIsLoader')
+
+	var tree
+		_ asIsLoader.createFromString
+			[
+				@ 'module'
+				@ '    kind react'
+				@ '    react Hello'
+				@ '        state'
+				@ '            @ name "stefi"'
+				._ join
+					@ '\n'
+			{
+				@ clean true
+
+	_ file.write
+		_ path.join
+			@ __dirname
+			@ 'result'
+			@ 'basic.sample.clean.json'
+		_ stringify
+			@ tree
+			@ null
+			@ 2
+
+	var tree
+		_ asIsLoader.createFromString
+			[
+				@ 'module'
+				@ '    kind react'
+				@ '    react Hello'
+				@ '        state'
+				@ '            @ name "stefi"'
+				._ join
+					@ '\n'
+			{
+				@ clean_remove true
+
+	_ file.write
+		_ path.join
+			@ __dirname
+			@ 'result'
+			@ 'basic.sample.clean_remove.json'
+		_ stringify
+			@ tree
+			@ null
+			@ 2

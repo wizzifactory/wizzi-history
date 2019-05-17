@@ -1,0 +1,55 @@
+﻿$
+	var app = {};
+	app.name = 'nextjs-starter';
+	app.description = 'Next-js starter example app';
+	app.useNextjs = true;
+	app.useServer = true;
+
+	if (app.useNextjs) {
+		app.useReact = true;
+	}
+	if (app.useRedux) {
+		app.useReact = true;
+	}
+	if (app.useMaterialUi) {
+		app.useReact = true;
+		if (!app.rootContainer) {
+			app.rootContainer = 'MuiThemeContainer';
+		}
+		if (!app.primaryColor) {
+			app.primaryColor = 'orange';
+			app.secondaryColor = 'green';
+			app.accentColor = 'red';
+		}
+		if (!app.useCssBaseline) {
+			app.useCssBaseline = false;
+		}
+	}
+	if (app.useReact && !app.useNextjs) {
+		app.useWebpack = true;
+		app.useBabel = true;
+		app.webpack = {};
+		app.webpack.loadCss = true;
+		if (!app.rootContainer) {
+			app.rootContainer = 'AppContainer';
+		}
+		if (!app.rootElementId) {
+			app.rootElementId = 'app';
+		}
+	}
+	if (app.useMaterialUi) {
+		if (!app.primaryColor) {
+			app.primaryColor = 'orange';
+			app.secondaryColor = 'green';
+			app.accentColor = 'red';
+		}
+	}
+	if (!app.version) {
+		app.version = '0.0.1';
+	}
+	if (!app.author) {
+		app.author = 'Stefano Bassoli';
+	}
+	if (!app.license) {
+		app.license = 'MIT';
+	}

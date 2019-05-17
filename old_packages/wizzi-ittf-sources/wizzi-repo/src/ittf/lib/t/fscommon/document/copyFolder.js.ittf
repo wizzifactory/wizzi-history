@@ -1,0 +1,51 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m copyFolder
+		string sourcePath
+		string destPath
+		callback
+
+		set sourcePath = normalize(sourcePath)
+		set destPath = normalize(destPath)
+		
+		if sourcePath === destPath
+			log 'wizzi-repo.t.fscommon.document.copyFolder. sourcePath === destPath'
+			r_cb( {} )
+
+		var that = this
+
+		var copies = []
+
+		log 'wizzi-repo.t.fscommon.document.getFiles.before'
+		_ this.getFiles
+			@ sourcePath
+			{
+				@ deep true
+			f_cb( files )
+
+				log 'wizzi-repo.t.fscommon.document.copyFolder. files', files.length
+				var
+					decl sourcefile
+					decl destfile
+					decl files_len = files.length
+
+				function repeater
+					param index
+					if index === files_len
+						r_cb( copies )
+			
+					set sourcefile = files[index]
+					set destfile = sourcefile.replace(sourcePath, destPath)
+		
+					_ that.copyFile
+						@ sourcefile
+						@ destfile
+						f_cb( r )
+							_ copies.push(r)
+							_ process.nextTick
+								function 
+									_ repeater(index + 1)
+        
+				_ repeater(0)
+

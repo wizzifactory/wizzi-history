@@ -1,0 +1,43 @@
+﻿transformer( wfpackage, fs-scanner, true )
+	
+	$append imports
+		var folderScanner = require('wizzi-utils').folderScanner
+
+	var result
+		{
+			@ generatedPackages []
+
+	var srcCwd = model.srcCwd
+	# log myname, 'srcCwd', srcCwd
+	foreach pkg in model.generatedPackages
+		var srcPath
+			_ path.join
+				@ srcCwd
+				@ pkg.sourceFolder
+		# log myname, 'srcPath', srcPath
+		var ittf
+			_ folderScanner.scan
+				@ srcPath
+				{
+					@ name pkg.wzName
+					@ gitPath pkg.gitCwd
+		_ ittf.insertAt
+			@ 'version'
+			@ pkg.version
+			@ 1
+		_ ittf.insertAt
+			@ 'title'
+			@ pkg.title
+			@ 2
+		_ ittf.insertAt
+			@ 'src-cwd'
+			@ srcPath
+			@ 3
+
+		_ result.generatedPackages.push
+			@ ittf
+
+	_ callback
+		@ null
+		@ result
+

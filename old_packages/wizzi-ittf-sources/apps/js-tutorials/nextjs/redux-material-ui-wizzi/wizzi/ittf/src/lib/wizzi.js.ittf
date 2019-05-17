@@ -1,0 +1,22 @@
+﻿module
+	kind es6
+
+	import wizziTools from 'wizzi-tools'
+
+	var wizzi
+		{
+			@ wizzify
+				function
+					param schema
+					param snippetCode
+					param callback
+					if wizziTools['wizzify_' + schema]
+						_ wizziTools['wizzify_' + schema]
+							@ snippetCode
+							{
+							@ callback
+					else
+						r_cb_error( Error )
+							@ 'Cannot wizzify a code snippet of type ' + schema + '. Not managed.'
+	
+	export default wizzi

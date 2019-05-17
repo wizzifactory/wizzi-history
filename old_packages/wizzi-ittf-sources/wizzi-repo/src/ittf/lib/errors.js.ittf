@@ -1,0 +1,26 @@
+﻿module
+	kind jsfile
+
+	import util
+	var utils = require('./repo/utils')
+
+	+
+	var md = module.exports = {}
+	+
+
+	error( NotImplemented, message )
+		log 'message', message
+		set this.message = message
+	+
+	error( InvalidRequest, message, code )
+		log 'message', message
+		set this.message = message
+		set this.code = code
+
+	error( FsItemNotFound, resourceType, uri )
+		set this.message = resourceType + ': ' + uri + ' not found '
+
+	error( IttfNotFound, resourceType, name, sourceUri )
+		set this.message = resourceType + ': ' + name + 
+			\ ' not found, processing document ' + utils.getSrcPathInfo(sourceUri)
+

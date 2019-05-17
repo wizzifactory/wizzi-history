@@ -1,0 +1,37 @@
+﻿module
+	kind jsfile
+
+	class Coder
+		ctor
+			set this.buffer = []
+			set this.indentValue = 0
+			set this.needIndent = false
+			set this.ctx = {}
+		
+		m w
+			param text
+			_ this.do_indent
+			_ this.buffer.push(text + '\n')
+			set this.needIndent = true
+		
+		m write
+			param text
+			_ this.do_indent
+			_ this.buffer.push(text)
+		
+		m indent
+			set this.indentValue++
+		
+		m deindent
+			set this.indentValue--
+
+		m do_indent
+			if this.needIndent
+				_ this.buffer.push
+					@ (new Array(1 + this.indentValue * 4)).join(' ')
+				set this.needIndent = false
+		
+		m toString
+			return this.buffer.join('')
+
+	set module.exports = Coder

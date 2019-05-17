@@ -1,0 +1,223 @@
+﻿loader(function)
+
+	$append requires
+		var lineParser = require('../util/lineParser')
+            
+	stm( exportfunction
+        var xdefault = model.__default ? 'default ' : ''
+        var name = (model.__name || '')
+        _ ctx.w('export ' + xdefault + 'function ' + name + '(' + model.paramNames.join(', ') + ') {')
+		_ ctx.indent()
+		_ generateParamConstraints
+			@ name
+			@ model.constrainedParams
+			@ model.hasCallbackParam
+			@ model.hasOptionsCallbackParam
+			@ ctx
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent false
+			f_cb()
+				_ ctx.deindent()
+				_ ctx.write('}')
+				r_cb()
+    
+	stm( xfunction
+        var 
+            decl name = ''
+			decl aster = ctx.__aster || ''
+        if model.paramNames.length > 0
+            set name = model.wzName.trim()
+        else 
+            var p
+                _ lineParser.parse
+                    @ model.wzName
+                    @ model
+            if p.tokens.length > 0
+                var state = 0
+                for var i = 0; i < p.tokens.length; i++
+                    var text = p.tokens[i].text
+                    if text === '('
+                        set state = 1
+                    elif text === ')'
+                        + ;
+                    elif i == 0 && state == 0
+                        set name = text
+                        set state = 1
+                    else 
+                        _ model.paramNames.push(text)
+        var 
+            decl f
+            decl iifeInvoke
+            decl iife = model.statements.length > 0 && model.statements[(model.statements.length - 1)].wzElement === 'memberCall'
+        if iife
+            set f = '(' + (name.length > 0 ? ('function' + aster + ' ' + name) : 'function')
+            set iifeInvoke = model.statements[(model.statements.length - 1)]
+            set iifeInvoke.wzParent =
+                { 
+                    @ wzElement 'call'
+            _ model.statements.splice((model.statements.length - 1), 1)
+        else 
+            set f = name.length > 0 ? ('function' + aster + ' ' + name) : 'function' + aster
+        _ ctx.w(f + '(' + model.paramNames.join(', ') + ') {')
+
+		# constraints
+		_ ctx.indent()
+		_ generateParamConstraints
+			@ iife ? 'iife' : aster + name
+			@ model.constrainedParams
+			@ model.hasCallbackParam
+			@ model.hasOptionsCallbackParam
+			@ ctx
+
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent false
+			f_cb()
+				_ ctx.deindent()
+				_ ctx.write('}')
+        
+				if iife
+					return
+						_ cnt.genItems
+							[ 
+								@ iifeInvoke
+							@ ctx
+							{ 
+								@ indent false
+							f_cb()
+								_ ctx.write(')')
+								if u.isTopStatement(model)
+									_ ctx.w('')
+								r_cb()
+				if u.isTopStatement(model)
+					_ ctx.w('')
+				r_cb()
+
+    stm( iife
+		var invokeCall = null
+		if model.statements.length > 0 && model.statements[(model.statements.length - 1)].wzElement === 'callOnValue'
+			set invokeCall = model.statements[model.statements.length - 1]
+			_ model.statements.splice(model.statements.length - 1, 1)
+
+        if model.unary_prefix
+            _ ctx.write
+                @ model.unary_prefix
+        
+		_ ctx.w('(function(' + model.paramNames.join(', ') + ') {')
+		# constraints
+		_ ctx.indent()
+		_ generateParamConstraints
+			@ 'iife'
+			@ model.constrainedParams
+			@ model.hasCallbackParam
+			@ model.hasOptionsCallbackParam
+			@ ctx
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent false
+			f_cb()
+				_ ctx.deindent()
+				_ ctx.write('})')
+				if invokeCall
+					_ cnt.genItem
+						@ invokeCall
+						@ ctx
+						f_cb()
+							# _ ctx.w(';')
+							r_cb()
+				else
+					# _ ctx.w('();')
+					r_cb()
+
+	stm( generatorfunction
+		set ctx.__aster = '*'
+		_ cnt.stm.xfunction
+			@ model
+			@ ctx
+			f_cb()
+				set ctx.__aster = null
+				r_cb()
+
+	stm( xyield
+		var name = model.wzName.trim()
+		if hasStatements(model) == false
+			_ ctx.w('yield ' + name + u.semicolon(name))
+			r_cb()
+
+		_ ctx.write('yield ')
+		_ cnt.genItems
+			@ model.statements
+			@ ctx
+			@ callback
+
+	stm( arrowfunction
+        if ctx.__is_react_class && model.wzParent.wzElement == 'reactComponent'
+            _ ctx.w(model.wzName + ' = (' + model.paramNames.join(', ') + ') =>{')
+			_ ctx.indent()
+			_ generateParamConstraints
+				@ name
+				@ model.constrainedParams
+				@ model.hasCallbackParam
+				@ model.hasOptionsCallbackParam
+				@ ctx
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent false
+				f_cb()
+					_ ctx.deindent()
+					_ ctx.w('}')
+					r_cb()
+		elif u.onlyChildIs(model, 'callOnValue')
+            _ ctx.write('(' + model.paramNames.join(', ') + ') => ')
+			# TODO what if it needs generateParamConstraints ?
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent true
+				@ callback
+		elif u.onlyChildIs(model, 'arrowfunction')
+            _ ctx.write('(' + model.paramNames.join(', ') + ') => ')
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent true
+				@ callback
+		else 
+            _ ctx.w('(' + model.paramNames.join(', ') + ') => {')
+            _ cnt.genItems
+                @ model.statements
+                @ ctx
+                { 
+                    @ indent true
+				f_cb()
+					_ ctx.write('}')
+					r_cb()
+    
+	stm( xreturn
+		if hasStatements(model) == false
+			_ ctx.w('return ' + (model.wzName || '') + u.semicolon(model.wzName))
+			r_cb()
+
+        _ ctx.write('return ')
+        _ cnt.genItems
+            @ model.statements
+            @ ctx
+            { 
+                @ indent true
+			f_cb()
+				if model.statements.length == 1
+					_ ctx.w(';')
+				r_cb()
+	
+	$include generateParamConstraints

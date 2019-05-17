@@ -1,0 +1,23 @@
+﻿api_async( Globals )
+	+
+	$include filefy
+	$include makeWizziFactoryCreator
+	$include globals/index
+	+
+	$append imports
+		import assert
+		import chalk
+		import fs
+		import temp
+
+	$append methods
+
+		var jobsApi = makeJobsApi(config, api)
+		set api.globals
+			{
+				@ getExecFileJobList jobsApi.getExecFileJobList
+				@ getExecFile jobsApi.getExecFile
+				@ runExecFile jobsApi.runExecFile
+
+		return callback(null, api)
+

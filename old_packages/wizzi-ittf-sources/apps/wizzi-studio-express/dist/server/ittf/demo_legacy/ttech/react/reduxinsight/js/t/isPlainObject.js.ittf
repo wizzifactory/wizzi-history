@@ -1,0 +1,27 @@
+$group
+
+	var fnToString
+        function fnToString
+            param fn
+            return Function.prototype.toString.call(fn)
+    
+	var objStringValue = fnToString(Object)
+    
+	function isPlainObject
+        param obj
+        if !obj || (typeof (obj) === 'undefined' ? 'undefined' : _typeof(obj) !== 'object')
+            return false
+        
+		var proto
+            iif typeof (obj.constructor) === 'function'
+                then 
+                    _ Object.getPrototypeOf(obj)
+                else 
+                    set Object.prototype
+        
+		if proto === null
+            return true
+        
+		var constructor = proto.constructor
+        
+		return typeof (constructor) === 'function' && constructor instanceof constructor && fnToString(constructor) === objStringValue

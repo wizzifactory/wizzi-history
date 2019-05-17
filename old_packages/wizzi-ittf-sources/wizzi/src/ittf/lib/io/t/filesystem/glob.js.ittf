@@ -1,0 +1,33 @@
+﻿$group
+
+	set md.glob
+		function
+			param userId
+			param projectId
+			param pattern
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'IO wizzi repository not mounted. Review your start procedure'
+
+			var fsPattern
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ pattern
+				
+			# log 'wizzi-io.filesystem.glob.fsPattern', fsPattern
+
+			_ glob
+				@ fsPattern
+				@ this
+				{
+				f_cb( fsitems )
+					# log 'wizzi-io.filesystem.glob.fsPattern', fsPattern, 'fsitems', fsitems
+					return 
+						_ callback(null, fsitems)

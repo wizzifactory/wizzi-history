@@ -1,0 +1,26 @@
+$group
+
+	#
+		# Retrieve a WizziModelFactory by its wizzischema name
+		# searching the loader in this WizziPackage.
+		# No search up in "node_modules" folders.
+	m getModelFactory
+		string schemaName
+		var factory = this.modelFactories[schemaName] || null
+		if factory == null
+			var modulePath
+				_ path.resolve
+					@ __dirname
+					@ './lib/wizzi/models/' + schemaName + '-factory.g.js'
+			if this.file.exists(modulePath)
+				try
+					set factory = require('./lib/wizzi/models/' + schemaName + '-factory.g')
+				catch ex
+					return
+						_ error
+							@ 'WizziPluginError'
+							@ 'getModelFactory'
+							@ 'Error loading wizzi model factory: ' + modulePath + ', in plugin: ' + this.getFilename()
+								\b + ', err: ' + ex.message + ', stack: ' + ex.stack
+				set this.modelFactories[schemaName] = factory
+		return factory

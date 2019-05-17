@@ -1,0 +1,161 @@
+﻿$group
+
+	m getFragments
+		param schemaName
+		param callback
+		# returns
+		# { fragments
+		
+		var fragments = fragmentsCache.get(schemaName)
+		
+		if fragments
+			r_cb( fragments )
+		
+		_ this.fb.getDocument
+			_ this.pathNames.fragmentsPath
+				@ schemaName
+			f_cb( fragments )
+				log 'WizziStore.getFragments', fragments
+				if fragments
+					_ fragmentsCache.set(schemaName, fragments)
+				r_cb( fragments || {} )
+
+	m getFragment
+		param schemaName
+		param name
+		param callback
+		
+		_ this.getFragments
+			@ schemaName
+			f_cb( fragments )
+				const item = fragments[name]
+				log 'WizziStore.getFragment', 'got', item
+				r_cb( item )
+
+	m setFragment
+		param schemaName
+		param name
+		param content
+		param callback
+		
+		const that = this
+		_ this.getFragments
+			@ schemaName
+			f_cb( fragments )
+				
+				var updated, inserted
+				if fragments[name]
+					set fragments[name] = content
+					set updated++
+				else
+					set fragments[name] = content
+					set inserted++
+				
+				_ fragmentsCache.set(schemaName, fragments)
+				
+				_ that.setSchemaFragment
+					@ schemaName
+					@ name
+
+				_ that.updatesQueue.set
+					_ that.pathNames.fragmentsPath
+						@ schemaName
+					@ fragments
+				
+				_ that.scheduleCloudUpdate
+				
+				const message = 'setFragment successfull ' + schemaName + '/' + name
+				log 'message', message
+				const result
+					{
+						@ inserted inserted
+						@ updated updated
+						@ item fragments[name]
+						@ schemas that.schemas
+						@ message message
+				r_cb( result )
+
+	m deleteFragment
+		param schemaName
+		param name
+		param callback
+		
+		const that = this
+		_ this.getFragments
+			@ schemaName
+			f_cb( fragments )
+				
+				if !fragments[name]
+					r_cb_error( Error
+						@ 'Delete error. Fragment does not exists: ' + schemaName + '/' + name
+				
+				const dataItem = fragments[name]
+				delete fragments[name]
+				
+				_ fragmentsCache.set(schemaName, fragments)
+				
+				_ that.removeSchemaFragment
+					@ schemaName
+					@ name
+
+				_ that.updatesQueue.set
+					_ that.pathNames.fragmentsPath
+						@ schemaName
+					@ fragments
+				
+				_ that.scheduleCloudUpdate
+				
+				const message = 'deleteFragment successfull ' + schemaName + '/' + name
+				log message
+				const result
+					{
+						@ deleted 1
+						@ item dataItem
+						@ schemas that.schemas
+						@ message message
+				r_cb( result )
+
+	m renameFragment
+		param schemaName
+		param oldName
+		param newName
+		param callback
+		
+		const that = this
+		_ this.getFragments
+			@ schemaName
+			f_cb( fragments )
+				
+				if !fragments[oldName]
+					r_cb_error( Error
+						@ 'Rename error. Fragment old name does not exists: ' + schemaName + '/' + oldName
+				
+				if fragments[newName]
+					r_cb_error( Error
+						@ 'Rename error. Fragment new name already exists: ' + schemaName + '/' + newName
+				
+				set fragments[newName] = fragments[oldName]
+				
+				delete fragments[oldName]
+				
+				_ fragmentsCache.set(schemaName, fragments)
+				
+				_ that.renameSchemaFragment
+					@ schemaName
+					@ oldName
+					@ newName
+
+				_ that.updatesQueue.set
+					_ that.pathNames.fragmentsPath
+						@ schemaName
+					@ fragments
+				
+				_ that.scheduleCloudUpdate
+				
+				const message = 'renameFragment successfull ' + schemaName + '/' + oldName + '/' + newName
+				log message
+				const result
+					{
+						@ schemas that.schemas
+						@ message message
+				r_cb( result )

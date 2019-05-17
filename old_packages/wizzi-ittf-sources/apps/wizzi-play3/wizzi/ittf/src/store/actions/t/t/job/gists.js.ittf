@@ -1,0 +1,163 @@
+﻿$group
+
+	export
+		const getJobGists
+			=>
+				param kind
+				return
+					{
+						@ type GET_JOB_GISTS
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_JOB_GISTS_REQUEST
+										@ GET_JOB_GISTS_SUCCESS
+										@ GET_JOB_GISTS_FAILURE
+								@ url '/api/jobs/gists'
+								@ queryParams
+									{
+										@ kind kind
+								@ method 'get'
+
+	export
+		const getJobGist
+			=>
+				param hash
+				return
+					{
+						@ type GET_JOB_GIST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_JOB_GIST_REQUEST
+										@ GET_JOB_GIST_SUCCESS
+										@ GET_JOB_GIST_FAILURE
+								@ url '/api/jobs/gist'
+								@ queryParams
+									{
+										@ hash hash
+								@ method 'get'
+
+	export
+		const changedJobGist
+			=>
+				param content
+				return
+					{
+						@ type CHANGED_JOB_GIST
+						@ content content
+
+	export
+		const createJobGist
+			=>
+				param kind
+				param name
+				param schema
+				param content
+				return
+					{
+						@ type CREATE_JOB_GIST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ CREATE_JOB_GIST_REQUEST
+										@ CREATE_JOB_GIST_SUCCESS
+										@ CREATE_JOB_GIST_FAILURE
+								@ url '/api/jobs/gist'
+								@ payload
+									{
+										@ name name
+										@ schema schema
+										@ kind kind
+										@ content content
+								@ method 'post'
+
+	export
+		const updateJobGist
+			=>
+				param hash
+				param content
+				return
+					{
+						@ type UPDATE_JOB_GIST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ UPDATE_JOB_GIST_REQUEST
+										@ UPDATE_JOB_GIST_SUCCESS
+										@ UPDATE_JOB_GIST_FAILURE
+								@ url '/api/jobs/gist'
+								@ payload
+									{
+										@ hash hash
+										@ content content
+								@ method 'put'
+								@ delayId UPDATE_JOB_GIST + hash
+								@ delay 4000
+	export
+		const duplicateJobGist
+			=>
+				param hash
+				param newname
+				return
+					{
+						@ type DUPLICATE_JOB_GIST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ DUPLICATE_JOB_GIST_REQUEST
+										@ DUPLICATE_JOB_GIST_SUCCESS
+										@ DUPLICATE_JOB_GIST_FAILURE
+								@ url '/api/jobs/gist/duplicate'
+								@ payload
+									{
+										@ hash hash
+										@ newname newname
+								@ method 'post'
+
+	export
+		const renameJobGist
+			=>
+				param hash
+				param newname
+				return
+					{
+						@ type RENAME_JOB_GIST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ RENAME_JOB_GIST_REQUEST
+										@ RENAME_JOB_GIST_SUCCESS
+										@ RENAME_JOB_GIST_FAILURE
+								@ url '/api/jobs/gist/rename'
+								@ payload
+									{
+										@ hash hash
+										@ newname newname
+								@ method 'post'
+
+	export
+		const deleteJobGist
+			=>
+				param hash
+				return
+					{
+						@ type DELETE_JOB_GIST
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ DELETE_JOB_GIST_REQUEST
+										@ DELETE_JOB_GIST_SUCCESS
+										@ DELETE_JOB_GIST_FAILURE
+								@ url '/api/jobs/gist'
+								@ payload
+									{
+										@ hash hash
+								@ method 'delete'

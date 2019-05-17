@@ -1,0 +1,46 @@
+﻿module
+	kind jsfile
+
+	import async
+	var wizziUtils = require('wizzi-utils')
+	var importFile = require('./fileImporter')
+
+	function importFolder
+		param baseImportPath
+		param baseExportPath
+		param vfile
+		param callback
+
+		if typeof callback === 'undefined'
+			set callback = vfile
+			# vfile() defaults to local filesystem
+			set vfile = wizziUtils.vfile() 
+
+		const files
+			_ vfile.getFiles
+				@ baseImportPath
+
+		_ async.map
+			@ files
+			_ getImportFile
+				@ baseImportPath
+				@ baseExportPath
+				@ vfile
+			@ callback
+
+	function getImportFile
+		param baseImportPath
+		param baseExportPath
+		param vfile
+		return
+			function
+				param f
+				param callback
+				_ importFile
+					@ f.fullPath
+					@ baseImportPath
+					@ baseExportPath
+					@ vfile
+					@ callback
+
+	set module.exports = importFolder

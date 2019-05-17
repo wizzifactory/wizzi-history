@@ -1,0 +1,17 @@
+﻿wfjob wizzi-studio
+	
+	$
+		var ittf_webpacks     = path.join(__dirname, 'ittf', 'webpacks');
+		var dest_folder       = "c:/my/wizzi/v5/apps/wizzi-studio/dist/server";
+
+	line webpacks
+		cwd-folder ${ittf_webpacks}
+		dest-folder ${dest_folder}/webpacks
+
+		$include wfjob/any_js
+		$include wfjob/any_json
+		$include wfjob/any_css
+
+	production
+		dest-folder ${dest_folder}
+		line-ref webpacks

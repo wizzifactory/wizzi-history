@@ -1,0 +1,70 @@
+﻿r-component( CodeEditSplit2
+
+	$
+		var opt = {};
+		opt.codeInState = true;
+		opt.headerHeight = 65;
+		opt.footerHeight = 60;
+		opt.footerCommandsHeight = 40;
+		opt.splitterResizerSize = 25;
+		opt.splitterResizerDiff = opt.headerHeight + opt.footerHeight + 4;
+		opt.gray_1_tb = '#020302';
+		opt.gray_2_aside = '#0d0a10';
+		opt.gray_3_ehead = '#0a0a0a';
+		opt.gray_4_page = '#1d1f20';
+
+	$append imports
+		common/page_imports()
+		codesplit2/imports()
+		import CodeBeautify from '../mui/CodeBeautify'
+		import CodeEditor from '../mui/CodeEditor'
+		const initialCode
+			[
+				@ "import Lowlight from 'react-lowlight'"
+				@ ""
+				@ "// Load any languages you want to use"
+				@ "// (see https://github.com/isagalaev/highlight.js/tree/master/src/languages)"
+				@ "import js from 'highlight.js/lib/languages/javascript"
+				@ ""
+				@ "// Then register them with lowlight"
+				@ "Lowlight.registerLanguage('js', js)"
+				@ ""
+				@ "ReactDOM.render(<Lowlight language='js' value='/* Code to highlight */' />,"
+				@ "  document.getElementById('target')"
+				@ ")"
+				._ join('\n')
+
+	style
+		codesplit2/style(&opt)
+
+	state
+		
+		codesplit2/state(&opt)
+
+
+	codesplit2/handlers(&opt)
+
+	render
+
+		prop classes
+
+		codesplit2/render_prop_state(&opt)
+
+		const editOptions 
+			{
+
+		return
+
+			codesplit2/render(&opt)
+				$append pane1
+					< CodeEditor 
+						@ theme 'vs-dark'
+						@ width { splitter1Sizes.primary }
+						@ height { splitter1Sizes.third }
+						@ value { codeSnippet }
+						@ options { editOptions }
+						@ onChange { this.handleCodeChange }
+				$append pane2
+					< CodeBeautify
+						@ language { 'js' }
+						@ codeSnippet { codeSnippet }

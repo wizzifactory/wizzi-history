@@ -1,0 +1,13 @@
+﻿$group
+
+	it-async should async glob a folder
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ db_dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+			@ file
+			f_cb_test( result )
+				tobe_array(result, 3)
+				_ done

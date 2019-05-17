@@ -1,0 +1,54 @@
+﻿module
+	kind react
+
+	import App, {Container} from 'next/app'
+	import {Provider} from 'react-redux'
+	import {initializeStore} from '../store'
+
+	const isServer = typeof window === 'undefined'
+	const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__'
+
+	function getOrCreateStore
+		param initialState
+		# Always make a new store if server, otherwise state is shared between requests
+		if  isServer
+			return initializeStore(initialState)
+
+		# Store in global variable if client
+		if !window[__NEXT_REDUX_STORE__]
+			set window[__NEXT_REDUX_STORE__] = initializeStore(initialState)
+		return window[__NEXT_REDUX_STORE__]
+
+	export default
+		=>
+			param App
+			return
+				react Redux
+					m getInitialProps
+						static
+						async
+						param appContext
+
+						const reduxStore = getOrCreateStore()
+
+						# Provide the store to getInitialProps of pages
+						set appContext.ctx.reduxStore = reduxStore
+
+						log 'with-redux-store.reduxStore', reduxStore
+						let appProps = {}
+						if App.getInitialProps
+							set appProps = await App.getInitialProps(appContext)
+
+						return
+							{
+								@ ...appProps
+								@ initialReduxState reduxStore.getState()
+
+					ctor
+						set this.reduxStore = getOrCreateStore(props.initialReduxState)
+
+					render
+						return
+							< App
+								@ {...this.props}
+								@ reduxStore {this.reduxStore} 

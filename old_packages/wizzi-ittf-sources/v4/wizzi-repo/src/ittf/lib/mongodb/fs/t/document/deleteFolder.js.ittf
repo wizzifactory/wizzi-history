@@ -1,0 +1,34 @@
+﻿$group
+
+	m deleteFolder
+		string folderPath
+		callback
+
+		set folderPath = normalize(path.resolve(folderPath))
+		var that = this
+		_ this.fsdb.getItemByPath
+			@ folderPath
+			f_cb( fsitem )
+				
+				if fsitem == null
+					r_cb_wz_err( MongoRepoError, deleteFolder )
+						@ 'Document folder not found: ' + folderPath
+				
+				if fsitem.kind == 1
+					r_cb_wz_err( MongoRepoError, deleteFolder )
+						@ 'Is a file path, not a folder path: ' + folderPath
+
+				_ that.fsdb.getItemChildren
+					@ fsitem._id
+					f_cb( children )
+						log 'wizzi-repo.mongodb.document.deleteFolder.children', children
+						if children.length > 0
+							r_cb_wz_err( MongoRepoError, deleteFolder )
+								@ 'Folder not empty: ' + folderPath
+						else
+							_ that.fsdb.deleteItem
+								@ fsitem._id
+								f_cb( r )
+									log 'wizzi-repo.mongodb.document.deleteFolder.r', r
+									_ assert( true, r.deleted )
+									r_cb( r )

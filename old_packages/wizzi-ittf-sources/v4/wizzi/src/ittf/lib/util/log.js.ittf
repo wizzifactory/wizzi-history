@@ -1,0 +1,108 @@
+﻿module 
+    kind jsfile
+    
+	var util = require('util')
+    var path = require('path')
+    var fs = require('fs')
+    var chalk = require('chalk')
+    var fileLoggingEnabled = false
+    
+	function buildMessage
+        param color
+        param args
+        if typeof (args) !== 'object'
+            return ''
+        var msg = ''
+        for var i = 0; i < args.length; i++
+            if args[i]
+                set msg += (' ' + util.inspect(args[i]))
+        return color(msg)
+    
+    $include log/myLogger
+	$include log/log
+    
+	var consoleLogger
+        new MyLogger('debug')
+    
+	var fileLoggers
+        { 
+    
+	function getFileLogger
+        param filename
+        
+		var dirname = path.dirname(filename)
+        if fileLoggers[dirname]
+            return fileLoggers[dirname].logger
+        var logfile = path.join(dirname, 'debug.log')
+        _ console.log
+            @ 'creating debug.log for: '
+            _ filename.substr((filename.length - 50))
+        var stream = fs.createWriteStream(logfile)
+        var logger
+            new MyLogger('debug', stream)
+        set fileLoggers[dirname]
+            { 
+                @ logger logger
+                @ stream stream
+        _ logFlushSetup()
+        return logger
+    
+	var logFlush_setup = false
+    
+	function logFlushSetup
+        param stream
+        
+		if logFlush_setup
+            return 
+        
+		set logFlush_setup = true
+        var logFlush_flushed = false
+        
+		function exitHandler
+            if !logFlush_flushed
+                for var k in fileLoggers
+                    _ fileLoggers[k].stream.end()
+                    _ console.log("log. flushed : " + k.substr(k.length - 50))
+                set logFlush_flushed = true
+            _ process.exit()
+        
+		_ process.on
+            @ 'exit'
+            function 
+                param err
+                _ console.log('util.log. Process.exit', err)
+                _ exitHandler()
+        
+		_ process.on
+            @ 'SIGINT'
+            function 
+                param err
+                _ console.log('util.log. Received Signal', err)
+                _ exitHandler()
+        
+		_ process.on
+            @ 'uncaughtException'
+            function 
+                param err
+                _ console.error
+                    @ "util.log. " + new Date().toUTCString() + ' uncaughtException:'
+                    @ err.message
+                _ console.error
+                    @ err.stack
+                _ exitHandler()
+    
+	set module.exports
+        function 
+            param module
+            param options
+            set options = (options || {})
+            var logger
+            if fileLoggingEnabled && options.tofile
+                set logger = getFileLogger(module.filename)
+            else 
+                set logger = consoleLogger
+            return 
+                new Log
+                    _ path.basename
+                        @ module.filename
+                    @ logger

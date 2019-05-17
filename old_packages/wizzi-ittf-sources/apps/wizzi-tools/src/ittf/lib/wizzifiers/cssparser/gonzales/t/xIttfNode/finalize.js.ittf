@@ -1,0 +1,119 @@
+﻿$group
+	
+	m finalize
+		if this.finalized || this.__deleted
+			return
+		set this.finalized = true
+		
+		if this.tag === '@function-declare'
+			set this.tag = '@function'
+			set this.name = getValidName(this.name)
+		
+		elif this.tag === '@function-call'
+			if this.isInsideTag('@function')
+				set this.tag = '_'
+			else
+				set this.tag = '@_'
+			set this.name = getValidName(this.name)
+		
+		elif this.tag === '@mixin'
+			set this.name = getValidName(this.name)
+
+		elif this.tag === '@mix'
+			set this.name = getValidName(this.name)
+
+		elif this.tag === '@argument'
+			_ this.replaceWith
+				@ this.children[0]
+			if this.isInsideTag('@function')
+				set this.tag = 'param'
+			else
+				set this.tag = '@param'
+			set this.name = getValidName(this.name)
+
+		elif this.tag === '@return'
+			if this.isInsideTag('@function')
+				set this.tag = 'return'
+				if this.childrenCount() > 1
+					_ this.wrapChildren
+						@ 'expr'
+						@ null
+		
+		elif this.tag === '@variable'
+			if this.isInsideTag('@function')
+				set this.tag = ':'
+			else
+				set this.tag = '@:'
+			set this.name = getValidName(this.name)
+
+		elif this.tag === '@var'
+			if this.isInsideTag('@function')
+				set this.tag = 'var'
+				set this.name = getValidName(this.name)
+			elif this.isInsideTag(['.', '<', '['], '&')
+				set this.tag = this.name
+				if this.getChild(1) && this.getChild(1).tag === '@literal' ||
+					\b this.getChild(1) && this.getChild(1).tag === '@number'
+					set this.name = this.getChild(1).name
+					_ this.getChild(1).delete
+				else
+					set this.name = null
+
+		elif this.tag === '@literal'
+			set this.name = getLiteral(this.name)
+
+		elif this.tag === '@if'
+			if this.isInsideTag('@function')
+				set this.tag = 'if'
+
+		elif this.tag === '@elif'
+			if this.isInsideTag('@function')
+				set this.tag = 'elif'
+
+		elif this.tag === '@else'
+			if this.isInsideTag('@function')
+				set this.tag = 'else'
+
+		elif this.tag === '@expression'
+			if this.isInsideTag('@function')
+				set this.tag = 'expr'
+				set this.name = null
+
+		elif this.tag === '@concat'
+			set this.name = null
+			if this.isInsideTag('@function')
+				set this.tag = 'concat'
+
+		elif this.tag === '@"'
+			if this.parent.tag === 'param' || this.parent.tag === '@param'
+				set this.tag = 'default-string'
+
+		elif this.tag === '@.'
+			set this.tag = '.'
+
+		elif this.tag === '@<'
+			set this.tag = '<'
+
+		elif this.tag === '@['
+			set this.tag = '['
+
+		elif this.tag === '@+'
+			set this.tag = '+'
+			set this.name = null
+
+		elif this.tag === '@&'
+			set this.tag = '&'
+
+		elif this.tag === '@.:'
+			set this.tag = ':'
+
+		elif this.tag === '@::'
+			set this.tag = '::'
+
+		if typeof(this.name) === 'undefined'
+			set this.name = null
+
+		foreach item in this.children
+			_ item.finalize()
+
+	m finalize_function_declare

@@ -1,0 +1,33 @@
+﻿example( loader_liner, 1 )
+
+	# 
+		# EXAMPLE: liner
+
+	$append imports
+		var liner = require('../../lib/loader/liner')
+
+	_ exec( 'liner_1' )
+
+	function exec
+		param name
+		
+		var source
+			_ file.read
+				_ path.join
+					@ __dirname
+					@ 'step_1'
+					@ name + '.sample.ittf'
+
+		var lines
+			_ liner
+				@ source
+				{
+					@ sourceKey 'f1'
+
+		_ printValue
+			@ name + ' source'
+			@ source
+
+		_ printArray
+			@ name + ' lines'
+			@ lines

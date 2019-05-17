@@ -1,0 +1,69 @@
+﻿base_test(asyncModelLoader)
+
+	$append imports
+		var modelInfo = require('../../lib/model/modelInfo').ModelInfo
+		var asyncModelLoader = require('../../lib/model/asyncModelLoader')
+		var mocks = require('../mocks/misc')
+
+	var modelPaths = {}
+	var moodel_path_1
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'simple.tests.ittf'
+	var moodel_path_2
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'complex.tests.ittf'
+	set modelPaths[moodel_path_1]  = true
+	set modelPaths[moodel_path_2]  = true
+
+	it-async shoul load a simple wizzi model
+		var mi
+			new modelInfo
+				{
+					@ cwd
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+					@ src 'simple.tests.ittf'
+					@ schema 'tests'
+		_ mi.productionManager
+			_ mocks.getProductionManager
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+				@ modelPaths
+
+		_ asyncModelLoader.load
+			@ mi
+			f_cb_test( result )
+				log 'result.keys()', Object.keys(result)
+				tobe_object(result)
+				_ done
+
+	it-async shoul load a simple json format model
+		var mi
+			new modelInfo
+				{
+					@ cwd
+						_ path.join
+							@ __dirname
+							@ 'data'
+					@ src 'simple.tests.json'
+					@ format 'json'
+		_ mi.productionManager
+			_ mocks.getProductionManager
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+				@ modelPaths
+
+		_ asyncModelLoader.load
+			@ mi
+			f_cb_test( result )
+				log 'result.keys()', Object.keys(result)
+				tobe_object(result)
+				tobe_string(result.alfa,stefi)
+				_ done

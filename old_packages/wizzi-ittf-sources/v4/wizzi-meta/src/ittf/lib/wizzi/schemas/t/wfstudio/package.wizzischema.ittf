@@ -1,0 +1,138 @@
+﻿$group
+
+	e package : wfstudioitem
+		
+		a_tag( pluginName, plugin-name )
+		a_tag( srcFolder, src-folder )
+		a_tag( destFolder, dest-folder )
+		a description
+		
+		r schema/s
+
+	e schema : wfstudioitem
+		
+		a srcPath
+		a modelPath
+		a factoryPath
+		a jsonDocPath
+		a htmlDocPath
+		a defaultArtifact
+		a defaultTransform
+		
+		r artifact/s
+		r transform/s
+
+		m wzinitialize
+
+			foreach a in this.artifacts
+				if a.isDefault
+					set this.defaultArtifact = this.wzName + '/' + a.wzName
+			
+			foreach t in this.transforms
+				if t.isDefault
+					set this.defaultTransform = this.wzName + '/' + t.wzName
+			
+			var srcFolder
+				_ path.join
+					@ this.wzParent.srcFolder
+					@ 'ittf'
+					@ 'lib'
+					@ 'wizzi'
+					@ 'schemas'
+					
+			var destFolder
+				_ path.join
+					@ this.wzParent.destFolder
+					@ 'lib'
+					@ 'wizzi'
+					@ 'models'
+
+			set this.srcPath
+				_ path.join
+					@ srcFolder
+					@ this.wzName + '.wizzischema.ittf'
+			set this.modelPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-model.g.js'
+			set this.factoryPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-factory.g.js'
+			set this.jsonDocPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-schema.g.json'
+			set this.htmlDocPath
+				_ path.join
+					@ destFolder
+					@ this.wzName + '-schema.g.html'
+
+	e artifact : wfstudioitem
+		a_tag( targetLanguage, language )
+		a_flag( isDefault, is-default )
+		a name
+		a srcPath
+		a modulePath
+
+		m wzinitialize
+
+			var s = this.wzParent
+			var p = s.wzParent
+
+			set this.name = s.wzName + '/' + this.wzName
+			set this.srcPath
+				_ path.join
+					@ p.srcFolder
+					@ 'ittf'
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'gen'
+					@ 'main.js.ittf'
+					
+			set this.modulePath
+				_ path.join
+					@ p.destFolder
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'gen'
+					@ 'main.js'
+
+	e transform : wfstudioitem
+		a_tag( targetLanguage, language )
+		a_flag( isDefault, is-default )
+		a name
+		a srcPath
+		a modulePath
+
+		m wzinitialize
+
+			var s = this.wzParent
+			var p = s.wzParent
+
+			set this.name = s.wzName + '/' + this.wzName
+			set this.srcPath
+				_ path.join
+					@ p.srcFolder
+					@ 'ittf'
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'trans'
+					@ 'main.js.ittf'
+					
+			set this.modulePath
+				_ path.join
+					@ p.destFolder
+					@ 'lib'
+					@ 'artifacts'
+					@ s.wzName
+					@ this.wzName
+					@ 'trans'
+					@ 'main.js'
+

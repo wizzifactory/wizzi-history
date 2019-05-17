@@ -1,0 +1,13 @@
+﻿$group
+
+	get( /repo/:user/:project/* )
+
+		_ repoApi.getFolderOrFile
+			@ req.params.user
+			@ req.params.project
+			@ req.params['0']
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

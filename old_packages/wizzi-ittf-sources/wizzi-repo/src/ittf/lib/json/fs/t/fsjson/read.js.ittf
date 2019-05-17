@@ -1,0 +1,16 @@
+﻿$group
+
+	m readDocument
+		{ id
+		callback
+			
+		_ this.documents.find
+			{
+				@ _id id
+			._ toArray
+				f_cb( r )
+					# log 'wizzi-repo.json.FsJson.read.r', id, r
+					if r.length == 1
+						r_cb( r[0].content )
+					else
+						r_cb( null )

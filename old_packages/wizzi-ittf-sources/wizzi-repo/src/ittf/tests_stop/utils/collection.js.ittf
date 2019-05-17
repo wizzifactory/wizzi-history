@@ -1,0 +1,213 @@
+﻿base_test( utils.collection )
+	
+	$append imports
+		var errors = require('../../lib/utils/errors')
+		var ObjectId = require('../../lib/utils/objectId')
+		var Collection = require('../../lib/utils/collection')
+
+	var rootId = new ObjectId
+	var child_aId = new ObjectId
+	var item_root
+		{
+			@ _id rootId
+			@ parentId null
+			@ path '/'
+	var item_a
+		{
+			@ _id child_aId
+			@ parentId rootId
+			@ path '/a'
+	var item_a_1
+		{
+			@ _id new ObjectId()
+			@ parentId child_aId
+			@ path '/a/1'
+	var item_a_2
+		{
+			@ _id new ObjectId()
+			@ parentId child_aId
+			@ path '/a/1'
+
+		
+	it-async should create a collection and extract it with the toArray() async method
+		var c
+			new Collection
+				[
+					@ item_root
+					@ item_a
+		_ c.toArray
+			f_cb_test( items )
+				tobe_array(items, 2)
+				_ done						
+
+	it-async should create a collection and insert one item without _id
+		var c
+			new Collection
+		_ c.insertOne
+			{
+			f_cb_test( result )
+				tobe_object(result)
+				tobe_number(result.insertedCount, 1)
+				tobe_number(result.result.ok, 1)
+				tobe_number(result.result.n, 1)
+				tobe_number(result.insertedId.id.length, 24)
+				_ c.toArray
+					f_cb_test( items )
+						tobe_array(items, 1)
+						_ done						
+
+	it-async should create a collection and insert one item with _id
+		var c
+			new Collection
+		_ c.insertOne
+			@ item_root
+			f_cb_test( result )
+				tobe_object(result)
+				tobe_number(result.insertedCount, 1)
+				tobe_number(result.result.ok, 1)
+				tobe_number(result.result.n, 1)
+				tobe_equal(result.insertedId, rootId)
+				_ c.toArray
+					f_cb_test( items )
+						tobe_array(items, 1)
+						tobe_equal(items[0]._id.toString(), item_root._id.toString())
+						_ done						
+
+	it-async should give a Duplicated key error
+		var c
+			new Collection
+				[
+					@ item_root
+		_ c.insertOne
+			@ item_root
+			f_cb_no_err( result )
+				# log 'err', err, 'result', result
+				tobe_typeof( err, errors.RepoCollectionError )
+				tobe_string( err.message, Duplicated key )
+				_ done
+
+	it-async should delete one item
+		var c
+			new Collection
+				[
+					@ item_root
+					@ item_a
+		tobe_number( c.count(), 2 )
+		_ c.deleteOne
+			{
+				@ _id item_root._id
+			f_cb_test( result )
+				log result
+				tobe_number( result.deletedCount, 1 )
+				tobe_number( result.result.n, 1 )
+				tobe_number( result.result.ok, 1 )
+				tobe_number( c.count(), 1 )
+				_ done
+
+	it-async should delete many items
+		var c
+			new Collection
+				[
+					@ item_root
+					@ item_a
+					@ item_a_1
+					@ item_a_2
+		tobe_number( c.count(), 4 )
+		_ c.deleteMany
+			{
+				@ parentId item_a._id
+			f_cb_test( result )
+				log result
+				tobe_number( result.deletedCount, 2 )
+				tobe_number( result.result.n, 2 )
+				tobe_number( result.result.ok, 1 )
+				tobe_number( c.count(), 2 )
+				_ done
+
+	it-async should replace one item
+		var c
+			new Collection
+				[
+					@ item_root
+					@ item_a
+		set item_root.newField = 20
+		_ c.replaceOne
+			{
+				@ _id item_root._id
+			@ item_root
+			f_cb_test( result )
+				log result
+				tobe_number( result.modifiedCount, 1 )
+				tobe_number( result.upsertedCount, 0 )
+				tobe_number( result.result.ok, 1 )
+				# scanned
+				tobe_number( result.result.n, 2 )
+				tobe_number( result.result.nModified, 1 )
+				tobe_array( result.ops, 1 )
+				tobe_number( c.count(), 2 )
+				_ done
+
+	it-async should replace upsert an item
+		var c
+			new Collection
+				[
+					@ item_root
+		_ c.replaceOne
+			{
+				@ _id item_a._id
+			@ item_a
+			{
+				@ upsert true
+			f_cb_test( result )
+				log result
+				tobe_number( result.modifiedCount, 0 )
+				tobe_number( result.upsertedCount, 1 )
+				tobe_array( result.ops, 1 )
+				tobe_number( c.count(), 2 )
+				_ done
+
+	it-async should give an error trying to replace a non existing item
+		var c
+			new Collection
+				[
+					@ item_root
+		_ c.replaceOne
+			{
+				@ _id item_a._id
+			@ item_a
+			f_cb_no_err( result )
+				tobe_typeof( err, errors.RepoCollectionError )
+				tobe_string( err.message, Key not found )
+				_ done
+
+	it-async should find an item by id
+		var c
+			new Collection
+				[
+					@ item_root
+					@ item_a
+		var items
+			_ c.find
+				{
+					@ _id item_root._id
+		tobe_number( items.count(), 1 )
+		_ items.toArray
+			f_cb(result)
+				tobe_array(result, 1)
+				_ done
+
+	it-async should find an item by path
+		var c
+			new Collection
+				[
+					@ item_root
+					@ item_a
+		var items
+			_ c.find
+				{
+					@ path item_root.path
+		tobe_number( items.count(), 1 )
+		_ items.toArray
+			f_cb(result)
+				tobe_array(result, 1)
+				_ done

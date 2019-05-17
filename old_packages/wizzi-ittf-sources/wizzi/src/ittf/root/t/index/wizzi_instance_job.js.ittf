@@ -1,0 +1,105 @@
+﻿$group
+
+    set md.executeInstanceJob
+        function
+			param request
+			param callback
+
+			if verify.isFunction(callback) != true
+				throw new Error('wizzi.executeInstanceJob requires a callback function')
+
+			if verify.isObject(request) != true
+				return
+					_ callback
+						_ error
+							@ 999
+							@ 'wizzi/index/executeInstanceJob'
+							@ 'The request parameter is required'
+
+			if verify.isObject(request.config) != true
+				return
+					_ callback
+						_ error
+							@ 999
+							@ 'wizzi/index/executeInstanceJob'
+							@ 'The request.configOptions property is required'
+
+			if verify.isObject(request.job) != true
+				return
+					_ callback
+						_ error
+							@ 999
+							@ 'wizzi/index/executeInstanceJob'
+							@ 'The request.wfschema property is required'
+
+			var user = request.user || 'stefi'
+			var role = request.role || 'admin'
+			var storeKind = request.storeKind || 'filesystem'
+
+			# VIA set request.globalContext = Object.assign({}, request.globalContext)
+
+			log 'executeInstanceJob.user', user
+			log 'executeInstanceJob.role', role
+			log 'executeInstanceJob.storeKind', storeKind
+			log 'executeInstanceJob.config', request.config
+			log 'executeInstanceJob.job', request.job
+
+			_ md.startJobWizziFactoryInstance
+				@ user
+				@ role
+				@ storeKind
+				@ request.config
+				@ request.job
+				f_cb( notUsed )
+					_ md.executeJob
+						@ request.job
+						f_cb( notUsed )
+							_ md.terminateJobWizziFactoryInstance
+								@ callback
+
+    set md.executeJob
+        function 
+			param jobRequest
+			param callback
+
+			log 'executeJob.jobRequest', jobRequest
+
+			var jobName = jobRequest.name
+			var path = jobRequest.path
+			var productionOptions = jobRequest.productionOptions
+			var globalContext = jobRequest.globalContext
+			+
+			
+            var pman
+				_ job_wizziFactory.createProductionManager
+                    @ productionOptions
+					@ globalContext
+			+
+			_ pman.addWfJob
+                { 
+                    @ options
+                        { 
+                    @ wfjob
+                        { 
+                            @ src path
+            +
+			_ pman.run
+                function 
+                    param err
+                    param result
+                    if err
+                        var msg = 'WizziFactoryJob ' + jobName + '\nError running production: ' + path + '\n' + util.inspect(err, {depth: null})
+                        throw 
+                            new Error(msg)
+                    _ log.success('run completed')
+                    _ pman.persistToFile
+                        function 
+                            param err
+                            param result
+                            if err
+                                var msg = 'WizziFactoryJob ' + jobName + '\nError persisting production to file: ' + path + '\n' + util.inspect(err, {depth: null})
+                                throw 
+                                    new Error(msg)
+                            _ log.success('persistToFile completed')
+							if callback
+								_ callback(null, result)

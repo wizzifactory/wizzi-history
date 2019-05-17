@@ -1,0 +1,351 @@
+﻿$group
+
+	// block -> declarationsGroup
+
+					sym params
+						// : param (COMMA param)* Ellipsis?
+						&
+							ref param
+							*
+								tk ,
+								ref param
+							?
+								tk Ellipsis
+
+					sym param
+						// : variableName paramOptionalValue?
+						&
+							ref variableName 
+							?
+								ref paramOptionalValue
+  
+										sym variableName
+											&
+												tk $
+												(
+													tk Identifier
+
+					sym paramOptionalValue
+						&
+							tk :
+							+
+								ref expression
+
+					sym mixinDeclaration
+						// : '@mixin' Identifier (LPAREN params? RPAREN)? block
+						tk mixinSym
+						tk Identifier
+						?
+							tk (
+							?
+								ref params
+							tk )
+						ref declarationsGroup
+
+					sym includeDeclaration
+						// : INCLUDE Identifier (';' | (LPAREN values? RPAREN ';'?)? block?)
+						tk includeSym 
+						tk Identifier 
+						&
+							|
+								: ;
+								?
+									&
+										tk (
+										?
+											values
+										tk )
+										?
+											tk ;
+							?
+								ref declarationsGroup
+
+					sym functionDeclaration
+						tk functionSym
+						tk Identifier
+						tk (
+						*
+							ref params
+						tk )
+						tk {
+						?
+							ref functionBody
+						tk }
+  
+					sym functionBody
+						*
+							ref functionStatement
+						ref functionReturn
+  
+					sym functionReturn
+						tk returnSym
+						ref commandStatement
+						tk ;
+
+					sym functionStatement
+						|
+							&
+								ref commandStatement
+								tk ;
+							ref statement
+  
+	sym commandStatement
+		|
+			+
+				ref expression
+			&
+				tk (
+				ref commandStatement
+				tk )
+		?
+			ref mathStatement
+  
+							e mathCharacter
+								|
+									tk *
+									tk +
+									tk /
+									tk -
+									tk %
+
+							sym mathStatement
+								ref mathCharacter
+								ref commandStatement
+  
+							sym expression
+								|
+									ref measurement
+									ref identifier
+									ref Color
+									ref StringLiteral
+									ref NULL
+									ref url
+									ref variableName
+									ref functionCall
+	
+						ref ifDeclaration
+							tk ifAt
+							ref conditions 
+							ref declarationsGroup
+							*
+								ref elseIfStatement
+							?
+								ref elseStatement
+  
+						ref elseIfStatement
+							tk elseAt
+							ref conditions
+							ref declarationsGroup
+  
+						ref elseStatement
+							tk elseAt
+							ref declarationsGroup
+		
+						ref conditions
+							|
+								&
+									ref condition
+									?
+										&
+											tk COMBINE_COMPARE
+											ref conditions
+								tk NULL
+  
+						ref condition
+							|
+								&
+									ref commandStatement
+									?
+										|
+											tk ==
+											tk <
+											tk >
+											tk !=
+										ref conditions
+								&
+									tk (
+									ref conditions
+									tk )
+  
+													ref variableDeclaration
+														ref variableName
+														tk :
+														ref values
+														?
+															tk !default
+														tk ;
+  
+						sym forDeclaration
+							tk forAt
+							ref variableName
+							tk from
+							ref fromNumber
+							tk through
+							ref throughNumber
+							ref declarationsGroup
+
+						sym fromNumber
+							tk Number
+
+						sym throughNumber
+							tk Number
+
+						sym whileDeclaration
+							tk whileAt
+							ref conditions
+							ref declarationsGroup
+  
+	sym eachDeclaration
+		tk eachAt
+		ref variableName
+		*
+			& 
+				tk ,
+				ref variableName
+		tk IN
+		ref eachValueList
+		ref declarationsGroup
+ 
+	sym eachValueList
+		|
+			&
+				tk Identifier
+				*
+					tk ,
+					tk Identifier
+			&
+				ref  identifierListOrMap
+				*
+					tk ,
+					ref identifierListOrMap
+  
+	sym identifierListOrMap
+		tk (
+		ref identifierValue
+		*
+			tk ,
+			ref identifierValue
+		tk )
+  
+	sym identifierValue
+		tk Identifier
+		?
+			tk ,
+			ref values
+
+	sym 
+
+//Imports
+importDeclaration
+	: '@import' referenceUrl mediaTypes? ';'
+	;
+
+referenceUrl
+    : StringLiteral
+    | UrlStart Url UrlEnd
+    ;
+
+
+mediaTypes
+  : (Identifier (COMMA Identifier)*)
+  ;
+
+
+
+
+//Nested (stylesheets, etc)
+nested
+ 	: '@' nest selectors BlockStart stylesheet BlockEnd
+	;
+
+nest
+	: (Identifier | '&') Identifier* pseudo*
+	;
+
+
+
+
+
+//Rules
+ruleset
+ 	: selectors block
+	;
+
+block
+  : BlockStart (property ';' | statement)* property? BlockEnd
+  ;
+
+selectors
+	: selector (COMMA selector)*
+	;
+
+selector
+	: element+ (selectorPrefix element)* attrib* pseudo?
+	;
+
+selectorPrefix
+  : (GT | PLUS | TIL)
+  ;
+
+element
+	: identifier
+  | '#' identifier
+  | '.' identifier
+  | '&'
+  | '*'
+	;
+
+pseudo
+	: (COLON|COLONCOLON) Identifier
+	| (COLON|COLONCOLON) functionCall
+	;
+
+attrib
+	: '[' Identifier (attribRelate (StringLiteral | Identifier))? ']'
+	;
+
+attribRelate
+	: '='
+	| '~='
+	| '|='
+	;
+
+identifier
+  : Identifier identifierPart*
+  | InterpolationStart identifierVariableName BlockEnd identifierPart*
+  ;
+
+identifierPart
+  : InterpolationStartAfter identifierVariableName BlockEnd
+  | IdentifierAfter
+  ;
+identifierVariableName
+  : DOLLAR (Identifier | IdentifierAfter)
+  ;
+
+property
+	: identifier COLON values
+	;
+
+					values
+						: commandStatement (COMMA commandStatement)*
+						;
+
+url
+  : UrlStart Url UrlEnd
+  ;
+
+measurement
+  : Number Unit?
+  ;
+
+
+functionCall
+	: Identifier LPAREN values? RPAREN
+	;
+
+	lexer-container
+
+		lexer css lexer
+
+			$include lexer/index

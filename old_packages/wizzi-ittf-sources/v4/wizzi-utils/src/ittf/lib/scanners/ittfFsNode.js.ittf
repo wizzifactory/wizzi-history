@@ -1,0 +1,178 @@
+﻿module
+    kind jsfile
+    
+	var path = require('path')
+	var file = require('../fs/file')
+	var verify = require('../verify')
+	var ittfHtmlPrettifier = require('../prettifiers/ittfHtmlPrettifier')
+
+	#
+		#
+		# File or directory in a folder tree structure of ittf documents.
+		# Is the result of a folderScanner(folderPath, option) execution.
+		# Can export its content to a wizzi.utils.ittfMTreeEx, calling
+		# the method 'toIttf'
+		#
+		# { IttfFsNode
+		#   { parent
+		#     ref IttfFsNode || null
+		#   string path
+		#   string basename
+		#   string dirname
+		#   boolean isDirectory
+		#   [ parts
+		#   string schema
+		#     # schema of ittf document file
+		#   boolean isFragment
+		#     # ittf document file is inside a t-folder
+		#   boolean isTFolder
+		#     # folder basename is t
+		#   boolean isInsideTFolder
+		#     # folder is descendant of a t-folder
+		#   [ folders
+		#   [ documents
+		#   # if method 'setSourcePaths' is called
+		#	string ittfBasePath
+		#   string jsBaseCodePath
+		#   # if method 'analize' is called
+		#   boolean isTest
+		#   boolean isExample
+		#   boolean isUtil
+		#   boolean isTest
+		#   boolean isJobFolder
+		#   boolean isPackageRoot
+		#
+    
+	class IttfFsNode
+		
+		ctor
+			param path
+			param parent
+			param isDirectory
+			set this.path = file.unixifyPath(path)
+			set this.parent = parent
+			set this.isDirectory = isDirectory
+			set this.parts = path.split('/')
+			set this.segments = this.parts.slice(0, this.parts.length -1)
+			set this.basename = this.parts[this.parts.length -1]
+			set this.dirname = this.segments.join('/')
+			if !isDirectory
+				set this.schema = detectSchema(this.basename)
+				set this.isFragment = isTFragment(this.parts)
+			else
+				set this.isTFolder = this.basename.toLowerCase() === 't'
+				set this.isInsideTFolder = isTFragment(this.parts) && (!this.isTFolder)
+			set this.folders = []
+			set this.documents = []
+			set this.info
+				{
+					@ schemas {}
+					@ lib
+						{
+							@ documents []
+					@ test
+						{
+							@ documents []
+					@ example
+						{
+							@ documents []
+					@ util
+						{
+							@ documents []
+		
+		m root
+			return this.parent == null ? this : this.parent.root()
+
+		m setInfo
+			var r = this.root()
+			if r === this
+				_ this.setIds
+				_ this.analize()
+			if !this.isDirectory && !this.isFragment
+				var schema = r.info.schemas[this.schema]
+				if !schema
+					set schema
+						{
+							@ name this.schema
+							@ documents []
+					set r.info.schemas[this.schema] = schema
+					# log 'created schema', schema, r.info.schemas
+				else
+					# log 'found', schema, r.info.schemas
+				_ schema.documents.push(this)
+				if this.isTest
+					_ r.info.test.documents.push(this)
+				elif this.isExample
+					_ r.info.example.documents.push(this)
+				elif this.isUtil
+					_ r.info.util.documents.push(this)
+				else
+					_ r.info.lib.documents.push(this)
+			if this.isDirectory
+				foreach folder in this.folders
+					_ folder.setInfo()
+				foreach d in this.documents
+					_ d.setInfo()
+
+		m addDocument
+			param relPath
+			param options
+			# log 'addDocument.relPath', relPath, options.basePath
+			# log 'this.path', this.path
+			set relPath = file.unixifyPath(relPath)
+			var parts = relPath.split('/')
+			if parts.length <= this.parts.length
+				return false
+			if this.match(parts) == false
+				return false
+			# log 'parts.length, this.parts.length', parts.length, this.parts.length
+			if parts.length == this.parts.length + 1
+				# log 'try match'
+				if this.match(parts)
+					var dnode = new IttfFsNode(relPath, this, false)
+					_ this.documents.push(dnode)
+					return true
+				else
+					return false
+			else
+				var subfolderPath = parts.slice(0, this.parts.length + 1).join('/')
+				# log 'try subfolder', subfolderPath
+				var added
+				foreach f in this.folders
+					if f.path === subfolderPath
+						set added
+							_ f.addDocument(relPath, options)
+						if added
+							return true
+				var fnode = new IttfFsNode(subfolderPath, this, true)
+				_ this.folders.push(fnode)
+				_ fnode.addDocument(relPath, options)
+				return true
+		
+		m match
+			param parts
+			if parts.length < this.parts.length
+				return false
+			foreach part in this.parts
+				if part !== this.parts[i]
+					return false
+			return true
+
+		$include ittfFsNode/ids
+		$include ittfFsNode/sources
+		$include ittfFsNode/analize
+		$include ittfFsNode/toIttf
+
+	function detectSchema
+		param name
+		var ss = name.split('.')
+		if ss.length > 1
+			return ss[ss.length -2]
+		else
+			return null
+
+	function isTFragment
+		param segments
+		return segments.indexOf('t') > -1
+
+    set module.exports = IttfFsNode

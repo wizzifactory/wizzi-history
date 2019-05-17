@@ -1,0 +1,25 @@
+﻿$group
+
+	function filefy
+		param textOrPath
+		param callback
+
+		if file.isFile(textOrPath)
+			return
+				_ callback
+					@ null
+					@ textOrPath
+
+		_ temp.track()
+		_ temp.open
+			@ 'ittfSource'
+			f_cb( info )
+				_ fs.write
+					@ info.fd
+					@ textOrPath
+				_ fs.close
+					@ info.fd
+					f_cb( notUsed )
+						_ return callback
+							@ null
+							@ info.path

@@ -1,0 +1,15 @@
+﻿module
+	$params name, withRouter:boolean|false, withStyles:boolean|false
+	kind react
+
+	$include app-options
+
+	$
+		var md = {};
+		md.name = name;
+		md.withRouter = withRouter;
+		md.withStyles = withStyles;
+	
+	react/container(&md, &app)
+
+		$hook

@@ -1,0 +1,27 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	+
+    var expect = require('expect.js')
+	var ittfTemp = require('../../lib/util/ittfTemp')
+	+
+	describe the ittfTemp class
+		+ 
+		it-async should build in memory and write an ittf
+
+			var ittfExpected = 'html\n\thead\n\tbody\n\t\tdiv\n\t\t\tstyle margin: 10px;'
+			
+			var ittf = new ittfTemp('html')
+			var n1 = ittf.add('head')
+			var n2 = ittf.add('body')
+			var n2a = n2.add('div')
+			var n2a1 = n2a.add('style', 'margin: 10px;')
+			_ ittf.writeFile
+				_ path.join
+					@ __dirname
+					@ 'outputs'
+					@ 'test.html.ittf'
+				f_cb_test( result )
+					_ done()

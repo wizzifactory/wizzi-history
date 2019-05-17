@@ -1,0 +1,22 @@
+﻿base_example( ittfTree )
+
+	var folderScanner = require('../../lib/scanners/folderScanner')
+
+	var ittfMTreeEx 
+		_ folderScanner.scan
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'first'
+			{
+				@ name 'first'
+				@ gitPath 'c:/blabla'
+
+	_ ittfMTreeEx.writeFile
+		_ path.join
+			@ __dirname
+			@ 'outputs'
+			@ 'first.wfpackage.ittf'
+		f_cb_test( result )
+			log 'err, result', err, result
+

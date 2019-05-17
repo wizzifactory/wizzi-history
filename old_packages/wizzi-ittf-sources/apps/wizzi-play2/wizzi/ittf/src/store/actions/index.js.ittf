@@ -1,0 +1,22 @@
+﻿module
+	kind react
+
+	$include app-options
+	
+	react/store/actions/index( &app )
+
+		$include app
+		schema(&app)
+		$include ittfStore
+		$include artifact
+		$include snippet
+		$include helpBoard
+
+	function getDocumentName
+		param schemaName
+		param name
+		param entity
+		if entity === 'Snippet'
+			return name + '.' + schemaName
+		else
+			return name + '.' + schemaName +'.ittf'

@@ -1,0 +1,117 @@
+  module  ids: 1 118
+    kind react ids: 2 119
+    ready  ids: 3 120
+      var UserList ids: 4 121
+        _ React.createClass ids: 5 122
+          {  ids: 6 123
+            @ getInitialState ids: 7 124
+              function  ids: 8 125
+                return  ids: 9 126
+                  {  ids: 10 127
+                    @ users ids: 11 128
+                      [  ids: 12 129
+                        {  ids: 13 130
+                          @ name 'Jackson Turner' ids: 14 131
+                          @ street '217 Tawny End' ids: 15 132
+                          @ img 'men_1.jpg' ids: 16 133
+                        {  ids: 17 134
+                          @ name 'Megan Perry' ids: 18 135
+                          @ street '77 Burning Ramp' ids: 19 136
+                          @ img 'women_1.jpg' ids: 20 137
+                        {  ids: 21 138
+                          @ name 'Ryan Harris' ids: 22 139
+                          @ street '12 Hazy Apple Route' ids: 23 140
+                          @ img 'men_2.jpg' ids: 24 141
+                        {  ids: 25 142
+                          @ name 'Jennifer Edwards' ids: 26 143
+                          @ street '33 Maple Drive' ids: 27 144
+                          @ img 'women_2.jpg' ids: 28 145
+                        {  ids: 29 146
+                          @ name 'Noah Jenkins' ids: 30 147
+                          @ street '423 Indian Pond Cape' ids: 31 148
+                          @ img 'men_3.jpg' ids: 32 149
+            @ render ids: 33 150
+              function  ids: 34 151
+                var eventHub = this.props.glEventHub ids: 35 152
+                return  ids: 36 153
+                  ul  ids: 37 154
+                    class userlist ids: 38 155
+                    {  ids: 39 156
+                      _ this.state.users.map ids: 40 157
+                        function  ids: 41 158
+                          param user ids: 42 159
+                          return  ids: 43 160
+                            < User ids: 44 161
+                              @ key {user.name} ids: 45 162
+                              @ userData {user} ids: 46 163
+                              @ glEventHub {eventHub} ids: 47 164
+      var User ids: 48 165
+        _ React.createClass ids: 49 166
+          {  ids: 50 167
+            @ getInitialState ids: 51 168
+              function  ids: 52 169
+                return this.props.userData ids: 53 170
+            @ selectUser ids: 54 171
+              function  ids: 55 172
+                _ this.props.glEventHub.emit ids: 56 173
+                  @ 'user-select' ids: 57 174
+                  @ this.state ids: 58 175
+            @ render ids: 59 176
+              function  ids: 60 177
+                return  ids: 61 178
+                  li {this.state.name} ids: 62 179
+                    onClick {this.selectUser} ids: 63 180
+      var UserDetail ids: 64 181
+        _ React.createClass ids: 65 182
+          {  ids: 66 183
+            @ componentWillMount ids: 67 184
+              function  ids: 68 185
+                _ this.props.glEventHub.on ids: 69 186
+                  @ 'user-select' ids: 70 187
+                  @ this.setUser ids: 71 188
+            @ componentWillUnmount ids: 72 189
+              function  ids: 73 190
+                _ this.props.glEventHub.off ids: 74 191
+                  @ 'user-select' ids: 75 192
+                  @ this.setUser ids: 76 193
+            @ setUser ids: 77 194
+              function  ids: 78 195
+                param userData ids: 79 196
+                _ this.setState(userData) ids: 80 197
+            @ render ids: 81 198
+              function  ids: 82 199
+                if this.state ids: 83 200
+                  var imgUrl = ('https://s3-us-west-2.amazonaws.com/s.cdpn.io/152047/' + this.state.img) ids: 84 201
+                  return  ids: 85 202
+                    . userdetails ids: 86 203
+                      img  ids: 87 204
+                        src {imgUrl} ids: 88 205
+                        width "100" ids: 89 206
+                        height "100" ids: 90 207
+                      h2 {this.state.name} ids: 91 208
+                      p {this.state.street} ids: 92 209
+                else  ids: 93 210
+                  return  ids: 94 211
+                    . userdetails ids: 95 212
+                      + No user selected ids: 96 213
+      var config ids: 97 214
+        {  ids: 98 215
+          @ content ids: 99 216
+            [  ids: 100 217
+              {  ids: 101 218
+                @ type 'row' ids: 102 219
+                @ content ids: 103 220
+                  [  ids: 104 221
+                    {  ids: 105 222
+                      @ title 'Users' ids: 106 223
+                      @ type 'react-component' ids: 107 224
+                      @ component 'user-list' ids: 108 225
+                    {  ids: 109 226
+                      @ title 'User Detail' ids: 110 227
+                      @ type 'react-component' ids: 111 228
+                      @ component 'user-detail' ids: 112 229
+      var myLayout ids: 113 230
+        new GoldenLayout(config) ids: 114 231
+      _ myLayout.registerComponent('user-list', UserList) ids: 115 232
+      _ myLayout.registerComponent('user-detail', UserDetail) ids: 116 233
+      _ myLayout.init() ids: 117 234

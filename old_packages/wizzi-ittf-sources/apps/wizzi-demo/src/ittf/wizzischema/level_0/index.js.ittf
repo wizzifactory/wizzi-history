@@ -1,0 +1,13 @@
+﻿module
+	kind jsfile
+
+	$
+		var samples = [
+			'step_1_go',
+			'step_2_go',
+			'step_3_go'
+			];
+
+	$foreach sample in samples
+		var ${sample} = require('./${sample}')
+		_ ${sample}()

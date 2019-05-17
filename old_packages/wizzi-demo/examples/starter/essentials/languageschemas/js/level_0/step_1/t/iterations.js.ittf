@@ -1,0 +1,66 @@
+$group
+
+	+
+	# ========================================
+	# ITERATIONS
+	# ========================================
+	+
+
+	# 
+		# The foreach iteration
+	foreach item in arr5
+		log 'item ', i, item
+
+	# 
+		# The backeach iteration (foreach backwards)
+	backeach item in arr5
+		log 'item ', i, item
+
+	#
+		# Nested foreach
+		# Until 6 nesting are allowed
+		# The letters used for iterations are, in order: 
+		#   i, j, k, l, m, n
+	foreach item5 in arr5
+		log 'item5', i, item5
+		foreach item4 in arr4
+			log 'item4', j, item4
+
+	#
+		# Nested backeach
+		# Until 6 nesting are allowed
+		# The letters used for iterations are in order: 
+		#   i, j, k, l, m, n
+	backeach item5 in arr5
+		log 'item5', i, item5
+		backeach item4 in arr4
+			log 'item4', j, item4
+
+	#
+		# Foreach's and backeach's
+		# can be mixed
+	backeach item5 in arr5
+		log 'item5', i, item5
+		foreach item4 in arr4
+			log 'item4', j, item4
+
+	#
+		# For loops
+	for var k in object3
+		log k, object3[k]
+
+	#
+		# While loops
+	var parent = node.parent
+	while typeof(parent) !== 'undefined'
+		log parent.id
+		set parent = parent.parent
+
+	#
+		# Inside iterations you can use break and continue nodes
+	for var k in object3
+		if k === 'go'
+			break
+		if k === 'skip'
+			continue
+		log k, object3[k]

@@ -1,0 +1,28 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import util ids: undefined undefined
+    import path ids: undefined undefined
+    import esprima ids: undefined undefined
+    var file = require('wizzi').file ids: undefined undefined
+    function go ids: undefined undefined
+      param name ids: undefined undefined
+      var src ids: undefined undefined
+        _ path.join ids: undefined undefined
+          @ __dirname ids: undefined undefined
+          @ 'data' ids: undefined undefined
+          @ name + '.js' ids: undefined undefined
+      var out_esprima ids: undefined undefined
+        _ path.join ids: undefined undefined
+          @ __dirname ids: undefined undefined
+          @ 'data' ids: undefined undefined
+          @ name + '.esprima.json' ids: undefined undefined
+      var parsed ids: undefined undefined
+        _ esprima.parse ids: undefined undefined
+          _ file.read ids: undefined undefined
+            @ src ids: undefined undefined
+      _ file.write ids: undefined undefined
+        @ out_esprima ids: undefined undefined
+        _ JSON.stringify ids: undefined undefined
+          @ parsed ids: undefined undefined
+          @ null ids: undefined undefined
+          @ 4 ids: undefined undefined

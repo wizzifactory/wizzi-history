@@ -1,0 +1,27 @@
+$group
+
+	#
+		# Retrieve an ArtifactGenerator by its name
+		# Generators are searched in this WizziPackage
+		# No search up in "node_modules" folders.
+	m getArtifactGenerator
+		string generationName
+		+
+		var generator = this.artifactGenerators[generationName] || null
+		if generator == null
+			var modulePath
+				_ path.resolve
+					@ __dirname
+					@ './lib/artifacts/' + generationName + '/gen/main.js'
+			if this.file.exists(modulePath)
+				try
+					set generator = require('./lib/artifacts/' + generationName + '/gen/main')
+				catch ex
+					return
+						_ error
+							@ 'WizziPluginError'
+							@ 'getArtifactGenerator'
+							@ 'Error loading artifact generator: ' + modulePath + ', in plugin: ' + this.getFilename()
+								\b + ', err: ' + ex.message + ', stack: ' + ex.stack
+				set this.artifactGenerators[generationName] = generator
+		return generator

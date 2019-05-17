@@ -1,0 +1,89 @@
+// 28/2/2017:14:15:4
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //44
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //45
+$.a($1, $2, 7);
+var $3 = { n: "var", v: "Texter = require('./texter').Texter", r: 4, c: 5, s: "f1", u: "f1",  }; //46
+$.a($1, $3, 9);
+var $4 = { n: "var", v: "StringWriter = require('./stringwriter').StringWriter", r: 5, c: 5, s: "f1", u: "f1",  }; //47
+$.a($1, $4, 11);
+var $5 = { n: "var", v: "md = module.exports = {}", r: 7, c: 5, s: "f1", u: "f1",  }; //48
+$.a($1, $5, 13);
+var $6 = { n: "class", v: "HtmlWriter", r: 9, c: 5, s: "f1", u: "f1",  }; //49
+$.a($1, $6, 15);
+var $7 = { n: "ctor", v: "", r: 10, c: 9, s: "f1", u: "f1",  }; //50
+$.a($6, $7, 17);
+var $8 = { n: "param", v: "noLF", r: 11, c: 13, s: "f1", u: "f1",  }; //51
+$.a($7, $8, 19);
+var $9 = { n: "set", v: "this.sw = new StringWriter(noLF)", r: 12, c: 13, s: "f1", u: "f1",  }; //52
+$.a($7, $9, 21);
+var $10 = { n: "set", v: "this.lfPending = false", r: 13, c: 13, s: "f1", u: "f1",  }; //53
+$.a($7, $10, 23);
+var $11 = { n: "m", v: "writeElement", r: 15, c: 9, s: "f1", u: "f1",  }; //54
+$.a($6, $11, 25);
+var $12 = { n: "param", v: "node", r: 16, c: 13, s: "f1", u: "f1",  }; //55
+$.a($11, $12, 27);
+var $13 = { n: "if", v: "node.tag === '_text'", r: 18, c: 13, s: "f1", u: "f1",  }; //56
+$.a($11, $13, 29);
+var $14 = { n: "_", v: "this.sw.write(new Texter(node.text).toString())", r: 19, c: 17, s: "f1", u: "f1",  }; //57
+$.a($13, $14, 31);
+var $15 = { n: "return", v: "", r: 20, c: 17, s: "f1", u: "f1",  }; //58
+$.a($13, $15, 33);
+var $16 = { n: "_", v: "this.sw.write('<' + node.tag)", r: 22, c: 13, s: "f1", u: "f1",  }; //59
+$.a($11, $16, 35);
+var $17 = { n: "foreach", v: "a in node.attribs", r: 23, c: 13, s: "f1", u: "f1",  }; //60
+$.a($11, $17, 37);
+var $18 = { n: "_", v: "this.writeAttribute(a)", r: 24, c: 17, s: "f1", u: "f1",  }; //61
+$.a($17, $18, 39);
+var $19 = { n: "_", v: "this.sw.write('>')", r: 25, c: 13, s: "f1", u: "f1",  }; //62
+$.a($11, $19, 41);
+var $20 = { n: "if", v: "node.text", r: 27, c: 13, s: "f1", u: "f1",  }; //63
+$.a($11, $20, 43);
+var $21 = { n: "_", v: "this.sw.write(new Texter(node.text).toString())", r: 28, c: 17, s: "f1", u: "f1",  }; //64
+$.a($20, $21, 45);
+var $22 = { n: "if", v: "node.childs.length > 0", r: 30, c: 13, s: "f1", u: "f1",  }; //65
+$.a($11, $22, 47);
+var $23 = { n: "_", v: "this.sw.w()", r: 31, c: 17, s: "f1", u: "f1",  }; //66
+$.a($22, $23, 49);
+var $24 = { n: "_", v: "this.sw.indent()", r: 32, c: 17, s: "f1", u: "f1",  }; //67
+$.a($22, $24, 51);
+var $25 = { n: "foreach", v: "e in node.childs", r: 33, c: 17, s: "f1", u: "f1",  }; //68
+$.a($22, $25, 53);
+var $26 = { n: "_", v: "this.writeElement(e)", r: 34, c: 21, s: "f1", u: "f1",  }; //69
+$.a($25, $26, 55);
+var $27 = { n: "_", v: "this.sw.deindent()", r: 35, c: 17, s: "f1", u: "f1",  }; //70
+$.a($22, $27, 57);
+var $28 = { n: "if", v: "this.lfPending && !node.inline", r: 37, c: 13, s: "f1", u: "f1",  }; //71
+$.a($11, $28, 59);
+var $29 = { n: "_", v: "this.sw.w()", r: 38, c: 17, s: "f1", u: "f1",  }; //72
+$.a($28, $29, 61);
+var $30 = { n: "_", v: "this.sw.write('</' + node.tag + '>')", r: 40, c: 13, s: "f1", u: "f1",  }; //73
+$.a($11, $30, 63);
+var $31 = { n: "if", v: "!node.inline", r: 41, c: 13, s: "f1", u: "f1",  }; //74
+$.a($11, $31, 65);
+var $32 = { n: "set", v: "this.lfPending = true", r: 42, c: 17, s: "f1", u: "f1",  }; //75
+$.a($31, $32, 67);
+var $33 = { n: "m", v: "writeAttribute", r: 44, c: 9, s: "f1", u: "f1",  }; //76
+$.a($6, $33, 69);
+var $34 = { n: "param", v: "attrib", r: 45, c: 13, s: "f1", u: "f1",  }; //77
+$.a($33, $34, 71);
+var $35 = { n: "if", v: "attrib.value === null || typeof attrib.value === 'undefined'", r: 46, c: 13, s: "f1", u: "f1",  }; //78
+$.a($33, $35, 73);
+var $36 = { n: "_", v: "this.sw.write(' ' + attrib.name)", r: 47, c: 17, s: "f1", u: "f1",  }; //79
+$.a($35, $36, 75);
+var $37 = { n: "else", v: "", r: 48, c: 13, s: "f1", u: "f1",  }; //80
+$.a($33, $37, 77);
+var $38 = { n: "_", v: "this.sw.write(' ' + attrib.name + '=\"' + attrib.value + '\"')", r: 49, c: 17, s: "f1", u: "f1",  }; //81
+$.a($37, $38, 79);
+var $39 = { n: "m", v: "toLines", r: 51, c: 9, s: "f1", u: "f1",  }; //82
+$.a($6, $39, 81);
+var $40 = { n: "return", v: "this.sw.toLines()", r: 52, c: 13, s: "f1", u: "f1",  }; //83
+$.a($39, $40, 83);
+var $41 = { n: "m", v: "toString", r: 54, c: 9, s: "f1", u: "f1",  }; //84
+$.a($6, $41, 85);
+var $42 = { n: "return", v: "this.sw.toString()", r: 55, c: 13, s: "f1", u: "f1",  }; //85
+$.a($41, $42, 87);
+var $43 = { n: "set", v: "md.HtmlWriter = HtmlWriter", r: 57, c: 5, s: "f1", u: "f1",  }; //86
+$.a($1, $43, 89);

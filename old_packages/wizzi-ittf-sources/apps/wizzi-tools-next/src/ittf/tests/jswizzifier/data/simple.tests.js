@@ -1,0 +1,2 @@
+﻿function alfa(beta, gamma) {
+}

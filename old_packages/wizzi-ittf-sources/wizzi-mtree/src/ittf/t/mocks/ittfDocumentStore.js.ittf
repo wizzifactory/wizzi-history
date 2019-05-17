@@ -1,0 +1,76 @@
+﻿module wizzi-mtree.tests.mocks.ittfDocumentStore
+    kind jsfile
+
+	# Copied from wizzi-repo.ittfDocumentStore
+
+    import util
+	var uriparser = require('./uriparser')
+	var FileSystemStore = require('./fileSystemStore')
+    
+	class IttfDocumentStore
+		m parseUri
+			string ittfDocumentUri
+			callback
+
+			_ uriparser
+				@ ittfDocumentUri
+				@ callback
+		#
+			# params
+			#   { ittfDocumentInfo
+			#     string storeKind
+			#       oneOf filesystem, mongodb, localstorage
+		m init
+			{ ittfDocumentInfo
+				string storeKind
+			callback
+
+            set this.storeImpl = new FileSystemStore()
+			set this.storeKind = this.storeImpl.storeKind
+			return
+				_ callback(null)
+
+		m initSync
+			{ ittfDocumentInfo
+				string storeKind
+
+            set this.storeImpl = new FileSystemStore()
+			set this.storeKind = this.storeImpl.storeKind
+
+		m documentExists
+			string documentUri
+            callback
+            _ this.storeImpl.documentExists(documentUri, callback)
+
+		m getModelContent
+            string documentUri
+            callback
+            _ this.storeImpl.getModelContent(documentUri, callback)
+
+		m folderExistsSync
+			string folderUri
+			if this.storeKind !== 'filesystem'
+				r_cb_wz_err( InvalidRequest, folderExistsSync )
+					@ 'Method "folderExistsSync" is for storeKind "filesystem" only. ' +
+							\b 'Current storeKind is: ' + this.storeKind
+            return this.storeImpl.folderExists(folderUri)
+
+		m getFoldersSync
+			string parentFolderUri
+			{ options
+			if this.storeKind !== 'filesystem'
+				r_cb_wz_err( InvalidRequest, getFoldersSync )
+					@ 'Method "getFoldersSync" is for storeKind "filesystem" only. ' +
+							\b 'Current storeKind is: ' + this.storeKind
+            return this.storeImpl.getFoldersSync(parentFolderUri, options)
+
+		m createFileSystemDocumentStore
+			static
+			var ret = new IttfDocumentStore()
+			_ ret.initSync
+				{
+					@ storeKind "filesystem"
+			return ret
+
+	set module.exports = IttfDocumentStore
+

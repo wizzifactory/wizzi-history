@@ -1,0 +1,103 @@
+﻿r-component( ConfirmDialog
+
+	$append imports
+		import Dialog from '@material-ui/core/Dialog'
+		import DialogTitle from '@material-ui/core/DialogTitle'
+		import DialogContent from '@material-ui/core/DialogContent'
+		import DialogContentText from '@material-ui/core/DialogContentText'
+		import DialogActions from '@material-ui/core/DialogActions'
+		import List from '@material-ui/core/List'
+		import ListItem from '@material-ui/core/ListItem'
+		import ListItemText from '@material-ui/core/ListItemText'
+		import Button from '@material-ui/core/Button'
+		import Icons from '../../mui/Icons'
+		import TextField from '@material-ui/core/TextField'
+
+	style
+
+	=> handleConfirm
+		_ this.props.onClose(true)
+
+	=> handleCancel
+		_ this.props.onClose(false)
+
+	render
+		prop classes
+		prop open
+		prop title
+		prop contentText
+		prop namedValues
+		prop items
+
+		var ItemsList
+			=>
+				return
+					iif items
+						then
+							_ items.map
+								=>
+									param p
+									param i
+									const ItemIcon = Icons(p.type)
+									return
+										< ListItem 
+											@ key {i}
+											< ItemIcon
+											< ListItemText
+												@ primary {p.name}
+						else
+							div
+
+		var FieldsList
+			=>
+				return
+					iif namedValues
+						then
+							_ namedValues.map
+								=>
+									param o
+									param i
+									return
+										< TextField
+											@ key {i}
+											@ label {o.label}
+											@ defaultValue {o.value}
+											@ margin normal
+											@ InputProps {{ readOnly: true }}
+						else
+							div
+
+        return 
+            div 
+                < Dialog 
+                    @ open {open}
+                    @ onClose {this.handleCancel}
+                    @ aria-labelledby "form-dialog-title"
+                    < DialogTitle 
+                        @ id "form-dialog-title"
+                        + {title}
+                    < DialogContent 
+                        < DialogContentText 
+                            + {contentText}
+
+						{
+							&&
+								+ ItemsList
+								< List
+									< ItemsList
+						{
+							&&
+								+ FieldsList
+								< FieldsList
+
+                    < DialogActions 
+                        < Button 
+                            @ onClick {this.handleCancel}
+                            @ color "primary"
+                            + Cancel
+                        < Button 
+                            @ onClick {this.handleConfirm}
+                            @ color "primary"
+                            + Confirm
+
+

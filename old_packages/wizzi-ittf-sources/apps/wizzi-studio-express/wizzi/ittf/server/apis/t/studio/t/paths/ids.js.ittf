@@ -1,0 +1,25 @@
+﻿$group
+
+	@ schemaId
+		function
+			param packageName
+			param schemaName
+			return
+				[
+					@ config.wizziPluginsBaseId
+					@ packageName
+					@ schemaName
+					._ join('_')
+	
+	@ artifactId
+		function
+			param packageName
+			param schemaName
+			param artifactName
+			return
+				[
+					@ config.wizziPluginsBaseId
+					@ packageName
+					@ schemaName
+					@ artifactName
+					._ join('_')

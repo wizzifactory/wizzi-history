@@ -1,0 +1,111 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import util ids: undefined undefined
+    var errors = require('./errors') ids: undefined undefined
+    var f_verify = require('./functions/verify') ids: undefined undefined
+    class ContextData ids: undefined undefined
+      ctor  ids: undefined undefined
+        param kind ids: undefined undefined
+        param modelKey ids: undefined undefined
+        set this.kind = kind ids: undefined undefined
+        set this.modelKey = modelKey ids: undefined undefined
+        set this.$freezed = false ids: undefined undefined
+        _ this.clear ids: undefined undefined
+      m clear ids: undefined undefined
+        set this.$freezed = false ids: undefined undefined
+        set this.functions = ids: undefined undefined
+          {  ids: undefined undefined
+        set this.values = ids: undefined undefined
+          {  ids: undefined undefined
+        set this.declares = ids: undefined undefined
+          {  ids: undefined undefined
+      m $freeze ids: undefined undefined
+        set this.$freezed = true ids: undefined undefined
+      m declare ids: undefined undefined
+        param name ids: undefined undefined
+        param init ids: undefined undefined
+        if name == '$' && this.$freezed ids: undefined undefined
+          throw new errors.InvalidVariableNameError('The variable "$" cannot be declared on the global context after it has been freezed.') ids: undefined undefined
+        set this.declares[name] = true ids: undefined undefined
+        if typeof (init) !== 'undefined' ids: undefined undefined
+          set this.values[name] = init ids: undefined undefined
+        # TODO debug only ids: undefined undefined
+        if f_verify.isObject(init) == false ids: undefined undefined
+          # log 'ContextData declare', name, init, 'kind', this.kind, this.modelKey ids: undefined undefined
+      m undeclare ids: undefined undefined
+        param name ids: undefined undefined
+        if this.declares[name] == true ids: undefined undefined
+          delete this.declares[name] ids: undefined undefined
+        if this.values[name] == true ids: undefined undefined
+          delete this.values[name] ids: undefined undefined
+      m isDeclared ids: undefined undefined
+        param name ids: undefined undefined
+        # log 'isDeclared', name, this.declares[name] ids: undefined undefined
+        return this.declares[name] == true ids: undefined undefined
+      m setValue ids: undefined undefined
+        param name ids: undefined undefined
+        param value ids: undefined undefined
+        if name == '$' && this.$freezed ids: undefined undefined
+          throw new errors.InvalidVariableNameError('The variable "$" cannot be set on the global context after it has been freezed.') ids: undefined undefined
+        _ this.declare(name, value) ids: undefined undefined
+        # TODO debug only ids: undefined undefined
+        if f_verify.isObject(value) == false ids: undefined undefined
+          # log 'ContextData setValue', name, value, 'kind', this.kind, this.modelKey ids: undefined undefined
+      m setValues ids: undefined undefined
+        param values ids: undefined undefined
+        set values = (values || {}) ids: undefined undefined
+        for var k in values ids: undefined undefined
+          _ this.declare ids: undefined undefined
+            @ k ids: undefined undefined
+            @ values[k] ids: undefined undefined
+      # Set value only if name is declared ids: undefined undefined
+      m put ids: undefined undefined
+        param name ids: undefined undefined
+        param value ids: undefined undefined
+        if this.declares[name] === true ids: undefined undefined
+          set this.values[name] = value ids: undefined undefined
+          return true ids: undefined undefined
+        else  ids: undefined undefined
+          return false ids: undefined undefined
+      m getValue ids: undefined undefined
+        param name ids: undefined undefined
+        if this.declares[name] === true ids: undefined undefined
+          # log 'ContextData getValue found for', name, this.kind, this.modelKey ids: undefined undefined
+          return this.values[name] ids: undefined undefined
+        else  ids: undefined undefined
+          # log 'ContextData getValue not found for', name, this.kind, this.modelKey ids: undefined undefined
+          return undefined ids: undefined undefined
+      m getValues ids: undefined undefined
+        return this.values ids: undefined undefined
+      m getSettableValues ids: undefined undefined
+        var ret = {} ids: undefined undefined
+        for var k in this.values ids: undefined undefined
+          if k != '$' ids: undefined undefined
+            set ret[k] = this.values[k] ids: undefined undefined
+        return ret ids: undefined undefined
+      m declareFunction ids: undefined undefined
+        param name ids: undefined undefined
+        param fn ids: undefined undefined
+        set this.functions[name] = fn ids: undefined undefined
+      m getFunction ids: undefined undefined
+        param name ids: undefined undefined
+        return this.functions[name] ids: undefined undefined
+      m dumpValues ids: undefined undefined
+        log 'Dump context value for debug', this.kind ids: undefined undefined
+        for var k in this.declares ids: undefined undefined
+          if f_verify.isObject(this.values[k]) == false ids: undefined undefined
+            log k, this.values[k] ids: undefined undefined
+      m getDeclareddumpValues ids: undefined undefined
+        log 'Dump context value for debug', this.kind ids: undefined undefined
+        for var k in this.declares ids: undefined undefined
+          if f_verify.isObject(this.values[k]) == false ids: undefined undefined
+            log k, this.values[k] ids: undefined undefined
+      m getDeclaredInfo ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        for var k in this.declares ids: undefined undefined
+          if f_verify.isObject(this.values[k]) == false ids: undefined undefined
+            _ ret.push(k + '=' + this.values[k]) ids: undefined undefined
+          else  ids: undefined undefined
+            _ ret.push(k + '= [object]') ids: undefined undefined
+        return ret.join(', ') ids: undefined undefined
+    set module.exports = ContextData ids: undefined undefined

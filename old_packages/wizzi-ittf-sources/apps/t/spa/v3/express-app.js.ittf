@@ -1,0 +1,87 @@
+$group
+	$params &spa
+	#
+		# Create express app
+	set module.exports.init
+		function
+			param options
+			param callback
+			+
+			log 'express-app-init'
+			+
+            var app = express()
+			var db = null
+			var api = {}
+            
+			_ initLocalVariables(app)
+            
+			_ initMiddleware(app)
+            
+			$$ _ initViewEngine(app)
+
+			$if spa.staticFolders && spa.staticFolders.length > 0
+				_ initStaticFolders(app)
+
+			$if spa.webpack
+				_ initWebpack(app)
+
+			$if spa.session
+				_ initSession(app, db)
+            
+			$$ _ initModulesConfiguration(app)
+            
+			$if spa.helmet
+				_ initHelmetHeaders(app)
+
+			$if spa.apisPath
+				$if spa.apisAsync
+					log 'calling initApis'
+					_ initApis
+						@ app
+						@ config
+						@ api
+						@ init_step_2_CB(app, db, callback)
+				$else
+					_ init_step_2_CB(app, db, callback)(null)
+
+	function init_step_2_CB
+		param app
+		param db 
+		param callback
+		
+		return
+			function init_step_2
+				param err
+				
+				if err
+					throw Error('Server launch aborted. Error: ' + err)
+				
+				$if spa.routesPath && !spa.apisAsync
+					_ initRoutes(app, api)
+            
+				$$ _ initModulesClientRoutes(app)
+				$$ _ initModulesServerPolicies(app)
+				$$ _ initModulesServerRoutes(app)
+            
+				_ initErrorRoutes(app)
+			
+				$if spa.socketio
+					set app = configureSocketIO(app, db)
+				$else
+					# TODO extract secure from ./socket.io
+					var http = require('http')
+					set app = http.createServer(app)
+				return
+					_ callback(null, app)
+
+	$include express/initLocalVariables
+	$include express/initWebpack
+	$include express/initMiddleware
+	$include express/initStaticFolders
+	$include express/initSession
+	$include express/initHelmetHeaders
+	$include express/initApis
+	$include express/initRoutes
+	$include express/initErrorRoutes
+	$include express/configureSocketIO
+	$include express/getGlobbedFiles

@@ -1,0 +1,50 @@
+﻿$group
+
+	+
+	# ========================================
+	# DECLARATIONS
+	# ========================================
+	+
+
+	# 
+		# Examples of variable declarations
+
+	# Without init value
+	var alfa
+	
+	# With simple init value
+	var beta = 'beta'
+	
+	# With init value returned by a function call
+	var gamma
+		_ getGamma
+			@ alfa
+			@ beta
+	
+	# With init value returned by a constructor
+	var newError
+		new Error
+			@ 'Something went wrong'
+
+	# With a function or object as init value
+	var mySum
+		function
+			param alfa
+			param beta
+			return alfa + beta + (alfa + beta) / 3
+
+	# With an object as init value
+	var user
+		{
+			@ id 'bepi'
+			[ roles
+				@ 'admin'
+
+	# Multiple declarations
+	var
+		decl i
+		decl k = 10
+		decl name
+			_ getUserById
+				@ 'bepi'
+	

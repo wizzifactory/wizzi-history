@@ -1,0 +1,85 @@
+﻿module 
+    kind jsfile
+
+	var genContext = require('./artifact/genContext')
+    
+	var md
+        set module.exports
+            { 
+
+	set md.repo = require('./repo/index')
+	
+	set md.getGenContext
+		function
+			return
+				new genContext
+					{
+						@ options
+							{
+								@ CRLF '\n'
+								@ indentSpaces 4
+	
+	set md.getLoadModelContext
+		function
+			param modelContext
+			set modelContext.__productionManager
+				_ md.getProductionManager
+			return modelContext
+
+	set md.getProductionManager
+		function
+			return
+				{
+					@ wizziFactory
+						{
+					@ productionContext
+						_ createProductionContext
+					@ globalContext
+						function
+							return {}
+
+	function createProductionContext
+		return
+			{
+				@ aclstat
+					{
+				@ ittfEvaluationScripts
+					{
+				@ setAclStat
+					function
+				@ addIttfDocument
+					function
+				@ addMTreeBuildUpScript
+					function
+						param uri
+						param ittfEvalScript
+						set this.ittfEvaluationScripts[uri]
+							{ 
+								@ uri uri
+								@ ittfEvalScript ittfEvalScript
+				@ addMixedMTree
+					function
+				@ addEvaluatedMTree
+					function
+				@ addMTree
+					function
+				@ addWizziModel
+					function
+				@ addArtifact
+					function
+				@ raiseIttfEvaluationScriptError
+					function
+						param uri
+						param exception
+						var script = this.ittfEvaluationScripts[uri]
+						if script && script.ittfEvalScript && exception && exception.lineNumber
+							var lines
+								_ script.ittfEvalScript.getErrorLines(exception)
+									._ join('\n')
+							set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + lines + '\n'
+						else 
+							set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + exception.message + '\n'
+						_ fail.warn(exception)
+						throw exception   
+
+

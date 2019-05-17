@@ -1,0 +1,236 @@
+﻿	$*
+    { 
+    { 
+			@ \
+			@ 
+				code /4\.0/
+			@ I have a 4.0.
+			@ escape the next charater
+				em 
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/5Yd2y/embedded/result/
+			@ escape
+    { 
+			@ (...)
+			@ 
+				code /(bug) \1's/
+			@ bug bug's and bug bugs
+			@ match
+				em bug
+				+ and store it in a variable called \1 which you can use later in the express to reference back to the first capture parentheses
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/cW9XW/embedded/result/
+			@ group
+    { 
+			@ (?:...)
+			@ 
+				code /(?:bug) \1's/
+			@ bug bug's and bug bugs
+			@ don't capture (
+				em bug
+				+ ) into a variable. So no matches because \1 has no value
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/2DwnZ/embedded/result/
+			@ Groups
+    { 
+			@ (?=...)
+			@ 
+				code /bug(?='s)/
+			@ bug bug's and bug bugs
+			@ matches
+				em bug
+				+ only if
+				em bug
+				+ is followed by
+				em 's
+				+ . called a lookahead
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/zeBpK/embedded/result/
+			@ lookaround
+    { 
+			@ (?!...)
+			@ 
+				code /bug(?!'s)/
+			@ bug bug's and bug bugs
+			@ matches
+				em bug
+				+ only if
+				em bug
+				+ is not followed by
+				em 's
+				+ called a negated lookahead
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/TkePa/embedded/result/
+			@ lookaround
+    { 
+			@ ...|...
+			@ 
+				code /foo|bar/
+			@ foo and bar is foobar
+			@ matches either
+				em foo
+				+ or
+				em bar
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/Amj5e/embedded/result/
+			@ alternation
+    { 
+			@ {...}
+			@ 
+				code /fo{2}/
+			@ fooÂ andÂ foooÂ andÂ foooooo and fo
+			@ matches the previous character exactlyÂ 2Â times
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/Ay5Ks/embedded/result/
+			@ quantifier
+    { 
+			@ {...,}
+			@ 
+				code /fo{2,}/
+			@ fooÂ andÂ foooÂ andÂ foooooo and fo
+			@ matches the previous character at leastÂ 2Â times
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/2eDPH/embedded/result/
+			@ quantifier
+    { 
+			@ {...,...}
+			@ 
+				code /fo{2,4}/
+			@ fooÂ andÂ foooÂ andÂ foooooo and fo
+			@ matches the previous character at least 2 times, but no more thanÂ 4Â times
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/Zn3Ef/embedded/result/
+			@ quantifier
+    { 
+			@ [...]
+			@ 
+				code /[cde]|[456]/
+			@ abcdefghijklmnopqrstuvwxyz 0123456789
+			@ matches any
+				em c
+				+ ,
+				em d
+				+ ,
+				em e
+				+ character or
+				em 4
+				+ ,
+				em 5
+				+ ,
+				em 6
+				+ character
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/SAcj8/embedded/result/
+			@ character set
+    { 
+			@ [...-...]
+			@ 
+				code /[c-u]|[4-9]/
+			@ abcdefghijklmnopqrstuvwxyz 0123456789
+			@ matches any  character in the rangeÂ
+				em c
+				+ to
+				em u
+				+ Â or
+				em 4
+				+ to
+				em 9
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/aUSww/embedded/result/
+			@ character set
+    { 
+			@ [^...]
+			@ 
+				code /[^c-u]/
+			@ abcdefghijklmnopqrstuvwxyz 0123456789
+			@ matches any single character not in the range of
+				em c
+				+ to
+				em u
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/DRg23/embedded/result/
+			@ character set
+    { 
+			@ 
+				colspan 5
+				@ align center
+				p 
+					strong Character Shorthands
+    { 
+			@ \b
+			@ 
+				code /\bton\b/
+			@ tone wantons ton toon
+			@ match ton if its a word character (ie. [A-Za-z0-9_]) between and start and end boundary
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/qEYrC/embedded/result/
+			@ anchors
+    { 
+			@ \B
+			@ 
+				code /ton\B/
+			@ tone wantons ton toon
+			@ match ton if its NOT a word word character (ie. [A-Za-z0-9_]) between and start and end boundary
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/FH8zt/embedded/result/
+			@ anchors
+    { 
+			@ \d
+			@ 
+				code /\d/
+			@ Match digits 0123456789
+			@ matches a digit character. Equivalent toÂ [0-9]
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/8WuSV/embedded/result/
+			@ character class
+    { 
+			@ \D
+			@ 
+				code /\D/
+			@ Match non-digits 0123456789
+			@ matches any non-digit character. Equivalent toÂ [^0-9]
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/7jQGR/embedded/result/
+			@ character class
+    { 
+			@ \s
+			@ 
+				code /\s/
+			@ 
+				++ spaces&nbsp;inbetween&nbsp;
+				++ these&nbsp;words&nbsp;and&nbsp;line&nbsp;breaks
+			@ matches a single white space character, including space, tab, form feed, line feed
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/xnEk4/embedded/result/
+			@ character class
+    { 
+			@ \S
+			@ 
+				code /\S/
+			@ anything
+				br 
+				+ but white space
+			@ matches a single character other than white space, including space, tab, form feed, line feed
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/5e9sC/embedded/result/
+			@ character class
+    { 
+			@ \w
+			@ 
+				code /w/
+			@ abc or 123 even _ but not much else
+			@ matches any alphanumeric character including the underscore. Equivalent toÂ [A-Za-z0-9_]
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/3rjtu/embedded/result/
+			@ character class
+    { 
+			@ \W
+			@ 
+				code /\W/
+			@ abc&nbsp;or&nbsp;123&nbsp;even&nbsp;_&nbsp;but&nbsp;not&nbsp;much&nbsp;else
+			@ matches any non-word character. Equivalent toÂ [^A-Za-z0-9_]
+				a jsfiddle
+					href http://jsfiddle.net/codylindley/PReRK/embedded/result/
+			@ character class
+
+	*$

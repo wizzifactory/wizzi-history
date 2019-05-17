@@ -1,0 +1,50 @@
+﻿$group
+
+    @ root
+        { 
+            @ fontFamily theme.typography.fontFamily
+            @ position 'relative'
+            @ backgroundColor theme.palette.background.contentFrame
+            @ marginBottom 40
+            @ marginLeft - (16)
+            @ marginRight - (16)
+    
+	@ demo
+        _ theme.mixins.gutters
+            { 
+                @ display 'flex'
+                @ justifyContent 'center'
+                @ paddingTop 20
+                @ paddingBottom 20
+    
+	@ codeButton
+        { 
+            @ display 'none'
+            @ zIndex 10
+            @ position 'absolute'
+            @ top 2
+            @ right 7
+    
+	@ code
+        { 
+            @ display 'none'
+            @ padding 0
+            @ margin 0
+            @ '& pre'
+                { 
+                    @ overflow 'auto'
+                    @ margin '0px !important'
+                    @ borderRadius '0px !important'
+    
+	@ [theme.breakpoints.up(600)]
+        { 
+            @ codeButton
+                { 
+                    @ display 'block'
+            @ code
+                { 
+                    @ display 'block'
+            @ root
+                { 
+                    @ marginLeft 0
+                    @ marginRight 0

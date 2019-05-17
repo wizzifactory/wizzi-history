@@ -1,0 +1,63 @@
+﻿base_test( runnerServer )
+
+	$append imports
+		var runnerServer = require('../../lib/services/runnerServer')
+		var mocks = require('../mocks/misc')
+
+	var _wizziFactory = null
+
+	before-async
+		_ runnerServer.init
+			@ __dirname
+		_ runnerServer.instance.registerApi
+			@ 'SUM'
+			function
+				param a
+				param b
+				return a + b
+		_ runnerServer.instance.registerPlugin
+			@ '../mocks/plugin'
+		_ runnerServer.instance.registerGlobalContext
+			{
+				@ myname 'stefi'
+		_ runnerServer.instance.registerGlobalContext
+			{
+				@ hername 'annie'
+		_ runnerServer.instance.registerGlobalContext
+		_ runnerServer.instance.initializeFactory
+			@ 'stefi'
+			@ 'admin'
+			{
+				@ storeKind 'filesystem'
+				@ test
+					{
+						@ testOnlyMockBaseDir __dirname
+			f_cb_test( wf )
+				set _wizziFactory = wf
+				_ done
+
+	it-async should use the runnerServer to load a model
+		_ runnerServer.instance.loadModel
+			@ 'tests'
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.tests.ittf'
+			{
+			f_cb_test( wizziModel )
+				tobe_object( wizziModel )
+				tobe_string( wizziModel.wzName, mock1 )
+				_ done
+		
+	it should call a SUM api function on the runnerServer
+		var tot
+			_ runnerServer.instance.callApi
+				@ 'SUM'
+				@ 2
+				@ 2
+		tobe_number( tot, 4 )
+
+
+
+
+	

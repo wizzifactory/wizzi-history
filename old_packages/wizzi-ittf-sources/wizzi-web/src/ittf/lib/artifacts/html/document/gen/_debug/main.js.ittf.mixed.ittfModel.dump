@@ -1,0 +1,305 @@
+  module  ids: 1 274
+    kind jsfile ids: 2 275
+    var util = require('util') ids: 3 276
+    var wizzi = require('../../../../../index'); ids: 4 277
+    var css_rule = require('./css_rule') ids: 5 278
+    var js_statement = require('./js_statement') ids: 6 279
+    var verify = wizzi.verify ids: 7 280
+    var utilNode = wizzi.utilNode ids: 8 281
+    var lineParser = wizzi.lineParser ids: 9 282
+    var md = module.exports = {} ids: 10 283
+    var myname = 'htm1.document.main' ids: 11 284
+    set md.gen ids: 12 285
+      function  ids: 13 286
+        param model ids: 14 287
+        param ctx ids: 15 288
+        param callback ids: 16 289
+        # log 'model', util.inspect(model, { depth: 1 }) ids: 17 290
+        _ this.genItem(model, ctx) ids: 18 291
+        _ callback(null, ctx) ids: 19 292
+    set md.gen.prototype.genItems ids: 20 293
+      function  ids: 21 294
+        param items ids: 22 295
+        param ctx ids: 23 296
+        param options ids: 24 297
+        var  ids: 25 298
+          decl opt = options || {} ids: 26 299
+          decl from = opt.from || 0 ids: 27 300
+          decl indent = typeof opt.indent === 'undefined' ? true : opt.indent ids: 28 301
+        if indent ids: 29 302
+          _ ctx.indent() ids: 30 303
+        for var i = from; i < items.length; i++ ids: 31 304
+          var item = items[i] ids: 32 305
+          _ this.genItem(item, ctx) ids: 33 306
+        if indent ids: 34 307
+          _ ctx.deindent() ids: 35 308
+    set md.gen.prototype.${name} ids: 547 553
+      $args: genItem  $params: name
+      function  ids: 549 554
+        param model ids: 550 555
+        param ctx ids: 551 556
+        if ['_text','_textLF'].indexOf(model.wzElement) >= 0 ids: 37 310
+          # model.wzName is a TEXTNODE ids: 38 311
+          # preserve a blank first char (coded between single hyphens) ids: 39 312
+          var text = verify.startsWith(model.wzName, "' '") ? '&nbsp;' + model.wzName.substr(3) : model.wzName; ids: 40 313
+          if ctx.__iscode || model.wzElement === '_textLF' ids: 41 314
+            _ ctx.w(text) ids: 42 315
+          else  ids: 43 316
+            _ ctx.write(text) ids: 44 317
+          _ this.genItems(model.elements, ctx) ids: 45 318
+          return  ids: 46 319
+        if this[model.wzElement] ids: 47 320
+          # known element ids: 48 321
+          if this[model.wzElement](model, ctx) ids: 49 322
+            # ok, processed ids: 50 323
+            return  ids: 51 324
+        _ this.preprocess(model, ctx) ids: 52 325
+        var voidEl = (model.wzTag in voidElements) ids: 53 326
+        _ ctx.write('<' + model.wzTag) ids: 54 327
+        foreach a in getAttrs(model) ids: 55 328
+          if (a.name in attrsneedsvalue) || a.value && a.value.length > 0 ids: 56 329
+            _ ctx.write(' ' + a.name + '="' + verify.unquote(a.value || '') + '"') ids: 57 330
+          else  ids: 58 331
+            _ ctx.write(' ' + a.name) ids: 59 332
+        _ ctx.write('>') ids: 60 333
+        if voidEl ids: 61 334
+          _ ctx.w() ids: 62 335
+          _ this.postprocess(model, ctx) ids: 63 336
+          return  ids: 64 337
+        # check if the element has text line coded as children of the $. ittf command ids: 65 338
+        var lt = utilNode.lineToText(model.wzName) ids: 66 339
+        if lt.text ids: 67 340
+          # preserve a blank first char (coded between single hyphens) ids: 68 341
+          var text = verify.startsWith(lt.text, "' '") ? '&nbsp;' + lt.text.substr(3) : lt.text ids: 69 342
+          _ ctx.write(text) ids: 70 343
+        if lt.lines ids: 71 344
+          _ ctx.w() ids: 72 345
+          var saveIndent ids: 73 346
+          if ctx.__ispre ids: 74 347
+            # we are inside a pre element, temporaly reset ids: 75 348
+            # to 0 the indentation depending from the node depth ids: 76 349
+            set saveIndent = ctx.forceIndent(0) ids: 77 350
+          else  ids: 78 351
+            _ ctx.indent() ids: 79 352
+          foreach line in lt.lines ids: 80 353
+            _ ctx.w(line) ids: 81 354
+          if ctx.__ispre ids: 82 355
+            # restore indentation ids: 83 356
+            _ ctx.forceIndent(saveIndent); ids: 84 357
+          else  ids: 85 358
+            _ ctx.deindent() ids: 86 359
+        if model.elements && model.elements.length > 0 ids: 87 360
+          if ctx.__ispre && !ctx.__ispre_started ids: 88 361
+            _ ctx.w('') ids: 89 362
+            set ctx.__ispre_started = true ids: 90 363
+            var saveIndent = ctx.forceIndent(0) ids: 91 364
+            _ this.genItems(model.elements, ctx) ids: 92 365
+            _ ctx.forceIndent(saveIndent) ids: 93 366
+            set ctx.__ispre_started = false ids: 94 367
+          else  ids: 95 368
+            var noinline = inline.indexOf(model.wzTag) < 0 ids: 96 369
+            if noinline ids: 97 370
+              _ ctx.w('') ids: 98 371
+            _ this.genItems(model.elements, ctx, { indent: noinline}) ids: 99 372
+        _ ctx.w('</' + model.wzTag + '>') ids: 100 373
+        _ this.postprocess(model, ctx) ids: 101 374
+    set md.gen.prototype.${name} ids: 547 558
+      $args: preprocess  $params: name
+      function  ids: 549 559
+        param model ids: 550 560
+        param ctx ids: 551 561
+        if model.wzTag == '.' ids: 103 376
+          set model.wzTag = 'div' ids: 104 377
+          set model.class = model.wzName ids: 105 378
+          set model.wzName = null ids: 106 379
+        elif model.wzTag == '#' ids: 107 380
+          set model.wzTag = 'div' ids: 108 381
+          set model.id = model.wzName ids: 109 382
+          set model.wzName = null ids: 110 383
+        elif model.wzTag == '<' ids: 111 384
+          set model.wzTag = model.wzName ids: 112 385
+          set model.wzName = null ids: 113 386
+        elif model.wzTag == 'js' ids: 114 387
+          set model.wzTag = 'script' ids: 115 388
+          set model.src = model.wzName ids: 116 389
+          set model.wzName = null ids: 117 390
+        elif model.wzTag === 'css' ids: 118 391
+          set model.wzTag = 'link' ids: 119 392
+          set model.href = model.wzName ids: 120 393
+          set model.rel = 'stylesheet' ids: 121 394
+          set model.wzName = null ids: 122 395
+        elif model.wzTag === '@title' ids: 123 396
+          set model.wzTag = 'title' ids: 124 397
+        elif model.wzTag === '@style' ids: 125 398
+          set model.wzTag = 'style' ids: 126 399
+        if incode.indexOf(model.wzTag) > -1 ids: 127 400
+          set ctx.__iscode = true ids: 128 401
+        if ['pre'].indexOf(model.wzTag) > -1 ids: 129 402
+          set ctx.__ispre = true ids: 130 403
+    set md.gen.prototype.${name} ids: 547 563
+      $args: postprocess  $params: name
+      function  ids: 549 564
+        param model ids: 550 565
+        param ctx ids: 551 566
+        if incode.indexOf(model.wzTag) > -1 ids: 132 405
+          set ctx.__iscode = false ids: 133 406
+        if ['pre'].indexOf(model.wzTag) > -1 ids: 134 407
+          set ctx.__ispre = false ids: 135 408
+    set md.gen.prototype.${name} ids: 547 568
+      $args: html  $params: name
+      function  ids: 549 569
+        param model ids: 550 570
+        param ctx ids: 551 571
+        if model.doctype ids: 137 410
+          _ ctx.w('<!doctype ' + model.doctype + '>') ids: 138 411
+        else  ids: 139 412
+          _ ctx.w('<!doctype html>') ids: 140 413
+        _ ctx.write('<html') ids: 141 414
+        foreach a in getAttrs(model) ids: 142 415
+          if a.name != 'doctype' ids: 143 416
+            if (a.name in attrsneedsvalue) || a.value && a.value.length > 0 ids: 144 417
+              _ ctx.write(' ' + a.name + '="' + verify.unquote(a.value || '') + '"') ids: 145 418
+            else  ids: 146 419
+              _ ctx.write(' ' + a.name) ids: 147 420
+        _ ctx.w('>') ids: 148 421
+        _ this.genItems(model.elements, ctx) ids: 149 422
+        _ ctx.w() ids: 150 423
+        _ ctx.w('</html>') ids: 151 424
+        return true; ids: 152 425
+    set md.gen.prototype.${name} ids: 547 573
+      $args: _css  $params: name
+      function  ids: 549 574
+        param model ids: 550 575
+        param ctx ids: 551 576
+        if model.rules.length === 0 ids: 154 427
+          # is link to a stylesheet not a style element ids: 155 428
+          return false ids: 156 429
+        _ ctx.w("<style>") ids: 157 430
+        _ css_rule.genItems(model.rules, ctx) ids: 158 431
+        _ ctx.w("</style>") ids: 159 432
+        return true; ids: 160 433
+    set md.gen.prototype.${name} ids: 547 578
+      $args: _js  $params: name
+      function  ids: 549 579
+        param model ids: 550 580
+        param ctx ids: 551 581
+        if model.statements.length === 0 ids: 162 435
+          # is link to a js file not a script element ids: 163 436
+          return false ids: 164 437
+        _ ctx.w("<script>") ids: 165 438
+        _ js_statement.genItems(model.statements, ctx) ids: 166 439
+        _ ctx.w("</script>") ids: 167 440
+        return true; ids: 168 441
+    set md.gen.prototype.${name} ids: 547 583
+      $args: ready  $params: name
+      function  ids: 549 584
+        param model ids: 550 585
+        param ctx ids: 551 586
+        _ ctx.w("<script>") ids: 170 443
+        _ ctx.indent() ids: 171 444
+        if model.kind === 'jquery' ids: 172 445
+          _ ctx.w('$(function() {') ids: 173 446
+          _ js_statement.genItems(model.statements, ctx, { indent: true }) ids: 174 447
+          _ ctx.w('});') ids: 175 448
+        else  ids: 176 449
+          _ ctx.w('window.onload = function() {') ids: 177 450
+          _ js_statement.genItems(model.statements, ctx, { indent: true }) ids: 178 451
+          _ ctx.w('};') ids: 179 452
+        _ ctx.deindent() ids: 180 453
+        _ ctx.w("</script>") ids: 181 454
+        return true ids: 182 455
+    set md.gen.prototype.${name} ids: 547 588
+      $args: comment  $params: name
+      function  ids: 549 589
+        param model ids: 550 590
+        param ctx ids: 551 591
+        if ctx.__iscode ids: 184 457
+          _ ctx.w("// " + model.wzName) ids: 185 458
+        else  ids: 186 459
+          _ ctx.w("<!-- " + model.wzName + " -->") ids: 187 460
+        return true; ids: 188 461
+    var noattrs ids: 189 462
+      [  ids: 190 463
+        @ 'wzTag' ids: 191 464
+        @ 'wzName' ids: 192 465
+        @ 'wzElement' ids: 193 466
+        @ 'wzParent' ids: 194 467
+        @ 'wzSourceLineInfo' ids: 195 468
+        @ '___exportName' ids: 196 469
+    function isAttrValue ids: 197 470
+      param a ids: 198 471
+      param v ids: 199 472
+      if noattrs.indexOf(a) > -1 ids: 200 473
+        return false ids: 201 474
+      if v == null || verify.isArray(v) || verify.isObject(v) || verify.isFunction(v) ids: 202 475
+        return false ids: 203 476
+      return true ids: 204 477
+    function getAttrs ids: 205 478
+      param e ids: 206 479
+      var retval = [] ids: 207 480
+      for var a in e ids: 208 481
+        if isAttrValue(a, e[a]) ids: 209 482
+          _ retval.push({ name: verify.replaceAll(a, '_', '-'), value: e[a] }) ids: 210 483
+        elif a.substr(0, 3) === 'ng-' ids: 211 484
+          _ retval.push({ name: a, value: e[a] }) ids: 212 485
+        elif a.substr(0, 5) === 'data-' ids: 213 486
+          _ retval.push({ name: a, value: e[a] }) ids: 214 487
+        elif a.substr(0, 5) === 'aria-' ids: 215 488
+          _ retval.push({ name: a, value: e[a] }) ids: 216 489
+      if e.attributes ids: 217 490
+        foreach a in e.attributes ids: 218 491
+          var p = lineParser.parseNameValueRaw(a.wzName, a) ids: 219 492
+          if p.hasValue() ids: 220 493
+            _ retval.push({ name: p.name(), value: p.value() }) ids: 221 494
+          else  ids: 222 495
+            _ retval.push({ name: p.name() }) ids: 223 496
+      return retval ids: 224 497
+    var inline ids: 225 498
+      [  ids: 226 499
+        @ 'a' ids: 227 500
+        @ 'img' ids: 228 501
+        @ 'input' ids: 229 502
+        @ 'li' ids: 230 503
+        @ 'textarea' ids: 231 504
+    var incode ids: 232 505
+      [  ids: 233 506
+        @ 'js' ids: 234 507
+        @ 'css' ids: 235 508
+        @ 'script' ids: 236 509
+        @ 'style' ids: 237 510
+        @ 'ready' ids: 238 511
+    var attrsneedsvalue ids: 239 512
+      {  ids: 240 513
+        @ __proto__ null ids: 241 514
+    var voidElements ids: 242 515
+      {  ids: 243 516
+        @ __proto__  null ids: 244 517
+        @ area  true ids: 245 518
+        @ base  true ids: 246 519
+        @ basefont  true ids: 247 520
+        @ br  true ids: 248 521
+        @ col  true ids: 249 522
+        @ command  true ids: 250 523
+        @ embed  true ids: 251 524
+        @ frame  true ids: 252 525
+        @ hr  true ids: 253 526
+        @ img  true ids: 254 527
+        @ input  true ids: 255 528
+        @ isindex  true ids: 256 529
+        @ keygen  true ids: 257 530
+        @ link  true ids: 258 531
+        @ meta  true ids: 259 532
+        @ param  true ids: 260 533
+        @ source  true ids: 261 534
+        @ track  true ids: 262 535
+        @ wbr  true ids: 263 536
+        # common self closing svg elements ids: 264 537
+        @ path  true ids: 265 538
+        @ circle  true ids: 266 539
+        @ ellipse  true ids: 267 540
+        @ line  true ids: 268 541
+        @ rect  true ids: 269 542
+        @ use  true ids: 270 543
+        @ stop  true ids: 271 544
+        @ polyline  true ids: 272 545
+        @ polygone  true ids: 273 546

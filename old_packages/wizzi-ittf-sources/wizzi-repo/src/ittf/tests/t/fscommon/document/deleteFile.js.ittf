@@ -1,0 +1,22 @@
+﻿$group
+
+	var filePathDelete = "c:/my/starters/darvin/hello.md"
+	var content = "Hello world"
+
+	describe delete a file
+
+		before-async
+			_ doc.writeFile
+				@ filePathDelete
+				@ content
+				f_cb_done( r )
+
+		it-async should delete a file
+			_ doc.deleteFile
+				@ filePathDelete
+				f_cb_done( r )
+					log 'should delete a file', err, r
+					tobe_string( r.code, FSITEM_DELETED )
+					tobe_number( r.deletedCount, 1 )
+
+

@@ -1,0 +1,88 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var wizziUtils = require('wizzi-utils')
+	var verify = wizziUtils.verify
+	var file = wizziUtils.file
+	var mocks = wizziUtils.mocks
+	var mtree = require('wizzi-mtree')
+
+	var js_factory = require('../lib/wizzi/models/js-factory.g')
+	var js_artifact = require('../lib/artifacts/js/module/gen/main')
+	+
+	var loadModel
+		_ js_factory.createLoadModel
+			_ getWizziObject
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath)
+		set item = item.substring(0, item.length - '.js.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	# _ execute('function')
+	+
+	function execute
+		param name
+		if name != 'jsx'
+			return
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.js.ittf'
+		var jsOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.js'
+		_ loadModel
+			@ ittfSource
+			_ getLoadModelContext
+				{
+			f_cb_test( jsWizziModel )
+				log 'jsWizziModel', jsWizziModel
+				var ctx = new mocks.getGenContext()
+				_ js_artifact.gen
+					@ jsWizziModel
+					@ ctx
+					f_cb_test( ctxout )
+						log 'ctxout', ctxout.getContent()
+						_ file.write
+							@ jsOutput
+							@ ctxout.getContent()
+
+	function getFiles
+		param srcpath
+		return
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith(file, '.js.ittf')
+
+	function getWizziObject
+		return 
+			{
+				@ loadMTree 
+					_ mtree.createLoadMTree
+						@ mocks.repo.getCreateFilesystemStore()
+						{
+							@ useCache false
+				@ file wizziUtils.file
+				@ verify wizziUtils.verify
+
+	function getLoadModelContext
+		param mTreeBuildUpContext
+		return 
+			_ mocks.getLoadModelContext
+				@ mTreeBuildUpContext
+

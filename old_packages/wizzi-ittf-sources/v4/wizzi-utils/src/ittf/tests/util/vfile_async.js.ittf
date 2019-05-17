@@ -1,0 +1,227 @@
+﻿base_test( vfile )
+	
+	$append imports
+		var async = require('async')
+		var vfile = require('../../lib/fs/vfile')
+		var file = vfile()
+		var glob = require('../../lib/glob')
+
+	before
+		_ del.sync
+			[
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+			{
+				@ force true
+
+	it-async should async create the first file in the ittf folder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'gc_one.ittf'
+			@ 'first one\nsecond one'
+			f_cb_test( result )
+				_ file.write
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'folder_one'
+						@ 'gc_two.ittf'
+					@ 'first one\nsecond one'
+					f_cb_test( result )
+						_ done
+
+	it-async should async check existence of file
+		_ file.exists
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'gc_one.ittf'
+			f_cb_test( exists )
+				tobe_true(exists)
+				_ file.exists
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'astrumb.ittf'
+					f_cb_test( exists )
+						tobe_false(exists)
+						_ file.isFile
+							_ path.join
+								@ __dirname 
+								@ 'ittf'
+								@ 'gc_one.ittf'
+							f_cb_test( isFile )
+								tobe_true(isFile)
+								_ file.isFile
+									_ path.join
+										@ __dirname 
+										@ 'ittf'
+										@ 'astrumb.ittf'
+									f_cb_test( isFile )
+										tobe_false(isFile)
+										_ file.isFile
+											_ path.join
+												@ __dirname 
+												@ 'ittf'
+												@ 'folder_one'
+											f_cb_test( isFile )
+												tobe_false(isFile)
+												_ file.isDirectory
+													_ path.join
+														@ __dirname 
+														@ 'ittf'
+														@ 'gc_one.ittf'
+													f_cb_test( isDirectory )
+														tobe_false(isDirectory)
+														_ done
+
+	it-async should async check existence of folder
+		_ file.exists
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'folder_one'
+			f_cb_test( exists )
+				tobe_true(exists)
+				_ file.exists
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'folder_astrumb'
+					f_cb_test( exists )
+						tobe_false(exists)
+						_ file.isDirectory
+							_ path.join
+								@ __dirname 
+								@ 'ittf'
+								@ 'folder_one'
+							f_cb_test( isDirectory )
+								tobe_true(isDirectory)
+								_ file.isDirectory
+									_ path.join
+										@ __dirname 
+										@ 'ittf'
+										@ 'astrumb.ittf'
+									f_cb_test( isDirectory )
+										tobe_false(isDirectory)
+										_ file.isFile
+											_ path.join
+												@ __dirname 
+												@ 'ittf'
+												@ 'folder_one'
+											f_cb_test( isFile )
+												tobe_false(isFile)
+												_ done
+
+	it-async should async create folder
+		_ file.mkdir
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'folder_created_one'
+			f_cb_test( result )
+				_ file.isDirectory
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'folder_created_one'
+					f_cb_test( isDirectory )
+						tobe_true(isDirectory)
+						_ file.mkdir
+							_ path.join
+								@ __dirname 
+								@ 'ittf'
+								@ 'folder_created_one'
+								@ 'alfa'
+								@ 'beta'
+							f_cb_test( result )
+								_ file.isDirectory
+									_ path.join
+										@ __dirname 
+										@ 'ittf'
+										@ 'folder_created_one'
+										@ 'alfa'
+										@ 'beta'
+									f_cb_test( isDirectory )
+										tobe_true(isDirectory)
+										_ done
+	
+	it-async should async write/read a file
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'gc_one.ittf'
+			@ 'first one\nsecond one'
+			f_cb_test( result )
+				_ file.read
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'gc_one.ittf'
+					f_cb_test( contents )
+						tobe_string( contents, first one\nsecond one )
+						_ done
+
+	it-async should async write/read a file on a new folder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'alca'
+				@ 'traz'
+				@ 'gc_one.ittf'
+			@ 'first one\nsecond one'
+			f_cb_test( result )
+				_ file.read
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'alca'
+						@ 'traz'
+						@ 'gc_one.ittf'
+					f_cb_test( contents )
+						tobe_string( contents, first one\nsecond one )
+						_ done
+
+	it-async should async write/read a json file
+		var obj
+			{
+				@ name 'stefi'
+				[ friends
+					{
+						@ name 'arth'
+					{
+						@ name 'marilu'
+		_ file.writeJSON
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'abrac.json'
+			@ obj
+			f_cb_test( result )
+				_ file.readJSON
+					_ path.join
+						@ __dirname 
+						@ 'ittf'
+						@ 'abrac.json'
+					f_cb_test( obj_read )
+						tobe_eql( obj, obj_read )
+						_ done
+
+	$include vfile_async/glob
+
+
+
+
+
+
+
+
+
+
+
+							

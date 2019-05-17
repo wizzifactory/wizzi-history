@@ -1,0 +1,12 @@
+﻿$group
+
+	get( /repo/:user )
+
+		_ repoApi.getUserRoot
+			@ req.params.user
+			f_cb_rest( result )
+				# log '/repo/' + req.params.user, result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

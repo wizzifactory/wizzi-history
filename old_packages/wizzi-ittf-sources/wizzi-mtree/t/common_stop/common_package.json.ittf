@@ -1,0 +1,44 @@
+$group
+	$params pkgName, version, description, license|MIT
+	
+	name  "${pkgName}"
+	
+	version  "${version}"
+	
+	description "${description}"
+    
+	author
+		{
+			name "Stefano Bassoli"
+			email "sbassoli.dev@gmail.com"
+	
+	private false
+	
+	licenses
+		[
+			$if license == 'MIT'
+			{
+				type "MIT"
+				url "https://github.com/wizzifactory/${pkgName}/blob/master/license.txt"
+	
+	repository
+		{
+			type "git"
+			url "https://github.com/wizzifactory/{pkgName}.git"
+
+	engines
+		{
+			node ">=0.10.28"
+			npm ">=1.4.28"
+	
+	scripts
+		{
+			build "node generate"
+	
+	dependencies
+		{
+			$hook
+	
+	devDependencies
+		{
+			$hook devDependencies

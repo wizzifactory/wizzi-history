@@ -1,0 +1,50 @@
+﻿$group
+
+	sym supports_rule
+		tk SupportsSym
+		ref supports_condition
+		ref declarationsGroup
+
+	sym supports_condition
+		|
+			ref supports_negation
+			ref supports_conjunction
+			ref supports_disjunction
+			ref supports_condition_in_parens
+
+	sym supports_condition_in_parens
+		|
+			tk (
+			ref supports_condition
+			tk ) 
+			ref supports_declaration_condition
+			ref general_enclosed
+
+	sym supports_negation
+		any not
+		ref supports_condition_in_parens
+
+	sym supports_conjunction
+		ref supports_condition_in_parens
+		+
+			any and
+			ref supports_condition_in_parens
+
+	sym supports_disjunction
+		ref supports_condition_in_parens
+		+
+			any or
+			ref supports_condition_in_parens
+
+	sym supports_declaration_condition
+		tk (
+		ref declaration
+		tk )
+
+	sym general_enclosed
+		|
+			tk Function
+			tk (
+		*
+			any
+		tk )		

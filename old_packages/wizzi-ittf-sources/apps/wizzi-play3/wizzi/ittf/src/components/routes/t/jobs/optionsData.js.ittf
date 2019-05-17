@@ -1,0 +1,26 @@
+﻿$group
+
+	const createGitCommitData
+		=>
+			param owner
+			param props
+			return
+				{
+					@ title 'Enter commit message'
+					@ options
+						[
+							{
+								@ name 'commitMessage'
+								@ label 'message'
+								@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ owner.executeGitCommit
+									@ values.commitMessage
+

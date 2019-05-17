@@ -1,0 +1,76 @@
+﻿xittf scss
+    @@ 
+    @@ Base styles
+    @@
+    . alert
+        position 
+            l relative
+        padding 
+            : alertPaddingY
+            : alertPaddingX
+        margin-bottom 
+            : alertMarginBottom
+        border 
+            : alertBorderWidth
+            l solid
+            l transparent
+        @mix borderRadius
+            @: alertBorderRadius
+    @@ Headings for larger alerts
+    . alert-heading
+        // Specified to prevent conflicts of changing $headings-color
+        color 
+            l inherit
+    @@ Provide class for links that match alerts
+    . alert-link
+        font-weight 
+            : alertLinkFontWeight
+    @@ Dismissible alerts
+    @@ 
+    @@ Expand the right padding and account for the close button's positioning.
+    . alert-dismissible
+        padding-right 
+            expr 
+                : closeFontSize
+                plus 
+                : alertPaddingX
+                times 
+                2 
+        // Adjust close link position
+        . close
+            position 
+                l absolute
+            top 
+                0 
+            right 
+                0 
+            padding 
+                : alertPaddingY
+                : alertPaddingX
+            color 
+                l inherit
+    @@ Alternate styles
+    @@ 
+    @@ Generate contextual modifier classes for colorizing the alert.
+    @each 
+        @: color
+        @: value
+        in 
+        @: themeColors
+        . alert-
+            #{ 
+                @: color
+            @mix alertVariant
+                @_ themeColorLevel
+                    @: color
+                    expr 
+                        minus 
+                        10 
+                @_ themeColorLevel
+                    @: color
+                    expr 
+                        minus 
+                        9 
+                @_ themeColorLevel
+                    @: color
+                    6 

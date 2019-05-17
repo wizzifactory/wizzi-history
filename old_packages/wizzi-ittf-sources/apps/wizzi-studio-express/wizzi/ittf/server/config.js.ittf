@@ -1,0 +1,101 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+
+	$include wizzi-options
+
+    var md
+        set module.exports
+            { 
+
+    set md.app
+		{
+			@ title '${spa.title}'
+			@ description '${spa.description}'
+			@ keywords '${spa.keywords}'
+			@ googleAnalyticsTrackingID (process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID')
+			
+	set md.port = process.env.PORT || ${spa.port}
+			
+	$if spa.session
+		set md.sessionCookie
+			{ 
+				@ maxAge 24 * (60 * 60) * 1000
+				@ httpOnly true
+				@ secure false
+		set md.sessionSecret = '${spa.session.secret}'
+		set md.sessionCollection = 'sessions'
+		set md.sessionKey = 'sessionId'
+
+	#
+		set md.logo = 'modules/core/client/img/brand/logo.png'
+		set md.favicon = 'modules/core/client/img/brand/favicon.ico'
+		set md.repoBaseUri = path.join(__dirname, 'data', 'repo')
+		set md.studioBasePath = path.join(__dirname, 'data', 'studio')
+
+	# set md.repoUri = 'mongodb://localhost:27017/darvin'
+	# set md.repoBaseFolderUri = 'c://users'
+	set md.wizziBasePath = 'c:\\my\\wizzi'
+	set md.wizziCurrentVersion = 'v5'
+	set md.wizziKernelBasePath = 'c:\\my\\wizzi\\v5\\kernel'
+	set md.getWizziKernelBasePath
+		function
+			param version
+			set version = version || md.wizziCurrentVersion
+			return 'c:\\my\\wizzi\\' + version + '\\kernel'
+	set md.wizziKernelBaseId = 'v5-kernel'
+	set md.getWizziKernelBaseId
+		function
+			param version
+			set version = version || md.wizziCurrentVersion
+			return version + '-kernel'
+	set md.wizziPluginsBasePath = 'c:\\my\\wizzi\\v5\\plugins'
+	set md.getWizziPluginsBasePath
+		function
+			param version
+			set version = version || md.wizziCurrentVersion
+			return 'c:\\my\\wizzi\\' + version + '\\plugins'
+	set md.wizziPluginsBaseId = 'v5-plugins'
+	set md.getWizziPluginsBaseId
+		function
+			param version
+			set version = version || md.wizziCurrentVersion
+			return version + '-plugins'
+	set md.wizziAppsBasePath = 'c:\\my\\wizzi\\v5\\apps'
+	set md.getWizziAppsBasePath
+		function
+			param version
+			set version = version || md.wizziCurrentVersion
+			return 'c:\\my\\wizzi\\' + version + '\\apps'
+	set md.wizziAppsBaseId = 'v5-apps'
+	set md.getWizziAppsBaseId
+		function
+			param version
+			set version = version || md.wizziCurrentVersion
+			return version + '-apps'
+	set md.repoUri = 'file://'
+	set md.repoBaseFolderUri = path.join(__dirname, 'data', 'repo')
+	set md.metaBasePath = path.join(__dirname, 'data', 'meta')
+	set md.studioBasePath = path.join(__dirname, 'data', 'studio')
+	set md.jobsBasePath = path.join(__dirname, 'data', 'jobs')
+	set md.generatedPluginsOutputBasePath = 'c:\\my\\wizzi\\v5\\apps\\wizzi-studio\\node_modules'
+	set md.defaultGeneratedPlugin = 'my-plugin'
+	set md.storeKind = 'filesystem'
+	set md.plugins
+		[
+			@ 'wizzi-core'
+			@ 'wizzi-meta'
+			@ 'wizzi-js'
+			@ 'wizzi-web'
+	set md.user = 'stefi'
+	set md.role = 'admin'
+
+	set md.set
+        function 
+            param key
+            param value
+            set md[key] = value
+			_ onChange(key)
+
+	function onChange

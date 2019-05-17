@@ -1,0 +1,145 @@
+// 15/5/2017:22:31:56  by C:\My\wizzi\boot\v.2\node_modules\wizzi-boot\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //72
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //73
+$.a($1, $2, 7);
+var $3 = { n: "var", v: "uriparser = require('./uriparser')", r: 4, c: 5, s: "f1", u: "f1",  }; //74
+$.a($1, $3, 9);
+var $4 = { n: "var", v: "file = require('./file')", r: 5, c: 5, s: "f1", u: "f1",  }; //75
+$.a($1, $4, 11);
+var $5 = { n: "var", v: "repo = require('./repo')", r: 6, c: 5, s: "f1", u: "f1",  }; //76
+$.a($1, $5, 13);
+var $6 = { n: "var", v: "md = module.exports = {}", r: 8, c: 5, s: "f1", u: "f1",  }; //77
+$.a($1, $6, 15);
+var $7 = { n: "var", v: "win32 = process.platform === 'win32'", r: 10, c: 5, s: "f1", u: "f1",  }; //78
+$.a($1, $7, 17);
+var $8 = { n: "set", v: "md.unixifyPath", r: 12, c: 5, s: "f1", u: "f1",  }; //79
+$.a($1, $8, 19);
+var $9 = { n: "function", v: "", r: 13, c: 9, s: "f1", u: "f1",  }; //80
+$.a($8, $9, 21);
+var $10 = { n: "param", v: "path_string", r: 14, c: 13, s: "f1", u: "f1",  }; //81
+$.a($9, $10, 23);
+var $11 = { n: "if", v: "win32", r: 15, c: 13, s: "f1", u: "f1",  }; //82
+$.a($9, $11, 25);
+var $12 = { n: "return", v: "path_string.replace(/\\\\/g, '/')", r: 16, c: 17, s: "f1", u: "f1",  }; //83
+$.a($11, $12, 27);
+var $13 = { n: "else", v: "", r: 17, c: 13, s: "f1", u: "f1",  }; //84
+$.a($9, $13, 29);
+var $14 = { n: "return", v: "path_string", r: 18, c: 17, s: "f1", u: "f1",  }; //85
+$.a($13, $14, 31);
+var $15 = { n: "set", v: "md.exists", r: 20, c: 5, s: "f1", u: "f1",  }; //86
+$.a($1, $15, 33);
+var $16 = { n: "function", v: "", r: 21, c: 9, s: "f1", u: "f1",  }; //87
+$.a($15, $16, 35);
+var $17 = { n: "param", v: "path_string", r: 22, c: 13, s: "f1", u: "f1",  }; //88
+$.a($16, $17, 37);
+var $18 = { n: "param", v: "callback", r: 23, c: 13, s: "f1", u: "f1",  }; //89
+$.a($16, $18, 39);
+var $19 = { n: "var", v: "parsed = uriparser(String(path_string))", r: 25, c: 13, s: "f1", u: "f1",  }; //90
+$.a($16, $19, 41);
+var $20 = { n: "if", v: "parsed.storeKind === 'repo'", r: 26, c: 13, s: "f1", u: "f1",  }; //91
+$.a($16, $20, 43);
+var $21 = { n: "return", v: "repo.exists(parsed, callback)", r: 27, c: 17, s: "f1", u: "f1",  }; //92
+$.a($20, $21, 45);
+var $22 = { n: "else", v: "", r: 28, c: 13, s: "f1", u: "f1",  }; //93
+$.a($16, $22, 47);
+var $23 = { n: "return", v: "file.exists(path_string, callback)", r: 29, c: 17, s: "f1", u: "f1",  }; //94
+$.a($22, $23, 49);
+var $24 = { n: "set", v: "md.isFile", r: 31, c: 5, s: "f1", u: "f1",  }; //95
+$.a($1, $24, 51);
+var $25 = { n: "function", v: "", r: 32, c: 9, s: "f1", u: "f1",  }; //96
+$.a($24, $25, 53);
+var $26 = { n: "param", v: "path_string", r: 33, c: 13, s: "f1", u: "f1",  }; //97
+$.a($25, $26, 55);
+var $27 = { n: "param", v: "callback", r: 34, c: 13, s: "f1", u: "f1",  }; //98
+$.a($25, $27, 57);
+var $28 = { n: "var", v: "parsed = uriparser(String(path_string))", r: 36, c: 13, s: "f1", u: "f1",  }; //99
+$.a($25, $28, 59);
+var $29 = { n: "if", v: "parsed.storeKind === 'repo'", r: 37, c: 13, s: "f1", u: "f1",  }; //100
+$.a($25, $29, 61);
+var $30 = { n: "return", v: "repo.isFile(parsed, callback)", r: 38, c: 17, s: "f1", u: "f1",  }; //101
+$.a($29, $30, 63);
+var $31 = { n: "else", v: "", r: 39, c: 13, s: "f1", u: "f1",  }; //102
+$.a($25, $31, 65);
+var $32 = { n: "return", v: "file.isFile(path_string, callback)", r: 40, c: 17, s: "f1", u: "f1",  }; //103
+$.a($31, $32, 67);
+var $33 = { n: "set", v: "md.isDirectory", r: 42, c: 5, s: "f1", u: "f1",  }; //104
+$.a($1, $33, 69);
+var $34 = { n: "function", v: "", r: 43, c: 9, s: "f1", u: "f1",  }; //105
+$.a($33, $34, 71);
+var $35 = { n: "param", v: "path_string", r: 44, c: 13, s: "f1", u: "f1",  }; //106
+$.a($34, $35, 73);
+var $36 = { n: "param", v: "callback", r: 45, c: 13, s: "f1", u: "f1",  }; //107
+$.a($34, $36, 75);
+var $37 = { n: "var", v: "parsed = uriparser(String(path_string))", r: 47, c: 13, s: "f1", u: "f1",  }; //108
+$.a($34, $37, 77);
+var $38 = { n: "if", v: "parsed.storeKind === 'repo'", r: 48, c: 13, s: "f1", u: "f1",  }; //109
+$.a($34, $38, 79);
+var $39 = { n: "return", v: "repo.isDirectory(parsed, callback)", r: 49, c: 17, s: "f1", u: "f1",  }; //110
+$.a($38, $39, 81);
+var $40 = { n: "else", v: "", r: 50, c: 13, s: "f1", u: "f1",  }; //111
+$.a($34, $40, 83);
+var $41 = { n: "return", v: "file.isDirectory(path_string, callback)", r: 51, c: 17, s: "f1", u: "f1",  }; //112
+$.a($40, $41, 85);
+var $42 = { n: "set", v: "md.read", r: 53, c: 5, s: "f1", u: "f1",  }; //113
+$.a($1, $42, 87);
+var $43 = { n: "function", v: "", r: 54, c: 9, s: "f1", u: "f1",  }; //114
+$.a($42, $43, 89);
+var $44 = { n: "param", v: "path_string", r: 55, c: 13, s: "f1", u: "f1",  }; //115
+$.a($43, $44, 91);
+var $45 = { n: "param", v: "options", r: 56, c: 13, s: "f1", u: "f1",  }; //116
+$.a($43, $45, 93);
+var $46 = { n: "param", v: "callback", r: 57, c: 13, s: "f1", u: "f1",  }; //117
+$.a($43, $46, 95);
+var $47 = { n: "if", v: "typeof (options) === 'function'", r: 59, c: 13, s: "f1", u: "f1",  }; //118
+$.a($43, $47, 97);
+var $48 = { n: "set", v: "callback = options, options = {}", r: 60, c: 17, s: "f1", u: "f1",  }; //119
+$.a($47, $48, 99);
+var $49 = { n: "if", v: "!options", r: 61, c: 13, s: "f1", u: "f1",  }; //120
+$.a($43, $49, 101);
+var $50 = { n: "set", v: "options =", r: 62, c: 17, s: "f1", u: "f1",  }; //121
+$.a($49, $50, 103);
+var $51 = { n: "{", v: "", r: 63, c: 21, s: "f1", u: "f1",  }; //122
+$.a($50, $51, 105);
+var $52 = { n: "var", v: "parsed = uriparser(String(path_string))", r: 64, c: 13, s: "f1", u: "f1",  }; //123
+$.a($43, $52, 107);
+var $53 = { n: "if", v: "parsed.storeKind === 'repo'", r: 65, c: 13, s: "f1", u: "f1",  }; //124
+$.a($43, $53, 109);
+var $54 = { n: "return", v: "repo.read(parsed, options, callback)", r: 66, c: 17, s: "f1", u: "f1",  }; //125
+$.a($53, $54, 111);
+var $55 = { n: "else", v: "", r: 67, c: 13, s: "f1", u: "f1",  }; //126
+$.a($43, $55, 113);
+var $56 = { n: "return", v: "file.read(path_string, options, callback)", r: 68, c: 17, s: "f1", u: "f1",  }; //127
+$.a($55, $56, 115);
+var $57 = { n: "set", v: "md.getGlobbedFiles", r: 70, c: 5, s: "f1", u: "f1",  }; //128
+$.a($1, $57, 117);
+var $58 = { n: "function", v: "", r: 71, c: 9, s: "f1", u: "f1",  }; //129
+$.a($57, $58, 119);
+var $59 = { n: "param", v: "globPattern", r: 72, c: 13, s: "f1", u: "f1",  }; //130
+$.a($58, $59, 121);
+var $60 = { n: "param", v: "options", r: 73, c: 13, s: "f1", u: "f1",  }; //131
+$.a($58, $60, 123);
+var $61 = { n: "param", v: "callback", r: 74, c: 13, s: "f1", u: "f1",  }; //132
+$.a($58, $61, 125);
+var $62 = { n: "if", v: "typeof (options) === 'function'", r: 76, c: 13, s: "f1", u: "f1",  }; //133
+$.a($58, $62, 127);
+var $63 = { n: "set", v: "callback = options, options = {}", r: 77, c: 17, s: "f1", u: "f1",  }; //134
+$.a($62, $63, 129);
+var $64 = { n: "if", v: "!options", r: 78, c: 13, s: "f1", u: "f1",  }; //135
+$.a($58, $64, 131);
+var $65 = { n: "set", v: "options =", r: 79, c: 17, s: "f1", u: "f1",  }; //136
+$.a($64, $65, 133);
+var $66 = { n: "{", v: "", r: 80, c: 21, s: "f1", u: "f1",  }; //137
+$.a($65, $66, 135);
+var $67 = { n: "var", v: "parsed = uriparser(String(path_string))", r: 81, c: 13, s: "f1", u: "f1",  }; //138
+$.a($58, $67, 137);
+var $68 = { n: "if", v: "parsed.storeKind === 'repo'", r: 82, c: 13, s: "f1", u: "f1",  }; //139
+$.a($58, $68, 139);
+var $69 = { n: "return", v: "repo.getGlobbedFiles(parsed, options, callback)", r: 83, c: 17, s: "f1", u: "f1",  }; //140
+$.a($68, $69, 141);
+var $70 = { n: "else", v: "", r: 84, c: 13, s: "f1", u: "f1",  }; //141
+$.a($58, $70, 143);
+var $71 = { n: "return", v: "file.getGlobbedFiles(globPattern, options, callback)", r: 85, c: 17, s: "f1", u: "f1",  }; //142
+$.a($70, $71, 145);

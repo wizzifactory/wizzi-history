@@ -1,0 +1,37 @@
+﻿base_test( asyncArtifactGenerator )
+
+	$append imports
+		var asyncArtifactGenerator = require('../../lib/artifact/asyncArtifactGenerator')
+		var mocks = require('../mocks/misc')
+
+	it-async shoul generate ...
+		#
+			_ asyncArtifactGenerator.generate
+				@ artifactInfo
+				@ generator
+				@ modelInfos
+				@ contextModelsCollection
+				f_cb_test( result )
+
+	it-async shoul generate ... from collection contexts
+		#
+			_ asyncArtifactGenerator.generateModelCollection
+				@ artifactInfo
+				@ generator
+				@ modelInfos
+				@ contextModelsCollectionCollection
+				f_cb_test( result )
+	
+	it-async shoul generate ... by code write
+		#
+			_ asyncArtifactGenerator.generateCodeWrite
+				@ artifactInfo
+				@ generator
+				@ contextModelsCollection
+				f_cb_test( result )
+
+	it-async shoul generate ... an item
+		#
+			_ asyncArtifactGenerator._gen_item
+				@ genInfo
+				f_cb_test( result )

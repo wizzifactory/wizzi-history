@@ -1,0 +1,48 @@
+﻿$group
+
+	var iterations
+		[
+			{
+				@ code 'var x = 10, y = 0;
+					\b  for( var i=0; i<x; i++) {
+					\b      y += 2;
+					\b }
+					\b return y;'
+				@ expected_number 20
+			{
+				@ code 'var x = 10, y = 0;
+					\b  for( var i=0; i<x; i++) {
+					\b      if (i > 4) { continue; }
+					\b      y += 2;
+					\b }
+					\b return y;'
+				@ expected_number 10
+			{
+				@ code 'var x = 10, y = 0;
+					\b  while( x > 0 ) {
+					\b      y += 2;
+					\b      x--;
+					\b }
+					\b return y;'
+				@ expected_number 20
+			{
+				@ code 'var x = 10, y = 0;
+					\b  while( x > 0 ) {
+					\b      y += 2;
+					\b      x--;
+					\b      if (x < 6) {
+					\b        break;
+					\b      }
+					\b }
+					\b return y;'
+				@ expected_number 10
+			{
+				@ code 'var x = 10, y = 0;
+					\b  do {
+					\b      y += 2;
+					\b      x--;
+					\b  }
+					\b  while( x > 0 )
+					\b return y;'
+				@ expected_number 20
+

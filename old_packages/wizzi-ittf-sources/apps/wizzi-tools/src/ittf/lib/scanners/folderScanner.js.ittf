@@ -1,0 +1,48 @@
+﻿module 
+    kind jsfile
+    
+	var path = require('path')
+	var file = require('../util/file')
+	var IttfTemp = require('../util/ittfTemp')
+	var IttfFsNode = require('./ittfFsNode')
+    
+	var md
+        set module.exports =
+            { 
+	set md.scan
+        function 
+            param folderPath
+			param options
+			var removeRoot = path.dirname(folderPath)
+			var baseFolder = path.basename(folderPath)
+			var ittfs
+				_ file.getGlobbedFilesEx
+					_ path.join
+						@ folderPath
+						@ '**/*.ittf'
+					{
+						@ removeRoot removeRoot
+						@ dot true
+						@ ignore
+							_ path.join
+								@ folderPath
+								@ '**/node_modules/**/*.*'
+			var root = new IttfFsNode(baseFolder, null, true)
+			var ittfTemp = new IttfTemp('wzfs')
+			foreach ittf in ittfs
+				# log 'ittf', ittf
+				_ root.addDocument(ittf)
+			_ root.setInfo()
+			log 'root.setInfo()'
+			_ root.toIttf(ittfTemp)
+			log 'root.toIttf(ittfTemp)'
+			_ ittfTemp.writeFile
+				_ path.join
+					@ __dirname
+					@ 'outputs'
+					@ 'example1.wzfs.ittf'
+				f_cb( result )
+					log 'err', err
+
+
+

@@ -1,0 +1,68 @@
+﻿$group
+	
+	handler( ruleset )
+		handle( selector )
+		handle( block, ctx.ittfNode )
+
+	handler( selector )
+		handle( class )
+		handle( id )
+		handle( typeSelector )
+
+	handler( typeSelector )
+		elif item.type === 'ident'
+			# log 'createIttfNode', item.content, parent.tag
+			set ctx.ittfNode
+				_ createIttfNode
+						@ '<'
+						@ item.content
+						@ parent
+		handle( interpolation, ctx.ittfNode )
+
+	handler( block )
+		handle( ruleset )
+		handle( declaration )
+		handle( conditionalStatement )
+		handle( include )
+		handle( atrule )
+		elif item.type === 'declarationDelimiter'
+
+	handler( class )
+		elif item.type === 'ident'
+			# log 'createIttfNode', item.content, parent.tag
+			set ctx.ittfNode
+				_ createIttfNode
+						@ '.'
+						@ item.content
+						@ parent
+		handle( interpolation, ctx.ittfNode )
+
+	handler( id )
+		elif item.type === 'ident'
+			# log 'createIttfNode', item.content, parent.tag
+			set ctx.ittfNode
+				_ createIttfNode
+						@ '#'
+						@ item.content
+						@ parent
+		handle( interpolation, ctx.ittfNode )
+
+	handler( include )
+		$append enter
+			set ctx.isMixinInclude = true
+			set ctx.ittfNode
+				_ createIttfNode
+						@ 'include'
+						@ ''
+						@ parent
+		elif item.type === 'ident'
+			set ctx.ittfNode.name = getValidName(item.content)
+		handle( atkeyword, ctx.ittfNode )
+		handle( arguments, ctx.ittfNode )
+		handle( block, ctx.ittfNode )
+		$append exit
+			set ctx.isMixinInclude = false
+
+	handler( atkeyword )
+		elif item.type === 'ident'
+			set parent.tag = item.content

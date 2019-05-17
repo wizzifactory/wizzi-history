@@ -1,0 +1,64 @@
+﻿$group
+
+	tk Null
+		pattern null
+
+	tk CombineCompare
+		pattern
+			|
+				: &&
+				: ||
+
+	tk Ellipsis
+		pattern ...
+
+	tk InterpolationStart
+		pattern
+			& 
+				: #
+				: {
+
+	tk if
+		pattern if
+
+	tk MixinAt
+		pattern @mixin
+			ignore-case
+
+	tk IncludeAt
+		pattern @include
+			ignore-case
+
+	tk FunctionAt
+		pattern @function
+			ignore-case
+
+	tk ElseAt
+		pattern @else
+
+	tk IfAt
+		pattern @if
+
+	tk ForAt
+		pattern @for
+
+	tk WhileAt
+		pattern @while
+
+	tk EachAt
+		pattern @each
+
+	tk ReturnAt
+		pattern @return
+
+	tk ContentAt
+		pattern @content
+
+	tk From
+		pattern from
+
+	tk Through
+		pattern through
+
+	tk PoundDefault
+		pattern !default

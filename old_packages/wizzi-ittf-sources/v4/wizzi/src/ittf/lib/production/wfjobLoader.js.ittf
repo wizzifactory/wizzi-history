@@ -1,0 +1,120 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var util = require('util')
+	var assert = require('assert')
+	var async = require('async')
+	var verify = require('wizzi-utils').verify
+	# 
+		# Async load a 'wfjob' wizzi model and accumulate
+		# wfjobArtifactModel elements.
+		# If the model contains 'wfjob' requests also check that
+		# they have not already been processed and add them to 
+		# pendingWfjobRequests.
+		# If the model contains wfjobArtifactModel elements
+		# check that they have not already been added and add them to 
+		# the artifactInfoConfigs collection.
+
+	wz-class WfjobLoader
+		
+		ctor
+			param productionManager
+			set this.productionManager = productionManager
+			set this.pendingWfjobRequests = []
+			set this.seenWfjobRequests = []
+			set this.artifactInfoConfigs = []
+		
+		m load
+			param wfjobRequest
+			param callback
+
+			_ this.seenWfjobRequests.push(wfjobRequest)
+
+			var ittfDocumentUri
+                iif verify.isAbsolutePath(wfjobRequest.model.src)
+                    then 
+                        set wfjobRequest.model.src
+                    else 
+                        _ path.join
+                            @ wfjobRequest.model.cwd
+                            @ wfjobRequest.model.src
+
+			var that = this
+			_ this.productionManager.loadWfjob
+				@ ittfDocumentUri
+				{
+				f_cb( wfjobModel )
+					_ that.processWfjobModel(wfjobModel)
+					
+					return
+						_ callback
+							@ null
+							@ that
+		
+		m addPendingWfjobRequest
+			param artifactInfoConfig
+			if this._isWfjobSeen(artifactInfoConfig) == false
+				_ this.pendingWfjobRequests.push(artifactInfoConfig)
+
+		m _isWfjobSeen
+			param artifactInfoConfig
+			foreach item in this.seenWfjobRequests
+				if this._areWfjobRequestsEqual(item, artifactInfoConfig)
+					return true
+			return false
+		
+		m addArtifactInfoConfig
+			param artifactInfoConfig
+			if this._isArtifactInfoConfigAdded(artifactInfoConfig) == false
+				_ this.artifactInfoConfigs.push(artifactInfoConfig)
+
+		m _isArtifactInfoConfigAdded
+			param artifactInfoConfig
+			foreach item in this.artifactInfoConfigs
+				if this._areArtifactInfoConfigsEqual(item, artifactInfoConfig)
+					return true
+			return false
+
+		m _areWfjobRequestsEqual
+			param a
+			param b
+			return a.model.cwd === b.model.cwd &&
+				\b a.model.src === b.model.src
+
+		m _areArtifactInfoConfigsEqual
+			param a
+			param b
+			return a.model.cwd === b.model.cwd &&
+				\b a.model.src === b.model.src &&
+				\b a.dest.baseFolder === b.dest.baseFolder &&
+				\b a.dest.folder === b.dest.folder &&
+				\b a.dest.path === b.dest.path &&
+				\b a.dest.extension === b.dest.extension &&
+				\b a.gen.generator === b.gen.generator
+
+		$include wfjobLoader/processModel
+
+	$include wfjobLoader/asyncRecurseWfjobLoad
+
+	function error
+		param code
+		param message
+		param node
+		set message
+			iif node
+				then 
+					new errors.NodeError
+						@ message
+						@ node
+					._ toString
+				else message
+		return
+			{
+				@ __is_error true
+				@ code code
+				@ message message
+
+
+
+

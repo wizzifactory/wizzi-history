@@ -1,0 +1,66 @@
+﻿base_test( appender )
+	
+	$append imports
+		var mocks = require('./mocks/misc')
+		var MTreeBrickProvider = require('../../lib/loader/mTreeBrickProvider')
+		var mixer = require('../../lib/loader/mixer')
+		var appender = require('../../lib/loader/appender')
+
+	var
+		decl store
+		decl appendedModel
+		decl node
+
+	before-async
+
+		set store = new mocks.IttfDocumentStore()
+		_ store.init
+			{
+				@ storeKind 'filesystem'
+			f_cb_no_err( notUsed )
+				_ done
+
+	it-async should load an mTree
+
+		var content_filepath
+			_ path.join
+				@ __dirname
+				@ 'repo'
+				@ 'data'
+				@ 'appender_1.tests.ittf'
+            
+		_ MTreeBrickProvider.createFromUri
+			@ content_filepath
+			{
+				@ mTreeBuildUpContext
+					{
+				@ productionContext mocks.ProductionContext
+				@ __ittfDocumentStore store
+			f_cb_no_err( provider )
+				var mTree = provider.getPrimaryMTreeBrick()
+				_ mixer
+					@ mTree
+					@ provider
+					f_cb_test( mixedModel )
+						_ appender
+							@ mixedModel
+							f_cb_test( result )
+								set appendedModel = result
+								_ done()
+
+	it nodes[0]
+		tobe_object( appendedModel )
+		tobe_array( appendedModel.nodes, 1 )
+		tobe_object( appendedModel.nodes[0] )
+		set node = appendedModel.nodes[0]
+		tobe_number( node.row, 1 )
+		tobe_number( node.col, 1 )
+		tobe_string( node.name, 'root' )
+
+	it nodes [0][0]
+		tobe_array( appendedModel.nodes[0].children, 1 )
+		set node = appendedModel.nodes[0].children[0]
+		tobe_number( node.row, 1 )
+		tobe_number( node.col, 1 )
+		tobe_string( node.name, 'leaf' )
+		tobe_string( node.value, '1' )

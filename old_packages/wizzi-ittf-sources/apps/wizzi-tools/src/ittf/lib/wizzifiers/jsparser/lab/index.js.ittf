@@ -1,0 +1,100 @@
+﻿module
+	kind jsfile
+
+	import util
+	import path
+	import esprima
+	import wizzi
+	var file = wizzi.file
+	var jswizzifier = require('../../jsparser/esprima/wizzifier')
+
+	_ go('t1')
+
+	function go
+		param name
+		
+		var src 
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.js'
+		
+		var out_esprima 
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.esprima.json'
+
+		var out_ittf 
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.js.ittf'
+
+		var out_ittf_js
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ name + '.js.ittf.js'
+
+		var parsed
+			_ esprima.parse
+				_ file.read
+					@ src
+				{
+					@ sourceType 'module'
+					@ jsx true
+
+		_ file.write
+			@ out_esprima
+			_ JSON.stringify
+				@ parsed
+				@ null
+				@ 4
+
+        _ jswizzifier.getWizziIttf
+			_ file.read
+				@ src
+			{
+				@ kind 'react'
+				@ esprima
+					{
+						@ sourceType 'module'
+            function 
+                param err
+                param result
+				if err
+					_ file.write
+						@ out_ittf
+						_ JSON.stringify
+							@ err
+							@ null
+							@ 4
+				else
+					var r1 = result.substring(0, 24)
+					var r2 = result.substring(24)
+					log 'r1', r1
+					set r1 = r1.replace('jsfile', 'react ')
+					log 'r1 after', r1
+
+					_ file.write
+						@ out_ittf
+						@ r1+r2
+
+		_ wizzi.jsModule
+			@ out_ittf
+			{
+            function 
+                param err
+                param result
+				if err
+					_ file.write
+						@ out_ittf_js
+						_ JSON.stringify
+							@ err
+							@ null
+							@ 4
+				else
+					_ file.write
+						@ out_ittf_js
+						@ result

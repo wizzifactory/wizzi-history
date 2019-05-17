@@ -1,0 +1,50 @@
+﻿module 
+    kind jsfile
+    var config
+        { 
+            @ content
+                [ 
+                    { 
+                        @ type 'row'
+                        @ content
+                            [ 
+                                { 
+                                    @ type 'component'
+                                    @ componentName 'testComponent'
+                                    @ componentState
+                                        { 
+                                            @ label 'A'
+                                { 
+                                    @ type 'column'
+                                    @ content
+                                        [ 
+                                            { 
+                                                @ type 'component'
+                                                @ cssClass 'highlight'
+                                                @ componentName 'testComponent'
+                                                @ componentState
+                                                    { 
+                                                        @ label 'B'
+                                            { 
+                                                @ type 'component'
+                                                @ componentName 'testComponent'
+                                                @ componentState
+                                                    { 
+                                                        @ label 'C'
+    var myLayout
+        new GoldenLayout(config)
+    _ myLayout.registerComponent
+        @ 'testComponent'
+        function 
+            param container
+            param componentState
+            _ container.getElement()
+                ._ html('<h2>' + componentState.label + '</h2>')
+    _ myLayout.on
+        @ 'itemCreated'
+        function 
+            param item
+            if item.config.cssClass
+                _ item.element.addClass
+                    @ item.config.cssClass
+    _ myLayout.init()

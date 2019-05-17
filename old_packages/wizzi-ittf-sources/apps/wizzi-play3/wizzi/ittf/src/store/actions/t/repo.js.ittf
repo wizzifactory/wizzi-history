@@ -1,0 +1,288 @@
+﻿$group
+	+
+	decl_rsf( repo_user, get )
+	decl_rsf( repo_project, get, create )
+	decl_rsf( repo_folder, get, create, delete )
+	decl_rsf( repo_document, get, create, update, delete )
+	decl_rsf( repo_fsitem, duplicate, rename )
+	+
+	export
+		const getRepoUser
+			=>
+				param userId
+				return
+					{
+						@ type GET_REPO_USER
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_REPO_USER_REQUEST
+										@ GET_REPO_USER_SUCCESS
+										@ GET_REPO_USER_FAILURE
+								@ url '/repo/' + userId
+								@ method 'get'
+								@ queryParams
+									{
+	+
+	export
+		const getRepoProject
+			=>
+				param userId
+				param projectId
+				return
+					{
+						@ type GET_REPO_PROJECT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_REPO_PROJECT_REQUEST
+										@ GET_REPO_PROJECT_SUCCESS
+										@ GET_REPO_PROJECT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId
+								@ method 'get'
+								@ queryParams
+									{
+	+
+	export
+		const getRepoFolder
+			=>
+				param userId
+				param projectId
+				param folderPath
+				log 'actions.repo.getRepoFolder.url', '/repo/' + userId + '/' + projectId + '/' + folderPath
+				return
+					{
+						@ type GET_REPO_PROJECT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_REPO_PROJECT_REQUEST
+										@ GET_REPO_PROJECT_SUCCESS
+										@ GET_REPO_PROJECT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + folderPath
+								@ method 'get'
+								@ queryParams
+									{
+	+
+	export
+		const getRepoDocument
+			=>
+				param userId
+				param projectId
+				param documentPath
+				return
+					{
+						@ type GET_REPO_DOCUMENT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_REPO_DOCUMENT_REQUEST
+										@ GET_REPO_DOCUMENT_SUCCESS
+										@ GET_REPO_DOCUMENT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + documentPath
+								@ method 'get'
+								@ queryParams
+									{
+	+
+	export
+		const createRepoProject
+			=>
+				param userId
+				param projectId
+				param pjtmpl
+				param options
+				return
+					{
+						@ type CREATE_REPO_PROJECT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ CREATE_REPO_PROJECT_REQUEST
+										@ CREATE_REPO_PROJECT_SUCCESS
+										@ CREATE_REPO_PROJECT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId
+								@ method 'post'
+								@ payload
+									{
+										@ pjtmpl pjtmpl
+										@ options options
+	+
+	export
+		const createRepoFolder
+			=>
+				param userId
+				param projectId
+				param folderPath
+				log 'actions.repo.createRepoFolder.url', '/repo/' + userId + '/' + projectId + '/' + folderPath
+				return
+					{
+						@ type CREATE_REPO_FOLDER
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ CREATE_REPO_FOLDER_REQUEST
+										@ CREATE_REPO_FOLDER_SUCCESS
+										@ CREATE_REPO_FOLDER_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + folderPath
+								@ method 'post'
+								@ payload
+									{
+										@ kind KIND_FOLDER
+	+
+	export
+		const deleteRepoFolder
+			=>
+				param userId
+				param projectId
+				param folderPath
+				log 'actions.repo.deleteRepoFolder.url', '/repo/' + userId + '/' + projectId + '/' + folderPath
+				return
+					{
+						@ type DELETE_REPO_FOLDER
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ DELETE_REPO_FOLDER_REQUEST
+										@ DELETE_REPO_FOLDER_SUCCESS
+										@ DELETE_REPO_FOLDER_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + folderPath
+								@ method 'delete'
+								@ payload
+									{
+										@ kind KIND_FOLDER
+
+	export
+		const createRepoDocument
+			=>
+				param userId
+				param projectId
+				param documentPath
+				param content
+				return
+					{
+						@ type CREATE_REPO_DOCUMENT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ CREATE_REPO_DOCUMENT_REQUEST
+										@ CREATE_REPO_DOCUMENT_SUCCESS
+										@ CREATE_REPO_DOCUMENT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + documentPath
+								@ method 'post'
+								@ payload
+									{
+										@ kind KIND_FILE
+										@ content content
+
+	export
+		const updateRepoDocument
+			=>
+				param userId
+				param projectId
+				param documentPath
+				param content
+				return
+					{
+						@ type UPDATE_REPO_DOCUMENT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ UPDATE_REPO_DOCUMENT_REQUEST
+										@ UPDATE_REPO_DOCUMENT_SUCCESS
+										@ UPDATE_REPO_DOCUMENT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + documentPath
+								@ method 'put'
+								@ payload
+									{
+										@ kind KIND_FILE
+										@ content content
+								@ delayId UPDATE_REPO_DOCUMENT + userId + projectId + documentPath
+								@ delay 2000
+
+	+
+	export
+		const deleteRepoDocument
+			=>
+				param userId
+				param projectId
+				param documentPath
+				log 'actions.repo.deleteRepoDocument.url', '/repo/' + userId + '/' + projectId + '/' + documentPath
+				return
+					{
+						@ type DELETE_REPO_DOCUMENT
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ DELETE_REPO_DOCUMENT_REQUEST
+										@ DELETE_REPO_DOCUMENT_SUCCESS
+										@ DELETE_REPO_DOCUMENT_FAILURE
+								@ url '/repo/' + userId + '/' + projectId + '/' + documentPath
+								@ method 'delete'
+								@ payload
+									{
+										@ kind KIND_FILE
+
+	+
+	export
+		const duplicateFsItem
+			=>
+				param kind
+				param fullPath
+				param newName
+				log 'actions.repo.duplicateFsItem.url', '/repo/' + fullPath
+				return
+					{
+						@ type DUPLICATE_REPO_FSITEM
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ DUPLICATE_REPO_FSITEM_REQUEST
+										@ DUPLICATE_REPO_FSITEM_SUCCESS
+										@ DUPLICATE_REPO_FSITEM_FAILURE
+								@ url '/repo/' + fullPath
+								@ method 'post'
+								@ payload
+									{
+										@ kind kind
+										@ action 'duplicate'
+										@ newname newName
+
+	+
+	export
+		const renameFsItem
+			=>
+				param kind
+				param fullPath
+				param newName
+				log 'actions.repo.renameFsItem.url', '/repo/' + fullPath
+				return
+					{
+						@ type RENAME_REPO_FSITEM
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ RENAME_REPO_FSITEM_REQUEST
+										@ RENAME_REPO_FSITEM_SUCCESS
+										@ RENAME_REPO_FSITEM_FAILURE
+								@ url '/repo/' + fullPath
+								@ method 'post'
+								@ payload
+									{
+										@ kind kind
+										@ action 'rename'
+										@ newname newName
+
+	$include repo/copyCut
+	$include repo/deleteBatch

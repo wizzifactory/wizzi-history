@@ -1,0 +1,33 @@
+﻿module
+    kind jsfile
+    
+	var util = require('util')
+    
+	var md
+        set module.exports =
+            { 
+
+	$include verify/is
+
+	set md.replaceAll
+        function 
+            param text
+            param find
+            param replace
+            if md.isEmpty(text)
+                return text
+            # log 'replaceAll', text, find, replace
+			return 
+                _ text.replace
+                    new RegExp
+                        _ md.escapeRegExp(find)
+                        @ 'g'
+                    @ replace
+    
+	set md.escapeRegExp
+		function
+			param text
+            if md.isEmpty(text)
+                return text
+			return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
+

@@ -1,0 +1,71 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	import async
+	var file = require('../../lib/util/file')
+	var thisPackage = require('../../index')
+	+
+	var bootstrap_scss_path = 'C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/wfSite/bootstrap-4-dev/scss'
+	var bootstrap_scss_Out = 'C:/My/wizzi/v5/apps/wizzi-tools/dist/examples/wizzifier/data/scss'
+	+
+	var scss_files
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ __dirname
+				@ 'data'
+				@ 'scss'
+				@ 'project1'
+				@ '**/*.scss'
+			{
+				@ removeRoot bootstrap_scss_path
+	var scss_files
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ bootstrap_scss_path
+				@ '**/*.scss'
+			{
+				@ removeRoot bootstrap_scss_path
+
+	log 'scss_files', scss_files
+
+	_ async.map
+		@ scss_files
+		function
+			param source
+			param callback
+			_ thisPackage.cssWizzify
+				_ path.join
+					@ bootstrap_scss_path
+					@ source
+				{
+					@ parser 'gonzales'
+					@ syntax 'scss'
+				f_cb_throw( ittf )
+					if ittf.substr(0,3) === 'err'
+						log 'source', source
+					_ thisPackage.cssWizzify
+						_ path.join
+							@ bootstrap_scss_path
+							@ source
+						{
+							@ parser 'gonzales'
+							@ syntax 'scss'
+							@ keepDeleted true
+						f_cb_throw( ittf2 )
+							_ thisPackage.cssWizzify
+								_ path.join
+									@ bootstrap_scss_path
+									@ source
+								{
+									@ parser 'gonzales'
+									@ syntax 'scss'
+									@ raw true
+								f_cb_throw( ittf3 )
+									_ file.write
+										_ path.join
+											@ bootstrap_scss_Out
+											@ 'project2'
+											@ source + '.ittf'
+										@ ittf + '\n' + ittf2 + '\n' + ittf3

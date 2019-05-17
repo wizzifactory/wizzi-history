@@ -1,0 +1,100 @@
+﻿base_test( util.node )
+
+	$append imports
+		var ittfTree = require('wizzi-utils').IttfMTreeEx
+		var node = require('../../lib/util/node')
+
+	$include nodeUpdates
+	$include nodeFinds
+
+	it should modify nodes
+		foreach item in nodeUpdates
+			if item.action === 'remove'
+				var original
+					_ ittfTree.createFrom(item.original)
+				log 'original', original.toString()
+				var expected
+					_ ittfTree.createFrom(item.expected)
+				var toremove = original.find(item.name)
+				_ node.remove
+					@ toremove
+				log 'toremove', toremove.toString()
+				log 'original after', original.toString()
+				log 'expected', expected.toString()
+				tobe_true( original.equals(expected) )
+
+			if item.action === 'replace'
+				var original
+					_ ittfTree.createFrom(item.original)
+				log 'original', original.toString()
+				var replacer
+					_ ittfTree.createFrom(item.replacer)
+				var expected
+					_ ittfTree.createFrom(item.expected)
+				var toreplace = original.find(item.name)
+				log 'toreplace', toreplace.toString()
+				_ node.replace
+					@ toreplace
+					@ [replacer]
+				log 'replacer', replacer.toString()
+				log 'original after', original.toString()
+				log 'expected', expected.toString()
+				tobe_true( original.equals(expected) )
+
+	it should find node commands
+		foreach item in nodeFinds
+			if item.action === 'findCommand'
+				var original
+					_ ittfTree.createFrom(item.original)
+				log 'original', original.toString()
+				var found
+					_ node.findIttfCommand
+						@ original
+						@ item.value
+						@ item.name
+				log 'findCommand.found', found
+				tobe_eql( item.expected, found.id )
+			
+			if item.action === 'findHook'
+				var original
+					_ ittfTree.createFrom(item.original)
+				log 'original', original.toString()
+				var startitem
+					_ original.find
+						{
+							@ id item.startitem
+				log 'startitem', item.startitem, startitem, startitem.value
+				var found
+					_ node.findHookExt
+						@ startitem
+						@ startitem.value
+						@ startitem
+				log 'findHook.found', found
+				tobe_eql( item.expected, found.id )
+
+	$*
+    
+	it should find the first $virtual node command (up to ancestors)
+		_ node.findVirtual
+            @ item
+            @ 'hello'
+
+	it should find the first $virtual node command
+		_ node.findVirtual
+            @ item
+            @ 'hello'
+    
+	it should inline a node hierarchy in a single text line
+		_ node.textToLine
+            @ node
+    
+	it should deinline a text into a node hierarchy
+		_ node.lineToText
+            @ text
+
+	it should check if parent of a node of a certain name
+		_ node.isParentOfName
+            @ node
+			@ nameOrArray
+	*$
+   

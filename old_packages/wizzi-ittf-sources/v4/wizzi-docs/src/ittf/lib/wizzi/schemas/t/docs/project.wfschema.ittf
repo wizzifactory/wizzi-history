@@ -1,0 +1,23 @@
+﻿$group
+
+	e project : item
+		m getTodos
+			return _.filter(this.items, { wzElement: 'todo' })
+		m getRoadMaps
+			return _.filter(this.items, { wzElement: 'roadmap' })
+		m getIssues
+			return _.filter(this.items, { wzElement: 'issue' })
+
+	e todo : item
+		a priority
+		a done
+			type boolean
+			default false
+
+	e issue : item
+
+	e roadmap : item
+		m getMilestones
+			return _.filter(this.items, { wzElement: 'milestone' })
+
+	e milestone : item

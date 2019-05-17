@@ -1,0 +1,55 @@
+﻿$group
+
+	function resolveModule
+        param pluginsBaseFolder
+        param modulePath
+        param callback
+		+
+        _ resolvePackage
+            @ pluginsBaseFolder
+            @ (modulePath + "/package.json")
+            function 
+                param err
+                param packagePath
+                var metadata
+                    { 
+				var packageMetadata
+                if !err
+                    try 
+                        set packageMetadata = (packagePath && require(packagePath).plugin) || {}
+                    catch ex
+                        return
+							_ callback
+								_ error
+									@ 'PackageError'
+									@ 'resolveModule'
+									@ 'Error loading plugin package.json ' + packagePath + ', message: ' + ex.message
+                iife 
+                    param next
+                    if err
+						var mp = verify.endsWith(modulePath, '.js') ? modulePath : modulePath + '.js'
+                        _ resolvePackage(pluginsBaseFolder, mp, next)
+                    elif packagePath
+                        _ next
+                            @ null
+                            _ path.dirname(packagePath)
+                    else 
+                        _ resolvePackage(pluginsBaseFolder, modulePath, next)
+					(
+						f_cb( modulePath )
+							var moduleObject
+							try
+								# load the module now
+								set moduleObject = require(modulePath)
+								# log 'wizzi.services.pluginManager.resolveModule: modulePath, moduleObject', modulePath, moduleObject
+							catch ex
+								return
+									_ callback
+										_ error
+											@ 'ModuleError'
+											@ 'resolveModule'
+											@ 'Error loading plugin module ' + modulePath + ', message: ' + ex.message + '\n' + ex.stack
+							set moduleObject.provides = (packageMetadata && packageMetadata.provides) || moduleObject.provides || []
+							set moduleObject.consumes = (packageMetadata && packageMetadata.consumes) || moduleObject.consumes || []
+							set moduleObject.packagePath = modulePath
+							_ callback(null, moduleObject)

@@ -1,0 +1,158 @@
+﻿r-component( WizziMTreeDebugInfo
+
+	$append imports
+		
+		common/page_imports()
+		import Dialog from '@material-ui/core/Dialog'
+		import CloseIcon from '@material-ui/icons/Close'
+		import Slide from '@material-ui/core/Slide'
+		import CodeHighLight from '../mui/CodeHighLight'
+
+		$include wfactions/constants
+
+		function Transition
+			param props
+			return 
+				< Slide 
+					@ direction "up"
+					@ {...props}
+
+    style
+        { appBar
+            @ position 'relative'
+        
+		{ flex
+            @ flex 1
+
+	state
+		@ infoAction null
+
+	did-mount
+		prop lastDebugInfoAction
+		log 'did-mount', lastDebugInfoAction
+		if lastDebugInfoAction
+			_ this.setState
+				{
+					@ infoAction lastDebugInfoAction
+
+	did-update
+		prop lastDebugInfoAction
+		log 'did-update', lastDebugInfoAction
+		if lastDebugInfoAction && lastDebugInfoAction !== prevProps.lastDebugInfoAction
+			_ this.setState
+				{
+					@ infoAction lastDebugInfoAction
+    
+	=> handleMTreeScript
+		_ this.setState
+			{
+				@ infoAction WF_ACTION.MTREE_SCRIPT
+	
+	=> handleMTree
+		_ this.setState
+			{
+				@ infoAction WF_ACTION.MTREE
+	
+	=> handleGenerateArtifact
+		_ this.setState
+			{
+				@ infoAction WF_ACTION.GEN_ARTIFACT
+	
+	=> handleGenerateSchema
+		_ this.setState
+			{
+				@ infoAction WF_ACTION.GEN_SCHEMA
+	
+	=> handleExecuteJob
+		_ this.setState
+			{
+				@ infoAction WF_ACTION.EXEC_JOB
+
+	render
+        prop classes
+		prop open
+		prop mTreeScript
+		prop mTree
+		prop generatedArtifact
+		prop jobExecutionResult
+		prop jobExecutionError
+		prop schemaGenerationResult
+		prop schemaGenerationError
+		prop onClose
+
+		# log 'WizziMTreeDebugInfo', 'mTreeScript', mTreeScript, 'mTree', mTree
+		
+		const {infoAction} = this.state
+
+		log 'infoAction', 'infoAction', infoAction
+
+        return 
+            div 
+                < Dialog 
+                    @ fullScreen
+                    @ open {open}
+                    @ onClose {onClose}
+                    @ TransitionComponent {Transition}
+                    < AppBar 
+                        @ className {classes.appBar}
+                        common/tlb()
+                            < IconButton 
+                                @ color "inherit"
+                                @ onClick {onClose}
+                                @ aria-label "Close"
+                                < CloseIcon 
+							{
+								&&
+									+ mTreeScript 
+									common/tlb-btn-disable( mTree script, this.handleMTreeScript, infoAction === WF_ACTION.MTREE_SCRIPT
+							{
+								&&
+									+ mTree 
+									common/tlb-btn-disable( mTree, this.handleMTree, infoAction === WF_ACTION.MTREE
+							{
+								&&
+									+ generatedArtifact
+									common/tlb-btn-disable( generated artifact, this.handleGenerateArtifact, infoAction === WF_ACTION.GEN_ARTIFACT
+							{
+								&&
+									+ (schemaGenerationResult || schemaGenerationError)
+									common/tlb-btn-disable( schema generation result, this.handleGenerateSchema, infoAction === WF_ACTION.GEN_SCHEMA
+							{
+								&&
+									+ (jobExecutionResult || jobExecutionError)
+									common/tlb-btn-disable( job result, this.handleExecuteJob, infoAction === WF_ACTION.EXEC_JOB
+					{
+						&&
+							+ infoAction === WF_ACTION.MTREE_SCRIPT && mTreeScript
+							< Paper
+								< CodeHighLight 
+									@ language { 'js' }
+									@ codeSnippet { mTreeScript }
+					{
+						&&
+							+ infoAction === WF_ACTION.MTREE && mTree
+							< Paper
+								< CodeHighLight 
+									@ language { 'js' }
+									@ codeSnippet { mTree }
+					{
+						&&
+							+ infoAction === WF_ACTION.GEN_ARTIFACT && generatedArtifact
+							< Paper
+								< CodeHighLight 
+									@ language { 'js' }
+									@ codeSnippet { generatedArtifact }
+					{
+						&&
+							+ infoAction === WF_ACTION.GEN_SCHEMA && (schemaGenerationResult || schemaGenerationError)
+							< Paper
+								< CodeHighLight 
+									@ language { 'js' }
+									@ codeSnippet { JSON.stringify(schemaGenerationResult || schemaGenerationError, null, 2) }
+					{
+						&&
+							+ infoAction === WF_ACTION.EXEC_JOB && (jobExecutionResult || jobExecutionError)
+							< Paper
+								< CodeHighLight 
+									@ language { 'js' }
+									@ codeSnippet { JSON.stringify(jobExecutionResult || jobExecutionError, null, 2) }

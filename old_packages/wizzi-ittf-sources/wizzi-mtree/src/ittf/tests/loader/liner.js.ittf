@@ -1,0 +1,194 @@
+﻿base_test( liner )
+	
+	$append imports
+		var liner = require('../../lib/loader/liner')
+		var file = require('wizzi-utils').file
+
+	it should have : an indent, row and col number, name and value
+
+		var lines
+			_ liner
+				_ file.read
+					_ path.join
+						@ __dirname
+						@ 'repo'
+						@ 'data'
+						@ 'liner_1.tests.ittf'
+				{
+					@ sourceKey 'f1'
+
+		# log 'liner lines', lines
+
+		tobe_array( lines, 7 )
+		tobe_number( lines[0].indent, 0 )
+		tobe_number( lines[0].row, 1 )
+		tobe_number( lines[0].col, 1 )
+		tobe_string( lines[0].sourceKey, 'f1' )
+		tobe_string( lines[0].name, 'alpha' )
+		tobe_undefined( lines[0].value )
+            
+		tobe_number( lines[1].indent, 1 )
+		tobe_number( lines[1].row, 2 )
+		tobe_number( lines[1].col, 18 )
+		tobe_string( lines[1].sourceKey, 'f1' )
+		tobe_string( lines[1].name, 'beta' )
+		tobe_string( lines[1].value, '1' )
+
+		tobe_number( lines[2].indent, 1 )
+		tobe_number( lines[2].row, 3 )
+		tobe_number( lines[2].col, 5 )
+		tobe_string( lines[2].sourceKey, 'f1' )
+		tobe_string( lines[2].name, 'beta' )
+		tobe_string( lines[2].value, '2' )
+
+		tobe_number( lines[4].indent, 1 )
+		tobe_number( lines[4].row, 10 )
+		tobe_number( lines[4].col, 5 )
+		tobe_string( lines[4].sourceKey, 'f1' )
+		tobe_string( lines[4].name, '<' )
+		tobe_string( lines[4].value, 'body' )
+
+	it should skip multi line comments
+		var lines
+			_ liner
+				[ 
+					@ 'root'
+					@ '    node1 value1'
+					@ '    $$ node2 value2'
+					@ '    node3 value3'
+					@ '    $*'
+					@ '    node4 value4'
+					@ '    node5 value5'
+					@ '    *$'
+					@ '    node6 value6'
+					._ join('\n')
+				{
+					@ sourceKey 'f1'
+
+		log 'should skip comments liner lines', lines
+		tobe_array( lines, 4 )
+		tobe_number( lines[0].indent, 0 )
+		tobe_number( lines[0].row, 1 )
+		tobe_number( lines[0].col, 1 )
+		tobe_string( lines[0].name, 'root' )
+		tobe_number( lines[3].indent, 1 )
+		tobe_number( lines[3].row, 9 )
+		tobe_number( lines[3].col, 5 )
+		tobe_string( lines[3].name, 'node6' )
+
+	it should skip line comments 2
+		var lines
+			_ liner
+				[ 
+					@ 'root'
+					@ '    node1 value1'
+					@ '$$ node2 value2'
+					@ '    node3 value3'
+					@ '$*'
+					@ '    node4 value4'
+					@ '    node5 value5'
+					@ '*$'
+					@ '    node6 v$$alue6'
+					._ join('\n')
+				{
+					@ sourceKey 'f1'
+
+		log 'should skip comments liner lines', lines
+		tobe_array( lines, 4 )
+		tobe_number( lines[0].indent, 0 )
+		tobe_number( lines[0].row, 1 )
+		tobe_number( lines[0].col, 1 )
+		tobe_string( lines[0].name, 'root' )
+		tobe_number( lines[3].indent, 1 )
+		tobe_number( lines[3].row, 9 )
+		tobe_number( lines[3].col, 5 )
+		tobe_string( lines[3].name, 'node6' )
+		tobe_string( lines[3].value, 'v' )
+
+	it should escape wizzi macro delimiters
+		var lines
+			_ liner
+				[ 
+					@ 'root'
+					@ '    node1 value1'
+					@ '    \$\{name}'
+					._ join('\n')
+				{
+					@ sourceKey 'f1'
+
+		log 'should skip comments liner lines', lines
+		tobe_array( lines, 3 )
+		tobe_number( lines[0].indent, 0 )
+		tobe_string( lines[0].name, 'root' )
+		tobe_number( lines[2].indent, 1 )
+		tobe_string( lines[2].name, '${'$'}{name}' )
+
+	it should escape javascript string macro delimiters
+		var source
+			[ 
+				@ 'root'
+				@ '    node1 value1'
+				@ '    `my ${name}`'
+				._ join('\n')
+		log 'source', source
+		var lines
+			_ liner
+				@ source
+				{
+					@ sourceKey 'f1'
+
+		# log 'should skip comments liner lines', lines
+		tobe_array( lines, 3 )
+		tobe_number( lines[0].indent, 0 )
+		tobe_string( lines[0].name, 'root' )
+		tobe_number( lines[2].indent, 1 )
+		# Alt+146 = Æ
+		var expected = String.fromCodePoint(96) +
+			\b 'my ' +
+			\b 'Æ' +
+			\b '{name}' +
+			\b String.fromCodePoint(96)
+		tobe_string_value( lines[2].name + ' ' + lines[2].value, expected )
+
+	it should escape javascript string macro delimiters with escapes
+		
+		var template = String.fromCodePoint(96) +
+			\b 'alfa ' +
+			\b '\\' + String.fromCodePoint(96) +
+			\b 'beta' + 
+			\b '\\' + String.fromCodePoint(96) +
+			\b ', ${'$'}{name}' +
+			\b String.fromCodePoint(96)
+		
+		# Alt+146 = Æ
+		var template_expected = String.fromCodePoint(96) +
+			\b 'alfa ' +
+			\b '\\' + String.fromCodePoint(96) +
+			\b 'beta' + 
+			\b '\\' + String.fromCodePoint(96) +
+			\b ', Æ{name}' +
+			\b String.fromCodePoint(96)
+
+		var source
+			[ 
+				@ 'root'
+				@ '    node1 value1'
+				@ '    node2 ' + template
+				@ '    node3 value2'
+				._ join('\n')
+		
+		log 'source', source
+		
+		var lines
+			_ liner
+				@ source
+				{
+					@ sourceKey 'f1'
+
+		# log 'should skip comments liner lines', lines
+		tobe_array( lines, 4 )
+		tobe_number( lines[0].indent, 0 )
+		tobe_string( lines[0].name, 'root' )
+		tobe_number( lines[2].indent, 1 )
+		tobe_string( lines[2].name, 'node2' )
+		tobe_string_value( lines[2].value, template_expected )

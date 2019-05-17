@@ -1,0 +1,15 @@
+﻿module
+	kind jsfile
+
+	var beautify = require('js-beautify').js_beautify
+	var fs = require('fs')
+
+	_ fs.readFile
+		@ 'foo.js'
+		@ 'utf8'
+		function
+			param err
+			param data
+			if err
+				throw err;
+			log beautify(data, { indent_size: 2 })

@@ -1,0 +1,11 @@
+﻿module
+	kind react
+
+	$include app-options
+	
+	react/store/reducers/index( &app )
+
+		$append imports
+			import appReducer from './appReducer'
+
+		@ app appReducer

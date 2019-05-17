@@ -1,0 +1,28 @@
+﻿$group
+
+	m createInstance
+		static
+		param user
+		param options
+		param callback
+		if FbFsClient.__instance
+			throw
+				new Error
+					@ 'FbFsClient.createInstance called more than once. This is a bug.'
+		set user = user || 'default'
+		set options = options || {}
+		set FbFsClient.__instance
+			new FbFsClient
+				@ user
+				@ options
+		_ FbFsClient.__instance.init
+		_ callback
+
+	m getInstance
+		static
+		# log 'FbFsClient.getInstance', FbFsClient.__instance, FbFsClient.__instance && FbFsClient.__instance.getSchemas
+		if typeof FbFsClient.__instance === 'undefined'
+			throw
+				new Error
+					@ 'FbFsClient.getInstance called before FbFsClient.createInstance. This is a bug.'
+		return FbFsClient.__instance

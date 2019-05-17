@@ -1,0 +1,158 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var index = require('../../index')
+	var verify = require('wizzi-utils').verify
+
+	var wfs = index.Filesystem
+	var userId = 'stefi'
+	var projectId = 'example'
+
+	_ wfs.mount
+		_ path.join
+			@ __dirname
+			@ 'io_fs'
+		f_cb_test()
+			_ wfs.mkdir
+				@ userId
+				@ projectId
+				@ 'folderA'
+				f_cb_test()
+					_ wfs.mkdir
+						@ userId
+						@ projectId
+						@ 'folderB'
+						f_cb_test()
+							_ wfs.mkdir
+								@ userId
+								@ projectId
+								@ 'folderC'
+								f_cb_test()
+									_ wfs.mkdir
+										@ userId
+										@ projectId
+										@ 'folderD'
+										f_cb_test()
+											_ wfs.mkdir
+												@ userId
+												@ projectId
+												@ 'folderToDelete/folder1'
+												f_cb_test()
+													_ createExampleFiles
+
+	function createExampleFiles
+		_ wfs.writeFile
+			@ userId
+			@ projectId
+			@ 'folderA/docA1.js.ittf'
+			@ 'module\n\t kind react'
+			f_cb_test()
+				_ wfs.writeFile
+					@ userId
+					@ projectId
+					@ 'folderA/docA2.js.ittf'
+					@ 'module\n\t kind jsfile'
+					f_cb_test()
+						_ wfs.writeFile
+							@ userId
+							@ projectId
+							@ 'folderB/docB1.js.ittf'
+							@ 'module\n\t kind es6'
+							f_cb_test()
+								_ wfs.writeFile
+									@ userId
+									@ projectId
+									@ 'folderC/docC1.js.ittf'
+									@ 'module\n\t kind es6'
+									f_cb_test()
+										_ wfs.writeFile
+											@ userId
+											@ projectId
+											@ 'folderC/docC2.js.ittf'
+											@ 'module\n\t kind es6'
+											f_cb_test()
+												_ wfs.writeFile
+													@ userId
+													@ projectId
+													@ 'folderToDelete/folder1/docToDel1.js.ittf'
+													@ 'module\n\t kind es6'
+													f_cb_test()
+														_ executeCopyMove
+		
+	function executeCopyMove
+		_ wfs.copyFolder
+			@ userId
+			@ projectId
+			@ 'folderA'
+			@ projectId
+			@ 'folderA_copied'
+			f_cb_test()
+				_ wfs.moveFolder
+					@ userId
+					@ projectId
+					@ 'folderB'
+					@ projectId
+					@ 'folderB_moved'
+					f_cb_test()
+						_ wfs.copyFile
+							@ userId
+							@ projectId
+							@ 'folderC/docC1.js.ittf'
+							@ projectId
+							@ 'folderD/docC1.js.ittf'
+							f_cb_test()
+								_ wfs.moveFile
+									@ userId
+									@ projectId
+									@ 'folderC/docC2.js.ittf'
+									@ projectId
+									@ 'folderD/docC2.js.ittf'
+									f_cb_test()
+										_ executeBatch
+
+	function executeBatch
+		_ wfs.batch
+			@ userId
+			[
+				{
+					@ actionType 'copy'
+					@ itemKind 0
+					@ sourceProjectId projectId
+					@ sourceItemPath 'folderB_moved'
+					@ destProjectId projectId
+					@ destItemPath 'folderE_batch'
+				{
+					@ actionType 'move'
+					@ itemKind 0
+					@ sourceProjectId projectId
+					@ sourceItemPath 'folderToDelete'
+					@ destProjectId projectId
+					@ destItemPath 'folderF_batch'
+				{
+					@ actionType 'delete'
+					@ userId userId
+					@ itemKind 0
+					@ projectId projectId
+					@ itemPath 'folderF_batch'
+				{
+					@ actionType 'copy'
+					@ itemKind 1
+					@ sourceProjectId projectId
+					@ sourceItemPath 'folderC/docC1.js.ittf'
+					@ destProjectId projectId
+					@ destItemPath 'folderG_batch/docC1.js.ittf'
+				{
+					@ actionType 'move'
+					@ itemKind 1
+					@ sourceProjectId projectId
+					@ sourceItemPath 'folderC/docC1.js.ittf'
+					@ destProjectId projectId
+					@ destItemPath 'folderH_batch/docC1.js.ittf'
+				{
+					@ actionType 'delete'
+					@ itemKind 1
+					@ userId userId
+					@ projectId projectId
+					@ itemPath 'folderA/docA1.js.ittf'
+			f_cb_test()

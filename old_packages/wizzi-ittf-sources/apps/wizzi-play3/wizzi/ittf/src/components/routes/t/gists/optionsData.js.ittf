@@ -1,0 +1,114 @@
+﻿$group
+	$params kind|gist
+
+	$
+		var kindCap = _.capitalize(kind)
+
+	const createJob${kindCap}Data
+		=>
+			param owner
+			param props
+			return
+				{
+					@ title 'Create ${kind}'
+					[ options
+						{
+							@ name '${kind}Name'
+							@ label 'name'
+							@ notEmpty true
+						{
+							@ name '${kind}Schema'
+							@ label 'schema'
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchCreateJobGist
+									@ '${kind}'
+									@ values.${kind}Name
+									@ values.${kind}Schema
+									@ ''
+
+	const duplicateJob${kindCap}Data
+		=>
+			param owner
+			param props
+			param hash
+			param basename
+			return
+				{
+					@ title 'Duplicate ${kind} ' + basename
+					[ options
+						{
+							@ name 'itemName'
+							@ label 'New name'
+							@ value basename
+							@ mustChange true
+							@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchDuplicateJobGist
+									@ hash
+									@ values.itemName
+
+	const renameJob${kindCap}Data
+		=>
+			param owner
+			param props
+			param hash
+			param basename
+			return
+				{
+					@ title 'Rename ${kind} ' + basename
+					[ options
+						{
+							@ name 'itemName'
+							@ label 'New name'
+							@ value basename
+							@ mustChange true
+							@ notEmpty true
+					@ handler
+						=>
+							param values
+							_ owner.setState
+								{
+									@ optionsDialogOpen false
+							_ alert(JSON.stringify(values, null, 2))
+							if values
+								_ props.dispatchRenameJobGist
+									@ hash
+									@ values.itemName
+
+	const confirmDeleteJob${kindCap}Data
+		=>
+			param owner
+			param props
+			param hash
+			param basename
+			
+			return
+				{
+					@ title 'Confirm ${kind} deletion'
+					[ namedValues
+						{
+							@ label 'basename'
+							@ value basename
+					@ handler
+						=>
+							param ok
+							_ owner.setState
+								{
+									@ confirmDialogOpen false
+							if ok
+								_ props.dispatchDeleteJobGist
+									@ hash

@@ -1,0 +1,71 @@
+  module  ids: 1 72
+    kind jsfile ids: 2 73
+    var verify = require('../../util/verify') ids: 3 74
+    var inflect = require('i') ids: 4 75
+    set String.prototype.capitalize = ids: 5 76
+      function  ids: 6 77
+        return  ids: 7 78
+          _ this.replace ids: 8 79
+            @ /(?:^|\s)\S/g ids: 9 80
+            function  ids: 10 81
+              param a ids: 11 82
+              return a.toUpperCase() ids: 12 83
+    set String.prototype.pluralize = ids: 13 84
+      function  ids: 14 85
+        return inflect.pluralize(this) ids: 15 86
+    set module.exports ids: 16 87
+      {  ids: 17 88
+        @ pluralize ids: 18 89
+          function  ids: 19 90
+            param str ids: 20 91
+            return inflect.pluralize(str) ids: 21 92
+        @ capitalize ids: 22 93
+          function  ids: 23 94
+            param str ids: 24 95
+            return  ids: 25 96
+              _ str.replace ids: 26 97
+                @ /(?:^|\s)\S/g ids: 27 98
+                function  ids: 28 99
+                  param a ids: 29 100
+                  return a.toUpperCase() ids: 30 101
+        @ escape verify.escapename ids: 31 102
+        @ isEmpty ids: 32 103
+          function  ids: 33 104
+            param text ids: 34 105
+            return typeof text === 'string' && text.trim().length === 0 ids: 35 106
+        @ isNotEmpty ids: 36 107
+          function  ids: 37 108
+            param text ids: 38 109
+            return typeof text === 'string' && text.trim().length > 0 ids: 39 110
+        @ isObject ids: 40 111
+          function  ids: 41 112
+            param obj ids: 42 113
+            var type = typeof obj ids: 43 114
+            return type === 'function' || type === 'object' && !!obj ids: 44 115
+        @ isArray ids: 45 116
+          function  ids: 46 117
+            param obj ids: 47 118
+            if Array.isArray ids: 48 119
+              return Array.isArray(obj) ids: 49 120
+            else  ids: 50 121
+              return toString.call(obj) === '[object Array]' ids: 51 122
+        @ isString ids: 52 123
+          function  ids: 53 124
+            param obj ids: 54 125
+            return toString.call(obj) === '[object String]' ids: 55 126
+        @ isNumber ids: 56 127
+          function  ids: 57 128
+            param obj ids: 58 129
+            return toString.call(obj) === '[object Number]' ids: 59 130
+        @ isDate ids: 60 131
+          function  ids: 61 132
+            param obj ids: 62 133
+            return toString.call(obj) === '[object Date]' ids: 63 134
+        @ isFunction ids: 64 135
+          function  ids: 65 136
+            param obj ids: 66 137
+            return toString.call(obj) === '[object Function]' ids: 67 138
+        @ isUndefined ids: 68 139
+          function  ids: 69 140
+            param obj ids: 70 141
+            return obj === void 0 ids: 71 142

@@ -1,0 +1,65 @@
+﻿module wizzi-repo.fragmentsFinder
+    kind jsfile
+
+	import path
+	var verify = require('wizzi-utils').verify
+	var config = require('../../config')
+	var errors = require('./errors')
+	var IttfDocumentStore = require('./ittfDocumentStore')
+
+	class FragmentsFinder
+        ctor
+			{ store
+			string schema
+			set this.store = store
+			set this.schema = schema
+			set this.ext = '.' + schema + '.ittf'
+			set this.baseFolder = config.get('wfBaseFolder')
+
+		m getFragmentsInScope
+			string ittfDocumentUri
+			var folderUri = path.dirname(ittfDocumentUri)
+			var ret = []
+			_ this._search_up(folderUri, ret)
+			_ this._search_down(folderUri, ret)
+			return ret;
+
+		m _search_down
+			string folderUri
+			{ resultByRef
+				[ folders
+			var folders
+				_ this.store.getFoldersSync
+					@ folderUri
+					{
+						@ deep true
+						@ tFoldersOnly true
+						@ documentNames true
+			foreach item in folders
+				_ resultByRef.folders.push(item)
+		
+		m _search_up
+			string folderUri
+			{ resultByRef
+				[ folders
+			set parentUri = path.dirname(folderUri)
+			if !verify.startsWith(parentUri, this.baseFolder)
+				return
+			var folders
+				_ this.store.getFoldersSync
+					@ parentUri
+					{
+						@ deep false
+						@ tFoldersOnly true
+						@ documentNames true
+			foreach item in folders
+				_ resultByRef.folders.push(item)
+
+		m createFileSystemFragmentFinder
+			static
+			string schema
+			var store = IttfDocumentStore.createFileSystemDocumentStore()
+			var ret = new FragmentsFinder(store, schema)
+			return ret
+			
+	set module.exports = FragmentsFinder

@@ -1,0 +1,43 @@
+﻿demo_module( wizzi_job_mongodb_level_0_step_1_upload )
+
+	var repo = require('wizzi-repo')
+
+	# Test mongoDb config
+	#   mongodbUri 'mongodb://localhost:27017/test'
+	#   mongodbBaseFolder `c:/wizzifactory/users`
+	# example
+	#   folder `wizzijob`
+	#   of project `demo`
+	#   of user `stefi`
+	#   has uri
+	#     `db://stefi/demo/wizzijob`
+	#   and maps to internal mongodb filesystem path
+	#     `c:/wizzifactory/users/stefi/demo/wizzijob`
+
+	var testMongodbUri = 'mongodb://localhost:27017/test'
+	var testMongodbBaseFolder = 'c:/wizzifactory/users'
+	var demoUploadMongodbBaseFolder
+		_ path.join
+			@ testMongodbBaseFolder
+			@ 'stefi'
+			@ 'demo'
+
+	_ repo.mongoDbDocumentManager
+		@ testMongodbUri
+		f_cb_throw( docman )
+
+			_ heading2('uploadFolder')
+			_ docman.uploadFolder
+				_ path.join
+					@ __dirname
+					@ 'step_1'
+				_ path.join
+					@ demoUploadMongodbBaseFolder
+					@ 'wizzijob'
+					@ 'level_0'
+					@ 'step_1'
+				f_cb_throw( result )
+					_ printValue
+						@ 'result'
+						@ result
+					_ docman.close

@@ -1,0 +1,57 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source https://github.com/isaacs/once/blob/master/once.js
+	# license (ISC) 
+    
+	var wrappy = require('./wrappy')
+    set module.exports = wrappy(once)
+    set module.exports.strict = wrappy(onceStrict)
+    
+	set once.proto =
+        _ once
+            function 
+                _ Object.defineProperty
+                    @ Function.prototype
+                    @ 'once'
+                    { 
+                        @ value
+                            function 
+                                return once(this)
+                        @ configurable true
+                _ Object.defineProperty
+                    @ Function.prototype
+                    @ 'onceStrict'
+                    { 
+                        @ value
+                            function 
+                                return onceStrict(this)
+                        @ configurable true
+    
+	function once
+        param fn
+        var f
+            function 
+                if f.called
+                    return f.value
+                set f.called = true
+                return f.value = fn.apply(this, arguments)
+        set f.called = false
+        return f
+    
+	function onceStrict
+        param fn
+        var f
+            function 
+                if f.called
+                    throw 
+                        new Error
+                            @ f.onceError
+                set f.called = true
+                return f.value = fn.apply(this, arguments)
+        var name = (fn.name || 'Function wrapped with `once`')
+        set f.onceError = (name + " shouldn't be called more than once")
+        set f.called = false
+        return f

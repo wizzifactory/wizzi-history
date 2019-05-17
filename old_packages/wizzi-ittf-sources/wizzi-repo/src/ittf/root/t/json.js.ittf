@@ -1,0 +1,27 @@
+﻿$group
+
+	#
+		# Create an instance of the mongoDb Document class
+		# for managing files and directory
+	set md.jsonDirectoryTreeFromFilesystem = JsonFsImpl.directoryTree
+	+
+	#
+		# json virtual file service
+		# params
+		#   { options
+		#     { jsonFsData
+	set md.jsonfile
+		function jsonfile
+			{ options
+				{ jsonFsData
+			callback
+			var fsimpl
+				new JsonFsImpl
+					@ options.jsonFsData
+			_ fsimpl.open
+				f_cb( notUsed )
+					var dbfile = vfile(fsimpl)
+					return
+						_ callback
+							@ null
+							@ dbfile

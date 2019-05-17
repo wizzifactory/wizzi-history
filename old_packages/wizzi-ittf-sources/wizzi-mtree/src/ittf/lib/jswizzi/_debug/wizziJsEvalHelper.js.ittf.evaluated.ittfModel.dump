@@ -1,0 +1,260 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import util ids: undefined undefined
+    import path ids: undefined undefined
+    import assert ids: undefined undefined
+    var runnerServer = require('../../runtime/runnerServer').instance ids: undefined undefined
+    var ContextData = require('./ContextData') ids: undefined undefined
+    var WizziJsContext = null ids: undefined undefined
+    var interpolate = require('../ittf/ittfInterpolate') ids: undefined undefined
+    var types = require('../util/types') ids: undefined undefined
+    var work ids: undefined undefined
+      {  ids: undefined undefined
+    set work.lineSep = "__LS__" ids: undefined undefined
+    set work.textSep = "__TS__" ids: undefined undefined
+    #  ids: undefined undefined
+      # properties ids: undefined undefined
+      # wizziJsContext:Object ids: undefined undefined
+      # primaryModel:Object ids: undefined undefined
+      # loadContext:Object ids: undefined undefined
+      # callApi:Function ids: undefined undefined
+      # loadWizziModel:Function ids: undefined undefined
+    class WizziJsEvalHelper ids: undefined undefined
+      ctor  ids: undefined undefined
+        param wizziJsContext ids: undefined undefined
+        param primaryModel ids: undefined undefined
+        set this.wizziJsContext = wizziJsContext ids: undefined undefined
+        set this.primaryModel = primaryModel ids: undefined undefined
+        set this.loadContext = primaryModel.loadContext ids: undefined undefined
+        set this.textSep = work.textSep ids: undefined undefined
+        if runnerServer ids: undefined undefined
+          set this.callApi = runnerServer.callApi ids: undefined undefined
+          set this.loadWizziModel = runnerServer.loadWizziModel ids: undefined undefined
+      #  ids: undefined undefined
+        # node tree buildup method ids: undefined undefined
+        # supershort method name ids: undefined undefined
+        # means set the WizziJsContext state to IttfModelEvalContext ids: undefined undefined
+      m s ids: undefined undefined
+        param modelKey ids: undefined undefined
+        # log 'WizziJsEvalHelper called $.s(' + modelKey +')' ids: undefined undefined
+        var notUsed ids: undefined undefined
+          _ this.wizziJsContext.set_IttfModelEvalContext(modelKey) ids: undefined undefined
+        if notUsed && notUsed.__is_error ids: undefined undefined
+          return notUsed ids: undefined undefined
+      #  ids: undefined undefined
+        # node tree buildup method ids: undefined undefined
+        # supershort method name ids: undefined undefined
+        # means set the WizziJsContext state to NodeContext ids: undefined undefined
+      m n ids: undefined undefined
+        # log 'WizziJsEvalHelper called $.n()' ids: undefined undefined
+        _ this.wizziJsContext.set_NodeContext() ids: undefined undefined
+      #  ids: undefined undefined
+        # node tree buildup method ids: undefined undefined
+        # supershort method name ids: undefined undefined
+        # means set the WizziJsContext state to GlobalContext ids: undefined undefined
+      m g ids: undefined undefined
+        # log 'WizziJsEvalHelper called $.g()' ids: undefined undefined
+        _ this.wizziJsContext.set_GlobalContext() ids: undefined undefined
+      #  ids: undefined undefined
+        # node tree buildup method ids: undefined undefined
+        # supershort method name ids: undefined undefined
+        # means append a child node to a parent node ids: undefined undefined
+      m a ids: undefined undefined
+        param parent ids: undefined undefined
+        param node ids: undefined undefined
+        param line ids: undefined undefined
+        # log 'WizziJsEvalHelper called $.a(' + node.n + ',' + node.v + ')' ids: undefined undefined
+        _ assert(parent, "Error evalHelper. Parent undefined in add. At line " + line) ids: undefined undefined
+        set node.parent = parent ids: undefined undefined
+        if typeof (parent.childs) === 'undefined' ids: undefined undefined
+          set parent.childs = [] ids: undefined undefined
+        set node.childs = [] ids: undefined undefined
+        _ parent.childs.push(node) ids: undefined undefined
+      #  ids: undefined undefined
+        # Interpolate a templated node value ids: undefined undefined
+      m ip ids: undefined undefined
+        param modelKey ids: undefined undefined
+        param templatedValue ids: undefined undefined
+        param type ids: undefined undefined
+        param line ids: undefined undefined
+        param hasMacro ids: undefined undefined
+        var ret ids: undefined undefined
+        try  ids: undefined undefined
+          var save = this.wizziJsContext.get_currentIttfModelKey() ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ this.wizziJsContext.set_IttfModelEvalContext(modelKey, line) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            return notUsed ids: undefined undefined
+          # log ' *** WizziJsEvalHelper.ip templatedValue', templatedValue, 'modelKey', modelKey ids: undefined undefined
+          var ret ids: undefined undefined
+            _ interpolate(templatedValue, this.wizziJsContext, {delimiter: '${}'}) ids: undefined undefined
+          if ret && ret.__is_error ids: undefined undefined
+            return ret ids: undefined undefined
+          # log 'interpolated result', ret ids: undefined undefined
+          if hasMacro ids: undefined undefined
+            set ret = remacro(ret) ids: undefined undefined
+          if save === null ids: undefined undefined
+            _ this.wizziJsContext.set_NodeContext(modelKey) ids: undefined undefined
+          else  ids: undefined undefined
+            var notUsed ids: undefined undefined
+              _ this.wizziJsContext.set_IttfModelEvalContext(save) ids: undefined undefined
+            if notUsed && notUsed.__is_error ids: undefined undefined
+              return notUsed ids: undefined undefined
+        catch ex ids: undefined undefined
+          var ittfModelData = this.loadContext.getIttfModelData(modelKey) ids: undefined undefined
+          var callerIttfModelData = this.loadContext.getIttfModelData(ittfModelData.ittfModel.$mixerModelKey) ids: undefined undefined
+          var callerUri = callerIttfModelData ? callerIttfModelData.ittfDocumentUri : 'root model'; ids: undefined undefined
+          # log 'saved ip.currentIttfModelKey', save, 'ittfModelData.evalContext', ittfModelData.evalContext ids: undefined undefined
+          # 'values.' + util.inspect(this.wizziJsContext.getValues(), {depth: 2})) ids: undefined undefined
+          var exMessage = ex ? ex.message : 'not available' ids: undefined undefined
+          var exStack = ex ? ex.stack : 'not available' ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ 'Exception interpolating: ' + templatedValue + ', line:' + line + ', type:' + type + ', modelKey:' + modelKey + ', ittfModel uri: ' + ittfModelData.ittfDocumentUri + ', callerIttfModel uri: ' + callerUri + ', ex message: ' + exMessage + ', stack: ' + exStack ids: undefined undefined
+              @ null ids: undefined undefined
+              @ 'ip' ids: undefined undefined
+        var retObject ids: undefined undefined
+          _ types.objectify ids: undefined undefined
+            @ ret ids: undefined undefined
+            @ type ids: undefined undefined
+            {  ids: undefined undefined
+              @ row line ids: undefined undefined
+        if retObject && retObject.__is_error ids: undefined undefined
+          var ittfModelData = this.loadContext.getIttfModelData(modelKey) ids: undefined undefined
+          var error ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ 'Error interpolating: ' + templatedValue + ', line:' + line + ', ittfModel uri: ' + ittfModelData.ittfDocumentUri + ', callerIttfModel uri: ' + callerUri ids: undefined undefined
+              @ null ids: undefined undefined
+              @ 'ip' ids: undefined undefined
+          set error.inner = retObject ids: undefined undefined
+          return error ids: undefined undefined
+        else  ids: undefined undefined
+          return retObject ids: undefined undefined
+      m api ids: undefined undefined
+        if this.callApi ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.callApi.apply ids: undefined undefined
+              @ runnerServer ids: undefined undefined
+              @ arguments ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ 'A RunnerServer has not been started. You must create a wizzifile.js.' ids: undefined undefined
+              @ null ids: undefined undefined
+              @ 'api' ids: undefined undefined
+      m model ids: undefined undefined
+        if this.loadWizziModel ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.loadWizziModel.apply ids: undefined undefined
+              @ runnerServer ids: undefined undefined
+              @ arguments ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ this.error ids: undefined undefined
+              @ 'A wizzi.RunnerServer has not been started. You must create a wizzifile.js.' ids: undefined undefined
+              @ null ids: undefined undefined
+              @ 'model' ids: undefined undefined
+      #  ids: undefined undefined
+        # called by set_IttfModelEvalContext ids: undefined undefined
+        # called by WizziJsRunner ids: undefined undefined
+      m getIttfModelEvalContext ids: undefined undefined
+        param modelKey ids: undefined undefined
+        param line ids: undefined undefined
+        # retrieve the ittfModelData for the given modelKey ids: undefined undefined
+        # from the loadContext ids: undefined undefined
+        var ittfModelData = this.loadContext.getIttfModelData(modelKey) ids: undefined undefined
+        var evalContext ids: undefined undefined
+        if ittfModelData.evalContext != null ids: undefined undefined
+          # An evalContext object has already been created for this ittfModelData ids: undefined undefined
+          set evalContext = ittfModelData.evalContext ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ this._refreshEvalContext ids: undefined undefined
+              @ ittfModelData ids: undefined undefined
+              @ evalContext ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            return notUsed ids: undefined undefined
+        else  ids: undefined undefined
+          set evalContext = new ContextData(1, modelKey) ids: undefined undefined
+          # log 'WizziJsEvalHelper created evalContext for', modelKey, 'id', ittfModelData.ittfModel.id, ittfModelData.evalContext, ittfModelData.ittfDocumentUri ids: undefined undefined
+          _ evalContext.setValue ids: undefined undefined
+            @ '__dirname' ids: undefined undefined
+            @ path.dirname(ittfModelData.ittfDocumentUri) ids: undefined undefined
+          _ evalContext.setValue ids: undefined undefined
+            @ '__filename' ids: undefined undefined
+            @ ittfModelData.ittfDocumentUri ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ this._refreshEvalContext ids: undefined undefined
+              @ ittfModelData ids: undefined undefined
+              @ evalContext ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            return notUsed ids: undefined undefined
+          set ittfModelData.evalContext = evalContext ids: undefined undefined
+        return evalContext ids: undefined undefined
+      m _refreshEvalContext ids: undefined undefined
+        param ittfModelData ids: undefined undefined
+        param evalContext ids: undefined undefined
+        if ittfModelData.ittfModel.$params ids: undefined undefined
+          var args = ittfModelData.ittfModel.$args ids: undefined undefined
+          if args && args.indexOf('${') > -1 ids: undefined undefined
+            # mixin call arguments must be interpolated ids: undefined undefined
+              # ittfModelData.ittfModel.$mixerModelKey is the modelKey of the ids: undefined undefined
+              # calling node that mixed the ittfModelData.ittfModel ids: undefined undefined
+              # we must retrieve the calling node model context ids: undefined undefined
+            var callingNode_ModelContext ids: undefined undefined
+              _ this.getIttfModelEvalContext ids: undefined undefined
+                @ ittfModelData.ittfModel.$mixerModelKey ids: undefined undefined
+            if callingNode_ModelContext && callingNode_ModelContext.__is_error ids: undefined undefined
+              return callingNode_ModelContext ids: undefined undefined
+            try  ids: undefined undefined
+              if WizziJsContext == null ids: undefined undefined
+                set WizziJsContext = require('./wizziJsContext') ids: undefined undefined
+              var interpolateArgsContext = new WizziJsContext() ids: undefined undefined
+              _ interpolateArgsContext.setValues(this.wizziJsContext.globalContext.getSettableValues()) ids: undefined undefined
+              _ interpolateArgsContext.setValues(callingNode_ModelContext.getValues()) ids: undefined undefined
+              set args = interpolate(args, interpolateArgsContext, {delimiter: '${}'}) ids: undefined undefined
+              # log 'WizziJsEvalHelper interpolateArgs', ittfModelData.ittfModel.$args, args ids: undefined undefined
+            catch ex ids: undefined undefined
+              var callerIttfModelData = this.loadContext.getIttfModelData(ittfModelData.ittfModel.$mixerModelKey) ids: undefined undefined
+              var callerUri = callerIttfModelData ? callerIttfModelData.ittfDocumentUri : 'root model'; ids: undefined undefined
+              var exMessage = ex ? ex.message : 'not available' ids: undefined undefined
+              var exStack = ex ? ex.stack : 'not available' ids: undefined undefined
+              return  ids: undefined undefined
+                _ this.error ids: undefined undefined
+                  @ 'Exception interpolating args: ' + args + ', ittfModel uri: ' + ittfModelData.ittfDocumentUri + ', callerIttfModel uri: ' + callerUri + ', ex message: ' + exMessage + ', stack: ' + exStack ids: undefined undefined
+                  @ null ids: undefined undefined
+                  @ '_refreshEvalContext' ids: undefined undefined
+          var paramValues ids: undefined undefined
+            _ ittfModelData.ittfModel.getParamValues ids: undefined undefined
+              @ args ids: undefined undefined
+          if paramValues && paramValues.__is_error ids: undefined undefined
+            return paramValues ids: undefined undefined
+          foreach item in paramValues ids: undefined undefined
+            if item.isByRef ids: undefined undefined
+              var callingNode_ModelContext ids: undefined undefined
+                _ this.getIttfModelEvalContext ids: undefined undefined
+                  @ ittfModelData.ittfModel.$mixerModelKey ids: undefined undefined
+              if callingNode_ModelContext && callingNode_ModelContext.__is_error ids: undefined undefined
+                return callingNode_ModelContext ids: undefined undefined
+              _ evalContext.setValue ids: undefined undefined
+                @ item.name ids: undefined undefined
+                @ callingNode_ModelContext.getValue(item.name) ids: undefined undefined
+              set ittfModelData.byRefParams = (ittfModelData.byRefParams || []) ids: undefined undefined
+              _ ittfModelData.byRefParams.push ids: undefined undefined
+                @ item.name ids: undefined undefined
+            else  ids: undefined undefined
+              _ evalContext.setValue ids: undefined undefined
+                @ item.name ids: undefined undefined
+                @ item.value ids: undefined undefined
+      m error ids: undefined undefined
+        param message ids: undefined undefined
+        param extra ids: undefined undefined
+        param method ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+            @ __is_error true ids: undefined undefined
+            @ message message ids: undefined undefined
+            @ source 'lib/esprima/wizziJsEvalHelper/' + method ids: undefined undefined
+    function remacro ids: undefined undefined
+      param value ids: undefined undefined
+      return verify.replaceAll(value, "#{", "${") ids: undefined undefined
+    set module.exports = WizziJsEvalHelper ids: undefined undefined

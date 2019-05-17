@@ -1,0 +1,12 @@
+﻿$group
+
+	class FsStat
+		ctor
+			param fsitem
+			set this.fsitem = fsitem
+		
+		m isDirectory
+			return this.fsitem.kind == 0
+		
+		m isFile
+			return this.fsitem.kind == 1

@@ -1,0 +1,204 @@
+﻿module
+    kind jsfile
+
+	var uriparser = require('./uriparser')
+	var file = require('./file')
+	var repo = require('./repo')
+	
+	var md = module.exports = {}
+
+	var win32 = process.platform === 'win32'
+
+	set md.unixifyPath
+        function 
+            string path_string
+            if win32
+                return path_string.replace(/\\/g, '/')
+            else 
+                return path_string
+
+	set md.exists
+		function
+			string path_string
+			callback
+
+			_ uriparser
+				@ path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.exists(parsed, callback)
+					else
+						return file.exists(path_string, callback)
+
+	set md.isFile
+		function
+			string path_string
+			callback
+
+			_ uriparser
+				@ path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.isFile(parsed, callback)
+					else
+						return file.isFile(path_string, callback)
+
+	set md.isDirectory
+		function
+			string path_string
+			callback
+
+			_ uriparser
+				@ path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.isDirectory(parsed, callback)
+					else
+						return file.isDirectory(path_string, callback)
+
+	set md.read
+		function
+			string path_string
+			param options
+			param callback
+
+			if typeof(options) === 'function'
+				set callback = options, options = {}
+			if !options
+				set options =
+					{ 
+			
+			check_wz_callback( read )
+
+			_ uriparser
+				@ path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.read(parsed, options, callback)
+					else
+						return file.read(path_string, options, callback)
+
+	set md.readJSON
+		function
+			string path_string
+			param options
+			param callback
+
+			if typeof (options) === 'function'
+				set callback = options, options = {}
+			if !options
+				set options =
+					{ 
+			
+			check_wz_callback( readJSON )
+
+			_ md.read
+				@ path_string
+				@ options
+				f_cb( content )
+					try 
+						var result = JSON.parse(content)
+						return
+							_ callback
+								@ null
+								@ result
+					catch ex
+						r_cb_wz_err( JSONParseError, readJSON, ex  )
+							@ 'Unable to parse ' +  path_string + '. Message: ' + ex.message
+
+	set md.readXml
+		function
+			string path_string
+			param options
+			param callback
+
+			if typeof (options) === 'function'
+				set callback = options, options = {}
+			if !options
+				set options =
+					{ 
+			check_wz_callback( readXml )
+
+			r_cb_wz_err( NotImplementedYet, readXml )
+				@ 'Not implemented yet. Trying to read: ' + path_string
+
+	set md.getGlobbedFiles
+		function 
+			string globPattern
+			param options
+			param callback
+
+			if typeof (options) === 'function'
+				set callback = options, options = {}
+			if !options
+				set options =
+					{ 
+			check_wz_callback( getGlobbedFiles )
+
+			_ uriparser
+				@ globPattern
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.getGlobbedFiles(parsed, options, callback)
+					else
+						return file.getGlobbedFiles(globPattern, options, callback)
+
+	set md.write
+		function
+			string path_string
+			string content
+			param options
+			param callback
+
+			if typeof (options) === 'function'
+				set callback = options, options = {}
+			if !options
+				set options =
+					{ 
+			
+			check_wz_callback( write )
+
+			_ uriparser
+				@ path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.write(parsed, content, options, callback)
+					else
+						return file.write(path_string, content, options, callback)
+
+	set md.mkdir
+		function
+			string path_string
+			param mode
+			param callback
+
+			if typeof (mode) === 'function'
+				set callback = mode, mode = null
+			if typeof(callback) !== 'function'
+				throw new Error('wizzi-repo.fs.index.mkdir error. Missing callback parameter. Trying to read: ' + path_string)
+			
+			check_wz_callback( mkdir )
+			
+			_ uriparser
+				@ path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						# no mode param for repo.mkdir
+						return repo.mkdir(parsed, callback)
+					else
+						return file.mkdir(path_string, mode, callback)
+
+	set md.copy
+		function
+			string source_path_string
+			string dest_path_string
+			callback
+
+			_ uriparser
+				@ source_path_string
+				f_cb( parsed )
+					if parsed.storeKind === 'repo'
+						return repo.copy(parsed, dest_path_string, callback)
+					else
+						return file.copy(source_path_string, dest_path_string, callback)
+

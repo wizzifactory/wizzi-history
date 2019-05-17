@@ -1,0 +1,202 @@
+﻿$group
+    
+	vfile/m( getFolders, readdirSync, options )
+		set options
+			_ Object.assign
+				{
+				@ GET_FOLDERS_DEFAULTS
+				@ options || {}
+
+		$append async
+
+			# log 'wizzi-utils.vfile.getFolders', path_string, options
+			var that = this
+
+			function getItems
+				param callback
+				_ that.isDirectory
+					@ path_string
+					f_cb( isDirectory )
+						# log 'wizzi-utils.vfile.getFolders.isDirectory', isDirectory
+						if isDirectory
+							var folders
+								[ 
+							var relPath
+								[ 
+							_ that._appendFolders
+								@ path_string
+								@ folders
+								@ relPath
+								@ options
+								f_cb( notUsed )
+									# log 'wizzi-utils.vfile.getFolders.folders', folders
+									return
+										_ callback
+											@ null
+											@ folders
+						else
+							return
+								_ callback
+									@ null
+									[
+
+			_ getItems
+				f_cb( items )
+					# log 'wizzi-utils.vfile.getFiles.items', items, options.documentNames
+					if options.documentNames
+						_ async.map
+							@ items
+							function
+								param item
+								param callback
+								if item !== null
+									_ that.getFiles
+										@ item.fullPath
+										{
+											@ deep false
+										f_cb( files )
+											return 
+												_ callback
+													@ null
+													{ 
+														@ fullPath item.fullPath
+														@ relPath item.relPath
+														@ documents files
+								else
+									return 
+										_ callback
+											@ null
+											{ 
+												@ fullPath item.fullPath
+												@ relPath item.relPath
+
+							f_cb( itemsWithNames )
+								return
+									_ callback
+										@ null
+										@ itemsWithNames
+
+					else
+						return
+							_ callback
+								@ null
+								@ items
+
+		$append sync
+
+			var result
+			if this.isDirectory(path_string)
+				var folders
+                    [ 
+                var relPath
+                    [ 
+                _ this._appendFolders(path_string, folders, relPath, options)
+                set result = folders
+            else 
+                set result = []
+            
+			if options.documentNames
+				var 
+					decl resultWithFileNames
+						[ 
+					decl files
+                foreach item in result
+					set files = this.getFiles(item.fullPath, {deep: false })
+                    _ resultWithFileNames.push
+                        { 
+                            @ folderFullPath item.fullPath
+							@ folderRelPath item.relPath
+                            @ documents files
+                return resultWithFileNames
+			else
+				return result
+    
+	vfile/m( _appendFolders, readdirSync, folders, relPath, options )
+
+		$append async
+			var that = this
+			_ this.fsimpl.readdir
+				@ path_string
+				f_cb( dir )
+					# log 'wizzi-utils.vfile._appendFolders.dir', dir
+					_ async.map
+						@ dir
+						function
+							param item
+							param callback
+							var filePath = path.join(path_string, item)
+							_ that.isDirectory
+								@ filePath
+								f_cb( isDirectory )
+									# log 'wizzi-utils.vfile._appendFolders.isDirectory', filePath, isDirectory
+									if isDirectory
+										_ folders.push
+											{
+												@ fullPath filePath
+												@ relPath 
+													_ unixifyPath
+														_ path.join
+															_ relPath.join('/')
+															@ item
+									_ callback
+										@ null
+										@ ( isDirectory && options.deep ? item : null )
+						f_cb( items )
+							# log 'wizzi-utils.vfile._appendFolders.async.items, folders', items, folders
+							var len = items.length
+							function repeat
+								param index
+								if index == len
+									return 
+										_ callback
+											@ null
+								var item = items[index]
+								if item !== null
+									var filePath = path.join(path_string, item)
+									var newRelPath = relPath.slice(0)
+									_ newRelPath.push(item)
+									_ that._appendFolders
+										@ filePath
+										@ folders
+										@ newRelPath
+										@ options
+										f_cb( result )
+											return
+												_ repeat
+													@ index + 1
+								else
+									return
+										_ repeat
+											@ index + 1
+							_ repeat(0)
+		
+		$append sync
+			var dir = this.fsimpl.readdirSync(path_string)
+			foreach item in dir
+				var filePath = path.join(path_string, item)
+				if this.isDirectory(filePath)
+					if options.tFoldersOnly
+						if item.toLowerCase() === 't'
+							_ folders.push
+								{
+									@ fullPath filePath
+									@ relPath
+										_ unixifyPath
+											_ path.join
+												_ relPath.join('/')
+												@ item
+                            return 
+                    else
+						_ folders.push
+							{
+								@ fullPath filePath
+								@ relPath
+									_ unixifyPath
+										_ path.join
+											_ relPath.join('/')
+											@ item
+					if options.deep
+                        var newRelPath = relPath.slice(0)
+                        _ newRelPath.push(item)
+                        _ this._appendFolders(filePath, folders, newRelPath, options)
+	

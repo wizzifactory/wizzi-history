@@ -1,0 +1,197 @@
+﻿module 
+    kind jsfile
+
+	var StringWriter = require('../util/stringwriter')
+	var file = require('wizzi-utils').file
+	var verify = require('wizzi-utils').verify
+    var block = require('./block')
+    var interpolate = require('../util/interpolate')
+    var errors = require('../errors')
+    
+	class GenContext
+        ctor
+            { genconfig
+				{ options
+				{ pman
+					{ wizziFactory
+            #
+				if !verify.isObject(genconfig)
+					throw 
+						new Error('wizzi.artifact.GenContext: genconfig argument must be an Object')
+				if !verify.isObject(genconfig.options)
+					throw 
+						new Error('wizzi.artifact.GenContext: genconfig.options argument must be an Object')
+            log 'wizzi.artifact.genContext.pman.globalContext', genconfig.pman.globalContext()
+			var globalContext
+				_ Object.assign
+					{
+					@ genconfig.options.data || {}
+					_ genconfig.pman.globalContext()
+			set this.model = genconfig.model
+            set this.srcPath = genconfig.srcPath
+            set this.pman = genconfig.pman
+			set this.wizziFactory = genconfig.pman.wizziFactory
+            set this.block = new block(genconfig.options)
+            set this.values = globalContext
+			set this.writeFilePath = null
+			set this.isEmpty = true
+			set this.artifactGenerationErrors = []
+    
+		m forceIndent
+            param value
+            return this.block.forceIndent(value)
+    
+		m indent
+            param value
+            _ this.block.indent(value)
+    
+		m deindent
+            param value
+            _ this.block.deindent(value)
+    
+		m a
+            param name
+            param value
+            set this.values[name] = value
+    
+		m g
+            param name
+            return this.values[name]
+    
+		m r
+            param name
+            if this.values[name]
+                set delete (this.values[name])
+    
+		m w
+            param text
+			if this.writeFilePath != null
+				throw new Error('Cannot write when a file write has been requested: ' + this.writeFilePath)
+            if verify.isString(text)
+                _ this.block.w
+                    iif text.indexOf('{') > -1
+                        then 
+                            _ interpolate
+                                @ text
+                                @ this.values
+                        else text
+            else
+                _ this.block.w('')
+			set this.isEmpty = false
+    
+		m write
+            param text
+			if this.writeFilePath != null
+				throw new Error('Cannot write when a file write has been requested: ' + this.writeFilePath)
+            if !verify.isString(text)
+                return 
+            _ this.block.write
+                iif text.indexOf('{') > -1
+                    then 
+                        _ interpolate
+                            @ text
+                            @ this.values
+                    else text
+			set this.isEmpty = false
+    
+		m writeAligned
+            param text
+			if this.writeFilePath != null
+				throw new Error('Cannot write when a file write has been requested: ' + this.writeFilePath)
+            if !verify.isString(text)
+                return 
+			foreach line in text.split('\n')
+				if i < i_len - 1 || line.length > 0
+					_ this.block.w
+						iif line.indexOf('{') > -1
+							then 
+								_ interpolate
+									@ line
+									@ this.values
+							else line
+			set this.isEmpty = false
+
+		m appendFile
+            param filePath
+            _ this.block.appendFile
+                _ interpolate
+                    @ filePath
+                    @ this.values
+			set this.isEmpty = false
+
+		m writeFile
+            param filePath
+			if this.isEmpty == false
+				throw new Error('Cannot write a file when text has already been added : ' + this.getContent())
+			set this.writeFilePath = filePath
+    
+		m toStream
+            param stream
+			if this.writeFilePath != null
+				# log 'wizzi.artifact.genContext.toStream. this.writeFilePath', this.writeFilePath
+				_ stream.write
+					_ file.read
+						@ this.writeFilePath
+            else
+				_ this.block.toStream(stream)
+    
+		m getContent
+			if this.writeFilePath != null
+				return
+					_ file.read
+						@ this.writeFilePath
+            else
+				var sw = new StringWriter()
+				_ this.block.toStream(sw)
+				return sw.toString()
+    
+		m getContentInLine
+            return 
+                _ verify.replaceAll
+                    _ this.getContent()
+                    @ '\n'
+                    @ '__1_2_3__'
+    
+		m error
+            param message
+            param node
+            return 
+                new errors.NodeError(message, node)
+    
+		m artifactGenerationError
+            param message
+            param location
+            param node
+			log 'wizzi.artifact.genContext.artifactGenerationError.message', message
+			var error
+				new errors.ArtifactGenerationError(message, location, node)
+			_ this.artifactGenerationErrors.push(error)
+			return error
+    
+		m terminate
+            set delete this.pman
+            _ this.block.terminate()
+    
+		m hydrate
+            param block
+            param options
+            set this.block = new block(options)
+            _ this.block.hydrate
+                @ block.lines
+                @ options
+    
+		m toStringFromJSON
+            param block
+            param options
+            if !block || !block.lines
+                return 'NO TEXT'
+            var gw
+                new GenContext
+                    { 
+                        @ options options
+            _ gw.block.hydrate
+                @ block.lines
+                @ options
+            return gw.getContent()
+
+    set module.exports = GenContext

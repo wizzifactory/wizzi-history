@@ -1,0 +1,83 @@
+﻿$group
+
+	@ getIttfFiles
+		function
+			param folderPath
+			set folderPath = this.normalize(folderPath)
+			var files
+				_ file.getGlobbedFiles
+					@ folderPath + "/**/*.ittf"
+			var wizziBaseUriLength = this.normalize(config.wizziBasePath).length
+			var parts, relFolder, ret = []
+			foreach item in files
+				set relFolder = path.dirname(item).length > folderPath.length ? path.dirname(item).substr(folderPath.length + 1) : ''
+				set parts = path.basename(item).split('.')
+				_ ret.push
+					{
+						@ baseName path.basename(item)
+						@ displayName (relFolder.length > 0 ? relFolder + '/' + path.basename(item) : path.basename(item))
+						@ baseFolder folderPath
+						@ relFolder relFolder
+						@ fullPath item
+						@ uri item.substr(wizziBaseUriLength)
+						@ hash hashEncrypt(item)
+						@ schema parts[parts.length-2]
+						@ isFragment item.indexOf('/t/') > -1 
+						@ hashTest hashDecrypt(hashEncrypt(item))
+			return ret
+
+	@ getIttfFilePathByHash
+		function
+			param hash
+			return hashDecrypt(hash)
+
+	@ getIttfFileContentByHash
+		function
+			param hash
+			var filePath = hashDecrypt(hash)
+			if file.isFile(filePath)
+				return
+					{
+						@ ok true
+						@ content
+							_ file.read
+								@ filePath
+			else
+				return
+					{
+						@ ok false
+						@ message 'Ittf document ' + filePath + ' not found'
+
+	@ getSchemaByIttfDocumentUri
+		function
+			param ittfDocumentUri
+			var ss = ittfDocumentUri.split('.')
+			return ss[ss.length-2]
+
+	@ getFolders
+		function 
+			param folderPath
+			var ret = []
+			var dir = fs.readdirSync(folderPath)
+			foreach name in dir
+				var target = folderPath + '/' + name
+				var stats = fs.statSync(target)
+				if stats.isDirectory()
+					_ ret.push
+						{
+							@ name name
+							@ fullPath target
+			return ret
+
+	@ joinPathFromArray
+		function
+			param segments
+			var ret = segments[0]
+			for var i=1; i<segments.length; i++
+				set ret
+					_ path.join
+						@ ret
+						@ segments[i]
+			return ret
+
+

@@ -1,0 +1,49 @@
+﻿module 
+    kind jsfile
+    
+	var path = require('path')
+	var file = require('../fs/file')
+    
+	var md
+        set module.exports =
+            { 
+	
+	# params
+	#   string callerFullPath
+	#   string name
+	set md.findFragment
+        function 
+            param callerFullPath
+			param fragmentName
+			var dirname = path.dirname(callerFullPath)
+			var ss = callerFullPath.split('.')
+			var schema = ss[ss.length-2]
+			# first search not in t-folders
+			var searchPath 
+				_ path.join
+					@ dirname
+					@ fragmentName + '.' + schema + '.ittf'
+			var result
+				_ tryExists
+					@ searchPath
+					@ schema
+			if result.found
+				return result.ittfDocumentUri
+			else 
+				# now search in t-folders
+				set result
+					_ recurseTFolder
+						@ dirname
+						@ fragmentName + '.' + schema + '.ittf'
+						@ schema
+				# log 'analizer recurseTFolder.result', result
+				if result.found
+					return result.ittfDocumentUri
+				else 
+					return
+						{
+							@ __is_error true
+							@ message 'Cannot resolve fragment ' + fragmentName + ' from caller path ' + callerFullPath
+    
+	$include ittfFinder/tryExists
+	$include ittfFinder/recurseTFolder

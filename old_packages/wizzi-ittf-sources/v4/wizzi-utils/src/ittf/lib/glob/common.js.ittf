@@ -1,0 +1,237 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source: https://github.com/isaacs/node-glob/blob/master/common.js
+	# license (ISC) 
+
+    set exports.alphasort = alphasort
+    set exports.alphasorti = alphasorti
+    set exports.setopts = setopts
+    set exports.ownProp = ownProp
+    set exports.makeAbs = makeAbs
+    set exports.finish = finish
+    set exports.mark = mark
+    set exports.isIgnored = isIgnored
+    set exports.childrenIgnored = childrenIgnored
+    
+	function ownProp
+        param obj
+        param field
+        return Object.prototype.hasOwnProperty.call(obj, field)
+    var path = require("path")
+    var minimatch = require("./minimatch")
+    var isAbsolute = require("./path-is-absolute")
+    var Minimatch = minimatch.Minimatch
+    
+	function alphasorti
+        param a
+        param b
+        return 
+            _ a.toLowerCase()
+                ._ localeCompare
+                    _ b.toLowerCase()
+    
+	function alphasort
+        param a
+        param b
+        return a.localeCompare(b)
+    
+	function setupIgnores
+        param self
+        param options
+        set self.ignore = (options.ignore || [])
+        if ! (Array.isArray(self.ignore))
+            set self.ignore = [self.ignore]
+        if self.ignore.length
+            set self.ignore = self.ignore.map(ignoreMap)
+    
+	function ignoreMap
+        param pattern
+        var gmatcher = null
+        if pattern.slice(- (3)) === '/**'
+            var gpattern = pattern.replace(/(\/\*\*)+$/, '')
+            set gmatcher = new Minimatch(gpattern, {dot: true})
+        return 
+            { 
+                @ matcher
+                    new Minimatch
+                        @ pattern
+                        { 
+                            @ dot true
+                @ gmatcher gmatcher
+    
+	function setopts
+        param self
+        param pattern
+        param options
+        if ! (options)
+            set options =
+                { 
+        if (options.matchBase && (- (1) === pattern.indexOf("/")))
+            if options.noglobstar
+                throw 
+                    new Error("base matching requires globstar")
+            set pattern = ("**/" + pattern)
+        set self.silent = ! (! (options.silent))
+        set self.pattern = pattern
+        set self.strict = options.strict !== false
+        set self.realpath = ! (! (options.realpath))
+        set self.realpathCache = (options.realpathCache || Object.create(null))
+        set self.follow = ! (! (options.follow))
+        set self.dot = ! (! (options.dot))
+        set self.mark = ! (! (options.mark))
+        set self.nodir = ! (! (options.nodir))
+        if self.nodir
+            set self.mark = true
+        set self.sync = ! (! (options.sync))
+        set self.nounique = ! (! (options.nounique))
+        set self.nonull = ! (! (options.nonull))
+        set self.nosort = ! (! (options.nosort))
+        set self.nocase = ! (! (options.nocase))
+        set self.stat = ! (! (options.stat))
+        set self.noprocess = ! (! (options.noprocess))
+        set self.absolute = ! (! (options.absolute))
+        set self.maxLength = (options.maxLength || Infinity)
+        set self.cache = (options.cache || Object.create(null))
+        set self.statCache = (options.statCache || Object.create(null))
+        set self.symlinks = (options.symlinks || Object.create(null))
+        _ setupIgnores(self, options)
+        set self.changedCwd = false
+        var cwd = process.cwd()
+        if ! (ownProp(options, "cwd"))
+            set self.cwd = cwd
+        else 
+            set self.cwd = path.resolve(options.cwd)
+            set self.changedCwd = self.cwd !== cwd
+        set self.root = (options.root || path.resolve(self.cwd, "/"))
+        set self.root = path.resolve(self.root)
+        if process.platform === "win32"
+            set self.root = self.root.replace(/\\/g, "/")
+        set self.cwdAbs = isAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd)
+        if process.platform === "win32"
+            set self.cwdAbs = self.cwdAbs.replace(/\\/g, "/")
+        set self.nomount = ! (! (options.nomount))
+        set options.nonegate = true
+        set options.nocomment = true
+        set self.minimatch = new Minimatch(pattern, options)
+        set self.options = self.minimatch.options
+    
+	function finish
+        param self
+        
+		var nou = self.nounique
+        
+		var all
+            iif nou
+                then 
+                    [ 
+                else 
+                    _ Object.create(null)
+        
+		for var i = 0, l = self.matches.length; i < l; i++
+            var matches = self.matches[i]
+            if !matches || Object.keys(matches).length === 0
+                if self.nonull
+                    var literal = self.minimatch.globSet[i]
+                    if nou
+                        _ all.push(literal)
+                    else 
+                        set all[literal] = true
+            else 
+                var m = Object.keys(matches)
+                if nou
+                    _ all.push.apply(all, m)
+                else 
+                    _ m.forEach
+                        function 
+                            param m
+                            set all[m] = true
+        if !nou
+            set all = Object.keys(all)
+        
+		if !self.nosort
+            set all = all.sort(self.nocase ? alphasorti : alphasort)
+        
+		if self.mark
+            for var i = 0; i < all.length; i++
+                set all[i] = self._mark(all[i])
+            if self.nodir
+                set all =
+                    _ all.filter
+                        function 
+                            param e
+                            var notDir = ! (/\/$/.test(e))
+                            var c = (self.cache[e] || self.cache[makeAbs(self, e)])
+                            if notDir && c
+                                set notDir = ((c !== 'DIR') && ! (Array.isArray(c)))
+                            return notDir
+        
+		if self.ignore.length
+            set all =
+                _ all.filter
+                    function 
+                        param m
+                        return ! (isIgnored(self, m))
+        
+		set self.found = all
+    
+	function mark
+        param self
+        param p
+        var abs = makeAbs(self, p)
+        var c = self.cache[abs]
+        var m = p
+        if c
+            var isDir = ((c === 'DIR') || Array.isArray(c))
+            var slash = p.slice(- (1)) === '/'
+            if isDir && ! (slash)
+                set m += '/'
+            elif ! (isDir) && slash
+                set m = m.slice(0, - (1))
+            if m !== p
+                var mabs = makeAbs(self, m)
+                set self.statCache[mabs] = self.statCache[abs]
+                set self.cache[mabs] = self.cache[abs]
+        return m
+    
+	function makeAbs
+        param self
+        param f
+        var abs = f
+        if f.charAt(0) === '/'
+            set abs = path.join(self.root, f)
+        elif (isAbsolute(f) || (f === ''))
+            set abs = f
+        elif self.changedCwd
+            set abs = path.resolve(self.cwd, f)
+        else 
+            set abs = path.resolve(f)
+        if process.platform === 'win32'
+            set abs = abs.replace(/\\/g, '/')
+		# log '***** wizzi-utils.glob.common.makeAbs.abs', abs
+        return abs
+    
+	function isIgnored
+        param self
+        param path
+        if ! (self.ignore.length)
+            return false
+        return 
+            _ self.ignore.some
+                function 
+                    param item
+                    return ( item.matcher.match(path) || !!(item.gmatcher && item.gmatcher.match(path)) )
+    
+	function childrenIgnored
+        param self
+        param path
+        
+		if !self.ignore.length
+            return false
+        return 
+            _ self.ignore.some
+                function 
+                    param item
+                    return !!(item.gmatcher && item.gmatcher.match(path))

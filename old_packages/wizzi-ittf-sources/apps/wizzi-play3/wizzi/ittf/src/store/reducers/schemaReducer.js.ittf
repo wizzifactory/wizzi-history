@@ -1,0 +1,96 @@
+﻿module 
+    kind react
+	+
+	import_rsf_actions( GET_SCHEMAS )
+	import_rsf_actions( GET_SCHEMA )
+	import_rsf_actions( GEN_WFSCHEMA )
+	import
+		@ GET_ITTF_REQUEST
+		from '../actions'
+	+
+	const schemaInitialState
+		{
+			@ items []
+			@ selectedSchemaUri null
+			@ ittfDocument null
+			@ jsonDoc null
+			@ factory null
+			@ model null
+			@ isLoading false
+			@ error null
+			@ isGenerating false
+			@ generationError null
+	+
+	r( schema, schemaInitialState )
+	
+		c( GET_SCHEMAS_REQUEST
+			{
+				@ ...state
+				@ isLoading true
+		
+		c( GET_SCHEMAS_SUCCESS
+			{
+				@ ...state
+				@ items action.payload.schemas
+				@ isLoading false
+				@ error null
+
+		c( GET_SCHEMAS_FAILURE
+			{
+				@ ...state
+				@ items []
+				@ isLoading false
+				@ error action.payload.error
+
+		c( GET_SCHEMA_REQUEST
+			{
+				@ ...state
+				@ isLoading true
+
+		c( GET_SCHEMA_SUCCESS
+			{
+				@ ...state
+				@ selectedSchemaUri action.payload.uri
+				@ ittfDocument action.payload.ittfDocument
+				@ jsonDoc action.payload.jsonDoc
+				@ factory action.payload.factory
+				@ model action.payload.model
+				@ isLoading false
+
+		c( GET_SCHEMA_FAILURE
+			{
+				@ ...state
+				@ selectedSchemaUri null
+				@ ittfDocument null
+				@ jsonDoc null
+				@ factory null
+				@ model null
+				@ isLoading false
+				@ error action.payload.error
+
+		c( GEN_WFSCHEMA_REQUEST
+			{
+				@ ...state
+				@ isGenerating true
+		
+		c( GEN_WFSCHEMA_SUCCESS
+			{
+				@ ...state
+				@ generationResult action.payload.result
+				@ isGenerating false
+				@ generationError null
+
+		c( GEN_WFSCHEMA_FAILURE
+			{
+				@ ...state
+				@ generationResult null
+				@ isGenerating false
+				@ generationError action.payload.error
+
+		c( GET_ITTF_REQUEST
+			{
+				@ ...state
+				@ generationResult null
+
+
+	export default schemaReducer

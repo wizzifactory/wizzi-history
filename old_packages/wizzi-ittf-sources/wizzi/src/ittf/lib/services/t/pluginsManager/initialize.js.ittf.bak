@@ -1,0 +1,83 @@
+﻿$group
+
+	#
+		# { options
+		#   string pluginsBaseFolder
+		#     default process.cwd()
+		#   [ items
+		#     required
+		#     string pluginName
+		# }
+	m initialize
+		{ options
+			[ items
+				optional
+		callback
+		
+		# log 'wizzi.pluginsManager.initialize.options', options
+		var itemsOptions = options.items
+		if typeof(itemsOptions) === 'undefined' || itemsOptions == null
+			set options.items = []
+		
+		var that = this
+		_ this.loadPlugins
+			@ options
+			f_cb( plugins )
+				function register
+					param i
+					if i >= plugins.length
+						return
+							_ callback
+								@ null
+								@ that
+					var plugin = plugins[i]
+					_ that.registerFactoryPlugin
+						@ plugin
+						f_cb( notUsed )
+							return register(++i)
+				_ register(0)
+
+	m loadPlugins
+		param options
+		param callback
+		+
+		var itemsOptions = options.items
+		var pluginsBaseFolder = options.pluginsBaseFolder || process.cwd()
+		# log 'pluginsBaseFolder', pluginsBaseFolder
+		var packagePathCache = this.packagePathCache
+		+
+		function resolveNext
+            param i
+            if i >= itemsOptions.length
+				# log 'itemsOptions', itemsOptions
+                return callback(null, itemsOptions)
+            var plugin = itemsOptions[i]
+            if typeof (plugin) === "string"
+                set plugin = itemsOptions[i] = {packagePath: plugin}
+            if plugin.hasOwnProperty("packagePath") && !(plugin.hasOwnProperty("setup"))
+                return 
+					_ resolveModule
+						@ pluginsBaseFolder
+						@ plugin.packagePath
+						function
+							param err
+							param moduleObject
+							if err
+								return callback(err)
+							_ Object.keys(moduleObject)
+								._ forEach
+									function 
+										param key
+										if !plugin.hasOwnProperty(key)
+											set plugin[key] = moduleObject[key]
+											# log 'plugin key', key
+							set plugin.packagePath = moduleObject.packagePath
+							return resolveNext(++i)
+            else
+				return resolveNext(++i)
+        
+		_ resolveNext(0)
+		
+		$include ./resolve-module
+		$include ./resolve-package
+

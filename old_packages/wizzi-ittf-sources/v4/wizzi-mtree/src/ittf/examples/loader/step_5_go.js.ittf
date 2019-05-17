@@ -1,0 +1,74 @@
+﻿example( loader_evaluator, 5 )
+
+	# 
+		# EXAMPLE: evaluator
+
+	var mocks = require('../../tests/loader/mocks/misc')
+	var MTreeBrickProvider = require('../../lib/loader/mTreeBrickProvider')
+	var mixer = require('../../lib/loader/mixer')
+	var appender = require('../../lib/loader/appender')
+	var evaluator = require('../../lib/loader/evaluator')
+
+	var
+		decl store = new mocks.IttfDocumentStore()
+		decl evaluatedModel
+		decl node
+
+	_ store.init
+		{
+			@ storeKind 'filesystem'
+		f_cb_throw( notUsed )
+
+			var loadContext
+				{
+					@ mTreeBuildUpContext
+						{
+					@ productionContext mocks.ProductionContext
+					@ __ittfDocumentStore store
+
+			_ exec( 'evaluate_1' )
+
+			function exec
+				param name
+		
+				var source
+					_ path.join
+						@ __dirname
+						@ 'step_5'
+						@ name + '.sample.ittf'
+
+				var sourceContent
+					_ file.read
+						@ source
+
+				_ MTreeBrickProvider.createFromUri
+					@ source
+					@ loadContext
+					f_cb_throw( provider )
+						var mTree = provider.getPrimaryMTreeBrick()
+						_ mixer
+							@ mTree
+							@ provider
+							f_cb_throw( mixedModel )
+								_ appender
+									@ mixedModel
+									f_cb_throw( appendedModel )
+										_ evaluator
+											@ appendedModel
+											@ loadContext
+											f_cb_throw( result )
+												set evaluatedModel = result
+												_ printValue
+													@ name + ' source'
+													@ sourceContent
+													@ 'dashes'
+
+												_ printValue
+													@ name + ' toIttf'
+													@ evaluatedModel.toIttf()
+													@ 'dashes'
+
+												_ printObject
+													@ name + ' evaluatedModel'
+													@ evaluatedModel
+													@ 'dashes'

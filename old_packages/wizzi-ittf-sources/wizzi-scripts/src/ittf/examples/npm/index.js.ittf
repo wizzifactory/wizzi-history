@@ -1,0 +1,56 @@
+﻿module
+	kind jsfile
+	import path
+	import util
+
+	var packageIndex = require('../../index')
+	var manager = new packageIndex.Manager()
+
+	# _ node
+	_ npm_ps
+
+	function npm_ps
+		var psOptions1
+			{
+				@ scriptPath
+					_ path.join
+						@ __dirname
+						@ 'packages'
+						@ 'sample1'
+						@ 'sample1.ps1'
+		_ manager.powershellExec
+			@ psOptions1
+			f_cb_test()
+	
+	function npm
+		var npmOptions1
+			{
+				@ command 'npm'
+				[ args
+					@ 'install'
+				@ cwd
+					_ path.join
+						@ __dirname
+						@ 'packages'
+						@ 'sample1'
+
+		_ manager.spawnExec
+			@ npmOptions1
+			f_cb_test()
+
+	function node
+		var nodeOptions1
+			{
+				@ command 'node'
+				[ args
+					@ 'sample1.js'
+					@ 'Stefi'
+				@ cwd
+					_ path.join
+						@ __dirname
+						@ 'packages'
+						@ 'nodesample1'
+
+		_ manager.spawnExec
+			@ nodeOptions1
+			f_cb_test()

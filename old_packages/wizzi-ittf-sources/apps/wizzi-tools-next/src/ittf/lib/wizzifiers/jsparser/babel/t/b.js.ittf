@@ -1,0 +1,10 @@
+﻿$group
+	$params name
+
+	log 'node.${name}', node.${name}
+
+	if !!node.${name} == true
+		_ ret.children.push
+			{
+				@ tag '${name}'
+				[ children

@@ -1,0 +1,121 @@
+﻿$group
+
+	@ dispatchCreateRepoProject
+		=>
+			param userId
+			param projectId
+			log 'dispatchCreateRepoProject', userId, projectId
+			_ dispatch
+				_ createRepoProject
+					@ userId
+					@ projectId
+
+	@ dispatchCreateRepoFolder
+		=>
+			param userId
+			param projectId
+			param folderBasePath
+			param folderName
+			log 'dispatchCreateRepoFolder', userId, projectId, folderBasePath, folderName
+			const fpath = verify.isEmpty(folderBasePath) ? folderName : folderBasePath + '/' + folderName
+			_ dispatch
+				_ createRepoFolder
+					@ userId
+					@ projectId
+					@ fpath
+
+	@ dispatchCreateRepoDocument
+		=>
+			param userId
+			param projectId
+			param folderBasePath
+			param documentName
+			log 'dispatchCreateRepoDocument', userId, projectId, folderBasePath, documentName
+			const fpath = verify.isEmpty(folderBasePath) ? documentName : folderBasePath + '/' + documentName
+			_ dispatch
+				_ createRepoDocument
+					@ userId
+					@ projectId
+					@ fpath
+
+	@ dispatchDuplicateFsItem
+		=>
+			param kind
+			param fullPath
+			param newName
+			log 'dispatchDuplicateFsItem', kind, fullPath, newName
+			_ dispatch
+				_ duplicateFsItem
+					@ kind
+					@ fullPath
+					@ newName
+
+	@ dispatchRenameFsItem
+		=>
+			param kind
+			param fullPath
+			param newName
+			log 'dispatchRenameFsItem', kind, fullPath, newName
+			_ dispatch
+				_ renameFsItem
+					@ kind
+					@ fullPath
+					@ newName
+
+	@ dispatchDeleteBatch
+		=>
+			param currentUserId
+			param currentProjectId
+			param currentItemPath
+			param selectedFsItems
+			_ alert('Execute dispatchDeleteBatch ' + JSON.stringify(selectedFsItems, null, 2))
+			_ dispatch
+				_ deleteRepoBatch
+					@ currentUserId
+					@ currentProjectId
+					@ currentItemPath
+					@ selectedFsItems
+									
+	@ dispatchCopyFsItems
+		=>
+			param sourcePath
+			param selectedFsItems
+			_ dispatch
+				_ copyCutRepoFsItems
+					@ 'copy'
+					@ sourcePath
+					@ selectedFsItems
+
+	@ dispatchCutFsItems
+		=>
+			param sourcePath
+			param selectedFsItems
+			_ dispatch
+				_ copyCutRepoFsItems
+					@ 'cut'
+					@ sourcePath
+					@ selectedFsItems
+
+	@ dispatchCancelCopyCutFsItems
+		=>
+			_ dispatch
+				_ copyCutRepoFsItems
+					@ ''
+					@ ''
+					@ []
+
+	@ dispatchPasteFsItems
+		=>
+			param copy_cut
+			param dest_userId
+			param dest_projectId
+			param dest_folderBasePath
+			param selectedFsItems
+			_ alert('ready to dispatch pasteRepoFsItems: ' + copy_cut + '/' + dest_userId + '/' + dest_projectId + '/' + dest_folderBasePath + '/' + JSON.stringify(selectedFsItems))
+			_ dispatch
+				_ pasteRepoFsItems
+					@ copy_cut
+					@ dest_userId
+					@ dest_projectId
+					@ dest_folderBasePath
+					@ selectedFsItems

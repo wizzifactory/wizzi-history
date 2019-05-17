@@ -1,0 +1,121 @@
+﻿r-component( Menus
+	
+	$append imports
+		import Button from '@material-ui/core/Button'
+		import Menu from '@material-ui/core/Menu'
+		import MenuItem from '@material-ui/core/MenuItem'
+		import ContextMenu from './dialogs/ContextMenu'
+
+	style
+	
+	state
+		@ anchorEl null
+		@ dynAnchorEl null
+		@ dynMenuItems []
+        
+	=> handleClick
+		param event
+		_ event.preventDefault
+		_ this.setState
+			{ 
+				@ anchorEl event.currentTarget
+	
+	=> handleDynClick
+		param event
+		_ event.preventDefault
+		const that = this
+		_ this.setState
+			{ 
+				@ dynAnchorEl event.currentTarget
+				@ dynMenuItems
+					[
+						{
+							@ label 'copy'
+							@ onClick
+								=>
+									_ alert('copy')
+									_ that.handleDynClose
+						{
+							@ label 'cut'
+							@ onClick
+								=>
+									_ alert('cut')
+									_ that.handleDynClose
+						{
+							@ label 'duplicate'
+							@ onClick
+								=>
+									_ alert('duplicate')
+									_ that.handleDynClose
+						{
+							@ label 'delete'
+							@ onClick
+								=>
+									_ alert('delete')
+									_ that.handleDynClose
+
+	=> handleClose
+		_ this.setState
+			{ 
+				@ anchorEl null
+	
+	=> handleDynClose
+		_ this.setState
+			{ 
+				@ dynAnchorEl null
+
+	render
+		const {anchorEl, dynAnchorEl, dynMenuItems} = this.state
+		return 
+			div 
+				< Button 
+					@ aria-owns
+						iif anchorEl
+							then 'simple-menu'
+							else null
+					@ aria-haspopup "true"
+					@ onContextMenu {this.handleClick}
+					+ Context Menu
+				< Button 
+					@ aria-owns
+						iif anchorEl
+							then 'simple-menu'
+							else null
+					@ aria-haspopup "true"
+					@ onClick {this.handleClick}
+					+ Click Menu
+				< Button 
+					@ aria-owns
+						iif anchorEl
+							then 'dynamic-menu'
+							else null
+					@ aria-haspopup "true"
+					@ onContextMenu {this.handleDynClick}
+					+ Dynamic context Menu
+				< Button 
+					@ aria-owns
+						iif anchorEl
+							then 'dynamic-menu'
+							else null
+					@ aria-haspopup "true"
+					@ onContextMenu {this.handleDynClick}
+					+ Dynamic context Menu
+				< Menu 
+					@ id "simple-menu"
+					@ anchorEl {anchorEl}
+					@ open {Boolean(anchorEl)}
+					@ onClose {this.handleClose}
+					< MenuItem 
+						@ onClick {this.handleClose}
+						+ Profile
+					< MenuItem 
+						@ onClick {this.handleClose}
+						+ My account
+					< MenuItem 
+						@ onClick {this.handleClose}
+						+ Logout
+				< ContextMenu
+					@ id "dynamic-menu"
+					@ anchorEl {dynAnchorEl}
+					@ items {dynMenuItems}
+					@ onClose {this.handleDynClose}

@@ -1,0 +1,52 @@
+﻿base_test( asIsLoader )
+
+	$append imports
+		var file = require('../../lib/fs/file')
+		var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+		var ittfHtmlPrettifier = require('../../lib/prettifiers/ittfHtmlPrettifier')
+
+	it-async should load an ittf tree as is and prettify it
+
+		_ ittfMTreeEx.createFrom
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'basic.tests.ittf'
+			{
+			f_cb_test( result )
+				# log? result
+				tobe_object( result )
+					var html_lines
+						_ ittfHtmlPrettifier
+							@ result
+							{
+					# log 'html_lines', html_lines
+					tobe_object( html_lines )
+					tobe_array( html_lines.prettyLines, 1 )
+					_ file.write
+						_ path.join
+							@ __dirname
+							@ 'outputs'
+							@ 'basic.tests.pretty.html'
+						@ html_lines.prettyLines.join('\n')
+					_ done()
+
+	it-async should load an ittf tree (by filepath ) as is and prettify it
+
+		var html_lines
+			_ ittfHtmlPrettifier
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'basic.tests.ittf'
+				{
+		# log 'html_lines', html_lines
+		tobe_object( html_lines )
+		tobe_array( html_lines.prettyLines, 1 )
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'outputs'
+				@ 'basic.tests.prettybyfile.html'
+			@ html_lines.prettyLines.join('\n')
+		_ done()

@@ -1,0 +1,150 @@
+﻿module
+	kind jsfile
+
+	import util
+	import path
+	var file = require('wizzi-utils').file
+	var verify = require('wizzi-utils').verify
+	var parser = require("@babel/parser")
+	var ittfwriter = require("../../../util/ittfwriter");
+	var cleanBabel = require('./cleanBabel')
+
+	var format
+		function
+			param parent
+			param ast
+			param options
+			if !ast
+				throw new Error('missing ast. parent is: ' + util.inspect(parent, { depth: 2 }))
+			if parent === null
+				if options.starter
+					set options.starter = false
+				elif options.returnText
+					# ok
+				else
+					_ showstack(options)
+					throw new Error('parent is null.' + util.inspect(ast, 4))
+
+			if options.verbose
+				log 'ast.type', ast.type
+			var formatter = format[ast.type]
+			if formatter
+				_ options.stack.push(ast)
+				var result = formatter(parent, ast, options)
+				_ options.stack.pop()
+				return result
+			else
+				throw new Error('no formatter for type: ' + ast.type)
+
+	var formatText
+		function
+			param parent
+			param ast
+			param options
+			param node
+			var saveReturnText = options.returnText
+			set options.returnText = true
+			if node
+				_ options.formatTextNodes.push(node)
+			var value = format(parent, ast, options)
+			if node
+				_ options.formatTextNodes.pop(); 
+			set options.returnText = saveReturnText
+			return value
+	
+	$hook
+
+	var md = module.exports = {}
+
+	$include helper_functions
+
+	set md.parse
+		function
+			param input
+			param options
+			return
+				_ parser.parse
+					@ input
+					{
+						@ sourceType 'module'
+						[ plugins
+							@ "jsx"
+							@ "flow"
+							@ "objectRestSpread"
+							@ "classProperties"
+							@ "doExpressions"
+							@ ['decorators', { decoratorsBeforeExport: false }]
+							@ "classProperties"
+							@ "classPrivateProperties"
+							@ "classPrivateMethods"
+							@ "exportDefaultFrom"
+							@ "exportNamespaceFrom"
+							@ "asyncGenerators"
+							@ "functionBind"
+							@ "functionSent"
+							@ "dynamicImport"
+							@ "numericSeparator"
+							@ "optionalChaining"
+							@ "importMeta"
+							@ "bigInt"
+							@ "optionalCatchBinding"
+							@ "throwExpressions"
+							@ "nullishCoalescingOperator"
+
+	set md.getCodeAST
+		function
+			param input
+			param options
+			param callback
+			set options = options || {}
+			set options.input = input
+			set options.stack = []
+			set options.formatTextNodes = []
+			var babelOptions = options.babel || {}
+			var syntax
+			try
+				set syntax = md.parse(input, babelOptions)
+			catch ex
+				return
+					_ callback
+						@ ex
+			r_cb( cleanBabel.cleanAst(syntax) )
+
+	set md.getWizziIttf
+		function
+			param input
+			param options
+			param callback
+			log 'options', options
+			
+			set options = options || {};
+			set options.input = input
+			set options.stack = []
+			set options.formatTextNodes = []
+			var startTime = Date.now()
+			var babelOptions = options.babel || {}
+			var syntax = md.parse(input, babelOptions)
+			log 'Parsed in ' + (Date.now() - startTime) + ' ms'
+			set options.starter = true
+			var root
+				{
+					@ tag 'module'
+					[ children
+						{
+							@ tag 'kind'
+							@ name 'react'
+							[ children
+			_ format(root, syntax, options)
+			# log "wizziTree", JSON.stringify(root, null, 2)
+			var ittf = ittfwriter.stringify(root, { lang: 'js' });
+			# log "wizziIttf\n" + ittf
+
+			if options.syntaxOutFile
+				_ file.write
+					@ options.syntaxOutFile
+					_ JSON.stringify
+						_ cleanBabel.cleanAst(syntax)
+						@ null
+						@ 2
+
+			_ callback(null, ittf)

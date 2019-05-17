@@ -1,0 +1,20 @@
+﻿$group
+	$params title, onClick, disabledTest, icon|@@null
+
+    < Grid 
+        @ item
+        < Paper 
+            @ className {classes.buttonPaper}
+			$if icon == null
+				< Button
+					@ className {classes.button}
+					@ onClick { ${onClick} }
+					@ disabled { ${disabledTest} }
+					+ ${title}
+			$else
+				< Tooltip
+					@ title ${title}
+					< Button
+						@ onClick { ${onClick} }
+						@ disabled { ${disabledTest} }
+						< ${icon}

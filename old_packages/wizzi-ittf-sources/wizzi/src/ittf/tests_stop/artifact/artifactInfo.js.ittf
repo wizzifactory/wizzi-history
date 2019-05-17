@@ -1,0 +1,72 @@
+﻿base_test(artifactInfo)
+
+	$append imports
+		var ArtifactInfo = require('../../lib/artifact/ArtifactInfo').ArtifactInfo
+		var asyncArtifactGenerator = require('../../lib/artifact/asyncArtifactGenerator')
+		var mocks = require('../mocks/misc')
+
+	var modelPaths = {}
+	var moodel_path_1
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'simple.tests.ittf'
+	var moodel_path_2
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'complex.tests.ittf'
+	set modelPaths[moodel_path_1]  = true
+	set modelPaths[moodel_path_2]  = true
+
+	var ai
+
+	it-async shoul create an artifact info
+		set ai
+			new ArtifactInfo
+				{
+					@ name 'test_1'
+					@ options
+						{
+							@ basedir __dirname
+							@ dotgExtensionPrefix false
+					@ model mocks.getModelInfo('mock1')
+					@ contexts null
+					@ isWfJob false
+					@ transformers []
+					@ gen
+						{
+							@ generator 'js/module'
+					@ dest
+						{
+							@ fullpath null
+							@ folder null
+							@ baseFolder null
+							@ path null
+							@ extension null
+		_ done
+
+
+	it shoul check properties
+		tobe_false( ai.isWizziFactoryJob() )
+		tobe_true( ai.isWizziModelArtifact() )
+		tobe_false( ai.isModelCollectionArtifact() )
+		tobe_false( ai.isCodeWriteArtifact() )
+		tobe_false( ai.isFinalArtifact() )
+
+	it-async shoul get items to persist to file
+		_ ai.getItemsToPersistToFile
+			f_cb_test( items )
+				tobe_array(items, 1)
+				_ done
+
+	it shoul interpolate the path of an item of a model collection artifact
+		var ipname
+			_ ai.getInterpolatePathNameContext
+		tobe_true( ipname.__is_error )
+    
+    it shoul build the destination uri of the generated artifact
+		var dest_uri
+			_ ai.getDestinationUri
+				@ 'srcPath'
+

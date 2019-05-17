@@ -1,0 +1,47 @@
+﻿r-component( SnippetComponent )
+
+	$append imports
+
+		import Typography from '@material-ui/core/Typography';
+		import CodemirrorEditor from './CodemirrorEditor'
+
+		var optionsIttf
+			{
+				@ lineNumbers true
+				@ mode 'yaml'
+				@ theme 'twilight'
+				@ scrollbarStyle "simple"
+		
+		var optionsJs
+			{
+				@ lineNumbers true
+				@ mode 'javascript'
+				@ theme 'twilight'
+				@ scrollbarStyle "simple"
+
+	style
+		@ root
+			{
+				@ color 'red'
+	render
+		prop classes
+		prop hello
+		prop snippetCode
+		
+		if process.browser
+			return
+				. { classes.root }
+					h1 Hello { hello }
+					< Typography
+						@ variant display1
+						@ gutterBottom
+						+  Material-UI
+					< CodemirrorEditor
+						@ value {snippetCode}
+						@ options {optionsJs}
+		else
+			return
+				. { classes.root }
+					h1 Hello { hello }
+
+

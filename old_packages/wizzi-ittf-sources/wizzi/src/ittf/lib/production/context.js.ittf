@@ -1,0 +1,128 @@
+﻿module 
+    kind jsfile
+
+    var path = require('path')
+    var util = require('util')
+    var file = require('wizzi-utils').file
+	var fail = require('wizzi-utils').fail
+	var runnerServer = null
+
+	#
+		# { options
+		#   { dumps
+		#     string dumpsBaseFolder
+		# 	  { mTreeBuildupJsWizziScript
+		#       boolean dump
+		#       string dumpsBaseFolder
+	wz-class ProductionContext
+        ctor
+			param options
+            set this.dump = false
+			set this.dumps = options.dumps || {}
+            set this.ittfDocuments =
+                { 
+            set this.ittfEvaluationScripts =
+                { 
+            set this.mTrees =
+                { 
+            set this.evaluatedMTrees =
+                { 
+            set this.wizziModels =
+                { 
+            set this.artifacts = []
+			if runnerServer == null
+				set runnerServer = require('../services/runnerServer')
+			set this.runnerServer = runnerServer.instance
+    
+		m setAclStat
+			param aclstat
+			set this.aclstat = aclstat
+		
+		m addIttfDocument
+            param uri
+            param content
+            if this.ittfDocuments[uri]
+                set this.ittfDocuments[uri].cacheCount++
+            else 
+                set this.ittfDocuments[uri]
+                    { 
+                        @ uri uri
+                        @ content content
+                        @ cacheCount 0
+    
+		m addMTreeBuildUpScript
+            param uri
+            param ittfEvalScript
+            set this.ittfEvaluationScripts[uri]
+                { 
+                    @ uri uri
+                    @ ittfEvalScript ittfEvalScript
+            
+			# log '*=*=*=*= temporary wizzi.production.productionContext. this.dumps : ', this.dumps
+			if this.dumps && this.dumps.mTreeBuildupJsWizziScript && this.dumps.mTreeBuildupJsWizziScript.dump
+				var dumpsFolder = this.dumps.mTreeBuildupJsWizziScript.dumpsBaseFolder || this.dumps.dumpsBaseFolder
+                _ file.write
+                    _ path.join
+                        @ dumpsFolder
+                        @ path.basename(uri) + '.js.dump'
+                    _ ittfEvalScript.toCode()
+    
+		m addMixedMTree
+            param uri
+            param mTree
+            
+			if this.dumps && this.dumps.mixedMTree && this.dumps.mixedMTree.dump
+				var dumpsFolder = this.dumps.mixedMTree.dumpsBaseFolder || this.dumps.dumpsBaseFolder
+                _ file.write
+                    _ path.join
+                        @ dumpsFolder
+                        @ (path.basename(uri) + '.mixed.mTree.dump')
+                    _ mTree.dump()
+    
+		m addEvaluatedMTree
+            param uri
+            param mTree
+
+			set this.evaluatedMTrees[uri] = mTree.dump(true)
+			
+			if this.dumps && this.dumps.evaluatedMTree && this.dumps.evaluatedMTree.dump
+				var dumpsFolder = this.dumps.evaluatedMTree.dumpsBaseFolder || this.dumps.dumpsBaseFolder
+                _ file.write
+                    _ path.join
+                        @ dumpsFolder
+                        @ path.basename(uri) + '.evaluated.mTree.dump'
+                    @ this.evaluatedMTrees[uri]
+    
+		m addMTree
+            param uri
+            param loadHistory
+            set this.mTrees[uri] =
+                { 
+                    @ uri uri
+                    @ loadHistory loadHistory
+    
+		m addWizziModel
+            param uri
+            param wizziModel
+            set this.wizziModels[uri] =
+                { 
+                    @ uri uri
+                    @ wizziModel wizziModel
+    
+		m addArtifact
+            param artifact
+            _ this.artifacts.push(artifact)
+    
+		m raiseIttfEvaluationScriptError
+            param uri
+            param exception
+            var script = this.ittfEvaluationScripts[uri]
+            if script && script.ittfEvalScript && exception && exception.lineNumber
+                var lines
+                    _ script.ittfEvalScript.getErrorLines(exception)
+                        ._ join('\n')
+                set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + lines + '\n'
+            else 
+                set exception.message = '\nError evaluating ittf in uri: ' + uri + '\n' + exception.message + '\n'
+            _ fail.warn(exception)
+            throw exception  

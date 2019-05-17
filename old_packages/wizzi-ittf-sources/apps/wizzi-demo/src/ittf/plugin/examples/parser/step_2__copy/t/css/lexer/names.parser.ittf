@@ -1,0 +1,46 @@
+﻿$group
+	$params kind|main
+
+	$if kind === 'main'
+		
+		escape( sub )
+
+	$if kind === 'main' || kind === 'sub'
+		
+		e nmstart
+			|
+				[ _a-zA-Z
+				ref nonascii
+				ref escape
+
+		e nmchar
+			|
+				[
+					: _
+					: a-z
+					: A-Z
+					: 0-9
+					: -
+				ref nonascii
+				ref escape
+
+		e name
+			+
+				ref nmchar
+	
+		e ident
+			(
+				&
+					?
+						[ -
+					ref nmstart
+					*
+						ref nmchar
+
+	$if kind === 'main' || kind === 'tokens'
+		tk Ident
+			pattern
+				ref ident
+
+	$if kind === 'main'
+		test jerome-naur _\u0754

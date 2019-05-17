@@ -1,0 +1,26 @@
+$group
+
+	var modelTransformers = {}
+	#
+		# Async execute a model transformation
+		# Transformers are searched in the PluginsManager
+	set md.doModelTransformation
+		function
+			param model
+			param transformerName
+			param context
+			param callback
+
+			var transformer = modelTransformers[transformerName]
+			if !transformer
+				set transformer = md.pluginsManager.getModelTransformer(transformerName)
+			if transformer == null
+				var error = new errors.NotFoundError('doModelTransformation', transformerName, model.uri)
+				_ wizzi.fail.warn(error.message)
+				return callback(error)
+			else
+				set modelTransformers[transformerName] = transformer
+				new transformer.trans
+					@ model
+					@ context
+					@ callback

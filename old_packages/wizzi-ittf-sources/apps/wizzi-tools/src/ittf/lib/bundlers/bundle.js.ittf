@@ -1,0 +1,30 @@
+﻿module
+	kind jsfile
+
+	var site = require('wizzi-lab-site')
+
+	var md = module.exports = {}
+
+	set md.loadBrowserify
+		function
+			param bundlePath
+			param context
+			param callback
+
+			set context = context || {}
+	
+			_ site.bundle
+				@ bundlePath
+				@ context
+				function
+					param err
+					param wizziModel
+					if err
+						return callback(err)
+
+					var b = wizziModel.getBrowserify()
+					if !b
+						return callback('Browserify bundle not found in ' + bundlePath)
+
+					_ callback(null, b.buildOptions())
+

@@ -1,0 +1,302 @@
+  module  ids: 1 98
+    kind jsfile ids: 2 99
+    import assert ids: 3 100
+    import util ids: 4 101
+    var f_dateutil = require('./functions/dateutil') ids: 5 102
+    var f_verify = require('./functions/verify') ids: 6 103
+    var f_underscore = require('./functions/underscore') ids: 7 104
+    var errors = require('./errors') ids: 8 105
+    var WizziJsEvalHelper = require('./wizziJsEvalHelper') ids: 9 106
+    var ContextData = require('./contextData') ids: 10 107
+    var defaultValues ids: 11 108
+      {  ids: 12 109
+        @ '__dollardollar' '$$' ids: 13 110
+        @ '__dollaraster' '$*' ids: 14 111
+        @ '__asterdollar' '*$' ids: 15 112
+    var knownCallables ids: 16 113
+      {  ids: 17 114
+        @ 'console' console ids: 18 115
+        @ '_' f_underscore ids: 19 116
+        @ 'Object' Object ids: 20 117
+        @ 'Math' Math ids: 21 118
+        @ 'path' require('path') ids: 22 119
+        @ 'dateUtil' f_dateutil ids: 23 120
+        @ 'verify' f_verify ids: 24 121
+    var ittfStates ids: 25 122
+      {  ids: 26 123
+        @ nodeContext 0 ids: 27 124
+        @ modelEvalContext 1 ids: 28 125
+        @ globalContext 2 ids: 29 126
+    class WizziJsContext ids: 30 127
+      ctor  ids: 31 128
+        param composedIttfModel ids: 32 129
+        if composedIttfModel ids: 33 130
+          # The WizziJsContext is used for the ids: 34 131
+          # evaluation of an IttfModel. ids: 35 132
+          # Create the WizziJsEvalHelper ids: 36 133
+          set this.primaryIttfModel = composedIttfModel ids: 37 134
+          set this.loadContext = composedIttfModel.loadContext ids: 38 135
+          set this.evalHelper = new WizziJsEvalHelper(this, composedIttfModel) ids: 39 136
+        else  ids: 40 137
+          # The WizziJsContext is used for interpolations. ids: 41 138
+        +  ids: 42 139
+        set this.nodeContext = new ContextData(ittfStates.nodeContext) ids: 43 140
+        set this.globalContext = new ContextData(ittfStates.globalContext) ids: 44 141
+        +  ids: 45 142
+        set this.exprPending = null ids: 46 143
+        +  ids: 47 144
+        # The first getValue will be for the '$' variable ids: 48 145
+        set this.ittf_state = ittfStates.globalContext ids: 49 146
+        set this.currentIttfModelKey = null ids: 50 147
+        set this.modelEvalContext = null ids: 51 148
+        +  ids: 52 149
+        _ this.globalContext.declare('$', this.evalHelper) ids: 53 150
+        _ this.globalContext.$freeze() ids: 54 151
+        _ this.globalContext.setValues(defaultValues) ids: 55 152
+        _ this.globalContext.setValues(knownCallables) ids: 56 153
+        +  ids: 57 154
+        set this.runningNodeId = null ids: 58 155
+        +  ids: 59 156
+      # Called by WizziJsRunner.FunctionDeclarationCall ids: 60 157
+      m push ids: 61 158
+        var ret ids: 62 159
+          new WizziJsContext(this.evalHelper) ids: 63 160
+        return ret ids: 64 161
+      m pop ids: 65 162
+        _ this.clear() ids: 66 163
+      m clear ids: 67 164
+        _ this.globalContext.clear ids: 68 165
+        _ this.nodeContext.clear ids: 69 166
+        if this.modelEvalContext ids: 70 167
+          _ this.modelEvalContext.clear ids: 71 168
+        _ this.globalContext.declare('$', this.evalHelper) ids: 72 169
+        _ this.globalContext.$freeze() ids: 73 170
+        _ this.globalContext.setValues(defaultValues) ids: 74 171
+        _ this.globalContext.setValues(knownCallables) ids: 75 172
+      m setRunningNodeId ids: 76 173
+        param id ids: 77 174
+        set this.runningNodeId = id ids: 78 175
+      m get_currentIttfModelInfo ids: 79 176
+        if this.currentIttfModelKey == null ids: 80 177
+          return  ids: 81 178
+            {  ids: 82 179
+              @ currentModel_uri 'unavailable' ids: 83 180
+              @ currentModel_callerUri 'unavailable' ids: 84 181
+        else  ids: 85 182
+          var ittfModelData = this.loadContext.getIttfModelData(this.currentIttfModelKey) ids: 86 183
+          var callerUri = 'root model' ids: 87 184
+          if ittfModelData.ittfModel.$mixerModelKey ids: 88 185
+            var callerIttfModelData = this.loadContext.getIttfModelData(ittfModelData.ittfModel.$mixerModelKey) ids: 89 186
+            var callerUri = callerIttfModelData ? callerIttfModelData.ittfDocumentUri : 'root model'; ids: 90 187
+          return  ids: 91 188
+            {  ids: 92 189
+              @ currentModel_uri ittfModelData.ittfDocumentUri ids: 93 190
+              @ currentModel_callerUri callerUri ids: 94 191
+      $group  ids: 195 349
+        m declare ids: 196 350
+          param name ids: 197 351
+          param value ids: 198 352
+          if this.ittf_state === ittfStates.globalContext ids: 199 353
+            _ this.globalContext.declare(name, value) ids: 200 354
+          elif this.ittf_state === ittfStates.nodeContext ids: 201 355
+            _ this.nodeContext.declare(name, value) ids: 202 356
+          else  ids: 203 357
+            _ this.modelEvalContext.declare(name, value) ids: 204 358
+        m undeclare ids: 205 359
+          param name ids: 206 360
+          if this.ittf_state === ittfStates.globalContext ids: 207 361
+            _ this.globalContext.undeclare(name) ids: 208 362
+          elif this.ittf_state === ittfStates.nodeContext ids: 209 363
+            _ this.nodeContext.undeclare(name) ids: 210 364
+          else  ids: 211 365
+            _ this.modelEvalContext.undeclare(name) ids: 212 366
+        m isDeclared ids: 213 367
+          param name ids: 214 368
+          var ret = false ids: 215 369
+          if this.ittf_state === ittfStates.globalContext ids: 216 370
+            set ret = this.globalContext.isDeclared(name) ids: 217 371
+          elif this.ittf_state === ittfStates.nodeContext ids: 218 372
+            var ret = this.nodeContext.isDeclared(name) ids: 219 373
+            if !ret ids: 220 374
+              set ret = this.globalContext.isDeclared(name) ids: 221 375
+          else  ids: 222 376
+            var ret = this.modelEvalContext.isDeclared(name) ids: 223 377
+            if !ret ids: 224 378
+              set ret = this.globalContext.isDeclared(name) ids: 225 379
+          return ret ids: 226 380
+        m setValue ids: 227 381
+          param name ids: 228 382
+          param value ids: 229 383
+          if this.ittf_state === ittfStates.globalContext ids: 230 384
+            _ this.globalContext.setValue(name, value) ids: 231 385
+          elif this.ittf_state === ittfStates.nodeContext ids: 232 386
+            _ this.nodeContext.setValue(name, value) ids: 233 387
+          else  ids: 234 388
+            _ this.modelEvalContext.setValue(name, value) ids: 235 389
+        m setValues ids: 236 390
+          param values ids: 237 391
+          set values = (values || {}) ids: 238 392
+          for var k in values ids: 239 393
+            _ this.setValue ids: 240 394
+              @ k ids: 241 395
+              @ values[k] ids: 242 396
+        m put ids: 243 397
+          param name ids: 244 398
+          param value ids: 245 399
+          _ assert ids: 246 400
+            @ this.ittf_state != ittfStates.nodeContext ids: 247 401
+            @ 'put in an invalid operation for NodeContext state' ids: 248 402
+          var ok = false ids: 249 403
+          if this.ittf_state === ittfStates.globalContext ids: 250 404
+            set ok = this.globalContext.put(name, value) ids: 251 405
+          else  ids: 252 406
+            set ok = this.modelEvalContext.put(name, value) ids: 253 407
+            if !ok ids: 254 408
+              set ok = this.globalContext.put(name, value) ids: 255 409
+          if !ok ids: 256 410
+            throw new Error('Not declared: ' + name); ids: 257 411
+        m getValue ids: 258 412
+          param name ids: 259 413
+          if this.ittf_state === ittfStates.globalContext ids: 260 414
+            if this.globalContext.isDeclared(name) ids: 261 415
+              return this.globalContext.getValue(name) ids: 262 416
+            else  ids: 263 417
+              return undefined ids: 264 418
+          elif this.ittf_state === ittfStates.nodeContext ids: 265 419
+            if this.nodeContext.isDeclared(name) ids: 266 420
+              return this.nodeContext.getValue(name) ids: 267 421
+            if this.globalContext.isDeclared(name) ids: 268 422
+              return this.globalContext.getValue(name) ids: 269 423
+            return undefined ids: 270 424
+          else  ids: 271 425
+            if this.modelEvalContext.isDeclared(name) ids: 272 426
+              return this.modelEvalContext.getValue(name) ids: 273 427
+            if this.globalContext.isDeclared(name) ids: 274 428
+              return this.globalContext.getValue(name) ids: 275 429
+            return undefined ids: 276 430
+            log 'WizziJsContext.getValue context value not found for', name ids: 277 431
+            log 'WizziJsContext.getValue ittf_state ', this.ittf_state ids: 278 432
+            log 'WizziJsContext.getValue currentIttfModelKey ', this.currentIttfModelKey ids: 279 433
+            _ this.dumpValues ids: 280 434
+            throw new Error('In esprima context. Not declared: ' + name); ids: 281 435
+        m getValues ids: 282 436
+          # TODO modelEvalContext needs globalValues ??? ids: 283 437
+          if this.ittf_state === ittfStates.globalContext ids: 284 438
+            return this.globalContext.getValues() ids: 285 439
+          elif this.ittf_state === ittfStates.nodeContext ids: 286 440
+            return this.nodeContext.getValues() ids: 287 441
+          else  ids: 288 442
+            return this.modelEvalContext.getValues() ids: 289 443
+        m setGlobalValues ids: 290 444
+          param values ids: 291 445
+          _ this.globalContext.setValues(values) ids: 292 446
+        m getGlobalValues ids: 293 447
+          _ this.globalContext.values ids: 294 448
+        m declareFunction ids: 295 449
+          param name ids: 296 450
+          param fn ids: 297 451
+          if this.ittf_state === ittfStates.globalContext ids: 298 452
+            _ this.globalContext.declareFunction(name, fn) ids: 299 453
+          else  ids: 300 454
+            _ this.modelEvalContext.declareFunction(name, fn) ids: 301 455
+        m getFunction ids: 302 456
+          param name ids: 303 457
+          if this.ittf_state === ittfStates.globalContext ids: 304 458
+            return this.globalContext.getFunction(name) ids: 305 459
+          else  ids: 306 460
+            var ret = this.modelEvalContext.getFunction(name) ids: 307 461
+            return ret ? ret : this.globalContext.getFunction(name) ids: 308 462
+        m beginExpr ids: 309 463
+          set this.exprPending = ids: 310 464
+            {  ids: 311 465
+        m endExpr ids: 312 466
+          _ assert ids: 313 467
+            @ this.exprPending ids: 314 468
+            @ 'endExpr called without previous call to beginExpr' ids: 315 469
+          for var k in this.exprPending ids: 316 470
+            _ this.put ids: 317 471
+              @ k ids: 318 472
+              @ this.exprPending[k] ids: 319 473
+          set this.exprPending = null ids: 320 474
+        m dumpValues ids: 321 475
+          # TODO if this.verbose ids: 322 476
+          log 'Dump context value for debug' ids: 323 477
+          log 'WizziJsContext ittf_state ', this.ittf_state ids: 324 478
+          log 'WizziJsContext currentIttfModelKey ', this.currentIttfModelKey ids: 325 479
+          if this.modelEvalContext ids: 326 480
+            log 'Local values' ids: 327 481
+            _ this.modelEvalContext.dumpValues ids: 328 482
+          log 'Global values' ids: 329 483
+          _ this.globalContext.dumpValues ids: 330 484
+        m getDeclaredInfo ids: 331 485
+          var ret = [] ids: 332 486
+          if this.ittf_state === ittfStates.globalContext ids: 333 487
+            _ ret.push ids: 334 488
+              @ 'state=global' ids: 335 489
+            _ ret.push ids: 336 490
+              @ 'global declares:' + this.globalContext.getDeclaredInfo() ids: 337 491
+          elif this.ittf_state === ittfStates.nodeContext ids: 338 492
+            _ ret.push ids: 339 493
+              @ 'state=node' ids: 340 494
+          else  ids: 341 495
+            _ ret.push ids: 342 496
+              @ 'state=model:' + this.currentIttfModelKey ids: 343 497
+            _ ret.push ids: 344 498
+              @ 'model declares:' + this.modelEvalContext.getDeclaredInfo() ids: 345 499
+            _ ret.push ids: 346 500
+              @ 'global declares:' + this.globalContext.getDeclaredInfo() ids: 347 501
+          return ret.join(', ') ids: 348 502
+      $group  ids: 503 552
+        #  ids: 504 553
+          # The WizziJsRunner is entering a block of statements ids: 505 554
+          # with instructions for the buildup of the treenode ids: 506 555
+          # of the final (evaluated) IttfModel. ids: 507 556
+        m set_NodeContext ids: 508 557
+          if this.ittf_state === ittfStates.nodeContext ids: 509 558
+            # we already are in a nodeContext state ids: 510 559
+            return  ids: 511 560
+          # log '*** => set_NodeContext' ids: 512 561
+          set this.ittf_state = ittfStates.nodeContext ids: 513 562
+          set this.currentIttfModelKey = null ids: 514 563
+          set this.modelEvalContext = null ids: 515 564
+        #  ids: 516 565
+          # The WizziJsRunner is entering a block of global statements ids: 517 566
+          # declared inside an IttfDocument. ids: 518 567
+          # Example: ids: 519 568
+          # 001     $global var message = 'hello'; ids: 520 569
+        m set_GlobalContext ids: 521 570
+          if this.ittf_state === ittfStates.globalContext ids: 522 571
+            # we already are in a globalContext state ids: 523 572
+            return  ids: 524 573
+          # log '*** => set_GlobalContext' ids: 525 574
+          set this.ittf_state = ittfStates.globalContext ids: 526 575
+          set this.currentIttfModelKey = null ids: 527 576
+          set this.modelEvalContext = null ids: 528 577
+        #  ids: 529 578
+          # The WizziJsRunner is entering a block of local statements ids: 530 579
+          # declared inside an IttfDocument using the $ IttfCommand. ids: 531 580
+          # Example: ids: 532 581
+          # 001     $ var message = 'hello'; ids: 533 582
+          # or the WizziJsEvalHelper has to execute an interpolation ids: 534 583
+          # on a node value which belongs to the modelKey. ids: 535 584
+        m set_IttfModelEvalContext ids: 536 585
+          param modelKey ids: 537 586
+          param line ids: 538 587
+          if this.currentIttfModelKey === modelKey ids: 539 588
+            return  ids: 540 589
+          # Must stay before the call to getIttfModelEvalContext ids: 541 590
+          # to allow debug info about modelKey ids: 542 591
+          set this.currentIttfModelKey = modelKey ids: 543 592
+          $group  ids: 601 607
+            $args: this.modelEvalContext $params: varName
+            set ${varName} ids: 603 608
+              _ this.evalHelper.getIttfModelEvalContext(modelKey, line) ids: 545 594
+            if ${varName} && ${varName}.__is_error ids: 605 610
+              return ${varName} ids: 606 611
+          _ assert(this.modelEvalContext, 'set_IttfModelEvalContext modelEvalContext for key ' + modelKey + ' undefined') ids: 546 595
+          # log '*** => set_IttfModelEvalContext', modelKey ids: 547 596
+          set this.ittf_state = ittfStates.modelEvalContext ids: 548 597
+          return this.modelEvalContext ids: 549 598
+        m get_currentIttfModelKey ids: 550 599
+          return this.currentIttfModelKey ids: 551 600
+    set module.exports = WizziJsContext ids: 97 194

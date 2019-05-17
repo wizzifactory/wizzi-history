@@ -1,0 +1,193 @@
+  module  ids: 1 178
+    kind jsfile ids: 2 179
+    var path = require('path') ids: 3 180
+    var util = require('util') ids: 4 181
+    var async = require('async') ids: 5 182
+    var verify = require('../util/verify') ids: 6 183
+    var log ids: 7 184
+      _ require('../util/log') ids: 8 185
+        (  ids: 9 186
+          @ module ids: 10 187
+    var GenWriter = require('./genWriter') ids: 11 188
+    function logme ids: 12 189
+      if false ids: 13 190
+        _ console.log.apply(console, arguments) ids: 14 191
+    +  ids: 15 192
+    #  ids: 16 193
+      # Generation functions are called by the production/runner. ids: 17 194
+      # A generation produces an array of writeContext, ready for persisting the artifact, ids: 18 195
+      # that are accumulated into the artifactInfo. ids: 19 196
+    +  ids: 20 197
+    wz-var AsyncArtifactGenerator ids: 21 198
+      {  ids: 22 199
+        #  ids: 23 200
+          # param artifactInfo:ArtifactInfo ids: 24 201
+          # param generator:Object { // retrieved from a WizziPackage ids: 25 202
+          # gen:Function   // executes generation ids: 26 203
+          # } ids: 27 204
+          # param modelInfos:Array of ModelInfo ids: 28 205
+          # param contextModelsCollection:Array of Objects (WizziModelInstances or other) ids: 29 206
+          # 1 Context object for each ModelInfo ids: 30 207
+        @ generate ids: 31 208
+          function  ids: 32 209
+            param artifactInfo ids: 33 210
+            param generator ids: 34 211
+            param modelInfos ids: 35 212
+            param contextModelsCollection ids: 36 213
+            param callback ids: 37 214
+            if verify.isObject(generator) == false || verify.isFunction(generator.gen) == false ids: 38 215
+              return  ids: 39 216
+                _ callback ids: 40 217
+                  _ error ids: 41 218
+                    @ 'The parameter "generator" must be an object and must contain the "gen" function.' ids: 42 219
+                    @ 'generate' ids: 43 220
+                    @ artifactInfo ids: 44 221
+            var genItems ids: 45 222
+              [  ids: 46 223
+            for var i = 0; i < modelInfos.length; i++ ids: 47 224
+              var modelInfo = modelInfos[i] ids: 48 225
+              var contextModelItem = contextModelsCollection[i] ids: 49 226
+              var genWriter ids: 50 227
+                new GenWriter ids: 51 228
+                  {  ids: 52 229
+                    @ model null ids: 53 230
+                    @ srcPath modelInfo.src() ids: 54 231
+                    @ srcFullPath modelInfo.srcFullPath() ids: 55 232
+                    @ options artifactInfo.options ids: 56 233
+                    @ pman artifactInfo.productionManager ids: 57 234
+              _ genItems.push ids: 58 235
+                {  ids: 59 236
+                  @ generator generator ids: 60 237
+                  @ genContext contextModelItem ids: 61 238
+                  @ genWriter genWriter ids: 62 239
+            _ async.map ids: 63 240
+              @ genItems ids: 64 241
+              @ AsyncArtifactGenerator._gen_item ids: 65 242
+              $group  ids: 355 365
+                $args: genWriters  $params: result
+                function  ids: 357 366
+                  param err ids: 358 367
+                  param ${result} ids: 359 368
+                  if err ids: 360 369
+                    return  ids: 361 370
+                      _ callback ids: 362 371
+                        @ err ids: 363 372
+                  foreach item in genWriters ids: 67 244
+                    _ artifactInfo.addGenWriter(item) ids: 68 245
+                  _ callback ids: 69 246
+                    @ null ids: 70 247
+                    {  ids: 71 248
+                      @ oper 'AsyncArtifactGenerator.generate' ids: 72 249
+                      @ status 'success' ids: 73 250
+                      @ item 'genWriters.count: ' + genWriters.length ids: 74 251
+        @ generateFromCollectionContexts ids: 75 252
+          function  ids: 76 253
+            param artifactInfo ids: 77 254
+            param generator ids: 78 255
+            param modelInfos ids: 79 256
+            param contextModelsCollectionCollection ids: 80 257
+            param callback ids: 81 258
+            if verify.isObject(generator) == false || verify.isFunction(generator.gen) == false ids: 82 259
+              return  ids: 83 260
+                _ callback ids: 84 261
+                  _ error ids: 85 262
+                    @ 'The parameter "generator" must be an object and must contain the "gen" function.' ids: 86 263
+                    @ 'generateFromCollectionContexts' ids: 87 264
+                    @ artifactInfo ids: 88 265
+            var genItems ids: 89 266
+              [  ids: 90 267
+            for var i = 0; i < modelInfos.length; i++ ids: 91 268
+              var modelInfo = modelInfos[i] ids: 92 269
+              var contextModelsCollection = contextModelsCollectionCollection[i] ids: 93 270
+              for var j = 0; j < contextModelsCollection.length; j++ ids: 94 271
+                var contextModelItem = contextModelsCollection[j] ids: 95 272
+                _ logme('AsyncArtifactGenerator.generateFromCollectionContexts', 'item', j, contextModelItem) ids: 96 273
+                var genWriter ids: 97 274
+                  new GenWriter ids: 98 275
+                    {  ids: 99 276
+                      @ model contextModelItem.___collItem ids: 100 277
+                      @ srcPath modelInfo.src() ids: 101 278
+                      @ srcFullPath modelInfo.srcFullPath() ids: 102 279
+                      @ options artifactInfo.options ids: 103 280
+                      @ pman artifactInfo.productionManager ids: 104 281
+                _ genItems.push ids: 105 282
+                  {  ids: 106 283
+                    @ generator generator ids: 107 284
+                    @ genContext contextModelItem ids: 108 285
+                    @ genWriter genWriter ids: 109 286
+            _ async.map ids: 110 287
+              @ genItems ids: 111 288
+              @ AsyncArtifactGenerator._gen_item ids: 112 289
+              $group  ids: 355 374
+                $args: genWriters  $params: result
+                function  ids: 357 375
+                  param err ids: 358 376
+                  param ${result} ids: 359 377
+                  if err ids: 360 378
+                    return  ids: 361 379
+                      _ callback ids: 362 380
+                        @ err ids: 363 381
+                  foreach item in genWriters ids: 114 291
+                    _ artifactInfo.addGenWriter(item) ids: 115 292
+                  _ callback ids: 116 293
+                    @ null ids: 117 294
+                    {  ids: 118 295
+                      @ oper 'AsyncArtifactGenerator.generate' ids: 119 296
+                      @ status 'success' ids: 120 297
+                      @ item 'genWriters.count: ' + genWriters.length ids: 121 298
+        @ generateCodeWrite ids: 122 299
+          function  ids: 123 300
+            param artifactInfo ids: 124 301
+            param generator ids: 125 302
+            param contextModelsCollection ids: 126 303
+            param callback ids: 127 304
+            if verify.isObject(generator) == false || verify.isFunction(generator.gen) == false ids: 128 305
+              return  ids: 129 306
+                _ callback ids: 130 307
+                  _ error ids: 131 308
+                    @ 'The parameter "generator" must be an object and must contain the "gen" function.' ids: 132 309
+                    @ 'generateCodeWrite' ids: 133 310
+                    @ artifactInfo ids: 134 311
+            var genContext ids: 135 312
+              {  ids: 136 313
+            _ contextModelsCollection.forEach ids: 137 314
+              function  ids: 138 315
+                param item ids: 139 316
+                set genContext[item.___exportName] = item ids: 140 317
+            var genWriter ids: 141 318
+              new GenWriter ids: 142 319
+                {  ids: 143 320
+                  @ model null ids: 144 321
+                  @ srcPath null ids: 145 322
+                  @ srcFullPath null ids: 146 323
+                  @ options artifactInfo.options ids: 147 324
+                  @ pman artifactInfo.productionManager ids: 148 325
+            new generator.gen(genContext, genWriter) ids: 149 326
+            _ artifactInfo.addGenWriter(genWriter) ids: 150 327
+            _ callback ids: 151 328
+              @ null ids: 152 329
+              {  ids: 153 330
+                @ oper 'AsyncArtifactGenerator.generateCodeWrite' ids: 154 331
+                @ status 'success' ids: 155 332
+        @ _gen_item ids: 156 333
+          function  ids: 157 334
+            param genInfo ids: 158 335
+            param callback ids: 159 336
+            _ logme ids: 160 337
+              @ 'AsyncArtifactGenerator._gen_item' ids: 161 338
+              @ 'genInfo.genContext' ids: 162 339
+              @ genInfo.genContext ids: 163 340
+            new genInfo.generator.gen ids: 164 341
+              @ genInfo.genContext ids: 165 342
+              @ genInfo.genWriter ids: 166 343
+              @ callback ids: 167 344
+    function error ids: 168 345
+      param message ids: 169 346
+      param method ids: 170 347
+      var err ids: 171 348
+        {  ids: 172 349
+          @ __is_error true ids: 173 350
+          @ message message ids: 174 351
+          @ source "wizzi/lib/artifact/asyncArtifactGenerator.js/" + method ids: 175 352
+      _ logme(err) ids: 176 353
+      return err ids: 177 354

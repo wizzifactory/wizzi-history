@@ -1,0 +1,101 @@
+﻿$group
+
+	cat color-function
+
+	e rgb()
+		is function
+		is[ arg 
+			|
+				[ 
+					|
+						: <percentage>{3}
+						: <number>{3} 
+					[?
+						: /
+						: <alpha-value>
+				[
+					|
+						: <percentage>#{3}
+						: <number>#{3}
+					[?
+						: ,
+						: <alpha-value>
+		cat color-function
+
+	e rgba()
+		is function
+		is[ arg 
+			|
+				[
+					|
+						: <percentage>{3}
+						: <number>{3}
+					[?
+						: /
+						: <alpha-value>
+				[
+					|
+						: <percentage>#{3}
+						: <number>#{3}
+					[?
+						: ,
+						: <alpha-value>
+		cat color-function
+
+	e hsl()
+		is function
+		is[ arg 
+			|
+				[
+					: <hue>
+					: <percentage>
+					: <percentage>
+					[?
+						: /
+						: <alpha-value>
+				[
+					: <hue>
+					: ,
+					: <percentage>
+					: ,
+					: <percentage>
+					[?
+						: ,
+						: <alpha-value>
+		cat color-function
+
+	e hsla()
+		is function
+		is[ arg 
+			|
+				[
+					: <hue>
+					: <percentage>
+					: <percentage>
+					[?
+						: /
+						: <alpha-value>
+				[
+					: <hue>
+					: ,
+					: <percentage>
+					: ,
+					: <percentage>
+					[?
+						: ,
+						: <alpha-value>
+		cat color-function
+
+	e <alpha-value>
+		is datatype
+		synthax
+			|
+				: <number>
+				: <percentage>
+
+	e <hue>
+		is datatype
+		synthax
+			|
+				: <number>
+				: <angle>

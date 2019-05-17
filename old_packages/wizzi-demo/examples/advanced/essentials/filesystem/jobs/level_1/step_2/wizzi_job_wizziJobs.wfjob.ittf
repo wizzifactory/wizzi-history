@@ -1,0 +1,22 @@
+wfjob model_types
+
+	$
+		var ittf_jobs_folder  = path.join(__dirname, 'ittf', 'jobs');
+		var dest_folder           = path.join(__dirname, 'outputs');
+
+	line one
+		cwd-folder ${ittf_jobs_folder}
+
+		artifact sub wizzi job 1
+			is-wf-job
+			src job1.wfjob.ittf
+			dest-path job1
+
+		artifact sub wizzi job 2
+			is-wf-job
+			src job2.wfjob.ittf
+			dest-path job2
+
+	production
+		dest-folder ${dest_folder}
+		line-ref one

@@ -1,0 +1,20 @@
+﻿base_example( ittfTree )
+
+	var ittfMTreeEx = require('../../lib/ittfTree/ittfMTreeEx')
+
+	_ ittfMTreeEx.createFrom
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'basic.sample.ittf'
+		{
+		f_cb_test( result )
+			_ file.write
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'basic.sample.json'
+				_ stringify
+					@ result
+					@ null
+					@ 2

@@ -1,0 +1,29 @@
+$group
+
+	$if spa.session
+		function initSession
+			param app
+			param options
+			_ app.use
+				_ session
+					{ 
+						@ saveUninitialized true
+						@ resave true
+						@ secret config.sessionSecret
+						@ cookie
+							{ 
+								@ maxAge config.sessionCookie.maxAge
+								@ httpOnly config.sessionCookie.httpOnly
+								@ secure config.sessionCookie.secure && config.secure.ssl
+						@ key config.sessionKey
+						$if spa.session_mongodb
+							@ store
+								new MongoStore
+									{ 
+										@ mongooseConnection db.connection
+										@ collection config.sessionCollection
+						$else
+							@ store null
+
+
+

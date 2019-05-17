@@ -1,0 +1,41 @@
+html 
+    head 
+		$hook head-styles-0
+		$hook head-styles
+		$hook head-styles-2
+
+		css /ittf/styles/layout.css.ittf
+    body 
+        nav 
+            class main-menu
+            ul 
+				sb-item( http://localhost:3014/ittf/home/index.html.ittf, home, Dashboard
+				sb-item( http://localhost:3014/ittf/demo/ttech/index.html.ittf, laptop, Target technologies
+				sb-item( http://localhost:3014, folder-open, ittfEditor App
+				sb-item( http://localhost:3014/app/wf/, table, wf App
+            ul 
+                class logout
+                li 
+                    a 
+                        href #
+                        i 
+                            class fa fa-power-off fa-2x
+                        span Logout
+                            class nav-text
+        . area
+			. logo
+				img
+					src /static/images/logo.png
+					width 120
+					height 50px
+			$hook breadcrumb
+			$hook left-sidebar
+			$hook
+
+		hr
+			lia( Next.js static , https://nextjs.org/learn/)
+			lia( JSS (javascript-css), https://github.com/cssinjs/jss )
+
+		$hook body-scripts-0
+		$hook body-scripts
+		$hook body-scripts-2

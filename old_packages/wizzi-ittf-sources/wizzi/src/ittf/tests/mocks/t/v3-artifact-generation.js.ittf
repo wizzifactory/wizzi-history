@@ -1,0 +1,17 @@
+$group
+
+	#
+		# Retrieve an ArtifactGenerator by its name
+		# Generators are searched in this WizziPackage
+		# No search up in "node_modules" folders.
+	m getArtifactGenerator
+		param generationName
+		+
+		var generator = this.artifactGenerators[generationName] || null
+		if generator == null
+			var generators = require('./generators')
+			set generator
+				_ generators.getGenerator
+					@ generationName
+			set this.artifactGenerators[generationName] = generator
+		return generator

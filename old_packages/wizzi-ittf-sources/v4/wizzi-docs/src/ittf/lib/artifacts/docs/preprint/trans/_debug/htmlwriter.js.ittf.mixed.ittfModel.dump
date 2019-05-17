@@ -1,0 +1,43 @@
+  module  ids: 1 44
+    kind jsfile ids: 2 45
+    var Texter = require('./texter').Texter ids: 3 46
+    var StringWriter = require('./stringwriter').StringWriter ids: 4 47
+    var md = module.exports = {} ids: 5 48
+    class HtmlWriter ids: 6 49
+      ctor  ids: 7 50
+        param noLF ids: 8 51
+        set this.sw = new StringWriter(noLF) ids: 9 52
+        set this.lfPending = false ids: 10 53
+      m writeElement ids: 11 54
+        param node ids: 12 55
+        if node.tag === '_text' ids: 13 56
+          _ this.sw.write(new Texter(node.text).toString()) ids: 14 57
+          return  ids: 15 58
+        _ this.sw.write('<' + node.tag) ids: 16 59
+        foreach a in node.attribs ids: 17 60
+          _ this.writeAttribute(a) ids: 18 61
+        _ this.sw.write('>') ids: 19 62
+        if node.text ids: 20 63
+          _ this.sw.write(new Texter(node.text).toString()) ids: 21 64
+        if node.childs.length > 0 ids: 22 65
+          _ this.sw.w() ids: 23 66
+          _ this.sw.indent() ids: 24 67
+          foreach e in node.childs ids: 25 68
+            _ this.writeElement(e) ids: 26 69
+          _ this.sw.deindent() ids: 27 70
+        if this.lfPending && !node.inline ids: 28 71
+          _ this.sw.w() ids: 29 72
+        _ this.sw.write('</' + node.tag + '>') ids: 30 73
+        if !node.inline ids: 31 74
+          set this.lfPending = true ids: 32 75
+      m writeAttribute ids: 33 76
+        param attrib ids: 34 77
+        if attrib.value === null || typeof attrib.value === 'undefined' ids: 35 78
+          _ this.sw.write(' ' + attrib.name) ids: 36 79
+        else  ids: 37 80
+          _ this.sw.write(' ' + attrib.name + '="' + attrib.value + '"') ids: 38 81
+      m toLines ids: 39 82
+        return this.sw.toLines() ids: 40 83
+      m toString ids: 41 84
+        return this.sw.toString() ids: 42 85
+    set md.HtmlWriter = HtmlWriter ids: 43 86

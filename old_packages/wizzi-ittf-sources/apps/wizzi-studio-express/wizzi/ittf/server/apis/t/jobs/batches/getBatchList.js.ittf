@@ -1,0 +1,40 @@
+﻿$group
+
+	@ getBatchList
+		function
+			param options
+			param callback
+
+			var docs
+				_ paths.batchesIttfDocuments
+
+			log 'getBatchList', docs
+
+			var sessionData = {}
+			var modelContext = {}
+			var artifactContext = {}
+		
+			_ async.map
+				@ docs
+				function
+					param doc
+					param callback
+					_ globalApi.wf.loadModelAndGenerateArtifact
+						@ sessionData
+						@ doc.fullPath
+						@ modelContext
+						@ 'json/document'
+						@ artifactContext
+						f_cb_api(result)
+							var jsonItems = JSON.parse(result.data)
+							foreach item in jsonItems
+								set item.fullPath = path.join(item.cwd, item.argv0)
+								set item.hash = hashEncrypt(item.fullPath)
+							_ callback
+								@ null
+								{
+									@ name doc.name
+									@ items jsonItems
+				f_cb_api(result)
+					r_cb_success_quoted( Got job batches list )
+						@ batches result

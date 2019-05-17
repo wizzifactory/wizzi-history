@@ -1,0 +1,19 @@
+﻿module
+	kind jsfile
+
+	import async
+
+	var samples
+		[
+			@ require('./step_1_go')
+
+	function execute
+		_ async.series
+			@ samples
+			f_cb_throw( notUsed )
+				log 'Level 1 samples done.'
+
+	set module.exports = execute
+
+	if typeof require != 'undefined' && require.main==module
+		_ execute

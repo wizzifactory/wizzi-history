@@ -1,0 +1,263 @@
+﻿$group
+
+	cat transform-function
+		# The <transform-function> data type is specified using one of the transformation functions listed below.
+		# Each function applies a geometric operation in either 2D or 3D.
+
+	cat matrix-transform
+
+	cat perspective-transform
+
+	cat rotation-transform
+
+	cat scaling-transform
+
+	cat distortion-transform
+
+	cat moving-transform
+
+	e matrix()
+		# Describes a homogeneous 2D transformation matrix.
+		is function
+		is[ arg
+			: <number>
+			# a linear transformation
+		is[ arg
+			: <number>
+			# b linear transformation
+		is[ arg
+			: <number>
+			# c linear transformation
+		is[ arg
+			: <number>
+			# d linear transformation
+		is[ arg
+			: <number>
+			# tx translation
+		is[ arg
+			: <number>
+			# ty translation
+		cat matrix-transform
+
+	e matrix3d()
+		# Describes a 3D transformation as a 4x4 homogeneous matrix.
+		is function
+		is[ arg
+			: <number>
+			# a1 linear transformation
+		is[ arg
+			: <number>
+			# b1 linear transformation
+		is[ arg
+			: <number>
+			# c1 linear transformation
+		is[ arg
+			: <number>
+			# d1 linear transformation
+		is[ arg
+			: <number>
+			# a2 linear transformation
+		is[ arg
+			: <number>
+			# b2 linear transformation
+		is[ arg
+			: <number>
+			# c2 linear transformation
+		is[ arg
+			: <number>
+			# d2 linear transformation
+		is[ arg
+			: <number>
+			# a3 linear transformation
+		is[ arg
+			: <number>
+			# b3 linear transformation
+		is[ arg
+			: <number>
+			# c3 linear transformation
+		is[ arg
+			: <number>
+			# d3 linear transformation
+		is[ arg
+			: <number>
+			# tx translation
+		is[ arg
+			: <number>
+			# ty translation
+		is[ arg
+			: <number>
+			# tz translation
+		is[ arg
+			: <number>
+			# d4 linear transformation
+		cat matrix-transform
+
+	e perspective()
+		# Sets the distance between the user and the z=0 plane.
+		is function
+		is[ arg
+			: <length>
+		cat perspective-transform
+
+	e rotate()
+		# Rotates an element around a fixed point on the 2D plane.
+		is function
+		is[ arg
+			: <angle>
+			# ax
+		is[ arg
+			: <angle>
+			# ay
+		cat rotation-transform
+	
+	e rotate3d()
+		# Rotates an element around a fixed axis in 3D space.
+		is function
+		is[ arg
+			: <angle>
+			# ax
+		is[ arg
+			: <angle>
+			# ay
+		is[ arg
+			: <angle>
+			# az
+		cat rotation-transform
+
+	e rotatex()
+		# Rotates an element around the horizontal axis.
+		is function
+		is[ arg
+			: <angle>
+		cat rotation-transform
+
+	e rotatey()
+		# Rotates an element around the vertical axis.
+		is function
+		is[ arg
+			: <angle>
+		cat rotation-transform
+	
+	e rotatez()
+		# Rotates an element around the z-axis.
+		is function
+		is[ arg
+			: <angle>
+		cat rotation-transform
+
+	e scale()
+		# Scales an element up or down on the 2D plane.
+		is function
+		is[ arg
+			: <number>
+			# sx
+		is[ arg
+			: <number>
+			# sy
+		cat scaling-transform
+
+	e scale3d()
+		# Scales an element up or down in 3D space.
+		is function
+		is[ arg
+			: <number>
+			# sx
+		is[ arg
+			: <number>
+			# sy
+		is[ arg
+			: <number>
+			# sz
+		cat scaling-transform
+
+	e scalex()
+		# Scales an element up or down horizontally.
+		is function
+		is[ arg
+			: <number>
+		cat scaling-transform
+
+	e scaley()
+		# Scales an element up or down vertically.
+		is function
+		is[ arg
+			: <number>
+		cat scaling-transform
+
+	e scalez()
+		# Scales an element up or down along the z-axis.
+		is function
+		is[ arg
+			: <number>
+		cat scaling-transform
+
+	e skew()
+		# Skews an element on the 2D plane.
+		is function
+		is[ arg
+			: <angle>
+			# ax
+		is[ arg
+			: <angle>
+			# ay
+		cat distortion-transform
+	
+	e skewx()
+		# Skews an element in the horizontal direction.
+		is function
+		is[ arg
+			: <angle>
+		cat distortion-transform
+	
+	e skewy()
+		# Skews an element in the vertical direction.
+		is function
+		is[ arg
+			: <angle>
+		cat distortion-transform
+	
+	e translate()
+		# Translates an element on the 2D plane.
+		is function
+		is[ arg
+			: <length>
+			# tx
+		is[ arg
+			: <length>
+			# ty
+		cat moving-transform
+	
+	e translate3d()
+		# Translates an element in 3D space.
+		is function
+		is[ arg
+			: <length>
+			# tx
+		is[ arg
+			: <length>
+			# ty
+		is[ arg
+			: <length>
+			# tz
+		cat moving-transform
+	
+	e translatex()
+		# Translates an element horizontally.
+		is function
+		is[ arg
+			: <length>
+		cat moving-transform
+	
+	e translatey()
+		# Translates an element vertically.
+		is function
+		is[ arg
+			: <length>
+		cat moving-transform
+	
+	e translatez()
+		# Translates an element along the z-axis.
+		is function
+		is[ arg
+			: <length>
+		cat moving-transform

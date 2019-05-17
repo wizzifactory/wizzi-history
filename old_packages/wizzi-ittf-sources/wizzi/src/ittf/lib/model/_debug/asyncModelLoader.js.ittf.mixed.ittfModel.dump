@@ -1,0 +1,424 @@
+  module  ids: 1 350
+    kind jsfile ids: 2 351
+    var path = require('path') ids: 3 352
+    var util = require('util') ids: 4 353
+    var async = require('async') ids: 5 354
+    var _ = require('lodash') ids: 6 355
+    var verify = require('../util/verify') ids: 7 356
+    var errors = require('../errors') ids: 8 357
+    var fail = require('../util/fail') ids: 9 358
+    var file = require('../util/file') ids: 10 359
+    var log ids: 11 360
+      _ require('../util/log') ids: 12 361
+        (  ids: 13 362
+          @ module ids: 14 363
+    +  ids: 15 364
+    function logme ids: 16 365
+      if false ids: 17 366
+        _ console.log.apply(console, arguments) ids: 18 367
+    +  ids: 19 368
+    wz-function loadMany ids: 20 369
+      param modelInfos ids: 21 370
+      param callback ids: 22 371
+      if modelInfos.length > 0 ids: 23 372
+        _ log.setLevel ids: 24 373
+          @ modelInfos[0].productionManager().options.verbose ids: 25 374
+      _ async.map ids: 26 375
+        @ modelInfos ids: 27 376
+        @ _load_item ids: 28 377
+        @ callback ids: 29 378
+    wz-function load ids: 30 379
+      param modelInfo ids: 31 380
+      param callback ids: 32 381
+      _ log.setLevel ids: 33 382
+        @ modelInfo.productionManager().options.verbose ids: 34 383
+      _ log.info ids: 35 384
+        @ 'Started.async.load.model' ids: 36 385
+        _ modelInfo.srcFullPath() ids: 37 386
+          ._ substr((modelInfo.productionManager().options.basedir.length + 1)) ids: 38 387
+      var modelInfos ids: 39 388
+        [  ids: 40 389
+          @ modelInfo ids: 41 390
+      _ async.map ids: 42 391
+        @ modelInfos ids: 43 392
+        @ _load_item ids: 44 393
+        function  ids: 45 394
+          param err ids: 46 395
+          param wizziModels ids: 47 396
+          if err ids: 48 397
+            return callback(err, null) ids: 49 398
+          _ log.info ids: 50 399
+            @ 'Ended.async.load.model' ids: 51 400
+            _ modelInfo.srcFullPath() ids: 52 401
+              ._ substr((modelInfo.productionManager().options.basedir.length + 1)) ids: 53 402
+          _ callback ids: 54 403
+            @ null ids: 55 404
+            @ wizziModels[0] ids: 56 405
+    #  ids: 57 406
+      # Load a single WizziModel using ModelInfo data ids: 58 407
+      # The master ModelInfo may contain one or many context ModelInfos ids: 59 408
+    wz-function _load_item ids: 60 409
+      param masterModelInfo ids: 61 410
+      param callback ids: 62 411
+      _ logme ids: 63 412
+        @ 'AsyncModelLoader._load_item.masterModelInfo.config' ids: 64 413
+        _ util.inspect ids: 65 414
+          @ masterModelInfo.config ids: 66 415
+          {  ids: 67 416
+            @ depth 3 ids: 68 417
+      if masterModelInfo.contexts && masterModelInfo.contexts.length > 0 ids: 69 418
+        # The master modelInfo has context ModelInfos, so it is templated. ids: 70 419
+        # First of all load recursively the context models ids: 71 420
+        +  ids: 72 421
+        # step 1 - set the production state on each contextModelInfo ids: 73 422
+        foreach contextModelInfo in masterModelInfo.contexts ids: 74 423
+          # set contextModelInfo.___state = masterModelInfo.___state ids: 75 424
+          _ logme ids: 76 425
+            @ 'AsyncModelLoader._load_item.context' ids: 77 426
+            @ contextModelInfo.id ids: 78 427
+            _ contextModelInfo.srcFullPath() ids: 79 428
+        +  ids: 80 429
+        # step 2 - recurse contextModelInfo loading ids: 81 430
+        _ async.map ids: 82 431
+          @ masterModelInfo.contexts ids: 83 432
+          @ _load_item ids: 84 433
+          function  ids: 85 434
+            param err ids: 86 435
+            param contextWizziModels ids: 87 436
+            if err ids: 88 437
+              _ log.error ids: 89 438
+                @ 'Error.AsyncModelLoader._load_item' ids: 90 439
+                _ util.inspect ids: 91 440
+                  @ err ids: 92 441
+                  {  ids: 93 442
+                    @ depth null ids: 94 443
+              return callback(err, null) ids: 95 444
+            # step 3 - prepare the loaded context model instances for the master model loading ids: 96 445
+            # if one context is a collection context, prepare the collection context ids: 97 446
+            var  ids: 98 447
+              decl wizziModelWithCollection = null ids: 99 448
+              decl collectionContextIndex = -1 ids: 100 449
+              decl loadingContext ids: 101 450
+                {  ids: 102 451
+            for var i = 0; i < contextWizziModels.length; i++ ids: 103 452
+              var contextWizziModel = contextWizziModels[i] ids: 104 453
+              set loadingContext[contextWizziModel.___exportName] = contextWizziModel ids: 105 454
+              if contextWizziModel.___coll ids: 106 455
+                set wizziModelWithCollection = contextWizziModel ids: 107 456
+                set collectionContextIndex = i ids: 108 457
+            if collectionContextIndex > -1 ids: 109 458
+              # Yes one of the loaded context models is a collection context. ids: 110 459
+              # step 3.b - Prepare the collection context. This is quite complex. ids: 111 460
+              # . We must have as many context objects as the items in the collection context ids: 112 461
+              # . Every context object has all the loaded context plus the ids: 113 462
+              # item of the collection context. ids: 114 463
+              # So the template of the artifact to be generate will have ids: 115 464
+              # available as a context its collection item plus all the other context models. ids: 116 465
+              $group  ids: 697 704
+                $args: collectionItemLoadDatas $params: varName, message|@@null
+                var ${varName} ids: 699 705
+                  _ prepareCollectionItemLoadDatas ids: 118 467
+                    @ masterModelInfo ids: 119 468
+                    @ contextWizziModels ids: 120 469
+                    @ wizziModelWithCollection ids: 121 470
+                    @ loadingContext ids: 122 471
+                if ${varName} && ${varName}.__is_error ids: 701 707
+                  log '__is_error ${message}', ${varName} ids: 702 708
+                  return callback(${varName}) ids: 703 709
+              if masterModelInfo.generatorRequireContextOnly ids: 123 472
+                # There is no source document for the artifact to be generated. ids: 124 473
+                # The ArtifactGenerator simply requires a context object. ids: 125 474
+                # So collect the loaded contexts in an array and pass them back. ids: 126 475
+                var collModelInstances ids: 127 476
+                  [  ids: 128 477
+                foreach itemLoadData in collectionItemLoadDatas ids: 129 478
+                  _ collModelInstances.push ids: 130 479
+                    _ _.assign ids: 131 480
+                      {  ids: 132 481
+                      @ itemLoadData.context ids: 133 482
+                      {  ids: 134 483
+                        @ ___collItem itemLoadData.itemObject ids: 135 484
+                _ callback(null, collModelInstances) ids: 136 485
+              else  ids: 137 486
+                # step 4.b - load a context for each item of the collection context ids: 138 487
+                _ async.map ids: 139 488
+                  @ collectionItemLoadDatas ids: 140 489
+                  @ load_collection ids: 141 490
+                  @ callback ids: 142 491
+            else  ids: 143 492
+              # step 3.1 - load the context model ids: 144 493
+              _ masterModelInfo.getWizziModelFactory ids: 145 494
+                $group  ids: 710 720
+                  $args: wizziModelFactory  $params: result
+                  function  ids: 712 721
+                    param err ids: 713 722
+                    param ${result} ids: 714 723
+                    if err ids: 715 724
+                      return  ids: 716 725
+                        _ callback ids: 717 726
+                          @ err ids: 718 727
+                    var ittfLoadContext ids: 147 496
+                      _ _.assign ids: 148 497
+                        {  ids: 149 498
+                        @ masterModelInfo.productionManager().globalContext || {} ids: 150 499
+                        @ loadingContext ids: 151 500
+                    set ittfLoadContext.__productionManager = masterModelInfo.productionManager() ids: 152 501
+                    _ wizziModelFactory ids: 153 502
+                      _ masterModelInfo.srcFullPath() ids: 154 503
+                      @ ittfLoadContext ids: 155 504
+                      $group  ids: 710 729
+                        $args: wizziModel  $params: result
+                        function  ids: 712 730
+                          param err ids: 713 731
+                          param ${result} ids: 714 732
+                          if err ids: 715 733
+                            return  ids: 716 734
+                              _ callback ids: 717 735
+                                @ err ids: 718 736
+                          set wizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema) ids: 157 506
+                          if masterModelInfo.coll ids: 158 507
+                            set wizziModel.___coll = masterModelInfo.coll ids: 159 508
+                          _ logme ids: 160 509
+                            @ 'AsyncModelLoader._load_item' ids: 161 510
+                            @ 'success with loadingContext no collectionContext, masterModelInfo' ids: 162 511
+                            @ masterModelInfo.id ids: 163 512
+                            @ 'exportName' ids: 164 513
+                            @ wizziModel.___exportName ids: 165 514
+                          _ callback(null, wizziModel) ids: 166 515
+      else  ids: 167 516
+        # The master modelInfo has no context ModelInfos ids: 168 517
+        # simply load it ids: 169 518
+        var srcFullPath = masterModelInfo.srcFullPath() ids: 170 519
+        _ masterModelInfo.getWizziModelFactory ids: 171 520
+          $group  ids: 710 738
+            $args: wizziModelFactory  $params: result
+            function  ids: 712 739
+              param err ids: 713 740
+              param ${result} ids: 714 741
+              if err ids: 715 742
+                return  ids: 716 743
+                  _ callback ids: 717 744
+                    @ err ids: 718 745
+              var ittfLoadContext ids: 173 522
+                _ _.assign ids: 174 523
+                  {  ids: 175 524
+                  {  ids: 176 525
+                  @ (masterModelInfo.productionManager().globalContext || {}) ids: 177 526
+              set ittfLoadContext.__productionManager = masterModelInfo.productionManager() ids: 178 527
+              _ wizziModelFactory ids: 179 528
+                @ srcFullPath ids: 180 529
+                @ ittfLoadContext ids: 181 530
+                $group  ids: 710 747
+                  $args: wizziModel $params: result
+                  function  ids: 712 748
+                    param err ids: 713 749
+                    param ${result} ids: 714 750
+                    if err ids: 715 751
+                      return  ids: 716 752
+                        _ callback ids: 717 753
+                          @ err ids: 718 754
+                    if masterModelInfo.transformers && masterModelInfo.transformers.length > 0 ids: 183 532
+                      _ recurseTransform ids: 184 533
+                        @ masterModelInfo.transformers ids: 185 534
+                        @ 0 ids: 186 535
+                        @ wizziModel ids: 187 536
+                        @ masterModelInfo ids: 188 537
+                        $group  ids: 710 756
+                          $args: transformedWizziModel $params: result
+                          function  ids: 712 757
+                            param err ids: 713 758
+                            param ${result} ids: 714 759
+                            if err ids: 715 760
+                              return  ids: 716 761
+                                _ callback ids: 717 762
+                                  @ err ids: 718 763
+                            set transformedWizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema) ids: 190 539
+                            if masterModelInfo.coll ids: 192 540
+                              # this wizziModel is a context model from which ids: 193 541
+                              # will be extracted a collection context, ids: 194 542
+                              # when bubbling up from the recursive loading ids: 195 543
+                              set transformedWizziModel.___coll = masterModelInfo.coll ids: 196 544
+                            # cache the loaded model, one day, may be, will be useful ids: 197 545
+                            set masterModelInfo.productionManager().setStateModel(srcFullPath, transformedWizziModel) ids: 198 546
+                            _ logme ids: 199 547
+                              @ 'AsyncModelLoader._load_item' ids: 200 548
+                              @ 'success after transformation, masterModelInfo' ids: 201 549
+                              @ masterModelInfo.id ids: 202 550
+                              @ 'exportName' ids: 203 551
+                              @ wizziModel.___exportName ids: 204 552
+                            _ callback(null, transformedWizziModel) ids: 205 553
+                    else  ids: 206 554
+                      set wizziModel.___exportName = (masterModelInfo.exportName || masterModelInfo.schema) ids: 207 555
+                      if masterModelInfo.coll ids: 209 556
+                        # this wizziModel is a context model from which ids: 210 557
+                        # will be extracted a collection context, ids: 211 558
+                        # when bubbling up from the recursive loading ids: 212 559
+                        set wizziModel.___coll = masterModelInfo.coll ids: 213 560
+                      # cache the loaded model, one day, may be, will be useful ids: 214 561
+                      set masterModelInfo.productionManager().setStateModel(srcFullPath, wizziModel) ids: 215 562
+                      _ logme ids: 216 563
+                        @ 'AsyncModelLoader._load_item' ids: 217 564
+                        @ 'success, masterModelInfo' ids: 218 565
+                        @ masterModelInfo.id ids: 219 566
+                        @ 'exportName' ids: 220 567
+                        @ wizziModel.___exportName ids: 221 568
+                      _ callback(null, wizziModel) ids: 222 569
+    wz-function recurseTransform ids: 223 570
+      param modelTransformers ids: 224 571
+      param index ids: 225 572
+      param instance ids: 226 573
+      param modelInfo ids: 227 574
+      param callback ids: 228 575
+      if index >= modelTransformers.length ids: 229 576
+        return callback(null, instance) ids: 230 577
+      var transformerConfig = modelTransformers[index] ids: 231 578
+      _ modelInfo.getModelTransformer ids: 232 579
+        @ transformerConfig.name ids: 233 580
+        $group  ids: 710 765
+          $args: modelTransformer  $params: result
+          function  ids: 712 766
+            param err ids: 713 767
+            param ${result} ids: 714 768
+            if err ids: 715 769
+              return  ids: 716 770
+                _ callback ids: 717 771
+                  @ err ids: 718 772
+            _ modelTransformer ids: 235 582
+              @ instance ids: 236 583
+              {  ids: 237 584
+              $group  ids: 710 774
+                $args: transformedWizziModel $params: result
+                function  ids: 712 775
+                  param err ids: 713 776
+                  param ${result} ids: 714 777
+                  if err ids: 715 778
+                    return  ids: 716 779
+                      _ callback ids: 717 780
+                        @ err ids: 718 781
+                  if transformerConfig.dumpFile ids: 239 586
+                    _ file.writeJSON ids: 240 587
+                      @ transformerConfig.dumpFile ids: 241 588
+                      @ transformedWizziModel ids: 242 589
+                  _ recurseTransform ids: 243 590
+                    @ modelTransformers ids: 244 591
+                    @ index + 1 ids: 245 592
+                    @ transformedWizziModel ids: 246 593
+                    @ modelInfo ids: 247 594
+                    @ callback ids: 248 595
+    wz-function prepareCollectionItemLoadDatas ids: 249 596
+      param modelInfo ids: 250 597
+      param wizziModelContexts ids: 251 598
+      param wizziModelWithCollection ids: 252 599
+      param loadingContext ids: 253 600
+      _ logme ids: 254 601
+        @ 'prepareCollectionItemLoadDatas' ids: 255 602
+        @ 'modelInfo' ids: 256 603
+        @ modelInfo.id ids: 257 604
+      var collName = wizziModelWithCollection.___coll.name ids: 258 605
+      var collItemExportName = wizziModelWithCollection.___coll.itemName ids: 259 606
+      _ logme ids: 260 607
+        @ 'prepareCollectionItemLoadDatas' ids: 261 608
+        @ 'collName, collItemExportName' ids: 262 609
+        @ collName ids: 263 610
+        @ collItemExportName ids: 264 611
+      var collectionArray = wizziModelWithCollection[collName] ids: 265 612
+      if !verify.isArray(collectionArray) ids: 266 613
+        return  ids: 267 614
+          _ error ids: 268 615
+            @ 'Collection is not an array. Name: ' + collName + ', ' + modelInfo.toString() ids: 269 616
+            @ 'prepareCollectionItemLoadDatas' ids: 270 617
+      var  ids: 271 618
+        decl itemLoadDatas ids: 272 619
+          [  ids: 273 620
+        decl context ids: 274 621
+      foreach itemObject in collectionArray ids: 275 622
+        set context ids: 276 623
+          _ _.assign ids: 277 624
+            {  ids: 278 625
+            @ loadingContext ids: 279 626
+        set context[collItemExportName] = itemObject ids: 280 627
+        _ itemLoadDatas.push ids: 281 628
+          {  ids: 282 629
+            @ modelInfo modelInfo ids: 283 630
+            @ itemObject itemObject ids: 284 631
+            @ context context ids: 285 632
+        if itemLoadDatas.length == 1 ids: 286 633
+          for var k in context ids: 287 634
+            _ logme('prepareCollectionItemLoadDatas', 'context exportName', k) ids: 288 635
+        _ logme ids: 289 636
+          @ 'prepareCollectionItemLoadDatas' ids: 290 637
+          @ 'itemObject' ids: 291 638
+          @ itemObject.wzName ids: 292 639
+      return itemLoadDatas ids: 293 640
+    #  ids: 294 641
+      # Load a single WizziModel using a single collection item as a context. ids: 295 642
+      # param collectionLoadData:Object { ids: 296 643
+      # modelInfo:Object { ids: 297 644
+      # schema:String, ids: 298 645
+      # ___state:Object { ids: 299 646
+      # pman:Object // ProductionManager ids: 300 647
+      # }, ids: 301 648
+      # srcFullPath:Function { ids: 302 649
+      # }, ids: 303 650
+      # context: Object { // prepared by prepareCollectionItemLoadDatas ids: 304 651
+      # } ids: 305 652
+      # } ids: 306 653
+    wz-function load_collection ids: 307 654
+      param collectionLoadData ids: 308 655
+      param callback ids: 309 656
+      var  ids: 310 657
+        decl modelInfo = collectionLoadData.modelInfo ids: 311 658
+        decl context = collectionLoadData.context ids: 312 659
+        decl itemObject = collectionLoadData.itemObject ids: 313 660
+      _ modelInfo.getWizziModelFactory ids: 314 661
+        $group  ids: 710 783
+          $args: wizziModelFactory  $params: result
+          function  ids: 712 784
+            param err ids: 713 785
+            param ${result} ids: 714 786
+            if err ids: 715 787
+              return  ids: 716 788
+                _ callback ids: 717 789
+                  @ err ids: 718 790
+            _ logme ids: 316 663
+              @ "AsyncModelLoader.load_collection" ids: 317 664
+              @ "modelInfo" ids: 318 665
+              @ modelInfo.id ids: 319 666
+              @ "schema" ids: 320 667
+              @ modelInfo.schema ids: 321 668
+            var ittfLoadContext ids: 322 669
+              _ _.assign ids: 323 670
+                {  ids: 324 671
+                @ modelInfo.productionManager().globalContext || {} ids: 325 672
+                @ context ids: 326 673
+            set ittfLoadContext.__productionManager = modelInfo.productionManager() ids: 327 674
+            log 'asyncModelLoader.load_collection.ittfLoadContext', ittfLoadContext ids: 328 675
+            _ wizziModelFactory ids: 329 676
+              _ modelInfo.srcFullPath() ids: 330 677
+              @ ittfLoadContext ids: 331 678
+              $group  ids: 710 792
+                $args: wizziModel  $params: result
+                function  ids: 712 793
+                  param err ids: 713 794
+                  param ${result} ids: 714 795
+                  if err ids: 715 796
+                    return  ids: 716 797
+                      _ callback ids: 717 798
+                        @ err ids: 718 799
+                  _ logme ids: 333 680
+                    @ "AsyncCollectionModelLoader.load" ids: 334 681
+                    @ "success, root" ids: 335 682
+                    @ wizziModel.wzTag ids: 336 683
+                    @ wizziModel.wzName ids: 337 684
+                  set wizziModel.___collItem = itemObject ids: 338 685
+                  _ callback(null, wizziModel) ids: 339 686
+    function error ids: 340 687
+      param message ids: 341 688
+      param method ids: 342 689
+      var err ids: 343 690
+        {  ids: 344 691
+          @ __is_error true ids: 345 692
+          @ message message ids: 346 693
+          @ source "wizzi/lib/model/asyncModelLoader/" + method ids: 347 694
+      _ logme(err) ids: 348 695
+      return err ids: 349 696

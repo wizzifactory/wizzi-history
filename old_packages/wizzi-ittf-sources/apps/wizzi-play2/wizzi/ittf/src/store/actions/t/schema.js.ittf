@@ -1,0 +1,662 @@
+﻿$group
+	$params &app
+	
+	+
+	
+	decl( SCHEMA_SELECTION )
+	decl( SELECT_ITTF_KIND )
+	decl( EXAMPLE_ITTF_CONTENT_CHANGED )
+	decl( FRAGMENT_ITTF_CONTENT_CHANGED )
+	decl( SNIPPET_CODE_CONTENT_CHANGED )
+	decl_rsf( example, select )
+	decl_rsf( example, add )
+	decl_rsf( example, rename )
+	decl_rsf( example, remove )
+	decl_rsf( fragment, select )
+	decl_rsf( fragment, add )
+	decl_rsf( fragment, rename )
+	decl_rsf( fragment, remove )
+	decl_rsf( snippet, select )
+	decl_rsf( snippet, add )
+	decl_rsf( snippet, rename )
+	decl_rsf( snippet, remove )
+	
+	+
+	
+	wz-const selectIttfKind
+		=>
+			param selectedIttfKind
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					_ dispatch
+						_ completeSelectIttfKind
+							@ selectedIttfKind
+					
+					if selectedIttfKind === 'examples'
+						_ dispatch
+							_ selectExample(null)
+					elif selectedIttfKind === 'snippets'
+						_ dispatch
+							_ selectSnippet(null)
+					else
+						_ dispatch
+							_ selectFragment(null)
+
+	wz-const completeSelectIttfKind
+		=>
+			param selectedIttfKind
+			return
+				{
+					@ type SELECT_ITTF_KIND
+					@ selectedIttfKind selectedIttfKind
+
+
+	wz-const selectSchema
+		=>
+			param schemaName
+			param exampleName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					log '*** store.actions.schema.selectSchema', schemaName, exampleName
+
+					const schemaState = getState().schema
+					const schemaObject = schemaState.schemas[schemaName]
+
+					_ dispatch
+						_ completeSelectSchema
+							@ schemaName
+
+					if schemaState.selectedIttfKind === 'examples'
+
+						if !exampleName || exampleName.length < 1
+							const exampleObject = schemaObject.examples && schemaObject.examples.length > 0 ? schemaObject.examples[0] : null
+							set exampleName = exampleObject ? (exampleObject.name || 'default') : 'default'
+					
+						log '*** store.actions.schema.selectSchema before selectExample dispatch', schemaName, exampleName
+						
+						_ dispatch
+							_ selectExample
+								@ exampleName
+
+					elif schemaState.selectedIttfKind === 'snippets'
+
+						var snippetName = exampleName
+						
+						if !snippetName || snippetName.length < 1
+							const snippetObject = schemaObject.snippets && schemaObject.snippets.length > 0 ? schemaObject.snippets[0] : null
+							set snippetName = snippetObject ? (snippetObject.name || 'default') : 'default'
+					
+						log '*** store.actions.schema.selectSchema before selectSnippet dispatch', schemaName, snippetName
+
+						_ dispatch
+							_ selectSnippet
+								@ snippetName
+
+					else
+
+						var fragmentName = exampleName
+						
+						if !fragmentName || fragmentName.length < 1
+							const fragmentObject = schemaObject.fragments && schemaObject.fragments.length > 0 ? schemaObject.fragments[0] : null
+							set fragmentName = fragmentObject ? (fragmentObject.name || 'default') : 'default'
+					
+						log '*** store.actions.schema.selectSchema before selectFragment dispatch', schemaName, fragmentName
+
+						_ dispatch
+							_ selectFragment
+								@ fragmentName
+
+
+	wz-const completeSelectSchema
+		=>
+			param schemaName
+			return
+				{
+					@ type SCHEMA_SELECTION
+					@ schema schemaName
+	
+	wz-const selectDocument
+		=>
+			param documentName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					const schemaState = getState().schema
+
+					log '*** store.actions.schema.selectDocument', documentName, schemaState
+
+					if schemaState.selectedIttfKind === 'examples'
+						_ dispatch
+							_ selectExample(documentName)
+					elif schemaState.selectedIttfKind === 'snippets'
+						_ dispatch
+							_ selectSnippet(documentName)
+					else
+						_ dispatch
+							_ selectFragment(documentName)
+
+	# thunk.withExtraArgument
+	wz-const selectExample
+		=>
+			param exampleName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					log '*** store.actions.schema.selectExample', exampleName
+					
+					const schemaState = getState().schema
+					const schemaObject = schemaState.schemas[schemaState.selectedSchema]
+					
+					if exampleName == null
+						log '-1> selectedIttfKind has been changed, look for previous example'
+						if schemaState.selectedExample && schemaState.selectedExample.length > 0
+							set exampleName = schemaState.selectedExample
+							log 'found previous ', exampleName
+						else
+							if schemaState.filteredExamples.length > 0
+								set exampleName = schemaState.filteredExamples[0].name
+								log '-1> selected first of schema ', exampleName
+							else
+								log '-1> fall back to default ', exampleName
+								set fragmentName = 'default'
+
+					_ dispatch
+						_ requestSelectExample
+
+					const wizziStore
+						_ extraArgument.WizziStore.getInstance
+
+					_ wizziStore.getExample
+						@ schemaState.selectedSchema
+						@ exampleName
+						f_cb_no_err( exampleItem )
+							# log '*** store.actions.schema.selectExample. getExample err, exampleItem', err, exampleItem
+							# return
+							if err
+								log '*** store.actions.schema.selectExample. getExample err', err
+								# TODO manage exception
+								throw err
+
+							if exampleItem == null
+								
+								var exampleObject
+								
+								# TODO simply add a new fragment, no data in exampleObject.ittf
+
+								if schemaObject.examples
+									_ schemaObject.examples.map
+										=>
+											param item
+											if item.name == exampleName
+												set exampleObject = item
+								
+								if exampleObject && exampleObject.ittf 
+									
+									throw new Error("Unexpected in store.actions.schema.selectExample")
+									
+									const ittf = exampleObject.ittf.join('\n') 
+									
+									_ dispatch
+										_ completeSelectExample
+											@ exampleName
+											@ ittf
+								
+									_ dispatch
+										_ updateIttfMTree
+											@ ittf
+								
+									_ dispatch
+										_ changeExampleMainIttf
+											@ schemaState.selectedSchema
+											@ exampleName
+											@ ittf
+
+								else
+									_ dispatch
+										_ addExample
+											@ schemaState.selectedSchema
+											@ exampleName
+
+							else
+
+								log '*** store.actions.schema.selectExample. retrieved exampleItem.data.content', exampleItem.data.content
+								
+								_ dispatch
+									_ completeSelectExample
+										@ exampleName
+										@ exampleItem.data.content
+								
+								_ dispatch
+									_ updateIttfMTree
+										@ exampleItem.data.content
+								
+								$if app.testNoArtifactGeneration == false
+									_ dispatch
+										_ generateArtifact
+											@ schemaState.selectedSchema
+											@ exampleName
+
+	wz-const requestSelectExample
+		=>
+			param exampleName
+			return
+				{
+					@ type SELECT_EXAMPLE_REQUEST
+					@ example exampleName
+
+	wz-const completeSelectExample
+		=>
+			param exampleName
+			param ittfContent
+			return
+				{
+					@ type SELECT_EXAMPLE_SUCCESS
+					@ example exampleName
+					@ ittfContent ittfContent
+
+	wz-const changeDocumentContent
+		=>
+			param content
+			# Called by Editor 
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					const schemaState = getState().schema
+					log '*** store.actions.schema.changeDocumentContent', schemaState
+
+					if schemaState.selectedIttfKind === "examples"
+						_ dispatch
+							_ changeExampleMainIttf
+								@ schemaState.selectedSchema
+								@ schemaState.selectedExample
+								@ content
+					elif schemaState.selectedIttfKind === "snippets"
+						_ dispatch
+							_ changeSnippetCode
+								@ schemaState.selectedSchema
+								@ schemaState.selectedSnippet
+								@ content
+					else
+						_ dispatch
+							_ changeIttfFragment
+								@ schemaState.selectedSchema
+								@ schemaState.selectedFragment
+								@ content
+
+
+	# thunk.withExtraArgument
+	wz-const changeExampleMainIttf
+		=>
+			param schemaName
+			param exampleName
+			param ittfContent
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					_ dispatch
+						_ updateStoredDocument
+							@ schemaName
+							@ exampleName
+							@ ittfContent
+							{
+								@ isFragment false
+
+					_ dispatch
+						_ updateIttfMTree
+							@ ittfContent
+					
+					$if app.testNoArtifactGeneration == false
+						_ dispatch
+							_ scheduleGenerateArtifact
+								@ schemaName
+								@ exampleName
+
+	wz-const changeExampleIttfContent
+		=>
+			param ittfContent
+			return
+				{
+					@ type EXAMPLE_ITTF_CONTENT_CHANGED
+					@ ittfContent ittfContent
+
+
+	# thunk.withExtraArgument
+	wz-const selectFragment
+		=>
+			param fragmentName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					log '*** store.actions.schema.selectFragment', fragmentName
+					
+					const schemaState = getState().schema
+					const schemaObject = schemaState.schemas[schemaState.selectedSchema]
+
+					if fragmentName == null
+						log 'selectFragment. selectedIttfKind has been changed, look for previous example'
+						if schemaState.selectedFragment && schemaState.selectedFragment.length > 0
+							set fragmentName = schemaState.selectedFragment
+						else
+							if schemaState.filteredFragments.length > 0
+								set fragmentName = schemaState.filteredFragments[0].name
+							else
+								set fragmentName = 'default'
+
+					_ dispatch
+						_ requestSelectFragment
+
+					const wizziStore
+						_ extraArgument.WizziStore.getInstance
+						
+					_ wizziStore.getFragment
+						@ schemaState.selectedSchema
+						@ fragmentName
+						f_cb_no_err( fragmentContent )
+							log '*** store.actions.schema.selectFragment. retrieve err, fragmentContent', err, fragmentContent
+							if err
+								log '*** store.actions.schema.selectFragment. retrieve err', err
+								# TODO manage exception
+								throw err
+
+							if typeof fragmentContent === 'undefined' || fragmentContent == null
+								
+								# TODO simply add a new fragment, no data in fragmentObject.ittf
+
+								var fragmentObject
+								
+								if schemaObject.fragments
+									_ schemaObject.fragments.map
+										=>
+											param item
+											if item.name == fragmentName
+												set fragmentObject = item
+
+								if fragmentObject && fragmentObject.ittf 
+									
+									const ittf = fragmentObject.ittf.join('\n') 
+								
+									_ dispatch
+										_ completeSelectFragment
+											@ fragmentName
+											@ ittf
+								
+									_ dispatch
+										_ updateIttfMTree
+											@ ittf
+								
+									_ dispatch
+										_ changeIttfFragment
+											@ schemaState.selectedSchema
+											@ fragmentName
+											@ ittf
+								
+								else
+									
+									_ dispatch
+										_ addFragment
+											@ schemaState.selectedSchema
+											@ fragmentName
+							
+							else
+
+								log '*** store.actions.schema.selectFragment. fragmentName, content', fragmentName, fragmentContent
+								
+								_ dispatch
+									_ completeSelectFragment
+										@ fragmentName
+										@ fragmentContent
+								
+								_ dispatch
+									_ updateIttfMTree
+										@ fragmentContent
+
+	wz-const requestSelectFragment
+		=>
+			param fragmentName
+			return
+				{
+					@ type SELECT_FRAGMENT_REQUEST
+					@ fragment fragmentName
+
+	wz-const completeSelectFragment
+		=>
+			param fragmentName
+			param ittfContent
+			return
+				{
+					@ type SELECT_FRAGMENT_SUCCESS
+					@ fragment fragmentName
+					@ ittfContent ittfContent
+
+
+	# thunk.withExtraArgument
+	wz-const changeIttfFragment
+		=>
+			param schemaName
+			param fragmentName
+			param ittfContent
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					_ dispatch
+						_ updateStoredDocument
+							@ schemaName
+							@ fragmentName
+							@ ittfContent
+							{
+								@ isFragment true
+
+					_ dispatch
+						_ updateIttfMTree
+							@ ittfContent
+
+					$if app.testNoArtifactGeneration == false
+						const schemaState = getState().schema
+						if schemaState.selectedExample && schemaState.selectedExample.length > 0
+							_ dispatch
+								_ scheduleGenerateArtifact
+									@ schemaName
+									@ schemaState.selectedExample
+					
+	wz-const changeFragmentIttfContent
+		=>
+			param ittfContent
+			return
+				{
+					@ type FRAGMENT_ITTF_CONTENT_CHANGED
+					@ ittfContent ittfContent
+
+
+	# thunk.withExtraArgument
+	wz-const selectSnippet
+		=>
+			param snippetName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					log '*** store.actions.schema.selectSnippet', snippetName
+					
+					const schemaState = getState().schema
+					const schemaObject = schemaState.schemas[schemaState.selectedSchema]
+
+					if snippetName == null
+						log 'selectSnippet. selectedIttfKind has been changed, look for previous example'
+						if schemaState.selectedSnippet && schemaState.selectedSnippet.length > 0
+							set snippetName = schemaState.selectedSnippet
+						else
+							if schemaState.filteredSnippets.length > 0
+								set snippetName = schemaState.filteredSnippets[0].name
+							else
+								set snippetName = 'default'
+
+					_ dispatch
+						_ requestSelectSnippet
+
+					const wizziStore
+						_ extraArgument.WizziStore.getInstance
+						
+					log 'selectSnippet.getSnippet', schemaState.selectedSchema, snippetName
+					_ wizziStore.getSnippet
+						@ schemaState.selectedSchema
+						@ snippetName
+						f_cb_no_err( snippetItem )
+							log '*** store.actions.schema.selectSnippet. retrieve err, snippetItem', err, snippetItem
+							if err
+								log '*** store.actions.schema.selectSnippet. retrieve err', err
+								# TODO manage exception
+								throw err
+
+							if typeof snippetItem === 'undefined' || snippetItem == null
+								
+								# TODO simply add a new snippet, no data in snippetObject.ittf
+
+								var snippetObject
+								
+								if schemaObject.snippets
+									_ schemaObject.snippets.map
+										=>
+											param item
+											if item.name == snippetName
+												set snippetObject = item
+
+								if snippetObject && snippetObject.ittf 
+									
+									throw new Error("Unexpected in store.actions.schema.selectSnippet")
+
+									const ittf = snippetObject.ittf.join('\n') 
+								
+									_ dispatch
+										_ completeSelectSnippet
+											@ snippetName
+											@ ittf
+								
+									_ dispatch
+										_ updateIttfMTree
+											@ ittf
+								
+									_ dispatch
+										_ changeIttfSnippet
+											@ schemaState.selectedSchema
+											@ snippetName
+											@ ittf
+								
+								else
+									
+									_ dispatch
+										_ addSnippet
+											@ schemaState.selectedSchema
+											@ snippetName
+							
+							else
+
+								log '*** store.actions.schema.selectSnippet. snippetName, content', snippetName, snippetItem
+
+								_ dispatch
+									_ completeSelectSnippet
+										@ snippetName
+										@ snippetItem.data.content
+								
+								_ dispatch
+									_ updateCodeAST
+										@ schemaState.selectedSchema
+										@ snippetItem.data.content
+								
+								$if app.testNoWizzify == false
+									_ dispatch
+										_ wizzifySnippet
+											@ schemaState.selectedSchema
+											@ snippetName
+											@ snippetItem.data.content
+
+	wz-const requestSelectSnippet
+		=>
+			param snippetName
+			return
+				{
+					@ type SELECT_SNIPPET_REQUEST
+					@ snippet snippetName
+
+	wz-const completeSelectSnippet
+		=>
+			param snippetName
+			param codeContent
+			return
+				{
+					@ type SELECT_SNIPPET_SUCCESS
+					@ snippet snippetName
+					@ codeContent codeContent
+
+
+	# thunk.withExtraArgument
+	wz-const changeSnippetCode
+		=>
+			param schemaName
+			param snippetName
+			param codeContent
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					_ dispatch
+						_ updateStoredDocument
+							@ schemaName
+							@ snippetName
+							@ codeContent
+							{
+								@ isSnippet true
+
+					_ dispatch
+						_ updateCodeAST
+							@ schemaName
+							@ codeContent
+
+					$if app.testNoWizzify == false
+						const schemaState = getState().schema
+						if schemaState.selectedSnippet && schemaState.selectedSnippet.length > 0
+							_ dispatch
+								_ scheduleWizzifySnippet
+									@ schemaName
+									@ schemaState.selectedSnippet
+									@ codeContent
+
+	wz-const changeSnippetCodeContent
+		=>
+			param codeContent
+			return
+				{
+					@ type SNIPPET_CODE_CONTENT_CHANGED
+					@ codeContent codeContent
+
+	listCrud( Example )
+	listCrud( Fragment )
+	listCrud( Snippet )

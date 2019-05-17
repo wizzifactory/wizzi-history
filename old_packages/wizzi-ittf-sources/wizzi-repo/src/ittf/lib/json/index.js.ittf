@@ -1,0 +1,59 @@
+﻿module
+	kind es6
+
+	var async = require('async')
+	
+	var md = {}
+	set module.exports = md
+
+	var Collection = require('../utils/collection')
+
+	set md.directoryTree = require('./directoryTree')
+	set md.FsJson = require('./fs/fsjson')
+	set md.Document = require('./fs/document')
+
+	set md.createDocumentManager
+		function
+			param fsJsonData
+			set fsJsonData = fsJsonData || {}
+			set fsJsonData.items = fsJsonData.items || []
+			set fsJsonData.documents = fsJsonData.documents || []
+			var fsJson = new md.FsJson(fsJsonData)
+			return new md.Document(fsJson)
+
+	set md.createJsonFsData
+		function
+			param documents
+			param callback
+			const doc = this.createDocumentManager()
+			_ async.map
+				@ documents
+				=>
+					param document
+					param callback
+					_ doc.writeFile
+						@ document.path
+						@ document.content
+						@ callback
+				f_cb()
+					_ doc.toJson
+						@ callback
+
+	set md.addToJsonFsData
+		function
+			param fsJsonData
+			param documents
+			param callback
+			const doc = this.createDocumentManager(fsJsonData)
+			_ async.map
+				@ documents
+				=>
+					param document
+					param callback
+					_ doc.writeFile
+						@ document.path
+						@ document.content
+						@ callback
+				f_cb()
+					_ doc.toJson
+						@ callback

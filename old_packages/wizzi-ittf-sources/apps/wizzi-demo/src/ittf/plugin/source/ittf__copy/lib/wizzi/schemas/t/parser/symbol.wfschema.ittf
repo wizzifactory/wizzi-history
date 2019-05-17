@@ -1,0 +1,116 @@
+﻿$group
+
+	e_tag( symbol, sym, node )
+		a_flag( start )
+		a_tag( typeName, type-name )
+		a_tag( astChildren, ast-children )
+			type integer
+			default 0
+		a_tag( operatorChild, operator-child )
+			type integer
+
+		m wzInitialize
+			var root = this.wzRoot()
+			if root.symbols[this.wzName]
+				throw new Error('Duplicated symbol: ' + this.wzName)
+			set root.symbols[this.wzName] = this
+			if this.start
+				set root.start = this
+			set this.typeName = this.typeName || this.wzName
+			if this.operatorChild === -1
+				set this.operators = findOperators(this)
+				# log '--------------- sym this.operators', this.operators
+			if countParseChildren(this) > 1
+				# default to ampersand
+				var savenodes = getParseChildren(this)
+				var othernodes = getNoParseChildren(this)
+				set this.nodes = []
+				var amp
+					_ this.wzCreateChildColl
+						@ '&'
+						@ ''
+						@ md.ampersand
+						@ this.nodes
+				foreach item in othernodes
+					_ amp.wzAddChildToColl(item, amp.nodes)
+				foreach item in savenodes
+					_ amp.wzAddChildToColl(item, amp.nodes)
+				_ amp.wzInitialize(ctx)
+
+		m match
+			param state
+			if !this.parserNodes
+				set this.parserNodes = getParseChildren(this)
+			if this.parserNodes && this.parserNodes.length === 1
+				# log 'enter sym', this.wzName
+				var ret = this.parserNodes[0].match(state)
+				if state.pos < state.tokens.length
+					# log ret.ok, 'sym', this.wzName, 'pos', state.pos, 'next', state.tokens[state.pos].type, state.tokens[state.pos].value, '/', state.tokens[state.pos].valueCapture, 'ast children', (ret.ast && ret.ast.content.length && ret.ast.content), this.astChildren, (ret.ast && ret.ast.type)
+				else
+					# log ret.ok, 'sym', this.wzName, 'pos', state.pos, 'ast children',(ret.ast && ret.ast.content.length && ret.ast.content), this.astChildren, (ret.ast && ret.ast.type)
+				if ret.ok
+					# log 'sym', this.wzName, '** matched'
+					if ret.ast && !ret.opterr
+						if ret.ast.type === this.wzName
+							return ret
+						elif ret.ast.type === 'KEPT'
+							return
+								{
+									@ ok true
+									@ ast
+										{
+											@ type this.typeName
+											@ content ret.ast.content
+						else
+							var okSymbol = this.astChildren === 0
+							if !okSymbol
+								if verify.isArray(ret.ast.content)
+									set okSymbol = ret.ast.content.length >= this.astChildren 
+							if okSymbol
+								# probabbly we must create ast of symbol
+								var ast
+									{
+										@ type this.typeName
+										@ content []
+								if verify.isNumber(this.operatorChild)
+									# log 'this.operatorChild', this.operatorChild
+									if this.operatorChild === -1
+										# log 'this.operators start', this.operators
+										# create ast of symbol only if ret.ast.content collection has an operator item
+										# search operator in ret.ast.content collection
+										var found = -1
+										for var i=0; i<ret.ast.content.length; i++
+											# log 'this.operators start', this.operators, 'item', i, ret.ast.content[i].content
+											if this.operators.indexOf(ret.ast.content[i].content) > -1
+												# log 'this.operators start', this.operators, 'item', i, ret.ast.content[i].content, 'found'
+												set ast.operator = ret.ast.content[i].content
+												set found = i
+										if found > -1
+											# operator found, has been set on ast of symbol, we can delete it from ret.ast.content
+											_ ret.ast.content.splice(found, 1)
+										else
+											# operator not found, do not create ast of symbol
+											return ret
+									elif verify.isArray(ret.ast.content) && (this.operatorChild -1) < ret.ast.content.length
+										# the grammar says the operator is at index == this.operatorChild -1
+										# set operator on ast of symbol and delete it from ret.ast.content
+										set ast.operator = ret.ast.content[this.operatorChild-1].content
+										_ ret.ast.content.splice(this.operatorChild-1, 1)
+								# create ast of symbol
+								return
+									{
+										@ ok true
+										@ ast loadAST(ast, ret.ast)
+							else
+								return ret
+					else
+						# log 'sym.ret|ast', this.wzName, ret
+						return ret
+				else
+					# log 'sym', this.wzName, 'failed'
+					return ret
+			else
+				# log 'symbol. this.nodes', getParseChildren(this)
+				_ this.error
+					@ 'symbol element node must have one single child'
+					@ this

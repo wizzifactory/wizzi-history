@@ -1,0 +1,37 @@
+﻿$group
+	$params name
+
+	$
+		var namelower = name.toLowerCase()
+
+	@ dispatchAdd${name}
+		=>
+			param schemaName
+			param ${namelower}Name
+			log 'dispatchAdd${name}', schemaName, ${namelower}Name
+			_ dispatch
+				_ add${name}
+					@ schemaName
+					@ ${namelower}Name
+
+	@ dispatchRename${name}
+		=>
+			param schemaName
+			param old${name}
+			param new${name}
+			log 'dispatchRename${name}', old${name}, new${name}
+			_ dispatch
+				_ rename${name}
+					@ schemaName
+					@ old${name}
+					@ new${name}
+
+	@ dispatchRemove${name}
+		=>
+			param schemaName
+			param ${namelower}Name
+			log 'dispatchRemove${name}', schemaName, ${namelower}Name
+			_ dispatch
+				_ remove${name}
+					@ schemaName
+					@ ${namelower}Name

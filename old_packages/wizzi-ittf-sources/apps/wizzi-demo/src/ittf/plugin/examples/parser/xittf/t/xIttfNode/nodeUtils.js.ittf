@@ -1,0 +1,167 @@
+﻿$group
+
+	m load
+		param node
+		if verify.isArray(node.content)
+			var child
+			foreach item in node.content
+				if item.type === 'space'
+					# skip
+				else
+					set child
+						_ this.addChild(item.type)
+					_ child.load(item)
+		else
+			set this._name = node.content
+
+	m addChild
+		param tag
+		param name
+		if tag._tag
+			set tag.parent = this
+			_ this.children.push(tag)
+			return tag
+		else
+			var node = new XIttfNode(tag, name, this)
+			_ this.children.push(node)
+			return node
+
+	m addChildren
+		param children
+		foreach item in children
+			_ this.addChild(item)
+
+	m getChild
+		param name
+		foreach item in this.children
+			if item._tag === name
+				return item
+		return null
+
+	m getNthSiebling
+		param num
+		if !this.parent
+			return null
+		var seen = false, count = 0
+		foreach item in this.parent.children
+			if !seen
+				if item === this
+					set seen = true
+			else
+				if count + 1 === num
+					return item
+				else
+					set count++
+		return null
+
+	m matchChildren
+		param tags
+		param analize
+		if this.children.length === tags.length
+			foreach tag in tags
+				if this.children[i]._tag !== tag
+					return false
+			if analize
+				_ this.analizeChildren
+			return true
+		else
+			return false
+
+	m analizeChildren
+		foreach item in this.children
+			_ item.analize
+
+	m moveTo
+		param node
+		_ node.import(this)
+		_ this.delete
+
+	m moveChildrenTo
+		param node
+		param del
+		foreach item in this.children
+			_ node.import(item)
+			_ item.delete
+		if del
+			_ this.delete
+
+	m import
+		param node
+		var imported
+			_ this.addChild
+				@ node._tag
+				@ node._name
+		_ imported.importProperties(node)
+		foreach item in node.children
+			_ imported.import(item)
+
+	m importProperties
+		param node
+		set this._tag = node._tag
+		set this._name = node._name
+		set this.tag = node.tag
+		set this.name = node.name
+		set this.analized = node.analized
+		set this.__deleted = node.__deleted
+
+	m replaceWith
+		param node
+		_ this.importProperties(node)
+		set this.children = []
+		foreach item in node.children
+			_ this.import(item)
+
+	m wrapChildren
+		param tag
+		param name
+		var wrapper = new XIttfNode(tag, name)
+		set wrapper.tag = tag
+		set wrapper.name = name
+		_ this.moveChildrenTo(wrapper)
+		_ this.addChild(wrapper)
+
+	m delete
+		set this.__deleted = true
+
+	m deleteChildren
+		foreach item in this.children
+			_ item.delete
+
+	m isInside
+		param name
+		var test = this.parent
+		while test
+			if test[name]
+				return true
+			set test = test.parent
+
+	m isInsideTag
+		param name
+		var isArray = verify.isArray(name)
+		var test = this.parent
+		while test
+			if isArray
+				foreach n in name
+					if test.tag === n
+						return true
+			else
+				if test.tag === name
+					return true
+			set test = test.parent
+
+	m childrenCount
+		var ret = 0
+		foreach item in this.children
+			if !item.__deleted
+				set ret++
+		return ret
+
+	m getChild
+		param num
+		var index = 0
+		foreach item in this.children
+			if !item.__deleted
+				set index++
+				if index === num
+					return item
+		return null

@@ -1,0 +1,421 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    function _typeof ids: undefined undefined
+      param obj ids: undefined undefined
+      return obj && typeof (Symbol) !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof (obj) ids: undefined undefined
+    var _extends ids: undefined undefined
+      op||  ids: undefined undefined
+        set Object.assign ids: undefined undefined
+        function  ids: undefined undefined
+          param target ids: undefined undefined
+          for var i = 1; i < arguments.length; i++ ids: undefined undefined
+            var source = arguments[i] ids: undefined undefined
+            for var key in source ids: undefined undefined
+              if Object.prototype.hasOwnProperty.call(source, key) ids: undefined undefined
+                set target[key] = source[key] ids: undefined undefined
+          return target ids: undefined undefined
+    function argumentsToArray ids: undefined undefined
+      param argumentsObject ids: undefined undefined
+      for var _len = argumentsObject.length, ret = Array(_len), _key = 0; _key < _len; _key++ ids: undefined undefined
+        set ret[_key] = argumentsObject[_key] ids: undefined undefined
+      return ret ids: undefined undefined
+    var fnToString ids: undefined undefined
+      function fnToString ids: undefined undefined
+        param fn ids: undefined undefined
+        return Function.prototype.toString.call(fn) ids: undefined undefined
+    var objStringValue = fnToString(Object) ids: undefined undefined
+    function isPlainObject ids: undefined undefined
+      param obj ids: undefined undefined
+      if !obj || (typeof (obj) === 'undefined' ? 'undefined' : _typeof(obj) !== 'object') ids: undefined undefined
+        return false ids: undefined undefined
+      var proto ids: undefined undefined
+        iif typeof (obj.constructor) === 'function' ids: undefined undefined
+          then  ids: undefined undefined
+            _ Object.getPrototypeOf(obj) ids: undefined undefined
+          else  ids: undefined undefined
+            set Object.prototype ids: undefined undefined
+      if proto === null ids: undefined undefined
+        return true ids: undefined undefined
+      var constructor = proto.constructor ids: undefined undefined
+      return typeof (constructor) === 'function' && constructor instanceof constructor && fnToString(constructor) === objStringValue ids: undefined undefined
+    function pick ids: undefined undefined
+      param obj ids: undefined undefined
+      param fn ids: undefined undefined
+      return  ids: undefined undefined
+        _ Object.keys(obj) ids: undefined undefined
+          ._ reduce ids: undefined undefined
+            function  ids: undefined undefined
+              param result ids: undefined undefined
+              param key ids: undefined undefined
+              if fn(obj[key]) ids: undefined undefined
+                set result[key] = obj[key] ids: undefined undefined
+              return result ids: undefined undefined
+            {  ids: undefined undefined
+    function mapValues ids: undefined undefined
+      param obj ids: undefined undefined
+      param fn ids: undefined undefined
+      return  ids: undefined undefined
+        _ Object.keys(obj) ids: undefined undefined
+          ._ reduce ids: undefined undefined
+            function  ids: undefined undefined
+              param result ids: undefined undefined
+              param key ids: undefined undefined
+              set result[key] = fn(obj[key], key) ids: undefined undefined
+              return result ids: undefined undefined
+            {  ids: undefined undefined
+    function compose ids: undefined undefined
+      var funcs = argumentsToArray(arguments) ids: undefined undefined
+      return  ids: undefined undefined
+        function  ids: undefined undefined
+          param arg ids: undefined undefined
+          return  ids: undefined undefined
+            _ funcs.reduceRight ids: undefined undefined
+              function  ids: undefined undefined
+                param composed ids: undefined undefined
+                param f ids: undefined undefined
+                log 'compose.f', f ids: undefined undefined
+                return f(composed) ids: undefined undefined
+              @ arg ids: undefined undefined
+    function test_compose ids: undefined undefined
+      function a ids: undefined undefined
+        param x ids: undefined undefined
+        log 'func a received', x, 'returned', x*2 ids: undefined undefined
+        return x * 2 ids: undefined undefined
+      function b ids: undefined undefined
+        param x ids: undefined undefined
+        log 'func b received', x, 'returned', x*3 ids: undefined undefined
+        return x * 3 ids: undefined undefined
+      var composed = compose(a, b) ids: undefined undefined
+      log 'test_compose', composed(5) ids: undefined undefined
+    function test_compose_state ids: undefined undefined
+      function a ids: undefined undefined
+        param state ids: undefined undefined
+        log 'func a received', state ids: undefined undefined
+        set state.alfa = 'alfa' ids: undefined undefined
+        return state ids: undefined undefined
+      function b ids: undefined undefined
+        param state ids: undefined undefined
+        log 'func b received', state ids: undefined undefined
+        set state.beta = 'beta' ids: undefined undefined
+        return state ids: undefined undefined
+      var composed = compose(a, b) ids: undefined undefined
+      log 'test_compose_state', composed({}) ids: undefined undefined
+    function bindActionCreator ids: undefined undefined
+      param actionCreator ids: undefined undefined
+      param dispatch ids: undefined undefined
+      return  ids: undefined undefined
+        function  ids: undefined undefined
+          return  ids: undefined undefined
+            _ dispatch ids: undefined undefined
+              _ actionCreator.apply(undefined, arguments) ids: undefined undefined
+    function bindActionCreators ids: undefined undefined
+      param actionCreators ids: undefined undefined
+      param dispatch ids: undefined undefined
+      if typeof (actionCreators) === 'function' ids: undefined undefined
+        return bindActionCreator(actionCreators, dispatch) ids: undefined undefined
+      if (typeof (actionCreators) === 'undefined' ? 'undefined' : _typeof(actionCreators) !== 'object') || actionCreators === null || actionCreators === undefined ids: undefined undefined
+        throw  ids: undefined undefined
+          new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof (actionCreators) === 'undefined' ? 'undefined' : _typeof(actionCreators)) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?') ids: undefined undefined
+      return  ids: undefined undefined
+        _ mapValues ids: undefined undefined
+          @ actionCreators ids: undefined undefined
+          function  ids: undefined undefined
+            param actionCreator ids: undefined undefined
+            return bindActionCreator(actionCreator, dispatch) ids: undefined undefined
+    function getUndefinedStateErrorMessage ids: undefined undefined
+      param key ids: undefined undefined
+      param action ids: undefined undefined
+      var actionType = action && action.type ids: undefined undefined
+      var actionName = (actionType && '"' + actionType.toString() + '"') || 'an action' ids: undefined undefined
+      return 'Reducer "' + key + '" returned undefined handling ' + actionName + '. ' + 'To ignore an action, you must explicitly return the previous state.' ids: undefined undefined
+    function getUnexpectedStateKeyWarningMessage ids: undefined undefined
+      param inputState ids: undefined undefined
+      param outputState ids: undefined undefined
+      param action ids: undefined undefined
+      var reducerKeys = Object.keys(outputState) ids: undefined undefined
+      var argumentName = action && action.type === createStoreActionTypes.INIT ? 'initialState argument passed to createStore' : 'previous state received by the reducer' ids: undefined undefined
+      if reducerKeys.length === 0 ids: undefined undefined
+        return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.' ids: undefined undefined
+      if !isPlainObject(inputState) ids: undefined undefined
+        return 'The ' + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + 'keys: "' + reducerKeys.join('", "') + '"' ids: undefined undefined
+      var unexpectedKeys ids: undefined undefined
+        _ Object.keys(inputState) ids: undefined undefined
+          ._ filter ids: undefined undefined
+            function  ids: undefined undefined
+              param key ids: undefined undefined
+              return reducerKeys.indexOf(key) < 0 ids: undefined undefined
+      if unexpectedKeys.length > 0 ids: undefined undefined
+        return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + '"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ' + 'Expected to find one of the known reducer keys instead: ' + '"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.' ids: undefined undefined
+    function assertReducerSanity ids: undefined undefined
+      param reducers ids: undefined undefined
+      _ Object.keys(reducers) ids: undefined undefined
+        ._ forEach ids: undefined undefined
+          function  ids: undefined undefined
+            param key ids: undefined undefined
+            var reducer = reducers[key] ids: undefined undefined
+            var initialState ids: undefined undefined
+              _ reducer ids: undefined undefined
+                @ undefined ids: undefined undefined
+                {  ids: undefined undefined
+                  @ type createStoreActionTypes.INIT ids: undefined undefined
+            if typeof (initialState) === 'undefined' ids: undefined undefined
+              throw  ids: undefined undefined
+                new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.') ids: undefined undefined
+            var type = ('@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.')) ids: undefined undefined
+            if typeof (reducer(undefined, {type: type})) === 'undefined' ids: undefined undefined
+              throw  ids: undefined undefined
+                new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + 'Don\'t try to handle ' + createStoreActionTypes.INIT + ' or other actions in "redux/*" ' + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.') ids: undefined undefined
+    function combineReducers ids: undefined undefined
+      param reducers ids: undefined undefined
+      var finalReducers ids: undefined undefined
+        _ pick ids: undefined undefined
+          @ reducers ids: undefined undefined
+          function  ids: undefined undefined
+            param val ids: undefined undefined
+            return typeof (val) === 'function' ids: undefined undefined
+      var sanityError ids: undefined undefined
+      try  ids: undefined undefined
+        _ assertReducerSanity(finalReducers) ids: undefined undefined
+      catch e ids: undefined undefined
+        set sanityError = e ids: undefined undefined
+      var defaultState ids: undefined undefined
+        _ mapValues ids: undefined undefined
+          @ finalReducers ids: undefined undefined
+          function  ids: undefined undefined
+            return undefined ids: undefined undefined
+      return  ids: undefined undefined
+        function combination ids: undefined undefined
+          var state ids: undefined undefined
+            iif arguments.length <= 0 || arguments[0] === undefined ids: undefined undefined
+              then defaultState ids: undefined undefined
+              else  ids: undefined undefined
+                set arguments[0] ids: undefined undefined
+          var action = arguments[1] ids: undefined undefined
+          if sanityError ids: undefined undefined
+            throw sanityError ids: undefined undefined
+          var hasChanged = false ids: undefined undefined
+          var finalState ids: undefined undefined
+            _ mapValues ids: undefined undefined
+              @ finalReducers ids: undefined undefined
+              function  ids: undefined undefined
+                param reducer ids: undefined undefined
+                param key ids: undefined undefined
+                var previousStateForKey = state[key] ids: undefined undefined
+                var nextStateForKey = reducer(previousStateForKey, action) ids: undefined undefined
+                if typeof (nextStateForKey) === 'undefined' ids: undefined undefined
+                  var errorMessage = getUndefinedStateErrorMessage(key, action) ids: undefined undefined
+                  throw  ids: undefined undefined
+                    new Error(errorMessage) ids: undefined undefined
+                set hasChanged = hasChanged || nextStateForKey !== previousStateForKey ids: undefined undefined
+                return nextStateForKey ids: undefined undefined
+          # if process.env.NODE_ENV !== 'production' ids: undefined undefined
+          var warningMessage = getUnexpectedStateKeyWarningMessage(state, finalState, action) ids: undefined undefined
+          if warningMessage ids: undefined undefined
+            _ console.error(warningMessage) ids: undefined undefined
+          return hasChanged ? finalState : state ids: undefined undefined
+    var createStoreActionTypes ids: undefined undefined
+      {  ids: undefined undefined
+        @ INIT '@@redux/INIT' ids: undefined undefined
+    function createStore ids: undefined undefined
+      param reducer ids: undefined undefined
+      param initialState ids: undefined undefined
+      if typeof (reducer) !== 'function' ids: undefined undefined
+        throw  ids: undefined undefined
+          new Error('Expected the reducer to be a function.') ids: undefined undefined
+      var currentReducer = reducer ids: undefined undefined
+      var currentState = initialState ids: undefined undefined
+      var listeners ids: undefined undefined
+        [  ids: undefined undefined
+      var isDispatching = false ids: undefined undefined
+      function getState ids: undefined undefined
+        return currentState ids: undefined undefined
+      function subscribe ids: undefined undefined
+        param listener ids: undefined undefined
+        _ listeners.push(listener) ids: undefined undefined
+        var isSubscribed = true ids: undefined undefined
+        return  ids: undefined undefined
+          function unsubscribe ids: undefined undefined
+            if ! (isSubscribed) ids: undefined undefined
+              return  ids: undefined undefined
+            set isSubscribed = false ids: undefined undefined
+            var index = listeners.indexOf(listener) ids: undefined undefined
+            _ listeners.splice(index, 1) ids: undefined undefined
+      function dispatch ids: undefined undefined
+        param action ids: undefined undefined
+        if !isPlainObject(action) ids: undefined undefined
+          throw  ids: undefined undefined
+            new Error(('Actions must be plain objects. ' + 'Use custom middleware for async actions.')) ids: undefined undefined
+        if typeof (action.type) === 'undefined' ids: undefined undefined
+          throw  ids: undefined undefined
+            new Error(('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?')) ids: undefined undefined
+        if isDispatching ids: undefined undefined
+          throw  ids: undefined undefined
+            new Error('Reducers may not dispatch actions.') ids: undefined undefined
+        try  ids: undefined undefined
+          set isDispatching = true ids: undefined undefined
+          set currentState = currentReducer(currentState, action) ids: undefined undefined
+        finally  ids: undefined undefined
+          set isDispatching = false ids: undefined undefined
+        _ listeners.slice() ids: undefined undefined
+          ._ forEach ids: undefined undefined
+            function  ids: undefined undefined
+              param listener ids: undefined undefined
+              return listener() ids: undefined undefined
+        return action ids: undefined undefined
+      function replaceReducer ids: undefined undefined
+        param nextReducer ids: undefined undefined
+        set currentReducer = nextReducer ids: undefined undefined
+        _ dispatch ids: undefined undefined
+          {  ids: undefined undefined
+            @ type createStoreActionTypes.INIT ids: undefined undefined
+      _ dispatch ids: undefined undefined
+        {  ids: undefined undefined
+          @ type createStoreActionTypes.INIT ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ dispatch dispatch ids: undefined undefined
+          @ subscribe subscribe ids: undefined undefined
+          @ getState getState ids: undefined undefined
+          @ replaceReducer replaceReducer ids: undefined undefined
+    function applyMiddleware ids: undefined undefined
+      var middlewares = argumentsToArray(arguments) ids: undefined undefined
+      log 'entered applyMiddleware.middlewares' ids: undefined undefined
+      return  ids: undefined undefined
+        function  ids: undefined undefined
+          param next ids: undefined undefined
+          log 'next should be the function createStore' ids: undefined undefined
+          log 'entered.applyMiddleware.next', next ids: undefined undefined
+          return  ids: undefined undefined
+            function  ids: undefined undefined
+              param reducer ids: undefined undefined
+              param initialState ids: undefined undefined
+              log 'entered.applyMiddleware.reducer,initialState', reducer, initialState ids: undefined undefined
+              log 'applyMiddleware.create the store using the next closure' ids: undefined undefined
+              var store = next(reducer, initialState) ids: undefined undefined
+              var dispatch = store.dispatch ids: undefined undefined
+              var chain ids: undefined undefined
+                [  ids: undefined undefined
+              var middlewareAPI ids: undefined undefined
+                {  ids: undefined undefined
+                  @ getState store.getState ids: undefined undefined
+                  @ dispatch ids: undefined undefined
+                    function dispatch ids: undefined undefined
+                      param action ids: undefined undefined
+                      return dispatch(action) ids: undefined undefined
+              set chain = ids: undefined undefined
+                _ middlewares.map ids: undefined undefined
+                  function  ids: undefined undefined
+                    param middleware ids: undefined undefined
+                    return middleware(middlewareAPI) ids: undefined undefined
+              log 'applyMiddleware.before calling compose.chain', chain ids: undefined undefined
+              set dispatch = compose.apply(undefined, chain)(store.dispatch) ids: undefined undefined
+              return  ids: undefined undefined
+                _ _extends ids: undefined undefined
+                  {  ids: undefined undefined
+                  @ store ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ dispatch dispatch ids: undefined undefined
+    function thunkMiddleware ids: undefined undefined
+      param options ids: undefined undefined
+      var dispatch = options.dispatch ids: undefined undefined
+      var getState = options.getState ids: undefined undefined
+      return  ids: undefined undefined
+        function  ids: undefined undefined
+          param next ids: undefined undefined
+          return  ids: undefined undefined
+            function  ids: undefined undefined
+              param action ids: undefined undefined
+              iif typeof action === 'function' ids: undefined undefined
+                then  ids: undefined undefined
+                  _ action(dispatch, getState) ids: undefined undefined
+                else  ids: undefined undefined
+                  _ next(action) ids: undefined undefined
+    function thunkMiddleware ids: undefined undefined
+      param options ids: undefined undefined
+      var dispatch = options.dispatch ids: undefined undefined
+      var getState = options.getState ids: undefined undefined
+      return  ids: undefined undefined
+        function  ids: undefined undefined
+          param next ids: undefined undefined
+          return  ids: undefined undefined
+            function  ids: undefined undefined
+              param action ids: undefined undefined
+              iif typeof action === 'function' ids: undefined undefined
+                then  ids: undefined undefined
+                  _ action(dispatch, getState) ids: undefined undefined
+                else  ids: undefined undefined
+                  _ next(action) ids: undefined undefined
+    function loggerMiddleware ids: undefined undefined
+      param store ids: undefined undefined
+      log 'entered.logger.storeMinimal(getState, dispatch)', store ids: undefined undefined
+      return  ids: undefined undefined
+        function  ids: undefined undefined
+          param next ids: undefined undefined
+          log 'entered.logger.next', next ids: undefined undefined
+          return  ids: undefined undefined
+            function  ids: undefined undefined
+              param action ids: undefined undefined
+              log 'logger.dispatching', action ids: undefined undefined
+              let result = next(action) ids: undefined undefined
+              log 'logger.next state', store.getState() ids: undefined undefined
+              return result ids: undefined undefined
+    function simple_increment ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ type '++' ids: undefined undefined
+    function simple_decrement ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ type '--' ids: undefined undefined
+    function simple_counterReducer ids: undefined undefined
+      param state ids: undefined undefined
+      param action ids: undefined undefined
+      set state = state || 0 ids: undefined undefined
+      switch action.type ids: undefined undefined
+        case '++' ids: undefined undefined
+          return state + 1 ids: undefined undefined
+        case '--' ids: undefined undefined
+          return state - 1 ids: undefined undefined
+        default  ids: undefined undefined
+          return state ids: undefined undefined
+    function test_simple ids: undefined undefined
+      log 'test simple started' ids: undefined undefined
+      var counterApp = combineReducers({ counterReducer: simple_counterReducer }) ids: undefined undefined
+      log 'test simple before create store' ids: undefined undefined
+      var store = createStore(counterApp) ids: undefined undefined
+      log 'test simple initial store', store.getState() ids: undefined undefined
+      _ store.dispatch(simple_increment()) ids: undefined undefined
+      log 'test simple current store', store.getState() ids: undefined undefined
+    function middle_increment ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ type '++' ids: undefined undefined
+    function middle_decrement ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ type '--' ids: undefined undefined
+    function middle_counterReducer ids: undefined undefined
+      param state ids: undefined undefined
+      param action ids: undefined undefined
+      set state = state || 0 ids: undefined undefined
+      switch action.type ids: undefined undefined
+        case '++' ids: undefined undefined
+          return state + 1 ids: undefined undefined
+        case '--' ids: undefined undefined
+          return state - 1 ids: undefined undefined
+        default  ids: undefined undefined
+          return state ids: undefined undefined
+    function test_middle ids: undefined undefined
+      log 'test middle started' ids: undefined undefined
+      log 'test middle before applyMiddleware' ids: undefined undefined
+      var createStoreWithMiddleware = applyMiddleware(loggerMiddleware)(createStore) ids: undefined undefined
+      var counterApp = combineReducers({ counterReducer: middle_counterReducer }) ids: undefined undefined
+      log 'test middle before createStoreWithMiddleware' ids: undefined undefined
+      var store = createStoreWithMiddleware(counterApp) ids: undefined undefined
+      log '*** start store updates' ids: undefined undefined
+      log 'test middle initial store', store.getState() ids: undefined undefined
+      _ store.dispatch(middle_increment()) ids: undefined undefined
+      log 'test middle current store', store.getState() ids: undefined undefined
+    # _ test_compose() ids: undefined undefined
+    # _ test_compose_state() ids: undefined undefined
+    _ test_middle() ids: undefined undefined

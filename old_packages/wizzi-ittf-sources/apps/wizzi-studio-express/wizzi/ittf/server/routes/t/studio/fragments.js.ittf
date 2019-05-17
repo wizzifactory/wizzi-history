@@ -1,0 +1,76 @@
+﻿$group
+
+	get( /api/studio/fragments )
+		check-params( )
+			not-empty( query , project )
+
+		_ studioApi.getFragments
+			{
+				@ userId req.user.id
+				@ projectName project
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/studio/fragment )
+		
+		check-params( )
+			not-empty( query , uri )
+		
+		_ studioApi.getFragment
+			@ uri
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/studio/fragment )
+		
+		check-params( )
+			optional( body, uri )
+			if uri != null
+				log 'POST /api/studio/fragment req.body', req.body
+				not-empty( body, newcontent )
+				_ studioApi.updateFragment
+					@ uri
+					@ newcontent
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+
+			else
+				optional( body , kind )
+				optional( body , project )
+				optional( body , folder )
+				not-empty( body , name )
+				not-empty( body , schema )
+				_ studioApi.createFragment
+					{
+						@ kind kind
+						@ fragmentName name
+						@ schemaName schema
+						@ projectName project
+						@ folder folder
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+
+	delete( /api/studio/fragment )
+		
+		check-params( )
+			not-empty( query , uri )
+		
+		_ studioApi.deleteFragment
+			@ uri
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

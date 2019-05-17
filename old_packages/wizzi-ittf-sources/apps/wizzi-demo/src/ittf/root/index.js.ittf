@@ -1,0 +1,12 @@
+﻿module
+	kind jsfile
+
+	var mtree_l0 = require('./mtree/level_0')
+	var mtree_l1 = require('./mtree/level_1')
+
+	var request = process.argv.length > 2 ? process.argv[2] : 'all'
+
+	if request == 'mtree' || request == 'all'
+		_ mtree_l0()
+		_ mtree_l1()
+

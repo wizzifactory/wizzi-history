@@ -1,0 +1,22 @@
+﻿$group
+
+	get( /api/wf/schema )
+
+		check-params( )
+
+			not-empty( query, name)
+
+		var sessionData = {}
+		var modelContext = {}
+		var artifactContext = {}
+		
+		_ wfApi.schemaObject
+			@ sessionData
+			@ name
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+

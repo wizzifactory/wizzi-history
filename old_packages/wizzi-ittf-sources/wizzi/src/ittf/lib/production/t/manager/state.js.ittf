@@ -1,0 +1,55 @@
+﻿$group
+
+	m aclStat
+        param value
+        if typeof(value) === 'undefined'
+            return this.aclStatObject
+        else 
+            set this.aclStatObject = value
+			_ this.productionContext.setAclStat(value)
+
+	m globalContext
+        param value
+        if typeof(value) === 'undefined'
+            return this.globalContextObject || {}
+        else 
+            set this.globalContextObject = value
+
+	m setStateModel
+		param key
+		param value
+		set this.___state.models[key] = value
+
+	m getLogState
+			
+		var logState
+			{
+				@ models
+					{
+			
+		# log 'wizzi-factory/productionManager/state models length', this.___state.models.length
+			
+		for var m in this.___state.models
+			var mo = this.___state.models[m]
+			var modelState = {}
+			set logState[m] = modelState
+			for var k in mo
+				# log 'wizzi-factory/productionManager/state model prop', k
+				if mo.loadHistory
+					set modelState.ittfSources = mo.loadHistory.getIttfDocuments()
+
+					foreach idm in mo.loadHistory.ittfDocumentDatas
+						var idm_o = mo.loadHistory.ittfDocumentDatas[idm]
+						+ delete idm_o.mTree
+						for var idm_k in idm_o
+							# log 'wizzi-factory/productionManager/state model loadHistory ittfDocumentData prop', idm_k
+							
+					# set modelState.ittfDocumentDatas = mo.loadHistory.ittfDocumentDatas
+
+					for var z in mo.loadHistory
+						# log 'wizzi-factory/productionManager/state model loadHistory prop', z
+					if mo.loadHistory.ittfSources
+						for var z in mo.loadHistory.ittfSources
+							# log 'wizzi-factory/productionManager/state model ittfSources prop', z
+
+		return logState

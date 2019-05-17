@@ -1,0 +1,464 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require("util") ids: undefined undefined
+    var assert = require("assert") ids: undefined undefined
+    var path = require("path") ids: undefined undefined
+    var async = require("async") ids: undefined undefined
+    var errors = require('../errors') ids: undefined undefined
+    var verify = require('../util/verify') ids: undefined undefined
+    var log ids: undefined undefined
+      _ require('../util/log') ids: undefined undefined
+        (  ids: undefined undefined
+          @ module ids: undefined undefined
+    var ittfs = require('../ittf/fs') ids: undefined undefined
+    +  ids: undefined undefined
+    #  ids: undefined undefined
+      # param config = { ids: undefined undefined
+      # cwd:String, ids: undefined undefined
+      # src:String, ids: undefined undefined
+      # ignore:String, ids: undefined undefined
+      # schema:String, ids: undefined undefined
+      # contexts:Object, // ModelInfo configs for context objects ids: undefined undefined
+      # coll:Object { ids: undefined undefined
+      # name:String ids: undefined undefined
+      # itemName:String ids: undefined undefined
+      # pathTemplateValues:Array of { ids: undefined undefined
+      # token:String ids: undefined undefined
+      # attribute:String ids: undefined undefined
+      # function:Function ids: undefined undefined
+      # } ids: undefined undefined
+      # } ids: undefined undefined
+      # modelRef:Object { ids: undefined undefined
+      # exportName:String ids: undefined undefined
+      # } ids: undefined undefined
+      # }; ids: undefined undefined
+    +  ids: undefined undefined
+    function logme ids: undefined undefined
+      if false ids: undefined undefined
+        _ console.log.apply(console, arguments) ids: undefined undefined
+    +  ids: undefined undefined
+    var modelInfoCount = 0 ids: undefined undefined
+    +  ids: undefined undefined
+    wz-class ModelInfo ids: undefined undefined
+      ctor  ids: undefined undefined
+        param config ids: undefined undefined
+        set config.id = ('mi_' + ++modelInfoCount) ids: undefined undefined
+        set this.id = config.id ids: undefined undefined
+        set this.config = config ids: undefined undefined
+        set this.schema = config.schema ids: undefined undefined
+        set this.contexts ids: undefined undefined
+          [  ids: undefined undefined
+        if verify.isArray(config.contexts) ids: undefined undefined
+          foreach item in config.contexts ids: undefined undefined
+            _ this.contexts.push ids: undefined undefined
+              new ModelInfo(item) ids: undefined undefined
+        set this.transformers = config.transformers ids: undefined undefined
+        set this.coll = config.coll ids: undefined undefined
+        set this.exportName = config.exportName ids: undefined undefined
+        +  ids: undefined undefined
+        if verify.isString(config.src) === false ids: undefined undefined
+          throw this.error("config.src must be a string") ids: undefined undefined
+        else  ids: undefined undefined
+          set this.generatorRequireContextOnly = false ids: undefined undefined
+          if config.src === 'context' ids: undefined undefined
+            set this.generatorRequireContextOnly = true ids: undefined undefined
+          else  ids: undefined undefined
+            set config.src = ittfs.unixifyPath(config.src) ids: undefined undefined
+            if verify.isString(config.cwd) ids: undefined undefined
+              set config.cwd = ittfs.unixifyPath(config.cwd) ids: undefined undefined
+            var ndx = config.src.indexOf('/*') ids: undefined undefined
+            if ndx > -1 ids: undefined undefined
+              set config.srcPattern = config.src.substr(ndx) ids: undefined undefined
+              set config.src = config.src.substr(0, ndx) ids: undefined undefined
+        if this.generatorRequireContextOnly == false ids: undefined undefined
+          if verify.isAbsolutePath(config.src) === false && verify.isEmpty(config.cwd) === true ids: undefined undefined
+            throw this.error("when config.src is not an absolute path, config.cwd must be a not empty string") ids: undefined undefined
+      m src ids: undefined undefined
+        param value ids: undefined undefined
+        if this.generatorRequireContextOnly == true ids: undefined undefined
+          return null ids: undefined undefined
+        if typeof (value) === 'undefined' ids: undefined undefined
+          return this.config.src ids: undefined undefined
+        else  ids: undefined undefined
+          set this.config.src = value ids: undefined undefined
+      m srcFullPath ids: undefined undefined
+        if this.generatorRequireContextOnly == true ids: undefined undefined
+          return null ids: undefined undefined
+        return  ids: undefined undefined
+          iif verify.isAbsolutePath(this.config.src) ids: undefined undefined
+            then  ids: undefined undefined
+              set this.config.src ids: undefined undefined
+            else  ids: undefined undefined
+              _ path.join ids: undefined undefined
+                @ this.config.cwd ids: undefined undefined
+                @ this.config.src ids: undefined undefined
+      m ignoreFullPath ids: undefined undefined
+        return  ids: undefined undefined
+          iif verify.isAbsolutePath(this.config.ignore) ids: undefined undefined
+            then  ids: undefined undefined
+              set this.config.ignore ids: undefined undefined
+            else  ids: undefined undefined
+              _ path.join ids: undefined undefined
+                @ this.config.cwd ids: undefined undefined
+                @ this.config.ignore ids: undefined undefined
+      m srcGlobPath ids: undefined undefined
+        var globPattern = this.config.srcPattern || '/**/*.*' ids: undefined undefined
+        if globPattern.substr(0, 1) !== '/' ids: undefined undefined
+          set globPattern = ('/' + globPattern) ids: undefined undefined
+        return this.srcFullPath() + globPattern ids: undefined undefined
+      m srcGlobOptions ids: undefined undefined
+        var ret ids: undefined undefined
+          {  ids: undefined undefined
+        if this.config.ignore ids: undefined undefined
+          set ret.ignore = [this.ignoreFullPath()] ids: undefined undefined
+        return ret ids: undefined undefined
+      m productionManager ids: undefined undefined
+        param value ids: undefined undefined
+        if typeof (value) === 'undefined' ids: undefined undefined
+          return this.productionManagerInstance ids: undefined undefined
+        else  ids: undefined undefined
+          if verify.isObject(value) === false ids: undefined undefined
+            throw  ids: undefined undefined
+              new Error("value parameter must be an object. Instead is: " + value) ids: undefined undefined
+          set this.productionManagerInstance = value ids: undefined undefined
+      m hasContext ids: undefined undefined
+        return verify.isArray(this.config.contexts) && this.config.contexts.length > 0 ids: undefined undefined
+      m getContextCollectionInfo ids: undefined undefined
+        if this.hasContext() ids: undefined undefined
+          foreach item in this.config.contexts ids: undefined undefined
+            if verify.isObject(item.coll) ids: undefined undefined
+              return item.coll ids: undefined undefined
+        return null ids: undefined undefined
+      m getModelInfos ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        var that = this ids: undefined undefined
+        _ this.isDirectory ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param isDirectory ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if isDirectory ids: undefined undefined
+              var ret ids: undefined undefined
+                [  ids: undefined undefined
+              _ that.getFiles ids: undefined undefined
+                @ options ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param files ids: undefined undefined
+                  if err ids: undefined undefined
+                    return  ids: undefined undefined
+                      _ callback ids: undefined undefined
+                        @ err ids: undefined undefined
+                  if files.__is_error ids: undefined undefined
+                    return  ids: undefined undefined
+                      _ callback(files) ids: undefined undefined
+                  for var i = 0; i < files.length; i++ ids: undefined undefined
+                    var fileInfo = files[i] ids: undefined undefined
+                    var mi = that.clone() ids: undefined undefined
+                    _ mi.src ids: undefined undefined
+                      @ fileInfo.relpath ids: undefined undefined
+                    _ mi.productionManager ids: undefined undefined
+                      @ that.productionManagerInstance ids: undefined undefined
+                    _ ret.push(mi) ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ null ids: undefined undefined
+                      @ ret ids: undefined undefined
+            else  ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ null ids: undefined undefined
+                  [  ids: undefined undefined
+                    @ that ids: undefined undefined
+      m clone ids: undefined undefined
+        var newconfig ids: undefined undefined
+          {  ids: undefined undefined
+            @ cwd this.config.cwd ids: undefined undefined
+            @ src this.config.src ids: undefined undefined
+            @ schema this.config.schema ids: undefined undefined
+            @ contexts this.config.contexts ids: undefined undefined
+            @ transformers this.config.transformers ids: undefined undefined
+            @ coll this.config.coll ids: undefined undefined
+        var ret ids: undefined undefined
+          new ModelInfo(newconfig) ids: undefined undefined
+        return ret ids: undefined undefined
+      m error ids: undefined undefined
+        param message ids: undefined undefined
+        param method ids: undefined undefined
+        var err ids: undefined undefined
+          {  ids: undefined undefined
+            @ __is_error true ids: undefined undefined
+            @ message message ids: undefined undefined
+            @ source "wizzi/lib/model/modelInfo/" + method ids: undefined undefined
+        _ logme(err) ids: undefined undefined
+        return err ids: undefined undefined
+      m toString ids: undefined undefined
+        return 'modelInfo.config: ' + util.inspect(this.config, {depth: 2}) ids: undefined undefined
+      m terminate ids: undefined undefined
+      m getSource ids: undefined undefined
+        param callback ids: undefined undefined
+        _ assert.equal("function", typeof(callback)) ids: undefined undefined
+        var that = this ids: undefined undefined
+        _ this.exists ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param exists ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if !exists ids: undefined undefined
+              _ callback ids: undefined undefined
+                _ that.error ids: undefined undefined
+                  @ "Cannot get source. File not found : " + that.srcFullPath() ids: undefined undefined
+                  @ 'getSource' ids: undefined undefined
+            _ that.isFile ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param isFile ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                if !isFile ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    _ that.error ids: undefined undefined
+                      @ "Cannot get source. Is not a file : " + that.srcFullPath() ids: undefined undefined
+                      @ 'getSource' ids: undefined undefined
+                _ ittfs.read ids: undefined undefined
+                  _ that.srcFullPath() ids: undefined undefined
+                  @ callback ids: undefined undefined
+      m getSources ids: undefined undefined
+        param callback ids: undefined undefined
+        _ assert.equal("function", typeof(callback)) ids: undefined undefined
+        var that = this ids: undefined undefined
+        _ this.exists ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param exists ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if !exists ids: undefined undefined
+              _ callback ids: undefined undefined
+                _ that.error ids: undefined undefined
+                  @ "Cannot get sources. Directory not found : " + that.srcFullPath() ids: undefined undefined
+                  @ 'getSources' ids: undefined undefined
+            _ that.isDirectory ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param isDirectory ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                if !isDirectory ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    _ that.error ids: undefined undefined
+                      @ "Cannot get sources. Is not a directory : " + that.srcFullPath() ids: undefined undefined
+                      @ 'getSources' ids: undefined undefined
+                _ that.getFiles ids: undefined undefined
+                  {  ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param fileInfos ids: undefined undefined
+                    if err ids: undefined undefined
+                      return  ids: undefined undefined
+                        _ callback ids: undefined undefined
+                          @ err ids: undefined undefined
+                    _ async.map ids: undefined undefined
+                      @ fileInfos ids: undefined undefined
+                      function  ids: undefined undefined
+                        param fileInfo ids: undefined undefined
+                        param callback ids: undefined undefined
+                        _ ittfs.read ids: undefined undefined
+                          @ fileInfo.fullpath ids: undefined undefined
+                          function  ids: undefined undefined
+                            param err ids: undefined undefined
+                            param content ids: undefined undefined
+                            if err ids: undefined undefined
+                              return  ids: undefined undefined
+                                _ callback ids: undefined undefined
+                                  @ err ids: undefined undefined
+                            _ callback ids: undefined undefined
+                              @ null ids: undefined undefined
+                              {  ids: undefined undefined
+                                @ fullpath fileInfo.fullpath ids: undefined undefined
+                                @ relpath fileInfo.relpath ids: undefined undefined
+                                @ content content ids: undefined undefined
+                      function  ids: undefined undefined
+                        param err ids: undefined undefined
+                        param fileContents ids: undefined undefined
+                        if err ids: undefined undefined
+                          return  ids: undefined undefined
+                            _ callback ids: undefined undefined
+                              @ err ids: undefined undefined
+                        _ callback ids: undefined undefined
+                          @ null ids: undefined undefined
+                          @ fileContents ids: undefined undefined
+      m getFiles ids: undefined undefined
+        param options ids: undefined undefined
+        param callback ids: undefined undefined
+        _ assert.equal("function", typeof(callback)) ids: undefined undefined
+        var that = this ids: undefined undefined
+        _ this.exists ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param exists ids: undefined undefined
+            if err ids: undefined undefined
+              return  ids: undefined undefined
+                _ callback ids: undefined undefined
+                  @ err ids: undefined undefined
+            if !exists ids: undefined undefined
+              _ callback ids: undefined undefined
+                _ that.error ids: undefined undefined
+                  @ "Cannot get files. Directory not found : " + that.srcFullPath() ids: undefined undefined
+                  @ 'getFiles' ids: undefined undefined
+            _ that.isDirectory ids: undefined undefined
+              function  ids: undefined undefined
+                param err ids: undefined undefined
+                param isDirectory ids: undefined undefined
+                if err ids: undefined undefined
+                  return  ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ err ids: undefined undefined
+                if !isDirectory ids: undefined undefined
+                  _ callback ids: undefined undefined
+                    _ that.error ids: undefined undefined
+                      @ "Cannot get files. Is not a directory : " + that.srcFullPath() ids: undefined undefined
+                      @ 'getFiles' ids: undefined undefined
+                var  ids: undefined undefined
+                  decl ret ids: undefined undefined
+                    [  ids: undefined undefined
+                  decl srcFullPath = that.srcFullPath() ids: undefined undefined
+                  decl srcGlobPath = that.srcGlobPath() ids: undefined undefined
+                _ ittfs.getGlobbedFiles ids: undefined undefined
+                  @ srcGlobPath ids: undefined undefined
+                  _ that.srcGlobOptions() ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param files ids: undefined undefined
+                    if err ids: undefined undefined
+                      return  ids: undefined undefined
+                        _ callback ids: undefined undefined
+                          @ err ids: undefined undefined
+                    for var i = 0; i < files.length; i++ ids: undefined undefined
+                      var fileInfo = files[i] ids: undefined undefined
+                      # skip "_debug" folder ids: undefined undefined
+                      if fileInfo.indexOf('/_debug/') > -1 ids: undefined undefined
+                        continue  ids: undefined undefined
+                      # skip "__copy" and "t" folders ids: undefined undefined
+                      if !options.final ids: undefined undefined
+                        if fileInfo.indexOf('__copy/') >= 0 || fileInfo.indexOf('/t/') >= 0 ids: undefined undefined
+                          continue  ids: undefined undefined
+                      var fullpath = fileInfo ids: undefined undefined
+                      var relpath ids: undefined undefined
+                        iif that.config.cwd ids: undefined undefined
+                          then  ids: undefined undefined
+                            _ relPath ids: undefined undefined
+                              @ fullpath ids: undefined undefined
+                              @ that.config.cwd ids: undefined undefined
+                          else  ids: undefined undefined
+                            set null ids: undefined undefined
+                      _ ret.push ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ fullpath fullpath ids: undefined undefined
+                          @ relpath relpath ids: undefined undefined
+                    _ callback ids: undefined undefined
+                      @ null ids: undefined undefined
+                      @ ret ids: undefined undefined
+      m exists ids: undefined undefined
+        param callback ids: undefined undefined
+        _ assert.equal("function", typeof(callback)) ids: undefined undefined
+        _ ittfs.exists ids: undefined undefined
+          _ this.srcFullPath() ids: undefined undefined
+          @ callback ids: undefined undefined
+      m isDirectory ids: undefined undefined
+        param callback ids: undefined undefined
+        _ assert.equal("function", typeof(callback)) ids: undefined undefined
+        _ ittfs.isDirectory ids: undefined undefined
+          _ this.srcFullPath() ids: undefined undefined
+          @ callback ids: undefined undefined
+      m isFile ids: undefined undefined
+        param callback ids: undefined undefined
+        _ assert.equal("function", typeof(callback)) ids: undefined undefined
+        _ ittfs.isFile ids: undefined undefined
+          _ this.srcFullPath() ids: undefined undefined
+          @ callback ids: undefined undefined
+      m getWizziModelFactory ids: undefined undefined
+        param callback ids: undefined undefined
+        if !this.productionManager() ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              _ this.error ids: undefined undefined
+                @ "Method called without setting the 'productionManager' object" ids: undefined undefined
+                @ "getWizziModelFactory" ids: undefined undefined
+        if !this.schema ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              _ this.error ids: undefined undefined
+                @ "Method called without setting the 'schema' name" ids: undefined undefined
+                @ "getWizziModelFactory" ids: undefined undefined
+        var wizziModelFactory ids: undefined undefined
+          _ this.productionManager().getWizziModelFactory ids: undefined undefined
+            @ this.schema ids: undefined undefined
+        if wizziModelFactory == null ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              new errors.NotFoundError ids: undefined undefined
+                @ 'WizziModelFactory' ids: undefined undefined
+                @ this.schema ids: undefined undefined
+                @ this ids: undefined undefined
+        else  ids: undefined undefined
+          _ callback(null, wizziModelFactory) ids: undefined undefined
+      m getModelTransformer ids: undefined undefined
+        param trasformerName ids: undefined undefined
+        param callback ids: undefined undefined
+        if !this.productionManager() ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              _ this.error ids: undefined undefined
+                @ "Method called without setting the 'productionManager' object" ids: undefined undefined
+                @ "getModelTransformer" ids: undefined undefined
+        var modelTransformer ids: undefined undefined
+          _ this.productionManager().getModelTransformer ids: undefined undefined
+            @ trasformerName ids: undefined undefined
+        if modelTransformer == null ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              new errors.NotFoundError ids: undefined undefined
+                @ 'modelTransformer' ids: undefined undefined
+                @ trasformerName ids: undefined undefined
+                @ this ids: undefined undefined
+        else  ids: undefined undefined
+          _ callback(null, modelTransformer) ids: undefined undefined
+      m getArtifactGenerator ids: undefined undefined
+        param generatorName ids: undefined undefined
+        param callback ids: undefined undefined
+        if !this.productionManager() ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              _ this.error ids: undefined undefined
+                @ "Method called without setting the 'productionManager' object" ids: undefined undefined
+                @ "getArtifactGenerator" ids: undefined undefined
+        var generator ids: undefined undefined
+          _ this.productionManager().getArtifactGenerator ids: undefined undefined
+            @ generatorName ids: undefined undefined
+        if generator == null ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              new errors.NotFoundError ids: undefined undefined
+                @ 'generator' ids: undefined undefined
+                @ generatorName ids: undefined undefined
+                @ this ids: undefined undefined
+        else  ids: undefined undefined
+          _ callback(null, generator) ids: undefined undefined
+    function relPath ids: undefined undefined
+      param fullpath ids: undefined undefined
+      param basedir ids: undefined undefined
+      return fullpath.substr(basedir.length + 1) ids: undefined undefined

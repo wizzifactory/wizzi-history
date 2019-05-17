@@ -1,0 +1,41 @@
+  module  ids: 1 42
+    kind jsfile ids: 2 43
+    var md = module.exports = {} ids: 3 44
+    class StringWriter ids: 4 45
+      ctor  ids: 5 46
+        param noLF ids: 6 47
+        set this.noLF = noLF ids: 7 48
+        set this.texts = [] ids: 8 49
+        set this.indentValue = 0 ids: 9 50
+        set this.newLine = true ids: 10 51
+      m w ids: 11 52
+        param text ids: 12 53
+        if this.newLine == true && !this.noLF ids: 13 54
+          _ this.texts.push(spaces(this.indentValue * 4)) ids: 14 55
+        if text ids: 15 56
+          _ this.texts.push(text) ids: 16 57
+        if !this.noLF ids: 17 58
+          _ this.texts.push('\n') ids: 18 59
+        set this.newLine = true ids: 19 60
+      m write ids: 20 61
+        param text ids: 21 62
+        if this.newLine == true && !this.noLF ids: 22 63
+          _ this.texts.push(spaces(this.indentValue * 4)) ids: 23 64
+          set this.newLine = false ids: 24 65
+        if text ids: 25 66
+          _ this.texts.push(text) ids: 26 67
+      m indent ids: 27 68
+        set this.indentValue++ ids: 28 69
+      m deindent ids: 29 70
+        set this.indentValue = Math.max(0, this.indentValue -1) ids: 30 71
+      m toString ids: 31 72
+        return this.texts.join('') ids: 32 73
+      m toLines ids: 33 74
+        if this.noLF ids: 34 75
+          return [this.toString()] ids: 35 76
+        else  ids: 36 77
+          return this.toString().split('\n') ids: 37 78
+    function spaces ids: 38 79
+      param num ids: 39 80
+      return Array(num + 1).join(" ") ids: 40 81
+    set md.StringWriter = StringWriter ids: 41 82

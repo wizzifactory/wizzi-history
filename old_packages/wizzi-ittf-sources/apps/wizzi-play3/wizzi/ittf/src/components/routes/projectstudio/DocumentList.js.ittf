@@ -1,0 +1,59 @@
+﻿r-component( DocumentList )
+
+	$append imports
+		import List from '@material-ui/core/List'
+		import ListItem from '@material-ui/core/ListItem'
+		import ListItemText from '@material-ui/core/ListItemText'
+		import AppDrawerNavItem from '../../mui/AppDrawerNavItem'
+		import {makeFolderList} from '../../../lib/document'
+
+	style
+		{ selected
+			@ color 'red'
+	
+	render
+		
+		prop classes
+		prop documents
+		prop selectedUri
+		prop onSelectDocument
+
+		const folders = makeFolderList(documents)
+		log 'DocumentList.folders', folders
+		
+		return
+
+			div
+				{
+					&&
+						+ folders.length === 0
+						h5 none.
+				{
+					&&
+						+ folders.length > 0
+						< List
+							@ dense {true}
+							{
+								_ folders.map
+									=>
+										param folder
+										return
+											< AppDrawerNavItem
+												@ title {folder.name} 
+												{
+													_ folder.documents.map
+														=>
+															param document
+															return
+																< AppDrawerNavItem
+																	@ title {document.folder + '/' + document.name + '.' + document.schema + '.ittf' }
+																	@ key {document.uri}
+																	@ className {selectedUri === document.uri ? classes.selected : ''}
+																	$$ VIA @ to {document.uri}
+																	@ onClick
+																		=>
+																			_ onSelectDocument
+																				@ document.uri
+																				@ document.schema
+
+

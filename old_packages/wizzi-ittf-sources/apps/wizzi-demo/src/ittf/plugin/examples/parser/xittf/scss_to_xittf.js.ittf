@@ -1,0 +1,51 @@
+﻿module
+	kind jsfile
+
+	var lineparser = require('wizzi-utils').lineparser
+	var XIttfNode = require('./xittfNode')
+
+	var md = module.exports = {}
+
+	var handlers = {}
+
+	set md.toXIttf
+		function
+			param ast
+	        param options
+		    param callback
+
+			log 'scss_to_xittf.ast', ast
+        
+			set options = options || {}
+		
+			var wizziTree
+				new XIttfNode
+					@ 'xittf'
+					@ 'scss'
+
+			try
+				_ wizziTree.load
+					@ ast
+				if options.raw
+					_ wizziTree.setRawTagNames
+					return
+						_ callback(null, wizziTree)
+				_ wizziTree.analize
+				_ wizziTree.finalize
+				return
+					_ callback(null, wizziTree)
+			catch ex
+				set wizziTree.tag = 'error'
+				_ wizziTree.children.push
+					{
+						@ tag ex.message
+						@ name css
+						@ children
+							[ 
+				return
+					_ callback
+						@ null
+						@ wizziTree
+
+
+			

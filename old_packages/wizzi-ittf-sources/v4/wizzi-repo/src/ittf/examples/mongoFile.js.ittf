@@ -1,0 +1,89 @@
+﻿base_example( wizzi-repo.examples.mongoFile )
+	
+	$append imports
+		var MongoFsImpl = require('../lib/mongodb/mongoFsimpl')
+
+	var fsimpl
+		new MongoFsImpl
+			@ null
+			@ 'c:/wz/users'
+
+	_ heading1('start')
+
+	_ fsimpl.open
+		f_cb_test( notUsed )
+
+			var file = vfile(fsimpl)
+
+			_ file.write
+				@ 'db://stefi/wf/folder1/hello.js.ittf'
+				@ 'Hello wizzi factory from mongoFile'
+				f_cb_test( result )
+					_ heading2('write')
+					_ printValue
+						@ 'result'
+						@ result
+					_ _openWrite
+
+			function _openWrite
+				_ heading2('openWrite')
+				_ file.openWrite
+					@ 'db://stefi/wf/folder1/helloOpenWrite.js.ittf'
+					f_cb_test( stream )
+						_ heading2('openWrite')
+						_ printValue
+							@ 'stream'
+							@ stream
+						_ stream.write('Hello openWrite\n')
+						_ stream.write('Welcome\n')
+						_ stream.end
+							f_cb_test( result )
+								_ printValue
+									@ 'result'
+									@ result
+								_ _read
+
+			function _read
+				_ file.read
+					@ 'db://stefi/wf/folder1/hello.js.ittf'
+					f_cb_test( content )
+						_ heading2('read')
+						_ printValue
+							@ 'content'
+							@ content
+						_ _getFiles
+
+			function _getFiles
+				_ file.getFiles
+					@ 'db://stefi/wf'
+					{
+						@ deep true
+						@ documentContent true
+					f_cb_test( files )
+						# log 'files', files
+						_ heading2('getFiles')
+						_ printArray
+							@ 'files'
+							@ files
+							[
+								@ 'fullPath'
+								@ 'content'
+						_ _getFolders
+
+			function _getFolders
+				_ file.getFolders
+					@ 'db://stefi/wf'
+					{
+						@ deep true
+					f_cb_test( folders )
+						# log 'folders', folders
+						_ heading2('getFolders')
+						_ printArray
+							@ 'folders'
+							@ folders
+							[
+								@ 'fullPath'
+						_ fsimpl.close
+
+
+

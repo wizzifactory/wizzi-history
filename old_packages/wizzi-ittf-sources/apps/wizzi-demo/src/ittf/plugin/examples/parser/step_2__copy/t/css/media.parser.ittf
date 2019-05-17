@@ -1,0 +1,158 @@
+﻿$group
+
+	// https://www.w3.org/TR/mediaqueries-4/
+
+	sym media
+		tk MediaSym
+		ref mediaQueryList
+		ref declarationsGroup
+
+	sym mediaQueryList
+		ref mediaQuery
+		*
+			tk ,
+			ref mediaQuery
+	
+	sym mediaQuery
+		|
+			ref mediaCondition
+			&
+				?
+					ref mediaQueryModifier
+				ref mediaType
+				?
+					any and
+					ref mediaConditionWithoutOr
+
+	sym mediaQueryModifier
+		|
+			any not
+			any only
+
+	sym mediaCondition
+		|
+			ref mediaNot
+			ref mediaInParens
+			ref mediaAnd
+			ref mediaOr
+
+	sym mediaType
+		tk Ident
+	
+	e mediaConditionWithoutOr
+		|
+			ref mediaNot
+			ref mediaAnd
+			ref mediaInParens
+	
+	sym mediaNot
+		any not
+		ref mediaInParens
+
+	sym mediaAnd
+		ref mediaInParens
+		+
+			any and
+			ref mediaInParens
+
+	sym mediaOr
+		ref mediaInParens
+		+
+			any or
+			ref mediaInParens
+
+	e mediaInParens
+		|
+			&
+				tk (
+				ref mediaCondition
+				tk )
+			ref mediaFeature
+			ref generalEnclosed
+
+	sym mediaFeature
+		tk (
+		|
+			ref mfPlain
+			ref mfBoolean
+			ref mfRange
+		tk )
+
+	sym generalEnclosed
+		|
+			&
+				tk Function
+				ref expression
+				tk )
+			&
+				tk (
+					tk Ident
+					ref expression
+				tk )
+	
+	sym mfPlain
+		ref mfName
+		tk :
+		ref mfValue
+
+	sym mfBoolean
+		ref mfName
+
+	sym mfRange
+		|
+			&
+				ref mfName
+				?
+					|
+						tk <
+						tk >
+				?
+					tk =
+				ref mfValue
+			&
+				ref mfValue 
+				?
+					|
+						tk <
+						tk >
+				?
+					tk =
+				ref mfName
+			&
+				ref mfValue
+				tk <
+				?
+					tk =
+				ref mfName
+				tk <
+				?
+					tk =
+				ref mfValue
+			&
+				ref mfValue
+				tk >
+				?
+					tk =
+				ref mfName
+				tk >
+				?
+					tk =
+				ref mfValue
+
+	sym mfName
+		tk Ident
+
+	sym mfValue
+		|
+			tk Number
+			ref dimension
+			tk Ident
+			ref ratio
+			tk VariableName
+
+	sym ratio
+		// TODO number must be integer
+		// add check pattern [0-9]
+		tk Number
+		tk /
+		tk Number

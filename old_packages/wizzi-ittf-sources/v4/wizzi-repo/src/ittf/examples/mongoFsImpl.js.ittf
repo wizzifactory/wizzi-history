@@ -1,0 +1,34 @@
+﻿base_example( wizzi-repo.examples.mongoFsImpl )
+	
+	$append imports
+		var MongoFsImpl = require('../lib/mongodb/mongoFsimpl')
+
+	var fsimpl
+		new MongoFsImpl
+			@ null
+			@ 'c:/wz/users'
+
+	_ heading1('start')
+	
+	_ fsimpl.open
+		f_cb_test( notUsed )
+			_ fsimpl.writeFile
+				@ 'db://stefi/wf/folder1/hello.js.ittf'
+				@ 'Hello wizzi factory'
+				f_cb_test( result )
+					_ heading2('writeFile')
+					_ printValue
+						@ 'result'
+						@ result
+					_ _readFile
+
+			function _readFile
+				_ fsimpl.readFile
+					@ 'db://stefi/wf/folder1/hello.js.ittf'
+					f_cb_test( content )
+						_ heading2('readFile')
+						_ printValue
+							@ 'content'
+							@ content
+						_ fsimpl.close
+

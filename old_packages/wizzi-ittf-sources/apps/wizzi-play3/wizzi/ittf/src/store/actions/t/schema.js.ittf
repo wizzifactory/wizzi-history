@@ -1,0 +1,86 @@
+﻿$group
+
+	decl_rsf( schemas, get )
+	decl_rsf( schema, get )
+	decl_rsf( schema, getJsonDoc )
+	decl_rsf( wfschema, gen )
+	+
+	export
+		const getSchemas
+			=>
+				return
+					{
+						@ type GET_SCHEMAS
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_SCHEMAS_REQUEST
+										@ GET_SCHEMAS_SUCCESS
+										@ GET_SCHEMAS_FAILURE
+								@ url '/api/studio/schemas'
+								@ method 'get'
+	+
+	export 
+		const getSchema
+			=>
+				param schemaUri
+				return
+					{
+						@ type GET_SCHEMA
+						@ uri schemaUri
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GET_SCHEMA_REQUEST
+										@ GET_SCHEMA_SUCCESS
+										@ GET_SCHEMA_FAILURE
+								@ url '/api/studio/schema'
+								@ method 'get'
+								@ queryParams
+									{
+										@ uri schemaUri
+	+
+	export
+		const getSchemaJsonDoc
+			=>
+				param schemaUri
+				return
+					{
+						@ type GEN_WFSCHEMA
+						@ uri schemaUri
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GETJSONDOC_SCHEMA_REQUEST
+										@ GETJSONDOC_SCHEMA_SUCCESS
+										@ GETJSONDOC_SCHEMA_FAILURE
+								@ url '/api/studio/schema'
+								@ method 'get'
+								@ queryParams
+									{
+										@ uri schemaUri
+		+
+	export
+		const generateWfSchema
+			=>
+				param hash
+				return
+					{
+						@ type GEN_WFSCHEMA
+						@ hash hash
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ GEN_WFSCHEMA_REQUEST
+										@ GEN_WFSCHEMA_SUCCESS
+										@ GEN_WFSCHEMA_FAILURE
+								@ url '/api/wizzi/wfschema'
+								@ method 'get'
+								@ queryParams
+									{
+										@ hash hash
+		+

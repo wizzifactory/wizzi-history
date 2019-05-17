@@ -1,0 +1,33 @@
+﻿module
+	$params title
+	kind jsfile
+	+
+	import path
+	import util
+	import del
+	import fs
+	var wizziUtils = require('wizzi-utils')
+	var verify = wizziUtils.verify
+	var file = wizziUtils.file
+	import wizzi
+	+
+	var expect = require('expect.js')
+	$hook imports
+	+
+	var wizziFactory = null
+	+
+	describe ${title}
+		before-async
+			# Create a filesystem factory without access control
+			# requiring the wizzi-html plugin.
+			_ wizzi.fsnoaclFactory
+				{
+					@ plugins
+						{
+							@ items
+								[
+									@ 'wizzi-html'
+				f_cb_throw( wf )
+					set wizziFactory = wf
+					_ done
+		$hook

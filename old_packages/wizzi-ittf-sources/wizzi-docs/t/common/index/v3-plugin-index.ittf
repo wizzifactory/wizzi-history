@@ -1,0 +1,31 @@
+module
+	$params pkgname
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+
+	var wizzi = require('wizzi')
+	var log = wizzi.log(module)
+	var GenContext = wizzi.GenContext
+	var StringWriter = wizzi.StringWriter
+	var options = wizzi.options
+	var file = wizzi.file
+	var ittf = wizzi.ittf
+	var verify = wizzi.verify
+	var errors = wizzi.errors
+	var fail = wizzi.fail
+
+	var md = module.exports = {}
+	set md.name = '${pkgname}'
+
+	$hook
+
+	#
+		# Exposes functions for loading WizziModels and
+		# executing ModelTransformers and ArtifactGenerators searching loaders and executors
+		# in this WizziPackage (no search up in "node_modules" folders)
+	$include ./f-model-factory
+	$include ./f-model-transformation
+	$include ./f-artifact-generation

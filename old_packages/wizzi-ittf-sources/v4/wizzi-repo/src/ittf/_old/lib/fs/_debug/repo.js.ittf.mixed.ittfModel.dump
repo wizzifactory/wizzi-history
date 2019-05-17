@@ -1,0 +1,200 @@
+  module  ids: 1 129
+    kind jsfile ids: 2 130
+    var uriparser = require('./uriparser') ids: 3 131
+    var repoFS = null ids: 4 132
+    function verifyFS ids: 5 133
+      param callback ids: 6 134
+      if repoFS == null ids: 7 135
+        set repoFS = require('wizzi-mongodb').Filesystem ids: 8 136
+      if repoFS && repoFS.isMounted ids: 9 137
+        return  ids: 10 138
+          _ callback(null) ids: 11 139
+      else  ids: 12 140
+        _ callback ids: 13 141
+          @ 'Module lib/ittf/fs/repo. MongoDB wizzi repo database not mounted. Review your wizzi instance starter.' ids: 14 142
+    var md = module.exports = {} ids: 15 143
+    set md.exists ids: 16 144
+      function  ids: 17 145
+        param parsed_path_string ids: 18 146
+        param callback ids: 19 147
+        _ verifyFS ids: 20 148
+          $group  ids: 257 267
+            $args: notUsed  $params: result
+            function  ids: 259 268
+              param err ids: 260 269
+              param ${result} ids: 261 270
+              if err ids: 262 271
+                return  ids: 263 272
+                  _ callback ids: 264 273
+                    @ err ids: 265 274
+              _ repoFS.exists ids: 22 150
+                @ parsed_path_string.userId ids: 23 151
+                @ parsed_path_string.projectId ids: 24 152
+                @ parsed_path_string.path ids: 25 153
+                @ callback ids: 26 154
+    set md.isFile ids: 27 155
+      function  ids: 28 156
+        param parsed_path_string ids: 29 157
+        param callback ids: 30 158
+        _ verifyFS ids: 31 159
+          $group  ids: 257 276
+            $args: notUsed  $params: result
+            function  ids: 259 277
+              param err ids: 260 278
+              param ${result} ids: 261 279
+              if err ids: 262 280
+                return  ids: 263 281
+                  _ callback ids: 264 282
+                    @ err ids: 265 283
+              _ repoFS.isFile ids: 33 161
+                @ parsed_path_string.userId ids: 34 162
+                @ parsed_path_string.projectId ids: 35 163
+                @ parsed_path_string.path ids: 36 164
+                @ callback ids: 37 165
+    set md.isDirectory ids: 38 166
+      function  ids: 39 167
+        param parsed_path_string ids: 40 168
+        param callback ids: 41 169
+        _ verifyFS ids: 42 170
+          $group  ids: 257 285
+            $args: notUsed  $params: result
+            function  ids: 259 286
+              param err ids: 260 287
+              param ${result} ids: 261 288
+              if err ids: 262 289
+                return  ids: 263 290
+                  _ callback ids: 264 291
+                    @ err ids: 265 292
+              _ repoFS.isFolder ids: 44 172
+                @ parsed_path_string.userId ids: 45 173
+                @ parsed_path_string.projectId ids: 46 174
+                @ parsed_path_string.path ids: 47 175
+                @ callback ids: 48 176
+    set md.mkdir ids: 49 177
+      function  ids: 50 178
+        param parsed_path_string ids: 51 179
+        param callback ids: 52 180
+        _ verifyFS ids: 53 181
+          $group  ids: 257 294
+            $args: notUsed  $params: result
+            function  ids: 259 295
+              param err ids: 260 296
+              param ${result} ids: 261 297
+              if err ids: 262 298
+                return  ids: 263 299
+                  _ callback ids: 264 300
+                    @ err ids: 265 301
+              _ repoFS.mkdir ids: 55 183
+                @ parsed_path_string.userId ids: 56 184
+                @ parsed_path_string.projectId ids: 57 185
+                @ parsed_path_string.path ids: 58 186
+                @ callback ids: 59 187
+    set md.read ids: 60 188
+      function  ids: 61 189
+        param parsed_path_string ids: 62 190
+        param options ids: 63 191
+        param callback ids: 64 192
+        _ verifyFS ids: 65 193
+          $group  ids: 257 303
+            $args: notUsed  $params: result
+            function  ids: 259 304
+              param err ids: 260 305
+              param ${result} ids: 261 306
+              if err ids: 262 307
+                return  ids: 263 308
+                  _ callback ids: 264 309
+                    @ err ids: 265 310
+              _ repoFS.readFile ids: 67 195
+                @ parsed_path_string.userId ids: 68 196
+                @ parsed_path_string.projectId ids: 69 197
+                @ parsed_path_string.path ids: 70 198
+                @ callback ids: 71 199
+    set md.getGlobbedFiles ids: 72 200
+      function  ids: 73 201
+        param parsed_path_string ids: 74 202
+        param options ids: 75 203
+        param callback ids: 76 204
+        _ verifyFS ids: 77 205
+          $group  ids: 257 312
+            $args: notUsed  $params: result
+            function  ids: 259 313
+              param err ids: 260 314
+              param ${result} ids: 261 315
+              if err ids: 262 316
+                return  ids: 263 317
+                  _ callback ids: 264 318
+                    @ err ids: 265 319
+              _ repoFS.glob ids: 79 207
+                @ parsed_path_string.userId ids: 80 208
+                @ parsed_path_string.projectId ids: 81 209
+                @ parsed_path_string.path ids: 82 210
+                @ callback ids: 83 211
+    set md.write ids: 84 212
+      function  ids: 85 213
+        param parsed_path_string ids: 86 214
+        param content ids: 87 215
+        param options ids: 88 216
+        param callback ids: 89 217
+        _ verifyFS ids: 90 218
+          $group  ids: 257 321
+            $args: notUsed  $params: result
+            function  ids: 259 322
+              param err ids: 260 323
+              param ${result} ids: 261 324
+              if err ids: 262 325
+                return  ids: 263 326
+                  _ callback ids: 264 327
+                    @ err ids: 265 328
+              _ repoFS.writeFile ids: 92 220
+                @ parsed_path_string.userId ids: 93 221
+                @ parsed_path_string.projectId ids: 94 222
+                @ parsed_path_string.path ids: 95 223
+                @ content ids: 96 224
+                @ callback ids: 97 225
+    set md.copy ids: 98 226
+      function  ids: 99 227
+        param parsed_source_path_string ids: 100 228
+        param dest_path_string ids: 101 229
+        param callback ids: 102 230
+        _ uriparser ids: 103 231
+          @ String(dest_path_string) ids: 104 232
+          $group  ids: 257 330
+            $args: parsed_dest_path_string  $params: result
+            function  ids: 259 331
+              param err ids: 260 332
+              param ${result} ids: 261 333
+              if err ids: 262 334
+                return  ids: 263 335
+                  _ callback ids: 264 336
+                    @ err ids: 265 337
+              if parsed_dest_path_string.storeKind !== 'repo' ids: 106 234
+                return  ids: 107 235
+                  _ callback ids: 108 236
+                    _ error ids: 109 237
+                      @ 'Destination uri must have schema = "repo", instead it is : ' + dest_path_string ids: 110 238
+                      @ "copy" ids: 111 239
+              elif parsed_dest_path_string.userId !== parsed_source_path_string.userId ids: 112 240
+                return  ids: 113 241
+                  _ callback ids: 114 242
+                    _ error ids: 115 243
+                      @ 'Copy of documents between different users is not implemented : ' + parsed_source_path_string.userId + '/' + parsed_dest_path_string.userId ids: 116 244
+                      @ "copy" ids: 117 245
+              _ repoFS.copyFile ids: 118 246
+                @ parsed_source_path_string.userId ids: 119 247
+                @ parsed_source_path_string.projectId ids: 120 248
+                @ parsed_source_path_string.path ids: 121 249
+                @ parsed_dest_path_string.projectId ids: 122 250
+                @ parsed_dest_path_string.path ids: 123 251
+                $group  ids: 257 339
+                  $args: notUsed  $params: result
+                  function  ids: 259 340
+                    param err ids: 260 341
+                    param ${result} ids: 261 342
+                    if err ids: 262 343
+                      return  ids: 263 344
+                        _ callback ids: 264 345
+                          @ err ids: 265 346
+                    return  ids: 125 253
+                      _ callback ids: 126 254
+                        @ null ids: 127 255
+                        @ true ids: 128 256

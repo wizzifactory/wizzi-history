@@ -1,0 +1,94 @@
+﻿module
+	kind jsfile
+
+	var smile = '\uD83D\uDE00'
+	# => '😀'  
+	log 'smile', smile , 'should be 😀'
+	# => 2
+	log 'smile.length', smile.length, 'should be 2'
+
+	function encode_astral
+		# An astral code point requires two code units: a surrogate pair.
+		# To encode U+1F600 (😀) in UTF-16 
+		# a surrogate pair is used: 0xD83D 0xDE00.
+		log '\uD83D\uDE00'
+
+	_ encode_astral
+	
+	function getSurrogatePair
+		param astralCodePoint
+		var highSurrogate =
+			\b Math.floor((astralCodePoint - 0x10000) / 0x400) + 0xD800
+		var lowSurrogate = (astralCodePoint - 0x10000) % 0x400 + 0xDC00
+		return [highSurrogate, lowSurrogate]
+
+	# => [0xDC00, 0xDFFF]
+	log getSurrogatePair(0x1F600)
+
+	function getAstralCodePoint
+		param highSurrogate
+		param lowSurrogate
+		var ret = (highSurrogate - 0xD800) * 0x400 +
+			\b lowSurrogate - 0xDC00 + 0x10000
+		log 'getAstralCodePoint', toHex(highSurrogate), toHex(lowSurrogate), toHex(ret)
+		return ret
+	
+	# => 0x1F600  
+	_ getAstralCodePoint(0xD83D, 0xDE00)
+
+	function toHex
+		param number
+		if {}.toString.call(number) === '[object Array]'
+			var ret = []
+			foreach item in number
+				_ ret.push(toHex(item))
+			return ret.join(',')
+		else
+			return number.toString(16)
+
+	function fromHex
+		param hexString
+		return parseInt(hexString, 16)
+
+	function getChars
+		param str
+		var result = []
+		var index = 0
+		while index < str.length
+			_ result.push
+				_ str.charAt
+					@ index
+			set index ++
+		return result
+
+	function getCodePoints
+		param str
+		var result = []
+		var index = 0
+		while index < str.length
+			var point = (str.charAt(index) + str.charAt(index + 1)).codePointAt(0)
+			if point > 0xffff
+				log 'point > 0xffff'
+				set index += 2
+			else
+				set index += 1
+			_ result.push(point)
+		return result
+
+	function stringFromCodePoints
+		param cps
+		var ret = []
+		foreach item in cps
+			_ ret.push
+				_ String.fromCodePoint
+					@ item
+		return ret.join('')
+
+
+	log 'getChars', toHex(getChars('a 😀 b'))
+	log 'getChars', toHex(getChars('a ' + smile + ' b'))
+	log 'getCodePoints', toHex(getCodePoints('a 😀 b'))
+	log 'getCodePoints', toHex(getCodePoints('a ' + smile + ' b'))
+	log 'stringFromCodePoints', stringFromCodePoints(getCodePoints('a 😀 b'))
+	log 'stringFromCodePoints', stringFromCodePoints(getCodePoints('a ' + smile + ' b'))
+	# log 'String.fromCodePoint', String.fromCodePoint(getAstralCodePoint(0xD83D, 0xDE00)), String.fromCodePoint(getAstralCodePoint(0xD83D, 0xDE00)).length

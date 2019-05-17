@@ -1,0 +1,38 @@
+﻿$group
+	$params name, kind, title, license
+
+	h1 ${name} - v4 (pre-release) ${kind} package
+	br
+	p ${title}
+	br
+
+	workinprogress()
+
+	$hook
+
+	h2 Source and generation
+	p ${name} is generated using the wizzi factory v3 (pre-release). 
+	p But until version v5 (pre-release) will not be possibile for users to
+		+ generate the distributable. Go directly to
+		a the /dist folder.
+			href https://github.com/wizzifactory/${name}/tree/master/dist
+	br
+	
+	wf()
+
+	h2 Built With
+	ul
+		li 
+			a Nodejs
+				href https://nodejs.org
+		li 
+			a Wizzi Factory
+				href https://github.com/wizzifactory
+	br
+	
+	$if license === 'MIT'
+		h2 License
+		p This project is licensed under the MIT License - see the
+			a license.txt
+				href license.txt
+			p for details.

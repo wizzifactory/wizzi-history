@@ -1,0 +1,88 @@
+﻿$group
+
+	@ createGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var name = options.name
+			var schema = options.schema
+			var type = options.type
+			var kind = options.kind
+
+			var fullName = name
+			if schema
+				if kind === 'gist'
+					set fullName = name + '.' + schema + '.ittf'
+				else
+					set fullName = name + '.' + schema
+
+			var that = this
+			_ paths.gistFileExists
+				@ kind
+				@ userId
+				@ fullName
+				f_cb_api(result)
+					if result
+						r_cb_error( kind + ' already exists' )
+					_ paths.putGistFile
+						@ kind
+						@ userId
+						@ fullName
+						@ ''
+						f_cb_api(result)
+							_ that.getGistList
+								{
+									@ userId userId
+									@ kind kind
+								f_cb_api( result )
+									if kind === 'gist'
+										r_cb_success_quoted( Gist created )
+											@ gists result.data.gists
+									else
+										r_cb_success_quoted( Snippet created )
+											@ snippets result.data.snippets
+
+	@ updateGist
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var content = options.content
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			
+			_ paths.putFile
+				@ filePath
+				@ content
+				f_cb_api( result )
+					r_cb_success( kind + ' updated' )
+
+	@ deleteGist
+		function
+			param options
+			param callback
+
+			var userId = options.userId
+			var hash = options.hash
+			var filePath = hashDecrypt(hash)
+			var kind = paths.gistKindFromFilePath(filePath)
+			
+			var that = this
+			_ paths.deleteFile
+				@ filePath
+				f_cb_api( result )
+					_ that.getGistList
+						{
+							@ userId userId
+							@ kind kind
+						f_cb_api( result )
+							if kind === 'gist'
+								r_cb_success_quoted( Gist deleted )
+									@ gists result.data.gists
+							else
+								r_cb_success_quoted( Snippet deleted )
+									@ snippets result.data.snippets
+

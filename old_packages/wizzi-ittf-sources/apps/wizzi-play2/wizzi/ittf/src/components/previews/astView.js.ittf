@@ -1,0 +1,33 @@
+﻿r-component( AstView )
+	
+	$append imports
+
+		import ReactJson from 'react-json-view'
+		import MonacoEditor from '../MonacoEditor'
+
+		var styles
+			{
+				$*
+				@ margin '20px'
+				@ padding '20px'
+				*$
+				@ overflow 'auto'
+
+	render
+		prop codeAST
+		prop width
+		prop height
+		# log 'AstView.render.codeAST', codeAST
+
+		return
+			div
+				style {styles}
+				< MonacoEditor 
+					@ value { JSON.stringify(codeAST, null, 2) }
+					@ width { width }
+					@ height { height }
+					@ theme 'vs-dark'
+				$*
+				< ReactJson
+					@ src { codeAST }
+				*$

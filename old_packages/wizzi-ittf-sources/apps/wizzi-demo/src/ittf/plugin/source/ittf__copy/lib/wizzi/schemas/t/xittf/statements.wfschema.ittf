@@ -1,0 +1,162 @@
+﻿$group
+
+	e set : statement
+
+		#
+		# The set element do not relate to any javascript synthax element but is
+		# fundamental in the 'js' language schema.
+		# A wizzi schema cannot have free node names (tags). User names
+		# cannot be node names but always must be node values.
+		# Whenever javascript has a left hand side item that is an user name
+		# must be preceded by set.
+		#
+		# ittf
+		#  set user.name = 'stefi'
+		# js
+		#  user.name = 'stefi';
+		#
+		# In a 'set' element the wzName is written as is. If it is a top statement
+		# the semicolon is added.
+		#
+
+	e if : statement
+		
+		# 
+		# ittf:
+		#   if a === b
+		#   elif a === c
+		#   else
+		# js:
+		#   if ( a === b ) {
+		#   }
+		#   else if ( a === c ) {
+		#   }
+		#   else {
+		#   }
+		#
+	e elif : statement
+
+		# ittf
+		#   see 'if' element
+
+	e else : statement
+
+		# ittf
+		#   see 'if' element
+	
+	e for : statement
+		
+		# ittf
+		#   for var k in object3
+		#     log k, object3[k]
+		#
+	
+	e foreach : statement
+		tag foreach|each
+	
+		# ittf
+		#   foreach item in arr5
+		#     log 'item ', i, item
+		#
+		# js
+		#   var i, i_len=arr5.length, item;
+		#   for (i=0; i<i_len; i++) {
+		#     item = arr5[i];
+		#     console.log('item ', i, item);
+		#   }
+		#
+
+	e backeach : statement
+
+		# ittf
+		#   backeach item in arr5
+		#     log 'item ', i, item
+		# js
+		#   var i, i_len=arr5.length, item;
+		#   for (i= (i_len-1); i>-1; i--) {
+		#     item = arr5[i];
+		#     console.log('item ', i, item);
+		#   }
+		#
+	
+	e break : statement
+		
+		# ittf
+		#   foreach item in arr5
+		#     ...
+		#     break
+		#
+	
+	e continue : statement
+		
+		# ittf
+		#   foreach item in arr5
+		#     ...
+		#     continue
+		#
+	
+	e label : statement
+
+		# ittf
+		#   var i, j
+		#   label loop1
+		#     for i = 0; i < 3; i++
+		#       # The first for statement is labeled "loop1"
+		#       label loop2
+		#         for j = 0; j < 3; j++
+		#           # The second for statement is labeled "loop2"
+		#           if i === 1 && j === 1
+		#             continue loop1
+		#           log 'i = ' + i + ', j = ' + j
+   	
+	e while : statement
+
+		#
+		# ittf
+		#   set parent = node.parent
+		#   while parent
+		#     set parent = parent.parent
+		#
+	
+	e do : statement
+
+		#
+		# ittf
+		#   var result = ''
+		#   var i = 0
+		#   do i < 5
+		#     set i += 1
+		#     set result += i + ' '
+		#
+		# js
+		#   var result = '';
+		#   var i = 0;
+		#   do {
+		#     i += 1;
+		#     result += i + ' ';
+		#   } while (i < 5);
+		#
+	
+	e switch : statement
+
+		#
+		# ittf
+		#   switch key
+		#     case 1
+		#       _ first()
+		#     case 2
+		#       _ second()
+		#     default
+		#       _ last()
+		#
+
+	e case : statement
+
+		# ittf
+		#   see 'switch' element
+
+	e default : statement
+
+		# ittf
+		#   see 'switch' element
+

@@ -1,0 +1,21 @@
+﻿module 
+    kind jsfile
+    
+	var _ = require('lodash')
+	var verify = require('wizzi-utils').verify
+    
+	set module.exports =
+        function 
+            param userdefaults
+            param genoptions
+            
+			return
+				_ _.merge
+					{ 
+						@ isDebug false
+						@ CRLF '\n'
+						@ indentSpaces 4
+						@ dotgExtensionPrefix false
+						@ dumps {}
+					@ userdefaults || {}
+					@ genoptions || {}         

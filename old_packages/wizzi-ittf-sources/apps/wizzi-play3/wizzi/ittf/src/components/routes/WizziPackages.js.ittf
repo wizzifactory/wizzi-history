@@ -1,0 +1,125 @@
+﻿r-container( WizziPackages, false, true
+
+	$append imports
+		common/page_imports()
+		import
+			@ getKernelPackages
+			@ getPluginsPackages 
+			from '../../store/actions'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+	style
+		{ root
+			@ display 'flex'
+			@ flexDirection 'column'
+			@ height '100%'
+			@ flexGrow 1
+		editor/style()
+
+	state
+		@ selectPackageType null
+		@ selectPackageName null
+
+	=> handleSelect
+		param packageType
+		param packageName
+		log 'WizziPackages.handleSelect.item', packageType, packageName
+		_ this.setState
+			{
+				@ selectPackageType packageType
+				@ selectPackageName packageName
+
+	did-mount
+		prop dispatchGetKernelPackages
+		prop dispatchGetPluginsPackages
+		_ dispatchGetKernelPackages
+		_ dispatchGetPluginsPackages
+
+	render
+
+		prop classes
+		prop match
+		prop kernelPackages
+		prop pluginsPackages
+
+		log 'WizziPackages.match', match
+
+		const title = this.state.selectPackageType 
+			\b ? 'Wizzi ' + this.state.selectPackageType + ' package '
+			\b : 'Wizzi packages'
+
+		# let disablePermanent = false
+		# let navIconClassName = ''		
+		let appBarClassName = classes.appBar
+		if title === null
+			# home route, don't shift app bar or dock drawer
+			# set disablePermanent = true
+			# set appBarClassName += ` ${classes.appBarHome}`
+		else
+			# set navIconClassName = classes.navIconHide
+			set appBarClassName += ` ${classes.appBarShift}`
+
+		return
+			. { classes.root }
+				< AppBar
+					$$ @ className {appBarClassName}
+					@ position static
+					< Toolbar
+						{
+							&&
+								+ title !== null
+								< Typography
+									@ className {classes.title}
+									@ variant title
+									@ color inherit
+									@ noWrap
+									+ {title}
+				. { classes.column1 }
+					h3 Kernel
+					< List
+						{
+							_ kernelPackages.map
+								=>
+									param p
+									param i
+									return
+										< MyLink
+											@ key {i}
+											@ to
+												`lit 
+													+ /wizzikernelpackage/
+													@ p.name
+											@ title {p.name}
+					h3 Plugins
+					< List
+						{
+							_ pluginsPackages.map
+								=>
+									param p
+									param i
+									return
+										< MyLink
+											@ key {i}
+											@ to
+												`lit 
+													+ /wizzipluginpackage/
+													@ p.name
+											@ title {p.name}
+
+	$append state-to-props
+		@ kernelPackages state.wizziPackages.kernelPackages
+		@ pluginsPackages state.wizziPackages.pluginsPackages
+
+	$append dispatch-to-props
+
+		@ dispatchGetKernelPackages
+			=>
+				log 'dispatchGetKernelPackages'
+				_ dispatch
+					_ getKernelPackages
+
+		@ dispatchGetPluginsPackages
+			=>
+				log 'dispatchGetPluginsPackages'
+				_ dispatch
+					_ getPluginsPackages

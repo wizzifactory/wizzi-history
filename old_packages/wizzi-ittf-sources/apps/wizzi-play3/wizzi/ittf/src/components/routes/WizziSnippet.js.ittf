@@ -1,0 +1,134 @@
+﻿r-container( WizziSnippet, false, true
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		editor/imports()
+		codesplit2/imports()
+		$include common/optionsImport
+		import
+			@ getJobGist
+			@ wizzifySnippet
+			editor/importActions()
+			gists/optionsImportActions(snippet)
+			from '../../store/actions'
+		import CodeHighLight from '../mui/CodeHighLight'
+		import EventSourceView from '../mui/EventSourceView'
+		
+		gists/optionsData(snippet)
+		$include wfactions/constants
+
+	style
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		editor/state()
+		codesplit2/state(&opt)
+		@ execUrl null
+		@ execUrlCounter 1
+		common/optionsState()
+
+	did-mount
+		prop match
+		prop dispatchGetJobGist
+		_ dispatchGetJobGist
+			@ match.params.hash
+
+	codesplit2/handlers(&opt)
+
+	=> handleSnippetChange
+		param value
+		prop snippet
+		prop dispatchUpdateJobGist
+		_ dispatchUpdateJobGist
+			@ snippet.hash
+			@ value
+
+	=> handleExec
+		prop snippet
+		const {execUrlCounter} = this.state
+		_ this.setState
+			{
+				@ execUrl '/api/jobs/gistexec?hash=' + snippet.hash + '&eventstream=true&counter=' + execUrlCounter
+				@ execUrlCounter execUrlCounter + 1
+
+	=> handleWizzifySnippet
+		prop snippet
+		prop dispatchWizzifySnippet
+		_ dispatchWizzifySnippet
+			@ snippet.hash
+		_ this.setState
+			{
+				@ execUrl null
+
+	editor/handlers()
+	gists/optionsHandlers(snippet)
+
+	render
+		prop classes
+		prop loadingError
+		prop match
+		prop snippet
+		prop wizzified
+
+		common/guardLoading( snippet )
+
+		editor/renderPropsAndState()
+		codesplit2/render_prop_state(&opt)
+		const { execUrl } = this.state
+
+		return
+			div
+				h2 Snippet {snippet.basename}
+				$include common/optionsRender
+				editor/renderInfoDialog()
+				common/tlb()
+					common/tlb-btn( Exec, this.handleExec
+					common/tlb-btn( wizzify, this.handleWizzifySnippet
+
+				codesplit2/render(&opt)
+					$append pane1
+						< CodeEditor 
+							@ language { 'js' }
+							@ value { snippet.content }
+							@ onChange { this.handleSnippetChange }
+					$append pane2
+						{
+							iif execUrl || !wizzified
+								test 
+									< EventSourceView
+										@ url { execUrl }
+								else
+									< CodeEditor 
+										@ language { 'js' }
+										@ value { wizzified }
+
+	$append state-to-props
+		editor/stateToProps()
+		@ loadingError state.job.loadingError
+		@ snippet state.job.snippet
+		@ wizzified state.job.wizzified
+		@ selectedDocumentHash state.job.snippet ? state.job.snippet.hash : null
+
+	$append dispatch-to-props
+
+		common/dispatch( getJobGist, hash
+		common/dispatch( wizzifySnippet, hash
+
+		@ dispatchUpdateJobGist
+			=>
+				param hash
+				param newcontent
+				log 'dispatchUpdateJobGist', hash
+				_ dispatch
+					_ updateJobGist
+						@ hash
+						@ newcontent
+				_ dispatch
+					_ changedJobGist
+						@ newcontent
+
+		editor/dispatchToProps()
+		gists/optionsDispatchToProps(snippet)

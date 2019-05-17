@@ -1,0 +1,256 @@
+﻿r-component( AppRouter
+
+	$append imports
+		import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+		import Drawer from '@material-ui/core/Drawer';
+		import AppBar from '@material-ui/core/AppBar';
+		import Toolbar from '@material-ui/core/Toolbar';
+		import Typography from '@material-ui/core/Typography';
+		import Home from './routes/Home'
+		import About from './routes/About'
+		import Topics from './routes/Topics'
+		import CodeHighLightDemo from './routes/CodeHighLightDemo'
+		import CodePrettierDemo from './routes/CodePrettierDemo'
+		import CodeBeautifyDemo from './routes/CodeBeautifyDemo'
+		import CodeEditorDemo from './routes/CodeEditorDemo'
+		import CodeEditSplit2 from './routes/CodeEditSplit2'
+		import TreeViewDemo from './routes/TreeViewDemo'
+		import FolderCodeEditor from './routes/FolderCodeEditor'
+		import FormDialog from './routes/FormDialog'
+		import Menus from './routes/Menus'
+		import GridDemo from './routes/GridDemo'
+		import NotifierDemo from './routes/NotifierDemo'
+		import WizziProjects from './routes/WizziProjects'
+		import WizziSchemaView from './routes/WizziSchemaView'
+		import WizziProjectStudio from './routes/WizziProjectStudio'
+		import WizziPackages from './routes/WizziPackages'
+		import WizziKernelPackage from './routes/WizziKernelPackage'
+		import WizziPluginPackage from './routes/WizziPluginPackage'
+		import WizziSchemaEditor from './routes/WizziSchemaEditor'
+		import WizziArtifactEditor from './routes/WizziArtifactEditor'
+		import WizziRepo from './routes/WizziRepo'
+		import WizziJobs from './routes/WizziJobs'
+		import WizziJob from './routes/WizziJob'
+		import WizziGists from './routes/WizziGists'
+		import WizziGist from './routes/WizziGist'
+		import WizziSnippets from './routes/WizziSnippets'
+		import WizziSnippet from './routes/WizziSnippet'
+		import WizziSystem from './routes/WizziSystem'
+		import List from '@material-ui/core/List'
+		import MyLink from './mui/AppDrawerNavItem'
+
+		const drawerWidth = 240
+    
+	style
+        { root
+			@ flexGrow 1
+			@ height '100%'
+        { appFrame
+			@ zIndex 1
+			@ overflow 'hidden'
+			@ position 'relative'
+			@ display 'flex'
+			@ width '100%'
+			@ height 'calc(100% - 64px)'
+        { appBar
+            @ width
+                `lit 
+                    + calc(100% -
+                    @ drawerWidth
+                    + px)
+        { drawerPaper
+            @ position 'relative'
+            @ width drawerWidth
+        @ toolbar theme.mixins.toolbar
+        { contentRoutes
+            @ flexGrow 1
+            @ backgroundColor theme.palette.background.default
+            @ padding theme.spacing.unit * 3
+			@ width '100%'
+    
+	render
+		prop classes
+
+		return
+			. {classes.root}
+				< AppBar
+					@ position static
+					@ color default
+					< Toolbar
+						< Typography
+							@ variant title
+							@ color inherit
+							+ Wizzi factory
+				< Router 
+					. {classes.appFrame}
+						< Drawer
+							@ variant permanent
+							@ anchor left
+							@ classes
+								{ 
+									@ paper classes.drawerPaper
+							< List 
+								< MyLink 
+									@ to /
+									@ title Home
+								< MyLink 
+									@ to "/about"
+									@ title About
+								< MyLink 
+									@ to "/topics"
+									@ title Topics
+								< MyLink 
+									@ to "/codehighlight"
+									@ title Code highlight
+								< MyLink 
+									@ to "/codeprettier"
+									@ title Code prettier
+								< MyLink 
+									@ to "/codebeautify"
+									@ title Code beautify
+								< MyLink 
+									@ to "/codeeditor"
+									@ title Code editor
+								< MyLink 
+									@ to "/codeeditsplit2"
+									@ title Code edit split 2
+								< MyLink 
+									@ to "/treeview"
+									@ title Tree view
+								< MyLink 
+									@ to "/foldereditor"
+									@ title Folder editor view
+								< MyLink 
+									@ to "/formdialog"
+									@ title Form dialog
+								< MyLink 
+									@ to "/menus"
+									@ title Menus
+								< MyLink 
+									@ to "/grid"
+									@ title GridDemo
+								< MyLink 
+									@ to "/notifier"
+									@ title NotifierDemo
+								< MyLink 
+									@ to "/wizziprojects"
+									@ title Wizzi projects
+								< MyLink 
+									@ to "/wizzipackages"
+									@ title Wizzi packages
+								< MyLink 
+									@ to "/wizzirepo/stefi"
+									@ title Wizzi repo
+								< MyLink 
+									@ to "/wizzijobs/stefi"
+									@ title Wizzi jobs
+								< MyLink 
+									@ to "/job/gists/stefi"
+									@ title Wizzi gists
+								< MyLink 
+									@ to "/job/snippets/stefi"
+									@ title Wizzi snippets
+								< MyLink 
+									@ to "/wizzi/system"
+									@ title Wizzi system
+						. {classes.contentRoutes}
+							< Route 
+								@ exact
+								@ path "/"
+								@ component {Home}
+							< Route 
+								@ path "/about"
+								@ component {About}
+							< Route 
+								@ path "/topics"
+								@ component {Topics}
+							< Route 
+								@ path "/codehighlight"
+								@ component {CodeHighLightDemo}
+							< Route 
+								@ path "/codeprettier"
+								@ component {CodePrettierDemo}
+							< Route 
+								@ path "/codebeautify"
+								@ component {CodeBeautifyDemo}
+							< Route 
+								@ path "/codeeditor"
+								@ component {CodeEditorDemo}
+							< Route 
+								@ path "/codeeditsplit2"
+								@ component {CodeEditSplit2}
+							< Route 
+								@ path "/treeview"
+								@ component {TreeViewDemo}
+							< Route 
+								@ path "/foldereditor"
+								@ component {FolderCodeEditor}
+							< Route 
+								@ path "/formdialog"
+								@ component {FormDialog}
+							< Route 
+								@ path "/menus"
+								@ component {Menus}
+							< Route 
+								@ path "/grid"
+								@ component {GridDemo}
+							< Route 
+								@ path "/notifier"
+								@ component {NotifierDemo}
+							< Route 
+								@ path "/wizziprojects"
+								@ component {WizziProjects}
+							< Route 
+								@ path "/wizzischema/:schemaUri"
+								@ component {WizziSchemaView}
+							< Route 
+								@ path "/wizziprojectstudio/:projectId"
+								@ component {WizziProjectStudio}
+							< Route 
+								@ path "/wizzipackages"
+								@ component {WizziPackages}
+							< Route 
+								@ path "/wizzikernelpackage/:packageName"
+								@ component {WizziKernelPackage}
+							< Route 
+								@ path "/wizzi/ittf/:version/kernel/:packageName"
+								@ component {WizziKernelPackage}
+							< Route 
+								@ path "/wizzipluginpackage/:packageName"
+								@ component {WizziPluginPackage}
+							< Route 
+								@ path "/wizzi/ittf/:version/plugin/:packageName"
+								@ component {WizziPluginPackage}
+							< Route 
+								@ path "/wizzischemaeditor/:schemaId"
+								@ component {WizziSchemaEditor}
+							< Route 
+								@ path "/wizziartifacteditor/:artifactId"
+								@ component {WizziArtifactEditor}
+							< Route 
+								@ path "/wizzirepo/:userId"
+								@ component {WizziRepo}
+							< Route 
+								@ path "/wizzijobs/:userId"
+								@ component {WizziJobs}
+							< Route 
+								@ path "/wizzijob/:userId/:hash"
+								@ component {WizziJob}
+							< Route 
+								@ path "/wizzi/jobs/:version/:packageKind/:packageName"
+								@ component {WizziJob}
+							< Route 
+								@ path "/job/gists/:userId"
+								@ component {WizziGists}
+							< Route 
+								@ path "/job/gist/:userId/:hash"
+								@ component {WizziGist}
+							< Route 
+								@ path "/job/snippets/:userId"
+								@ component {WizziSnippets}
+							< Route 
+								@ path "/job/snippet/:userId/:hash"
+								@ component {WizziSnippet}
+							< Route 
+								@ path "/wizzi/system"
+								@ component {WizziSystem}

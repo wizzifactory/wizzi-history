@@ -1,0 +1,58 @@
+﻿$group
+
+	@ generateSchema
+		function
+			param sessionData
+			param ittfDocumentUri
+			param wfschemaName
+			param outputPackagePath
+			param mTreeBuildUpContext
+			param callback
+
+			if typeof(callback) != 'function'
+				set callback = mTreeBuildUpContext
+				set mTreeBuildUpContext = {}
+
+			if userAuthRequired
+				_ createWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ null
+					_ generateModelTypes_cb
+						@ ittfDocumentUri
+						@ outputPackagePath
+						@ wfschemaName
+						@ mTreeBuildUpContext
+						@ callback
+			else
+				_ createWizziFactory
+					@ null
+					_ generateModelTypes_cb
+						@ ittfDocumentUri
+						@ outputPackagePath
+						@ wfschemaName
+						@ mTreeBuildUpContext
+						@ callback
+
+			function generateModelTypes_cb
+				param ittfDocumentUri
+				param outputPackagePath
+				param wfschemaName
+				param mTreeBuildUpContext
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.generateModelTypes
+							@ ittfDocumentUri 
+							@ outputPackagePath
+							@ wfschemaName
+							@ mTreeBuildUpContext
+							f_cb_api( result )
+								return
+									_ callback
+										@ null
+										{
+											@ result result
+											@ status
+												_ success
+													@ 'Schema ' + wfschemaName + ' generated'

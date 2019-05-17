@@ -1,0 +1,54 @@
+module
+	kind react
+
+	import React from 'react'
+	import PropTypes from 'prop-types'
+	import classNames from 'classnames'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+	import MarkdownElement from './MarkdownElement'
+
+	const styleSheet
+        _ createStyleSheet
+            @ 'AppContent'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/AppContent
+
+	function AppContent
+		param props
+		const { className, classes, children: childrenProp, route } = props
+		let children = childrenProp
+		if !children
+			const text
+				template
+					+ # Summary
+					+
+					macro
+						_ route.childRoutes.map
+							=>
+								param childRoute
+								return `- [${childRoute.title}](${childRoute.path})`
+							._ join('\n')
+			
+			log 'AppContent.text', text
+			
+			set children
+				< MarkdownElement
+					@ text {text}
+		
+		log 'AppContent.children', children
+		return
+			div
+				@ className {classNames(classes.content, className)}
+				+ {children}
+
+	set AppContent.propTypes
+		{
+			@ children PropTypes.node
+			@ classes PropTypes.object.isRequired
+			@ className PropTypes.string
+			@ route PropTypes.object.isRequired
+
+	export default withStyles(styleSheet)(AppContent)

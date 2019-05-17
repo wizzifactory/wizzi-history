@@ -1,0 +1,28 @@
+  module  ids: 3 31
+    $args: wizzi-docs, overview  $params: project, section
+    kind jsfile ids: 5 32
+    +  ids: 6 33
+    var path = require('path') ids: 7 34
+    var wizzi = require('wizzi'); ids: 8 35
+    +  ids: 9 36
+    _ wizzi.executeJob ids: 10 37
+      {  ids: 11 38
+        @ name '${project} - ${section}' ids: 12 39
+        @ path ids: 13 40
+          _ path.join ids: 14 41
+            @ __dirname ids: 15 42
+            @ 'ittf' ids: 16 43
+            @ '${project}' ids: 17 44
+            @ '${section}.wfjob.ittf' ids: 18 45
+        @ options ids: 19 46
+          _ wizzi.options ids: 20 47
+            {  ids: 21 48
+              @ indentSpaces 4 ids: 22 49
+              @ basedir __dirname ids: 23 50
+              @ verbose 2 ids: 24 51
+        @ wizziFactoryPackages ids: 25 52
+          [  ids: 26 53
+            _ require ids: 27 54
+              @ 'wizzi-lab-site' ids: 28 55
+            _ require ids: 29 56
+              @ '../index' ids: 30 57

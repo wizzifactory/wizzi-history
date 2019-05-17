@@ -1,0 +1,95 @@
+﻿r-component( App )
+
+	$include app-options
+
+	$include comp-options
+
+	$append imports
+		import SplitPane from 'react-split-pane'
+		import Editor from './Editor'
+		import Controls from './Controls'
+		import Syntax from './Syntax'
+
+		const splitPaneStyle
+			{
+				@ display 'flex'
+				@ position 'unset'
+				@ flex '1 1 0%'
+				@ height '100%'
+				@ width '100%'
+				@ outline 'none'
+				@ overflow 'hidden'
+				@ userSelect 'text'
+				@ flexDirection 'row'
+				@ left '0px'
+				@ right '0px'
+
+		const resizerStyle
+			{
+				@ width '18px'
+				@ cursor 'col-resize'
+				@ backgroundColor '#343436'
+
+	style
+
+		styles/splitter(&opt)
+
+	render
+
+		$foreach p in app.Editor.stateProps
+			prop ${p.name}
+		prop uioptions
+		
+		prop onChangeTheme
+		prop onChangeMode
+		prop onToggleControlled
+		prop onChangeUiOptionName
+		prop onChangeUiOptionValue
+
+		return
+			div
+				@ id container
+				header
+					span
+						id doc-v
+						+ {this.props.version}
+					a
+						href https://github.com/scniro/react-codemirror2
+						target _blank
+					h1
+						i
+							@ className fa fa-github
+							@ aria-hidden true
+						span scniro/react-codemirror2
+						i
+							@ className fa fa-external-link
+							aria-hidden true
+				
+				< Controls
+					$foreach p in app.Editor.stateProps
+						@ ${p.name} { ${p.name} }
+					@ onChangeMode {onChangeMode}
+					@ onChangeTheme {onChangeTheme}
+					@ onToggleControlled {onToggleControlled}
+					@ onChangeUiOptionName {onChangeUiOptionName}
+					@ onChangeUiOptionValue {onChangeUiOptionValue}
+				
+				div
+					@ id pane-container
+					< SplitPane
+						@ split { uioptions['splitter-split'] }
+						@ primary { uioptions['splitter-primary'] }
+						@ maxSize { uioptions['splitter-maxSize'] }
+						@ minSize { uioptions['splitter-minSize'] }
+						@ defaultSize { uioptions['splitter-defaultSize'] }
+						$$ @ resizerClassName {classes.resizer}
+						@ style {splitPaneStyle}
+						@ resizerStyle {resizerStyle}
+						< Editor
+							@ mode {mode}
+							@ theme {theme}
+							@ controlled {controlled}
+						< Syntax
+							@ mode {mode}
+							@ theme {theme}
+							@ controlled {controlled}

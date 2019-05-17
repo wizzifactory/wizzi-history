@@ -1,0 +1,40 @@
+﻿$group
+	$params commandParam
+
+	h3 String functions
+
+	$
+		var commands = [];
+		var actions = commandParam.split(';')
+		for (var i=0; i<actions.length; i++) {
+			var tokens = actions[i].trim().split(' ');
+			var command = { name: tokens[0] };
+			commands.push(command);
+		}
+		_.log(commands);
+
+	div Let us inspect the 'commands' variable content.
+	pre
+		+ Commands: ${ _.inspect(commands) }
+
+	h4 Commands passed as mixin parameter
+	p We perform a crazy operation, a template macro statement with
+		+ a multistatement jswizzi expression. We intersperse  command names
+		+ with dashes.
+	$foreach command in commands
+		div ${ command.name.toUpperCase()[0] + ' - ' + command.name }
+		div This is quite crazy. But it works! -> ${
+			\b var len = command.name.length, output = '';
+			\b for (var i=0; i<len; i++) {
+			\b   output += command.name[i];
+			\b   if (i < len -1) { output += ' - '};
+			\b   _.log(output)
+			\b }
+			\b return output;
+			\b }
+	p That is why mTree stays for "magical tree".
+	p See in wizzi-mtree/loader/ittfinterpolate.js how this works.
+	br
+	br
+
+

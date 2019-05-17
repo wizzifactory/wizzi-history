@@ -1,0 +1,71 @@
+﻿$group
+
+	-
+		- Grid framework
+		- Thanks to https://raw.githubusercontent.com/twbs/bootstrap/v4-dev/scss/mixins/_grid-framework.scss
+
+	% grid-column
+		position relative
+		width 100%
+		min-height 1px   $$ Prevent columns from collapsing when empty
+		padding-right ${grid_gutter / 2}px
+		padding-left ${grid_gutter / 2}px
+
+	$function do_media_breakpoint
+		$param infix
+		
+		$$ Provide basic `.col-{bp}` classes for equal-width flexbox grid_columns
+
+		. col${infix}
+			flex-basis 0
+			flex-grow 1
+			max-width 100%
+				
+		. col${infix}-auto
+			flex 0 0 auto
+			width auto
+			max-width none   $$ Reset earlier grid tiers
+
+		$for var i=1; i<=grid_columns; i++
+			. col${infix}-${i} 
+				flex 0 0 ${ (i / grid_columns) * 100 }%
+				$$ Add a `max-width` to ensure content within each column does not blow out
+				$$ the width of the column. Applies to IE10+ and Firefox. Chrome and Safari
+				$$ do not appear to require this.
+				max-width ${ (i / grid_columns) * 100 }%
+
+		. order${infix}-first
+			order -1
+
+		$for var i=1; i<=grid_columns; i++
+			. order${infix}-${i}
+				order ${i}
+
+		$$ `$grid_columns - 1` because offsetting by the width of an entire row isn't possible
+		$for var i=0; i<=grid_columns-1; i++
+			$if !(infix == "" && i == 0)   $$ Avoid emitting useless .offset-0
+				$ var num = i / grid_columns;
+				. offset${infix}-${i}
+					margin-left ${ num == 0 ? 0 : (num * 100) + '%' }
+
+	$foreach breakpoint in Object.keys(grid_breakpoints)
+
+		$
+			var infix = breakpoint_infix(breakpoint);
+
+		$$ Allow grid_columns to stretch full width below their breakpoints
+		$for var i=1; i<=grid_columns; i++
+			. col${infix}-${i}
+				extend %grid-column
+			
+		. col${infix}
+			+ .col${infix}-auto
+			extend %grid-column
+
+		$if breakpoint_min(breakpoint)
+			media min-width: ${ breakpoint_min(breakpoint) }px
+				$_ do_media_breakpoint
+					$@ infix
+		$else
+			$_ do_media_breakpoint
+				$@ infix

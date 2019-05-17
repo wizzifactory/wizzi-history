@@ -1,0 +1,10 @@
+﻿$group
+	$params method
+	if typeof(callback) !== 'function'
+		throw
+			new Error
+				_ error
+					@ 'InvalidArgument'
+					@ '${method}'
+					@ 'The callback parameter must be a function. Received: ' + callback
+		

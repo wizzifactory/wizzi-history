@@ -1,0 +1,149 @@
+﻿$group
+
+	m getTokens
+		param input
+		if !this.lexerModule
+			var code = this.getCode()
+			# log 'lexer.code', code
+			set this.lexerModule
+				_ wzutils.requireFromString(code)
+		try
+			var tokens
+				_ this.lexerModule.getTokens(input)
+			return tokens
+		catch ex
+			return
+				{
+					@ __is_error true
+					@ input input
+					@ ex ex
+
+	m getCode
+		var coder = new Coder()
+		set coder.ctx.okname = 'ok'
+
+		var check = {}
+			
+		_ coder.w('\'use strict\';')
+		
+		#
+		# tokenTypes
+		_ coder.w('var tokenTypes = {')
+		var first = true, name
+		for var k in this.punctuationChars
+			set name = this.punctuationChars[k]
+			if !check[name]
+				set check[name] = true
+				if !first
+					_ coder.w(',')
+				_ coder.write('    ' + name + ': \'' + name + '\'')
+				set first = false
+		for var k in this.tokens
+			set tk = this.tokens[k]
+			if tk.isFunction
+				set name = tk.wzName
+				if !check[name]
+					set check[name] = true
+					if !first
+						_ coder.w(',')
+					_ coder.write('    ' + name + ': \'' + name + '\'')
+					set first = false
+		_ coder.w('')
+		_ coder.w('}')
+
+		# 
+		# Punctuation
+		_ coder.w('var Punctuation = {')
+		var first = true, value, tk
+		for var k in this.punctuationChars
+			set name = this.punctuationChars[k]
+			if !first
+				_ coder.w(',')
+			_ coder.write('    \'' + escapeText(k) + '\': tokenTypes.' + name)
+			set first = false
+		_ coder.w('')
+		_ coder.w('}')
+
+		# 
+		# Main interface, the Lexer
+		_ coder.w('function getTokens(input) {')
+		_ coder.indent
+
+		_ coder.w('var len = input.length;')
+		_ coder.w('var pos = 0, tn = 0, row = 1, col=1, c, value = [], valueCapture = [], savepos, savecol, savevalue, saveValueCapture;')
+		_ coder.w('var tokens = [];')
+
+		#
+		# Helpers
+		_ coder.w('function tkPush(type) {')
+		_ coder.w('    tokens.push({')
+		_ coder.w('      tn: tn++,')
+		_ coder.w('      row: row,')
+		_ coder.w('      col: col - value.length,')
+		_ coder.w('      type: type,')
+		_ coder.w('      value: value.join(\'\'),')
+		_ coder.w('      valueCapture: valueCapture.join(\'\')')
+		_ coder.w('    });')
+		# _ coder.w('    console.log(\'Got token\', tokens[tokens.length-1]);')
+		_ coder.w('}')
+		_ coder.w('function eat(num, capture) { ')
+		_ coder.w('    num = num || 1;')
+		# _ coder.w('    for (var i=0; i<num; i++) { value.push(input[pos+i]); console.log(\'eaten: \' + input[pos+i]); }')
+		_ coder.w('    for (var i=0; i<num; i++) { value.push(input[pos+i]); }')
+		# _ coder.w('    if (capture) { for (var i=0; i<num; i++) { valueCapture.push(input[pos+i]); console.log(\'captured: \' + input[pos+i]); } }')
+		_ coder.w('    if (capture) { for (var i=0; i<num; i++) { valueCapture.push(input[pos+i]); } }')
+		_ coder.w('    pos += num; col += num;')
+		_ coder.w('    return true;')
+		_ coder.w('}')
+		_ coder.w('function newLine() { row++; col = 1; return true; }')
+		_ coder.w('function lineBreaks() {')
+		_ coder.w('    var seenlf = false;')
+		_ coder.w('    for (var i=0, len=value.length; i<len; i++) {')
+		_ coder.w('        if (seenlf) { col++; }')
+		_ coder.w('        if (value[i] === \'\\n\') { row++; col=1; seenlf=true; }')
+		_ coder.w('    }')
+		_ coder.w('}')
+		_ coder.w('function cp() { return { savepos: pos, savecol: col, savevalue: value.slice(), savevalueCapture: valueCapture.slice() }; }')
+		var by = '(by ? \' by \' + by : \'\')'
+		# _ coder.w('function spit(k, retval, by) { if (value.length > 0) { console.log(\'spitted: \' + value.join(\'\'), ' + by + '); }; pos = k.savepos; col = k.savecol; value = k.savevalue; valueCapture = k.savevalueCapture; return retval; }')
+		_ coder.w('function spit(k, retval, by) { pos = k.savepos; col = k.savecol; value = k.savevalue; valueCapture = k.savevalueCapture; return retval; }')
+		_ coder.w('function tkStart() { value = []; valueCapture = []; return cp(); }')
+
+		_ coder.w('while (pos < len) {')
+		_ coder.indent
+		# _ coder.w('console.log(\'lexing char\', input[pos], \'pos\', pos);')
+
+		set coder.ctx.xif = 'if'
+		for var k in this.tokens
+			_ this.tokens[k].toCode(coder)
+			set coder.ctx.xif = 'else if'
+		set coder.ctx.xif = null
+		_ coder.w('else {')
+		_ coder.w('    if (input.charAt(pos) in Punctuation) {')
+		_ coder.w('        value = []; valueCapture = [];')
+		# _ coder.w('        console.log(\'value.join 1\', value.join(\'\'));')
+		_ coder.w('        eat(1, false);')
+		# _ coder.w('        console.log(\'value.join 2\', value.join(\'\'));')
+		_ coder.w('        tkPush(Punctuation[value[0]]);')
+		_ coder.w('    } else {')
+		_ coder.w('        throw new Error(\'Lexer error invalid char:\' + input.charAt(pos) + \', at pos:\' + pos);')		
+		_ coder.w('    }')
+		_ coder.w('}')
+		_ coder.deindent
+		_ coder.w('}')
+		_ coder.w('return tokens;')
+
+		for var k in this.tokens
+			_ this.tokens[k].toFunction(coder)
+
+		_ coder.deindent
+		_ coder.w('}')
+
+		_ coder.w('module.exports = {')
+		_ coder.w('    tokenTypes: tokenTypes,')
+		_ coder.w('    getTokens: function(input) {')
+		_ coder.w('        return getTokens(input);')
+		_ coder.w('    }')
+		_ coder.w('}')
+
+		return coder.toString()

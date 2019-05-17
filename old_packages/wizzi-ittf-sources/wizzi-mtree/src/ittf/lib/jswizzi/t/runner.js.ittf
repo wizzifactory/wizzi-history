@@ -1,0 +1,11 @@
+﻿$group
+	$params name, arg1|@@null
+
+    set runner.${name}
+        function 
+            param node
+            param ctx
+			$if arg1 != null
+				param ${arg1}
+			_ log('${name}.node', node)
+			$hook

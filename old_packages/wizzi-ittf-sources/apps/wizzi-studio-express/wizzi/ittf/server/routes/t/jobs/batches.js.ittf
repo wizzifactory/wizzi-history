@@ -1,0 +1,178 @@
+﻿$group
+
+	get( /api/jobs/batches )
+
+		check-params( )
+			optional( query , refresh )
+		
+		_ api.jobs.getBatchList
+			{
+				@ userId req.user.id
+				@ refresh refresh === 'true'
+			f_cb_rest( result )
+				log '/api/jobs/batches', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/batch )
+
+		check-params( )
+			optional( query , hash )
+			optional( query , version )
+			optional( query , xpackage )
+		
+		_ api.jobs.getBatch
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ version version
+				@ xpackage xpackage
+			f_cb_rest( result )
+				log '/api/jobs/batch', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/batch/exec )
+
+		check-params( )
+			not-empty( query , hash )
+		
+		_ api.jobs.getBatch
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				var batch
+				if result.status.error
+					return
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+				
+				set batch = result.data.batch
+				_ res.writeHead
+					@ 200
+					{ 
+						@ "Content-Type" "text/event-stream"
+						@ "Cache-control" "no-cache"
+				var 
+					decl spw
+						_ cp.spawn
+							@ batch.command
+							[ 
+								@ batch.argv0
+							{
+								@ cwd batch.cwd
+								{ env
+								@ argv0 undefined
+								@ stdio undefined
+								@ detached false
+								@ shell true
+								@ windowsVerbatimArguments false
+								@ windowsHide false
+					decl str = ""
+
+				log "/api/jobs/batch/exec : spawned"
+
+				_ spw.stdout.on
+					@ 'data'
+					function 
+						param data
+						set str += data.toString()
+						# just so we can see the server is doing something
+						log "data"
+						# Flush out line by line.
+						var lines = str.split("\n")
+						for var i in lines
+							if i == lines.length - 1
+								set str = lines[i]
+							else
+								# Note: The double-newline is *required*
+								_ res.write('data: ' + lines[i] + "\n\n")
+				_ spw.on
+					@ 'close'
+					function 
+						param code
+						log "/api/jobs/batch/exec : close", "code", code
+						_ res.write('data: ***___CLOSE___***\n\n')
+						_ res.end(str)
+        
+				_ spw.stderr.on
+					@ 'data'
+					function 
+						param data
+						log "/api/jobs/batch/exec : stderr data", data
+						_ res.end('stderr: ' + data)
+
+	get( /api/jobs/batch/gitcommit )
+
+		check-params( )
+			not-empty( query , hash )
+			not-empty( query , message )
+		
+		_ api.jobs.getBatch
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				var batch
+				if result.status.error
+					return
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+
+				set batch = result.data.batch
+				if batch.git && batch.git.commit && batch.git.localPath
+					_ scriptManager.gitExecToEventStream
+						{
+							@ scriptPath
+								[
+									@ 'cd ' + batch.git.localPath
+									@ 'git add .'
+									@ 'git commit -m "' + message + ' commit"'
+									._ join('\n')
+						@ res
+				else
+					_ sendError
+						@ res
+						@ 'The batch has no commit info.'
+
+	get( /api/jobs/batch/gitpush )
+
+		check-params( )
+			not-empty( query , hash )
+		
+		_ api.jobs.getBatch
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				var batch
+				if result.status.error
+					return
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+
+				set batch = result.data.batch
+				if batch.git && batch.git.push && batch.git.localPath
+					_ scriptManager.gitExecToEventStream
+						{
+							@ scriptPath
+								[
+									@ 'cd ' + batch.git.localPath
+									@ 'git push -u origin master'
+									._ join('\n')
+						@ res
+				else
+					_ sendError
+						@ res
+						@ 'The batch has no push info.'

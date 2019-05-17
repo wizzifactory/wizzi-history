@@ -1,0 +1,30 @@
+﻿$group
+
+	describe insert a filesystem item
+
+		it-async should insert a root folder
+
+			_ fsdb.insertItem
+				{
+					@ parentId null
+					@ basename 'c:'
+					@ dirname null
+				f_cb_done( r )
+					log 'insertItem.r', err, r
+					tobe_number( r.insertedCount, 1 )
+					tobe_string( r.code, FSITEM_INSERTED )
+					tobe_object( r.item )
+					tobe_string( r.item.path, c: )
+
+		it-async should say the item already exists
+
+			_ fsdb.insertItem
+				{
+					@ parentId null
+					@ basename 'c:'
+					@ dirname null
+				f_cb_done( r )
+					log 'insertItem.r', err, r
+					tobe_string( r.code, FSITEM_EXISTS )
+					tobe_object( r.item )
+					tobe_string( r.item.path, c: )

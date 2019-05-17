@@ -1,0 +1,23 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    class Acl ids: undefined undefined
+      ctor  ids: undefined undefined
+        param config ids: undefined undefined
+        param wizziConfig ids: undefined undefined
+        set this.config = config ids: undefined undefined
+        set this.wizziConfig = wizziConfig ids: undefined undefined
+      m checkAuth ids: undefined undefined
+        param userId ids: undefined undefined
+        param subscriptionType ids: undefined undefined
+        param operId ids: undefined undefined
+        param resourceType ids: undefined undefined
+        param resourceName ids: undefined undefined
+        if subscriptionType === 'admin' ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+              @ ok true ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+            @ ok false ids: undefined undefined
+            @ reason userId + ' not authorized to ' + operId ids: undefined undefined
+    set module.exports = Acl ids: undefined undefined

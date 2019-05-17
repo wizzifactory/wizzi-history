@@ -1,0 +1,20 @@
+﻿$group
+
+	var declares
+		[
+			{
+				@ code 'var x = { a:1, b:\'alfa\', c:4 }; return x;'
+				@ expected_equal
+					{
+						@ a 1
+						@ b 'alfa'
+						@ c 4
+
+			{
+				@ code 'var x = [ 1, \'alfa\', 4 ]; return x;'
+				@ expected_equal
+					[
+						@ 1
+						@ 'alfa'
+						@ 4
+	

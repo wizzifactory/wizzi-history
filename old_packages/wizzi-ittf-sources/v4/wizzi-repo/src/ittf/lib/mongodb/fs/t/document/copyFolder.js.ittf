@@ -1,0 +1,47 @@
+﻿$group
+
+	m copyFolder
+		string sourcePath
+		string destPath
+		callback
+
+		set sourcePath = normalize(path.resolve(sourcePath))
+		set destPath = normalize(path.resolve(destPath))
+		
+		if sourcePath === destPath
+			r_cb( {} )
+
+		var that = this
+
+		var copies = []
+
+		_ this.getFiles
+			@ sourcePath
+			{
+				@ deep true
+			f_cb( files )
+
+				var
+					decl sourcefile
+					decl destfile
+					decl files_len = files.length
+
+				function repeater
+					param index
+					if index === files_len
+						r_cb( copies )
+			
+					set sourcefile = files[index]
+					set destfile = sourcefile.replace(sourcePath, destPath)
+		
+					_ that.copyFile
+						@ sourcefile
+						@ destfile
+						f_cb( r )
+							_ copies.push(r)
+							_ process.nextTick
+								function 
+									_ repeater(index + 1)
+        
+				_ repeater(0)
+

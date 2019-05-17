@@ -1,0 +1,77 @@
+﻿module 
+    kind jsfile
+    
+	var path = require('path')
+	var file = require('../fs/file')
+	var IttfMTreeEx = require('../ittfTree/ittfMTreeEx')
+	var IttfFsNode = require('./ittfFsNode')
+
+	var md
+        set module.exports =
+            { 
+	
+	#
+		#
+		# Scans a folder searching for *.ittf files
+		# Returns a wizzi.utils.IttfMTreeEx instance
+		# loaded with an mTree conformant to the 
+		# 'wzpackage' schema.
+		#
+		# params
+		#   string folderPath
+		#   { options
+		#     string name
+		#       # the name of the 'wzpackage' wizzi model that
+		#       # will be generated from this folder
+		#     string gitPath 
+		#       # the base path to the 'main' generated artifact
+		#       # in the future, could be used for linking the ittf document
+		#       # of a language type to the generated code.
+		#
+	set md.scan
+        function 
+            param folderPath
+			param options
+			var removeRoot = path.dirname(folderPath)
+			# log 'folderPath, removeRoot', folderPath, removeRoot
+			var baseFolder = path.basename(folderPath)
+			var ittfs
+				_ file.getGlobbedFilesEx
+					_ path.join
+						@ folderPath
+						@ '**/*.ittf'
+					{
+						@ removeRoot removeRoot
+						@ dot true
+						@ ignore
+							_ path.join
+								@ folderPath
+								@ '**/node_modules/**/*.*'
+			
+			var ittfMTreeEx = new IttfMTreeEx('wzpackage', options.name)
+			var root = new IttfFsNode(baseFolder, null, true)
+			_ root.setSourcePaths
+				{
+					@ ittfBasePath removeRoot
+					@ jsBaseCodePath options.gitPath
+			
+			foreach ittf in ittfs
+				# log 'wizzi-utils.folderScanner.ittf', ittf
+				_ root.addDocument
+					@ ittf
+					{
+						@ basePath removeRoot
+						@ gitPath options.gitPath
+			
+			_ root.setInfo()
+			# log 'root.setInfo()'
+			
+			_ root.toIttf(ittfMTreeEx)
+			# log 'root.toIttf(ittfMTreeEx)'
+			
+			return ittfMTreeEx
+
+
+			
+
+

@@ -1,0 +1,2381 @@
+// 26/5/2017:13:14:52  by C:\My\wizzi\boot\v.2\node_modules\wizzi-boot\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //195
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //196
+$.a($1, $2, 7);
+var $3 = { n: "var", v: "util = require('util')", r: 4, c: 5, s: "f1", u: "f1",  }; //197
+$.a($1, $3, 9);
+var $4 = { n: "var", v: "escodegen = require('escodegen')", r: 5, c: 5, s: "f1", u: "f1",  }; //198
+$.a($1, $4, 11);
+var $5 = { n: "var", v: "esprima = require('esprima')", r: 6, c: 5, s: "f1", u: "f1",  }; //199
+$.a($1, $5, 13);
+var $6 = { n: "var", v: "file = require('../util/file')", r: 7, c: 5, s: "f1", u: "f1",  }; //200
+$.a($1, $6, 15);
+var $7 = { n: "var", v: "verify = require('../util/verify')", r: 8, c: 5, s: "f1", u: "f1",  }; //201
+$.a($1, $7, 17);
+var $8 = { n: "var", v: "errors = require('./errors')", r: 9, c: 5, s: "f1", u: "f1",  }; //202
+$.a($1, $8, 19);
+var $9 = { n: "var", v: "verbose = false", r: 10, c: 5, s: "f1", u: "f1",  }; //203
+$.a($1, $9, 21);
+var $10 = { n: "var", v: "defaultOptions", r: 12, c: 5, s: "f1", u: "f1",  }; //204
+$.a($1, $10, 23);
+var $11 = { n: "{", v: "", r: 13, c: 9, s: "f1", u: "f1",  }; //205
+$.a($10, $11, 25);
+var $12 = { n: "@", v: "verbose true", r: 14, c: 13, s: "f1", u: "f1",  }; //206
+$.a($11, $12, 27);
+var $13 = { n: "function", v: "log", r: 16, c: 5, s: "f1", u: "f1",  }; //207
+$.a($1, $13, 29);
+var $14 = { n: "param", v: "label", r: 17, c: 9, s: "f1", u: "f1",  }; //208
+$.a($13, $14, 31);
+var $15 = { n: "param", v: "node", r: 18, c: 9, s: "f1", u: "f1",  }; //209
+$.a($13, $15, 33);
+var $16 = { n: "param", v: "force", r: 19, c: 9, s: "f1", u: "f1",  }; //210
+$.a($13, $16, 35);
+var $17 = { n: "if", v: "(verbose || force)", r: 20, c: 9, s: "f1", u: "f1",  }; //211
+$.a($13, $17, 37);
+var $18 = { n: "log", v: "escodegen.generate(node)", r: 21, c: 13, s: "f1", u: "f1",  }; //212
+$.a($17, $18, 39);
+var $19 = { n: "_", v: "console.log", r: 22, c: 13, s: "f1", u: "f1",  }; //213
+$.a($17, $19, 41);
+var $20 = { n: "@", v: "label", r: 23, c: 17, s: "f1", u: "f1",  }; //214
+$.a($19, $20, 43);
+var $21 = { n: "_", v: "util.inspect", r: 24, c: 17, s: "f1", u: "f1",  }; //215
+$.a($19, $21, 45);
+var $22 = { n: "@", v: "node", r: 25, c: 21, s: "f1", u: "f1",  }; //216
+$.a($21, $22, 47);
+var $23 = { n: "{", v: "", r: 26, c: 21, s: "f1", u: "f1",  }; //217
+$.a($21, $23, 49);
+var $24 = { n: "@", v: "depth 2", r: 27, c: 25, s: "f1", u: "f1",  }; //218
+$.a($23, $24, 51);
+var $25 = { n: "var", v: "runner", r: 29, c: 5, s: "f1", u: "f1",  }; //219
+$.a($1, $25, 53);
+var $26 = { n: "function", v: "", r: 30, c: 9, s: "f1", u: "f1",  }; //220
+$.a($25, $26, 55);
+var $27 = { n: "param", v: "ast", r: 31, c: 13, s: "f1", u: "f1",  }; //221
+$.a($26, $27, 57);
+var $28 = { n: "param", v: "ctx", r: 32, c: 13, s: "f1", u: "f1",  }; //222
+$.a($26, $28, 59);
+var $29 = { n: "param", v: "action", r: 33, c: 13, s: "f1", u: "f1",  }; //223
+$.a($26, $29, 61);
+var $30 = { n: "param", v: "data", r: 34, c: 13, s: "f1", u: "f1",  }; //224
+$.a($26, $30, 63);
+var $31 = { n: "var", v: "type", r: 36, c: 13, s: "f1", u: "f1",  }; //225
+$.a($26, $31, 65);
+var $32 = { n: "iif", v: "action", r: 37, c: 17, s: "f1", u: "f1",  }; //226
+$.a($31, $32, 67);
+var $33 = { n: "then", v: "ast.type + '_' + action", r: 38, c: 21, s: "f1", u: "f1",  }; //227
+$.a($32, $33, 69);
+var $34 = { n: "else", v: "", r: 39, c: 21, s: "f1", u: "f1",  }; //228
+$.a($32, $34, 71);
+var $35 = { n: "set", v: "ast.type", r: 40, c: 25, s: "f1", u: "f1",  }; //229
+$.a($34, $35, 73);
+var $36 = { n: "if", v: "verbose", r: 42, c: 13, s: "f1", u: "f1",  }; //230
+$.a($26, $36, 75);
+var $37 = { n: "_", v: "console.log(('ast.type: ' + type))", r: 43, c: 17, s: "f1", u: "f1",  }; //231
+$.a($36, $37, 77);
+var $38 = { n: "if", v: "ast.trailingComments && ast.trailingComments.length == 1", r: 45, c: 13, s: "f1", u: "f1",  }; //232
+$.a($26, $38, 79);
+var $39 = { n: "_", v: "ctx.setRunningNodeId", r: 46, c: 17, s: "f1", u: "f1",  }; //233
+$.a($38, $39, 81);
+var $40 = { n: "@", v: "ast.trailingComments[0].value", r: 47, c: 21, s: "f1", u: "f1",  }; //234
+$.a($39, $40, 83);
+var $41 = { n: "var", v: "trunner = runner[type]", r: 48, c: 13, s: "f1", u: "f1",  }; //235
+$.a($26, $41, 85);
+var $42 = { n: "if", v: "trunner", r: 49, c: 13, s: "f1", u: "f1",  }; //236
+$.a($26, $42, 87);
+var $43 = { n: "return", v: "trunner(ast, ctx, data)", r: 50, c: 17, s: "f1", u: "f1",  }; //237
+$.a($42, $43, 89);
+var $44 = { n: "else", v: "", r: 51, c: 13, s: "f1", u: "f1",  }; //238
+$.a($26, $44, 91);
+var $45 = { n: "return", v: "", r: 52, c: 17, s: "f1", u: "f1",  }; //239
+$.a($44, $45, 93);
+var $46 = { n: "_", v: "error", r: 53, c: 21, s: "f1", u: "f1",  }; //240
+$.a($45, $46, 95);
+var $47 = { n: "@", v: "ctx", r: 54, c: 25, s: "f1", u: "f1",  }; //241
+$.a($46, $47, 97);
+var $48 = { n: "@", v: "'Missing runner for type: ' + type", r: 55, c: 25, s: "f1", u: "f1",  }; //242
+$.a($46, $48, 99);
+var $49 = { n: "@", v: "'runner'", r: 56, c: 25, s: "f1", u: "f1",  }; //243
+$.a($46, $49, 101);
+var $50 = { n: "var", v: "runnerSet", r: 58, c: 5, s: "f1", u: "f1",  }; //244
+$.a($1, $50, 103);
+var $51 = { n: "function", v: "", r: 59, c: 9, s: "f1", u: "f1",  }; //245
+$.a($50, $51, 105);
+var $52 = { n: "param", v: "ast", r: 60, c: 13, s: "f1", u: "f1",  }; //246
+$.a($51, $52, 107);
+var $53 = { n: "param", v: "ctx", r: 61, c: 13, s: "f1", u: "f1",  }; //247
+$.a($51, $53, 109);
+var $54 = { n: "param", v: "data", r: 62, c: 13, s: "f1", u: "f1",  }; //248
+$.a($51, $54, 111);
+var $55 = { n: "return", v: "runner(ast, ctx, 'Set', data)", r: 63, c: 13, s: "f1", u: "f1",  }; //249
+$.a($51, $55, 113);
+var $56 = { n: "var", v: "runnerCall", r: 65, c: 5, s: "f1", u: "f1",  }; //250
+$.a($1, $56, 115);
+var $57 = { n: "function", v: "", r: 66, c: 9, s: "f1", u: "f1",  }; //251
+$.a($56, $57, 117);
+var $58 = { n: "param", v: "ast", r: 67, c: 13, s: "f1", u: "f1",  }; //252
+$.a($57, $58, 119);
+var $59 = { n: "param", v: "ctx", r: 68, c: 13, s: "f1", u: "f1",  }; //253
+$.a($57, $59, 121);
+var $60 = { n: "param", v: "data", r: 69, c: 13, s: "f1", u: "f1",  }; //254
+$.a($57, $60, 123);
+var $61 = { n: "return", v: "runner(ast, ctx, 'Call', data)", r: 70, c: 13, s: "f1", u: "f1",  }; //255
+$.a($57, $61, 125);
+var $62 = { n: "set", v: $.ip("f2", "runner.${name}", "string", 126), r: 4, c: 5, s: "f2", u: "f6",  }; //1582
+$.a($1, $62, 127);
+var $63 = { n: "function", v: "", r: 5, c: 9, s: "f2", u: "f6",  }; //1583
+$.a($62, $63, 129);
+var $64 = { n: "param", v: "node", r: 6, c: 13, s: "f2", u: "f6",  }; //1584
+$.a($63, $64, 131);
+var $65 = { n: "param", v: "ctx", r: 7, c: 13, s: "f2", u: "f6",  }; //1585
+$.a($63, $65, 133);
+$.s("f2");
+if (arg1 != null) { //1586
+    $.n();
+    var $67 = { n: "param", v: $.ip("f2", "${arg1}", "string", 137), r: 9, c: 17, s: "f2", u: "f6",  }; //1587
+    $.a($63, $67, 138);
+}
+$.n();
+var $68 = { n: "_", v: $.ip("f2", "log('${name}.node', node)", "string", 141), r: 10, c: 13, s: "f2", u: "f6",  }; //1588
+$.a($63, $68, 142);
+var $69 = { n: "var", v: "state", r: 73, c: 9, s: "f1", u: "f1",  }; //257
+$.a($63, $69, 144);
+var $70 = { n: "for", v: "var i = 0; i < node.body.length; i++", r: 74, c: 9, s: "f1", u: "f1",  }; //258
+$.a($63, $70, 146);
+var $71 = { n: "var", v: "statement = node.body[i]", r: 75, c: 13, s: "f1", u: "f1",  }; //259
+$.a($70, $71, 148);
+var $72 = { n: "var", v: $.ip("f3", "${varName}", "string", 149), r: 4, c: 5, s: "f3", u: "f7",  }; //1598
+$.a($70, $72, 150);
+var $73 = { n: "_", v: "runner(statement, ctx)", r: 77, c: 17, s: "f1", u: "f1",  }; //261
+$.a($72, $73, 152);
+var $74 = { n: "if", v: $.ip("f3", "${varName} && ${varName}.__is_error", "string", 153), r: 6, c: 5, s: "f3", u: "f7",  }; //1600
+$.a($70, $74, 154);
+var $75 = { n: "log", v: $.ip("f3", "'__is_error ${message}', ${varName}", "string", 155), r: 7, c: 9, s: "f3", u: "f7",  }; //1601
+$.a($74, $75, 156);
+var $76 = { n: "return", v: $.ip("f3", "${varName}", "string", 157), r: 8, c: 9, s: "f3", u: "f7",  }; //1602
+$.a($74, $76, 158);
+var $77 = { n: "if", v: "state.return", r: 78, c: 13, s: "f1", u: "f1",  }; //262
+$.a($70, $77, 160);
+var $78 = { n: "return", v: "state.value", r: 79, c: 17, s: "f1", u: "f1",  }; //263
+$.a($77, $78, 162);
+var $79 = { n: "set", v: $.ip("f4", "runner.${name}", "string", 163), r: 4, c: 5, s: "f4", u: "f6",  }; //1604
+$.a($1, $79, 164);
+var $80 = { n: "function", v: "", r: 5, c: 9, s: "f4", u: "f6",  }; //1605
+$.a($79, $80, 166);
+var $81 = { n: "param", v: "node", r: 6, c: 13, s: "f4", u: "f6",  }; //1606
+$.a($80, $81, 168);
+var $82 = { n: "param", v: "ctx", r: 7, c: 13, s: "f4", u: "f6",  }; //1607
+$.a($80, $82, 170);
+$.s("f4");
+if (arg1 != null) { //1608
+    $.n();
+    var $84 = { n: "param", v: $.ip("f4", "${arg1}", "string", 174), r: 9, c: 17, s: "f4", u: "f6",  }; //1609
+    $.a($80, $84, 175);
+}
+$.n();
+var $85 = { n: "_", v: $.ip("f4", "log('${name}.node', node)", "string", 178), r: 10, c: 13, s: "f4", u: "f6",  }; //1610
+$.a($80, $85, 179);
+var $86 = { n: "if", v: "node.name == 'undefined'", r: 82, c: 9, s: "f1", u: "f1",  }; //265
+$.a($80, $86, 181);
+var $87 = { n: "#", v: "log 'Identifier returning node.name = undefined'", r: 83, c: 13, s: "f1", u: "f1",  }; //266
+$.a($86, $87, 183);
+var $88 = { n: "return", v: "undefined", r: 84, c: 13, s: "f1", u: "f1",  }; //267
+$.a($86, $88, 185);
+var $89 = { n: "if", v: "ctx.isDeclared(node.name)", r: 85, c: 9, s: "f1", u: "f1",  }; //268
+$.a($80, $89, 187);
+var $90 = { n: "return", v: "", r: 86, c: 13, s: "f1", u: "f1",  }; //269
+$.a($89, $90, 189);
+var $91 = { n: "_", v: "ctx.getValue", r: 87, c: 17, s: "f1", u: "f1",  }; //270
+$.a($90, $91, 191);
+var $92 = { n: "@", v: "node.name", r: 88, c: 21, s: "f1", u: "f1",  }; //271
+$.a($91, $92, 193);
+var $93 = { n: "else", v: "", r: 89, c: 9, s: "f1", u: "f1",  }; //272
+$.a($80, $93, 195);
+var $94 = { n: "return", v: "", r: 90, c: 13, s: "f1", u: "f1",  }; //273
+$.a($93, $94, 197);
+var $95 = { n: "_", v: "error", r: 91, c: 17, s: "f1", u: "f1",  }; //274
+$.a($94, $95, 199);
+var $96 = { n: "@", v: "ctx", r: 92, c: 21, s: "f1", u: "f1",  }; //275
+$.a($95, $96, 201);
+var $97 = { n: "@", v: "'Identifier < ' + node.name + ' > not defined, on node < ' + ctx.runningNodeId + ' > ' +ctx.getDeclaredInfo()", r: 93, c: 21, s: "f1", u: "f1",  }; //276
+$.a($95, $97, 203);
+var $98 = { n: "@", v: "node", r: 95, c: 21, s: "f1", u: "f1",  }; //277
+$.a($95, $98, 205);
+var $99 = { n: "@", v: "node", r: 96, c: 21, s: "f1", u: "f1",  }; //278
+$.a($95, $99, 207);
+var $100 = { n: "@", v: "'Identifier'", r: 97, c: 21, s: "f1", u: "f1",  }; //279
+$.a($95, $100, 209);
+var $101 = { n: "set", v: $.ip("f5", "runner.${name}", "string", 210), r: 4, c: 5, s: "f5", u: "f6",  }; //1613
+$.a($1, $101, 211);
+var $102 = { n: "function", v: "", r: 5, c: 9, s: "f5", u: "f6",  }; //1614
+$.a($101, $102, 213);
+var $103 = { n: "param", v: "node", r: 6, c: 13, s: "f5", u: "f6",  }; //1615
+$.a($102, $103, 215);
+var $104 = { n: "param", v: "ctx", r: 7, c: 13, s: "f5", u: "f6",  }; //1616
+$.a($102, $104, 217);
+$.s("f5");
+if (arg1 != null) { //1617
+    $.n();
+    var $106 = { n: "param", v: $.ip("f5", "${arg1}", "string", 221), r: 9, c: 17, s: "f5", u: "f6",  }; //1618
+    $.a($102, $106, 222);
+}
+$.n();
+var $107 = { n: "_", v: $.ip("f5", "log('${name}.node', node)", "string", 225), r: 10, c: 13, s: "f5", u: "f6",  }; //1619
+$.a($102, $107, 226);
+var $108 = { n: "_", v: "ctx.put", r: 100, c: 9, s: "f1", u: "f1",  }; //281
+$.a($102, $108, 228);
+var $109 = { n: "@", v: "node.name", r: 101, c: 13, s: "f1", u: "f1",  }; //282
+$.a($108, $109, 230);
+var $110 = { n: "@", v: "data", r: 102, c: 13, s: "f1", u: "f1",  }; //283
+$.a($108, $110, 232);
+var $111 = { n: "set", v: $.ip("f6", "runner.${name}", "string", 233), r: 4, c: 5, s: "f6", u: "f6",  }; //1622
+$.a($1, $111, 234);
+var $112 = { n: "function", v: "", r: 5, c: 9, s: "f6", u: "f6",  }; //1623
+$.a($111, $112, 236);
+var $113 = { n: "param", v: "node", r: 6, c: 13, s: "f6", u: "f6",  }; //1624
+$.a($112, $113, 238);
+var $114 = { n: "param", v: "ctx", r: 7, c: 13, s: "f6", u: "f6",  }; //1625
+$.a($112, $114, 240);
+$.s("f6");
+if (arg1 != null) { //1626
+    $.n();
+    var $116 = { n: "param", v: $.ip("f6", "${arg1}", "string", 244), r: 9, c: 17, s: "f6", u: "f6",  }; //1627
+    $.a($112, $116, 245);
+}
+$.n();
+var $117 = { n: "_", v: $.ip("f6", "log('${name}.node', node)", "string", 248), r: 10, c: 13, s: "f6", u: "f6",  }; //1628
+$.a($112, $117, 249);
+var $118 = { n: "return", v: "node.value", r: 105, c: 9, s: "f1", u: "f1",  }; //285
+$.a($112, $118, 251);
+var $119 = { n: "set", v: $.ip("f7", "runner.${name}", "string", 252), r: 4, c: 5, s: "f7", u: "f6",  }; //1631
+$.a($1, $119, 253);
+var $120 = { n: "function", v: "", r: 5, c: 9, s: "f7", u: "f6",  }; //1632
+$.a($119, $120, 255);
+var $121 = { n: "param", v: "node", r: 6, c: 13, s: "f7", u: "f6",  }; //1633
+$.a($120, $121, 257);
+var $122 = { n: "param", v: "ctx", r: 7, c: 13, s: "f7", u: "f6",  }; //1634
+$.a($120, $122, 259);
+$.s("f7");
+if (arg1 != null) { //1635
+    $.n();
+    var $124 = { n: "param", v: $.ip("f7", "${arg1}", "string", 263), r: 9, c: 17, s: "f7", u: "f6",  }; //1636
+    $.a($120, $124, 264);
+}
+$.n();
+var $125 = { n: "_", v: $.ip("f7", "log('${name}.node', node)", "string", 267), r: 10, c: 13, s: "f7", u: "f6",  }; //1637
+$.a($120, $125, 268);
+var $126 = { n: "foreach", v: "declaration in node.declarations", r: 108, c: 9, s: "f1", u: "f1",  }; //287
+$.a($120, $126, 270);
+var $127 = { n: "var", v: $.ip("f8", "${varName}", "string", 271), r: 4, c: 5, s: "f8", u: "f7",  }; //1640
+$.a($126, $127, 272);
+var $128 = { n: "_", v: "runner(declaration, ctx)", r: 110, c: 17, s: "f1", u: "f1",  }; //289
+$.a($127, $128, 274);
+var $129 = { n: "if", v: $.ip("f8", "${varName} && ${varName}.__is_error", "string", 275), r: 6, c: 5, s: "f8", u: "f7",  }; //1642
+$.a($126, $129, 276);
+var $130 = { n: "log", v: $.ip("f8", "'__is_error ${message}', ${varName}", "string", 277), r: 7, c: 9, s: "f8", u: "f7",  }; //1643
+$.a($129, $130, 278);
+var $131 = { n: "return", v: $.ip("f8", "${varName}", "string", 279), r: 8, c: 9, s: "f8", u: "f7",  }; //1644
+$.a($129, $131, 280);
+var $132 = { n: "return", v: "", r: 111, c: 9, s: "f1", u: "f1",  }; //290
+$.a($120, $132, 282);
+var $133 = { n: "{", v: "", r: 112, c: 13, s: "f1", u: "f1",  }; //291
+$.a($132, $133, 284);
+var $134 = { n: "set", v: $.ip("f9", "runner.${name}", "string", 285), r: 4, c: 5, s: "f9", u: "f6",  }; //1646
+$.a($1, $134, 286);
+var $135 = { n: "function", v: "", r: 5, c: 9, s: "f9", u: "f6",  }; //1647
+$.a($134, $135, 288);
+var $136 = { n: "param", v: "node", r: 6, c: 13, s: "f9", u: "f6",  }; //1648
+$.a($135, $136, 290);
+var $137 = { n: "param", v: "ctx", r: 7, c: 13, s: "f9", u: "f6",  }; //1649
+$.a($135, $137, 292);
+$.s("f9");
+if (arg1 != null) { //1650
+    $.n();
+    var $139 = { n: "param", v: $.ip("f9", "${arg1}", "string", 296), r: 9, c: 17, s: "f9", u: "f6",  }; //1651
+    $.a($135, $139, 297);
+}
+$.n();
+var $140 = { n: "_", v: $.ip("f9", "log('${name}.node', node)", "string", 300), r: 10, c: 13, s: "f9", u: "f6",  }; //1652
+$.a($135, $140, 301);
+var $141 = { n: "if", v: "!node.init", r: 115, c: 9, s: "f1", u: "f1",  }; //293
+$.a($135, $141, 303);
+var $142 = { n: "_", v: "ctx.declare", r: 116, c: 13, s: "f1", u: "f1",  }; //294
+$.a($141, $142, 305);
+var $143 = { n: "@", v: "node.id.name", r: 117, c: 17, s: "f1", u: "f1",  }; //295
+$.a($142, $143, 307);
+var $144 = { n: "else", v: "", r: 118, c: 9, s: "f1", u: "f1",  }; //296
+$.a($135, $144, 309);
+var $145 = { n: "var", v: $.ip("f10", "${varName}", "string", 310), r: 4, c: 5, s: "f10", u: "f7",  }; //1655
+$.a($144, $145, 311);
+var $146 = { n: "_", v: "runner", r: 120, c: 17, s: "f1", u: "f1",  }; //298
+$.a($145, $146, 313);
+var $147 = { n: "@", v: "node.init", r: 121, c: 21, s: "f1", u: "f1",  }; //299
+$.a($146, $147, 315);
+var $148 = { n: "@", v: "ctx", r: 122, c: 21, s: "f1", u: "f1",  }; //300
+$.a($146, $148, 317);
+var $149 = { n: "if", v: $.ip("f10", "${varName} && ${varName}.__is_error", "string", 318), r: 6, c: 5, s: "f10", u: "f7",  }; //1657
+$.a($144, $149, 319);
+var $150 = { n: "log", v: $.ip("f10", "'__is_error ${message}', ${varName}", "string", 320), r: 7, c: 9, s: "f10", u: "f7",  }; //1658
+$.a($149, $150, 321);
+var $151 = { n: "return", v: $.ip("f10", "${varName}", "string", 322), r: 8, c: 9, s: "f10", u: "f7",  }; //1659
+$.a($149, $151, 323);
+var $152 = { n: "_", v: "ctx.declare", r: 123, c: 13, s: "f1", u: "f1",  }; //301
+$.a($144, $152, 325);
+var $153 = { n: "@", v: "node.id.name", r: 124, c: 17, s: "f1", u: "f1",  }; //302
+$.a($152, $153, 327);
+var $154 = { n: "@", v: "value", r: 125, c: 17, s: "f1", u: "f1",  }; //303
+$.a($152, $154, 329);
+var $155 = { n: "set", v: $.ip("f11", "runner.${name}", "string", 330), r: 4, c: 5, s: "f11", u: "f6",  }; //1661
+$.a($1, $155, 331);
+var $156 = { n: "function", v: "", r: 5, c: 9, s: "f11", u: "f6",  }; //1662
+$.a($155, $156, 333);
+var $157 = { n: "param", v: "node", r: 6, c: 13, s: "f11", u: "f6",  }; //1663
+$.a($156, $157, 335);
+var $158 = { n: "param", v: "ctx", r: 7, c: 13, s: "f11", u: "f6",  }; //1664
+$.a($156, $158, 337);
+$.s("f11");
+if (arg1 != null) { //1665
+    $.n();
+    var $160 = { n: "param", v: $.ip("f11", "${arg1}", "string", 341), r: 9, c: 17, s: "f11", u: "f6",  }; //1666
+    $.a($156, $160, 342);
+}
+$.n();
+var $161 = { n: "_", v: $.ip("f11", "log('${name}.node', node)", "string", 345), r: 10, c: 13, s: "f11", u: "f6",  }; //1667
+$.a($156, $161, 346);
+var $162 = { n: "return", v: "", r: 4, c: 13, s: "f1", u: "f2",  }; //486
+$.a($156, $162, 348);
+var $163 = { n: "{", v: "", r: 5, c: 17, s: "f1", u: "f2",  }; //487
+$.a($162, $163, 350);
+var $164 = { n: "set", v: $.ip("f12", "runner.${name}", "string", 351), r: 4, c: 5, s: "f12", u: "f6",  }; //1670
+$.a($1, $164, 352);
+var $165 = { n: "function", v: "", r: 5, c: 9, s: "f12", u: "f6",  }; //1671
+$.a($164, $165, 354);
+var $166 = { n: "param", v: "node", r: 6, c: 13, s: "f12", u: "f6",  }; //1672
+$.a($165, $166, 356);
+var $167 = { n: "param", v: "ctx", r: 7, c: 13, s: "f12", u: "f6",  }; //1673
+$.a($165, $167, 358);
+$.s("f12");
+if (arg1 != null) { //1674
+    $.n();
+    var $169 = { n: "param", v: $.ip("f12", "${arg1}", "string", 362), r: 9, c: 17, s: "f12", u: "f6",  }; //1675
+    $.a($165, $169, 363);
+}
+$.n();
+var $170 = { n: "_", v: $.ip("f12", "log('${name}.node', node)", "string", 366), r: 10, c: 13, s: "f12", u: "f6",  }; //1676
+$.a($165, $170, 367);
+var $171 = { n: "_", v: "ctx.beginExpr()", r: 8, c: 9, s: "f1", u: "f2",  }; //489
+$.a($165, $171, 369);
+var $172 = { n: "var", v: $.ip("f13", "${varName}", "string", 370), r: 4, c: 5, s: "f13", u: "f7",  }; //1679
+$.a($165, $172, 371);
+var $173 = { n: "_", v: "runner", r: 10, c: 13, s: "f1", u: "f2",  }; //491
+$.a($172, $173, 373);
+var $174 = { n: "@", v: "node.expression", r: 11, c: 17, s: "f1", u: "f2",  }; //492
+$.a($173, $174, 375);
+var $175 = { n: "@", v: "ctx", r: 12, c: 17, s: "f1", u: "f2",  }; //493
+$.a($173, $175, 377);
+var $176 = { n: "if", v: $.ip("f13", "${varName} && ${varName}.__is_error", "string", 378), r: 6, c: 5, s: "f13", u: "f7",  }; //1681
+$.a($165, $176, 379);
+var $177 = { n: "log", v: $.ip("f13", "'__is_error ${message}', ${varName}", "string", 380), r: 7, c: 9, s: "f13", u: "f7",  }; //1682
+$.a($176, $177, 381);
+var $178 = { n: "return", v: $.ip("f13", "${varName}", "string", 382), r: 8, c: 9, s: "f13", u: "f7",  }; //1683
+$.a($176, $178, 383);
+var $179 = { n: "_", v: "ctx.endExpr()", r: 13, c: 9, s: "f1", u: "f2",  }; //494
+$.a($165, $179, 385);
+var $180 = { n: "return", v: "", r: 14, c: 9, s: "f1", u: "f2",  }; //495
+$.a($165, $180, 387);
+var $181 = { n: "{", v: "", r: 15, c: 13, s: "f1", u: "f2",  }; //496
+$.a($180, $181, 389);
+var $182 = { n: "set", v: $.ip("f14", "runner.${name}", "string", 390), r: 4, c: 5, s: "f14", u: "f6",  }; //1685
+$.a($1, $182, 391);
+var $183 = { n: "function", v: "", r: 5, c: 9, s: "f14", u: "f6",  }; //1686
+$.a($182, $183, 393);
+var $184 = { n: "param", v: "node", r: 6, c: 13, s: "f14", u: "f6",  }; //1687
+$.a($183, $184, 395);
+var $185 = { n: "param", v: "ctx", r: 7, c: 13, s: "f14", u: "f6",  }; //1688
+$.a($183, $185, 397);
+$.s("f14");
+if (arg1 != null) { //1689
+    $.n();
+    var $187 = { n: "param", v: $.ip("f14", "${arg1}", "string", 401), r: 9, c: 17, s: "f14", u: "f6",  }; //1690
+    $.a($183, $187, 402);
+}
+$.n();
+var $188 = { n: "_", v: $.ip("f14", "log('${name}.node', node)", "string", 405), r: 10, c: 13, s: "f14", u: "f6",  }; //1691
+$.a($183, $188, 406);
+var $189 = { n: "var", v: "", r: 18, c: 9, s: "f1", u: "f2",  }; //498
+$.a($183, $189, 408);
+var $190 = { n: "decl", v: "ret", r: 19, c: 13, s: "f1", u: "f2",  }; //499
+$.a($189, $190, 410);
+var $191 = { n: "{", v: "", r: 20, c: 17, s: "f1", u: "f2",  }; //500
+$.a($190, $191, 412);
+var $192 = { n: "decl", v: "savedCurrentModelKey", r: 21, c: 13, s: "f1", u: "f2",  }; //501
+$.a($189, $192, 414);
+var $193 = { n: "var", v: $.ip("f15", "${varName}", "string", 415), r: 4, c: 5, s: "f15", u: "f7",  }; //1694
+$.a($183, $193, 416);
+var $194 = { n: "_", v: "runner(node.test, ctx)", r: 23, c: 13, s: "f1", u: "f2",  }; //503
+$.a($193, $194, 418);
+var $195 = { n: "if", v: $.ip("f15", "${varName} && ${varName}.__is_error", "string", 419), r: 6, c: 5, s: "f15", u: "f7",  }; //1696
+$.a($183, $195, 420);
+var $196 = { n: "log", v: $.ip("f15", "'__is_error ${message}', ${varName}", "string", 421), r: 7, c: 9, s: "f15", u: "f7",  }; //1697
+$.a($195, $196, 422);
+var $197 = { n: "return", v: $.ip("f15", "${varName}", "string", 423), r: 8, c: 9, s: "f15", u: "f7",  }; //1698
+$.a($195, $197, 424);
+var $198 = { n: "if", v: "test", r: 24, c: 9, s: "f1", u: "f2",  }; //504
+$.a($183, $198, 426);
+var $199 = { n: "set", v: "savedCurrentModelKey = ctx.get_currentIttfModelKey()", r: 25, c: 13, s: "f1", u: "f2",  }; //505
+$.a($198, $199, 428);
+var $200 = { n: "set", v: $.ip("f16", "${varName}", "string", 429), r: 4, c: 5, s: "f16", u: "f8",  }; //1707
+$.a($198, $200, 430);
+var $201 = { n: "_", v: "runner(node.consequent, ctx)", r: 27, c: 17, s: "f1", u: "f2",  }; //507
+$.a($200, $201, 432);
+var $202 = { n: "if", v: $.ip("f16", "${varName} && ${varName}.__is_error", "string", 433), r: 6, c: 5, s: "f16", u: "f8",  }; //1709
+$.a($198, $202, 434);
+var $203 = { n: "log", v: $.ip("f16", "'__is_error ${message}', ${varName}", "string", 435), r: 7, c: 9, s: "f16", u: "f8",  }; //1710
+$.a($202, $203, 436);
+var $204 = { n: "return", v: $.ip("f16", "${varName}", "string", 437), r: 8, c: 9, s: "f16", u: "f8",  }; //1711
+$.a($202, $204, 438);
+var $205 = { n: "var", v: $.ip("f17", "${varName}", "string", 439), r: 4, c: 5, s: "f17", u: "f7",  }; //1713
+$.a($198, $205, 440);
+var $206 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 29, c: 17, s: "f1", u: "f2",  }; //509
+$.a($205, $206, 442);
+var $207 = { n: "if", v: $.ip("f17", "${varName} && ${varName}.__is_error", "string", 443), r: 6, c: 5, s: "f17", u: "f7",  }; //1715
+$.a($198, $207, 444);
+var $208 = { n: "log", v: $.ip("f17", "'__is_error ${message}', ${varName}", "string", 445), r: 7, c: 9, s: "f17", u: "f7",  }; //1716
+$.a($207, $208, 446);
+var $209 = { n: "return", v: $.ip("f17", "${varName}", "string", 447), r: 8, c: 9, s: "f17", u: "f7",  }; //1717
+$.a($207, $209, 448);
+var $210 = { n: "else", v: "", r: 30, c: 9, s: "f1", u: "f2",  }; //510
+$.a($183, $210, 450);
+var $211 = { n: "if", v: "node.alternate", r: 31, c: 13, s: "f1", u: "f2",  }; //511
+$.a($210, $211, 452);
+var $212 = { n: "set", v: "savedCurrentModelKey = ctx.get_currentIttfModelKey()", r: 32, c: 17, s: "f1", u: "f2",  }; //512
+$.a($211, $212, 454);
+var $213 = { n: "set", v: $.ip("f18", "${varName}", "string", 455), r: 4, c: 5, s: "f18", u: "f8",  }; //1719
+$.a($211, $213, 456);
+var $214 = { n: "_", v: "runner(node.alternate, ctx)", r: 34, c: 21, s: "f1", u: "f2",  }; //514
+$.a($213, $214, 458);
+var $215 = { n: "if", v: $.ip("f18", "${varName} && ${varName}.__is_error", "string", 459), r: 6, c: 5, s: "f18", u: "f8",  }; //1721
+$.a($211, $215, 460);
+var $216 = { n: "log", v: $.ip("f18", "'__is_error ${message}', ${varName}", "string", 461), r: 7, c: 9, s: "f18", u: "f8",  }; //1722
+$.a($215, $216, 462);
+var $217 = { n: "return", v: $.ip("f18", "${varName}", "string", 463), r: 8, c: 9, s: "f18", u: "f8",  }; //1723
+$.a($215, $217, 464);
+var $218 = { n: "var", v: $.ip("f19", "${varName}", "string", 465), r: 4, c: 5, s: "f19", u: "f7",  }; //1725
+$.a($211, $218, 466);
+var $219 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 36, c: 21, s: "f1", u: "f2",  }; //516
+$.a($218, $219, 468);
+var $220 = { n: "if", v: $.ip("f19", "${varName} && ${varName}.__is_error", "string", 469), r: 6, c: 5, s: "f19", u: "f7",  }; //1727
+$.a($211, $220, 470);
+var $221 = { n: "log", v: $.ip("f19", "'__is_error ${message}', ${varName}", "string", 471), r: 7, c: 9, s: "f19", u: "f7",  }; //1728
+$.a($220, $221, 472);
+var $222 = { n: "return", v: $.ip("f19", "${varName}", "string", 473), r: 8, c: 9, s: "f19", u: "f7",  }; //1729
+$.a($220, $222, 474);
+var $223 = { n: "return", v: "ret", r: 37, c: 9, s: "f1", u: "f2",  }; //517
+$.a($183, $223, 476);
+var $224 = { n: "set", v: $.ip("f20", "runner.${name}", "string", 477), r: 4, c: 5, s: "f20", u: "f6",  }; //1731
+$.a($1, $224, 478);
+var $225 = { n: "function", v: "", r: 5, c: 9, s: "f20", u: "f6",  }; //1732
+$.a($224, $225, 480);
+var $226 = { n: "param", v: "node", r: 6, c: 13, s: "f20", u: "f6",  }; //1733
+$.a($225, $226, 482);
+var $227 = { n: "param", v: "ctx", r: 7, c: 13, s: "f20", u: "f6",  }; //1734
+$.a($225, $227, 484);
+$.s("f20");
+if (arg1 != null) { //1735
+    $.n();
+    var $229 = { n: "param", v: $.ip("f20", "${arg1}", "string", 488), r: 9, c: 17, s: "f20", u: "f6",  }; //1736
+    $.a($225, $229, 489);
+}
+$.n();
+var $230 = { n: "_", v: $.ip("f20", "log('${name}.node', node)", "string", 492), r: 10, c: 13, s: "f20", u: "f6",  }; //1737
+$.a($225, $230, 493);
+var $231 = { n: "var", v: "state", r: 40, c: 9, s: "f1", u: "f2",  }; //519
+$.a($225, $231, 495);
+var $232 = { n: "for", v: "var i = 0; i < node.body.length; i++", r: 41, c: 9, s: "f1", u: "f2",  }; //520
+$.a($225, $232, 497);
+var $233 = { n: "var", v: "statement = node.body[i]", r: 42, c: 13, s: "f1", u: "f2",  }; //521
+$.a($232, $233, 499);
+var $234 = { n: "set", v: $.ip("f21", "${varName}", "string", 500), r: 4, c: 5, s: "f21", u: "f8",  }; //1740
+$.a($232, $234, 501);
+var $235 = { n: "_", v: "runner(statement, ctx)", r: 44, c: 17, s: "f1", u: "f2",  }; //523
+$.a($234, $235, 503);
+var $236 = { n: "if", v: $.ip("f21", "${varName} && ${varName}.__is_error", "string", 504), r: 6, c: 5, s: "f21", u: "f8",  }; //1742
+$.a($232, $236, 505);
+var $237 = { n: "log", v: $.ip("f21", "'__is_error ${message}', ${varName}", "string", 506), r: 7, c: 9, s: "f21", u: "f8",  }; //1743
+$.a($236, $237, 507);
+var $238 = { n: "return", v: $.ip("f21", "${varName}", "string", 508), r: 8, c: 9, s: "f21", u: "f8",  }; //1744
+$.a($236, $238, 509);
+var $239 = { n: "if", v: "state.result || state.break || state.continue", r: 45, c: 13, s: "f1", u: "f2",  }; //524
+$.a($232, $239, 511);
+var $240 = { n: "return", v: "state", r: 46, c: 17, s: "f1", u: "f2",  }; //525
+$.a($239, $240, 513);
+var $241 = { n: "return", v: "", r: 47, c: 9, s: "f1", u: "f2",  }; //526
+$.a($225, $241, 515);
+var $242 = { n: "{", v: "", r: 48, c: 13, s: "f1", u: "f2",  }; //527
+$.a($241, $242, 517);
+var $243 = { n: "set", v: $.ip("f22", "runner.${name}", "string", 518), r: 4, c: 5, s: "f22", u: "f6",  }; //1746
+$.a($1, $243, 519);
+var $244 = { n: "function", v: "", r: 5, c: 9, s: "f22", u: "f6",  }; //1747
+$.a($243, $244, 521);
+var $245 = { n: "param", v: "node", r: 6, c: 13, s: "f22", u: "f6",  }; //1748
+$.a($244, $245, 523);
+var $246 = { n: "param", v: "ctx", r: 7, c: 13, s: "f22", u: "f6",  }; //1749
+$.a($244, $246, 525);
+$.s("f22");
+if (arg1 != null) { //1750
+    $.n();
+    var $248 = { n: "param", v: $.ip("f22", "${arg1}", "string", 529), r: 9, c: 17, s: "f22", u: "f6",  }; //1751
+    $.a($244, $248, 530);
+}
+$.n();
+var $249 = { n: "_", v: $.ip("f22", "log('${name}.node', node)", "string", 533), r: 10, c: 13, s: "f22", u: "f6",  }; //1752
+$.a($244, $249, 534);
+var $250 = { n: "var", v: "", r: 51, c: 9, s: "f1", u: "f2",  }; //529
+$.a($244, $250, 536);
+var $251 = { n: "decl", v: "state", r: 52, c: 13, s: "f1", u: "f2",  }; //530
+$.a($250, $251, 538);
+var $252 = { n: "decl", v: "savedCurrentModelKey", r: 53, c: 13, s: "f1", u: "f2",  }; //531
+$.a($250, $252, 540);
+var $253 = { n: "var", v: $.ip("f23", "${varName}", "string", 541), r: 4, c: 5, s: "f23", u: "f7",  }; //1755
+$.a($244, $253, 542);
+var $254 = { n: "_", v: "runner(node.test, ctx)", r: 55, c: 13, s: "f1", u: "f2",  }; //533
+$.a($253, $254, 544);
+var $255 = { n: "if", v: $.ip("f23", "${varName} && ${varName}.__is_error", "string", 545), r: 6, c: 5, s: "f23", u: "f7",  }; //1757
+$.a($244, $255, 546);
+var $256 = { n: "log", v: $.ip("f23", "'__is_error ${message}', ${varName}", "string", 547), r: 7, c: 9, s: "f23", u: "f7",  }; //1758
+$.a($255, $256, 548);
+var $257 = { n: "return", v: $.ip("f23", "${varName}", "string", 549), r: 8, c: 9, s: "f23", u: "f7",  }; //1759
+$.a($255, $257, 550);
+var $258 = { n: "while", v: "test", r: 56, c: 9, s: "f1", u: "f2",  }; //534
+$.a($244, $258, 552);
+var $259 = { n: "set", v: "savedCurrentModelKey = ctx.get_currentIttfModelKey()", r: 57, c: 13, s: "f1", u: "f2",  }; //535
+$.a($258, $259, 554);
+var $260 = { n: "set", v: $.ip("f24", "${varName}", "string", 555), r: 4, c: 5, s: "f24", u: "f8",  }; //1761
+$.a($258, $260, 556);
+var $261 = { n: "_", v: "runner(node.body, ctx)", r: 59, c: 17, s: "f1", u: "f2",  }; //537
+$.a($260, $261, 558);
+var $262 = { n: "if", v: $.ip("f24", "${varName} && ${varName}.__is_error", "string", 559), r: 6, c: 5, s: "f24", u: "f8",  }; //1763
+$.a($258, $262, 560);
+var $263 = { n: "log", v: $.ip("f24", "'__is_error ${message}', ${varName}", "string", 561), r: 7, c: 9, s: "f24", u: "f8",  }; //1764
+$.a($262, $263, 562);
+var $264 = { n: "return", v: $.ip("f24", "${varName}", "string", 563), r: 8, c: 9, s: "f24", u: "f8",  }; //1765
+$.a($262, $264, 564);
+var $265 = { n: "if", v: "state.result || state.break", r: 60, c: 13, s: "f1", u: "f2",  }; //538
+$.a($258, $265, 566);
+var $266 = { n: "return", v: "state", r: 61, c: 17, s: "f1", u: "f2",  }; //539
+$.a($265, $266, 568);
+var $267 = { n: "var", v: $.ip("f25", "${varName}", "string", 569), r: 4, c: 5, s: "f25", u: "f7",  }; //1767
+$.a($258, $267, 570);
+var $268 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 63, c: 17, s: "f1", u: "f2",  }; //541
+$.a($267, $268, 572);
+var $269 = { n: "if", v: $.ip("f25", "${varName} && ${varName}.__is_error", "string", 573), r: 6, c: 5, s: "f25", u: "f7",  }; //1769
+$.a($258, $269, 574);
+var $270 = { n: "log", v: $.ip("f25", "'__is_error ${message}', ${varName}", "string", 575), r: 7, c: 9, s: "f25", u: "f7",  }; //1770
+$.a($269, $270, 576);
+var $271 = { n: "return", v: $.ip("f25", "${varName}", "string", 577), r: 8, c: 9, s: "f25", u: "f7",  }; //1771
+$.a($269, $271, 578);
+var $272 = { n: "set", v: $.ip("f26", "${varName}", "string", 579), r: 4, c: 5, s: "f26", u: "f8",  }; //1773
+$.a($258, $272, 580);
+var $273 = { n: "_", v: "runner(node.test, ctx)", r: 65, c: 17, s: "f1", u: "f2",  }; //543
+$.a($272, $273, 582);
+var $274 = { n: "if", v: $.ip("f26", "${varName} && ${varName}.__is_error", "string", 583), r: 6, c: 5, s: "f26", u: "f8",  }; //1775
+$.a($258, $274, 584);
+var $275 = { n: "log", v: $.ip("f26", "'__is_error ${message}', ${varName}", "string", 585), r: 7, c: 9, s: "f26", u: "f8",  }; //1776
+$.a($274, $275, 586);
+var $276 = { n: "return", v: $.ip("f26", "${varName}", "string", 587), r: 8, c: 9, s: "f26", u: "f8",  }; //1777
+$.a($274, $276, 588);
+var $277 = { n: "return", v: "", r: 66, c: 9, s: "f1", u: "f2",  }; //544
+$.a($244, $277, 590);
+var $278 = { n: "{", v: "", r: 67, c: 13, s: "f1", u: "f2",  }; //545
+$.a($277, $278, 592);
+var $279 = { n: "set", v: $.ip("f27", "runner.${name}", "string", 593), r: 4, c: 5, s: "f27", u: "f6",  }; //1779
+$.a($1, $279, 594);
+var $280 = { n: "function", v: "", r: 5, c: 9, s: "f27", u: "f6",  }; //1780
+$.a($279, $280, 596);
+var $281 = { n: "param", v: "node", r: 6, c: 13, s: "f27", u: "f6",  }; //1781
+$.a($280, $281, 598);
+var $282 = { n: "param", v: "ctx", r: 7, c: 13, s: "f27", u: "f6",  }; //1782
+$.a($280, $282, 600);
+$.s("f27");
+if (arg1 != null) { //1783
+    $.n();
+    var $284 = { n: "param", v: $.ip("f27", "${arg1}", "string", 604), r: 9, c: 17, s: "f27", u: "f6",  }; //1784
+    $.a($280, $284, 605);
+}
+$.n();
+var $285 = { n: "_", v: $.ip("f27", "log('${name}.node', node)", "string", 608), r: 10, c: 13, s: "f27", u: "f6",  }; //1785
+$.a($280, $285, 609);
+var $286 = { n: "var", v: "", r: 70, c: 9, s: "f1", u: "f2",  }; //547
+$.a($280, $286, 611);
+var $287 = { n: "decl", v: "test", r: 71, c: 13, s: "f1", u: "f2",  }; //548
+$.a($286, $287, 613);
+var $288 = { n: "decl", v: "state", r: 72, c: 13, s: "f1", u: "f2",  }; //549
+$.a($286, $288, 615);
+var $289 = { n: "decl", v: "savedCurrentModelKey", r: 73, c: 13, s: "f1", u: "f2",  }; //550
+$.a($286, $289, 617);
+var $290 = { n: "set", v: "savedCurrentModelKey = ctx.get_currentIttfModelKey()", r: 75, c: 9, s: "f1", u: "f2",  }; //551
+$.a($280, $290, 619);
+var $291 = { n: "set", v: $.ip("f28", "${varName}", "string", 620), r: 4, c: 5, s: "f28", u: "f8",  }; //1788
+$.a($280, $291, 621);
+var $292 = { n: "_", v: "runner(node.body, ctx)", r: 78, c: 13, s: "f1", u: "f2",  }; //553
+$.a($291, $292, 623);
+var $293 = { n: "if", v: $.ip("f28", "${varName} && ${varName}.__is_error", "string", 624), r: 6, c: 5, s: "f28", u: "f8",  }; //1790
+$.a($280, $293, 625);
+var $294 = { n: "log", v: $.ip("f28", "'__is_error ${message}', ${varName}", "string", 626), r: 7, c: 9, s: "f28", u: "f8",  }; //1791
+$.a($293, $294, 627);
+var $295 = { n: "return", v: $.ip("f28", "${varName}", "string", 628), r: 8, c: 9, s: "f28", u: "f8",  }; //1792
+$.a($293, $295, 629);
+var $296 = { n: "if", v: "state.result || state.break", r: 79, c: 9, s: "f1", u: "f2",  }; //554
+$.a($280, $296, 631);
+var $297 = { n: "return", v: "state", r: 80, c: 13, s: "f1", u: "f2",  }; //555
+$.a($296, $297, 633);
+var $298 = { n: "var", v: $.ip("f29", "${varName}", "string", 634), r: 4, c: 5, s: "f29", u: "f7",  }; //1794
+$.a($280, $298, 635);
+var $299 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 83, c: 13, s: "f1", u: "f2",  }; //557
+$.a($298, $299, 637);
+var $300 = { n: "if", v: $.ip("f29", "${varName} && ${varName}.__is_error", "string", 638), r: 6, c: 5, s: "f29", u: "f7",  }; //1796
+$.a($280, $300, 639);
+var $301 = { n: "log", v: $.ip("f29", "'__is_error ${message}', ${varName}", "string", 640), r: 7, c: 9, s: "f29", u: "f7",  }; //1797
+$.a($300, $301, 641);
+var $302 = { n: "return", v: $.ip("f29", "${varName}", "string", 642), r: 8, c: 9, s: "f29", u: "f7",  }; //1798
+$.a($300, $302, 643);
+var $303 = { n: "set", v: $.ip("f30", "${varName}", "string", 644), r: 4, c: 5, s: "f30", u: "f8",  }; //1800
+$.a($280, $303, 645);
+var $304 = { n: "_", v: "runner(node.test, ctx)", r: 86, c: 13, s: "f1", u: "f2",  }; //559
+$.a($303, $304, 647);
+var $305 = { n: "if", v: $.ip("f30", "${varName} && ${varName}.__is_error", "string", 648), r: 6, c: 5, s: "f30", u: "f8",  }; //1802
+$.a($280, $305, 649);
+var $306 = { n: "log", v: $.ip("f30", "'__is_error ${message}', ${varName}", "string", 650), r: 7, c: 9, s: "f30", u: "f8",  }; //1803
+$.a($305, $306, 651);
+var $307 = { n: "return", v: $.ip("f30", "${varName}", "string", 652), r: 8, c: 9, s: "f30", u: "f8",  }; //1804
+$.a($305, $307, 653);
+var $308 = { n: "while", v: "test", r: 88, c: 9, s: "f1", u: "f2",  }; //560
+$.a($280, $308, 655);
+var $309 = { n: "set", v: $.ip("f31", "${varName}", "string", 656), r: 4, c: 5, s: "f31", u: "f8",  }; //1806
+$.a($308, $309, 657);
+var $310 = { n: "_", v: "runner(node.body, ctx)", r: 91, c: 17, s: "f1", u: "f2",  }; //562
+$.a($309, $310, 659);
+var $311 = { n: "if", v: $.ip("f31", "${varName} && ${varName}.__is_error", "string", 660), r: 6, c: 5, s: "f31", u: "f8",  }; //1808
+$.a($308, $311, 661);
+var $312 = { n: "log", v: $.ip("f31", "'__is_error ${message}', ${varName}", "string", 662), r: 7, c: 9, s: "f31", u: "f8",  }; //1809
+$.a($311, $312, 663);
+var $313 = { n: "return", v: $.ip("f31", "${varName}", "string", 664), r: 8, c: 9, s: "f31", u: "f8",  }; //1810
+$.a($311, $313, 665);
+var $314 = { n: "if", v: "state.result || state.break", r: 92, c: 13, s: "f1", u: "f2",  }; //563
+$.a($308, $314, 667);
+var $315 = { n: "return", v: "state", r: 93, c: 17, s: "f1", u: "f2",  }; //564
+$.a($314, $315, 669);
+var $316 = { n: "var", v: $.ip("f32", "${varName}", "string", 670), r: 4, c: 5, s: "f32", u: "f7",  }; //1812
+$.a($308, $316, 671);
+var $317 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 96, c: 17, s: "f1", u: "f2",  }; //566
+$.a($316, $317, 673);
+var $318 = { n: "if", v: $.ip("f32", "${varName} && ${varName}.__is_error", "string", 674), r: 6, c: 5, s: "f32", u: "f7",  }; //1814
+$.a($308, $318, 675);
+var $319 = { n: "log", v: $.ip("f32", "'__is_error ${message}', ${varName}", "string", 676), r: 7, c: 9, s: "f32", u: "f7",  }; //1815
+$.a($318, $319, 677);
+var $320 = { n: "return", v: $.ip("f32", "${varName}", "string", 678), r: 8, c: 9, s: "f32", u: "f7",  }; //1816
+$.a($318, $320, 679);
+var $321 = { n: "set", v: $.ip("f33", "${varName}", "string", 680), r: 4, c: 5, s: "f33", u: "f8",  }; //1818
+$.a($308, $321, 681);
+var $322 = { n: "_", v: "runner(node.test, ctx)", r: 99, c: 17, s: "f1", u: "f2",  }; //568
+$.a($321, $322, 683);
+var $323 = { n: "if", v: $.ip("f33", "${varName} && ${varName}.__is_error", "string", 684), r: 6, c: 5, s: "f33", u: "f8",  }; //1820
+$.a($308, $323, 685);
+var $324 = { n: "log", v: $.ip("f33", "'__is_error ${message}', ${varName}", "string", 686), r: 7, c: 9, s: "f33", u: "f8",  }; //1821
+$.a($323, $324, 687);
+var $325 = { n: "return", v: $.ip("f33", "${varName}", "string", 688), r: 8, c: 9, s: "f33", u: "f8",  }; //1822
+$.a($323, $325, 689);
+var $326 = { n: "return", v: "", r: 101, c: 9, s: "f1", u: "f2",  }; //569
+$.a($280, $326, 691);
+var $327 = { n: "{", v: "", r: 102, c: 13, s: "f1", u: "f2",  }; //570
+$.a($326, $327, 693);
+var $328 = { n: "set", v: $.ip("f34", "runner.${name}", "string", 694), r: 4, c: 5, s: "f34", u: "f6",  }; //1824
+$.a($1, $328, 695);
+var $329 = { n: "function", v: "", r: 5, c: 9, s: "f34", u: "f6",  }; //1825
+$.a($328, $329, 697);
+var $330 = { n: "param", v: "node", r: 6, c: 13, s: "f34", u: "f6",  }; //1826
+$.a($329, $330, 699);
+var $331 = { n: "param", v: "ctx", r: 7, c: 13, s: "f34", u: "f6",  }; //1827
+$.a($329, $331, 701);
+$.s("f34");
+if (arg1 != null) { //1828
+    $.n();
+    var $333 = { n: "param", v: $.ip("f34", "${arg1}", "string", 705), r: 9, c: 17, s: "f34", u: "f6",  }; //1829
+    $.a($329, $333, 706);
+}
+$.n();
+var $334 = { n: "_", v: $.ip("f34", "log('${name}.node', node)", "string", 709), r: 10, c: 13, s: "f34", u: "f6",  }; //1830
+$.a($329, $334, 710);
+var $335 = { n: "var", v: $.ip("f35", "${varName}", "string", 711), r: 4, c: 5, s: "f35", u: "f7",  }; //1833
+$.a($329, $335, 712);
+var $336 = { n: "_", v: "runner", r: 106, c: 13, s: "f1", u: "f2",  }; //573
+$.a($335, $336, 714);
+var $337 = { n: "@", v: "node.argument", r: 107, c: 17, s: "f1", u: "f2",  }; //574
+$.a($336, $337, 716);
+var $338 = { n: "@", v: "ctx", r: 108, c: 17, s: "f1", u: "f2",  }; //575
+$.a($336, $338, 718);
+var $339 = { n: "if", v: $.ip("f35", "${varName} && ${varName}.__is_error", "string", 719), r: 6, c: 5, s: "f35", u: "f7",  }; //1835
+$.a($329, $339, 720);
+var $340 = { n: "log", v: $.ip("f35", "'__is_error ${message}', ${varName}", "string", 721), r: 7, c: 9, s: "f35", u: "f7",  }; //1836
+$.a($339, $340, 722);
+var $341 = { n: "return", v: $.ip("f35", "${varName}", "string", 723), r: 8, c: 9, s: "f35", u: "f7",  }; //1837
+$.a($339, $341, 724);
+var $342 = { n: "return", v: "", r: 109, c: 9, s: "f1", u: "f2",  }; //576
+$.a($329, $342, 726);
+var $343 = { n: "{", v: "", r: 110, c: 13, s: "f1", u: "f2",  }; //577
+$.a($342, $343, 728);
+var $344 = { n: "@", v: "result true", r: 111, c: 17, s: "f1", u: "f2",  }; //578
+$.a($343, $344, 730);
+var $345 = { n: "@", v: "value value", r: 112, c: 17, s: "f1", u: "f2",  }; //579
+$.a($343, $345, 732);
+var $346 = { n: "set", v: $.ip("f36", "runner.${name}", "string", 733), r: 4, c: 5, s: "f36", u: "f6",  }; //1839
+$.a($1, $346, 734);
+var $347 = { n: "function", v: "", r: 5, c: 9, s: "f36", u: "f6",  }; //1840
+$.a($346, $347, 736);
+var $348 = { n: "param", v: "node", r: 6, c: 13, s: "f36", u: "f6",  }; //1841
+$.a($347, $348, 738);
+var $349 = { n: "param", v: "ctx", r: 7, c: 13, s: "f36", u: "f6",  }; //1842
+$.a($347, $349, 740);
+$.s("f36");
+if (arg1 != null) { //1843
+    $.n();
+    var $351 = { n: "param", v: $.ip("f36", "${arg1}", "string", 744), r: 9, c: 17, s: "f36", u: "f6",  }; //1844
+    $.a($347, $351, 745);
+}
+$.n();
+var $352 = { n: "_", v: $.ip("f36", "log('${name}.node', node)", "string", 748), r: 10, c: 13, s: "f36", u: "f6",  }; //1845
+$.a($347, $352, 749);
+var $353 = { n: "var", v: "", r: 5, c: 9, s: "f1", u: "f3",  }; //655
+$.a($347, $353, 751);
+var $354 = { n: "decl", v: "test", r: 6, c: 13, s: "f1", u: "f3",  }; //656
+$.a($353, $354, 753);
+var $355 = { n: "decl", v: "state", r: 7, c: 13, s: "f1", u: "f3",  }; //657
+$.a($353, $355, 755);
+var $356 = { n: "decl", v: "savedCurrentModelKey", r: 8, c: 13, s: "f1", u: "f3",  }; //658
+$.a($353, $356, 757);
+var $357 = { n: "set", v: "savedCurrentModelKey = ctx.get_currentIttfModelKey()", r: 10, c: 9, s: "f1", u: "f3",  }; //659
+$.a($347, $357, 759);
+var $358 = { n: "var", v: $.ip("f37", "${varName}", "string", 760), r: 4, c: 5, s: "f37", u: "f7",  }; //1848
+$.a($347, $358, 761);
+var $359 = { n: "_", v: "runner", r: 13, c: 13, s: "f1", u: "f3",  }; //661
+$.a($358, $359, 763);
+var $360 = { n: "@", v: "node.init", r: 14, c: 17, s: "f1", u: "f3",  }; //662
+$.a($359, $360, 765);
+var $361 = { n: "@", v: "ctx", r: 15, c: 17, s: "f1", u: "f3",  }; //663
+$.a($359, $361, 767);
+var $362 = { n: "if", v: $.ip("f37", "${varName} && ${varName}.__is_error", "string", 768), r: 6, c: 5, s: "f37", u: "f7",  }; //1850
+$.a($347, $362, 769);
+var $363 = { n: "log", v: $.ip("f37", "'__is_error ${message}', ${varName}", "string", 770), r: 7, c: 9, s: "f37", u: "f7",  }; //1851
+$.a($362, $363, 771);
+var $364 = { n: "return", v: $.ip("f37", "${varName}", "string", 772), r: 8, c: 9, s: "f37", u: "f7",  }; //1852
+$.a($362, $364, 773);
+var $365 = { n: "var", v: $.ip("f38", "${varName}", "string", 774), r: 4, c: 5, s: "f38", u: "f7",  }; //1854
+$.a($347, $365, 775);
+var $366 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 18, c: 13, s: "f1", u: "f3",  }; //665
+$.a($365, $366, 777);
+var $367 = { n: "if", v: $.ip("f38", "${varName} && ${varName}.__is_error", "string", 778), r: 6, c: 5, s: "f38", u: "f7",  }; //1856
+$.a($347, $367, 779);
+var $368 = { n: "log", v: $.ip("f38", "'__is_error ${message}', ${varName}", "string", 780), r: 7, c: 9, s: "f38", u: "f7",  }; //1857
+$.a($367, $368, 781);
+var $369 = { n: "return", v: $.ip("f38", "${varName}", "string", 782), r: 8, c: 9, s: "f38", u: "f7",  }; //1858
+$.a($367, $369, 783);
+var $370 = { n: "set", v: $.ip("f39", "${varName}", "string", 784), r: 4, c: 5, s: "f39", u: "f8",  }; //1860
+$.a($347, $370, 785);
+var $371 = { n: "_", v: "runner(node.test, ctx)", r: 21, c: 13, s: "f1", u: "f3",  }; //667
+$.a($370, $371, 787);
+var $372 = { n: "if", v: $.ip("f39", "${varName} && ${varName}.__is_error", "string", 788), r: 6, c: 5, s: "f39", u: "f8",  }; //1862
+$.a($347, $372, 789);
+var $373 = { n: "log", v: $.ip("f39", "'__is_error ${message}', ${varName}", "string", 790), r: 7, c: 9, s: "f39", u: "f8",  }; //1863
+$.a($372, $373, 791);
+var $374 = { n: "return", v: $.ip("f39", "${varName}", "string", 792), r: 8, c: 9, s: "f39", u: "f8",  }; //1864
+$.a($372, $374, 793);
+var $375 = { n: "while", v: "test", r: 23, c: 9, s: "f1", u: "f3",  }; //668
+$.a($347, $375, 795);
+var $376 = { n: "set", v: $.ip("f40", "${varName}", "string", 796), r: 4, c: 5, s: "f40", u: "f8",  }; //1866
+$.a($375, $376, 797);
+var $377 = { n: "_", v: "runner(node.body, ctx)", r: 26, c: 17, s: "f1", u: "f3",  }; //670
+$.a($376, $377, 799);
+var $378 = { n: "if", v: $.ip("f40", "${varName} && ${varName}.__is_error", "string", 800), r: 6, c: 5, s: "f40", u: "f8",  }; //1868
+$.a($375, $378, 801);
+var $379 = { n: "log", v: $.ip("f40", "'__is_error ${message}', ${varName}", "string", 802), r: 7, c: 9, s: "f40", u: "f8",  }; //1869
+$.a($378, $379, 803);
+var $380 = { n: "return", v: $.ip("f40", "${varName}", "string", 804), r: 8, c: 9, s: "f40", u: "f8",  }; //1870
+$.a($378, $380, 805);
+var $381 = { n: "if", v: "state.result || state.break", r: 27, c: 13, s: "f1", u: "f3",  }; //671
+$.a($375, $381, 807);
+var $382 = { n: "return", v: "state", r: 28, c: 17, s: "f1", u: "f3",  }; //672
+$.a($381, $382, 809);
+var $383 = { n: "var", v: $.ip("f41", "${varName}", "string", 810), r: 4, c: 5, s: "f41", u: "f7",  }; //1872
+$.a($375, $383, 811);
+var $384 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 31, c: 17, s: "f1", u: "f3",  }; //674
+$.a($383, $384, 813);
+var $385 = { n: "if", v: $.ip("f41", "${varName} && ${varName}.__is_error", "string", 814), r: 6, c: 5, s: "f41", u: "f7",  }; //1874
+$.a($375, $385, 815);
+var $386 = { n: "log", v: $.ip("f41", "'__is_error ${message}', ${varName}", "string", 816), r: 7, c: 9, s: "f41", u: "f7",  }; //1875
+$.a($385, $386, 817);
+var $387 = { n: "return", v: $.ip("f41", "${varName}", "string", 818), r: 8, c: 9, s: "f41", u: "f7",  }; //1876
+$.a($385, $387, 819);
+var $388 = { n: "var", v: $.ip("f42", "${varName}", "string", 820), r: 4, c: 5, s: "f42", u: "f7",  }; //1878
+$.a($375, $388, 821);
+var $389 = { n: "_", v: "runner", r: 34, c: 17, s: "f1", u: "f3",  }; //676
+$.a($388, $389, 823);
+var $390 = { n: "@", v: "node.update", r: 35, c: 21, s: "f1", u: "f3",  }; //677
+$.a($389, $390, 825);
+var $391 = { n: "@", v: "ctx", r: 36, c: 21, s: "f1", u: "f3",  }; //678
+$.a($389, $391, 827);
+var $392 = { n: "if", v: $.ip("f42", "${varName} && ${varName}.__is_error", "string", 828), r: 6, c: 5, s: "f42", u: "f7",  }; //1880
+$.a($375, $392, 829);
+var $393 = { n: "log", v: $.ip("f42", "'__is_error ${message}', ${varName}", "string", 830), r: 7, c: 9, s: "f42", u: "f7",  }; //1881
+$.a($392, $393, 831);
+var $394 = { n: "return", v: $.ip("f42", "${varName}", "string", 832), r: 8, c: 9, s: "f42", u: "f7",  }; //1882
+$.a($392, $394, 833);
+var $395 = { n: "var", v: $.ip("f43", "${varName}", "string", 834), r: 4, c: 5, s: "f43", u: "f7",  }; //1884
+$.a($375, $395, 835);
+var $396 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 39, c: 17, s: "f1", u: "f3",  }; //680
+$.a($395, $396, 837);
+var $397 = { n: "if", v: $.ip("f43", "${varName} && ${varName}.__is_error", "string", 838), r: 6, c: 5, s: "f43", u: "f7",  }; //1886
+$.a($375, $397, 839);
+var $398 = { n: "log", v: $.ip("f43", "'__is_error ${message}', ${varName}", "string", 840), r: 7, c: 9, s: "f43", u: "f7",  }; //1887
+$.a($397, $398, 841);
+var $399 = { n: "return", v: $.ip("f43", "${varName}", "string", 842), r: 8, c: 9, s: "f43", u: "f7",  }; //1888
+$.a($397, $399, 843);
+var $400 = { n: "set", v: $.ip("f44", "${varName}", "string", 844), r: 4, c: 5, s: "f44", u: "f8",  }; //1890
+$.a($375, $400, 845);
+var $401 = { n: "_", v: "runner(node.test, ctx)", r: 42, c: 17, s: "f1", u: "f3",  }; //682
+$.a($400, $401, 847);
+var $402 = { n: "if", v: $.ip("f44", "${varName} && ${varName}.__is_error", "string", 848), r: 6, c: 5, s: "f44", u: "f8",  }; //1892
+$.a($375, $402, 849);
+var $403 = { n: "log", v: $.ip("f44", "'__is_error ${message}', ${varName}", "string", 850), r: 7, c: 9, s: "f44", u: "f8",  }; //1893
+$.a($402, $403, 851);
+var $404 = { n: "return", v: $.ip("f44", "${varName}", "string", 852), r: 8, c: 9, s: "f44", u: "f8",  }; //1894
+$.a($402, $404, 853);
+var $405 = { n: "return", v: "", r: 44, c: 9, s: "f1", u: "f3",  }; //683
+$.a($347, $405, 855);
+var $406 = { n: "{", v: "", r: 45, c: 13, s: "f1", u: "f3",  }; //684
+$.a($405, $406, 857);
+var $407 = { n: "set", v: $.ip("f45", "runner.${name}", "string", 858), r: 4, c: 5, s: "f45", u: "f6",  }; //1896
+$.a($1, $407, 859);
+var $408 = { n: "function", v: "", r: 5, c: 9, s: "f45", u: "f6",  }; //1897
+$.a($407, $408, 861);
+var $409 = { n: "param", v: "node", r: 6, c: 13, s: "f45", u: "f6",  }; //1898
+$.a($408, $409, 863);
+var $410 = { n: "param", v: "ctx", r: 7, c: 13, s: "f45", u: "f6",  }; //1899
+$.a($408, $410, 865);
+$.s("f45");
+if (arg1 != null) { //1900
+    $.n();
+    var $412 = { n: "param", v: $.ip("f45", "${arg1}", "string", 869), r: 9, c: 17, s: "f45", u: "f6",  }; //1901
+    $.a($408, $412, 870);
+}
+$.n();
+var $413 = { n: "_", v: $.ip("f45", "log('${name}.node', node)", "string", 873), r: 10, c: 13, s: "f45", u: "f6",  }; //1902
+$.a($408, $413, 874);
+var $414 = { n: "var", v: "", r: 48, c: 9, s: "f1", u: "f3",  }; //686
+$.a($408, $414, 876);
+var $415 = { n: "decl", v: "test", r: 49, c: 13, s: "f1", u: "f3",  }; //687
+$.a($414, $415, 878);
+var $416 = { n: "decl", v: "state", r: 50, c: 13, s: "f1", u: "f3",  }; //688
+$.a($414, $416, 880);
+var $417 = { n: "decl", v: "savedCurrentModelKey", r: 51, c: 13, s: "f1", u: "f3",  }; //689
+$.a($414, $417, 882);
+var $418 = { n: "set", v: "savedCurrentModelKey = ctx.get_currentIttfModelKey()", r: 53, c: 9, s: "f1", u: "f3",  }; //690
+$.a($408, $418, 884);
+var $419 = { n: "var", v: $.ip("f46", "${varName}", "string", 885), r: 4, c: 5, s: "f46", u: "f7",  }; //1905
+$.a($408, $419, 886);
+var $420 = { n: "_", v: "runner", r: 56, c: 13, s: "f1", u: "f3",  }; //692
+$.a($419, $420, 888);
+var $421 = { n: "@", v: "node.right", r: 57, c: 17, s: "f1", u: "f3",  }; //693
+$.a($420, $421, 890);
+var $422 = { n: "@", v: "ctx", r: 58, c: 17, s: "f1", u: "f3",  }; //694
+$.a($420, $422, 892);
+var $423 = { n: "if", v: $.ip("f46", "${varName} && ${varName}.__is_error", "string", 893), r: 6, c: 5, s: "f46", u: "f7",  }; //1907
+$.a($408, $423, 894);
+var $424 = { n: "log", v: $.ip("f46", "'__is_error ${message}', ${varName}", "string", 895), r: 7, c: 9, s: "f46", u: "f7",  }; //1908
+$.a($423, $424, 896);
+var $425 = { n: "return", v: $.ip("f46", "${varName}", "string", 897), r: 8, c: 9, s: "f46", u: "f7",  }; //1909
+$.a($423, $425, 898);
+var $426 = { n: "if", v: "_.isObject(obj) == false", r: 60, c: 9, s: "f1", u: "f3",  }; //695
+$.a($408, $426, 900);
+var $427 = { n: "return", v: "", r: 61, c: 13, s: "f1", u: "f3",  }; //696
+$.a($426, $427, 902);
+var $428 = { n: "_", v: "error", r: 62, c: 17, s: "f1", u: "f3",  }; //697
+$.a($427, $428, 904);
+var $429 = { n: "@", v: "ctx", r: 63, c: 21, s: "f1", u: "f3",  }; //698
+$.a($428, $429, 906);
+var $430 = { n: "@", v: "'The value must be an object. It is \"' + getTypeDescription(obj) + '\".'", r: 64, c: 21, s: "f1", u: "f3",  }; //699
+$.a($428, $430, 908);
+var $431 = { n: "@", v: "node.right", r: 65, c: 21, s: "f1", u: "f3",  }; //700
+$.a($428, $431, 910);
+var $432 = { n: "@", v: "node", r: 66, c: 21, s: "f1", u: "f3",  }; //701
+$.a($428, $432, 912);
+var $433 = { n: "@", v: "'ForInStatement'", r: 67, c: 21, s: "f1", u: "f3",  }; //702
+$.a($428, $433, 914);
+var $434 = { n: "var", v: $.ip("f47", "${varName}", "string", 915), r: 4, c: 5, s: "f47", u: "f7",  }; //1911
+$.a($408, $434, 916);
+var $435 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 70, c: 13, s: "f1", u: "f3",  }; //704
+$.a($434, $435, 918);
+var $436 = { n: "if", v: $.ip("f47", "${varName} && ${varName}.__is_error", "string", 919), r: 6, c: 5, s: "f47", u: "f7",  }; //1913
+$.a($408, $436, 920);
+var $437 = { n: "log", v: $.ip("f47", "'__is_error ${message}', ${varName}", "string", 921), r: 7, c: 9, s: "f47", u: "f7",  }; //1914
+$.a($436, $437, 922);
+var $438 = { n: "return", v: $.ip("f47", "${varName}", "string", 923), r: 8, c: 9, s: "f47", u: "f7",  }; //1915
+$.a($436, $438, 924);
+var $439 = { n: "var", v: "left = node.left.name", r: 72, c: 9, s: "f1", u: "f3",  }; //705
+$.a($408, $439, 926);
+var $440 = { n: "_", v: "ctx.declare(left)", r: 73, c: 9, s: "f1", u: "f3",  }; //706
+$.a($408, $440, 928);
+var $441 = { n: "for", v: "k in obj", r: 75, c: 9, s: "f1", u: "f3",  }; //707
+$.a($408, $441, 930);
+var $442 = { n: "_", v: "ctx.put(left, k)", r: 76, c: 13, s: "f1", u: "f3",  }; //708
+$.a($441, $442, 932);
+var $443 = { n: "set", v: $.ip("f48", "${varName}", "string", 933), r: 4, c: 5, s: "f48", u: "f8",  }; //1917
+$.a($441, $443, 934);
+var $444 = { n: "_", v: "runner(node.body, ctx)", r: 79, c: 17, s: "f1", u: "f3",  }; //710
+$.a($443, $444, 936);
+var $445 = { n: "if", v: $.ip("f48", "${varName} && ${varName}.__is_error", "string", 937), r: 6, c: 5, s: "f48", u: "f8",  }; //1919
+$.a($441, $445, 938);
+var $446 = { n: "log", v: $.ip("f48", "'__is_error ${message}', ${varName}", "string", 939), r: 7, c: 9, s: "f48", u: "f8",  }; //1920
+$.a($445, $446, 940);
+var $447 = { n: "return", v: $.ip("f48", "${varName}", "string", 941), r: 8, c: 9, s: "f48", u: "f8",  }; //1921
+$.a($445, $447, 942);
+var $448 = { n: "if", v: "state.result || state.break", r: 80, c: 13, s: "f1", u: "f3",  }; //711
+$.a($441, $448, 944);
+var $449 = { n: "return", v: "state", r: 81, c: 17, s: "f1", u: "f3",  }; //712
+$.a($448, $449, 946);
+var $450 = { n: "var", v: $.ip("f49", "${varName}", "string", 947), r: 4, c: 5, s: "f49", u: "f7",  }; //1923
+$.a($441, $450, 948);
+var $451 = { n: "_", v: "ctx.set_IttfModelEvalContext(savedCurrentModelKey)", r: 84, c: 17, s: "f1", u: "f3",  }; //714
+$.a($450, $451, 950);
+var $452 = { n: "if", v: $.ip("f49", "${varName} && ${varName}.__is_error", "string", 951), r: 6, c: 5, s: "f49", u: "f7",  }; //1925
+$.a($441, $452, 952);
+var $453 = { n: "log", v: $.ip("f49", "'__is_error ${message}', ${varName}", "string", 953), r: 7, c: 9, s: "f49", u: "f7",  }; //1926
+$.a($452, $453, 954);
+var $454 = { n: "return", v: $.ip("f49", "${varName}", "string", 955), r: 8, c: 9, s: "f49", u: "f7",  }; //1927
+$.a($452, $454, 956);
+var $455 = { n: "_", v: "ctx.undeclare(left)", r: 86, c: 9, s: "f1", u: "f3",  }; //715
+$.a($408, $455, 958);
+var $456 = { n: "return", v: "", r: 88, c: 9, s: "f1", u: "f3",  }; //716
+$.a($408, $456, 960);
+var $457 = { n: "{", v: "", r: 89, c: 13, s: "f1", u: "f3",  }; //717
+$.a($456, $457, 962);
+var $458 = { n: "set", v: $.ip("f50", "runner.${name}", "string", 963), r: 4, c: 5, s: "f50", u: "f6",  }; //1929
+$.a($1, $458, 964);
+var $459 = { n: "function", v: "", r: 5, c: 9, s: "f50", u: "f6",  }; //1930
+$.a($458, $459, 966);
+var $460 = { n: "param", v: "node", r: 6, c: 13, s: "f50", u: "f6",  }; //1931
+$.a($459, $460, 968);
+var $461 = { n: "param", v: "ctx", r: 7, c: 13, s: "f50", u: "f6",  }; //1932
+$.a($459, $461, 970);
+$.s("f50");
+if (arg1 != null) { //1933
+    $.n();
+    var $463 = { n: "param", v: $.ip("f50", "${arg1}", "string", 974), r: 9, c: 17, s: "f50", u: "f6",  }; //1934
+    $.a($459, $463, 975);
+}
+$.n();
+var $464 = { n: "_", v: $.ip("f50", "log('${name}.node', node)", "string", 978), r: 10, c: 13, s: "f50", u: "f6",  }; //1935
+$.a($459, $464, 979);
+var $465 = { n: "return", v: "", r: 92, c: 9, s: "f1", u: "f3",  }; //719
+$.a($459, $465, 981);
+var $466 = { n: "{", v: "", r: 93, c: 13, s: "f1", u: "f3",  }; //720
+$.a($465, $466, 983);
+var $467 = { n: "@", v: "break true", r: 94, c: 17, s: "f1", u: "f3",  }; //721
+$.a($466, $467, 985);
+var $468 = { n: "set", v: $.ip("f51", "runner.${name}", "string", 986), r: 4, c: 5, s: "f51", u: "f6",  }; //1938
+$.a($1, $468, 987);
+var $469 = { n: "function", v: "", r: 5, c: 9, s: "f51", u: "f6",  }; //1939
+$.a($468, $469, 989);
+var $470 = { n: "param", v: "node", r: 6, c: 13, s: "f51", u: "f6",  }; //1940
+$.a($469, $470, 991);
+var $471 = { n: "param", v: "ctx", r: 7, c: 13, s: "f51", u: "f6",  }; //1941
+$.a($469, $471, 993);
+$.s("f51");
+if (arg1 != null) { //1942
+    $.n();
+    var $473 = { n: "param", v: $.ip("f51", "${arg1}", "string", 997), r: 9, c: 17, s: "f51", u: "f6",  }; //1943
+    $.a($469, $473, 998);
+}
+$.n();
+var $474 = { n: "_", v: $.ip("f51", "log('${name}.node', node)", "string", 1001), r: 10, c: 13, s: "f51", u: "f6",  }; //1944
+$.a($469, $474, 1002);
+var $475 = { n: "return", v: "", r: 97, c: 9, s: "f1", u: "f3",  }; //723
+$.a($469, $475, 1004);
+var $476 = { n: "{", v: "", r: 98, c: 13, s: "f1", u: "f3",  }; //724
+$.a($475, $476, 1006);
+var $477 = { n: "@", v: "continue true", r: 99, c: 17, s: "f1", u: "f3",  }; //725
+$.a($476, $477, 1008);
+var $478 = { n: "set", v: $.ip("f52", "runner.${name}", "string", 1009), r: 4, c: 5, s: "f52", u: "f6",  }; //1947
+$.a($1, $478, 1010);
+var $479 = { n: "function", v: "", r: 5, c: 9, s: "f52", u: "f6",  }; //1948
+$.a($478, $479, 1012);
+var $480 = { n: "param", v: "node", r: 6, c: 13, s: "f52", u: "f6",  }; //1949
+$.a($479, $480, 1014);
+var $481 = { n: "param", v: "ctx", r: 7, c: 13, s: "f52", u: "f6",  }; //1950
+$.a($479, $481, 1016);
+$.s("f52");
+if (arg1 != null) { //1951
+    $.n();
+    var $483 = { n: "param", v: $.ip("f52", "${arg1}", "string", 1020), r: 9, c: 17, s: "f52", u: "f6",  }; //1952
+    $.a($479, $483, 1021);
+}
+$.n();
+var $484 = { n: "_", v: $.ip("f52", "log('${name}.node', node)", "string", 1024), r: 10, c: 13, s: "f52", u: "f6",  }; //1953
+$.a($479, $484, 1025);
+var $485 = { n: "var", v: $.ip("f53", "${varName}", "string", 1026), r: 4, c: 5, s: "f53", u: "f7",  }; //1956
+$.a($479, $485, 1027);
+var $486 = { n: "_", v: "runner", r: 5, c: 13, s: "f1", u: "f4",  }; //1085
+$.a($485, $486, 1029);
+var $487 = { n: "@", v: "node.argument", r: 6, c: 17, s: "f1", u: "f4",  }; //1086
+$.a($486, $487, 1031);
+var $488 = { n: "@", v: "ctx", r: 7, c: 17, s: "f1", u: "f4",  }; //1087
+$.a($486, $488, 1033);
+var $489 = { n: "if", v: $.ip("f53", "${varName} && ${varName}.__is_error", "string", 1034), r: 6, c: 5, s: "f53", u: "f7",  }; //1958
+$.a($479, $489, 1035);
+var $490 = { n: "log", v: $.ip("f53", "'__is_error ${message}', ${varName}", "string", 1036), r: 7, c: 9, s: "f53", u: "f7",  }; //1959
+$.a($489, $490, 1037);
+var $491 = { n: "return", v: $.ip("f53", "${varName}", "string", 1038), r: 8, c: 9, s: "f53", u: "f7",  }; //1960
+$.a($489, $491, 1039);
+var $492 = { n: "if", v: "node.prefix", r: 8, c: 9, s: "f1", u: "f4",  }; //1088
+$.a($479, $492, 1041);
+var $493 = { n: "if", v: "node.operator === '!'", r: 9, c: 13, s: "f1", u: "f4",  }; //1089
+$.a($492, $493, 1043);
+var $494 = { n: "return", v: "!exp", r: 10, c: 17, s: "f1", u: "f4",  }; //1090
+$.a($493, $494, 1045);
+var $495 = { n: "elif", v: "node.operator === '-'", r: 11, c: 13, s: "f1", u: "f4",  }; //1091
+$.a($492, $495, 1047);
+var $496 = { n: "return", v: "-exp", r: 12, c: 17, s: "f1", u: "f4",  }; //1092
+$.a($495, $496, 1049);
+var $497 = { n: "elif", v: "node.operator === '+'", r: 13, c: 13, s: "f1", u: "f4",  }; //1093
+$.a($492, $497, 1051);
+var $498 = { n: "return", v: "exp", r: 14, c: 17, s: "f1", u: "f4",  }; //1094
+$.a($497, $498, 1053);
+var $499 = { n: "else", v: "", r: 15, c: 13, s: "f1", u: "f4",  }; //1095
+$.a($492, $499, 1055);
+var $500 = { n: "return", v: "", r: 16, c: 17, s: "f1", u: "f4",  }; //1096
+$.a($499, $500, 1057);
+var $501 = { n: "_", v: "error", r: 17, c: 21, s: "f1", u: "f4",  }; //1097
+$.a($500, $501, 1059);
+var $502 = { n: "@", v: "ctx", r: 18, c: 25, s: "f1", u: "f4",  }; //1098
+$.a($501, $502, 1061);
+var $503 = { n: "@", v: "'Unmanaged unary operator ' + node.operator + ' (prefix: true)'", r: 19, c: 25, s: "f1", u: "f4",  }; //1099
+$.a($501, $503, 1063);
+var $504 = { n: "@", v: "node.operator", r: 20, c: 25, s: "f1", u: "f4",  }; //1100
+$.a($501, $504, 1065);
+var $505 = { n: "@", v: "node", r: 21, c: 25, s: "f1", u: "f4",  }; //1101
+$.a($501, $505, 1067);
+var $506 = { n: "@", v: "'UnaryExpression'", r: 22, c: 25, s: "f1", u: "f4",  }; //1102
+$.a($501, $506, 1069);
+var $507 = { n: "else", v: "", r: 23, c: 9, s: "f1", u: "f4",  }; //1103
+$.a($479, $507, 1071);
+var $508 = { n: "if", v: "node.operator === '!'", r: 24, c: 13, s: "f1", u: "f4",  }; //1104
+$.a($507, $508, 1073);
+var $509 = { n: "return", v: "!exp", r: 25, c: 17, s: "f1", u: "f4",  }; //1105
+$.a($508, $509, 1075);
+var $510 = { n: "else", v: "", r: 26, c: 13, s: "f1", u: "f4",  }; //1106
+$.a($507, $510, 1077);
+var $511 = { n: "return", v: "", r: 27, c: 17, s: "f1", u: "f4",  }; //1107
+$.a($510, $511, 1079);
+var $512 = { n: "_", v: "error", r: 28, c: 21, s: "f1", u: "f4",  }; //1108
+$.a($511, $512, 1081);
+var $513 = { n: "@", v: "ctx", r: 29, c: 25, s: "f1", u: "f4",  }; //1109
+$.a($512, $513, 1083);
+var $514 = { n: "@", v: "'Unmanaged unary operator ' + node.operator + ' (prefix: false)'", r: 30, c: 25, s: "f1", u: "f4",  }; //1110
+$.a($512, $514, 1085);
+var $515 = { n: "@", v: "node.operator", r: 31, c: 25, s: "f1", u: "f4",  }; //1111
+$.a($512, $515, 1087);
+var $516 = { n: "@", v: "node", r: 32, c: 25, s: "f1", u: "f4",  }; //1112
+$.a($512, $516, 1089);
+var $517 = { n: "@", v: "'UnaryExpression'", r: 33, c: 25, s: "f1", u: "f4",  }; //1113
+$.a($512, $517, 1091);
+var $518 = { n: "set", v: $.ip("f54", "runner.${name}", "string", 1092), r: 4, c: 5, s: "f54", u: "f6",  }; //1962
+$.a($1, $518, 1093);
+var $519 = { n: "function", v: "", r: 5, c: 9, s: "f54", u: "f6",  }; //1963
+$.a($518, $519, 1095);
+var $520 = { n: "param", v: "node", r: 6, c: 13, s: "f54", u: "f6",  }; //1964
+$.a($519, $520, 1097);
+var $521 = { n: "param", v: "ctx", r: 7, c: 13, s: "f54", u: "f6",  }; //1965
+$.a($519, $521, 1099);
+$.s("f54");
+if (arg1 != null) { //1966
+    $.n();
+    var $523 = { n: "param", v: $.ip("f54", "${arg1}", "string", 1103), r: 9, c: 17, s: "f54", u: "f6",  }; //1967
+    $.a($519, $523, 1104);
+}
+$.n();
+var $524 = { n: "_", v: $.ip("f54", "log('${name}.node', node)", "string", 1107), r: 10, c: 13, s: "f54", u: "f6",  }; //1968
+$.a($519, $524, 1108);
+var $525 = { n: "var", v: $.ip("f55", "${varName}", "string", 1109), r: 4, c: 5, s: "f55", u: "f7",  }; //1971
+$.a($519, $525, 1110);
+var $526 = { n: "_", v: "runner", r: 37, c: 13, s: "f1", u: "f4",  }; //1116
+$.a($525, $526, 1112);
+var $527 = { n: "@", v: "node.left", r: 38, c: 17, s: "f1", u: "f4",  }; //1117
+$.a($526, $527, 1114);
+var $528 = { n: "@", v: "ctx", r: 39, c: 17, s: "f1", u: "f4",  }; //1118
+$.a($526, $528, 1116);
+var $529 = { n: "if", v: $.ip("f55", "${varName} && ${varName}.__is_error", "string", 1117), r: 6, c: 5, s: "f55", u: "f7",  }; //1973
+$.a($519, $529, 1118);
+var $530 = { n: "log", v: $.ip("f55", "'__is_error ${message}', ${varName}", "string", 1119), r: 7, c: 9, s: "f55", u: "f7",  }; //1974
+$.a($529, $530, 1120);
+var $531 = { n: "return", v: $.ip("f55", "${varName}", "string", 1121), r: 8, c: 9, s: "f55", u: "f7",  }; //1975
+$.a($529, $531, 1122);
+var $532 = { n: "var", v: $.ip("f56", "${varName}", "string", 1123), r: 4, c: 5, s: "f56", u: "f7",  }; //1977
+$.a($519, $532, 1124);
+var $533 = { n: "_", v: "runner", r: 41, c: 13, s: "f1", u: "f4",  }; //1120
+$.a($532, $533, 1126);
+var $534 = { n: "@", v: "node.right", r: 42, c: 17, s: "f1", u: "f4",  }; //1121
+$.a($533, $534, 1128);
+var $535 = { n: "@", v: "ctx", r: 43, c: 17, s: "f1", u: "f4",  }; //1122
+$.a($533, $535, 1130);
+var $536 = { n: "if", v: $.ip("f56", "${varName} && ${varName}.__is_error", "string", 1131), r: 6, c: 5, s: "f56", u: "f7",  }; //1979
+$.a($519, $536, 1132);
+var $537 = { n: "log", v: $.ip("f56", "'__is_error ${message}', ${varName}", "string", 1133), r: 7, c: 9, s: "f56", u: "f7",  }; //1980
+$.a($536, $537, 1134);
+var $538 = { n: "return", v: $.ip("f56", "${varName}", "string", 1135), r: 8, c: 9, s: "f56", u: "f7",  }; //1981
+$.a($536, $538, 1136);
+var $539 = { n: "_", v: "log", r: 44, c: 9, s: "f1", u: "f4",  }; //1123
+$.a($519, $539, 1138);
+var $540 = { n: "@", v: "'BinaryExpression.l,r'", r: 45, c: 13, s: "f1", u: "f4",  }; //1124
+$.a($539, $540, 1140);
+var $541 = { n: "[", v: "", r: 46, c: 13, s: "f1", u: "f4",  }; //1125
+$.a($539, $541, 1142);
+var $542 = { n: "@", v: "l", r: 47, c: 17, s: "f1", u: "f4",  }; //1126
+$.a($541, $542, 1144);
+var $543 = { n: "@", v: "r", r: 48, c: 17, s: "f1", u: "f4",  }; //1127
+$.a($541, $543, 1146);
+var $544 = { n: "if", v: "node.operator === '+'", r: 49, c: 9, s: "f1", u: "f4",  }; //1128
+$.a($519, $544, 1148);
+var $545 = { n: "return", v: "(l + r)", r: 50, c: 13, s: "f1", u: "f4",  }; //1129
+$.a($544, $545, 1150);
+var $546 = { n: "elif", v: "node.operator === '-'", r: 51, c: 9, s: "f1", u: "f4",  }; //1130
+$.a($519, $546, 1152);
+var $547 = { n: "return", v: "(l - r)", r: 52, c: 13, s: "f1", u: "f4",  }; //1131
+$.a($546, $547, 1154);
+var $548 = { n: "elif", v: "node.operator === '*'", r: 53, c: 9, s: "f1", u: "f4",  }; //1132
+$.a($519, $548, 1156);
+var $549 = { n: "return", v: "l * r", r: 54, c: 13, s: "f1", u: "f4",  }; //1133
+$.a($548, $549, 1158);
+var $550 = { n: "elif", v: "node.operator === '/'", r: 55, c: 9, s: "f1", u: "f4",  }; //1134
+$.a($519, $550, 1160);
+var $551 = { n: "return", v: "l / r", r: 56, c: 13, s: "f1", u: "f4",  }; //1135
+$.a($550, $551, 1162);
+var $552 = { n: "elif", v: "node.operator === '=='", r: 57, c: 9, s: "f1", u: "f4",  }; //1136
+$.a($519, $552, 1164);
+var $553 = { n: "return", v: "l == r", r: 58, c: 13, s: "f1", u: "f4",  }; //1137
+$.a($552, $553, 1166);
+var $554 = { n: "elif", v: "node.operator === '==='", r: 59, c: 9, s: "f1", u: "f4",  }; //1138
+$.a($519, $554, 1168);
+var $555 = { n: "return", v: "l === r", r: 60, c: 13, s: "f1", u: "f4",  }; //1139
+$.a($554, $555, 1170);
+var $556 = { n: "elif", v: "node.operator === '!='", r: 61, c: 9, s: "f1", u: "f4",  }; //1140
+$.a($519, $556, 1172);
+var $557 = { n: "return", v: "l != r", r: 62, c: 13, s: "f1", u: "f4",  }; //1141
+$.a($556, $557, 1174);
+var $558 = { n: "elif", v: "node.operator === '!=='", r: 63, c: 9, s: "f1", u: "f4",  }; //1142
+$.a($519, $558, 1176);
+var $559 = { n: "return", v: "l !== r", r: 64, c: 13, s: "f1", u: "f4",  }; //1143
+$.a($558, $559, 1178);
+var $560 = { n: "elif", v: "node.operator === '>='", r: 65, c: 9, s: "f1", u: "f4",  }; //1144
+$.a($519, $560, 1180);
+var $561 = { n: "return", v: "l >= r", r: 66, c: 13, s: "f1", u: "f4",  }; //1145
+$.a($560, $561, 1182);
+var $562 = { n: "elif", v: "node.operator === '>'", r: 67, c: 9, s: "f1", u: "f4",  }; //1146
+$.a($519, $562, 1184);
+var $563 = { n: "return", v: "l > r", r: 68, c: 13, s: "f1", u: "f4",  }; //1147
+$.a($562, $563, 1186);
+var $564 = { n: "elif", v: "node.operator === '<='", r: 69, c: 9, s: "f1", u: "f4",  }; //1148
+$.a($519, $564, 1188);
+var $565 = { n: "return", v: "l <= r", r: 70, c: 13, s: "f1", u: "f4",  }; //1149
+$.a($564, $565, 1190);
+var $566 = { n: "elif", v: "node.operator === '<'", r: 71, c: 9, s: "f1", u: "f4",  }; //1150
+$.a($519, $566, 1192);
+var $567 = { n: "return", v: "l < r", r: 72, c: 13, s: "f1", u: "f4",  }; //1151
+$.a($566, $567, 1194);
+var $568 = { n: "else", v: "", r: 73, c: 9, s: "f1", u: "f4",  }; //1152
+$.a($519, $568, 1196);
+var $569 = { n: "return", v: "", r: 74, c: 13, s: "f1", u: "f4",  }; //1153
+$.a($568, $569, 1198);
+var $570 = { n: "_", v: "error", r: 75, c: 17, s: "f1", u: "f4",  }; //1154
+$.a($569, $570, 1200);
+var $571 = { n: "@", v: "ctx", r: 76, c: 21, s: "f1", u: "f4",  }; //1155
+$.a($570, $571, 1202);
+var $572 = { n: "@", v: "'Unmanaged binary operator ' + node.operator", r: 77, c: 21, s: "f1", u: "f4",  }; //1156
+$.a($570, $572, 1204);
+var $573 = { n: "@", v: "node.operator", r: 78, c: 21, s: "f1", u: "f4",  }; //1157
+$.a($570, $573, 1206);
+var $574 = { n: "@", v: "node", r: 79, c: 21, s: "f1", u: "f4",  }; //1158
+$.a($570, $574, 1208);
+var $575 = { n: "@", v: "'BinaryExpression'", r: 80, c: 21, s: "f1", u: "f4",  }; //1159
+$.a($570, $575, 1210);
+var $576 = { n: "set", v: $.ip("f57", "runner.${name}", "string", 1211), r: 4, c: 5, s: "f57", u: "f6",  }; //1983
+$.a($1, $576, 1212);
+var $577 = { n: "function", v: "", r: 5, c: 9, s: "f57", u: "f6",  }; //1984
+$.a($576, $577, 1214);
+var $578 = { n: "param", v: "node", r: 6, c: 13, s: "f57", u: "f6",  }; //1985
+$.a($577, $578, 1216);
+var $579 = { n: "param", v: "ctx", r: 7, c: 13, s: "f57", u: "f6",  }; //1986
+$.a($577, $579, 1218);
+$.s("f57");
+if (arg1 != null) { //1987
+    $.n();
+    var $581 = { n: "param", v: $.ip("f57", "${arg1}", "string", 1222), r: 9, c: 17, s: "f57", u: "f6",  }; //1988
+    $.a($577, $581, 1223);
+}
+$.n();
+var $582 = { n: "_", v: $.ip("f57", "log('${name}.node', node)", "string", 1226), r: 10, c: 13, s: "f57", u: "f6",  }; //1989
+$.a($577, $582, 1227);
+var $583 = { n: "var", v: "", r: 83, c: 9, s: "f1", u: "f4",  }; //1161
+$.a($577, $583, 1229);
+var $584 = { n: "decl", v: "v", r: 84, c: 13, s: "f1", u: "f4",  }; //1162
+$.a($583, $584, 1231);
+var $585 = { n: "decl", v: "exp", r: 85, c: 13, s: "f1", u: "f4",  }; //1163
+$.a($583, $585, 1233);
+var $586 = { n: "var", v: $.ip("f58", "${varName}", "string", 1234), r: 4, c: 5, s: "f58", u: "f7",  }; //1992
+$.a($577, $586, 1235);
+var $587 = { n: "_", v: "runner", r: 87, c: 13, s: "f1", u: "f4",  }; //1165
+$.a($586, $587, 1237);
+var $588 = { n: "@", v: "node.argument", r: 88, c: 17, s: "f1", u: "f4",  }; //1166
+$.a($587, $588, 1239);
+var $589 = { n: "@", v: "ctx", r: 89, c: 17, s: "f1", u: "f4",  }; //1167
+$.a($587, $589, 1241);
+var $590 = { n: "if", v: $.ip("f58", "${varName} && ${varName}.__is_error", "string", 1242), r: 6, c: 5, s: "f58", u: "f7",  }; //1994
+$.a($577, $590, 1243);
+var $591 = { n: "log", v: $.ip("f58", "'__is_error ${message}', ${varName}", "string", 1244), r: 7, c: 9, s: "f58", u: "f7",  }; //1995
+$.a($590, $591, 1245);
+var $592 = { n: "return", v: $.ip("f58", "${varName}", "string", 1246), r: 8, c: 9, s: "f58", u: "f7",  }; //1996
+$.a($590, $592, 1247);
+var $593 = { n: "if", v: "node.operator === '++'", r: 90, c: 9, s: "f1", u: "f4",  }; //1168
+$.a($577, $593, 1249);
+var $594 = { n: "set", v: "v = exp + 1", r: 91, c: 13, s: "f1", u: "f4",  }; //1169
+$.a($593, $594, 1251);
+var $595 = { n: "elif", v: "node.operator === '--'", r: 92, c: 9, s: "f1", u: "f4",  }; //1170
+$.a($577, $595, 1253);
+var $596 = { n: "set", v: "v = exp - 1", r: 93, c: 13, s: "f1", u: "f4",  }; //1171
+$.a($595, $596, 1255);
+var $597 = { n: "else", v: "", r: 94, c: 9, s: "f1", u: "f4",  }; //1172
+$.a($577, $597, 1257);
+var $598 = { n: "return", v: "", r: 95, c: 13, s: "f1", u: "f4",  }; //1173
+$.a($597, $598, 1259);
+var $599 = { n: "_", v: "error", r: 96, c: 17, s: "f1", u: "f4",  }; //1174
+$.a($598, $599, 1261);
+var $600 = { n: "@", v: "ctx", r: 97, c: 21, s: "f1", u: "f4",  }; //1175
+$.a($599, $600, 1263);
+var $601 = { n: "@", v: "'Unmanaged update expression ' + node.operator", r: 98, c: 21, s: "f1", u: "f4",  }; //1176
+$.a($599, $601, 1265);
+var $602 = { n: "@", v: "node.operator", r: 99, c: 21, s: "f1", u: "f4",  }; //1177
+$.a($599, $602, 1267);
+var $603 = { n: "@", v: "node", r: 100, c: 21, s: "f1", u: "f4",  }; //1178
+$.a($599, $603, 1269);
+var $604 = { n: "@", v: "'UpdateExpression'", r: 101, c: 21, s: "f1", u: "f4",  }; //1179
+$.a($599, $604, 1271);
+var $605 = { n: "_", v: "ctx.put", r: 103, c: 9, s: "f1", u: "f4",  }; //1180
+$.a($577, $605, 1273);
+var $606 = { n: "@", v: "node.argument.name", r: 104, c: 13, s: "f1", u: "f4",  }; //1181
+$.a($605, $606, 1275);
+var $607 = { n: "@", v: "v", r: 105, c: 13, s: "f1", u: "f4",  }; //1182
+$.a($605, $607, 1277);
+var $608 = { n: "return", v: "node.prefix ? v : exp", r: 106, c: 9, s: "f1", u: "f4",  }; //1183
+$.a($577, $608, 1279);
+var $609 = { n: "set", v: $.ip("f59", "runner.${name}", "string", 1280), r: 4, c: 5, s: "f59", u: "f6",  }; //1998
+$.a($1, $609, 1281);
+var $610 = { n: "function", v: "", r: 5, c: 9, s: "f59", u: "f6",  }; //1999
+$.a($609, $610, 1283);
+var $611 = { n: "param", v: "node", r: 6, c: 13, s: "f59", u: "f6",  }; //2000
+$.a($610, $611, 1285);
+var $612 = { n: "param", v: "ctx", r: 7, c: 13, s: "f59", u: "f6",  }; //2001
+$.a($610, $612, 1287);
+$.s("f59");
+if (arg1 != null) { //2002
+    $.n();
+    var $614 = { n: "param", v: $.ip("f59", "${arg1}", "string", 1291), r: 9, c: 17, s: "f59", u: "f6",  }; //2003
+    $.a($610, $614, 1292);
+}
+$.n();
+var $615 = { n: "_", v: $.ip("f59", "log('${name}.node', node)", "string", 1295), r: 10, c: 13, s: "f59", u: "f6",  }; //2004
+$.a($610, $615, 1296);
+var $616 = { n: "var", v: $.ip("f60", "${varName}", "string", 1297), r: 4, c: 5, s: "f60", u: "f7",  }; //2007
+$.a($610, $616, 1298);
+var $617 = { n: "_", v: "runner", r: 110, c: 13, s: "f1", u: "f4",  }; //1186
+$.a($616, $617, 1300);
+var $618 = { n: "@", v: "node.left", r: 111, c: 17, s: "f1", u: "f4",  }; //1187
+$.a($617, $618, 1302);
+var $619 = { n: "@", v: "ctx", r: 112, c: 17, s: "f1", u: "f4",  }; //1188
+$.a($617, $619, 1304);
+var $620 = { n: "if", v: $.ip("f60", "${varName} && ${varName}.__is_error", "string", 1305), r: 6, c: 5, s: "f60", u: "f7",  }; //2009
+$.a($610, $620, 1306);
+var $621 = { n: "log", v: $.ip("f60", "'__is_error ${message}', ${varName}", "string", 1307), r: 7, c: 9, s: "f60", u: "f7",  }; //2010
+$.a($620, $621, 1308);
+var $622 = { n: "return", v: $.ip("f60", "${varName}", "string", 1309), r: 8, c: 9, s: "f60", u: "f7",  }; //2011
+$.a($620, $622, 1310);
+var $623 = { n: "if", v: "node.operator === '&&' && (l === false || l === null)", r: 113, c: 9, s: "f1", u: "f4",  }; //1189
+$.a($610, $623, 1312);
+var $624 = { n: "return", v: "false", r: 114, c: 13, s: "f1", u: "f4",  }; //1190
+$.a($623, $624, 1314);
+var $625 = { n: "var", v: $.ip("f61", "${varName}", "string", 1315), r: 4, c: 5, s: "f61", u: "f7",  }; //2013
+$.a($610, $625, 1316);
+var $626 = { n: "_", v: "runner", r: 116, c: 13, s: "f1", u: "f4",  }; //1192
+$.a($625, $626, 1318);
+var $627 = { n: "@", v: "node.right", r: 117, c: 17, s: "f1", u: "f4",  }; //1193
+$.a($626, $627, 1320);
+var $628 = { n: "@", v: "ctx", r: 118, c: 17, s: "f1", u: "f4",  }; //1194
+$.a($626, $628, 1322);
+var $629 = { n: "if", v: $.ip("f61", "${varName} && ${varName}.__is_error", "string", 1323), r: 6, c: 5, s: "f61", u: "f7",  }; //2015
+$.a($610, $629, 1324);
+var $630 = { n: "log", v: $.ip("f61", "'__is_error ${message}', ${varName}", "string", 1325), r: 7, c: 9, s: "f61", u: "f7",  }; //2016
+$.a($629, $630, 1326);
+var $631 = { n: "return", v: $.ip("f61", "${varName}", "string", 1327), r: 8, c: 9, s: "f61", u: "f7",  }; //2017
+$.a($629, $631, 1328);
+var $632 = { n: "_", v: "log", r: 119, c: 9, s: "f1", u: "f4",  }; //1195
+$.a($610, $632, 1330);
+var $633 = { n: "@", v: "'LogicalExpression.l,r'", r: 120, c: 13, s: "f1", u: "f4",  }; //1196
+$.a($632, $633, 1332);
+var $634 = { n: "[", v: "", r: 121, c: 13, s: "f1", u: "f4",  }; //1197
+$.a($632, $634, 1334);
+var $635 = { n: "@", v: "l", r: 122, c: 17, s: "f1", u: "f4",  }; //1198
+$.a($634, $635, 1336);
+var $636 = { n: "@", v: "r", r: 123, c: 17, s: "f1", u: "f4",  }; //1199
+$.a($634, $636, 1338);
+var $637 = { n: "if", v: "node.operator === '&&'", r: 124, c: 9, s: "f1", u: "f4",  }; //1200
+$.a($610, $637, 1340);
+var $638 = { n: "return", v: "l && r", r: 125, c: 13, s: "f1", u: "f4",  }; //1201
+$.a($637, $638, 1342);
+var $639 = { n: "elif", v: "node.operator === '||'", r: 126, c: 9, s: "f1", u: "f4",  }; //1202
+$.a($610, $639, 1344);
+var $640 = { n: "return", v: "l || r", r: 127, c: 13, s: "f1", u: "f4",  }; //1203
+$.a($639, $640, 1346);
+var $641 = { n: "else", v: "", r: 128, c: 9, s: "f1", u: "f4",  }; //1204
+$.a($610, $641, 1348);
+var $642 = { n: "return", v: "", r: 129, c: 13, s: "f1", u: "f4",  }; //1205
+$.a($641, $642, 1350);
+var $643 = { n: "_", v: "error", r: 130, c: 17, s: "f1", u: "f4",  }; //1206
+$.a($642, $643, 1352);
+var $644 = { n: "@", v: "ctx", r: 131, c: 21, s: "f1", u: "f4",  }; //1207
+$.a($643, $644, 1354);
+var $645 = { n: "@", v: "'Unmanaged logical expression ' + node.operator", r: 132, c: 21, s: "f1", u: "f4",  }; //1208
+$.a($643, $645, 1356);
+var $646 = { n: "@", v: "node.operator", r: 133, c: 21, s: "f1", u: "f4",  }; //1209
+$.a($643, $646, 1358);
+var $647 = { n: "@", v: "node", r: 134, c: 21, s: "f1", u: "f4",  }; //1210
+$.a($643, $647, 1360);
+var $648 = { n: "@", v: "'LogicalExpression'", r: 135, c: 21, s: "f1", u: "f4",  }; //1211
+$.a($643, $648, 1362);
+var $649 = { n: "set", v: $.ip("f62", "runner.${name}", "string", 1363), r: 4, c: 5, s: "f62", u: "f6",  }; //2019
+$.a($1, $649, 1364);
+var $650 = { n: "function", v: "", r: 5, c: 9, s: "f62", u: "f6",  }; //2020
+$.a($649, $650, 1366);
+var $651 = { n: "param", v: "node", r: 6, c: 13, s: "f62", u: "f6",  }; //2021
+$.a($650, $651, 1368);
+var $652 = { n: "param", v: "ctx", r: 7, c: 13, s: "f62", u: "f6",  }; //2022
+$.a($650, $652, 1370);
+$.s("f62");
+if (arg1 != null) { //2023
+    $.n();
+    var $654 = { n: "param", v: $.ip("f62", "${arg1}", "string", 1374), r: 9, c: 17, s: "f62", u: "f6",  }; //2024
+    $.a($650, $654, 1375);
+}
+$.n();
+var $655 = { n: "_", v: $.ip("f62", "log('${name}.node', node)", "string", 1378), r: 10, c: 13, s: "f62", u: "f6",  }; //2025
+$.a($650, $655, 1379);
+var $656 = { n: "var", v: $.ip("f63", "${varName}", "string", 1380), r: 4, c: 5, s: "f63", u: "f7",  }; //2028
+$.a($650, $656, 1381);
+var $657 = { n: "_", v: "runner(node.test, ctx)", r: 139, c: 13, s: "f1", u: "f4",  }; //1214
+$.a($656, $657, 1383);
+var $658 = { n: "if", v: $.ip("f63", "${varName} && ${varName}.__is_error", "string", 1384), r: 6, c: 5, s: "f63", u: "f7",  }; //2030
+$.a($650, $658, 1385);
+var $659 = { n: "log", v: $.ip("f63", "'__is_error ${message}', ${varName}", "string", 1386), r: 7, c: 9, s: "f63", u: "f7",  }; //2031
+$.a($658, $659, 1387);
+var $660 = { n: "return", v: $.ip("f63", "${varName}", "string", 1388), r: 8, c: 9, s: "f63", u: "f7",  }; //2032
+$.a($658, $660, 1389);
+var $661 = { n: "if", v: "test", r: 140, c: 9, s: "f1", u: "f4",  }; //1215
+$.a($650, $661, 1391);
+var $662 = { n: "var", v: $.ip("f64", "${varName}", "string", 1392), r: 4, c: 5, s: "f64", u: "f7",  }; //2034
+$.a($661, $662, 1393);
+var $663 = { n: "_", v: "runner", r: 142, c: 17, s: "f1", u: "f4",  }; //1217
+$.a($662, $663, 1395);
+var $664 = { n: "@", v: "node.consequent", r: 143, c: 21, s: "f1", u: "f4",  }; //1218
+$.a($663, $664, 1397);
+var $665 = { n: "@", v: "ctx", r: 144, c: 21, s: "f1", u: "f4",  }; //1219
+$.a($663, $665, 1399);
+var $666 = { n: "if", v: $.ip("f64", "${varName} && ${varName}.__is_error", "string", 1400), r: 6, c: 5, s: "f64", u: "f7",  }; //2036
+$.a($661, $666, 1401);
+var $667 = { n: "log", v: $.ip("f64", "'__is_error ${message}', ${varName}", "string", 1402), r: 7, c: 9, s: "f64", u: "f7",  }; //2037
+$.a($666, $667, 1403);
+var $668 = { n: "return", v: $.ip("f64", "${varName}", "string", 1404), r: 8, c: 9, s: "f64", u: "f7",  }; //2038
+$.a($666, $668, 1405);
+var $669 = { n: "return", v: "value", r: 145, c: 13, s: "f1", u: "f4",  }; //1220
+$.a($661, $669, 1407);
+var $670 = { n: "else", v: "", r: 146, c: 9, s: "f1", u: "f4",  }; //1221
+$.a($650, $670, 1409);
+var $671 = { n: "var", v: $.ip("f65", "${varName}", "string", 1410), r: 4, c: 5, s: "f65", u: "f7",  }; //2040
+$.a($670, $671, 1411);
+var $672 = { n: "_", v: "runner", r: 148, c: 17, s: "f1", u: "f4",  }; //1223
+$.a($671, $672, 1413);
+var $673 = { n: "@", v: "node.alternate", r: 149, c: 21, s: "f1", u: "f4",  }; //1224
+$.a($672, $673, 1415);
+var $674 = { n: "@", v: "ctx", r: 150, c: 21, s: "f1", u: "f4",  }; //1225
+$.a($672, $674, 1417);
+var $675 = { n: "if", v: $.ip("f65", "${varName} && ${varName}.__is_error", "string", 1418), r: 6, c: 5, s: "f65", u: "f7",  }; //2042
+$.a($670, $675, 1419);
+var $676 = { n: "log", v: $.ip("f65", "'__is_error ${message}', ${varName}", "string", 1420), r: 7, c: 9, s: "f65", u: "f7",  }; //2043
+$.a($675, $676, 1421);
+var $677 = { n: "return", v: $.ip("f65", "${varName}", "string", 1422), r: 8, c: 9, s: "f65", u: "f7",  }; //2044
+$.a($675, $677, 1423);
+var $678 = { n: "return", v: "value", r: 151, c: 13, s: "f1", u: "f4",  }; //1226
+$.a($670, $678, 1425);
+var $679 = { n: "set", v: $.ip("f66", "runner.${name}", "string", 1426), r: 4, c: 5, s: "f66", u: "f6",  }; //2046
+$.a($1, $679, 1427);
+var $680 = { n: "function", v: "", r: 5, c: 9, s: "f66", u: "f6",  }; //2047
+$.a($679, $680, 1429);
+var $681 = { n: "param", v: "node", r: 6, c: 13, s: "f66", u: "f6",  }; //2048
+$.a($680, $681, 1431);
+var $682 = { n: "param", v: "ctx", r: 7, c: 13, s: "f66", u: "f6",  }; //2049
+$.a($680, $682, 1433);
+$.s("f66");
+if (arg1 != null) { //2050
+    $.n();
+    var $684 = { n: "param", v: $.ip("f66", "${arg1}", "string", 1437), r: 9, c: 17, s: "f66", u: "f6",  }; //2051
+    $.a($680, $684, 1438);
+}
+$.n();
+var $685 = { n: "_", v: $.ip("f66", "log('${name}.node', node)", "string", 1441), r: 10, c: 13, s: "f66", u: "f6",  }; //2052
+$.a($680, $685, 1442);
+var $686 = { n: "var", v: "", r: 154, c: 9, s: "f1", u: "f4",  }; //1228
+$.a($680, $686, 1444);
+var $687 = { n: "decl", v: "value", r: 155, c: 13, s: "f1", u: "f4",  }; //1229
+$.a($686, $687, 1446);
+var $688 = { n: "decl", v: "args", r: 156, c: 13, s: "f1", u: "f4",  }; //1230
+$.a($686, $688, 1448);
+var $689 = { n: "[", v: "", r: 157, c: 17, s: "f1", u: "f4",  }; //1231
+$.a($688, $689, 1450);
+var $690 = { n: "decl", v: "property", r: 158, c: 13, s: "f1", u: "f4",  }; //1232
+$.a($686, $690, 1452);
+var $691 = { n: "foreach", v: "item in node.arguments", r: 160, c: 9, s: "f1", u: "f4",  }; //1233
+$.a($680, $691, 1454);
+var $692 = { n: "set", v: $.ip("f67", "${varName}", "string", 1455), r: 4, c: 5, s: "f67", u: "f8",  }; //2055
+$.a($691, $692, 1456);
+var $693 = { n: "_", v: "runner(item, ctx)", r: 162, c: 17, s: "f1", u: "f4",  }; //1235
+$.a($692, $693, 1458);
+var $694 = { n: "if", v: $.ip("f67", "${varName} && ${varName}.__is_error", "string", 1459), r: 6, c: 5, s: "f67", u: "f8",  }; //2057
+$.a($691, $694, 1460);
+var $695 = { n: "log", v: $.ip("f67", "'__is_error ${message}', ${varName}", "string", 1461), r: 7, c: 9, s: "f67", u: "f8",  }; //2058
+$.a($694, $695, 1462);
+var $696 = { n: "return", v: $.ip("f67", "${varName}", "string", 1463), r: 8, c: 9, s: "f67", u: "f8",  }; //2059
+$.a($694, $696, 1464);
+var $697 = { n: "_", v: "args.push(value)", r: 163, c: 13, s: "f1", u: "f4",  }; //1236
+$.a($691, $697, 1466);
+var $698 = { n: "if", v: "node.callee.type === 'MemberExpression'", r: 165, c: 9, s: "f1", u: "f4",  }; //1237
+$.a($680, $698, 1468);
+var $699 = { n: "var", v: $.ip("f68", "${varName}", "string", 1469), r: 4, c: 5, s: "f68", u: "f7",  }; //2061
+$.a($698, $699, 1470);
+var $700 = { n: "_", v: "runner", r: 167, c: 17, s: "f1", u: "f4",  }; //1239
+$.a($699, $700, 1472);
+var $701 = { n: "@", v: "node.callee.object", r: 168, c: 21, s: "f1", u: "f4",  }; //1240
+$.a($700, $701, 1474);
+var $702 = { n: "@", v: "ctx", r: 169, c: 21, s: "f1", u: "f4",  }; //1241
+$.a($700, $702, 1476);
+var $703 = { n: "if", v: $.ip("f68", "${varName} && ${varName}.__is_error", "string", 1477), r: 6, c: 5, s: "f68", u: "f7",  }; //2063
+$.a($698, $703, 1478);
+var $704 = { n: "log", v: $.ip("f68", "'__is_error ${message}', ${varName}", "string", 1479), r: 7, c: 9, s: "f68", u: "f7",  }; //2064
+$.a($703, $704, 1480);
+var $705 = { n: "return", v: $.ip("f68", "${varName}", "string", 1481), r: 8, c: 9, s: "f68", u: "f7",  }; //2065
+$.a($703, $705, 1482);
+var $706 = { n: "if", v: "!obj", r: 170, c: 13, s: "f1", u: "f4",  }; //1242
+$.a($698, $706, 1484);
+var $707 = { n: "return", v: "", r: 171, c: 17, s: "f1", u: "f4",  }; //1243
+$.a($706, $707, 1486);
+var $708 = { n: "_", v: "error", r: 172, c: 21, s: "f1", u: "f4",  }; //1244
+$.a($707, $708, 1488);
+var $709 = { n: "@", v: "ctx", r: 173, c: 25, s: "f1", u: "f4",  }; //1245
+$.a($708, $709, 1490);
+var $710 = { n: "@", v: "'The value of callee must be an object. It is \"' + getTypeDescription(obj) + '\".'", r: 174, c: 25, s: "f1", u: "f4",  }; //1246
+$.a($708, $710, 1492);
+var $711 = { n: "@", v: "node.callee.object", r: 175, c: 25, s: "f1", u: "f4",  }; //1247
+$.a($708, $711, 1494);
+var $712 = { n: "@", v: "node", r: 176, c: 25, s: "f1", u: "f4",  }; //1248
+$.a($708, $712, 1496);
+var $713 = { n: "@", v: "'CallExpression'", r: 177, c: 25, s: "f1", u: "f4",  }; //1249
+$.a($708, $713, 1498);
+var $714 = { n: "if", v: "node.callee.computed", r: 178, c: 13, s: "f1", u: "f4",  }; //1250
+$.a($698, $714, 1500);
+var $715 = { n: "set", v: $.ip("f69", "${varName}", "string", 1501), r: 4, c: 5, s: "f69", u: "f8",  }; //2067
+$.a($714, $715, 1502);
+var $716 = { n: "_", v: "runner", r: 180, c: 21, s: "f1", u: "f4",  }; //1252
+$.a($715, $716, 1504);
+var $717 = { n: "@", v: "node.callee.property", r: 181, c: 25, s: "f1", u: "f4",  }; //1253
+$.a($716, $717, 1506);
+var $718 = { n: "@", v: "ctx", r: 182, c: 25, s: "f1", u: "f4",  }; //1254
+$.a($716, $718, 1508);
+var $719 = { n: "if", v: $.ip("f69", "${varName} && ${varName}.__is_error", "string", 1509), r: 6, c: 5, s: "f69", u: "f8",  }; //2069
+$.a($714, $719, 1510);
+var $720 = { n: "log", v: $.ip("f69", "'__is_error ${message}', ${varName}", "string", 1511), r: 7, c: 9, s: "f69", u: "f8",  }; //2070
+$.a($719, $720, 1512);
+var $721 = { n: "return", v: $.ip("f69", "${varName}", "string", 1513), r: 8, c: 9, s: "f69", u: "f8",  }; //2071
+$.a($719, $721, 1514);
+var $722 = { n: "else", v: "", r: 183, c: 13, s: "f1", u: "f4",  }; //1255
+$.a($698, $722, 1516);
+var $723 = { n: "set", v: "property = node.callee.property.name", r: 184, c: 17, s: "f1", u: "f4",  }; //1256
+$.a($722, $723, 1518);
+var $724 = { n: "if", v: "!obj[property]", r: 185, c: 13, s: "f1", u: "f4",  }; //1257
+$.a($698, $724, 1520);
+var $725 = { n: "return", v: "", r: 186, c: 17, s: "f1", u: "f4",  }; //1258
+$.a($724, $725, 1522);
+var $726 = { n: "_", v: "error", r: 187, c: 21, s: "f1", u: "f4",  }; //1259
+$.a($725, $726, 1524);
+var $727 = { n: "@", v: "ctx", r: 188, c: 25, s: "f1", u: "f4",  }; //1260
+$.a($726, $727, 1526);
+var $728 = { n: "@", v: "'Missing object property.'", r: 189, c: 25, s: "f1", u: "f4",  }; //1261
+$.a($726, $728, 1528);
+var $729 = { n: "@", v: "node.callee.property", r: 190, c: 25, s: "f1", u: "f4",  }; //1262
+$.a($726, $729, 1530);
+var $730 = { n: "@", v: "node", r: 191, c: 25, s: "f1", u: "f4",  }; //1263
+$.a($726, $730, 1532);
+var $731 = { n: "@", v: "'CallExpression'", r: 192, c: 25, s: "f1", u: "f4",  }; //1264
+$.a($726, $731, 1534);
+var $732 = { n: "if", v: "verify.isFunction(obj[property])", r: 193, c: 13, s: "f1", u: "f4",  }; //1265
+$.a($698, $732, 1536);
+var $733 = { n: "try", v: "", r: 194, c: 17, s: "f1", u: "f4",  }; //1266
+$.a($732, $733, 1538);
+var $734 = { n: "var", v: "value = obj[property].apply(obj, args)", r: 195, c: 21, s: "f1", u: "f4",  }; //1267
+$.a($733, $734, 1540);
+var $735 = { n: "if", v: "value && value.__is_error", r: 196, c: 21, s: "f1", u: "f4",  }; //1268
+$.a($733, $735, 1542);
+var $736 = { n: "var", v: "currentModelInfo = ctx.get_currentIttfModelInfo()", r: 197, c: 25, s: "f1", u: "f4",  }; //1269
+$.a($735, $736, 1544);
+var $737 = { n: "log", v: "'error calling ' + property + ', on statement: ' + escodegen.generate(node)", r: 198, c: 25, s: "f1", u: "f4",  }; //1270
+$.a($735, $737, 1546);
+var $738 = { n: "set", v: "value.message += ' (' + 'error calling ' + property + ', on statement: ' + escodegen.generate(node) + ', currentModel_uri: ' + currentModelInfo.currentModel_uri + ', currentModel_callerUri: ' + currentModelInfo.currentModel_callerUri + ')'", r: 199, c: 25, s: "f1", u: "f4",  }; //1271
+$.a($735, $738, 1548);
+var $739 = { n: "return", v: "value", r: 203, c: 21, s: "f1", u: "f4",  }; //1272
+$.a($733, $739, 1550);
+var $740 = { n: "catch", v: "ex", r: 204, c: 17, s: "f1", u: "f4",  }; //1273
+$.a($732, $740, 1552);
+var $741 = { n: "return", v: "", r: 205, c: 21, s: "f1", u: "f4",  }; //1274
+$.a($740, $741, 1554);
+var $742 = { n: "_", v: "error", r: 206, c: 25, s: "f1", u: "f4",  }; //1275
+$.a($741, $742, 1556);
+var $743 = { n: "@", v: "ctx", r: 207, c: 29, s: "f1", u: "f4",  }; //1276
+$.a($742, $743, 1558);
+var $744 = { n: "@", v: "'Exception calling function: ' + (ex ? ex.message : 'exception message unavailable')", r: 208, c: 29, s: "f1", u: "f4",  }; //1277
+$.a($742, $744, 1560);
+var $745 = { n: "@", v: "node.callee.property", r: 209, c: 29, s: "f1", u: "f4",  }; //1278
+$.a($742, $745, 1562);
+var $746 = { n: "@", v: "node", r: 210, c: 29, s: "f1", u: "f4",  }; //1279
+$.a($742, $746, 1564);
+var $747 = { n: "@", v: "'CallExpression'", r: 211, c: 29, s: "f1", u: "f4",  }; //1280
+$.a($742, $747, 1566);
+var $748 = { n: "@", v: "ex", r: 212, c: 29, s: "f1", u: "f4",  }; //1281
+$.a($742, $748, 1568);
+var $749 = { n: "else", v: "", r: 213, c: 13, s: "f1", u: "f4",  }; //1282
+$.a($698, $749, 1570);
+var $750 = { n: "return", v: "", r: 214, c: 17, s: "f1", u: "f4",  }; //1283
+$.a($749, $750, 1572);
+var $751 = { n: "_", v: "error", r: 215, c: 21, s: "f1", u: "f4",  }; //1284
+$.a($750, $751, 1574);
+var $752 = { n: "@", v: "ctx", r: 216, c: 25, s: "f1", u: "f4",  }; //1285
+$.a($751, $752, 1576);
+var $753 = { n: "@", v: "'property: \"' + property + '\" is not a function'", r: 217, c: 25, s: "f1", u: "f4",  }; //1286
+$.a($751, $753, 1578);
+var $754 = { n: "@", v: "node.callee.property", r: 218, c: 25, s: "f1", u: "f4",  }; //1287
+$.a($751, $754, 1580);
+var $755 = { n: "@", v: "node", r: 219, c: 25, s: "f1", u: "f4",  }; //1288
+$.a($751, $755, 1582);
+var $756 = { n: "@", v: "'CallExpression'", r: 220, c: 25, s: "f1", u: "f4",  }; //1289
+$.a($751, $756, 1584);
+var $757 = { n: "if", v: "node.callee.type === 'Identifier'", r: 222, c: 9, s: "f1", u: "f4",  }; //1290
+$.a($680, $757, 1586);
+var $758 = { n: "var", v: "f", r: 223, c: 13, s: "f1", u: "f4",  }; //1291
+$.a($757, $758, 1588);
+var $759 = { n: "_", v: "ctx.getFunction", r: 224, c: 17, s: "f1", u: "f4",  }; //1292
+$.a($758, $759, 1590);
+var $760 = { n: "@", v: "node.callee.name", r: 225, c: 21, s: "f1", u: "f4",  }; //1293
+$.a($759, $760, 1592);
+var $761 = { n: "if", v: "f == null", r: 226, c: 13, s: "f1", u: "f4",  }; //1294
+$.a($757, $761, 1594);
+var $762 = { n: "return", v: "", r: 227, c: 17, s: "f1", u: "f4",  }; //1295
+$.a($761, $762, 1596);
+var $763 = { n: "_", v: "error", r: 228, c: 21, s: "f1", u: "f4",  }; //1296
+$.a($762, $763, 1598);
+var $764 = { n: "@", v: "ctx", r: 229, c: 25, s: "f1", u: "f4",  }; //1297
+$.a($763, $764, 1600);
+var $765 = { n: "@", v: "('Function undeclared ' + node.callee.name)", r: 230, c: 25, s: "f1", u: "f4",  }; //1298
+$.a($763, $765, 1602);
+var $766 = { n: "@", v: "node.callee", r: 231, c: 25, s: "f1", u: "f4",  }; //1299
+$.a($763, $766, 1604);
+var $767 = { n: "@", v: "node", r: 232, c: 25, s: "f1", u: "f4",  }; //1300
+$.a($763, $767, 1606);
+var $768 = { n: "@", v: "'CallExpression'", r: 233, c: 25, s: "f1", u: "f4",  }; //1301
+$.a($763, $768, 1608);
+var $769 = { n: "return", v: "runnerCall(f, ctx, args)", r: 234, c: 13, s: "f1", u: "f4",  }; //1302
+$.a($757, $769, 1610);
+var $770 = { n: "return", v: "", r: 236, c: 9, s: "f1", u: "f4",  }; //1303
+$.a($680, $770, 1612);
+var $771 = { n: "_", v: "error", r: 237, c: 13, s: "f1", u: "f4",  }; //1304
+$.a($770, $771, 1614);
+var $772 = { n: "@", v: "ctx", r: 238, c: 17, s: "f1", u: "f4",  }; //1305
+$.a($771, $772, 1616);
+var $773 = { n: "@", v: "'Not implemented'", r: 239, c: 17, s: "f1", u: "f4",  }; //1306
+$.a($771, $773, 1618);
+var $774 = { n: "@", v: "null", r: 240, c: 17, s: "f1", u: "f4",  }; //1307
+$.a($771, $774, 1620);
+var $775 = { n: "@", v: "node", r: 241, c: 17, s: "f1", u: "f4",  }; //1308
+$.a($771, $775, 1622);
+var $776 = { n: "@", v: "'CallExpression'", r: 242, c: 17, s: "f1", u: "f4",  }; //1309
+$.a($771, $776, 1624);
+var $777 = { n: "set", v: $.ip("f70", "runner.${name}", "string", 1625), r: 4, c: 5, s: "f70", u: "f6",  }; //2073
+$.a($1, $777, 1626);
+var $778 = { n: "function", v: "", r: 5, c: 9, s: "f70", u: "f6",  }; //2074
+$.a($777, $778, 1628);
+var $779 = { n: "param", v: "node", r: 6, c: 13, s: "f70", u: "f6",  }; //2075
+$.a($778, $779, 1630);
+var $780 = { n: "param", v: "ctx", r: 7, c: 13, s: "f70", u: "f6",  }; //2076
+$.a($778, $780, 1632);
+$.s("f70");
+if (arg1 != null) { //2077
+    $.n();
+    var $782 = { n: "param", v: $.ip("f70", "${arg1}", "string", 1636), r: 9, c: 17, s: "f70", u: "f6",  }; //2078
+    $.a($778, $782, 1637);
+}
+$.n();
+var $783 = { n: "_", v: $.ip("f70", "log('${name}.node', node)", "string", 1640), r: 10, c: 13, s: "f70", u: "f6",  }; //2079
+$.a($778, $783, 1641);
+var $784 = { n: "var", v: $.ip("f71", "${varName}", "string", 1642), r: 4, c: 5, s: "f71", u: "f7",  }; //2082
+$.a($778, $784, 1643);
+var $785 = { n: "_", v: "runner", r: 246, c: 13, s: "f1", u: "f4",  }; //1312
+$.a($784, $785, 1645);
+var $786 = { n: "@", v: "node.object", r: 247, c: 17, s: "f1", u: "f4",  }; //1313
+$.a($785, $786, 1647);
+var $787 = { n: "@", v: "ctx", r: 248, c: 17, s: "f1", u: "f4",  }; //1314
+$.a($785, $787, 1649);
+var $788 = { n: "if", v: $.ip("f71", "${varName} && ${varName}.__is_error", "string", 1650), r: 6, c: 5, s: "f71", u: "f7",  }; //2084
+$.a($778, $788, 1651);
+var $789 = { n: "log", v: $.ip("f71", "'__is_error ${message}', ${varName}", "string", 1652), r: 7, c: 9, s: "f71", u: "f7",  }; //2085
+$.a($788, $789, 1653);
+var $790 = { n: "return", v: $.ip("f71", "${varName}", "string", 1654), r: 8, c: 9, s: "f71", u: "f7",  }; //2086
+$.a($788, $790, 1655);
+var $791 = { n: "if", v: "!obj", r: 249, c: 9, s: "f1", u: "f4",  }; //1315
+$.a($778, $791, 1657);
+var $792 = { n: "return", v: "", r: 250, c: 13, s: "f1", u: "f4",  }; //1316
+$.a($791, $792, 1659);
+var $793 = { n: "_", v: "error", r: 251, c: 17, s: "f1", u: "f4",  }; //1317
+$.a($792, $793, 1661);
+var $794 = { n: "@", v: "ctx", r: 252, c: 21, s: "f1", u: "f4",  }; //1318
+$.a($793, $794, 1663);
+var $795 = { n: "@", v: "'The value must be an object. It is \"' + getTypeDescription(obj) + '\".'", r: 253, c: 21, s: "f1", u: "f4",  }; //1319
+$.a($793, $795, 1665);
+var $796 = { n: "@", v: "node.object", r: 254, c: 21, s: "f1", u: "f4",  }; //1320
+$.a($793, $796, 1667);
+var $797 = { n: "@", v: "node", r: 255, c: 21, s: "f1", u: "f4",  }; //1321
+$.a($793, $797, 1669);
+var $798 = { n: "@", v: "'MemberExpression'", r: 256, c: 21, s: "f1", u: "f4",  }; //1322
+$.a($793, $798, 1671);
+var $799 = { n: "if", v: "node.computed", r: 257, c: 9, s: "f1", u: "f4",  }; //1323
+$.a($778, $799, 1673);
+var $800 = { n: "var", v: $.ip("f72", "${varName}", "string", 1674), r: 4, c: 5, s: "f72", u: "f7",  }; //2088
+$.a($799, $800, 1675);
+var $801 = { n: "_", v: "runner", r: 259, c: 17, s: "f1", u: "f4",  }; //1325
+$.a($800, $801, 1677);
+var $802 = { n: "@", v: "node.property", r: 260, c: 21, s: "f1", u: "f4",  }; //1326
+$.a($801, $802, 1679);
+var $803 = { n: "@", v: "ctx", r: 261, c: 21, s: "f1", u: "f4",  }; //1327
+$.a($801, $803, 1681);
+var $804 = { n: "if", v: $.ip("f72", "${varName} && ${varName}.__is_error", "string", 1682), r: 6, c: 5, s: "f72", u: "f7",  }; //2090
+$.a($799, $804, 1683);
+var $805 = { n: "log", v: $.ip("f72", "'__is_error ${message}', ${varName}", "string", 1684), r: 7, c: 9, s: "f72", u: "f7",  }; //2091
+$.a($804, $805, 1685);
+var $806 = { n: "return", v: $.ip("f72", "${varName}", "string", 1686), r: 8, c: 9, s: "f72", u: "f7",  }; //2092
+$.a($804, $806, 1687);
+var $807 = { n: "return", v: "obj[property]", r: 262, c: 13, s: "f1", u: "f4",  }; //1328
+$.a($799, $807, 1689);
+var $808 = { n: "else", v: "", r: 263, c: 9, s: "f1", u: "f4",  }; //1329
+$.a($778, $808, 1691);
+var $809 = { n: "var", v: "property = node.property.name", r: 264, c: 13, s: "f1", u: "f4",  }; //1330
+$.a($808, $809, 1693);
+var $810 = { n: "return", v: "obj[property]", r: 265, c: 13, s: "f1", u: "f4",  }; //1331
+$.a($808, $810, 1695);
+var $811 = { n: "set", v: $.ip("f73", "runner.${name}", "string", 1696), r: 4, c: 5, s: "f73", u: "f6",  }; //2094
+$.a($1, $811, 1697);
+var $812 = { n: "function", v: "", r: 5, c: 9, s: "f73", u: "f6",  }; //2095
+$.a($811, $812, 1699);
+var $813 = { n: "param", v: "node", r: 6, c: 13, s: "f73", u: "f6",  }; //2096
+$.a($812, $813, 1701);
+var $814 = { n: "param", v: "ctx", r: 7, c: 13, s: "f73", u: "f6",  }; //2097
+$.a($812, $814, 1703);
+$.s("f73");
+if (arg1 != null) { //2098
+    $.n();
+    var $816 = { n: "param", v: $.ip("f73", "${arg1}", "string", 1707), r: 9, c: 17, s: "f73", u: "f6",  }; //2099
+    $.a($812, $816, 1708);
+}
+$.n();
+var $817 = { n: "_", v: $.ip("f73", "log('${name}.node', node)", "string", 1711), r: 10, c: 13, s: "f73", u: "f6",  }; //2100
+$.a($812, $817, 1712);
+var $818 = { n: "var", v: $.ip("f74", "${varName}", "string", 1713), r: 4, c: 5, s: "f74", u: "f7",  }; //2103
+$.a($812, $818, 1714);
+var $819 = { n: "_", v: "runner", r: 269, c: 13, s: "f1", u: "f4",  }; //1334
+$.a($818, $819, 1716);
+var $820 = { n: "@", v: "node.object", r: 270, c: 17, s: "f1", u: "f4",  }; //1335
+$.a($819, $820, 1718);
+var $821 = { n: "@", v: "ctx", r: 271, c: 17, s: "f1", u: "f4",  }; //1336
+$.a($819, $821, 1720);
+var $822 = { n: "if", v: $.ip("f74", "${varName} && ${varName}.__is_error", "string", 1721), r: 6, c: 5, s: "f74", u: "f7",  }; //2105
+$.a($812, $822, 1722);
+var $823 = { n: "log", v: $.ip("f74", "'__is_error ${message}', ${varName}", "string", 1723), r: 7, c: 9, s: "f74", u: "f7",  }; //2106
+$.a($822, $823, 1724);
+var $824 = { n: "return", v: $.ip("f74", "${varName}", "string", 1725), r: 8, c: 9, s: "f74", u: "f7",  }; //2107
+$.a($822, $824, 1726);
+var $825 = { n: "if", v: "!obj", r: 272, c: 9, s: "f1", u: "f4",  }; //1337
+$.a($812, $825, 1728);
+var $826 = { n: "return", v: "", r: 273, c: 13, s: "f1", u: "f4",  }; //1338
+$.a($825, $826, 1730);
+var $827 = { n: "_", v: "error", r: 274, c: 17, s: "f1", u: "f4",  }; //1339
+$.a($826, $827, 1732);
+var $828 = { n: "@", v: "ctx", r: 275, c: 21, s: "f1", u: "f4",  }; //1340
+$.a($827, $828, 1734);
+var $829 = { n: "@", v: "'The value must be an object. It is \"' + getTypeDescription(obj) + '\".'", r: 276, c: 21, s: "f1", u: "f4",  }; //1341
+$.a($827, $829, 1736);
+var $830 = { n: "@", v: "node.object", r: 277, c: 21, s: "f1", u: "f4",  }; //1342
+$.a($827, $830, 1738);
+var $831 = { n: "@", v: "node", r: 278, c: 21, s: "f1", u: "f4",  }; //1343
+$.a($827, $831, 1740);
+var $832 = { n: "@", v: "'MemberExpression_Set'", r: 279, c: 21, s: "f1", u: "f4",  }; //1344
+$.a($827, $832, 1742);
+var $833 = { n: "if", v: "node.computed", r: 280, c: 9, s: "f1", u: "f4",  }; //1345
+$.a($812, $833, 1744);
+var $834 = { n: "var", v: $.ip("f75", "${varName}", "string", 1745), r: 4, c: 5, s: "f75", u: "f7",  }; //2109
+$.a($833, $834, 1746);
+var $835 = { n: "_", v: "runner", r: 282, c: 17, s: "f1", u: "f4",  }; //1347
+$.a($834, $835, 1748);
+var $836 = { n: "@", v: "node.property", r: 283, c: 21, s: "f1", u: "f4",  }; //1348
+$.a($835, $836, 1750);
+var $837 = { n: "@", v: "ctx", r: 284, c: 21, s: "f1", u: "f4",  }; //1349
+$.a($835, $837, 1752);
+var $838 = { n: "if", v: $.ip("f75", "${varName} && ${varName}.__is_error", "string", 1753), r: 6, c: 5, s: "f75", u: "f7",  }; //2111
+$.a($833, $838, 1754);
+var $839 = { n: "log", v: $.ip("f75", "'__is_error ${message}', ${varName}", "string", 1755), r: 7, c: 9, s: "f75", u: "f7",  }; //2112
+$.a($838, $839, 1756);
+var $840 = { n: "return", v: $.ip("f75", "${varName}", "string", 1757), r: 8, c: 9, s: "f75", u: "f7",  }; //2113
+$.a($838, $840, 1758);
+var $841 = { n: "set", v: "obj[property] = data", r: 285, c: 13, s: "f1", u: "f4",  }; //1350
+$.a($833, $841, 1760);
+var $842 = { n: "else", v: "", r: 286, c: 9, s: "f1", u: "f4",  }; //1351
+$.a($812, $842, 1762);
+var $843 = { n: "var", v: "property = node.property.name", r: 287, c: 13, s: "f1", u: "f4",  }; //1352
+$.a($842, $843, 1764);
+var $844 = { n: "set", v: "obj[property] = data", r: 288, c: 13, s: "f1", u: "f4",  }; //1353
+$.a($842, $844, 1766);
+var $845 = { n: "set", v: $.ip("f76", "runner.${name}", "string", 1767), r: 4, c: 5, s: "f76", u: "f6",  }; //2115
+$.a($1, $845, 1768);
+var $846 = { n: "function", v: "", r: 5, c: 9, s: "f76", u: "f6",  }; //2116
+$.a($845, $846, 1770);
+var $847 = { n: "param", v: "node", r: 6, c: 13, s: "f76", u: "f6",  }; //2117
+$.a($846, $847, 1772);
+var $848 = { n: "param", v: "ctx", r: 7, c: 13, s: "f76", u: "f6",  }; //2118
+$.a($846, $848, 1774);
+$.s("f76");
+if (arg1 != null) { //2119
+    $.n();
+    var $850 = { n: "param", v: $.ip("f76", "${arg1}", "string", 1778), r: 9, c: 17, s: "f76", u: "f6",  }; //2120
+    $.a($846, $850, 1779);
+}
+$.n();
+var $851 = { n: "_", v: $.ip("f76", "log('${name}.node', node)", "string", 1782), r: 10, c: 13, s: "f76", u: "f6",  }; //2121
+$.a($846, $851, 1783);
+var $852 = { n: "var", v: $.ip("f77", "${varName}", "string", 1784), r: 4, c: 5, s: "f77", u: "f7",  }; //2124
+$.a($846, $852, 1785);
+var $853 = { n: "_", v: "runner", r: 292, c: 13, s: "f1", u: "f4",  }; //1356
+$.a($852, $853, 1787);
+var $854 = { n: "@", v: "node.left", r: 293, c: 17, s: "f1", u: "f4",  }; //1357
+$.a($853, $854, 1789);
+var $855 = { n: "@", v: "ctx", r: 294, c: 17, s: "f1", u: "f4",  }; //1358
+$.a($853, $855, 1791);
+var $856 = { n: "if", v: $.ip("f77", "${varName} && ${varName}.__is_error", "string", 1792), r: 6, c: 5, s: "f77", u: "f7",  }; //2126
+$.a($846, $856, 1793);
+var $857 = { n: "log", v: $.ip("f77", "'__is_error ${message}', ${varName}", "string", 1794), r: 7, c: 9, s: "f77", u: "f7",  }; //2127
+$.a($856, $857, 1795);
+var $858 = { n: "return", v: $.ip("f77", "${varName}", "string", 1796), r: 8, c: 9, s: "f77", u: "f7",  }; //2128
+$.a($856, $858, 1797);
+var $859 = { n: "var", v: $.ip("f78", "${varName}", "string", 1798), r: 4, c: 5, s: "f78", u: "f7",  }; //2130
+$.a($846, $859, 1799);
+var $860 = { n: "_", v: "runner", r: 296, c: 13, s: "f1", u: "f4",  }; //1360
+$.a($859, $860, 1801);
+var $861 = { n: "@", v: "node.right", r: 297, c: 17, s: "f1", u: "f4",  }; //1361
+$.a($860, $861, 1803);
+var $862 = { n: "@", v: "ctx", r: 298, c: 17, s: "f1", u: "f4",  }; //1362
+$.a($860, $862, 1805);
+var $863 = { n: "if", v: $.ip("f78", "${varName} && ${varName}.__is_error", "string", 1806), r: 6, c: 5, s: "f78", u: "f7",  }; //2132
+$.a($846, $863, 1807);
+var $864 = { n: "log", v: $.ip("f78", "'__is_error ${message}', ${varName}", "string", 1808), r: 7, c: 9, s: "f78", u: "f7",  }; //2133
+$.a($863, $864, 1809);
+var $865 = { n: "return", v: $.ip("f78", "${varName}", "string", 1810), r: 8, c: 9, s: "f78", u: "f7",  }; //2134
+$.a($863, $865, 1811);
+var $866 = { n: "var", v: "v", r: 299, c: 9, s: "f1", u: "f4",  }; //1363
+$.a($846, $866, 1813);
+var $867 = { n: "if", v: "node.operator === '='", r: 300, c: 9, s: "f1", u: "f4",  }; //1364
+$.a($846, $867, 1815);
+var $868 = { n: "set", v: "v = l = r", r: 301, c: 13, s: "f1", u: "f4",  }; //1365
+$.a($867, $868, 1817);
+var $869 = { n: "elif", v: "node.operator === '*='", r: 302, c: 9, s: "f1", u: "f4",  }; //1366
+$.a($846, $869, 1819);
+var $870 = { n: "set", v: "v = l *= r", r: 303, c: 13, s: "f1", u: "f4",  }; //1367
+$.a($869, $870, 1821);
+var $871 = { n: "elif", v: "node.operator === '/='", r: 304, c: 9, s: "f1", u: "f4",  }; //1368
+$.a($846, $871, 1823);
+var $872 = { n: "set", v: "v = l /= r", r: 305, c: 13, s: "f1", u: "f4",  }; //1369
+$.a($871, $872, 1825);
+var $873 = { n: "elif", v: "node.operator === '%='", r: 306, c: 9, s: "f1", u: "f4",  }; //1370
+$.a($846, $873, 1827);
+var $874 = { n: "set", v: "v = l %= r", r: 307, c: 13, s: "f1", u: "f4",  }; //1371
+$.a($873, $874, 1829);
+var $875 = { n: "elif", v: "node.operator === '+='", r: 308, c: 9, s: "f1", u: "f4",  }; //1372
+$.a($846, $875, 1831);
+var $876 = { n: "set", v: "v = l += r", r: 309, c: 13, s: "f1", u: "f4",  }; //1373
+$.a($875, $876, 1833);
+var $877 = { n: "elif", v: "node.operator === '-='", r: 310, c: 9, s: "f1", u: "f4",  }; //1374
+$.a($846, $877, 1835);
+var $878 = { n: "set", v: "v = l -= r", r: 311, c: 13, s: "f1", u: "f4",  }; //1375
+$.a($877, $878, 1837);
+var $879 = { n: "elif", v: "node.operator === '<<='", r: 312, c: 9, s: "f1", u: "f4",  }; //1376
+$.a($846, $879, 1839);
+var $880 = { n: "set", v: "v = l <<= r", r: 313, c: 13, s: "f1", u: "f4",  }; //1377
+$.a($879, $880, 1841);
+var $881 = { n: "elif", v: "node.operator === '>>='", r: 314, c: 9, s: "f1", u: "f4",  }; //1378
+$.a($846, $881, 1843);
+var $882 = { n: "set", v: "v = l >>= r", r: 315, c: 13, s: "f1", u: "f4",  }; //1379
+$.a($881, $882, 1845);
+var $883 = { n: "elif", v: "node.operator === '>>>='", r: 316, c: 9, s: "f1", u: "f4",  }; //1380
+$.a($846, $883, 1847);
+var $884 = { n: "set", v: "v = l >>>= r", r: 317, c: 13, s: "f1", u: "f4",  }; //1381
+$.a($883, $884, 1849);
+var $885 = { n: "elif", v: "node.operator === '&='", r: 318, c: 9, s: "f1", u: "f4",  }; //1382
+$.a($846, $885, 1851);
+var $886 = { n: "set", v: "v = l &= r", r: 319, c: 13, s: "f1", u: "f4",  }; //1383
+$.a($885, $886, 1853);
+var $887 = { n: "elif", v: "node.operator === '^='", r: 320, c: 9, s: "f1", u: "f4",  }; //1384
+$.a($846, $887, 1855);
+var $888 = { n: "set", v: "v = l ^= r", r: 321, c: 13, s: "f1", u: "f4",  }; //1385
+$.a($887, $888, 1857);
+var $889 = { n: "elif", v: "node.operator === '|='", r: 322, c: 9, s: "f1", u: "f4",  }; //1386
+$.a($846, $889, 1859);
+var $890 = { n: "set", v: "v = l |= r", r: 323, c: 13, s: "f1", u: "f4",  }; //1387
+$.a($889, $890, 1861);
+var $891 = { n: "else", v: "", r: 324, c: 9, s: "f1", u: "f4",  }; //1388
+$.a($846, $891, 1863);
+var $892 = { n: "return", v: "", r: 325, c: 13, s: "f1", u: "f4",  }; //1389
+$.a($891, $892, 1865);
+var $893 = { n: "_", v: "error", r: 326, c: 17, s: "f1", u: "f4",  }; //1390
+$.a($892, $893, 1867);
+var $894 = { n: "@", v: "ctx", r: 327, c: 21, s: "f1", u: "f4",  }; //1391
+$.a($893, $894, 1869);
+var $895 = { n: "@", v: "'Unmanaged expression operator ' + node.operator", r: 328, c: 21, s: "f1", u: "f4",  }; //1392
+$.a($893, $895, 1871);
+var $896 = { n: "@", v: "node.operator", r: 329, c: 21, s: "f1", u: "f4",  }; //1393
+$.a($893, $896, 1873);
+var $897 = { n: "@", v: "node", r: 330, c: 21, s: "f1", u: "f4",  }; //1394
+$.a($893, $897, 1875);
+var $898 = { n: "@", v: "'AssignmentExpression'", r: 331, c: 21, s: "f1", u: "f4",  }; //1395
+$.a($893, $898, 1877);
+var $899 = { n: "var", v: $.ip("f79", "${varName}", "string", 1878), r: 4, c: 5, s: "f79", u: "f7",  }; //2136
+$.a($846, $899, 1879);
+var $900 = { n: "_", v: "runnerSet", r: 334, c: 13, s: "f1", u: "f4",  }; //1397
+$.a($899, $900, 1881);
+var $901 = { n: "@", v: "node.left", r: 335, c: 17, s: "f1", u: "f4",  }; //1398
+$.a($900, $901, 1883);
+var $902 = { n: "@", v: "ctx", r: 336, c: 17, s: "f1", u: "f4",  }; //1399
+$.a($900, $902, 1885);
+var $903 = { n: "@", v: "v", r: 337, c: 17, s: "f1", u: "f4",  }; //1400
+$.a($900, $903, 1887);
+var $904 = { n: "if", v: $.ip("f79", "${varName} && ${varName}.__is_error", "string", 1888), r: 6, c: 5, s: "f79", u: "f7",  }; //2138
+$.a($846, $904, 1889);
+var $905 = { n: "log", v: $.ip("f79", "'__is_error ${message}', ${varName}", "string", 1890), r: 7, c: 9, s: "f79", u: "f7",  }; //2139
+$.a($904, $905, 1891);
+var $906 = { n: "return", v: $.ip("f79", "${varName}", "string", 1892), r: 8, c: 9, s: "f79", u: "f7",  }; //2140
+$.a($904, $906, 1893);
+var $907 = { n: "return", v: "v", r: 338, c: 9, s: "f1", u: "f4",  }; //1401
+$.a($846, $907, 1895);
+var $908 = { n: "set", v: $.ip("f80", "runner.${name}", "string", 1896), r: 4, c: 5, s: "f80", u: "f6",  }; //2142
+$.a($1, $908, 1897);
+var $909 = { n: "function", v: "", r: 5, c: 9, s: "f80", u: "f6",  }; //2143
+$.a($908, $909, 1899);
+var $910 = { n: "param", v: "node", r: 6, c: 13, s: "f80", u: "f6",  }; //2144
+$.a($909, $910, 1901);
+var $911 = { n: "param", v: "ctx", r: 7, c: 13, s: "f80", u: "f6",  }; //2145
+$.a($909, $911, 1903);
+$.s("f80");
+if (arg1 != null) { //2146
+    $.n();
+    var $913 = { n: "param", v: $.ip("f80", "${arg1}", "string", 1907), r: 9, c: 17, s: "f80", u: "f6",  }; //2147
+    $.a($909, $913, 1908);
+}
+$.n();
+var $914 = { n: "_", v: $.ip("f80", "log('${name}.node', node)", "string", 1911), r: 10, c: 13, s: "f80", u: "f6",  }; //2148
+$.a($909, $914, 1912);
+var $915 = { n: "var", v: "", r: 341, c: 9, s: "f1", u: "f4",  }; //1403
+$.a($909, $915, 1914);
+var $916 = { n: "decl", v: "ret", r: 342, c: 13, s: "f1", u: "f4",  }; //1404
+$.a($915, $916, 1916);
+var $917 = { n: "[", v: "", r: 343, c: 17, s: "f1", u: "f4",  }; //1405
+$.a($916, $917, 1918);
+var $918 = { n: "decl", v: "value", r: 344, c: 13, s: "f1", u: "f4",  }; //1406
+$.a($915, $918, 1920);
+var $919 = { n: "foreach", v: "element in node.elements", r: 345, c: 9, s: "f1", u: "f4",  }; //1407
+$.a($909, $919, 1922);
+var $920 = { n: "set", v: $.ip("f81", "${varName}", "string", 1923), r: 4, c: 5, s: "f81", u: "f8",  }; //2151
+$.a($919, $920, 1924);
+var $921 = { n: "_", v: "runner(element, ctx)", r: 347, c: 17, s: "f1", u: "f4",  }; //1409
+$.a($920, $921, 1926);
+var $922 = { n: "if", v: $.ip("f81", "${varName} && ${varName}.__is_error", "string", 1927), r: 6, c: 5, s: "f81", u: "f8",  }; //2153
+$.a($919, $922, 1928);
+var $923 = { n: "log", v: $.ip("f81", "'__is_error ${message}', ${varName}", "string", 1929), r: 7, c: 9, s: "f81", u: "f8",  }; //2154
+$.a($922, $923, 1930);
+var $924 = { n: "return", v: $.ip("f81", "${varName}", "string", 1931), r: 8, c: 9, s: "f81", u: "f8",  }; //2155
+$.a($922, $924, 1932);
+var $925 = { n: "_", v: "ret.push(value)", r: 348, c: 13, s: "f1", u: "f4",  }; //1410
+$.a($919, $925, 1934);
+var $926 = { n: "return", v: "ret", r: 349, c: 9, s: "f1", u: "f4",  }; //1411
+$.a($909, $926, 1936);
+var $927 = { n: "set", v: $.ip("f82", "runner.${name}", "string", 1937), r: 4, c: 5, s: "f82", u: "f6",  }; //2157
+$.a($1, $927, 1938);
+var $928 = { n: "function", v: "", r: 5, c: 9, s: "f82", u: "f6",  }; //2158
+$.a($927, $928, 1940);
+var $929 = { n: "param", v: "node", r: 6, c: 13, s: "f82", u: "f6",  }; //2159
+$.a($928, $929, 1942);
+var $930 = { n: "param", v: "ctx", r: 7, c: 13, s: "f82", u: "f6",  }; //2160
+$.a($928, $930, 1944);
+$.s("f82");
+if (arg1 != null) { //2161
+    $.n();
+    var $932 = { n: "param", v: $.ip("f82", "${arg1}", "string", 1948), r: 9, c: 17, s: "f82", u: "f6",  }; //2162
+    $.a($928, $932, 1949);
+}
+$.n();
+var $933 = { n: "_", v: $.ip("f82", "log('${name}.node', node)", "string", 1952), r: 10, c: 13, s: "f82", u: "f6",  }; //2163
+$.a($928, $933, 1953);
+var $934 = { n: "if", v: "node.properties.length == 0", r: 352, c: 9, s: "f1", u: "f4",  }; //1413
+$.a($928, $934, 1955);
+var $935 = { n: "return", v: "", r: 353, c: 13, s: "f1", u: "f4",  }; //1414
+$.a($934, $935, 1957);
+var $936 = { n: "{", v: "", r: 354, c: 17, s: "f1", u: "f4",  }; //1415
+$.a($935, $936, 1959);
+var $937 = { n: "var", v: "", r: 355, c: 9, s: "f1", u: "f4",  }; //1416
+$.a($928, $937, 1961);
+var $938 = { n: "decl", v: "ret", r: 356, c: 13, s: "f1", u: "f4",  }; //1417
+$.a($937, $938, 1963);
+var $939 = { n: "{", v: "", r: 357, c: 17, s: "f1", u: "f4",  }; //1418
+$.a($938, $939, 1965);
+var $940 = { n: "decl", v: "prop", r: 358, c: 13, s: "f1", u: "f4",  }; //1419
+$.a($937, $940, 1967);
+var $941 = { n: "foreach", v: "property in node.properties", r: 359, c: 9, s: "f1", u: "f4",  }; //1420
+$.a($928, $941, 1969);
+var $942 = { n: "set", v: $.ip("f83", "${varName}", "string", 1970), r: 4, c: 5, s: "f83", u: "f8",  }; //2166
+$.a($941, $942, 1971);
+var $943 = { n: "_", v: "runner(property, ctx)", r: 361, c: 17, s: "f1", u: "f4",  }; //1422
+$.a($942, $943, 1973);
+var $944 = { n: "if", v: $.ip("f83", "${varName} && ${varName}.__is_error", "string", 1974), r: 6, c: 5, s: "f83", u: "f8",  }; //2168
+$.a($941, $944, 1975);
+var $945 = { n: "log", v: $.ip("f83", "'__is_error ${message}', ${varName}", "string", 1976), r: 7, c: 9, s: "f83", u: "f8",  }; //2169
+$.a($944, $945, 1977);
+var $946 = { n: "return", v: $.ip("f83", "${varName}", "string", 1978), r: 8, c: 9, s: "f83", u: "f8",  }; //2170
+$.a($944, $946, 1979);
+var $947 = { n: "set", v: "ret[prop.key] = prop.value", r: 362, c: 13, s: "f1", u: "f4",  }; //1423
+$.a($941, $947, 1981);
+var $948 = { n: "return", v: "ret", r: 363, c: 9, s: "f1", u: "f4",  }; //1424
+$.a($928, $948, 1983);
+var $949 = { n: "set", v: $.ip("f84", "runner.${name}", "string", 1984), r: 4, c: 5, s: "f84", u: "f6",  }; //2172
+$.a($1, $949, 1985);
+var $950 = { n: "function", v: "", r: 5, c: 9, s: "f84", u: "f6",  }; //2173
+$.a($949, $950, 1987);
+var $951 = { n: "param", v: "node", r: 6, c: 13, s: "f84", u: "f6",  }; //2174
+$.a($950, $951, 1989);
+var $952 = { n: "param", v: "ctx", r: 7, c: 13, s: "f84", u: "f6",  }; //2175
+$.a($950, $952, 1991);
+$.s("f84");
+if (arg1 != null) { //2176
+    $.n();
+    var $954 = { n: "param", v: $.ip("f84", "${arg1}", "string", 1995), r: 9, c: 17, s: "f84", u: "f6",  }; //2177
+    $.a($950, $954, 1996);
+}
+$.n();
+var $955 = { n: "_", v: $.ip("f84", "log('${name}.node', node)", "string", 1999), r: 10, c: 13, s: "f84", u: "f6",  }; //2178
+$.a($950, $955, 2000);
+var $956 = { n: "var", v: "key = node.key.name", r: 366, c: 9, s: "f1", u: "f4",  }; //1426
+$.a($950, $956, 2002);
+var $957 = { n: "var", v: $.ip("f85", "${varName}", "string", 2003), r: 4, c: 5, s: "f85", u: "f7",  }; //2181
+$.a($950, $957, 2004);
+var $958 = { n: "_", v: "runner", r: 368, c: 13, s: "f1", u: "f4",  }; //1428
+$.a($957, $958, 2006);
+var $959 = { n: "@", v: "node.value", r: 369, c: 17, s: "f1", u: "f4",  }; //1429
+$.a($958, $959, 2008);
+var $960 = { n: "@", v: "ctx", r: 370, c: 17, s: "f1", u: "f4",  }; //1430
+$.a($958, $960, 2010);
+var $961 = { n: "if", v: $.ip("f85", "${varName} && ${varName}.__is_error", "string", 2011), r: 6, c: 5, s: "f85", u: "f7",  }; //2183
+$.a($950, $961, 2012);
+var $962 = { n: "log", v: $.ip("f85", "'__is_error ${message}', ${varName}", "string", 2013), r: 7, c: 9, s: "f85", u: "f7",  }; //2184
+$.a($961, $962, 2014);
+var $963 = { n: "return", v: $.ip("f85", "${varName}", "string", 2015), r: 8, c: 9, s: "f85", u: "f7",  }; //2185
+$.a($961, $963, 2016);
+var $964 = { n: "return", v: "", r: 371, c: 9, s: "f1", u: "f4",  }; //1431
+$.a($950, $964, 2018);
+var $965 = { n: "{", v: "", r: 372, c: 13, s: "f1", u: "f4",  }; //1432
+$.a($964, $965, 2020);
+var $966 = { n: "@", v: "key key", r: 373, c: 17, s: "f1", u: "f4",  }; //1433
+$.a($965, $966, 2022);
+var $967 = { n: "@", v: "value value", r: 374, c: 17, s: "f1", u: "f4",  }; //1434
+$.a($965, $967, 2024);
+var $968 = { n: "set", v: $.ip("f86", "runner.${name}", "string", 2025), r: 4, c: 5, s: "f86", u: "f6",  }; //2187
+$.a($1, $968, 2026);
+var $969 = { n: "function", v: "", r: 5, c: 9, s: "f86", u: "f6",  }; //2188
+$.a($968, $969, 2028);
+var $970 = { n: "param", v: "node", r: 6, c: 13, s: "f86", u: "f6",  }; //2189
+$.a($969, $970, 2030);
+var $971 = { n: "param", v: "ctx", r: 7, c: 13, s: "f86", u: "f6",  }; //2190
+$.a($969, $971, 2032);
+$.s("f86");
+if (arg1 != null) { //2191
+    $.n();
+    var $973 = { n: "param", v: $.ip("f86", "${arg1}", "string", 2036), r: 9, c: 17, s: "f86", u: "f6",  }; //2192
+    $.a($969, $973, 2037);
+}
+$.n();
+var $974 = { n: "_", v: $.ip("f86", "log('${name}.node', node)", "string", 2040), r: 10, c: 13, s: "f86", u: "f6",  }; //2193
+$.a($969, $974, 2041);
+var $975 = { n: "var", v: "", r: 4, c: 9, s: "f1", u: "f5",  }; //1505
+$.a($969, $975, 2043);
+var $976 = { n: "decl", v: "objbase", r: 5, c: 13, s: "f1", u: "f5",  }; //1506
+$.a($975, $976, 2045);
+var $977 = { n: "decl", v: "value", r: 6, c: 13, s: "f1", u: "f5",  }; //1507
+$.a($975, $977, 2047);
+var $978 = { n: "if", v: "node.name.base", r: 7, c: 9, s: "f1", u: "f5",  }; //1508
+$.a($969, $978, 2049);
+var $979 = { n: "set", v: $.ip("f87", "${varName}", "string", 2050), r: 4, c: 5, s: "f87", u: "f8",  }; //2196
+$.a($978, $979, 2051);
+var $980 = { n: "_", v: "runner", r: 9, c: 17, s: "f1", u: "f5",  }; //1510
+$.a($979, $980, 2053);
+var $981 = { n: "@", v: "node.name.base", r: 10, c: 21, s: "f1", u: "f5",  }; //1511
+$.a($980, $981, 2055);
+var $982 = { n: "@", v: "ctx", r: 11, c: 21, s: "f1", u: "f5",  }; //1512
+$.a($980, $982, 2057);
+var $983 = { n: "if", v: $.ip("f87", "${varName} && ${varName}.__is_error", "string", 2058), r: 6, c: 5, s: "f87", u: "f8",  }; //2198
+$.a($978, $983, 2059);
+var $984 = { n: "log", v: $.ip("f87", "'__is_error ${message}', ${varName}", "string", 2060), r: 7, c: 9, s: "f87", u: "f8",  }; //2199
+$.a($983, $984, 2061);
+var $985 = { n: "return", v: $.ip("f87", "${varName}", "string", 2062), r: 8, c: 9, s: "f87", u: "f8",  }; //2200
+$.a($983, $985, 2063);
+var $986 = { n: "else", v: "", r: 12, c: 9, s: "f1", u: "f5",  }; //1513
+$.a($969, $986, 2065);
+var $987 = { n: "set", v: "objbase = ctx.values", r: 13, c: 13, s: "f1", u: "f5",  }; //1514
+$.a($986, $987, 2067);
+var $988 = { n: "if", v: "_.isObject(objbase) == false", r: 14, c: 9, s: "f1", u: "f5",  }; //1515
+$.a($969, $988, 2069);
+var $989 = { n: "return", v: "", r: 15, c: 13, s: "f1", u: "f5",  }; //1516
+$.a($988, $989, 2071);
+var $990 = { n: "_", v: "error", r: 16, c: 17, s: "f1", u: "f5",  }; //1517
+$.a($989, $990, 2073);
+var $991 = { n: "@", v: "ctx", r: 17, c: 21, s: "f1", u: "f5",  }; //1518
+$.a($990, $991, 2075);
+var $992 = { n: "@", v: "'The value must be an object. It is \"' + getTypeDescription(obj) + '\".'", r: 18, c: 21, s: "f1", u: "f5",  }; //1519
+$.a($990, $992, 2077);
+var $993 = { n: "@", v: "node.name.base", r: 19, c: 21, s: "f1", u: "f5",  }; //1520
+$.a($990, $993, 2079);
+var $994 = { n: "@", v: "node", r: 20, c: 21, s: "f1", u: "f5",  }; //1521
+$.a($990, $994, 2081);
+var $995 = { n: "@", v: "'FunctionCall'", r: 21, c: 21, s: "f1", u: "f5",  }; //1522
+$.a($990, $995, 2083);
+var $996 = { n: "var", v: "args", r: 22, c: 9, s: "f1", u: "f5",  }; //1523
+$.a($969, $996, 2085);
+var $997 = { n: "[", v: "", r: 23, c: 13, s: "f1", u: "f5",  }; //1524
+$.a($996, $997, 2087);
+var $998 = { n: "if", v: "Object.prototype.toString.call(node.arguments) == '[object Array]'", r: 24, c: 9, s: "f1", u: "f5",  }; //1525
+$.a($969, $998, 2089);
+var $999 = { n: "foreach", v: "item in node.arguments", r: 25, c: 13, s: "f1", u: "f5",  }; //1526
+$.a($998, $999, 2091);
+var $1000 = { n: "set", v: $.ip("f88", "${varName}", "string", 2092), r: 4, c: 5, s: "f88", u: "f8",  }; //2202
+$.a($999, $1000, 2093);
+var $1001 = { n: "_", v: "runner(item, ctx)", r: 27, c: 21, s: "f1", u: "f5",  }; //1528
+$.a($1000, $1001, 2095);
+var $1002 = { n: "if", v: $.ip("f88", "${varName} && ${varName}.__is_error", "string", 2096), r: 6, c: 5, s: "f88", u: "f8",  }; //2204
+$.a($999, $1002, 2097);
+var $1003 = { n: "log", v: $.ip("f88", "'__is_error ${message}', ${varName}", "string", 2098), r: 7, c: 9, s: "f88", u: "f8",  }; //2205
+$.a($1002, $1003, 2099);
+var $1004 = { n: "return", v: $.ip("f88", "${varName}", "string", 2100), r: 8, c: 9, s: "f88", u: "f8",  }; //2206
+$.a($1002, $1004, 2101);
+var $1005 = { n: "_", v: "args.push(value)", r: 28, c: 17, s: "f1", u: "f5",  }; //1529
+$.a($999, $1005, 2103);
+var $1006 = { n: "var", v: "f = objbase[node.name.name]", r: 29, c: 9, s: "f1", u: "f5",  }; //1530
+$.a($969, $1006, 2105);
+var $1007 = { n: "if", v: "!f", r: 30, c: 9, s: "f1", u: "f5",  }; //1531
+$.a($969, $1007, 2107);
+var $1008 = { n: "return", v: "", r: 31, c: 13, s: "f1", u: "f5",  }; //1532
+$.a($1007, $1008, 2109);
+var $1009 = { n: "_", v: "error", r: 32, c: 17, s: "f1", u: "f5",  }; //1533
+$.a($1008, $1009, 2111);
+var $1010 = { n: "@", v: "ctx", r: 33, c: 21, s: "f1", u: "f5",  }; //1534
+$.a($1009, $1010, 2113);
+var $1011 = { n: "@", v: "'Missing function.'", r: 34, c: 21, s: "f1", u: "f5",  }; //1535
+$.a($1009, $1011, 2115);
+var $1012 = { n: "@", v: "node.name.base", r: 35, c: 21, s: "f1", u: "f5",  }; //1536
+$.a($1009, $1012, 2117);
+var $1013 = { n: "@", v: "node", r: 36, c: 21, s: "f1", u: "f5",  }; //1537
+$.a($1009, $1013, 2119);
+var $1014 = { n: "@", v: "'FunctionCall'", r: 37, c: 21, s: "f1", u: "f5",  }; //1538
+$.a($1009, $1014, 2121);
+var $1015 = { n: "if", v: "verify.isFunction(f)", r: 38, c: 9, s: "f1", u: "f5",  }; //1539
+$.a($969, $1015, 2123);
+var $1016 = { n: "try", v: "", r: 39, c: 13, s: "f1", u: "f5",  }; //1540
+$.a($1015, $1016, 2125);
+var $1017 = { n: "var", v: "v = objbase[node.name.name].apply(objbase, args)", r: 40, c: 17, s: "f1", u: "f5",  }; //1541
+$.a($1016, $1017, 2127);
+var $1018 = { n: "return", v: "v", r: 41, c: 17, s: "f1", u: "f5",  }; //1542
+$.a($1016, $1018, 2129);
+var $1019 = { n: "catch", v: "ex", r: 42, c: 13, s: "f1", u: "f5",  }; //1543
+$.a($1015, $1019, 2131);
+var $1020 = { n: "return", v: "", r: 43, c: 17, s: "f1", u: "f5",  }; //1544
+$.a($1019, $1020, 2133);
+var $1021 = { n: "_", v: "error", r: 44, c: 21, s: "f1", u: "f5",  }; //1545
+$.a($1020, $1021, 2135);
+var $1022 = { n: "@", v: "ctx", r: 45, c: 25, s: "f1", u: "f5",  }; //1546
+$.a($1021, $1022, 2137);
+var $1023 = { n: "@", v: "(ex ? ex.message : 'Error calling function')", r: 46, c: 25, s: "f1", u: "f5",  }; //1547
+$.a($1021, $1023, 2139);
+var $1024 = { n: "@", v: "node.callee.property", r: 47, c: 25, s: "f1", u: "f5",  }; //1548
+$.a($1021, $1024, 2141);
+var $1025 = { n: "@", v: "node", r: 48, c: 25, s: "f1", u: "f5",  }; //1549
+$.a($1021, $1025, 2143);
+var $1026 = { n: "@", v: "'CallExpression'", r: 49, c: 25, s: "f1", u: "f5",  }; //1550
+$.a($1021, $1026, 2145);
+var $1027 = { n: "@", v: "ex", r: 50, c: 25, s: "f1", u: "f5",  }; //1551
+$.a($1021, $1027, 2147);
+var $1028 = { n: "set", v: $.ip("f89", "runner.${name}", "string", 2148), r: 4, c: 5, s: "f89", u: "f6",  }; //2208
+$.a($1, $1028, 2149);
+var $1029 = { n: "function", v: "", r: 5, c: 9, s: "f89", u: "f6",  }; //2209
+$.a($1028, $1029, 2151);
+var $1030 = { n: "param", v: "node", r: 6, c: 13, s: "f89", u: "f6",  }; //2210
+$.a($1029, $1030, 2153);
+var $1031 = { n: "param", v: "ctx", r: 7, c: 13, s: "f89", u: "f6",  }; //2211
+$.a($1029, $1031, 2155);
+$.s("f89");
+if (arg1 != null) { //2212
+    $.n();
+    var $1033 = { n: "param", v: $.ip("f89", "${arg1}", "string", 2159), r: 9, c: 17, s: "f89", u: "f6",  }; //2213
+    $.a($1029, $1033, 2160);
+}
+$.n();
+var $1034 = { n: "_", v: $.ip("f89", "log('${name}.node', node)", "string", 2163), r: 10, c: 13, s: "f89", u: "f6",  }; //2214
+$.a($1029, $1034, 2164);
+var $1035 = { n: "_", v: "ctx.declareFunction", r: 53, c: 9, s: "f1", u: "f5",  }; //1553
+$.a($1029, $1035, 2166);
+var $1036 = { n: "@", v: "node.id.name", r: 54, c: 13, s: "f1", u: "f5",  }; //1554
+$.a($1035, $1036, 2168);
+var $1037 = { n: "@", v: "node", r: 55, c: 13, s: "f1", u: "f5",  }; //1555
+$.a($1035, $1037, 2170);
+var $1038 = { n: "return", v: "", r: 56, c: 9, s: "f1", u: "f5",  }; //1556
+$.a($1029, $1038, 2172);
+var $1039 = { n: "{", v: "", r: 57, c: 13, s: "f1", u: "f5",  }; //1557
+$.a($1038, $1039, 2174);
+var $1040 = { n: "set", v: $.ip("f90", "runner.${name}", "string", 2175), r: 4, c: 5, s: "f90", u: "f6",  }; //2217
+$.a($1, $1040, 2176);
+var $1041 = { n: "function", v: "", r: 5, c: 9, s: "f90", u: "f6",  }; //2218
+$.a($1040, $1041, 2178);
+var $1042 = { n: "param", v: "node", r: 6, c: 13, s: "f90", u: "f6",  }; //2219
+$.a($1041, $1042, 2180);
+var $1043 = { n: "param", v: "ctx", r: 7, c: 13, s: "f90", u: "f6",  }; //2220
+$.a($1041, $1043, 2182);
+$.s("f90");
+if (arg1 != null) { //2221
+    $.n();
+    var $1045 = { n: "param", v: $.ip("f90", "${arg1}", "string", 2186), r: 9, c: 17, s: "f90", u: "f6",  }; //2222
+    $.a($1041, $1045, 2187);
+}
+$.n();
+var $1046 = { n: "_", v: $.ip("f90", "log('${name}.node', node)", "string", 2190), r: 10, c: 13, s: "f90", u: "f6",  }; //2223
+$.a($1041, $1046, 2191);
+var $1047 = { n: "var", v: "ctx = ctx.push()", r: 60, c: 9, s: "f1", u: "f5",  }; //1559
+$.a($1041, $1047, 2193);
+var $1048 = { n: "for", v: "var i = 0; i < node.params.length; i++", r: 61, c: 9, s: "f1", u: "f5",  }; //1560
+$.a($1041, $1048, 2195);
+var $1049 = { n: "if", v: "data.length > i", r: 62, c: 13, s: "f1", u: "f5",  }; //1561
+$.a($1048, $1049, 2197);
+var $1050 = { n: "_", v: "ctx.declare", r: 63, c: 17, s: "f1", u: "f5",  }; //1562
+$.a($1049, $1050, 2199);
+var $1051 = { n: "@", v: "node.params[i].name", r: 64, c: 21, s: "f1", u: "f5",  }; //1563
+$.a($1050, $1051, 2201);
+var $1052 = { n: "@", v: "data[i]", r: 65, c: 21, s: "f1", u: "f5",  }; //1564
+$.a($1050, $1052, 2203);
+var $1053 = { n: "var", v: $.ip("f91", "${varName}", "string", 2204), r: 4, c: 5, s: "f91", u: "f7",  }; //2226
+$.a($1041, $1053, 2205);
+var $1054 = { n: "_", v: "runner", r: 67, c: 13, s: "f1", u: "f5",  }; //1566
+$.a($1053, $1054, 2207);
+var $1055 = { n: "@", v: "node.body", r: 68, c: 17, s: "f1", u: "f5",  }; //1567
+$.a($1054, $1055, 2209);
+var $1056 = { n: "@", v: "ctx", r: 69, c: 17, s: "f1", u: "f5",  }; //1568
+$.a($1054, $1056, 2211);
+var $1057 = { n: "if", v: $.ip("f91", "${varName} && ${varName}.__is_error", "string", 2212), r: 6, c: 5, s: "f91", u: "f7",  }; //2228
+$.a($1041, $1057, 2213);
+var $1058 = { n: "log", v: $.ip("f91", "'__is_error ${message}', ${varName}", "string", 2214), r: 7, c: 9, s: "f91", u: "f7",  }; //2229
+$.a($1057, $1058, 2215);
+var $1059 = { n: "return", v: $.ip("f91", "${varName}", "string", 2216), r: 8, c: 9, s: "f91", u: "f7",  }; //2230
+$.a($1057, $1059, 2217);
+var $1060 = { n: "_", v: "ctx.pop()", r: 70, c: 9, s: "f1", u: "f5",  }; //1569
+$.a($1041, $1060, 2219);
+var $1061 = { n: "return", v: "state.value", r: 71, c: 9, s: "f1", u: "f5",  }; //1570
+$.a($1041, $1061, 2221);
+var $1062 = { n: "function", v: "error", r: 132, c: 5, s: "f1", u: "f1",  }; //308
+$.a($1, $1062, 2223);
+var $1063 = { n: "param", v: "ctx", r: 133, c: 9, s: "f1", u: "f1",  }; //309
+$.a($1062, $1063, 2225);
+var $1064 = { n: "param", v: "message", r: 134, c: 9, s: "f1", u: "f1",  }; //310
+$.a($1062, $1064, 2227);
+var $1065 = { n: "param", v: "node", r: 135, c: 9, s: "f1", u: "f1",  }; //311
+$.a($1062, $1065, 2229);
+var $1066 = { n: "param", v: "parentnode", r: 136, c: 9, s: "f1", u: "f1",  }; //312
+$.a($1062, $1066, 2231);
+var $1067 = { n: "param", v: "method", r: 137, c: 9, s: "f1", u: "f1",  }; //313
+$.a($1062, $1067, 2233);
+var $1068 = { n: "param", v: "ex", r: 138, c: 9, s: "f1", u: "f1",  }; //314
+$.a($1062, $1068, 2235);
+var $1069 = { n: "var", v: "nodeStm", r: 140, c: 9, s: "f1", u: "f1",  }; //315
+$.a($1062, $1069, 2237);
+var $1070 = { n: "try", v: "", r: 141, c: 9, s: "f1", u: "f1",  }; //316
+$.a($1062, $1070, 2239);
+var $1071 = { n: "set", v: "nodeStm = node ? escodegen.generate(node) : ''", r: 142, c: 13, s: "f1", u: "f1",  }; //317
+$.a($1070, $1071, 2241);
+var $1072 = { n: "catch", v: "ex", r: 143, c: 9, s: "f1", u: "f1",  }; //318
+$.a($1062, $1072, 2243);
+var $1073 = { n: "set", v: "nodeStm = 'escodegen failed: ' + ex.message", r: 144, c: 13, s: "f1", u: "f1",  }; //319
+$.a($1072, $1073, 2245);
+var $1074 = { n: "var", v: "nodeInsp = node ? util.inspect(node, {depth:2}) : ''", r: 146, c: 9, s: "f1", u: "f1",  }; //320
+$.a($1062, $1074, 2247);
+var $1075 = { n: "var", v: "parentnodeStm", r: 148, c: 9, s: "f1", u: "f1",  }; //321
+$.a($1062, $1075, 2249);
+var $1076 = { n: "try", v: "", r: 149, c: 9, s: "f1", u: "f1",  }; //322
+$.a($1062, $1076, 2251);
+var $1077 = { n: "set", v: "parentnodeStm = parentnode ? escodegen.generate(parentnode) : ''", r: 150, c: 13, s: "f1", u: "f1",  }; //323
+$.a($1076, $1077, 2253);
+var $1078 = { n: "catch", v: "ex", r: 151, c: 9, s: "f1", u: "f1",  }; //324
+$.a($1062, $1078, 2255);
+var $1079 = { n: "set", v: "parentnodeStm = 'escodegen failed: ' + ex.message", r: 152, c: 13, s: "f1", u: "f1",  }; //325
+$.a($1078, $1079, 2257);
+var $1080 = { n: "var", v: "parentnodeInsp = node ? util.inspect(node, {depth:2}) : ''", r: 154, c: 9, s: "f1", u: "f1",  }; //326
+$.a($1062, $1080, 2259);
+var $1081 = { n: "var", v: "currentModelInfo = ctx.get_currentIttfModelInfo()", r: 156, c: 9, s: "f1", u: "f1",  }; //327
+$.a($1062, $1081, 2261);
+var $1082 = { n: "var", v: "message", r: 158, c: 9, s: "f1", u: "f1",  }; //328
+$.a($1062, $1082, 2263);
+var $1083 = { n: "[", v: "", r: 159, c: 13, s: "f1", u: "f1",  }; //329
+$.a($1082, $1083, 2265);
+var $1084 = { n: "@", v: "'WizziJsRunner Error'", r: 160, c: 17, s: "f1", u: "f1",  }; //330
+$.a($1083, $1084, 2267);
+var $1085 = { n: "@", v: "'message: ' + message", r: 161, c: 17, s: "f1", u: "f1",  }; //331
+$.a($1083, $1085, 2269);
+var $1086 = { n: "@", v: "'node statement: ' + nodeStm", r: 162, c: 17, s: "f1", u: "f1",  }; //332
+$.a($1083, $1086, 2271);
+var $1087 = { n: "@", v: "'node inspected: ' + nodeInsp", r: 163, c: 17, s: "f1", u: "f1",  }; //333
+$.a($1083, $1087, 2273);
+var $1088 = { n: "@", v: "'parent node statement: ' + parentnodeStm", r: 164, c: 17, s: "f1", u: "f1",  }; //334
+$.a($1083, $1088, 2275);
+var $1089 = { n: "@", v: "'parent node inspected: ' + parentnodeInsp", r: 165, c: 17, s: "f1", u: "f1",  }; //335
+$.a($1083, $1089, 2277);
+var $1090 = { n: "@", v: "'currentModel_uri: ' + currentModelInfo.currentModel_uri", r: 166, c: 17, s: "f1", u: "f1",  }; //336
+$.a($1083, $1090, 2279);
+var $1091 = { n: "@", v: "'currentModel_callerUri: ' + currentModelInfo.currentModel_callerUri", r: 167, c: 17, s: "f1", u: "f1",  }; //337
+$.a($1083, $1091, 2281);
+var $1092 = { n: "@", v: "'method: ' + method", r: 168, c: 17, s: "f1", u: "f1",  }; //338
+$.a($1083, $1092, 2283);
+var $1093 = { n: "if", v: "ex", r: 169, c: 9, s: "f1", u: "f1",  }; //339
+$.a($1062, $1093, 2285);
+var $1094 = { n: "_", v: "message.push(ex.stack)", r: 170, c: 13, s: "f1", u: "f1",  }; //340
+$.a($1093, $1094, 2287);
+var $1095 = { n: "return", v: "", r: 171, c: 9, s: "f1", u: "f1",  }; //341
+$.a($1062, $1095, 2289);
+var $1096 = { n: "{", v: "", r: 172, c: 13, s: "f1", u: "f1",  }; //342
+$.a($1095, $1096, 2291);
+var $1097 = { n: "@", v: "__is_error true", r: 173, c: 17, s: "f1", u: "f1",  }; //343
+$.a($1096, $1097, 2293);
+var $1098 = { n: "@", v: "message message.join('\\n')", r: 174, c: 17, s: "f1", u: "f1",  }; //344
+$.a($1096, $1098, 2295);
+var $1099 = { n: "function", v: "getTypeDescription", r: 176, c: 5, s: "f1", u: "f1",  }; //345
+$.a($1, $1099, 2297);
+var $1100 = { n: "param", v: "obj", r: 177, c: 9, s: "f1", u: "f1",  }; //346
+$.a($1099, $1100, 2299);
+var $1101 = { n: "if", v: "obj == null", r: 178, c: 9, s: "f1", u: "f1",  }; //347
+$.a($1099, $1101, 2301);
+var $1102 = { n: "return", v: "'null'", r: 179, c: 13, s: "f1", u: "f1",  }; //348
+$.a($1101, $1102, 2303);
+var $1103 = { n: "return", v: "typeof(obj)", r: 180, c: 9, s: "f1", u: "f1",  }; //349
+$.a($1099, $1103, 2305);
+var $1104 = { n: "set", v: "module.exports =", r: 182, c: 5, s: "f1", u: "f1",  }; //350
+$.a($1, $1104, 2307);
+var $1105 = { n: "{", v: "", r: 183, c: 9, s: "f1", u: "f1",  }; //351
+$.a($1104, $1105, 2309);
+var $1106 = { n: "@", v: "getParsed", r: 184, c: 13, s: "f1", u: "f1",  }; //352
+$.a($1105, $1106, 2311);
+var $1107 = { n: "function", v: "", r: 185, c: 17, s: "f1", u: "f1",  }; //353
+$.a($1106, $1107, 2313);
+var $1108 = { n: "param", v: "source", r: 186, c: 21, s: "f1", u: "f1",  }; //354
+$.a($1107, $1108, 2315);
+var $1109 = { n: "try", v: "", r: 187, c: 21, s: "f1", u: "f1",  }; //355
+$.a($1107, $1109, 2317);
+var $1110 = { n: "var", v: "parsed", r: 188, c: 25, s: "f1", u: "f1",  }; //356
+$.a($1109, $1110, 2319);
+var $1111 = { n: "_", v: "esprima.parse", r: 189, c: 29, s: "f1", u: "f1",  }; //357
+$.a($1110, $1111, 2321);
+var $1112 = { n: "@", v: "source", r: 190, c: 33, s: "f1", u: "f1",  }; //358
+$.a($1111, $1112, 2323);
+var $1113 = { n: "{", v: "", r: 191, c: 33, s: "f1", u: "f1",  }; //359
+$.a($1111, $1113, 2325);
+var $1114 = { n: "@", v: "attachComment true", r: 192, c: 37, s: "f1", u: "f1",  }; //360
+$.a($1113, $1114, 2327);
+var $1115 = { n: "@", v: "loc true", r: 193, c: 37, s: "f1", u: "f1",  }; //361
+$.a($1113, $1115, 2329);
+var $1116 = { n: "@", v: "sourceType 'module'", r: 194, c: 37, s: "f1", u: "f1",  }; //362
+$.a($1113, $1116, 2331);
+var $1117 = { n: "return", v: "parsed", r: 195, c: 25, s: "f1", u: "f1",  }; //363
+$.a($1109, $1117, 2333);
+var $1118 = { n: "catch", v: "ex", r: 196, c: 21, s: "f1", u: "f1",  }; //364
+$.a($1107, $1118, 2335);
+var $1119 = { n: "throw", v: "", r: 197, c: 25, s: "f1", u: "f1",  }; //365
+$.a($1118, $1119, 2337);
+var $1120 = { n: "new", v: "errors.WizziJsSynthaxError(ex, source)", r: 198, c: 29, s: "f1", u: "f1",  }; //366
+$.a($1119, $1120, 2339);
+var $1121 = { n: "@", v: "run", r: 199, c: 13, s: "f1", u: "f1",  }; //367
+$.a($1105, $1121, 2341);
+var $1122 = { n: "function", v: "", r: 200, c: 17, s: "f1", u: "f1",  }; //368
+$.a($1121, $1122, 2343);
+var $1123 = { n: "param", v: "source", r: 201, c: 21, s: "f1", u: "f1",  }; //369
+$.a($1122, $1123, 2345);
+var $1124 = { n: "param", v: "ctx", r: 202, c: 21, s: "f1", u: "f1",  }; //370
+$.a($1122, $1124, 2347);
+var $1125 = { n: "param", v: "options", r: 203, c: 21, s: "f1", u: "f1",  }; //371
+$.a($1122, $1125, 2349);
+var $1126 = { n: "param", v: "callback", r: 204, c: 21, s: "f1", u: "f1",  }; //372
+$.a($1122, $1126, 2351);
+var $1127 = { n: "set", v: "options = (options || defaultOptions)", r: 206, c: 21, s: "f1", u: "f1",  }; //373
+$.a($1122, $1127, 2353);
+var $1128 = { n: "var", v: "parsed = this.getParsed(source)", r: 208, c: 21, s: "f1", u: "f1",  }; //374
+$.a($1122, $1128, 2355);
+var $1129 = { n: "if", v: "options.dumpfile", r: 209, c: 21, s: "f1", u: "f1",  }; //375
+$.a($1122, $1129, 2357);
+var $1130 = { n: "_", v: "file.write", r: 210, c: 25, s: "f1", u: "f1",  }; //376
+$.a($1129, $1130, 2359);
+var $1131 = { n: "@", v: "options.dumpfile", r: 211, c: 29, s: "f1", u: "f1",  }; //377
+$.a($1130, $1131, 2361);
+var $1132 = { n: "_", v: "JSON.stringify(parsed, null, 2)", r: 212, c: 29, s: "f1", u: "f1",  }; //378
+$.a($1130, $1132, 2363);
+var $1133 = { n: "var", v: "result = runner(parsed, ctx)", r: 214, c: 21, s: "f1", u: "f1",  }; //379
+$.a($1122, $1133, 2365);
+var $1134 = { n: "if", v: "callback", r: 216, c: 21, s: "f1", u: "f1",  }; //380
+$.a($1122, $1134, 2367);
+var $1135 = { n: "if", v: "result && result.__is_error", r: 217, c: 25, s: "f1", u: "f1",  }; //381
+$.a($1134, $1135, 2369);
+var $1136 = { n: "set", v: "delete (result.__is_error)", r: 218, c: 29, s: "f1", u: "f1",  }; //382
+$.a($1135, $1136, 2371);
+var $1137 = { n: "_", v: "callback(result)", r: 219, c: 29, s: "f1", u: "f1",  }; //383
+$.a($1135, $1137, 2373);
+var $1138 = { n: "else", v: "", r: 220, c: 25, s: "f1", u: "f1",  }; //384
+$.a($1134, $1138, 2375);
+var $1139 = { n: "_", v: "callback(null, result)", r: 221, c: 29, s: "f1", u: "f1",  }; //385
+$.a($1138, $1139, 2377);
+var $1140 = { n: "else", v: "", r: 222, c: 21, s: "f1", u: "f1",  }; //386
+$.a($1122, $1140, 2379);
+var $1141 = { n: "return", v: "result", r: 223, c: 25, s: "f1", u: "f1",  }; //387
+$.a($1140, $1141, 2381);

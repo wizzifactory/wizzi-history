@@ -1,0 +1,110 @@
+﻿$group
+
+	runner( ForStatement
+        
+		var 
+			decl test
+            decl state
+            decl savedCurrentBrickKey
+			decl iterCheck = 0
+		
+		set savedCurrentBrickKey = ctx.get_currentMTreeBrickKey()
+		
+		checked_run( notUsed, ForStatement node.init
+			_ runner
+				@ node.init
+				@ ctx
+        
+		checked_run( notUsed, ForStatement set_MTreeBrickEvalContext
+			_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+   		
+		checked_run_set( test, ForStatement node.test
+			_ runner(node.test, ctx)
+		
+		while test
+			
+			if iterCheck > MAX_ITERATIONS
+				return state
+			set iterCheck++
+			
+			checked_run_set( state, ForStatement node.body
+				_ runner(node.body, ctx)
+			
+			if state.result
+				return state
+			
+			if state.break
+				break
+			
+			checked_run( notUsed, ForStatement set_MTreeBrickEvalContext
+				_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+			
+			checked_run( notUsed, ForStatement node.update
+				_ runner
+					@ node.update
+					@ ctx
+			
+			checked_run( notUsed, ForStatement set_MTreeBrickEvalContext
+				_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+			
+			checked_run_set( test, ForStatement node.test 
+				_ runner(node.test, ctx)
+		
+		return 
+			{ 
+
+	runner( ForInStatement
+		var 
+			decl test
+            decl state
+            decl savedCurrentBrickKey
+		
+		set savedCurrentBrickKey = ctx.get_currentMTreeBrickKey()
+		
+		checked_run( obj, ForInStatement node.right
+            _ runner
+                @ node.right
+                @ ctx
+		
+		if _.isObject(obj) == false
+			return
+				_ local_error
+					@ ctx
+					@ 'The value must be an object. It is "' + getTypeDescription(obj) + '".'
+					@ node.right
+					@ node
+					@ 'ForInStatement'
+		
+		checked_run( notUsed, ForInStatement set_MTreeBrickEvalContext
+			_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+        
+		var left = node.left.name
+        _ ctx.declare(left)
+        
+		for k in obj
+            _ ctx.put(left, k)
+			
+			checked_run_set( state, ForInStatement node.body
+				_ runner(node.body, ctx)
+            if state.result
+                return state
+            if state.break
+                break
+			checked_run( notUsed, ForInStatement set_MTreeBrickEvalContext
+				_ ctx.set_MTreeBrickEvalContext(savedCurrentBrickKey)
+        
+		_ ctx.undeclare(left)
+        
+		return 
+            { 
+
+	runner( BreakStatement
+        return 
+            { 
+                @ break true
+    
+	runner( ContinueStatement
+        return 
+            { 
+                @ continue true
+

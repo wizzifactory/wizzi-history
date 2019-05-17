@@ -1,0 +1,70 @@
+﻿base_test( jsWizziRunner )
+
+	$append imports
+		var JsWizziContext = require('../../lib/jswizzi/jsWizziContext')
+		var jsWizziRunner = require('../../lib/jswizzi/jsWizziRunner')
+
+	$include declares
+	$include mathExpressions
+	$include stringExpressions
+	$include logicalExpressions
+	$include unaryExpressions
+	$include memberAccesses
+	$include conditionals
+	$include iterations
+
+	it should run declares
+		_ runGroup(declares)
+	
+	it should run string expressions
+		_ runGroup(stringExpressions)
+	
+	it should run math expressions
+		foreach expr in mathExpressions
+			tobe_number( runExpression(expr.code), expr.expected )
+	
+	it should run logical expressions
+		_ runGroup(logicalExpressions)
+
+	it should run unary expressions
+		_ runGroup(unaryExpressions)
+
+	it should run member accesses
+		_ runGroup(memberAccesses)
+
+	it should run conditional statements
+		_ runGroup(conditionals)
+
+	it should run iteration statements
+		_ runGroup(iterations)
+
+	function runGroup
+		param items
+		foreach expr in items
+			if typeof(expr.expected_equal) !== 'undefined'
+				tobe_eql( runExpression(expr.code), expr.expected_equal )
+			elif typeof(expr.expected_number) !== 'undefined'
+				tobe_number( runExpression(expr.code), expr.expected_number )
+			else
+				# log 'expr.code, expr.expected', expr.code, expr.expected
+				tobe_string_value( runExpression(expr.code), expr.expected )
+
+	function runExpression
+		param code
+
+		# without ctor arguments means: isForInterpolation
+		var jsWizziContext
+			new JsWizziContext()
+		# run the expression embedded in a var declaration 'result'
+		var hr
+			_ jsWizziRunner.run
+				iif code.indexOf('return ') > -1
+					then 'var result = function dummy() { ' + code + ' }();'
+					else 'var result = ' + code + ';'
+				@ jsWizziContext
+				{
+					@ verbose false
+		if hr && hr.__is_error
+			throw new Error(hr)
+		# return the 'result' var from the context
+		return jsWizziContext.getValue('result')

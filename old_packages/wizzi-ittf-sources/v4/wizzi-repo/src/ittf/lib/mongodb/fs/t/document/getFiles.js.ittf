@@ -1,0 +1,97 @@
+﻿$group
+
+	m getFiles
+		string folderPath
+		options-callback
+		+
+		set folderPath = normalize(path.resolve(folderPath))
+		var deep = options.deep
+		var extension = options.extension
+		var documentContent = options.documentContent || false
+		+
+		var that = this
+		
+		function get_files_Async
+			param singleFolderPath
+			param callback
+			+
+			_ that.fsdb.getItemByPath
+				@ singleFolderPath
+				f_cb( r )
+					if r
+						_ that.fsdb.getItemChildren
+							@ r._id
+							@ callback
+					else
+						r_cb( null )
+
+		function get_folders_files_Async
+			param folderPaths
+			param callback
+			
+			_ async.map
+				@ folderPaths
+				@ get_files_Async
+				f_cb( fsitems )
+					r_cb( fsitems )
+
+		function recurser
+			param folderPaths
+			param files
+			param ids
+
+			return
+				new Promise
+					function
+						param resolve
+						_ get_folders_files_Async
+							@ folderPaths
+							f_cb( fsitemsArray )
+								# log 'wizzi-repo.mongodb.document.getfiles fsitemsArray', fsitemsArray
+								var subfolders = []
+								foreach fsitems in fsitemsArray
+									if fsitems != null
+										foreach item in fsitems
+											if item.kind == 0
+												_ subfolders.push(item.path)
+											else
+												if !extension || item.path.substr(-extension.length) === extension
+													_ files.push(item.path)
+													_ ids.push(item._id)
+								if deep && subfolders.length > 0
+									_ recurser
+										@ subfolders
+										@ files
+										@ ids
+										._ then
+											function
+												_ resolve()
+								else
+									_ resolve()
+
+		var files = []
+		var ids = []
+		_ recurser
+			@ [folderPath]
+			@ files
+			@ ids
+			._ then
+				function
+					# log 'wizzi-repo.mongodb.document.getfiles', files, documentContent
+					if !documentContent
+						return
+							_ callback(null, files)
+					else
+						_ that.getContentsByIds
+							@ ids
+							f_cb( contents )
+								# log 'wizzi-repo.mongodb.document.getfiles.contents', contents
+								var ret = []
+								for var i=0; i<files.length; i++
+									_ ret.push
+										{
+											@ fullPath files[i]
+											@ content contents[i]
+								return
+									_ callback(null, ret)
+

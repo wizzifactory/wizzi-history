@@ -1,0 +1,16 @@
+$group
+
+	#
+		# Retrieve a schema definition in json format
+		# Schema definitions are searched in the PluginsManager
+		# They are cached
+	m getSchemaDefinition
+		string schemaName
+		+
+		var schema = this.schemaDefinitions[schemaName] || null
+		if schema == null
+			set schema = this.pluginsManager.getSchemaDefinition(schemaName)
+			if schema != null
+				set this.schemaDefinitions[schemaName] = schema
+		return schema
+

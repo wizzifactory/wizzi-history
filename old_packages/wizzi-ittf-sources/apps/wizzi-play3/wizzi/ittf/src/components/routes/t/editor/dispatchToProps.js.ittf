@@ -1,0 +1,41 @@
+﻿$group
+
+	@ dispatchGetIttfDocument
+		=>
+			param hash
+			log 'dispatchGetIttfDocument', hash
+			_ dispatch
+				_ getIttfDocument
+					@ hash
+
+	@ dispatchGetMTreeDebugInfo
+		=>
+			param hash
+			log 'dispatchGetMTreeDebugInfo', hash
+			_ dispatch
+				_ getMTreeDebugInfo
+					@ hash
+
+	@ dispatchGenerateDefaultArtifact
+		=>
+			param hash
+			log 'dispatchGenerateDefaultArtifact', hash
+			_ dispatch
+				_ generateDefaultArtifact
+					@ hash
+
+	@ dispatchGenerateWfSchema
+		=>
+			param hash
+			log 'dispatchGenerateWfSchema', hash
+			_ dispatch
+				_ generateWfSchema
+					@ hash	
+	
+	@ dispatchExecuteWfJob
+		=>
+			param hash
+			log 'dispatchExecuteWfJob', hash
+			_ dispatch
+				_ executeWfJob
+					@ hash

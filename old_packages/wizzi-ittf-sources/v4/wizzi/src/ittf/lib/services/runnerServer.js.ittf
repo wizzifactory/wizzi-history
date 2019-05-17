@@ -1,0 +1,98 @@
+﻿module wizzi.runnerServer
+    kind jsfile
+    
+	var _ = require('lodash')
+	var async = require('async')
+	var chalk = require('chalk')
+	var errors = require('../errors')
+	var wizziFactory = require('./wizziFactory')
+    
+	class RunnerServer
+        ctor
+            string cwd
+			param user
+			param role
+			set this.cwd = cwd
+			set this.user = user
+			set this.role = role
+			set this.wizziFactory = null
+			set this.wizziFactories = []
+			set this.apis = {}
+			set this.models = {}
+			$$ TODO VIA
+			set this.registeredPlugins = []
+			$$ TODO VIA
+			set this.globalContext = {}
+    
+		$$ TODO VIA
+		m registerPlugin
+			string pluginName
+			if this.wizziFactory != null
+				throw new Error('wizzi/runnerServer/registerPlugin error: Cannot register a plugin. The WizziFactory has been already initialized.')
+			_ this.registeredPlugins.push
+				@ pluginName
+    
+		$$ TODO VIA
+		m registerGlobalContext
+			{ context
+			if this.wizziFactory != null
+				throw new Error('wizzi/runnerServer/registerPlugin error: Cannot register a global context. The WizziFactory has been already initialized.')
+			set this.globalContext
+				_ _.merge
+					@ this.globalContext
+					@ context
+
+		m initializeFactory
+			string userid
+			string role
+			param options
+			param callback
+			
+			if typeof(callback) == 'undefined'
+				set callback = options
+				set options = {}
+			set options.storeKind = options.storeKind || 'filesystem'
+			
+			check_wz_callback( initializeFactory )
+			
+			var that = this
+			_ wizziFactory.createFactory
+				@ userid
+				@ role
+				{
+					@ repo
+						{
+							@ storeKind options.storeKind
+					@ plugins
+						{
+							@ items this.registeredPlugins
+							@ pluginsBaseFolder this.cwd
+					@ globalContext this.globalContext
+					@ test options.test
+				f_cb( wf )
+					set that.wizziFactory = wf
+					log chalk.yellow('RUNNER SERVER WIZZI FACTORY CREATED on store ' + options.storeKind)
+					return
+						_ callback
+							@ null
+							@ wf
+    
+		$include runnerServer/factoryServer
+		$include runnerServer/apiServer
+
+	set module.exports
+		{
+			@ instance null
+			@ init
+				function
+					param cwd
+					param user
+					param role
+					if this.instance != null
+						throw new Error('wizzi/services/runnerServer/init error: The runner server has already been instantiated.')
+					set this.instance 
+						new RunnerServer
+							@ cwd
+							@ user 
+							@ role 
+						

@@ -1,0 +1,9 @@
+﻿$group
+	$params menuType|fsItem
+
+	$if menuType === 'fsItem'
+		< ContextMenu
+			@ id "fsItem-context-menu"
+			@ anchorEl {this.state.contextMenuAnchorEl}
+			@ items {this.state.contextMenuItems}
+			@ onClose {this.handleContextMenuClose}

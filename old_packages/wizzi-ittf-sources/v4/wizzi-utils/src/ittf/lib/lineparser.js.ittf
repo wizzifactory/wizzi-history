@@ -1,0 +1,35 @@
+﻿module 
+    kind jsfile
+    
+	var verify = require('./verify')
+
+	var regexEscape = /([$\^\\\/()|?+*\[\]{}.\-])/g
+    
+	var md
+        set module.exports =
+            { 
+    
+	$include lineparser/codifyInterpolation
+    
+	function match
+		param text
+		param pos
+		param test
+		for var i=0; i<test.length; i++
+			if test[i] !== text[pos+i]
+				return false
+		return true
+
+	function escapename
+        param value
+        if verify.isNotEmpty(value)
+            return 
+                _ verify.replaceAll
+                    _ verify.replaceAll(value, "\\", "\\\\")
+                    @ '"'
+                    @ '\\"'
+        else
+            return value  
+
+
+

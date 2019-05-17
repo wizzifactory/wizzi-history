@@ -1,0 +1,825 @@
+// 2/5/2017:22:21:17  by C:\My\wizzi\next\node_modules\wizzi\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "module", v: "", r: 1, c: 1, s: "f1", u: "f1",  }; //37
+$.a($0, $1, 5);
+var $2 = { n: "kind", v: "jsfile", r: 2, c: 5, s: "f1", u: "f1",  }; //38
+$.a($1, $2, 7);
+var $3 = { n: "class", v: "StyleBuilder", r: 3, c: 5, s: "f1", u: "f2",  }; //265
+$.a($1, $3, 9);
+var $4 = { n: "ctor", v: "", r: 4, c: 9, s: "f1", u: "f2",  }; //266
+$.a($3, $4, 11);
+var $5 = { n: "param", v: "styleObject", r: 5, c: 13, s: "f1", u: "f2",  }; //267
+$.a($4, $5, 13);
+var $6 = { n: "set", v: "this.styleObject = styleObject", r: 6, c: 13, s: "f1", u: "f2",  }; //268
+$.a($4, $6, 15);
+var $7 = { n: "m", v: "getWidth", r: 8, c: 9, s: "f1", u: "f2",  }; //269
+$.a($3, $7, 17);
+var $8 = { n: "var", v: "ret = 0", r: 9, c: 13, s: "f1", u: "f2",  }; //270
+$.a($7, $8, 19);
+var $9 = { n: "for", v: "var k in this.styleObject", r: 10, c: 13, s: "f1", u: "f2",  }; //271
+$.a($7, $9, 21);
+var $10 = { n: "if", v: "k === 'margin' || k === 'padding'", r: 11, c: 17, s: "f1", u: "f2",  }; //272
+$.a($9, $10, 23);
+var $11 = { n: "set", v: "ret += this.getLeftWidth(this.styleObject[k])", r: 12, c: 21, s: "f1", u: "f2",  }; //273
+$.a($10, $11, 25);
+var $12 = { n: "set", v: "ret += this.getRightWidth(this.styleObject[k])", r: 13, c: 21, s: "f1", u: "f2",  }; //274
+$.a($10, $12, 27);
+var $13 = { n: "elif", v: "k === 'width'", r: 14, c: 17, s: "f1", u: "f2",  }; //275
+$.a($9, $13, 29);
+var $14 = { n: "set", v: "ret += this.styleObject[k]", r: 15, c: 21, s: "f1", u: "f2",  }; //276
+$.a($13, $14, 31);
+var $15 = { n: "elif", v: "k === 'border'", r: 16, c: 17, s: "f1", u: "f2",  }; //277
+$.a($9, $15, 33);
+var $16 = { n: "set", v: "ret += (this._getSize(this.styleObject[k]) * 2)", r: 17, c: 21, s: "f1", u: "f2",  }; //278
+$.a($15, $16, 35);
+var $17 = { n: "elif", v: "k === 'borderLeft' || k === 'borderRight'", r: 18, c: 17, s: "f1", u: "f2",  }; //279
+$.a($9, $17, 37);
+var $18 = { n: "set", v: "ret += this._getSize(this.styleObject[k])", r: 19, c: 21, s: "f1", u: "f2",  }; //280
+$.a($17, $18, 39);
+var $19 = { n: "return", v: "ret", r: 20, c: 13, s: "f1", u: "f2",  }; //281
+$.a($7, $19, 41);
+var $20 = { n: "m", v: "getHeight", r: 22, c: 9, s: "f1", u: "f2",  }; //282
+$.a($3, $20, 43);
+var $21 = { n: "var", v: "ret = 0", r: 23, c: 13, s: "f1", u: "f2",  }; //283
+$.a($20, $21, 45);
+var $22 = { n: "for", v: "var k in this.styleObject", r: 24, c: 13, s: "f1", u: "f2",  }; //284
+$.a($20, $22, 47);
+var $23 = { n: "if", v: "k === 'margin' || k === 'padding'", r: 25, c: 17, s: "f1", u: "f2",  }; //285
+$.a($22, $23, 49);
+var $24 = { n: "set", v: "ret += this.getTopWidth(this.styleObject[k])", r: 26, c: 21, s: "f1", u: "f2",  }; //286
+$.a($23, $24, 51);
+var $25 = { n: "set", v: "ret += this.getBottomWidth(this.styleObject[k])", r: 27, c: 21, s: "f1", u: "f2",  }; //287
+$.a($23, $25, 53);
+var $26 = { n: "elif", v: "k === 'height'", r: 28, c: 17, s: "f1", u: "f2",  }; //288
+$.a($22, $26, 55);
+var $27 = { n: "set", v: "ret += this.styleObject[k]", r: 29, c: 21, s: "f1", u: "f2",  }; //289
+$.a($26, $27, 57);
+var $28 = { n: "elif", v: "k === 'border'", r: 30, c: 17, s: "f1", u: "f2",  }; //290
+$.a($22, $28, 59);
+var $29 = { n: "set", v: "ret += (this._getSize(this.styleObject[k]) * 2)", r: 31, c: 21, s: "f1", u: "f2",  }; //291
+$.a($28, $29, 61);
+var $30 = { n: "elif", v: "k === 'borderTop' || k === 'borderBottom'", r: 32, c: 17, s: "f1", u: "f2",  }; //292
+$.a($22, $30, 63);
+var $31 = { n: "set", v: "ret += this._getSize(this.styleObject[k])", r: 33, c: 21, s: "f1", u: "f2",  }; //293
+$.a($30, $31, 65);
+var $32 = { n: "return", v: "ret", r: 34, c: 13, s: "f1", u: "f2",  }; //294
+$.a($20, $32, 67);
+var $33 = { n: "m", v: "getPadMarginBorderWidth", r: 36, c: 9, s: "f1", u: "f2",  }; //295
+$.a($3, $33, 69);
+var $34 = { n: "var", v: "ret = 0", r: 37, c: 13, s: "f1", u: "f2",  }; //296
+$.a($33, $34, 71);
+var $35 = { n: "var", v: "seenBorder = 0", r: 38, c: 13, s: "f1", u: "f2",  }; //297
+$.a($33, $35, 73);
+var $36 = { n: "for", v: "var k in this.styleObject", r: 39, c: 13, s: "f1", u: "f2",  }; //298
+$.a($33, $36, 75);
+var $37 = { n: "if", v: "k === 'margin' || k === 'padding'", r: 40, c: 17, s: "f1", u: "f2",  }; //299
+$.a($36, $37, 77);
+var $38 = { n: "set", v: "ret += this.getLeftWidth(this.styleObject[k])", r: 41, c: 21, s: "f1", u: "f2",  }; //300
+$.a($37, $38, 79);
+var $39 = { n: "set", v: "ret += this.getRightWidth(this.styleObject[k])", r: 42, c: 21, s: "f1", u: "f2",  }; //301
+$.a($37, $39, 81);
+var $40 = { n: "elif", v: "k === 'border' && seenBorder == 0", r: 43, c: 17, s: "f1", u: "f2",  }; //302
+$.a($36, $40, 83);
+var $41 = { n: "set", v: "ret += (this._getSize(this.styleObject[k]) * 2)", r: 44, c: 21, s: "f1", u: "f2",  }; //303
+$.a($40, $41, 85);
+var $42 = { n: "set", v: "seenBorder = 1", r: 45, c: 21, s: "f1", u: "f2",  }; //304
+$.a($40, $42, 87);
+var $43 = { n: "elif", v: "(k === 'borderLeft' || k === 'borderRight') && seenBorder != 1", r: 46, c: 17, s: "f1", u: "f2",  }; //305
+$.a($36, $43, 89);
+var $44 = { n: "set", v: "ret += this._getSize(this.styleObject[k])", r: 47, c: 21, s: "f1", u: "f2",  }; //306
+$.a($43, $44, 91);
+var $45 = { n: "set", v: "seenBorder = 2", r: 48, c: 21, s: "f1", u: "f2",  }; //307
+$.a($43, $45, 93);
+var $46 = { n: "log", v: "'StyleBuilder.width', ret", r: 49, c: 13, s: "f1", u: "f2",  }; //308
+$.a($33, $46, 95);
+var $47 = { n: "return", v: "ret", r: 50, c: 13, s: "f1", u: "f2",  }; //309
+$.a($33, $47, 97);
+var $48 = { n: "m", v: "getPadMarginBorderHeight", r: 52, c: 9, s: "f1", u: "f2",  }; //310
+$.a($3, $48, 99);
+var $49 = { n: "var", v: "ret = 0", r: 53, c: 13, s: "f1", u: "f2",  }; //311
+$.a($48, $49, 101);
+var $50 = { n: "for", v: "var k in this.styleObject", r: 54, c: 13, s: "f1", u: "f2",  }; //312
+$.a($48, $50, 103);
+var $51 = { n: "if", v: "k === 'margin' || k === 'padding'", r: 55, c: 17, s: "f1", u: "f2",  }; //313
+$.a($50, $51, 105);
+var $52 = { n: "set", v: "ret += this.getTopWidth(this.styleObject[k])", r: 56, c: 21, s: "f1", u: "f2",  }; //314
+$.a($51, $52, 107);
+var $53 = { n: "set", v: "ret += this.getBottomWidth(this.styleObject[k])", r: 57, c: 21, s: "f1", u: "f2",  }; //315
+$.a($51, $53, 109);
+var $54 = { n: "elif", v: "k === 'border' && seenBorder == 0", r: 58, c: 17, s: "f1", u: "f2",  }; //316
+$.a($50, $54, 111);
+var $55 = { n: "set", v: "ret += (this._getSize(this.styleObject[k]) * 2)", r: 59, c: 21, s: "f1", u: "f2",  }; //317
+$.a($54, $55, 113);
+var $56 = { n: "set", v: "seenBorder = 1", r: 60, c: 21, s: "f1", u: "f2",  }; //318
+$.a($54, $56, 115);
+var $57 = { n: "elif", v: "(k === 'borderTop' || k === 'borderBottom') && seenBorder != 1", r: 61, c: 17, s: "f1", u: "f2",  }; //319
+$.a($50, $57, 117);
+var $58 = { n: "set", v: "ret += this._getSize(this.styleObject[k])", r: 62, c: 21, s: "f1", u: "f2",  }; //320
+$.a($57, $58, 119);
+var $59 = { n: "set", v: "seenBorder = 2", r: 63, c: 21, s: "f1", u: "f2",  }; //321
+$.a($57, $59, 121);
+var $60 = { n: "return", v: "ret", r: 64, c: 13, s: "f1", u: "f2",  }; //322
+$.a($48, $60, 123);
+var $61 = { n: "m", v: "getLeftWidth", r: 66, c: 9, s: "f1", u: "f2",  }; //323
+$.a($3, $61, 125);
+var $62 = { n: "param", v: "value", r: 67, c: 13, s: "f1", u: "f2",  }; //324
+$.a($61, $62, 127);
+var $63 = { n: "if", v: "isNumeric(value.left)", r: 68, c: 13, s: "f1", u: "f2",  }; //325
+$.a($61, $63, 129);
+var $64 = { n: "return", v: "value.left", r: 69, c: 17, s: "f1", u: "f2",  }; //326
+$.a($63, $64, 131);
+var $65 = { n: "elif", v: "isNumeric(value.horizontal)", r: 70, c: 13, s: "f1", u: "f2",  }; //327
+$.a($61, $65, 133);
+var $66 = { n: "return", v: "value.horizontal", r: 71, c: 17, s: "f1", u: "f2",  }; //328
+$.a($65, $66, 135);
+var $67 = { n: "elif", v: "isNumeric(value)", r: 72, c: 13, s: "f1", u: "f2",  }; //329
+$.a($61, $67, 137);
+var $68 = { n: "return", v: "value", r: 73, c: 17, s: "f1", u: "f2",  }; //330
+$.a($67, $68, 139);
+var $69 = { n: "else", v: "", r: 74, c: 13, s: "f1", u: "f2",  }; //331
+$.a($61, $69, 141);
+var $70 = { n: "return", v: "0", r: 75, c: 17, s: "f1", u: "f2",  }; //332
+$.a($69, $70, 143);
+var $71 = { n: "m", v: "getTopWidth", r: 77, c: 9, s: "f1", u: "f2",  }; //333
+$.a($3, $71, 145);
+var $72 = { n: "param", v: "value", r: 78, c: 13, s: "f1", u: "f2",  }; //334
+$.a($71, $72, 147);
+var $73 = { n: "if", v: "isNumeric(value.top)", r: 79, c: 13, s: "f1", u: "f2",  }; //335
+$.a($71, $73, 149);
+var $74 = { n: "return", v: "value.top", r: 80, c: 17, s: "f1", u: "f2",  }; //336
+$.a($73, $74, 151);
+var $75 = { n: "elif", v: "isNumeric(value.vertical)", r: 81, c: 13, s: "f1", u: "f2",  }; //337
+$.a($71, $75, 153);
+var $76 = { n: "return", v: "value.vertical", r: 82, c: 17, s: "f1", u: "f2",  }; //338
+$.a($75, $76, 155);
+var $77 = { n: "elif", v: "isNumeric(value)", r: 83, c: 13, s: "f1", u: "f2",  }; //339
+$.a($71, $77, 157);
+var $78 = { n: "return", v: "value", r: 84, c: 17, s: "f1", u: "f2",  }; //340
+$.a($77, $78, 159);
+var $79 = { n: "else", v: "", r: 85, c: 13, s: "f1", u: "f2",  }; //341
+$.a($71, $79, 161);
+var $80 = { n: "return", v: "0", r: 86, c: 17, s: "f1", u: "f2",  }; //342
+$.a($79, $80, 163);
+var $81 = { n: "m", v: "getRightWidth", r: 88, c: 9, s: "f1", u: "f2",  }; //343
+$.a($3, $81, 165);
+var $82 = { n: "param", v: "value", r: 89, c: 13, s: "f1", u: "f2",  }; //344
+$.a($81, $82, 167);
+var $83 = { n: "if", v: "isNumeric(value.right)", r: 90, c: 13, s: "f1", u: "f2",  }; //345
+$.a($81, $83, 169);
+var $84 = { n: "return", v: "value.right", r: 91, c: 17, s: "f1", u: "f2",  }; //346
+$.a($83, $84, 171);
+var $85 = { n: "elif", v: "isNumeric(value.horizontal)", r: 92, c: 13, s: "f1", u: "f2",  }; //347
+$.a($81, $85, 173);
+var $86 = { n: "return", v: "value.horizontal", r: 93, c: 17, s: "f1", u: "f2",  }; //348
+$.a($85, $86, 175);
+var $87 = { n: "elif", v: "isNumeric(value)", r: 94, c: 13, s: "f1", u: "f2",  }; //349
+$.a($81, $87, 177);
+var $88 = { n: "return", v: "value", r: 95, c: 17, s: "f1", u: "f2",  }; //350
+$.a($87, $88, 179);
+var $89 = { n: "else", v: "", r: 96, c: 13, s: "f1", u: "f2",  }; //351
+$.a($81, $89, 181);
+var $90 = { n: "return", v: "0", r: 97, c: 17, s: "f1", u: "f2",  }; //352
+$.a($89, $90, 183);
+var $91 = { n: "m", v: "getBottomWidth", r: 99, c: 9, s: "f1", u: "f2",  }; //353
+$.a($3, $91, 185);
+var $92 = { n: "param", v: "value", r: 100, c: 13, s: "f1", u: "f2",  }; //354
+$.a($91, $92, 187);
+var $93 = { n: "if", v: "isNumeric(value.bottom)", r: 101, c: 13, s: "f1", u: "f2",  }; //355
+$.a($91, $93, 189);
+var $94 = { n: "return", v: "value.bottom", r: 102, c: 17, s: "f1", u: "f2",  }; //356
+$.a($93, $94, 191);
+var $95 = { n: "elif", v: "isNumeric(value.vertical)", r: 103, c: 13, s: "f1", u: "f2",  }; //357
+$.a($91, $95, 193);
+var $96 = { n: "return", v: "value.vertical", r: 104, c: 17, s: "f1", u: "f2",  }; //358
+$.a($95, $96, 195);
+var $97 = { n: "elif", v: "isNumeric(value)", r: 105, c: 13, s: "f1", u: "f2",  }; //359
+$.a($91, $97, 197);
+var $98 = { n: "return", v: "value", r: 106, c: 17, s: "f1", u: "f2",  }; //360
+$.a($97, $98, 199);
+var $99 = { n: "else", v: "", r: 107, c: 13, s: "f1", u: "f2",  }; //361
+$.a($91, $99, 201);
+var $100 = { n: "return", v: "0", r: 108, c: 17, s: "f1", u: "f2",  }; //362
+$.a($99, $100, 203);
+var $101 = { n: "m", v: "_getSize", r: 110, c: 9, s: "f1", u: "f2",  }; //363
+$.a($3, $101, 205);
+var $102 = { n: "param", v: "value", r: 111, c: 13, s: "f1", u: "f2",  }; //364
+$.a($101, $102, 207);
+var $103 = { n: "if", v: "isNumeric(value.size)", r: 112, c: 13, s: "f1", u: "f2",  }; //365
+$.a($101, $103, 209);
+var $104 = { n: "return", v: "value.size", r: 113, c: 17, s: "f1", u: "f2",  }; //366
+$.a($103, $104, 211);
+var $105 = { n: "else", v: "", r: 114, c: 13, s: "f1", u: "f2",  }; //367
+$.a($101, $105, 213);
+var $106 = { n: "return", v: "0", r: 115, c: 17, s: "f1", u: "f2",  }; //368
+$.a($105, $106, 215);
+var $107 = { n: "m", v: "toStyle", r: 117, c: 9, s: "f1", u: "f2",  }; //369
+$.a($3, $107, 217);
+var $108 = { n: "var", v: "ret = []", r: 118, c: 13, s: "f1", u: "f2",  }; //370
+$.a($107, $108, 219);
+var $109 = { n: "for", v: "var k in this.styleObject", r: 119, c: 13, s: "f1", u: "f2",  }; //371
+$.a($107, $109, 221);
+var $110 = { n: "if", v: "k === 'margin'", r: 120, c: 17, s: "f1", u: "f2",  }; //372
+$.a($109, $110, 223);
+var $111 = { n: "_", v: "ret.push('margin: ' + this.toLength14(this.styleObject[k]))", r: 121, c: 21, s: "f1", u: "f2",  }; //373
+$.a($110, $111, 225);
+var $112 = { n: "elif", v: "k === 'padding'", r: 122, c: 17, s: "f1", u: "f2",  }; //374
+$.a($109, $112, 227);
+var $113 = { n: "_", v: "ret.push('padding: ' + this.toLength14(this.styleObject[k]))", r: 123, c: 21, s: "f1", u: "f2",  }; //375
+$.a($112, $113, 229);
+var $114 = { n: "elif", v: "k === 'width'", r: 124, c: 17, s: "f1", u: "f2",  }; //376
+$.a($109, $114, 231);
+var $115 = { n: "_", v: "ret.push('width: ' + this.toLength(this.styleObject[k]))", r: 125, c: 21, s: "f1", u: "f2",  }; //377
+$.a($114, $115, 233);
+var $116 = { n: "elif", v: "k === 'border'", r: 126, c: 17, s: "f1", u: "f2",  }; //378
+$.a($109, $116, 235);
+var $117 = { n: "_", v: "ret.push('border: ' + this.toBorder(this.styleObject[k]))", r: 127, c: 21, s: "f1", u: "f2",  }; //379
+$.a($116, $117, 237);
+var $118 = { n: "elif", v: "k === 'borderTop'", r: 128, c: 17, s: "f1", u: "f2",  }; //380
+$.a($109, $118, 239);
+var $119 = { n: "_", v: "ret.push('border-top: ' + this.toBorder(this.styleObject[k]))", r: 129, c: 21, s: "f1", u: "f2",  }; //381
+$.a($118, $119, 241);
+var $120 = { n: "elif", v: "k === 'borderLeft'", r: 130, c: 17, s: "f1", u: "f2",  }; //382
+$.a($109, $120, 243);
+var $121 = { n: "_", v: "ret.push('border-left: ' + this.toBorder(this.styleObject[k]))", r: 131, c: 21, s: "f1", u: "f2",  }; //383
+$.a($120, $121, 245);
+var $122 = { n: "elif", v: "k === 'borderBottom'", r: 132, c: 17, s: "f1", u: "f2",  }; //384
+$.a($109, $122, 247);
+var $123 = { n: "_", v: "ret.push('border-bottom: ' + this.toBorder(this.styleObject[k]))", r: 133, c: 21, s: "f1", u: "f2",  }; //385
+$.a($122, $123, 249);
+var $124 = { n: "elif", v: "k === 'borderRight'", r: 134, c: 17, s: "f1", u: "f2",  }; //386
+$.a($109, $124, 251);
+var $125 = { n: "_", v: "ret.push('border-right: ' + this.toBorder(this.styleObject[k]))", r: 135, c: 21, s: "f1", u: "f2",  }; //387
+$.a($124, $125, 253);
+var $126 = { n: "elif", v: "k === 'color'", r: 136, c: 17, s: "f1", u: "f2",  }; //388
+$.a($109, $126, 255);
+var $127 = { n: "_", v: "ret.push('color: ' + this.toColor(this.styleObject[k]))", r: 137, c: 21, s: "f1", u: "f2",  }; //389
+$.a($126, $127, 257);
+var $128 = { n: "elif", v: "k === 'backgroundColor'", r: 138, c: 17, s: "f1", u: "f2",  }; //390
+$.a($109, $128, 259);
+var $129 = { n: "_", v: "ret.push('background-color: ' + this.toColor(this.styleObject[k]))", r: 139, c: 21, s: "f1", u: "f2",  }; //391
+$.a($128, $129, 261);
+var $130 = { n: "else", v: "", r: 140, c: 17, s: "f1", u: "f2",  }; //392
+$.a($109, $130, 263);
+var $131 = { n: "_", v: "ret.push(k + ': ' + this.styleObject[k])", r: 141, c: 21, s: "f1", u: "f2",  }; //393
+$.a($130, $131, 265);
+var $132 = { n: "return", v: "ret.join('')", r: 142, c: 13, s: "f1", u: "f2",  }; //394
+$.a($107, $132, 267);
+var $133 = { n: "m", v: "toStyleObject", r: 144, c: 9, s: "f1", u: "f2",  }; //395
+$.a($3, $133, 269);
+var $134 = { n: "var", v: "ret = {}", r: 145, c: 13, s: "f1", u: "f2",  }; //396
+$.a($133, $134, 271);
+var $135 = { n: "for", v: "var k in this.styleObject", r: 146, c: 13, s: "f1", u: "f2",  }; //397
+$.a($133, $135, 273);
+var $136 = { n: "if", v: "k === 'margin'", r: 147, c: 17, s: "f1", u: "f2",  }; //398
+$.a($135, $136, 275);
+var $137 = { n: "set", v: "ret.margin = this.toLength14(this.styleObject[k])", r: 148, c: 21, s: "f1", u: "f2",  }; //399
+$.a($136, $137, 277);
+var $138 = { n: "elif", v: "k === 'padding'", r: 149, c: 17, s: "f1", u: "f2",  }; //400
+$.a($135, $138, 279);
+var $139 = { n: "set", v: "ret.padding = this.toLength14(this.styleObject[k])", r: 150, c: 21, s: "f1", u: "f2",  }; //401
+$.a($138, $139, 281);
+var $140 = { n: "elif", v: "k === 'width'", r: 151, c: 17, s: "f1", u: "f2",  }; //402
+$.a($135, $140, 283);
+var $141 = { n: "set", v: "ret.width = this.toLength(this.styleObject[k])", r: 152, c: 21, s: "f1", u: "f2",  }; //403
+$.a($140, $141, 285);
+var $142 = { n: "elif", v: "k === 'border'", r: 153, c: 17, s: "f1", u: "f2",  }; //404
+$.a($135, $142, 287);
+var $143 = { n: "set", v: "ret.border = this.toBorder(this.styleObject[k])", r: 154, c: 21, s: "f1", u: "f2",  }; //405
+$.a($142, $143, 289);
+var $144 = { n: "elif", v: "k === 'borderTop' || k === 'borderLeft' || k === 'borderRight' || k === 'borderBottom'", r: 155, c: 17, s: "f1", u: "f2",  }; //406
+$.a($135, $144, 291);
+var $145 = { n: "set", v: "ret[k] = this.toBorder(this.styleObject[k])", r: 156, c: 21, s: "f1", u: "f2",  }; //407
+$.a($144, $145, 293);
+var $146 = { n: "elif", v: "k === 'color'", r: 157, c: 17, s: "f1", u: "f2",  }; //408
+$.a($135, $146, 295);
+var $147 = { n: "set", v: "ret.color = this.toColor(this.styleObject[k])", r: 158, c: 21, s: "f1", u: "f2",  }; //409
+$.a($146, $147, 297);
+var $148 = { n: "elif", v: "k === 'backgroundColor'", r: 159, c: 17, s: "f1", u: "f2",  }; //410
+$.a($135, $148, 299);
+var $149 = { n: "set", v: "ret.backgroundColor = this.toColor(this.styleObject[k])", r: 160, c: 21, s: "f1", u: "f2",  }; //411
+$.a($148, $149, 301);
+var $150 = { n: "else", v: "", r: 161, c: 17, s: "f1", u: "f2",  }; //412
+$.a($135, $150, 303);
+var $151 = { n: "set", v: "ret[k] = this.styleObject[k]", r: 162, c: 21, s: "f1", u: "f2",  }; //413
+$.a($150, $151, 305);
+var $152 = { n: "return", v: "ret", r: 163, c: 13, s: "f1", u: "f2",  }; //414
+$.a($133, $152, 307);
+var $153 = { n: "m", v: "toLength", r: 165, c: 9, s: "f1", u: "f2",  }; //415
+$.a($3, $153, 309);
+var $154 = { n: "param", v: "value", r: 166, c: 13, s: "f1", u: "f2",  }; //416
+$.a($153, $154, 311);
+var $155 = { n: "if", v: "isNumeric(value)", r: 167, c: 13, s: "f1", u: "f2",  }; //417
+$.a($153, $155, 313);
+var $156 = { n: "return", v: "value + 'px'", r: 168, c: 17, s: "f1", u: "f2",  }; //418
+$.a($155, $156, 315);
+var $157 = { n: "return", v: "'0'", r: 169, c: 13, s: "f1", u: "f2",  }; //419
+$.a($153, $157, 317);
+var $158 = { n: "m", v: "toLength14", r: 171, c: 9, s: "f1", u: "f2",  }; //420
+$.a($3, $158, 319);
+var $159 = { n: "param", v: "value", r: 172, c: 13, s: "f1", u: "f2",  }; //421
+$.a($158, $159, 321);
+var $160 = { n: "if", v: "isNumeric(value)", r: 173, c: 13, s: "f1", u: "f2",  }; //422
+$.a($158, $160, 323);
+var $161 = { n: "return", v: "value + 'px'", r: 174, c: 17, s: "f1", u: "f2",  }; //423
+$.a($160, $161, 325);
+var $162 = { n: "elif", v: "isNumeric(value.top)", r: 175, c: 13, s: "f1", u: "f2",  }; //424
+$.a($158, $162, 327);
+var $163 = { n: "return", v: "value.left + 'px 0 0 0'", r: 176, c: 17, s: "f1", u: "f2",  }; //425
+$.a($162, $163, 329);
+var $164 = { n: "elif", v: "isNumeric(value.right)", r: 177, c: 13, s: "f1", u: "f2",  }; //426
+$.a($158, $164, 331);
+var $165 = { n: "return", v: "'0 ' + value.right + 'px 0 0'", r: 178, c: 17, s: "f1", u: "f2",  }; //427
+$.a($164, $165, 333);
+var $166 = { n: "elif", v: "isNumeric(value.bottom)", r: 179, c: 13, s: "f1", u: "f2",  }; //428
+$.a($158, $166, 335);
+var $167 = { n: "return", v: "'0 0 ' + value.bottom + 'px 0'", r: 180, c: 17, s: "f1", u: "f2",  }; //429
+$.a($166, $167, 337);
+var $168 = { n: "elif", v: "isNumeric(value.left)", r: 181, c: 13, s: "f1", u: "f2",  }; //430
+$.a($158, $168, 339);
+var $169 = { n: "return", v: "'0 0 0 ' + value.left + 'px'", r: 182, c: 17, s: "f1", u: "f2",  }; //431
+$.a($168, $169, 341);
+var $170 = { n: "elif", v: "isNumeric(value.horizontal)", r: 183, c: 13, s: "f1", u: "f2",  }; //432
+$.a($158, $170, 343);
+var $171 = { n: "return", v: "'0 ' + value.left + 'px'", r: 184, c: 17, s: "f1", u: "f2",  }; //433
+$.a($170, $171, 345);
+var $172 = { n: "elif", v: "isNumeric(value.vertical)", r: 185, c: 13, s: "f1", u: "f2",  }; //434
+$.a($158, $172, 347);
+var $173 = { n: "return", v: "value.left + 'px 0'", r: 186, c: 17, s: "f1", u: "f2",  }; //435
+$.a($172, $173, 349);
+var $174 = { n: "return", v: "0", r: 187, c: 13, s: "f1", u: "f2",  }; //436
+$.a($158, $174, 351);
+var $175 = { n: "m", v: "toBorder", r: 189, c: 9, s: "f1", u: "f2",  }; //437
+$.a($3, $175, 353);
+var $176 = { n: "param", v: "value", r: 190, c: 13, s: "f1", u: "f2",  }; //438
+$.a($175, $176, 355);
+var $177 = { n: "var", v: "ret = []", r: 191, c: 13, s: "f1", u: "f2",  }; //439
+$.a($175, $177, 357);
+var $178 = { n: "if", v: "isNumeric(value)", r: 192, c: 13, s: "f1", u: "f2",  }; //440
+$.a($175, $178, 359);
+var $179 = { n: "return", v: "value + 'px'", r: 193, c: 17, s: "f1", u: "f2",  }; //441
+$.a($178, $179, 361);
+var $180 = { n: "if", v: "isNumeric(value.size)", r: 194, c: 13, s: "f1", u: "f2",  }; //442
+$.a($175, $180, 363);
+var $181 = { n: "_", v: "ret.push(value.size + 'px')", r: 195, c: 17, s: "f1", u: "f2",  }; //443
+$.a($180, $181, 365);
+var $182 = { n: "if", v: "value.style", r: 196, c: 13, s: "f1", u: "f2",  }; //444
+$.a($175, $182, 367);
+var $183 = { n: "_", v: "ret.push(value.style)", r: 197, c: 17, s: "f1", u: "f2",  }; //445
+$.a($182, $183, 369);
+var $184 = { n: "if", v: "value.color", r: 198, c: 13, s: "f1", u: "f2",  }; //446
+$.a($175, $184, 371);
+var $185 = { n: "_", v: "ret.push(this.toColor(value.color))", r: 199, c: 17, s: "f1", u: "f2",  }; //447
+$.a($184, $185, 373);
+var $186 = { n: "return", v: "ret.join(' ')", r: 200, c: 13, s: "f1", u: "f2",  }; //448
+$.a($175, $186, 375);
+var $187 = { n: "m", v: "toColor", r: 202, c: 9, s: "f1", u: "f2",  }; //449
+$.a($3, $187, 377);
+var $188 = { n: "param", v: "value", r: 203, c: 13, s: "f1", u: "f2",  }; //450
+$.a($187, $188, 379);
+var $189 = { n: "return", v: "value", r: 204, c: 13, s: "f1", u: "f2",  }; //451
+$.a($187, $189, 381);
+var $190 = { n: "function", v: "isNumeric", r: 206, c: 5, s: "f1", u: "f2",  }; //452
+$.a($1, $190, 383);
+var $191 = { n: "param", v: "n", r: 207, c: 9, s: "f1", u: "f2",  }; //453
+$.a($190, $191, 385);
+var $192 = { n: "return", v: "!isNaN(parseFloat(n)) && isFinite(n)", r: 208, c: 9, s: "f1", u: "f2",  }; //454
+$.a($190, $192, 387);
+var $193 = { n: "var", v: "win = typeof window != 'undefined' && window", r: 3, c: 5, s: "f1", u: "f3",  }; //573
+$.a($1, $193, 389);
+var $194 = { n: "var", v: "doc = typeof document != 'undefined' && document", r: 4, c: 5, s: "f1", u: "f3",  }; //574
+$.a($1, $194, 391);
+var $195 = { n: "var", v: "docElem = doc && doc.documentElement", r: 5, c: 5, s: "f1", u: "f3",  }; //575
+$.a($1, $195, 393);
+var $196 = { n: "var", v: "matchMedia = win['matchMedia'] || win['msMatchMedia']", r: 6, c: 5, s: "f1", u: "f3",  }; //576
+$.a($1, $196, 395);
+var $197 = { n: "var", v: "mq", r: 7, c: 5, s: "f1", u: "f3",  }; //577
+$.a($1, $197, 397);
+var $198 = { n: "iif", v: "matchMedia", r: 8, c: 9, s: "f1", u: "f3",  }; //578
+$.a($197, $198, 399);
+var $199 = { n: "then", v: "", r: 9, c: 13, s: "f1", u: "f3",  }; //579
+$.a($198, $199, 401);
+var $200 = { n: "function", v: "", r: 10, c: 17, s: "f1", u: "f3",  }; //580
+$.a($199, $200, 403);
+var $201 = { n: "param", v: "q", r: 11, c: 21, s: "f1", u: "f3",  }; //581
+$.a($200, $201, 405);
+var $202 = { n: "return", v: "!!matchMedia.call(win, q).matches", r: 12, c: 21, s: "f1", u: "f3",  }; //582
+$.a($200, $202, 407);
+var $203 = { n: "else", v: "", r: 13, c: 13, s: "f1", u: "f3",  }; //583
+$.a($198, $203, 409);
+var $204 = { n: "function", v: "", r: 14, c: 17, s: "f1", u: "f3",  }; //584
+$.a($203, $204, 411);
+var $205 = { n: "return", v: "false", r: 15, c: 21, s: "f1", u: "f3",  }; //585
+$.a($204, $205, 413);
+var $206 = { n: "log", v: "'win', win", r: 16, c: 5, s: "f1", u: "f3",  }; //586
+$.a($1, $206, 415);
+var $207 = { n: "log", v: "'doc', doc", r: 17, c: 5, s: "f1", u: "f3",  }; //587
+$.a($1, $207, 417);
+var $208 = { n: "log", v: "'docElem', docElem", r: 18, c: 5, s: "f1", u: "f3",  }; //588
+$.a($1, $208, 419);
+var $209 = { n: "class", v: "ElementPosition", r: 20, c: 5, s: "f1", u: "f3",  }; //589
+$.a($1, $209, 421);
+var $210 = { n: "ctor", v: "", r: 21, c: 9, s: "f1", u: "f3",  }; //590
+$.a($209, $210, 423);
+var $211 = { n: "param", v: "element", r: 22, c: 13, s: "f1", u: "f3",  }; //591
+$.a($210, $211, 425);
+var $212 = { n: "set", v: "this.$element = $(element)", r: 23, c: 13, s: "f1", u: "f3",  }; //592
+$.a($210, $212, 427);
+var $213 = { n: "m", v: "getPositionData", r: 25, c: 9, s: "f1", u: "f3",  }; //593
+$.a($209, $213, 429);
+var $214 = { n: "var", v: "elem = this.$element[0]", r: 26, c: 13, s: "f1", u: "f3",  }; //594
+$.a($213, $214, 431);
+var $215 = { n: "var", v: "win = elem.ownerDocument.defaultView", r: 27, c: 13, s: "f1", u: "f3",  }; //595
+$.a($213, $215, 433);
+var $216 = { n: "var", v: "rect = elem.getBoundingClientRect()", r: 28, c: 13, s: "f1", u: "f3",  }; //596
+$.a($213, $216, 435);
+var $217 = { n: "log", v: "'rect', rect", r: 29, c: 13, s: "f1", u: "f3",  }; //597
+$.a($213, $217, 437);
+var $218 = { n: "#", v: "", r: 30, c: 13, s: "f1", u: "f3",  }; //598
+$.a($213, $218, 439);
+var $219 = { n: "return", v: "", r: 31, c: 17, s: "f1", u: "f3",  }; //599
+$.a($218, $219, 441);
+var $220 = { n: "{", v: "", r: 32, c: 21, s: "f1", u: "f3",  }; //600
+$.a($219, $220, 443);
+var $221 = { n: "@", v: "top rect.top + win.pageYOffset", r: 33, c: 25, s: "f1", u: "f3",  }; //601
+$.a($220, $221, 445);
+var $222 = { n: "@", v: "left rect.left + win.pageXOffset", r: 34, c: 25, s: "f1", u: "f3",  }; //602
+$.a($220, $222, 447);
+var $223 = { n: "var", v: "ret", r: 35, c: 13, s: "f1", u: "f3",  }; //603
+$.a($213, $223, 449);
+var $224 = { n: "{", v: "", r: 36, c: 17, s: "f1", u: "f3",  }; //604
+$.a($223, $224, 451);
+var $225 = { n: "@", v: "winLeft win.screenX || win.screenLeft", r: 37, c: 21, s: "f1", u: "f3",  }; //605
+$.a($224, $225, 453);
+var $226 = { n: "@", v: "winTop win.screenY || win.screenTop", r: 38, c: 21, s: "f1", u: "f3",  }; //606
+$.a($224, $226, 455);
+var $227 = { n: "@", v: "winScreenWidth win.screen.width", r: 39, c: 21, s: "f1", u: "f3",  }; //607
+$.a($224, $227, 457);
+var $228 = { n: "@", v: "winScreenHeight win.screen.height", r: 40, c: 21, s: "f1", u: "f3",  }; //608
+$.a($224, $228, 459);
+var $229 = { n: "@", v: "winScreenAvailWidth win.screen.availWidth", r: 41, c: 21, s: "f1", u: "f3",  }; //609
+$.a($224, $229, 461);
+var $230 = { n: "@", v: "winScreenAvailHeight win.screen.availHeight", r: 42, c: 21, s: "f1", u: "f3",  }; //610
+$.a($224, $230, 463);
+var $231 = { n: "@", v: "winInnerWidth win.innerWidth", r: 43, c: 21, s: "f1", u: "f3",  }; //611
+$.a($224, $231, 465);
+var $232 = { n: "@", v: "winInnerHeight win.innerHeight", r: 44, c: 21, s: "f1", u: "f3",  }; //612
+$.a($224, $232, 467);
+var $233 = { n: "@", v: "winOuterWidth win.outerWidth", r: 45, c: 21, s: "f1", u: "f3",  }; //613
+$.a($224, $233, 469);
+var $234 = { n: "@", v: "winOuterHeight win.outerHeight", r: 46, c: 21, s: "f1", u: "f3",  }; //614
+$.a($224, $234, 471);
+var $235 = { n: "@", v: "winScrollX win.pageXOffset || docElem.scrollLeft", r: 47, c: 21, s: "f1", u: "f3",  }; //615
+$.a($224, $235, 473);
+var $236 = { n: "@", v: "winScrollY win.pageYOffset || docElem.scrollTop", r: 48, c: 21, s: "f1", u: "f3",  }; //616
+$.a($224, $236, 475);
+var $237 = { n: "@", v: "docBodyClientWidth doc.body.clientWidth", r: 49, c: 21, s: "f1", u: "f3",  }; //617
+$.a($224, $237, 477);
+var $238 = { n: "@", v: "docBodyClientHeight doc.body.clientHeight", r: 50, c: 21, s: "f1", u: "f3",  }; //618
+$.a($224, $238, 479);
+var $239 = { n: "@", v: "docBodyOffsetWidth doc.body.offsetWidth", r: 51, c: 21, s: "f1", u: "f3",  }; //619
+$.a($224, $239, 481);
+var $240 = { n: "@", v: "docBodyOffsetHeight doc.body.offsetHeight", r: 52, c: 21, s: "f1", u: "f3",  }; //620
+$.a($224, $240, 483);
+var $241 = { n: "@", v: "docBodyScrollWidth doc.body.scrollWidth", r: 53, c: 21, s: "f1", u: "f3",  }; //621
+$.a($224, $241, 485);
+var $242 = { n: "@", v: "docBodyScrollHeight doc.body.scrollHeight", r: 54, c: 21, s: "f1", u: "f3",  }; //622
+$.a($224, $242, 487);
+var $243 = { n: "@", v: "docElemClientWidth docElem.clientWidth", r: 55, c: 21, s: "f1", u: "f3",  }; //623
+$.a($224, $243, 489);
+var $244 = { n: "@", v: "docElemClientHeight docElem.clientHeight", r: 56, c: 21, s: "f1", u: "f3",  }; //624
+$.a($224, $244, 491);
+var $245 = { n: "@", v: "docElemOffsetWidth docElem.offsetWidth", r: 57, c: 21, s: "f1", u: "f3",  }; //625
+$.a($224, $245, 493);
+var $246 = { n: "@", v: "docElemOffsetHeight docElem.offsetHeight", r: 58, c: 21, s: "f1", u: "f3",  }; //626
+$.a($224, $246, 495);
+var $247 = { n: "@", v: "docElemScrollWidth docElem.scrollWidth", r: 59, c: 21, s: "f1", u: "f3",  }; //627
+$.a($224, $247, 497);
+var $248 = { n: "@", v: "docElemScrollHeight docElem.scrollHeight", r: 60, c: 21, s: "f1", u: "f3",  }; //628
+$.a($224, $248, 499);
+var $249 = { n: "@", v: "docInnerWidth docElem.innerWidth", r: 61, c: 21, s: "f1", u: "f3",  }; //629
+$.a($224, $249, 501);
+var $250 = { n: "@", v: "docInnerHeight docElem.innerHeight", r: 62, c: 21, s: "f1", u: "f3",  }; //630
+$.a($224, $250, 503);
+var $251 = { n: "@", v: "offset", r: 63, c: 21, s: "f1", u: "f3",  }; //631
+$.a($224, $251, 505);
+var $252 = { n: "{", v: "", r: 64, c: 25, s: "f1", u: "f3",  }; //632
+$.a($251, $252, 507);
+var $253 = { n: "@", v: "left elem.offsetLeft", r: 65, c: 29, s: "f1", u: "f3",  }; //633
+$.a($252, $253, 509);
+var $254 = { n: "@", v: "top elem.offsetTop", r: 66, c: 29, s: "f1", u: "f3",  }; //634
+$.a($252, $254, 511);
+var $255 = { n: "@", v: "elemRectLeft rect.left", r: 67, c: 21, s: "f1", u: "f3",  }; //635
+$.a($224, $255, 513);
+var $256 = { n: "@", v: "elemRectTop rect.top", r: 68, c: 21, s: "f1", u: "f3",  }; //636
+$.a($224, $256, 515);
+var $257 = { n: "@", v: "elemRectRight rect.right", r: 69, c: 21, s: "f1", u: "f3",  }; //637
+$.a($224, $257, 517);
+var $258 = { n: "@", v: "elemRectBottom rect.bottom", r: 70, c: 21, s: "f1", u: "f3",  }; //638
+$.a($224, $258, 519);
+var $259 = { n: "@", v: "elemRectWidth rect.width", r: 71, c: 21, s: "f1", u: "f3",  }; //639
+$.a($224, $259, 521);
+var $260 = { n: "@", v: "elemRectHeight rect.height", r: 72, c: 21, s: "f1", u: "f3",  }; //640
+$.a($224, $260, 523);
+var $261 = { n: "@", v: "documentRect document.body.getBoundingClientRect()", r: 73, c: 21, s: "f1", u: "f3",  }; //641
+$.a($224, $261, 525);
+var $262 = { n: "return", v: "ret", r: 74, c: 13, s: "f1", u: "f3",  }; //642
+$.a($213, $262, 527);
+var $263 = { n: "m", v: "popupStyle", r: 76, c: 9, s: "f1", u: "f3",  }; //643
+$.a($209, $263, 529);
+var $264 = { n: "param", v: "options", r: 77, c: 13, s: "f1", u: "f3",  }; //644
+$.a($263, $264, 531);
+var $265 = { n: "var", v: "width = options.width || (16 * 30)", r: 78, c: 13, s: "f1", u: "f3",  }; //645
+$.a($263, $265, 533);
+var $266 = { n: "var", v: "padMarginWidth = options.padMarginWidth || 0", r: 79, c: 13, s: "f1", u: "f3",  }; //646
+$.a($263, $266, 535);
+var $267 = { n: "var", v: "height = options.height || (9 * 30)", r: 80, c: 13, s: "f1", u: "f3",  }; //647
+$.a($263, $267, 537);
+var $268 = { n: "var", v: "event = options.event", r: 81, c: 13, s: "f1", u: "f3",  }; //648
+$.a($263, $268, 539);
+var $269 = { n: "if", v: "event", r: 82, c: 13, s: "f1", u: "f3",  }; //649
+$.a($263, $269, 541);
+var $270 = { n: "log", v: "event", r: 83, c: 17, s: "f1", u: "f3",  }; //650
+$.a($269, $270, 543);
+var $271 = { n: "return", v: "", r: 84, c: 17, s: "f1", u: "f3",  }; //651
+$.a($269, $271, 545);
+var $272 = { n: "{", v: "", r: 85, c: 21, s: "f1", u: "f3",  }; //652
+$.a($271, $272, 547);
+var $273 = { n: "@", v: "position \"absolute\"", r: 86, c: 25, s: "f1", u: "f3",  }; //653
+$.a($272, $273, 549);
+var $274 = { n: "@", v: "display \"inline\"", r: 87, c: 25, s: "f1", u: "f3",  }; //654
+$.a($272, $274, 551);
+var $275 = { n: "@", v: "top Math.max(event.pageY - (height / 2), 0)", r: 88, c: 25, s: "f1", u: "f3",  }; //655
+$.a($272, $275, 553);
+var $276 = { n: "@", v: "left this.leftCheckedFromEvent(event, width + padMarginWidth)", r: 89, c: 25, s: "f1", u: "f3",  }; //656
+$.a($272, $276, 555);
+var $277 = { n: "@", v: "width (width + \"px\")", r: 90, c: 25, s: "f1", u: "f3",  }; //657
+$.a($272, $277, 557);
+var $278 = { n: "@", v: "height (height + \"px\")", r: 91, c: 25, s: "f1", u: "f3",  }; //658
+$.a($272, $278, 559);
+var $279 = { n: "else", v: "", r: 92, c: 13, s: "f1", u: "f3",  }; //659
+$.a($263, $279, 561);
+var $280 = { n: "return", v: "", r: 93, c: 17, s: "f1", u: "f3",  }; //660
+$.a($279, $280, 563);
+var $281 = { n: "{", v: "", r: 94, c: 21, s: "f1", u: "f3",  }; //661
+$.a($280, $281, 565);
+var $282 = { n: "@", v: "position \"absolute\"", r: 95, c: 25, s: "f1", u: "f3",  }; //662
+$.a($281, $282, 567);
+var $283 = { n: "@", v: "top \"50%\"", r: 96, c: 25, s: "f1", u: "f3",  }; //663
+$.a($281, $283, 569);
+var $284 = { n: "@", v: "left \"50%\"", r: 97, c: 25, s: "f1", u: "f3",  }; //664
+$.a($281, $284, 571);
+var $285 = { n: "@", v: "width (width + \"px\")", r: 98, c: 25, s: "f1", u: "f3",  }; //665
+$.a($281, $285, 573);
+var $286 = { n: "@", v: "height (height + \"px\")", r: 99, c: 25, s: "f1", u: "f3",  }; //666
+$.a($281, $286, 575);
+var $287 = { n: "@", v: "marginLeft ((-1 * width/2) + \"px\")", r: 100, c: 25, s: "f1", u: "f3",  }; //667
+$.a($281, $287, 577);
+var $288 = { n: "@", v: "marginTop ((-1 * height/2) + \"px\")", r: 101, c: 25, s: "f1", u: "f3",  }; //668
+$.a($281, $288, 579);
+var $289 = { n: "m", v: "topCheckedFromEvent", r: 103, c: 9, s: "f1", u: "f3",  }; //669
+$.a($209, $289, 581);
+var $290 = { n: "param", v: "event", r: 104, c: 13, s: "f1", u: "f3",  }; //670
+$.a($289, $290, 583);
+var $291 = { n: "param", v: "height", r: 105, c: 13, s: "f1", u: "f3",  }; //671
+$.a($289, $291, 585);
+var $292 = { n: "var", v: "top = event.pageY - (height / 2)", r: 106, c: 13, s: "f1", u: "f3",  }; //672
+$.a($289, $292, 587);
+var $293 = { n: "if", v: "top < 0", r: 107, c: 13, s: "f1", u: "f3",  }; //673
+$.a($289, $293, 589);
+var $294 = { n: "return", v: "0", r: 108, c: 17, s: "f1", u: "f3",  }; //674
+$.a($293, $294, 591);
+var $295 = { n: "elif", v: "(top + height) > win.innerHeight", r: 109, c: 13, s: "f1", u: "f3",  }; //675
+$.a($289, $295, 593);
+var $296 = { n: "return", v: "win.innerHeight - height", r: 110, c: 17, s: "f1", u: "f3",  }; //676
+$.a($295, $296, 595);
+var $297 = { n: "else", v: "", r: 111, c: 13, s: "f1", u: "f3",  }; //677
+$.a($289, $297, 597);
+var $298 = { n: "return", v: "top", r: 112, c: 17, s: "f1", u: "f3",  }; //678
+$.a($297, $298, 599);
+var $299 = { n: "m", v: "leftCheckedFromEvent", r: 114, c: 9, s: "f1", u: "f3",  }; //679
+$.a($209, $299, 601);
+var $300 = { n: "param", v: "event", r: 115, c: 13, s: "f1", u: "f3",  }; //680
+$.a($299, $300, 603);
+var $301 = { n: "param", v: "width", r: 116, c: 13, s: "f1", u: "f3",  }; //681
+$.a($299, $301, 605);
+var $302 = { n: "var", v: "left = event.pageX - (width / 2)", r: 117, c: 13, s: "f1", u: "f3",  }; //682
+$.a($299, $302, 607);
+var $303 = { n: "if", v: "left < 0", r: 118, c: 13, s: "f1", u: "f3",  }; //683
+$.a($299, $303, 609);
+var $304 = { n: "return", v: "0", r: 119, c: 17, s: "f1", u: "f3",  }; //684
+$.a($303, $304, 611);
+var $305 = { n: "elif", v: "(left + width) > doc.body.clientWidth", r: 120, c: 13, s: "f1", u: "f3",  }; //685
+$.a($299, $305, 613);
+var $306 = { n: "return", v: "doc.body.clientWidth - width", r: 121, c: 17, s: "f1", u: "f3",  }; //686
+$.a($305, $306, 615);
+var $307 = { n: "else", v: "", r: 122, c: 13, s: "f1", u: "f3",  }; //687
+$.a($299, $307, 617);
+var $308 = { n: "return", v: "left", r: 123, c: 17, s: "f1", u: "f3",  }; //688
+$.a($307, $308, 619);
+var $309 = { n: "class", v: "RichDiv", r: 3, c: 5, s: "f1", u: "f4",  }; //738
+$.a($1, $309, 621);
+var $310 = { n: "ctor", v: "", r: 4, c: 9, s: "f1", u: "f4",  }; //739
+$.a($309, $310, 623);
+var $311 = { n: "param", v: "element", r: 5, c: 13, s: "f1", u: "f4",  }; //740
+$.a($310, $311, 625);
+var $312 = { n: "param", v: "style", r: 6, c: 13, s: "f1", u: "f4",  }; //741
+$.a($310, $312, 627);
+var $313 = { n: "set", v: "this.$element = $(element)", r: 7, c: 13, s: "f1", u: "f4",  }; //742
+$.a($310, $313, 629);
+var $314 = { n: "set", v: "this.styleBuilder = new StyleBuilder(style)", r: 8, c: 13, s: "f1", u: "f4",  }; //743
+$.a($310, $314, 631);
+var $315 = { n: "set", v: "this.elementPosition = new ElementPosition(element)", r: 9, c: 13, s: "f1", u: "f4",  }; //744
+$.a($310, $315, 633);
+var $316 = { n: "m", v: "beaPopup", r: 11, c: 9, s: "f1", u: "f4",  }; //745
+$.a($309, $316, 635);
+var $317 = { n: "param", v: "options", r: 12, c: 13, s: "f1", u: "f4",  }; //746
+$.a($316, $317, 637);
+var $318 = { n: "var", v: "onClickElement = $(options.onClickElement)", r: 13, c: 13, s: "f1", u: "f4",  }; //747
+$.a($316, $318, 639);
+var $319 = { n: "var", v: "onClickElementPosition = new ElementPosition(options.onClickElement)", r: 14, c: 13, s: "f1", u: "f4",  }; //748
+$.a($316, $319, 641);
+var $320 = { n: "var", v: "that = this", r: 15, c: 13, s: "f1", u: "f4",  }; //749
+$.a($316, $320, 643);
+var $321 = { n: "_", v: "onClickElement.bind", r: 16, c: 13, s: "f1", u: "f4",  }; //750
+$.a($316, $321, 645);
+var $322 = { n: "@", v: "'click'", r: 17, c: 17, s: "f1", u: "f4",  }; //751
+$.a($321, $322, 647);
+var $323 = { n: "function", v: "", r: 18, c: 17, s: "f1", u: "f4",  }; //752
+$.a($321, $323, 649);
+var $324 = { n: "param", v: "event", r: 19, c: 21, s: "f1", u: "f4",  }; //753
+$.a($323, $324, 651);
+var $325 = { n: "_", v: "that.$element.css", r: 20, c: 21, s: "f1", u: "f4",  }; //754
+$.a($323, $325, 653);
+var $326 = { n: "_", v: "objUtils.extends", r: 21, c: 25, s: "f1", u: "f4",  }; //755
+$.a($325, $326, 655);
+var $327 = { n: "_", v: "that.styleBuilder.toStyleObject()", r: 22, c: 29, s: "f1", u: "f4",  }; //756
+$.a($326, $327, 657);
+var $328 = { n: "_", v: "that.elementPosition.popupStyle", r: 23, c: 29, s: "f1", u: "f4",  }; //757
+$.a($326, $328, 659);
+var $329 = { n: "{", v: "", r: 24, c: 33, s: "f1", u: "f4",  }; //758
+$.a($328, $329, 661);
+var $330 = { n: "@", v: "event event", r: 25, c: 37, s: "f1", u: "f4",  }; //759
+$.a($329, $330, 663);
+var $331 = { n: "@", v: "width options.width", r: 26, c: 37, s: "f1", u: "f4",  }; //760
+$.a($329, $331, 665);
+var $332 = { n: "@", v: "padMarginWidth that.styleBuilder.getPadMarginBorderWidth()", r: 27, c: 37, s: "f1", u: "f4",  }; //761
+$.a($329, $332, 667);
+var $333 = { n: "@", v: "height options.height", r: 28, c: 37, s: "f1", u: "f4",  }; //762
+$.a($329, $333, 669);
+var $334 = { n: "_", v: "that.$element.html", r: 29, c: 21, s: "f1", u: "f4",  }; //763
+$.a($323, $334, 671);
+var $335 = { n: "_", v: "JSON.stringify", r: 30, c: 25, s: "f1", u: "f4",  }; //764
+$.a($334, $335, 673);
+var $336 = { n: "{", v: "", r: 31, c: 29, s: "f1", u: "f4",  }; //765
+$.a($335, $336, 675);
+var $337 = { n: "@", v: "eventInfo", r: 32, c: 33, s: "f1", u: "f4",  }; //766
+$.a($336, $337, 677);
+var $338 = { n: "_", v: "posUtils.getEventInfo", r: 33, c: 37, s: "f1", u: "f4",  }; //767
+$.a($337, $338, 679);
+var $339 = { n: "@", v: "event", r: 34, c: 41, s: "f1", u: "f4",  }; //768
+$.a($338, $339, 681);
+var $340 = { n: "@", v: "mystyle", r: 35, c: 33, s: "f1", u: "f4",  }; //769
+$.a($336, $340, 683);
+var $341 = { n: "_", v: "that.elementPosition.popupStyle", r: 36, c: 37, s: "f1", u: "f4",  }; //770
+$.a($340, $341, 685);
+var $342 = { n: "{", v: "", r: 37, c: 41, s: "f1", u: "f4",  }; //771
+$.a($341, $342, 687);
+var $343 = { n: "@", v: "event event", r: 38, c: 45, s: "f1", u: "f4",  }; //772
+$.a($342, $343, 689);
+var $344 = { n: "@", v: "width options.width", r: 39, c: 45, s: "f1", u: "f4",  }; //773
+$.a($342, $344, 691);
+var $345 = { n: "@", v: "padMarginWidth that.styleBuilder.getPadMarginBorderWidth()", r: 40, c: 45, s: "f1", u: "f4",  }; //774
+$.a($342, $345, 693);
+var $346 = { n: "@", v: "height options.height", r: 41, c: 45, s: "f1", u: "f4",  }; //775
+$.a($342, $346, 695);
+var $347 = { n: "@", v: "elementInfo", r: 42, c: 33, s: "f1", u: "f4",  }; //776
+$.a($336, $347, 697);
+var $348 = { n: "_", v: "onClickElementPosition.getPositionData()", r: 43, c: 37, s: "f1", u: "f4",  }; //777
+$.a($347, $348, 699);
+var $349 = { n: "@", v: "null", r: 44, c: 29, s: "f1", u: "f4",  }; //778
+$.a($335, $349, 701);
+var $350 = { n: "@", v: "2", r: 45, c: 29, s: "f1", u: "f4",  }; //779
+$.a($335, $350, 703);
+var $351 = { n: "_", v: "that.$element.show()", r: 46, c: 21, s: "f1", u: "f4",  }; //780
+$.a($323, $351, 705);
+var $352 = { n: "_", v: "this.$element.bind", r: 48, c: 13, s: "f1", u: "f4",  }; //781
+$.a($316, $352, 707);
+var $353 = { n: "@", v: "'click'", r: 49, c: 17, s: "f1", u: "f4",  }; //782
+$.a($352, $353, 709);
+var $354 = { n: "function", v: "", r: 50, c: 17, s: "f1", u: "f4",  }; //783
+$.a($352, $354, 711);
+var $355 = { n: "_", v: "that.$element.hide()", r: 51, c: 21, s: "f1", u: "f4",  }; //784
+$.a($354, $355, 713);
+var $356 = { n: "var", v: "objUtils", r: 3, c: 5, s: "f1", u: "f5",  }; //813
+$.a($1, $356, 715);
+var $357 = { n: "{", v: "", r: 4, c: 9, s: "f1", u: "f5",  }; //814
+$.a($356, $357, 717);
+var $358 = { n: "@", v: "extends", r: 5, c: 13, s: "f1", u: "f5",  }; //815
+$.a($357, $358, 719);
+var $359 = { n: "function", v: "", r: 6, c: 17, s: "f1", u: "f5",  }; //816
+$.a($358, $359, 721);
+var $360 = { n: "param", v: "objsink", r: 7, c: 21, s: "f1", u: "f5",  }; //817
+$.a($359, $360, 723);
+var $361 = { n: "param", v: "objsource", r: 8, c: 21, s: "f1", u: "f5",  }; //818
+$.a($359, $361, 725);
+var $362 = { n: "for", v: "var k in objsource", r: 9, c: 21, s: "f1", u: "f5",  }; //819
+$.a($359, $362, 727);
+var $363 = { n: "set", v: "objsink[k] = objsource[k]", r: 10, c: 25, s: "f1", u: "f5",  }; //820
+$.a($362, $363, 729);
+var $364 = { n: "log", v: "'objsink, objsource', objsink, objsource", r: 11, c: 21, s: "f1", u: "f5",  }; //821
+$.a($359, $364, 731);
+var $365 = { n: "return", v: "objsink", r: 12, c: 21, s: "f1", u: "f5",  }; //822
+$.a($359, $365, 733);
+var $366 = { n: "var", v: "posUtils", r: 14, c: 5, s: "f1", u: "f5",  }; //823
+$.a($1, $366, 735);
+var $367 = { n: "{", v: "", r: 15, c: 9, s: "f1", u: "f5",  }; //824
+$.a($366, $367, 737);
+var $368 = { n: "@", v: "getEventInfo", r: 16, c: 13, s: "f1", u: "f5",  }; //825
+$.a($367, $368, 739);
+var $369 = { n: "function", v: "", r: 17, c: 17, s: "f1", u: "f5",  }; //826
+$.a($368, $369, 741);
+var $370 = { n: "param", v: "event", r: 18, c: 21, s: "f1", u: "f5",  }; //827
+$.a($369, $370, 743);
+var $371 = { n: "return", v: "", r: 19, c: 21, s: "f1", u: "f5",  }; //828
+$.a($369, $371, 745);
+var $372 = { n: "{", v: "", r: 20, c: 25, s: "f1", u: "f5",  }; //829
+$.a($371, $372, 747);
+var $373 = { n: "@", v: "kind 'event'", r: 21, c: 29, s: "f1", u: "f5",  }; //830
+$.a($372, $373, 749);
+var $374 = { n: "@", v: "clientX event.clientX", r: 22, c: 29, s: "f1", u: "f5",  }; //831
+$.a($372, $374, 751);
+var $375 = { n: "@", v: "clientY event.clientY", r: 23, c: 29, s: "f1", u: "f5",  }; //832
+$.a($372, $375, 753);
+var $376 = { n: "@", v: "offsetX event.offsetX", r: 24, c: 29, s: "f1", u: "f5",  }; //833
+$.a($372, $376, 755);
+var $377 = { n: "@", v: "offsetY event.offsetY", r: 25, c: 29, s: "f1", u: "f5",  }; //834
+$.a($372, $377, 757);
+var $378 = { n: "@", v: "pageX event.pageX", r: 26, c: 29, s: "f1", u: "f5",  }; //835
+$.a($372, $378, 759);
+var $379 = { n: "@", v: "pageY event.pageY", r: 27, c: 29, s: "f1", u: "f5",  }; //836
+$.a($372, $379, 761);
+var $380 = { n: "@", v: "screenX event.screenX", r: 28, c: 29, s: "f1", u: "f5",  }; //837
+$.a($372, $380, 763);
+var $381 = { n: "@", v: "screenY event.screenY", r: 29, c: 29, s: "f1", u: "f5",  }; //838
+$.a($372, $381, 765);
+var $382 = { n: "ready", v: "", r: 9, c: 5, s: "f1", u: "f1",  }; //43
+$.a($1, $382, 767);
+var $383 = { n: "var", v: "bodyPos = new ElementPosition(document.body)", r: 11, c: 9, s: "f1", u: "f1",  }; //44
+$.a($382, $383, 769);
+var $384 = { n: "log", v: "'bodyPos', bodyPos.getPositionData()", r: 12, c: 9, s: "f1", u: "f1",  }; //45
+$.a($382, $384, 771);
+var $385 = { n: "var", v: "headrPos = new ElementPosition('#header')", r: 13, c: 9, s: "f1", u: "f1",  }; //46
+$.a($382, $385, 773);
+var $386 = { n: "log", v: "'headrPos', headrPos.getPositionData()", r: 14, c: 9, s: "f1", u: "f1",  }; //47
+$.a($382, $386, 775);
+var $387 = { n: "var", v: "mainContentPos = new ElementPosition('#main-content')", r: 15, c: 9, s: "f1", u: "f1",  }; //48
+$.a($382, $387, 777);
+var $388 = { n: "log", v: "'mainContentPos', mainContentPos.getPositionData()", r: 16, c: 9, s: "f1", u: "f1",  }; //49
+$.a($382, $388, 779);
+var $389 = { n: "var", v: "mainContentPopLayoutInfo = new RichDiv('#mainContentPopLayoutInfo', popupStyle())", r: 18, c: 9, s: "f1", u: "f1",  }; //50
+$.a($382, $389, 781);
+var $390 = { n: "_", v: "mainContentPopLayoutInfo.beaPopup", r: 19, c: 9, s: "f1", u: "f1",  }; //51
+$.a($382, $390, 783);
+var $391 = { n: "{", v: "", r: 20, c: 13, s: "f1", u: "f1",  }; //52
+$.a($390, $391, 785);
+var $392 = { n: "@", v: "onClickElement '#main-content'", r: 21, c: 17, s: "f1", u: "f1",  }; //53
+$.a($391, $392, 787);
+var $393 = { n: "@", v: "width (20 * 16)", r: 22, c: 17, s: "f1", u: "f1",  }; //54
+$.a($391, $393, 789);
+var $394 = { n: "@", v: "height (20 * 9)", r: 23, c: 17, s: "f1", u: "f1",  }; //55
+$.a($391, $394, 791);
+var $395 = { n: "var", v: "headerPopLayoutInfo = new RichDiv('#headerPopLayoutInfo', popupStyle())", r: 25, c: 9, s: "f1", u: "f1",  }; //56
+$.a($382, $395, 793);
+var $396 = { n: "_", v: "headerPopLayoutInfo.beaPopup", r: 26, c: 9, s: "f1", u: "f1",  }; //57
+$.a($382, $396, 795);
+var $397 = { n: "{", v: "", r: 27, c: 13, s: "f1", u: "f1",  }; //58
+$.a($396, $397, 797);
+var $398 = { n: "@", v: "onClickElement '#header'", r: 28, c: 17, s: "f1", u: "f1",  }; //59
+$.a($397, $398, 799);
+var $399 = { n: "@", v: "width (20 * 16)", r: 29, c: 17, s: "f1", u: "f1",  }; //60
+$.a($397, $399, 801);
+var $400 = { n: "@", v: "height (20 * 9)", r: 30, c: 17, s: "f1", u: "f1",  }; //61
+$.a($397, $400, 803);
+var $401 = { n: "function", v: "popupStyle", r: 32, c: 5, s: "f1", u: "f1",  }; //62
+$.a($1, $401, 805);
+var $402 = { n: "return", v: "", r: 33, c: 9, s: "f1", u: "f1",  }; //63
+$.a($401, $402, 807);
+var $403 = { n: "{", v: "", r: 34, c: 13, s: "f1", u: "f1",  }; //64
+$.a($402, $403, 809);
+var $404 = { n: "@", v: "padding 5", r: 35, c: 17, s: "f1", u: "f1",  }; //65
+$.a($403, $404, 811);
+var $405 = { n: "@", v: "border", r: 36, c: 17, s: "f1", u: "f1",  }; //66
+$.a($403, $405, 813);
+var $406 = { n: "{", v: "", r: 37, c: 21, s: "f1", u: "f1",  }; //67
+$.a($405, $406, 815);
+var $407 = { n: "@", v: "size 5", r: 38, c: 25, s: "f1", u: "f1",  }; //68
+$.a($406, $407, 817);
+var $408 = { n: "@", v: "color '#2288AA'", r: 39, c: 25, s: "f1", u: "f1",  }; //69
+$.a($406, $408, 819);
+var $409 = { n: "@", v: "style 'solid'", r: 40, c: 25, s: "f1", u: "f1",  }; //70
+$.a($406, $409, 821);
+var $410 = { n: "@", v: "backgroundColor '#DDEEFF'", r: 41, c: 17, s: "f1", u: "f1",  }; //71
+$.a($403, $410, 823);
+var $411 = { n: "@", v: "overflow 'auto'", r: 42, c: 17, s: "f1", u: "f1",  }; //72
+$.a($403, $411, 825);

@@ -1,0 +1,44 @@
+﻿$group
+
+	@ getProjectRoot
+		function
+			param userId
+			param projectId
+			param callback
+
+			_ repoFS.readDir
+				@ userId
+				@ projectId
+				@ null
+				f_cb( result )
+					var items = []
+					foreach f in result
+						const parentPath = userId + '/' + projectId
+						const fileItem
+							{
+								@ basename f.basename
+								@ parentFullPath parentPath
+								@ fullPath parentPath + '/' + f.basename
+								@ parentFolderPath null
+								@ folderPath f.basename
+								@ kind f.kind
+						if f.kind == 1
+							const ss = f.basename.split('.')
+							set fileItem.isIttfDocument = ss.length > 0 && ss.pop() === 'ittf'
+							set fileItem.schema = fileItem.isIttfDocument && ss.length > 1 ? ss[ss.length-1] : null
+							set fileItem.isFragment = (parentPath + '/' + f.basename).indexOf('/t/') > - 1
+						_ items.push(fileItem)
+					return
+						_ callback
+							@ null
+							{
+								@ status
+									_ success
+										@ 'Folder retrieved for project ' + userId + '/' + projectId
+								@ data
+									{
+										@ kind 0
+										@ userId userId
+										@ projectId projectId
+										@ folderPath null
+										@ items items

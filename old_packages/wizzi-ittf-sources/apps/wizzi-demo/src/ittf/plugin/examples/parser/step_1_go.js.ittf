@@ -1,0 +1,87 @@
+﻿demo_module( plugin_examples, parser, 1 )
+
+	# 
+		# DEMO: How to use the `parser` wizzi model type to 
+		#       test regular expressions
+	+
+	
+	$if false
+		
+		loadMTree( 1, first.parser.ittf, print:dumpx )
+			loadModel( 1, first.parser.ittf, save;print:jsonx )
+				log 'wizziModel.elements', Object.keys(wizziModel.elements)
+				log 'wizziModel.symbols', Object.keys(wizziModel.symbols)
+				log 'wizziModel.extensionParsers', Object.keys(wizziModel.extensionParsers)
+
+				var results
+					_ wizziModel.execTests
+						f_cb_throw( results )
+							log 'results', results
+							foreach r in results
+								var x = r.state.input
+								delete r.state.input
+								_ printValue('test state', r.state, 'dashes')
+								_ printValue('test state', x, 'meter', 140)
+								_ printValue('test ast', r.ast, 'json')
+
+	$if false
+		
+		loadMTree( 1, css.parser.ittf, print:dumpx )
+			loadModel( 1, css.parser.ittf, save;print:jsonx )
+				log 'wizziModel.elements', Object.keys(wizziModel.elements)
+				log 'wizziModel.symbols', Object.keys(wizziModel.symbols)
+				log 'wizziModel.extensionParsers', Object.keys(wizziModel.extensionParsers)
+
+				var results
+					_ wizziModel.execTests
+						f_cb_throw( results )
+							log 'results', results
+							foreach r in results
+								var x = r.state.input
+								delete r.state.input
+								_ printValue('test state', r.state, 'dashes')
+								_ printValue('test state', x, 'meter', 140)
+								_ printValue('test ast', r.ast, 'json')
+
+	$if false
+		
+		loadMTree( 1, expr.parser.ittf, print:dumpx )
+			loadModel( 1, expr.parser.ittf, save;print:jsonx )
+				log 'wizziModel.elements', Object.keys(wizziModel.elements)
+				log 'wizziModel.symbols', Object.keys(wizziModel.symbols)
+				log 'wizziModel.extensionParsers', Object.keys(wizziModel.extensionParsers)
+
+				var results
+					_ wizziModel.execTests
+						f_cb_throw( results )
+							log 'results', results
+							foreach r in results
+								var x = r.state.input
+								delete r.state.input
+								_ printValue('test state', r.state, 'dashes')
+								_ printValue('test state', x, 'meter', 140)
+								_ printValue('test ast', r.ast, 'json')
+
+
+	$if true
+
+		# var folder = "C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/wfSite/bootstrap-4-dev/scss/mixins"
+		var folder = "C:/My/wizzi/v5/apps/wizzi-studio/dist/server/ittf/demo/wfSite/bootstrap-4-dev/scss"
+
+		var source
+			_ fsfile.read
+				_ path.join
+					@ folder
+					@ '_variables.scss'
+
+		_ printValue('scss source', source, 'dashes')
+		
+		loadModel( 1, css.parser.ittf )
+			_ wizziModel.match
+				@ source
+				f_cb_throw( result )
+					log 'result', result
+					var x = result.state.input
+					delete result.state.input
+					_ printValue('test state', result.state, 'dashes')
+					_ printValue('test ast', result.ast, 'json')

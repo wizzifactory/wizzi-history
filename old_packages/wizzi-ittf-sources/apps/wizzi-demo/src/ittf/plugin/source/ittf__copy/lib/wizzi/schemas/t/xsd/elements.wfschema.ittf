@@ -1,0 +1,138 @@
+﻿$group
+
+	e particle : item
+		is-abstract
+		a_tag( minOccurs, min-occurs )
+		a_tag( maxOccurs, max-occurs )
+	
+	e element : particle
+		tag e
+		a ref
+			# The name of an element declared
+			# MutuallyExclusive: e:complexType, e:simpleType, e:key, e:keyref, e:unique, 
+				\b a:nillable, a:default, a:fixed, a:form, a:block, a:type
+		a_flag(isAbstract, is-abstract)
+		a_flag(isNillable, is-nillable)
+		a type
+			# Either the name of a built-in data type, or 
+			# the name of a simpleType or complexType
+			# MutuallyExclusive: a:ref
+		a fixed
+			# A fixed (constant value) of its content, if a simple type or a textOnly
+			# MutuallyExclusive: a:default
+		a default
+			# The default value of its content, if a simple type or a textOnly.
+			# MutuallyExclusive: a:fixed
+		a block
+			# Used to constrain the replacement of the name of the complex type in derivations???
+			restrict
+				enum #all
+					# prevents replacement at all
+				enum restriction
+					# prevents replacement on derivations by restriction
+				enum extension
+					# prevents replacement on derivations by extension
+				enum substitution
+					# prevents replacement on derivations by extension
+        a final
+			# Used to constrain derivations
+			restrict
+				enum #all
+					# prevents derivations at all
+				enum restriction
+					# prevents derivations by restriction
+				enum extension
+					# prevents derivations by extension
+		a_tag(substitutionGroup, substitution-group)
+			# The name of an element for which this element can be substituted. 
+			# This element must have the same type or a type derived 
+			# from the type of the specified element.
+		a form
+			restrict
+				enum qualified
+				enum unqualified
+
+	e group : particle
+		# Parents: schema, choice, sequence, complexType, complexContentRestrict, complexContentExtend
+		# Content: (all | choice | sequence)?
+
+	e groupRef : particle
+		tag group-ref
+	
+	e elementRef : particle
+		tag e-ref
+
+	e compositor : particle
+		is-abstract
+	
+	e all : compositor
+		# children must correspond, to the specified `particles`
+		# and the elements can occur in any order.
+		# Parents: group, choice, sequence, complexType, simpleContentRestrict, simpleContentExtend, complexContentRestrict, complexContentExtend
+		# Content: (element | any)*
+	
+	e choice : compositor
+		# children must correspond to exactly one of the specified `particles`
+		# Parents: group, choice, sequence, complexType, simpleContentRestrict, simpleContentExtend, complexContentRestrict, complexContentExtend
+		# Content: (element | group | choice | sequence | any)*
+	
+	e sequence : compositor
+		# Requires the elements in the group to appear in 
+		# the specified sequence within the containing element.
+		# Parents: group, choice, sequence, complexType, simpleContentRestrict, simpleContentExtend, complexContentRestrict, complexContentExtend
+		# Content: (element | group | choice | sequence | any)*
+	
+	$* =============================================
+		WILDCARD
+	============================================= *$
+	
+	e any : item
+		tag any
+		a_tag( processContents, process-contents )
+			default strict
+			restrict
+                enum skip
+                enum lax
+                enum strict
+
+	$* =============================================
+		ID CONSTRAINTS
+	============================================= *$
+	
+	e idConstraint : item
+		is-abstract
+		r selector
+			one-to-one
+		r field/s
+	
+	e key : idConstraint
+	
+	e keyRef : idConstraint
+		tag key-ref
+		a refer
+			# The name of a key or unique element
+			# indicated by the specified namespace. 
+			# The refer value must be a qualified name (QName). 
+			# The type can include a namespace prefix.
+	
+	e unique : idConstraint
+		# Specifies that an attribute or element value
+		# (or a combination) must be unique within the specified scope.
+		# The value must be unique or nil.
+	
+	e selector : item
+		a xpath
+		# XPath expression relative to the element being declared.
+		# Identifies the child elements (of the element being declared) 
+		# to which the identity constraint applies.
+	
+	e field : item
+		a xpath
+		# XPath expression that is relative to each element 
+		# selected by the selector of the identity constraint. 
+		# This expression must identify a single element or attribute 
+		# whose content or value is used for the constraint. 
+		# If the expression identifies an element, that element 
+		# must be of a simple type.
+
+

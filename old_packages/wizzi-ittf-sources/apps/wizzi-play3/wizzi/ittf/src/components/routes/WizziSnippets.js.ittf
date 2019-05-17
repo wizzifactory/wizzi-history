@@ -1,0 +1,88 @@
+﻿r-container( WizziSnippets, false, true
+
+	$append imports
+		common/page_imports()
+		import
+			@ getJobGists
+			gists/optionsImportActions(snippet)
+			from '../../store/actions'
+		import MyLink from '../mui/FileSystemNavItem'
+		import OptionsDialog from './dialogs/OptionsDialog'
+		import ConfirmDialog from './dialogs/ConfirmDialog'
+
+		gists/optionsData(snippet)
+
+	style
+		{ root
+			@ flexGrow 1
+		{ barHead
+			@ marginLeft '15px'
+		{ column
+			@ float 'left'
+			@ padding '20px'
+
+	state
+		$include common/optionsState
+
+	did-mount
+		prop dispatchGetJobGists
+		_ dispatchGetJobGists
+			@ 'snippet'
+
+	gists/optionsHandlers(snippet)
+
+	render
+		prop classes
+		prop loadingError
+		prop match
+		prop snippets
+
+		common/guardLoading( snippets )
+
+		return
+			. { classes.root }
+				h2 Job snippets
+				$include common/optionsRender
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						common/tlb-btn( Create, this.handleCreateJobSnippet
+				. { classes.column }
+					< List
+						{
+							_ snippets.map
+								=>
+									param p
+									param i
+									return
+										< MyLink
+											@ key {i}
+											@ title {p.basename}
+											@ kind {1} 
+											@ to
+												`lit 
+													+ /job/snippet/
+													@ match.params.userId
+													+ /
+													@ p.hash
+											@ onDuplicate
+												=> 
+													_ this.handleDuplicateJobSnippet(p.hash, p.basename)
+											@ onRename
+												=> 
+													_ this.handleRenameJobSnippet(p.hash, p.basename)
+											@ onDelete
+												=> 
+													_ this.handleDeleteJobSnippet(p.hash, p.basename)
+
+
+	$append state-to-props
+		@ loadingError state.job.loadingError
+		@ snippets state.job.snippets
+
+	$append dispatch-to-props
+
+		common/dispatch( getJobGists, kind
+		gists/optionsDispatchToProps(snippet)
+

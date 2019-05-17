@@ -1,0 +1,16 @@
+﻿$group
+	$params &opt
+
+	=> handleSplitter1Resize
+		param sizes
+		log 'handleSplitter1Resize', sizes
+		_ this.setState
+			{
+				@ splitter1Sizes sizes
+
+	$if opt.codeInState
+		=> handleCodeChange
+			param value
+			_ this.setState
+				{
+					@ codeSnippet value

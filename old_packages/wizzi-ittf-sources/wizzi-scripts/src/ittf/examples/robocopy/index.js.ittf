@@ -1,0 +1,51 @@
+﻿base_example()
+
+	var rcOptions1
+		{
+			@ source
+				_ path.join
+					@ __dirname
+					@ 'data'
+					@ 'from'
+			[ destination
+				_ path.join
+					@ __dirname
+					@ 'data'
+					@ 'to1'
+				_ path.join
+					@ __dirname
+					@ 'data'
+					@ 'to2'
+			@ serial false
+			[ files
+
+	_ robo
+		f_cb_test(result)
+			log 'robo.result', result
+			_ roboToEventStream
+				f_cb_test(result)
+					log 'roboToEventStream.result', result
+	
+	function robo
+		param callback
+
+		_ manager.robocopyExec
+			@ rcOptions1
+			@ callback
+
+	function roboToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.robocopyExecToEventStream
+			@ rcOptions1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result
+
+

@@ -1,0 +1,31 @@
+﻿$group
+
+	@ getIttfDocument
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+
+			var ittf
+				_ paths.getIttfFileContentByHash
+					@ hash
+
+			if ittf.ok == false
+				return
+					_ callback
+						{
+							@ status
+								_ error
+									@ ittf.message
+			else
+				return
+					_ callback
+						@ null
+						{
+							@ data
+								{
+									@ content ittf.content
+							@ status
+								_ success
+									@ 'Ittf document content fetched'

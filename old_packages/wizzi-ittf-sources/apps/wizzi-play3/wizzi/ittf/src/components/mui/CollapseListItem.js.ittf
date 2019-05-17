@@ -1,0 +1,223 @@
+﻿r-component( CollapseListItem )
+
+	$append imports
+		import { Link } from 'react-router-dom'
+		import ListItem from '@material-ui/core/ListItem'
+		import Collapse from '@material-ui/core/Collapse'
+		import Tooltip from '@material-ui/core/Tooltip'
+		import Button from '@material-ui/core/Button'
+		import IconButton from '@material-ui/core/IconButton'
+		import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder'
+		import { CreateFileIcon } from './Icons'
+		import { FolderIcon, FileIcon, DuplicateIcon, RenameIcon } from './Icons'
+		import DeleteIcon from '@material-ui/icons/Delete'
+		import EditIcon from '@material-ui/icons/Edit'
+		import LaunchIcon from '@material-ui/icons/Launch'
+
+		function compareFsItems
+			param a
+			param b
+			var a_has_children = a.children && a.children.length > 0
+			var b_has_children = b.children && b.children.length > 0
+			if a_has_children && !b_has_children
+				return -1
+			elif b_has_children && !a_has_children
+				return 1
+			elif a.name < b.name
+				return -1
+			elif b.name < a.name
+				return 1
+			else
+				return 0
+
+	prop classes
+		{
+		required
+
+	#
+	# { item
+	#   string name
+	#   string schema
+	#   boolean isFragment
+	#   string itemPath
+	#   string hash
+	#   [ children
+	#
+	prop item
+		{
+		required
+
+	prop onSelect
+		func
+
+	prop to
+		string
+
+	prop openImmediately
+		boolean
+		default false
+
+	prop applySort
+		boolean
+		default true
+
+	style
+		nav_buttons_styles()
+    
+
+	state
+		@ open false
+		@ showItemIcons false
+		@ showGroupIcons false
+
+	did-mount
+		prop item
+		if item && item.openImmediately
+			_ this.setState
+				{
+					@ open true
+    
+	=> handleExpandCollapse
+		_ this.setState
+			{
+				@ open !this.state.open
+
+	=> handleMouseEnterItem
+		param e
+		_ e.stopPropagation
+		_ this.setState
+			{
+				@ showItemIcons true
+		_ setTimeout
+			=>
+				_ this.setState
+					{
+						@ showItemIcons false
+			@ 2000
+
+	=> handleMouseLeaveItem
+		_ this.setState
+			{
+				@ showItemIcons false
+
+	=> handleMouseEnterGroup
+		param e
+		_ e.stopPropagation
+		_ this.setState
+			{
+				@ showGroupIcons true
+		_ setTimeout
+			=>
+				_ this.setState
+					{
+						@ showGroupIcons false
+			@ 2000
+
+	=> handleMouseLeaveGroup
+		_ this.setState
+			{
+				@ showGroupIcons false
+
+	render
+		
+		prop classes
+		prop item
+		prop onSelect
+		prop to
+		prop applySort
+
+		prop onCreateFolder
+		prop onCreateFile
+		prop onDuplicate
+		prop onRename
+		prop onDelete
+
+		const { open, showItemIcons, showGroupIcons } = this.state
+
+		const hasChildren = item.children && item.children.length
+		if (hasChildren || item.name) == false
+			# case of empty list
+			return
+				span
+		
+		if hasChildren
+			const children_sorted = applySort ? item.children.sort(compareFsItems) : item.children
+			return
+				< ListItem
+					@ className {classes.navItem} 
+					@ disableGutters
+					@ dense {true}
+					@ onMouseEnter {this.handleMouseEnterGroup}
+					@ onMouseLeave {this.handleMouseLeaveGroup} 
+					< React.Fragment
+						< Button
+							@ className {classes.button}
+							@ onClick {this.handleExpandCollapse}
+							+ {item.name}
+						{
+							&&
+								+ showGroupIcons
+								< React.Fragment
+									create_folder_file()
+					< Collapse
+						@ in {open}
+						@ timeout auto
+						@ unmountOnExit
+						@ component ul
+						{
+							_ children_sorted.map
+								=>
+									param child 
+									param i
+									return
+										< CollapseListItem
+											@ key {i}
+											@ item {child}
+											@ classes {classes}
+											@ onSelect {onSelect}
+											@ onCreateFolder {onCreateFolder}
+											@ onCreateFile {onCreateFile}
+											@ onDuplicate {onDuplicate}
+											@ onRename {onRename}
+											@ onDelete {onDelete}
+											@ onDelete {onDelete}
+
+		else
+			return
+				< ListItem
+					@ className {classes.navLink}
+					@ dense {true}
+					@ disableGutters
+					@ onMouseEnter {this.handleMouseEnterItem}
+					@ onMouseLeave {this.handleMouseLeaveItem} 
+					< React.Fragment
+						{
+							&&
+								+ !!(onSelect || to) == false
+								< Button
+									@ className {classNames(classes.button, classes.navLinkButton)}
+									+ {item.name}
+						{
+							&&
+								+ onSelect
+								< Button
+									@ className {classNames(classes.button, classes.navLinkButton)}
+									@ onClick
+										=>
+											if onSelect
+												_ onSelect(item)
+									+ {item.name}
+						{
+							&&
+								+ to
+								< Button
+									@ component {Link}
+									@ to {to}
+									@ className {classNames(classes.button, classes.navLinkButton)}
+									+ {item.name}
+						{
+							&&
+								+ showItemIcons
+								< React.Fragment
+									dup_ren_del()
+									pkg_repo_jobs()

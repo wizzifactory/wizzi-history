@@ -1,0 +1,68 @@
+﻿$group
+
+	e jsObject : statement
+		
+		tag {
+		
+		# Declares an object structure.
+		# ittf:
+		#   var user
+		#     {
+		#       : name 'stefi'
+		#       : birth 1957
+		#
+		# It can be used everywhere an object can be used
+		# ittf
+		#    var user
+		#      _ db.getUser
+		#        {
+		#           : name 'arthur'
+		# 
+	
+	e jsArray : statement
+		
+		tag [
+
+		# Declares an array structure.
+		# ittf:
+		#   var users
+		#     [
+		#       {
+		#         : name 'stefi'
+		#         : birth 1957
+		#       {
+		#         : name 'arthur'
+		#         : birth 1955
+		#
+
+	e jsPropertyOrValue : statement
+		tag :
+		
+		# This element is used in many contexts with a different semantic.
+		#
+		# As children of a 'jsObject' element it is an object property.
+		# ittf
+		#   var user
+		#     {
+		#       : name 'annie'
+		#
+		# As children of a 'call', 'memberCall', 'decoratorCall', 'callOnValue' element
+		# is a function call argument.
+		# ittf
+		#   var user
+		#     _ db.getUser
+		#       : name 'annie'
+		#
+		# As a children of an element derived from the 'htmlelement' element
+		# is an html element attribute.
+		# ittf
+		#   m render
+		#     return
+		#       div
+		#         button Press me
+		#           : onClick { this.handleClick() }
+		#
+
+		
+
+

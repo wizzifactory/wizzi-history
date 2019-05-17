@@ -1,0 +1,50 @@
+  module  ids: 1 51
+    kind jsfile ids: 2 52
+    var util = require('util') ids: 3 53
+    var path = require('path') ids: 4 54
+    var verify = require('../../util/verify') ids: 5 55
+    set module.exports = ids: 6 56
+      function  ids: 7 57
+        param wzmodel ids: 8 58
+        param filepath ids: 9 59
+        param wzrepoRootPath ids: 10 60
+        var filepath_norm ids: 11 61
+          iif verify.isString(filepath) ids: 12 62
+            then  ids: 13 63
+              _ verify.replaceAll ids: 14 64
+                _ path.dirname(filepath) ids: 15 65
+                @ '\\' ids: 16 66
+                @ '/' ids: 17 67
+            else null ids: 18 68
+        var wzrepoRootPath_norm ids: 19 69
+          iif verify.isString(wzrepoRootPath) ids: 20 70
+            then  ids: 21 71
+              _ verify.replaceAll(wzrepoRootPath, '\\', '/') ids: 22 72
+            else null ids: 23 73
+        var  ids: 24 74
+          decl source ids: 25 75
+          decl fullpath ids: 26 76
+          decl relpath ids: 27 77
+          decl wzpath ids: 28 78
+          decl ret ids: 29 79
+            {  ids: 30 80
+              @ kind '$sourcetree' ids: 31 81
+              @ filepath filepath ids: 32 82
+              @ sources ids: 33 83
+                [  ids: 34 84
+        var sources = wzmodel.loadContext.sources ids: 35 85
+        for var k in sources ids: 36 86
+          set fullpath = sources[k].filepath ids: 37 87
+          if filepath_norm ids: 38 88
+            set fullpath_norm = verify.replaceAll(fullpath, '\\', '/') ids: 39 89
+            set relpath = fullpath_norm.substr(filepath_norm.length + 1) ids: 40 90
+            set wzpath = fullpath_norm.substr(wzrepoRootPath_norm.length + 1) ids: 41 91
+          set source = ids: 42 92
+            {  ids: 43 93
+              @ kind '$source' ids: 44 94
+              @ key k ids: 45 95
+              @ filepath fullpath ids: 46 96
+              @ relpath relpath ids: 47 97
+              @ wzpath wzpath ids: 48 98
+          _ ret.sources.push(source) ids: 49 99
+        return ret ids: 50 100

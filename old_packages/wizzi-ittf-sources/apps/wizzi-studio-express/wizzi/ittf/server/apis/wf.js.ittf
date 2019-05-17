@@ -1,0 +1,31 @@
+﻿api_async( Wf )
+	+
+	$include filefy
+	$include makeWizziFactoryCreator
+	$include wf/index
+	+
+	$append imports
+		import assert
+		import chalk
+		import fs
+		import temp
+		var tools = require('wizzi-tools')
+
+	$append methods
+
+		var wfApi = makeWfApi(config)
+		set api.wf
+			{
+				@ loadModel wfApi.loadModel
+				@ generateArtifact wfApi.generateArtifact
+				@ loadModelAndGenerateArtifact wfApi.loadModelAndGenerateArtifact
+				@ schemaObject wfApi.schemaObject
+				@ generateSchema wfApi.generateSchema
+				@ executeJob wfApi.executeJob
+				@ jsWizzify wfApi.jsWizzify
+				@ htmlWizzify wfApi.htmlWizzify
+				@ cssWizzify wfApi.cssWizzify
+				@ xmlWizzify wfApi.xmlWizzify
+
+		return callback(null, api)
+

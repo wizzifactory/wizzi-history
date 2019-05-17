@@ -1,0 +1,92 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m _createFile
+		param parentId
+		param dirname
+		param basename
+		param content
+		param callback
+		
+		var that = this
+
+		_ this.fsdb.insertItem
+			{
+				@ basename basename 
+				@ parentId parentId
+				@ dirname dirname
+				@ path normalize(path.join(dirname, basename))
+				@ kind 1
+			f_cb( r )
+				# log 'wizzi-repo.${source}.document.writeFile._createFile.r', r
+				if r.code === 'FSITEM_EXISTS'
+					_ that.fsdb.writeDocument
+						@ r.item._id
+						@ content
+						@ callback
+				else
+					_ that.fsdb.writeDocument
+						@ r.insertedId
+						@ content
+						@ callback
+
+	m _updateFile
+		param id
+		param content
+		param callback
+		# log 'wizzi-repo.${source}.document.writeFile._updateFile', id, content
+		_ this.fsdb.writeDocument
+			@ id
+			@ content
+			@ callback
+
+	m writeFile
+		string filePath
+		string content
+			optional
+		callback
+
+		# log 'wizzi-repo.${source}.document.writeFile.writeFile.init', filePath
+		set filePath = normalize(filePath)
+		# log 'wizzi-repo.${source}.document.writeFile.writeFile.normalized', filePath
+		
+		var that = this
+
+		_ this.fsdb.getItemByPath
+			@ filePath
+			f_cb( fsitem )
+				if fsitem != null
+					# log 'wizzi-repo.${source}.document.writeFile.writeFile.1.exists, so update', filePath
+					return
+						_ that._updateFile
+							@ fsitem._id
+							@ content
+							@ callback
+				else
+					var dirname = path.dirname(filePath)
+					# log 'wizzi-repo.${source}.document.writeFile.writeFile.2.not exists. try get dirname', dirname
+					_ that.fsdb.getItemByPath
+						@ dirname
+						f_cb( fsitem )
+							if fsitem != null
+								# log 'wizzi-repo.${source}.document.writeFile.writeFile.3. dirname exists create file', fsitem._id, dirname, path.basename(filePath)
+								return
+									_ that._createFile
+										@ fsitem._id
+										@ dirname
+										@ path.basename(filePath)
+										@ content
+										@ callback
+							else
+								# log 'wizzi-repo.${source}.document.writeFile.writeFile.4.dirname not exists.create dirname', dirname
+								_ that.createFolder
+									@ dirname
+									f_cb( fsitem )
+										# log 'wizzi-repo.${source}.document.writeFile.writeFile.5.dirname created. so create file', fsitem.item._id, dirname, path.basename(filePath)
+										return
+											_ that._createFile
+												@ fsitem.item._id
+												@ dirname
+												@ path.basename(filePath)
+												@ content
+												@ callback

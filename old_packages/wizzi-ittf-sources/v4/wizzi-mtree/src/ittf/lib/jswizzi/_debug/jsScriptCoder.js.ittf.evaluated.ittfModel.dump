@@ -1,0 +1,91 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    class JsScriptCoder ids: undefined undefined
+      ctor  ids: undefined undefined
+        set this.stm = [] ids: undefined undefined
+        set this.indentValue = 0 ids: undefined undefined
+        set this.length = 0 ids: undefined undefined
+        set this.line = '' ids: undefined undefined
+      m for ids: undefined undefined
+        param text ids: undefined undefined
+        param node ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        _ this.w('for (' + text + ') {' + ' //' + node.id) ids: undefined undefined
+        _ this.indent() ids: undefined undefined
+      m if ids: undefined undefined
+        param text ids: undefined undefined
+        param node ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        _ this.w('if (' + text + ') {' + ' //' + node.id) ids: undefined undefined
+        _ this.indent() ids: undefined undefined
+      m elif ids: undefined undefined
+        param text ids: undefined undefined
+        param node ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        _ this.w('else if (' + text + ') {' + ' //' + node.id) ids: undefined undefined
+        _ this.indent() ids: undefined undefined
+      m else ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        _ this.w('else {') ids: undefined undefined
+        _ this.indent() ids: undefined undefined
+      m while ids: undefined undefined
+        param text ids: undefined undefined
+        param node ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        _ this.w('while (' + text + ') {' + ' //' + node.id) ids: undefined undefined
+        _ this.indent() ids: undefined undefined
+      m end ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        _ this.deindent() ids: undefined undefined
+        _ this.w('}') ids: undefined undefined
+      m w ids: undefined undefined
+        param text ids: undefined undefined
+        var ind = spaces(this.indentValue * 4) ids: undefined undefined
+        _ this.stm.push(ind + this.line + (text || '')) ids: undefined undefined
+        set this.line = '' ids: undefined undefined
+        set this.length++ ids: undefined undefined
+      m write ids: undefined undefined
+        param text ids: undefined undefined
+        set this.line += (text || '') ids: undefined undefined
+      m indent ids: undefined undefined
+        set this.indentValue++ ids: undefined undefined
+      m deindent ids: undefined undefined
+        set this.indentValue = Math.max(0, (this.indentValue - 1)) ids: undefined undefined
+      m toCode ids: undefined undefined
+        if this.line.length > 0 ids: undefined undefined
+          _ this.w() ids: undefined undefined
+        return this.stm.join('\n') ids: undefined undefined
+      m getErrorLines ids: undefined undefined
+        param esprimaException ids: undefined undefined
+        var start = Math.max(0, (esprimaException.lineNumber - 4)) ids: undefined undefined
+        var end ids: undefined undefined
+          _ Math.min ids: undefined undefined
+            @ this.stm.length ids: undefined undefined
+            @ (esprimaException.lineNumber + 4) ids: undefined undefined
+        var ret ids: undefined undefined
+          [  ids: undefined undefined
+        for var i = start; i < end; i++ ids: undefined undefined
+          _ ret.push(formatLineNumber(i + 1) + ' ' + this.stm[i]) ids: undefined undefined
+          if (i == esprimaException.lineNumber - 1) ids: undefined undefined
+            var col = esprimaException.column ids: undefined undefined
+            _ ret.push(spaces(col + 4) + '* ' + esprimaException.description) ids: undefined undefined
+        return ret ids: undefined undefined
+    function spaces ids: undefined undefined
+      param num ids: undefined undefined
+      return Array(num + 1).join(" ") ids: undefined undefined
+    function formatLineNumber ids: undefined undefined
+      param num ids: undefined undefined
+      if num > 999 ids: undefined undefined
+        return num ids: undefined undefined
+      if num > 99 ids: undefined undefined
+        return ('0' + num) ids: undefined undefined
+      if num > 9 ids: undefined undefined
+        return ('00' + num) ids: undefined undefined
+      return ('000' + num) ids: undefined undefined
+    set module.exports = JsScriptCoder ids: undefined undefined

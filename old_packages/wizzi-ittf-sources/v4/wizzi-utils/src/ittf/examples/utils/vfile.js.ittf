@@ -1,0 +1,46 @@
+﻿base_example( vfile )
+	
+	$append imports
+		var vfile = require('../../lib/vfile')
+		var file = vfile()
+
+	_ file.write
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'globs2'
+			@ 'globbed_1.ittf'
+		@ 'globbed 1'
+	_ file.write
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'globs2'
+			@ 'globbed_2.ittf'
+		@ 'globbed 2'
+
+	var result
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+	log 'vfile.result', result
+
+	var result
+		_ file.getGlobbedFilesEx
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+			{
+				@ removeRoot
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+
+	log 'vfile.result', result
+
+

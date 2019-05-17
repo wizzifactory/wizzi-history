@@ -1,0 +1,157 @@
+﻿$group
+
+	cat length-unit
+		is enum
+
+	cat relative-length-unit
+		# Relative lengths represent a <length> in terms of some other distance. 
+		# Depending on the unit, this can be the size of a specific character, 
+		# the line height, or the size of the viewport.
+		cat length-unit
+	
+	cat font-relative-length
+		# Font-relative lengths specify the <length> value in terms of the size of 
+		# a particular character or font attribute in the font currently in effect 
+		# in an element or its parent.
+		# Note: These units, especially em and rem, are often used to create 
+		# scalable layouts, which maintain the vertical rhythm of the page 
+		# even when the user changes the font size.
+		cat relative-length-unit
+
+	cat viewport-percentage-length
+		# Viewport-percentage lengths define the <length> value relative to the 
+		# size of the viewport, i.e., the visible portion of the document. 
+		# Viewport lengths are invalid in @page declaration blocks.
+		# Note: If the <html> and <body> elements are set as overflow:auto, 
+		# space taken by scrollbars is not subtracted from the viewport, 
+		# whereas it will be subtracted if set as overflow:scroll.
+		cat relative-length-unit
+
+	cat absolute-length-unit
+		# Absolute length units represent a physical measurement when the physical 
+		# properties of the output medium are known, such as for print layout. 
+		# This is done by anchoring one of the units to a physical unit, 
+		# and then defining the others relative to it. The anchor is done differently 
+		# for low-resolution devices, such as screens, 
+		# versus high-resolution devices, such as printers.
+		# For low-dpi devices, the unit px represents the physical reference pixel; 
+		# other units are defined relative to it. 
+		# Thus, 1in is defined as 96px, which equals 72pt. 
+		# The consequence of this definition is that on such devices, dimensions 
+		# described in inches (in), centimeters (cm), or millimeters (mm) 
+		# doesn't necessary match the size of the physical unit with the same name.
+		# For high-dpi devices, inches (in), centimeters (cm), and millimeters (mm) 
+		# are the same as their physical counterparts. Therefore, the px unit is 
+		# defined relative to them (1/96 of 1 inch).
+		# Note: Users may increase font size for accessibility purposes. 
+		# To allow for usable layouts regardless of font size, use only 
+		# absolute length units when the physical characteristics of the 
+		# output medium are known, such as bitmap images. When setting a length 
+		# related to font-size, prefer relative units like em or rem.
+		cat length-unit
+
+	e cap 
+		# Represents the "cap height" (nominal height of capital letters) of the element’s font.
+		cat font-relative-length
+	
+	e ch
+		# Represents the width, or more precisely the advance measure, of the glyph "0" (zero, 
+		# the Unicode character U+0030) in the element's font.
+		cat font-relative-length
+	
+	e em
+		# Represents the calculated font-size of the element. If used on the font-size property itself, 
+		# it represents the inherited font-size of the element.
+		cat font-relative-length
+	
+	e ex
+		# Represents the x-height of the element's font. On fonts with the "x" letter, 
+		# this is generally the height of lowercase letters in the font; 1ex ≈ 0.5em in many fonts.
+		cat font-relative-length
+	
+	e ic 
+		# Equal to the used advance measure of the "水" (CJK water ideograph, U+6C34) glyph found 
+		# in the font used to render it.
+		cat font-relative-length
+	
+	e lh 
+		# Equal to the computed value of the line-height property of the element on which it is used, 
+		# converted to an absolute length.
+		cat font-relative-length
+	
+	e rem
+		# Represents the font-size of the root element (typically <html>). When used within 
+		# the root element font-size, it represents its initial value (a common browser default 
+		# is 16px, but user-defined preferences may modify this).
+		cat font-relative-length
+	
+	e rlh 
+		# Equal to the computed value of the line-height property on the root element (typically <html>), 
+		# converted to an absolute length. When used on the font-size or line-height properties of
+		# the root element, it refers to the properties' initial value.
+		cat font-relative-length
+
+	e vh
+		# Equal to 1% of the height of the viewport's initial containing block.
+		cat viewport-percentage-length
+	
+	e vw
+		# Equal to 1% of the width of the viewport's initial containing block.
+		cat viewport-percentage-length
+	
+	e vi 
+		# Equal to 1% of the size of the initial containing block, in the direction 
+		# of the root element’s inline axis.
+		cat viewport-percentage-length
+	
+	e vb 
+		# Equal to 1% of the size of the initial containing block, in the direction 
+		# of the root element’s block axis.
+		cat viewport-percentage-length
+	
+	e vmin
+		# Equal to the smaller of vw and vh.
+		cat viewport-percentage-length
+	
+	e vmax
+		# Equal to the larger of vw and vh.
+		cat viewport-percentage-length
+	
+	e px
+		# Depends on the viewing device. For screen displays, it traditionally 
+		# represents one device pixel (dot). However, for printers and high-resolution 
+		# screens, one CSS pixel implies multiple device pixels, so that the number 
+		# of pixels per inch stays around 96.
+		cat absolute-length-unit
+	
+	e mm
+		# One millimeter.
+		cat absolute-length-unit
+	
+	e q 
+		# A quarter of a millimeter (1/40th of a centimeter).
+		cat absolute-length-unit
+	
+	e cm
+		# One centimeter (10 millimeters).
+		cat absolute-length-unit
+	
+	e in
+		# One inch (2.54 centimeters).
+		cat absolute-length-unit
+	
+	e pt
+		# One point (1/72nd of an inch).
+		cat absolute-length-unit
+	
+	e pc
+		# One pica (12 points).
+		cat absolute-length-unit
+	
+	e mozmm 
+		is experimental
+		# An experimental unit that attempts to render at exactly one millimeter regardless 
+		# of the size or resolution of the display. This is rarely actually what you want, 
+		# but may be useful in particular for mobile devices.
+		cat absolute-length-unit
+

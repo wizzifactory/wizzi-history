@@ -1,0 +1,19 @@
+﻿module
+	kind es6
+
+	const path = require('path');
+
+	set module.exports
+		{
+			@ entry './src/index.js'
+			{ output
+				@ path path.resolve(__dirname, '..', '..', 'wizzifactory.github.io', 'scripts')
+				@ filename 'wizzi-js-plugin.js'
+				@ library 'wizziJsPlugin'
+				@ libraryTarget 'var'
+			@ node
+				{
+					@ fs 'empty'
+					@ module 'empty'
+					@ mongodb 'empty'
+					@ 'mongodb-core' 'empty'

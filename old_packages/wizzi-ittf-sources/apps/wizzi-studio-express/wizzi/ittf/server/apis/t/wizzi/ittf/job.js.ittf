@@ -1,0 +1,32 @@
+﻿$group
+
+	@ generateWfJob
+		function
+			param options
+			param callback
+
+			var jobName = options.jobName || 'wizzi.ittf.wfjob.default'
+			var ittfDocumentHash = options.hash
+			var mTreeBuildUpContext = options.context || {}
+			var sessionData = {}
+			var globalContext = {}
+
+			var ittfDocumentUri
+				_ paths.getIttfFilePathByHash
+					@ ittfDocumentHash
+
+			_ globalApi.wf.executeJob
+				@ sessionData
+				@ ittfDocumentUri
+				@ jobName
+				@ globalContext
+				f_cb_api( result )
+					return
+						_ callback
+							@ null
+							{
+								@ data result
+								@ status
+									_ success
+										@ 'WfJob ' + jobName + ' on uri ' + ittfDocumentUri + ' executed'
+

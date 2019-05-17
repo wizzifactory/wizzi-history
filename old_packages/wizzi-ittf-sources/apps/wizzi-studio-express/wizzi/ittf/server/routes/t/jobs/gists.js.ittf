@@ -1,0 +1,143 @@
+﻿$group
+
+	get( /api/jobs/gists )
+
+		check-params( )
+			optional( query , kind )
+
+		_ api.jobs.getGistList
+			{
+				@ userId req.user.id
+				@ kind kind || 'gist'
+			f_cb_rest( result )
+				log '/api/jobs/gists', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/gist )
+
+		check-params( )
+			not-empty( query , hash )
+
+		_ api.jobs.getGist
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				log '/api/jobs/gist', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/jobs/gist )
+
+		check-params( )
+			not-empty( body , name )
+			optional( body , schema )
+			optional( body , type )
+			optional( body , kind )
+
+		_ api.jobs.createGist
+			{
+				@ userId req.user.id
+				@ name name
+				@ schema schema
+				@ type type
+				@ kind kind || 'gist'
+			f_cb_rest( result )
+				log 'post /api/jobs/gist', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	put( /api/jobs/gist )
+
+		check-params( )
+			not-empty( body , hash )
+			not-empty( body , content )
+
+		_ api.jobs.updateGist
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ content content
+			f_cb_rest( result )
+				log 'put /api/jobs/gist', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	delete( /api/jobs/gist )
+
+		check-params( )
+			not-empty( body , hash )
+
+		_ api.jobs.deleteGist
+			{
+				@ userId req.user.id
+				@ hash hash
+			f_cb_rest( result )
+				log 'delete /api/jobs/gist', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/jobs/gist/duplicate )
+
+		check-params( )
+			not-empty( body , hash )
+			not-empty( body , newname )
+
+		_ api.jobs.duplicateGist
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ newname newname
+			f_cb_rest( result )
+				log 'delete /api/jobs/gist', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/jobs/gist/rename )
+
+		check-params( )
+			not-empty( body , hash )
+			not-empty( body , newname )
+
+		_ api.jobs.renameGist
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ newname newname
+			f_cb_rest( result )
+				log 'delete /api/jobs/gist', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/gistexec )
+
+		check-params( )
+			not-empty( query , hash )
+			optional( query , eventstream )
+
+		_ api.jobs.executeGist
+			{
+				@ userId req.user.id
+				@ hash hash
+				@ res eventstream === 'true' ? res : null
+			f_cb_rest( result )
+				log '/api/jobs/gistexec', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

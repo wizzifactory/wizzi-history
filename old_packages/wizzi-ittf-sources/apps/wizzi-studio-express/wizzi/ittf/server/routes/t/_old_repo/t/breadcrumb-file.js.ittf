@@ -1,0 +1,27 @@
+﻿$group
+
+	h2
+		if ctx.userId
+			span
+				a {{ ctx.userId }}
+					href /repo/{{ ctx.userId }}
+		if ctx.projectId
+			span {{ ' / ' }}
+			span
+				a {{ ctx.projectId }}
+					href /repo/{{ ctx.userId }}/{{ ctx.projectId }}
+	h3
+		if ctx.projectId
+			span
+				a {{ ctx.projectId }}
+					href /repo/{{ ctx.userId }}/{{ ctx.projectId }}
+		
+		if ctx.folderId
+			var folderUrl = [], parts = ctx.folderId.split('/')
+			foreach part in parts
+				_ folderUrl.push(part)
+				var url = folderUrl.join('/')
+				span {{ ' / ' }}
+				span
+					a {{ part }}
+						href /repo/{{ ctx.userId }}/{{ ctx.projectId }}/{{ url }}

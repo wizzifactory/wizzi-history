@@ -1,0 +1,35 @@
+﻿lexer second
+
+	$if true
+
+		css/whitespace()
+
+		tk PATT
+			pattern kk
+				ignore-case
+
+		test \t kk Kk kK KK
+
+	$if false
+		css/dimensions(main)
+
+	$if false
+		css/numperc(main)
+
+	$if false
+		css/uri(main)
+
+	$if false
+		css/escape(main)
+	
+	$if false
+		$include css/whitespace
+		css/escape(sub)
+		css/names(sub)
+		css/string(sub)
+
+		test 'b\\ra' 'alba' '\'a'
+		test '\'' "\""
+		test '\'a' "\"a"
+		test 'b\'' "b\""
+		test 'a\'a' "b\"b"

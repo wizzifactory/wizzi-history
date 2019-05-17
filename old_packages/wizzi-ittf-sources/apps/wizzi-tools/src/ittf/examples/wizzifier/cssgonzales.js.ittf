@@ -1,0 +1,46 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	+
+	var thisPackage = require('../../index')
+	var file = require('../../lib/util/file')
+	+
+	var name = 'second'
+	# var name = 'first'
+	+
+	var source
+		_ path.join
+			@ __dirname
+			@ 'data'
+			@ 'css'
+			@ name + '.tests.scss'
+	+
+	_ thisPackage.cssWizzify
+		@ source
+		{
+			@ parser 'gonzales'
+			@ syntax 'scss'
+		f_cb_throw( ittf )
+			_ thisPackage.cssWizzify
+				@ source
+				{
+					@ parser 'gonzales'
+					@ syntax 'scss'
+					@ keepDeleted true
+				f_cb_throw( ittf2 )
+					_ thisPackage.cssWizzify
+						@ source
+						{
+							@ parser 'gonzales'
+							@ syntax 'scss'
+							@ raw true
+						f_cb_throw( ittf3 )
+							_ file.write
+								_ path.join
+									@ __dirname
+									@ 'data'
+									@ 'output'
+									@ name + '.gonzales.css.ittf'
+								@ ittf + '\n' + ittf2 + '\n' + ittf3

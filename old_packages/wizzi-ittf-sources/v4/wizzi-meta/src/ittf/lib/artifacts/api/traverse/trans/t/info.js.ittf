@@ -1,0 +1,52 @@
+﻿$group
+
+	oper( info_item )
+		if node.name === 'api-ref'
+			newnode( api-ref )
+		elif node.name === 'closure'
+			newnode_named( ndep, dependency, node.value, parent )
+			newnode( type, name_closure, ndep )
+			foreach item in node.children
+				_ md.info_item(item, ctx, ndep)
+		elif node.name === 'store-on-this'
+			newnode_named( nstore, store-on-this, node.value, parent )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'api-call'
+			newnode( api-call, node.value, parent )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'api-receive'
+			newnode( api-receive )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'api-send'
+			newnode( api-send )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'api-create'
+			newnode( api-create )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'internal-call'
+			newnode( internal-call )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'receive'
+			newnode( receive )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'send'
+			newnode( send )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'set'
+			newnode( set )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		elif node.name === 'merge'
+			newnode( merge )
+			foreach item in node.children
+				_ md.info_item(item, ctx, newnode)
+		check(node, parent, info_item, value_item)
+

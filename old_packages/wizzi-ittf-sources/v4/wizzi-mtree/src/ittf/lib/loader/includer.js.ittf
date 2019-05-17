@@ -1,0 +1,139 @@
+﻿module wizzi-mtree.loader.includer
+    kind jsfile
+    
+	var util = require('util')
+    var path = require('path')
+	var async = require('async')
+    var errors = require('../errors')
+	var verify = require('wizzi-utils').verify
+    var utilnode = require('../util/node')
+
+	#
+		# Ittf commands
+		#   $include
+		#   $json
+    
+	var includer
+        set module.exports =
+            function 
+                { primaryMTreeBrick
+                { mTreeBrickProvider
+                callback
+                
+				var includes
+                    [ 
+                
+				var jsons
+                    [ 
+                
+				foreach node in primaryMTreeBrick.nodes
+                    _ searchIncludes
+                        @ node
+                        @ includes
+                        @ jsons
+                
+				_ async.mapSeries
+					@ includes
+					function
+						param item
+						param callback
+						var v = item.value.trim()
+						var mixeruri = item.model.uri
+						var mixerbasedir = path.dirname(mixeruri)
+						_ mTreeBrickProvider.get
+							{ 
+								@ from 'store'
+								@ basedir mixerbasedir
+								@ relpath v
+								@ include true
+								@ includerBrickKey item.model.brickKey
+							f_cb( includedWipNodifiedMTree )
+								_ mTreeBrickProvider.enterFragmentCall
+									@ mixeruri
+									@ includedWipNodifiedMTree.uri
+								if mTreeBrickProvider.checkForRecursion()
+									return
+										_ callback
+											_ local_error
+												@ 'InvalidIttfError'
+												@ 'default'
+												@ 'Recursive mixin or include: ' + v
+												@ node
+								_ includer
+									@ includedWipNodifiedMTree
+									@ mTreeBrickProvider
+									f_cb( includeResult )
+										_ mTreeBrickProvider.exitFragmentCall()
+										# _ mTreeBrickProvider.callChain.pop()
+										_ utilnode.replace
+											@ item
+											@ includeResult.nodes
+										return
+											_ callback
+												@ null
+					f_cb( results )
+						foreach item in jsons
+							var json
+								_ JSON.parse
+									@ item.value
+							if verify.isArray(json)
+								var normalized
+									[ 
+								foreach jsonitem in json
+									_ normalized.push
+										_ normalizeNode
+											@ jsonitem
+											@ item.parent
+											@ item.model
+											@ item.row
+											@ item.col
+											@ item.sourceKey
+								_ utilnode.replace(item, normalized)
+							else 
+								var normalized
+									_ normalizeNode
+										@ json
+										@ item.parent
+										@ item.model
+										@ item.row
+										@ item.col
+										@ item.sourceKey
+								_ utilnode.replace
+									@ item
+									[ 
+										@ normalized
+						_ callback(null, primaryMTreeBrick)
+    
+	function searchIncludes
+        param item
+        param includes
+        param jsons
+        if item.name === '$include'
+            _ includes.push(item)
+        elif item.name === '$json'
+            _ jsons.push(item)
+        foreach child in item.children
+            _ searchIncludes
+                @ child
+                @ includes
+                @ jsons
+    
+	function normalizeNode
+        param node
+        param parent
+        param model
+        param r
+        param c
+        param u
+        set node.parent = parent
+        set node.model = model
+        set node.row = r
+        set node.col = c
+        set node.souceKey = u
+		if node.children
+			foreach item in node.children
+				_ normalizeNode(item, node, model, r, c, u)
+        else
+            set node.children = []
+
+	$include local_error

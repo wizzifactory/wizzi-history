@@ -1,0 +1,19 @@
+﻿module
+	kind jsfile
+
+	$
+		var samplesAll = [
+			'basic',
+			'composed',
+			'contained_1',
+			'treeview_1'
+			];
+		
+		var samples = [
+			'basic',
+			'composed',
+			];
+
+	$foreach sample in samples
+		var ${sample} = require('./${sample}')
+		_ ${sample}()

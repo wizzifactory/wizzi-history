@@ -1,0 +1,17 @@
+$group
+
+    function initErrorRoutes
+        param app
+        
+		_ app.use
+            function 
+                param err
+                param req
+                param res
+                param next
+                if !(err)
+                    return next()
+                error err.stack
+                _ res.redirect('/server-error')
+
+

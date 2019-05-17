@@ -1,0 +1,49 @@
+﻿wfjob wizzi-studio
+	
+	$
+		var ittf_root_folder  = path.join(__dirname, 'ittf', 'root');
+		var ittf_server       = path.join(__dirname, 'ittf', 'server');
+		var ittf_tests        = path.join(__dirname, 'ittf', 'tests');
+		var dest_folder       = path.resolve(__dirname, '..', 'dist');
+
+	line root
+		cwd-folder ${ittf_root_folder}
+
+		wfjob/any_js()
+			ignore ${ittf_root_folder}/**/*__copy.*/**/*.js.ittf
+
+		$include wfjob/any_json
+
+		artifact .bowerrc
+			src .bowerrc.ittf
+			schema json
+			generator json/document
+			dest-path .bowerrc
+			extension bowerrc
+
+	line server
+		cwd-folder ${ittf_server}
+		dest-folder ${dest_folder}/server
+
+		$include wfjob/any_js
+		$include wfjob/any_json
+		$include wfjob/any_css
+
+	line tests
+		cwd-folder ${ittf_tests}
+		dest-folder ${dest_folder}/tests
+
+		wfjob/any_js()
+			ignore ${ittf_tests}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_tests}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_tests_ittf
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+		line-ref server
+		line-ref tests

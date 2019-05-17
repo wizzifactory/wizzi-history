@@ -1,0 +1,43 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var Acl = require('./acl') ids: undefined undefined
+    var Statistics = require('./statistics') ids: undefined undefined
+    var config = null ids: undefined undefined
+    class AclStat ids: undefined undefined
+      ctor  ids: undefined undefined
+        param userId ids: undefined undefined
+        param subscriptionType ids: undefined undefined
+        param aclConfig ids: undefined undefined
+        param statisticsConfig ids: undefined undefined
+        set this.userId = userId ids: undefined undefined
+        set this.subscriptionType = subscriptionType ids: undefined undefined
+        set this.aclConfig = aclConfig ids: undefined undefined
+        set this.statisticsConfig = statisticsConfig ids: undefined undefined
+        _ this._init() ids: undefined undefined
+      m _init ids: undefined undefined
+        if config == null ids: undefined undefined
+          set config = require('../../index').config ids: undefined undefined
+        log 'AclStat.init.config', config ids: undefined undefined
+        set this.acl = new Acl(this.aclConfig, config) ids: undefined undefined
+        set this.statistics = new Statistics(this.statisticsConfig, config) ids: undefined undefined
+      m checkAuth ids: undefined undefined
+        param operId ids: undefined undefined
+        param resourceType ids: undefined undefined
+        param resourceName ids: undefined undefined
+        return  ids: undefined undefined
+          _ this.acl.checkAuth ids: undefined undefined
+            @ this.userId ids: undefined undefined
+            @ this.subscriptionType ids: undefined undefined
+            @ operId ids: undefined undefined
+            @ resourceType ids: undefined undefined
+            @ resourceName ids: undefined undefined
+      m stat ids: undefined undefined
+        param operId ids: undefined undefined
+        param options ids: undefined undefined
+        return  ids: undefined undefined
+          _ this.statistics.stat ids: undefined undefined
+            @ this.userId ids: undefined undefined
+            @ this.subscriptionType ids: undefined undefined
+            @ operId ids: undefined undefined
+            @ options ids: undefined undefined
+    set module.exports = AclStat ids: undefined undefined

@@ -1,0 +1,35 @@
+﻿base_test( mongodb.document.fsdb )
+	+
+	$append imports
+		var 
+			decl MongoClient
+				_ require('mongodb')
+					. MongoClient
+			decl FsDb = require('../../lib/mongodb/fs/fsdb')
+			decl Document = require('../../lib/mongodb/fs/document')
+
+	var mounted_db
+	var FSITEMS = 'fsitems'
+	var DOCUMENTS = 'documents'
+	var fsdb, doc
+
+	var hellotxt_item = null
+
+	$include mongo_before_async
+	$include fsdb/createItem
+	$include fsdb/updateItem
+	$include fsdb/writeDocument
+	$include fsdb/readDocument
+	$include fsdb/deleteItem
+	$include mongo_after_async
+		
+	$*
+	
+	$include fsdb/updateItem
+	$include fsdb/getItem
+	$include fsdb/read
+	$include fsdb/write
+	*$
+
+
+	

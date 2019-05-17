@@ -1,0 +1,47 @@
+﻿module
+	kind jsfile
+
+	import path
+	import util
+	import async
+	var thisPackageIndex = require('../../index')
+	var verify = require('wizzi-utils').verify
+	var log = require('../util/log')(module)
+
+	function logme
+		if false 
+			_ console.log.apply(console, arguments);
+
+	# 
+		#
+	var AsyncWfJobRunner
+		{
+			@ run_many
+				function
+					param modelInfos
+					param callback
+					_ async.mapSeries
+						@ modelInfos
+						@ AsyncWfJobRunner._run_item
+						@ callback
+
+			@ _run_item
+				function
+					param modelInfo
+					param callback
+					var srcFullPath = modelInfo.srcFullPath();
+
+					# log "AsyncWfJobRunner._run_item: I should run " + srcFullPath
+					_ thisPackageIndex.executeJob
+						{
+							@ name 'wizzi-studio dev-dashboard-incubator'
+							@ path srcFullPath
+							@ options
+								_ thisPackageIndex.options
+									{
+										@ indentSpaces 4
+										@ basedir path.dirname(srcFullPath)
+										@ verbose 2
+						@ callback
+	
+	set module.exports = AsyncWfJobRunner

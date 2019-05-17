@@ -1,0 +1,271 @@
+﻿module 
+    kind jsfile
+
+	#
+	# NOT USED YET
+	#
+
+    var fs = require("fs-extra")
+	var verify = require('wizzi-utils').verify
+    var sanitize = require("./sanitize")
+
+    var md
+        set module.exports =
+            { 
+
+    wz-function checkItemName
+        param name
+        return name === sanitize(name, {replacement: '_'})
+
+    wz-function checkPath
+        param filepath
+        var base_path = getBasePath(filepath)
+        return fs.existsSync(base_path)
+
+    wz-function pathExists
+        param filepath
+        return fs.existsSync(filepath)
+
+    wz-function isFile
+        param filepath
+        return pathExists(filepath) && fs.lstatSync(filepath).isDirectory() === false
+    
+	wz-function isDir
+        param filepath
+        return (md.pathExists(filepath) && (fs.lstatSync(filepath).isDirectory() === true))
+    
+	wz-function getFile
+        param filepath
+        param callback
+        _ fs.readFile
+            @ filepath
+            @ "utf8"
+            function 
+                param err
+                param data
+                _ callback(err, data)
+    
+	wz-function renameFile
+        param filepath
+        param newname
+        param callback
+        var base_path = getBasePath(filepath)
+        _ fs.rename
+            @ filepath
+            @ base_path + "/" + newname
+            function
+                param err
+                param data
+                _ callback(err, data)
+    
+	wz-function saveFile
+        param filepath
+        param content
+        param callback
+        _ fs.writeFile
+            @ filepath
+            @ content
+            function 
+                param err
+                param data
+                _ callback(err, data)
+    
+	wz-function copyFile
+        param dirpath
+        param destination
+        param callback
+        _ fs.copy
+            @ dirpath
+            @ destination
+            function 
+                param err
+                _ callback(err)
+    
+	wz-function deleteFile
+        param dirpath
+        param callback
+        _ fs.remove
+            @ dirpath
+            function 
+                param err
+                _ callback(err)
+
+    wz-function getDir
+        param dirpath
+        param basepath
+        param callback
+        _ fs.readdir
+            @ dirpath
+            function 
+                param err
+                param files
+                if err
+                    _ callback(err, null)
+                else 
+                    set dirpath.slice(- (1)) !== "/" ? dirpath = (dirpath + "/") : dirpath = dirpath
+                    var 
+                        decl output
+                            { 
+                        decl output_dirs
+                            [ 
+                        decl output_files
+                            [ 
+                        decl current
+                        decl relpath
+                        decl link
+                    var createItem
+                        function 
+                            param name
+                            param current
+                            param relpath
+                            param type
+                            param link
+                            return 
+                                { 
+                                    @ name name
+                                    @ dirpath relpath.replace('//', '/')
+                                    @ type type
+                                    @ size
+                                        _ fs.lstatSync(current)
+                                            . size
+                                    @ atime
+                                        _ fs.lstatSync(current)
+                                            . atime
+                                            ._ getTime()
+                                    @ mtime
+                                        _ fs.lstatSync(current)
+                                            . mtime
+                                            ._ getTime()
+                                    @ link link
+                    _ files.sort()
+                    for var i = 0, z = (files.length - 1); i <= z; i++
+                        set current = (dirpath + files[i])
+                        set current = verify.replaceAll(current, '\\', '/')
+                        set relpath = current.replace(basepath, "")
+                        set fs.lstatSync(current).isSymbolicLink() ? link = true : link = false
+                        if fs.lstatSync(current).isDirectory()
+                            _ output_dirs.push
+                                _ createItem
+                                    @ files[i]
+                                    @ current
+                                    @ relpath
+                                    @ "directory"
+                                    @ link
+                        else 
+                            _ output_files.push
+                                _ createItem
+                                    @ files[i]
+                                    @ current
+                                    @ relpath
+                                    @ "file"
+                                    @ link
+                    var pd = getParentDirs(dirpath, basepath)
+                    set output =
+                        { 
+                            @ curdirname pd.curdirname
+                            @ curdirpath pd.curdirpath
+                            @ dirs output_dirs
+                            @ files output_files
+                            @ parents pd.parents
+                    _ callback(null, output)
+
+    wz-function createDir
+        param dirpath
+        param cmode
+        param callback
+        _ fs.mkdir
+            @ dirpath
+            @ cmode
+            function 
+                param err
+                param data
+                _ callback(err, data)
+    
+	wz-function copyDir
+        param dirpath
+        param destination
+        param callback
+        _ fs.copy
+            @ dirpath
+            @ destination
+            function 
+                param err
+                _ callback(err)
+
+    wz-function deleteDir
+        param dirpath
+        param callback
+        _ fs.remove
+            @ dirpath
+            function 
+                param err
+                _ callback(err)
+    
+	var getBasePath
+        function 
+            param path
+            set path = verify.replaceAll(path, '\\', '/')
+            var base_path = path.split("/")
+            _ base_path.pop()
+            return base_path.join("/")
+    
+	var getParentDirs
+        function 
+            param path
+            param basepath
+            
+			set path = normalizePath(path)
+            set basepath = normalizePath(basepath)
+            var relpath = path.replace(basepath, "")
+            set relpath = relpath.substr(0, 1) === '/' ? relpath.substr(1) : relpath
+            set relpath = relpath.substr(- (1), 1) === '/' ? relpath.substr(0, (relpath.length - 1)) : relpath
+            if relpath.length == 0
+                return 
+                    { 
+                        @ curdirname '/'
+                        @ curdirpath '/'
+                        @ parents
+                            [ 
+            _ console.log('getParentDirs', relpath)
+            var parents = relpath.split("/")
+            var curdirname = parents.pop()
+            var 
+                decl dp = '/'
+                decl ret
+                    [ 
+                        { 
+                            @ name '..'
+                            @ dirpath '/'
+            _ parents.forEach
+                function 
+                    param item
+                    set dp += item
+                    _ ret.push
+                        { 
+                            @ name ('.. ' + item)
+                            @ dirpath dp
+                    set dp += '/'
+            return 
+                { 
+                    @ curdirname curdirname
+                    @ curdirpath ('/' + relpath)
+                    @ parents ret
+    
+	var normalizePath
+        function 
+            param path
+            return verify.replaceAll(path, '\\', '/')
+    
+	var merge
+        function 
+            param obj1
+            param obj2
+            var 
+                decl mobj
+                    { 
+                decl attrname
+            for attrname in obj1
+                set mobj[attrname] = obj1[attrname]
+            for attrname in obj2
+                set mobj[attrname] = obj2[attrname]
+            return mobj

@@ -1,0 +1,183 @@
+﻿$group
+
+    e expression
+		// term [ operator? term ]*
+		ref term
+		*
+			?
+				ref operator
+			ref term
+
+	e operator
+		// '/' S* | ',' S*
+		|
+			tk /
+				keep-value
+			tk ,
+
+	e term
+		|
+			ref conditionalOrExpr
+			ref map
+
+	sym map
+		tk (
+		*
+			ref mapProperty
+			tk ,
+		?
+			ref mapProperty
+		tk )
+
+	sym mapProperty
+		|
+			tk Ident
+			tk StringLiteral
+			tk Number
+		tk :
+		ref term
+
+	sym conditionalOrExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref conditionalAndExpr
+		*
+			tk LOGICAL_OR
+				keep-value
+			ref conditionalAndExpr
+
+	sym conditionalAndExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref equalityExpr
+		*
+			tk LOGICAL_AND
+				keep-value
+			ref equalityExpr
+
+	sym equalityExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref relationalExpr
+		*
+			|
+				tk Equal
+					keep-value
+				tk NotEqual
+					keep-value
+			ref relationalExpr
+	
+	sym relationalExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref additiveExpr
+		*
+			|
+				tk <
+					keep-value
+				tk >
+					keep-value
+				tk OP_LE
+					keep-value
+				tk OP_GE
+					keep-value
+			ref additiveExpr
+
+	sym additiveExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref factoryExpr
+		*
+			|
+				tk +
+					keep-value
+				tk -
+					keep-value
+			ref factoryExpr
+
+	sym factoryExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref powerExpr
+		*
+			|
+				tk *
+					keep-value
+				tk /
+					keep-value
+			ref powerExpr
+
+	sym powerExpr
+		ast-children 3
+		type-name binaryExpr
+		operator-child 2
+		ref unaryExpr
+		*
+			tk ^
+				keep-value
+			ref unaryExpr
+
+	sym unaryExpr
+		ast-children 2
+		operator-child -1
+		|
+			&
+				tk +
+					keep-value
+				ref primaryExpr
+			&
+				tk -
+					keep-value
+				ref primaryExpr
+			ref primaryExpr
+
+	e primaryExpr
+		|
+			ref cssFunction
+			tk Number
+			tk Percentage
+			ref dimension
+			tk StringLiteral
+			ref identifier
+			tk Uri
+			tk HexColor
+			tk VariableName
+			ref enclosedExpr
+
+	sym cssFunction
+		tk Ident
+		tk (
+		ref arguments
+		tk )
+
+	sym arguments
+		ref expression
+
+	e dimension
+		|
+			tk Length
+			tk Angle
+			tk Time
+			tk Frequency
+
+	sym identifier
+		+
+			|
+				tk Ident
+				ref interpolation
+
+	sym interpolation
+		tk InterpolationStart
+		tk VariableName
+		tk }
+	
+	sym enclosedExpr
+		tk (
+		ref expression
+		tk )

@@ -1,0 +1,149 @@
+﻿$group
+
+	< *
+		+ *::before
+		+ *::after
+		box-sizing border-box
+	
+	< html
+		font-family sans-serif
+		line-height 1.15
+		-webkit-text-size-adjust 100%
+		-ms-text-size-adjust 100%
+		-ms-overflow-style scrollbar
+		-webkit-tap-highlight-color rgba(0, 0, 0, 0)
+		
+	- 
+		- IE10+ doesn't honor `<meta name="viewport">` in some cases.
+
+	-
+		- Shim for "new" HTML5 structural elements to display correctly (IE10, older browsers)
+	< article
+		+ aside
+		+ dialog
+		+ figcaption
+		+ figure
+		+ footer
+		+ header
+		+ hgroup
+		+ main
+		+ nav
+		+ section
+		display block
+
+	-
+		- Body
+		- 1. Remove the margin in all browsers.
+		- 2. As a best practice apply a default `background-color`.
+		- 3. Set an explicit initial text-align value so that we can later use the
+		-    the `inherit` value on things like `<th>` elements.
+
+	< body
+		margin 0
+		font-family ${font_family_base}
+		font-size ${font_size_base}
+		font-weight ${font_weight_base}
+		line-height ${line_height_base}
+		color ${body_color}
+		text-align left
+		background-color ${body_bg}
+	
+	-
+		- Suppress the focus outline on elements that cannot be accessed via keyboard.
+		- This prevents an unwanted focus outline from appearing around elements that
+		- might still respond to pointer events.
+		- Credit: https://github.com/suitcss/base
+	
+	< [tabindex="-1"]:focus
+		outline none !important
+		
+	-
+		- Content grouping
+		- 1. Add the correct box sizing in Firefox.
+		- 2. Show the overflow in Edge and IE.
+
+	< hr
+		box-sizing content-box
+		height 0
+		overflow visible
+	
+	-
+		- Typography
+		- Remove top margins from headings
+		- By default
+		- `<h1>`-`<h6>` all receive top and bottom margins. We nuke the top
+		- margin for easier control within type scales as it avoids margin collapsing.
+	
+	< h1
+		+ h2
+		+ h3
+		+ h4
+		+ h5
+		+ h6
+		margin-top 0
+		margin-bottom ${headings_margin_bottom}
+
+	-
+		- Reset margins on paragraphs
+		- Similarly
+		-   the top margin on `<p>`s get reset. However
+		-   we also reset the bottom margin to use `rem` units instead of `em`.
+	< p
+		margin-top 0
+		margin-bottom ${paragraph_margin_bottom}
+	-
+		- Abbreviations
+		- 1. Remove the bottom border in Firefox 39-.
+		- 2. Add the correct text decoration in Chrome
+		-    Edge
+		-    IE
+		-    Opera
+		-   and Safari.
+		- 3. Add explicit cursor to indicate changed behavior.
+		- 4. Duplicate behavior to the data-* attribute for our tooltip plugin
+
+	< abbr[title]
+		+ abbr[data-original-title]
+		text-decoration underline
+		text-decoration underline dotted
+		cursor help
+		border-bottom 0
+	
+	< address
+		margin-bottom 1rem
+		font-style normal
+		line-height inherit
+	
+	< ol
+		+ ul
+		+ dl
+		margin-top 0
+		margin-bottom 1rem
+	
+	< ol ol
+		+ ul ul
+		+ ol ul
+		+ ul ol
+		margin-bottom 0
+	
+	< dt
+		font-weight ${dt_font_weight}
+	
+	< dd
+		margin-bottom .5rem
+		margin-left 0
+	
+	< blockquote
+		margin 0 0 1rem
+	
+	< dfn
+		font-style italic
+	
+	< b
+		+ strong
+		font-weight bolder
+
+	< small
+		font-size 80%
+
+	- TODO lots more

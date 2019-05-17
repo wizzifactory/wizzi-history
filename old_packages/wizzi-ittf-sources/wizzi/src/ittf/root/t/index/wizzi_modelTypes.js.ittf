@@ -1,0 +1,87 @@
+$group
+
+	#
+		# PARAMS
+		# { request
+		# 	string user
+		# 		default stefi
+		# 	string role
+		# 		default admin
+		# 	string storeKind
+		# 		default filesystem
+		# 	{ configOptions
+		# 	{ wfschema
+		# 		string name
+		# 		string ittfDocumentUri
+		# 		string outputPackageFolder
+
+	set md.generateWizziModelTypes
+        function 
+			param request
+            param callback
+			+
+			check_cb( callback, generateWizziModelTypes )
+			check_cb_object( request, generateWizziModelTypes )
+			check_cb_object( request.configOptions, generateWizziModelTypes )
+			check_cb_object( request.wfschema, generateWizziModelTypes )
+			# TODO implement jsWizzi : _.toIdentifier(varName)
+			# TODO check_cb_not_empty( request.wfschema.name, generateWizziModelTypes )
+			# TODO check_cb_not_empty( request.wfschema.ittfDocumentUri, generateWizziModelTypes )
+			# TODO check_cb_not_empty( request.wfschema.outputPackageFolder, generateWizziModelTypes )
+			+
+			var user = request.user || 'stefi'
+			var role = request.role || 'admin'
+			var storeKind = request.storeKind || 'filesystem'
+			+
+			set request.wfschema.mTreeBuildUpContext = Object.assign({}, request.wfschema.mTreeBuildUpContext)
+			set request.globalContext = Object.assign({}, request.globalContext)
+			+
+			log 'generateWizziModelTypes'
+			log '- user', user +'/' + role
+			log '- storeKind', storeKind
+			log '- configOptions', request.configOptions
+			log '- wfschema.name', request.wfschema.name
+			log '- wfschema.ittfDocumentUri', request.wfschema.ittfDocumentUri
+			log '- wfschema.outputPackageFolder', request.wfschema.outputPackageFolder
+			+
+			var repoUri = request.configOptions.repoUri
+			var repoBaseFolder = request.configOptions.repoBaseFolder
+			+
+			var plugins 
+				[
+					@ 'wizzi-core'
+			if request.configOptions.plugins
+				foreach item in request.configOptions.plugins
+					if plugins.indexOf(item) < 0
+						_ plugins.push(item)
+			log '- plugins', plugins
+			for var k in request.wfschema.mTreeBuildUpContext
+				log '- wfschemaContext property', k
+			for var k in request.globalContext
+				log '- globalContext property', k
+			+
+			_ wizziFactory.createFactory
+				@ user
+				@ role
+				{
+					@ repo
+						{
+							@ storeKind storeKind
+					@ plugins
+						{
+							@ items plugins
+							@ pluginsBaseFolder request.configOptions.pluginsBaseFolder || process.cwd()
+					@ globalContext request.globalContext
+				f_cb( wizziFactory )
+					# Now we can generate the wizzi model types
+					# They will be written in the folder passed as second parameter.
+					log chalk.yellow('STARTING WIZZI MODEL TYPES GENERATION FOR SCHEMA ' + request.wfschema.name)
+					_ wizziFactory.generateModelTypes
+						@ request.wfschema.ittfDocumentUri
+						@ request.wfschema.outputPackageFolder
+						@ request.wfschema.name
+						@ request.wfschema.mTreeBuildUpContext
+						f_cb( result )
+							log chalk.green('WIZZI MODEL TYPES GENERATED FOR SCHEMA ' + request.wfschema.name)
+
+	

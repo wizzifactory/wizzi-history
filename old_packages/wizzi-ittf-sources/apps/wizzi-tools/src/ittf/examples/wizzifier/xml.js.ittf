@@ -1,0 +1,29 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	+
+	var thisPackage = require('../../index')
+	var file = require('../../lib/util/file')
+	+
+	var source
+		_ path.join
+			@ __dirname
+			@ 'data'
+			@ 'xml'
+			@ 'svg.tests.xml'
+	+
+	_ thisPackage.xmlWizzify
+		@ source
+		{
+		f_cb_throw( ittf )
+			_ file.write
+				_ path.join
+					@ __dirname
+					@ 'data'
+					@ 'output'
+					@ 'svg.xsd.ittf'
+				@ ittf
+
+

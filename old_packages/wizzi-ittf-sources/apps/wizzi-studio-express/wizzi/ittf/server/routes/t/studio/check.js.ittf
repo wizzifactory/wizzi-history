@@ -1,0 +1,11 @@
+﻿$group
+
+	get( /api/studio/check )
+		
+		_ studioApi.getCheck
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+

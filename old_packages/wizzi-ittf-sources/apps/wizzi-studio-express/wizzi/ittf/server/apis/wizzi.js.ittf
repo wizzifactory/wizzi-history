@@ -1,0 +1,38 @@
+﻿api_async( Wizzi )
+	
+	$include makeWizziFactoryCreator
+
+	$append imports
+		import fs
+		$include hashImports
+		$include hashFunctions
+
+	$include wizzi/index
+
+	$append methods
+		var checkApi = makeCheckApi(config)
+		var wizziIttfApi = makeWizziIttfApi(config)
+		var wizziKernelApi = makeWizziKernelApi(config)
+		var wizziPluginsApi = makeWizziPluginsApi(config)
+		var wizziSystemApi = makeWizziSystemApi(config)
+		set api.wizzi
+			{
+				@ getCheck checkApi.get
+				@ getKernelPackages wizziKernelApi.getKernelPackages
+				@ getKernelPackage wizziKernelApi.getKernelPackage
+				@ getPluginsPackages wizziPluginsApi.getPluginsPackages
+				@ getPluginPackage wizziPluginsApi.getPluginPackage
+				@ getPluginSchemas wizziPluginsApi.getPluginSchemas
+				@ getPluginArtifacts wizziPluginsApi.getPluginArtifacts
+				@ getIttfDocument wizziIttfApi.getIttfDocument
+				@ generateDefaultArtifact wizziIttfApi.generateDefaultArtifact
+				@ generateArtifact wizziIttfApi.generateArtifact
+				@ getMTreeDebugInfo wizziIttfApi.getMTreeDebugInfo
+				@ getWizziFactoryInfo wizziIttfApi.getWizziFactoryInfo
+				@ generateDefaultArtifact wizziIttfApi.generateDefaultArtifact
+				@ generateWfJob wizziIttfApi.generateWfJob
+				@ generateWfSchema wizziIttfApi.generateWfSchema
+				@ getSystemPackages wizziSystemApi.getSystemPackages
+				@ paths makePaths(config)
+
+		return callback(null, api)

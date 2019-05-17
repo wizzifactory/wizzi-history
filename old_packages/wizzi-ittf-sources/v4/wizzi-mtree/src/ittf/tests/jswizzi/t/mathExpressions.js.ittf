@@ -1,0 +1,30 @@
+﻿$group
+
+	var mathExpressions
+		[
+			{
+				@ code '2 + 10'
+				@ expected 12
+			{
+				@ code '2 - 10'
+				@ expected -8
+			{
+				@ code '2 * 10'
+				@ expected 20
+			{
+				@ code '2 / 10'
+				@ expected 0.2
+			{
+				@ code 'var x = 10; x += 2; return x;'
+				@ expected 12
+			{
+				@ code 'var x = 10; x -= 2; return x;'
+				@ expected 8
+			{
+				@ code 'var x = 10; x *= 2; return x;'
+				@ expected 20
+			{
+				@ code 'var x = 10; x /= 2; return x;'
+				@ expected 5
+
+	

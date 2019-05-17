@@ -1,0 +1,222 @@
+﻿module wizzi-demo.plugin.lib.artifacts.xittf.document.gen.main
+	kind jsfile
+
+	var codegen = require('wizzi-codegen')
+	var statement = codegen.js_v4_Statement
+
+	# Example of a general purpose ittf transformer
+	#
+	# This is a code write based artifact generator.
+	#
+
+	var md = module.exports = {}
+	var myname = 'wizzi-demo.plugins.lib.artifacts.xittf.document.main';
+
+	set md.gen
+		function gen
+			{ model
+			{ ctx
+			callback
+			# check the model is a wizzi model of type 'xittf'
+			if model.wzElement !== 'xittf'
+				return
+					_ callback
+						_ ctx.error
+							@ myname + " error: the model paramater should be an 'xittf' wizzi model, received: " + model.wzElement
+							@ model
+			set ctx.__artifact = 'xittf/document'
+			set ctx.__allowSingleLineOp = true
+			set ctx.__functionProvider = model.functionProvider
+			set ctx.__functionNames = model.functionNames
+			set ctx.isInsideJsWizzi = false
+			var handler = handlers[model.wzElement]
+			_ handler(model, ctx)
+			_ callback(null, ctx)
+
+	function handleAtStatements
+		param parent
+		param ctx
+		param indent
+		if indent
+			_ ctx.indent
+		var stms = parent.atStatements ? parent.atStatements : parent
+		foreach item in stms
+			var handler = handlers[item.wzElement]
+			if !handler
+				_ statement.gen(item, ctx)
+			elif false
+				_ ctx.error
+					@ myname + " error: element handler not found: " + item.wzElement
+					@ item
+			else
+				_ handler(item, ctx)
+		if indent
+			_ ctx.deindent
+
+	function handleStatements
+		param parent
+		param ctx
+		param indent
+		if indent
+			_ ctx.indent
+		var stms = parent.statements ? parent.statements : parent
+		foreach item in stms
+			var handler = handlers[item.wzElement]
+			if !handler
+				_ statement.gen(item, ctx)
+			elif false
+				_ ctx.error
+					@ myname + " error: element handler not found: " + item.wzElement
+					@ item
+			else
+				_ handler(item, ctx)
+		if indent
+			_ ctx.deindent
+
+	var handlers = {}
+	
+	handler( xittf )
+		_ ctx.w(model.wzName)
+		_ handleAtStatements(model, ctx, true )
+	
+	handler( atStatement )
+		_ checkJsWizzi(false, ctx)
+		_ ctx.w('# ' + model.wzName)
+
+	handler( sem )
+		_ checkJsWizzi(false, ctx)
+		_ ctx.write(model.wzName)
+		var cvs = model.getValueComponents()
+		if cvs.length > 0
+			_ ctx.write(' $' + '{')
+			foreach item in cvs
+				if item.wzElement === 'mixinVarRef' || item.wzElement === 'op'
+					_ ctx.write(item.wzName)
+				elif item.wzElement === 'atFunctionCall'
+					set item.wzElement = 'call'
+					_ statement.gen(item, ctx)
+					set item.wzElement = 'atFunctionCall'
+			_ ctx.write('}')
+		_ ctx.w()
+		_ handleAtStatements(model.getStatements(), ctx, true )
+	
+	handler( atFunction )
+		_ checkJsWizzi(true, ctx)
+		var prms = model.getParamNames()
+		_ ctx.w('function ' + model.wzName + '(' + prms.join(', ') + ') {')
+		_ handleStatements(model.getStatements(), ctx, true )
+		_ ctx.w('}')
+	
+	handler( mixin )
+		_ checkJsWizzi(false, ctx)
+		_ ctx.w('$mixin ' + model.wzName)
+		_ handleAtStatements(model, ctx, true )
+
+	handler( mixinParam )
+		_ ctx.w('$param ' + model.wzName)
+	
+	handler( mixinVarDecl )
+		_ checkJsWizzi(true, ctx)
+		_ ctx.write('var ' + model.wzName)
+		if model.statements.length == 1
+			_ ctx.write(' = ')
+			if model.statements[0].wzElement === 'jsPropertyOrValue'
+				_ ctx.write(model.statements[0].wzName)
+			else
+				_ statement.gen(model.statements[0], ctx)
+		elif model.statements.length > 1
+			_ ctx.write(' = concat(')
+			foreach item in model.statements
+				if item.wzElement === 'jsPropertyOrValue'
+					_ ctx.write(item.wzName)
+				else
+					_ statement.gen(item, ctx)
+				if item_index < model.statements.length
+					_ ctx.write(', ')
+		if model.statements.length > 0 || model.wzName.trim()[model.wzName.trim().length -1] !== ';'
+			_ ctx.w(';')
+		else
+			_ ctx.w()
+
+	handler( mixinInclude )
+		_ checkJsWizzi(false, ctx)
+		var prms = model.getParams()
+		_ ctx.w('$mix ' + model.wzName)
+		_ ctx.indent
+		foreach item in prms
+			_ ctx.w('$: ' + item.wzName)
+		_ handleAtStatements(model.getStatements(), ctx, false )
+		_ ctx.deindent
+
+	handler( atIf )
+		_ checkJsWizzi(false, ctx)
+		_ ctx.write('$if')
+		if model.wzName && model.wzName.length > 0
+			_ ctx.write(' ' + model.wzName)
+		var test = model.getTest()
+		if test
+			_ ctx.write(' ')
+			if test.wzElement === 'atFalse'
+				_ ctx.write('!(')
+			_ handleStatements(test, ctx, false )
+			if test.wzElement === 'atFalse'
+				_ ctx.write(')')
+		_ ctx.w()
+		_ handleAtStatements(model.getStatements(), ctx, true )
+
+	handler( atElif )
+		_ checkJsWizzi(false, ctx)
+		_ ctx.write('$elif')
+		if model.wzName && model.wzName.length > 0
+			_ ctx.write(' ' + model.wzName)
+		var test = model.getTest()
+		if test
+			_ ctx.write(' ')
+			if test.wzElement === 'atFalse'
+				_ ctx.write('!(')
+			_ handleStatements(test, ctx, false )
+			if test.wzElement === 'atFalse'
+				_ ctx.write(')')
+		_ ctx.w()
+		_ handleAtStatements(model.getStatements(), ctx, true )
+
+	handler( atElse )
+		_ checkJsWizzi(false, ctx)
+		_ ctx.w('$else')
+		_ handleAtStatements(model.atStatements, ctx, true )
+	
+	handler( atEach )
+		_ ctx.w('$foreach ' + model.wzName)
+	
+	handler( atForeach )
+		_ ctx.w('$foreach ' + model.wzName)
+	
+	handler( atBackeach )
+		_ ctx.w('$backeach ' + model.wzName)
+	
+	handler( atWhile )
+		_ ctx.w('$while ' + model.wzName)
+	
+	handler( atFor )
+		_ ctx.w('$for ' + model.wzName)
+
+	handler( atHook )
+		_ ctx.w('$hook ' + model.wzName)
+
+	handler( atContent )
+		_ ctx.w('$content ' + model.wzName)
+
+	function checkJsWizzi
+		param isJsWizziStart
+		param ctx
+		if isJsWizziStart
+			if ctx.isInsideJsWizzi == true
+				return
+			else
+				set ctx.isInsideJsWizzi = true
+				_ ctx.w('$')
+				_ ctx.indent
+		else
+			if ctx.isInsideJsWizzi == true
+				set ctx.isInsideJsWizzi = false
+				_ ctx.deindent

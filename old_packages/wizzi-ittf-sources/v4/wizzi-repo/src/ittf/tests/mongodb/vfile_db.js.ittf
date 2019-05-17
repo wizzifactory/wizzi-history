@@ -1,0 +1,28 @@
+﻿base_test( vfile_db )
+	
+	$append imports
+		var async = require('async')
+		var vfile = require('wizzi-utils').vfile
+		var MongoFsImpl = require('../../lib/mongodb/mongoFsimpl')
+
+	var fsimpl
+		new MongoFsImpl
+			@ null
+			@ 'c:/wz/users'
+	var file = vfile(fsimpl)
+
+	var db_dirname = 'db://stefi/wf'
+
+	$include vfile_db/glob
+
+
+
+
+
+
+
+
+
+
+
+							

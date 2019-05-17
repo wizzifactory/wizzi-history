@@ -1,0 +1,42 @@
+﻿$group
+
+	@ getBatch
+		function
+			param options
+			param callback
+
+			var hash = options.hash
+			var version = options.version || globalConfig.wizziCurrentVersion
+			var xpackage = options.xpackage
+
+			_ this.getBatchList
+				@ options
+				f_cb_api(result)
+					var found
+					foreach group in result.data.batches
+						foreach batch in group.items
+							if batch.hash == hash || (batch.version == version && batch.packageName == xpackage)
+								if !batch.dependencies
+									set batch.dependencies = []
+								set found = batch
+					if found
+						_ paths.getFile
+							@ found.fullPath
+							f_cb_api( result )
+								set found.fileContent = result
+								_ async.map
+									@ found.dependencies
+									function
+										param dep
+										param callback
+										_ paths.getFile
+											@ dep.fullPath
+											f_cb_api(depContent)
+												set dep.fileContent = depContent
+												_ callback(null)
+									f_cb_api()
+										r_cb_success_quoted( Got job batch )
+											@ batch found
+					else
+						r_cb_error_quoted( Job not found )
+

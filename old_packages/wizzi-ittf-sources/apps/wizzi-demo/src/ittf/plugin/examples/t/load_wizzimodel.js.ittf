@@ -1,0 +1,29 @@
+﻿$group
+	$params functionName, schemaName, modelName
+
+	function ${functionName}
+		# Create a filesystem factory without access control
+		# requiring the local plugin.
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				# Now we can load the model
+				_ wf.loadModel
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ '${schemaName}'
+						@ '${modelName}.${schemaName}.ittf'
+					{
+					f_cb_throw( wizziModel )
+						# And print the wizzi model object
+						_ wizzi.file.write
+							_ path.join
+								@ __dirname
+								@ 'output'
+								@ '${modelName}.${schemaName}.json'
+							_ stringify
+								@ wizziModel.toJson()
+								@ null
+								@ 2
+

@@ -1,0 +1,29 @@
+﻿$group
+	
+	function recurseTFolder
+		param basePath
+		param relPath
+		param schema
+
+		# log 'wizzi-utils.finder.recurseTFolder', basePath, relPath, schema
+		var ittfDocumentUri = path.join(basePath, 't', relPath)
+		var result
+			_ tryExists
+				@ ittfDocumentUri
+				@ schema
+		if result.found
+			# log 'recurseTFolder found', result
+			return result
+		else 
+			set basePath = path.dirname(basePath)
+			if basePath.length > 3
+				return 
+					_ recurseTFolder
+						@ basePath
+						@ relPath
+						@ schema
+			else 
+				# log 'recurseTFolder not found', ittfDocumentUri
+				return
+					{ 
+						@ found false

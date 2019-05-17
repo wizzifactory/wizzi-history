@@ -1,0 +1,166 @@
+﻿$group
+
+	cat gradient-function
+		# The <gradient> CSS data type is a special type of <image> that consists of a progressive 
+		# transition between two or more colors.
+		# A CSS gradient has no intrinsic dimensions; i.e., it has no natural or preferred size, 
+		# nor a preferred ratio. Its concrete size will match the size of the element to which it applies.
+
+	e linear-gradient()
+		# Transitions colors progressively along an imaginary line. Generated with the linear-gradient() function.
+		is function
+		is[ arg
+			|
+				: <angle>
+				[?
+					: to
+					: <side-or-corner> 
+			# Definition of the gradient line
+		is[ arg
+			[
+				: <color-stop>
+				[+
+					: ,
+					: <color-stop> 
+			# List of color stops
+		cat gradient-function
+
+	e radial-gradient()
+		# Transitions colors progressively from a center point (origin). Generated with the radial-gradient() function.
+		is function
+		is[ arg
+			[?
+				|
+					[
+						||
+							: circle
+							: <length>
+						[?
+							: at
+							: <position>
+					[
+						||
+							: ellipse 
+							[ {2}
+								|
+									: <length>
+									: <percentage>
+						[?
+							: at
+							: <position>
+
+					[
+						||
+							|
+								: circle
+								: ellipse
+							: <extent-keyword>
+						[?
+							: at
+							: <position> 
+					[
+						: at
+						: <position>
+		is[ arg
+			[
+				: <color-stop>
+				[+
+					: ,
+					: <color-stop> 
+			# List of color stops
+ 		cat gradient-function
+
+	e repeating-linear-gradient()
+		# Repeats a gradient as much as necessary to fill the entire element. 
+		is function
+		is[ arg
+			|
+				: <angle>
+				[?
+					: to
+					: <side-or-corner> 
+			# Definition of the gradient line
+		is[ arg
+			[
+				: <color-stop>
+				[+
+					: ,
+					: <color-stop> 
+			# List of color stops
+		cat gradient-function
+
+	e radial-repeat()
+		# Repeats a gradient as much as necessary to fill the entire element. 
+		is function
+		is[ arg
+			[?
+				|
+					[
+						||
+							: circle
+							: <length>
+						[?
+							: at
+							: <position>
+					[
+						||
+							: ellipse 
+							[ {2}
+								|
+									: <length>
+									: <percentage>
+						[?
+							: at
+							: <position>
+
+					[
+						||
+							|
+								: circle
+								: ellipse
+							: <extent-keyword>
+						[?
+							: at
+							: <position> 
+					[
+						: at
+						: <position>
+		is[ arg
+			[
+				: <color-stop>
+				[+
+					: ,
+					: <color-stop> 
+			# List of color stops
+		cat gradient-function
+
+	e <side-or-corner>
+		is datatype
+		synthax
+			||
+				|
+					: left
+					: right
+				|
+					: top
+					: bottom
+
+	e <color-stop>
+		is datatype
+		synthax
+			[
+				: <color>
+				[?
+					|
+						: <percentage>
+						: <length>
+
+	e <extent-keyword>
+		is datatype
+		is enum
+		synthax
+			|
+				: closest-corner
+				: closest-side
+				: farthest-corner
+				: farthest-side

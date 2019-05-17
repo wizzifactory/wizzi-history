@@ -1,0 +1,71 @@
+  module  ids: 1 72
+    kind jsfile ids: 2 73
+    var uriparser = require('./uriparser') ids: 3 74
+    var file = require('./file') ids: 4 75
+    var repo = require('./repo') ids: 5 76
+    var md = module.exports = {} ids: 6 77
+    var win32 = process.platform === 'win32' ids: 7 78
+    set md.unixifyPath ids: 8 79
+      function  ids: 9 80
+        param path_string ids: 10 81
+        if win32 ids: 11 82
+          return path_string.replace(/\\/g, '/') ids: 12 83
+        else  ids: 13 84
+          return path_string ids: 14 85
+    set md.exists ids: 15 86
+      function  ids: 16 87
+        param path_string ids: 17 88
+        param callback ids: 18 89
+        var parsed = uriparser(String(path_string)) ids: 19 90
+        if parsed.storeKind === 'repo' ids: 20 91
+          return repo.exists(parsed, callback) ids: 21 92
+        else  ids: 22 93
+          return file.exists(path_string, callback) ids: 23 94
+    set md.isFile ids: 24 95
+      function  ids: 25 96
+        param path_string ids: 26 97
+        param callback ids: 27 98
+        var parsed = uriparser(String(path_string)) ids: 28 99
+        if parsed.storeKind === 'repo' ids: 29 100
+          return repo.isFile(parsed, callback) ids: 30 101
+        else  ids: 31 102
+          return file.isFile(path_string, callback) ids: 32 103
+    set md.isDirectory ids: 33 104
+      function  ids: 34 105
+        param path_string ids: 35 106
+        param callback ids: 36 107
+        var parsed = uriparser(String(path_string)) ids: 37 108
+        if parsed.storeKind === 'repo' ids: 38 109
+          return repo.isDirectory(parsed, callback) ids: 39 110
+        else  ids: 40 111
+          return file.isDirectory(path_string, callback) ids: 41 112
+    set md.read ids: 42 113
+      function  ids: 43 114
+        param path_string ids: 44 115
+        param options ids: 45 116
+        param callback ids: 46 117
+        if typeof (options) === 'function' ids: 47 118
+          set callback = options, options = {} ids: 48 119
+        if !options ids: 49 120
+          set options = ids: 50 121
+            {  ids: 51 122
+        var parsed = uriparser(String(path_string)) ids: 52 123
+        if parsed.storeKind === 'repo' ids: 53 124
+          return repo.read(parsed, options, callback) ids: 54 125
+        else  ids: 55 126
+          return file.read(path_string, options, callback) ids: 56 127
+    set md.getGlobbedFiles ids: 57 128
+      function  ids: 58 129
+        param globPattern ids: 59 130
+        param options ids: 60 131
+        param callback ids: 61 132
+        if typeof (options) === 'function' ids: 62 133
+          set callback = options, options = {} ids: 63 134
+        if !options ids: 64 135
+          set options = ids: 65 136
+            {  ids: 66 137
+        var parsed = uriparser(String(path_string)) ids: 67 138
+        if parsed.storeKind === 'repo' ids: 68 139
+          return repo.getGlobbedFiles(parsed, options, callback) ids: 69 140
+        else  ids: 70 141
+          return file.getGlobbedFiles(globPattern, options, callback) ids: 71 142

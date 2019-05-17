@@ -1,0 +1,62 @@
+﻿$group
+
+	@ getKernelPackages
+		function
+			param options
+			param callback
+			return
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								[ packages
+									{
+										@ name 'wizzi'
+									{
+										@ name 'wizzi-mtree'
+									{
+										@ name 'wizzi-repo'
+									{
+										@ name 'wizzi-utils'
+						@ status
+							_ success
+								@ 'Kernel packages data fetched'
+
+	@ getKernelPackage
+		function
+			param options
+			param callback
+
+			# options.packageName required
+
+			var packageName = options.packageName
+			var version = options.version || globalConfig.wizziCurrentVersion
+
+			log 'packageName', packageName
+			return
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								@ name packageName
+								@ generatePath
+									_ paths.kernelGeneratePath(packageName, version)
+								@ generateWfJobPath
+									_ paths.kernelGenerateWfJobPath(packageName, version)
+								@ rootIttfDocuments
+									_ paths.getIttfFiles(paths.kernelRootFolderPath(packageName, version))
+								@ libIttfDocuments
+									_ paths.getIttfFiles(paths.kernelLibFolderPath(packageName, version))
+								@ examplesIttfDocuments
+									_ paths.getIttfFiles(paths.kernelExamplesFolderPath(packageName, version))
+								@ testsIttfDocuments
+									_ paths.getIttfFiles(paths.kernelTestsFolderPath(packageName, version))
+								@ metaIttfDocuments
+									_ paths.getIttfFiles(paths.kernelMetaFolderPath(packageName, version))
+								@ tIttfDocuments
+									_ paths.getIttfFiles(paths.kernelTFolderPath(packageName, version))
+						@ status
+							_ success
+								@ 'Kernel package data fetched'

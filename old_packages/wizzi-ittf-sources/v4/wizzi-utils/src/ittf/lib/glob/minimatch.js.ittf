@@ -1,0 +1,667 @@
+﻿module 
+	kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source: https://github.com/isaacs/minimatch/blob/master/minimatch.js
+	# license (ISC) https://github.com/isaacs/minimatch/blob/master/LICENSE
+
+    set module.exports = minimatch
+    set minimatch.Minimatch = Minimatch
+    var path
+        { 
+            @ sep '/'
+    try 
+        set path = require('path')
+    catch er
+    var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
+    var expand = require('./brace-expansion')
+    var plTypes
+        { 
+            @ '!'
+                { 
+                    @ open '(?:(?!(?:'
+                    @ close '))[^/]*?)'
+            @ '?'
+                { 
+                    @ open '(?:'
+                    @ close ')?'
+            @ '+'
+                { 
+                    @ open '(?:'
+                    @ close ')+'
+            @ '*'
+                { 
+                    @ open '(?:'
+                    @ close ')*'
+            @ '@'
+                { 
+                    @ open '(?:'
+                    @ close ')'
+    var qmark = '[^/]'
+    var star = (qmark + '*?')
+    var twoStarDot = '(?:(?!(?:\\\/|^)(?:\\.{1,2})($|\\\/)).)*?'
+    var twoStarNoDot = '(?:(?!(?:\\\/|^)\\.).)*?'
+    var reSpecials = charSet('().*{}+?[]^$\\!')
+    function charSet
+        param s
+        return 
+            _ s.split('')
+                ._ reduce
+                    function 
+                        param set
+                        param c
+                        set set[c] = true
+                        return set
+                    { 
+    var slashSplit = /\/+/
+    set minimatch.filter = filter
+    function filter
+        param pattern
+        param options
+        set options = (options || {})
+        return 
+            function 
+                param p
+                param i
+                param list
+                return minimatch(p, pattern, options)
+    function ext
+        param a
+        param b
+        set a = (a || {})
+        set b = (b || {})
+        var t
+            { 
+        _ Object.keys(b)
+            ._ forEach
+                function 
+                    param k
+                    set t[k] = b[k]
+        _ Object.keys(a)
+            ._ forEach
+                function 
+                    param k
+                    set t[k] = a[k]
+        return t
+    set minimatch.defaults =
+        function 
+            param def
+            if (! (def) || ! (Object.keys(def).length))
+                return minimatch
+            var orig = minimatch
+            var m
+                function minimatch
+                    param p
+                    param pattern
+                    param options
+                    return 
+                        _ orig.minimatch
+                            @ p
+                            @ pattern
+                            _ ext(def, options)
+            set m.Minimatch =
+                function Minimatch
+                    param pattern
+                    param options
+                    return 
+                        new orig.Minimatch
+                            @ pattern
+                            _ ext(def, options)
+            return m
+    set Minimatch.defaults =
+        function 
+            param def
+            if (! (def) || ! (Object.keys(def).length))
+                return Minimatch
+            return 
+                _ minimatch.defaults(def)
+                    . Minimatch
+    function minimatch
+        param p
+        param pattern
+        param options
+        if typeof (pattern) !== 'string'
+            throw 
+                new TypeError('glob pattern string required')
+        if ! (options)
+            set options =
+                { 
+        if (! (options.nocomment) && (pattern.charAt(0) === '#'))
+            return false
+        if pattern.trim() === ''
+            return p === ''
+        return 
+            new Minimatch(pattern, options)
+                ._ match(p)
+    function Minimatch
+        param pattern
+        param options
+        if ! (this instanceof Minimatch)
+            return 
+                new Minimatch(pattern, options)
+        if typeof (pattern) !== 'string'
+            throw 
+                new TypeError('glob pattern string required')
+        if ! (options)
+            set options =
+                { 
+        set pattern = pattern.trim()
+        if path.sep !== '/'
+            set pattern = pattern.split(path.sep).join('/')
+        set this.options = options
+        set this.set = []
+        set this.pattern = pattern
+        set this.regexp = null
+        set this.negate = false
+        set this.comment = false
+        set this.empty = false
+        _ this.make()
+    set Minimatch.prototype.debug =
+        function 
+    set Minimatch.prototype.make = make
+    function make
+        if this._made
+            return 
+        var pattern = this.pattern
+        var options = this.options
+        if (! (options.nocomment) && (pattern.charAt(0) === '#'))
+            set this.comment = true
+            return 
+        if ! (pattern)
+            set this.empty = true
+            return 
+        _ this.parseNegate()
+        var set = this.globSet = this.braceExpand()
+        if options.debug
+            set this.debug = console.error
+        _ this.debug
+            @ this.pattern
+            @ set
+        set set =
+            set this.globParts =
+                _ set.map
+                    function 
+                        param s
+                        return s.split(slashSplit)
+        _ this.debug
+            @ this.pattern
+            @ set
+        set set =
+            _ set.map
+                function 
+                    param s
+                    param si
+                    param set
+                    return 
+                        _ s.map
+                            @ this.parse
+                            @ this
+                @ this
+        _ this.debug
+            @ this.pattern
+            @ set
+        set set =
+            _ set.filter
+                function 
+                    param s
+                    return s.indexOf(false) === - (1)
+        _ this.debug
+            @ this.pattern
+            @ set
+        set this.set = set
+    set Minimatch.prototype.parseNegate = parseNegate
+    function parseNegate
+        var pattern = this.pattern
+        var negate = false
+        var options = this.options
+        var negateOffset = 0
+        if options.nonegate
+            return 
+        for var i = 0, l = pattern.length; ((i < l) && (pattern.charAt(i) === '!')); i++
+            set negate = ! (negate)
+            set negateOffset++
+        if negateOffset
+            set this.pattern = pattern.substr(negateOffset)
+        set this.negate = negate
+    set minimatch.braceExpand =
+        function 
+            param pattern
+            param options
+            return braceExpand(pattern, options)
+    set Minimatch.prototype.braceExpand = braceExpand
+    function braceExpand
+        param pattern
+        param options
+        if ! (options)
+            if this instanceof Minimatch
+                set options = this.options
+            else 
+                set options =
+                    { 
+        set pattern = typeof (pattern) === 'undefined' ? this.pattern : pattern
+        if typeof (pattern) === 'undefined'
+            throw 
+                new TypeError('undefined pattern')
+        if (options.nobrace || ! (pattern.match(/\{.*\}/)))
+            return 
+                [ 
+                    @ pattern
+        return expand(pattern)
+    set Minimatch.prototype.parse = parse
+    var SUBPARSE
+        { 
+    function parse
+        param pattern
+        param isSub
+        if (pattern.length > (1024 * 64))
+            throw 
+                new TypeError('pattern is too long')
+        var options = this.options
+        if (! (options.noglobstar) && (pattern === '**'))
+            return GLOBSTAR
+        if pattern === ''
+            return ''
+        var re = ''
+        var hasMagic = ! (! (options.nocase))
+        var escaping = false
+        var patternListStack
+            [ 
+        var negativeLists
+            [ 
+        var stateChar
+        var inClass = false
+        var reClassStart = - (1)
+        var classStart = - (1)
+        var patternStart = pattern.charAt(0) === '.' ? '' : options.dot ? '(?!(?:^|\\\/)\\.{1,2}(?:$|\\\/))' : '(?!\\.)'
+        var self = this
+        function clearStateChar
+            if stateChar
+                switch stateChar
+                    case '*'
+                        set re += star
+                        set hasMagic = true
+                        break 
+                    case '?'
+                        set re += qmark
+                        set hasMagic = true
+                        break 
+                    default 
+                        set re += ('\\' + stateChar)
+                        break 
+                _ self.debug('clearStateChar %j %j', stateChar, re)
+                set stateChar = false
+        for var i = 0, len = pattern.length, c; ((i < len) && (c = pattern.charAt(i))); i++
+            _ this.debug('%s\t%s %s %j', pattern, i, re, c)
+            if escaping && reSpecials[c]
+                set re += ('\\' + c)
+                set escaping = false
+                continue 
+            switch c
+                case '/'
+                    return false
+                case '\\'
+                    _ clearStateChar()
+                    set escaping = true
+                    continue 
+                case '?'
+                case '*'
+                case '+'
+                case '@'
+                case '!'
+                    _ this.debug('%s\t%s %s %j <-- stateChar', pattern, i, re, c)
+                    if inClass
+                        _ this.debug('  in class')
+                        if ((c === '!') && ((i === ((classStart + 1)))))
+                            set c = '^'
+                        set re += c
+                        continue 
+                    _ self.debug('call clearStateChar %j', stateChar)
+                    _ clearStateChar()
+                    set stateChar = c
+                    if options.noext
+                        _ clearStateChar()
+                    continue 
+                case '('
+                    if inClass
+                        set re += '('
+                        continue 
+                    if ! (stateChar)
+                        set re += '\\('
+                        continue 
+                    _ patternListStack.push
+                        { 
+                            @ type stateChar
+                            @ start (i - 1)
+                            @ reStart re.length
+                            @ open plTypes[stateChar].open
+                            @ close plTypes[stateChar].close
+                    set re += stateChar === '!' ? '(?:(?!(?:' : '(?:'
+                    _ this.debug('plType %j %j', stateChar, re)
+                    set stateChar = false
+                    continue 
+                case ')'
+                    if (inClass || ! (patternListStack.length))
+                        set re += '\\)'
+                        continue 
+                    _ clearStateChar()
+                    set hasMagic = true
+                    var pl = patternListStack.pop()
+                    set re += pl.close
+                    if pl.type === '!'
+                        _ negativeLists.push(pl)
+                    set pl.reEnd = re.length
+                    continue 
+                case '|'
+                    if (((inClass || ! (patternListStack.length))) || escaping)
+                        set re += '\\|'
+                        set escaping = false
+                        continue 
+                    _ clearStateChar()
+                    set re += '|'
+                    continue 
+                case '['
+                    _ clearStateChar()
+                    if inClass
+                        set re += ('\\' + c)
+                        continue 
+                    set inClass = true
+                    set classStart = i
+                    set reClassStart = re.length
+                    set re += c
+                    continue 
+                case ']'
+                    if (((i === ((classStart + 1)))) || ! (inClass))
+                        set re += ('\\' + c)
+                        set escaping = false
+                        continue 
+                    if inClass
+                        var cs = pattern.substring((classStart + 1), i)
+                        try 
+                            _ RegExp(((('[' + cs)) + ']'))
+                        catch er
+                            var sp = this.parse(cs, SUBPARSE)
+                            set re = (((((re.substr(0, reClassStart) + '\\[')) + sp[0])) + '\\]')
+                            set hasMagic = (hasMagic || sp[1])
+                            set inClass = false
+                            continue 
+                    set hasMagic = true
+                    set inClass = false
+                    set re += c
+                    continue 
+                default 
+                    _ clearStateChar()
+                    if escaping
+                        set escaping = false
+                    elif reSpecials[c] && ! (((c === '^') && inClass))
+                        set re += '\\'
+                    set re += c
+        if inClass
+            set cs = pattern.substr((classStart + 1))
+            set sp = this.parse(cs, SUBPARSE)
+            set re = (((re.substr(0, reClassStart) + '\\[')) + sp[0])
+            set hasMagic = (hasMagic || sp[1])
+        for pl = patternListStack.pop(); pl; pl = patternListStack.pop()
+            var tail = re.slice((pl.reStart + pl.open.length))
+            _ this.debug('setting tail', re, pl)
+            set tail =
+                _ tail.replace
+                    @ /((?:\\{2}){0,64})(\\?)\|/g
+                    function 
+                        param _
+                        param $1
+                        param $2
+                        if ! ($2)
+                            set $2 = '\\'
+                        return ((((($1 + $1)) + $2)) + '|')
+            _ this.debug('tail=%j\n   %s', tail, tail, pl, re)
+            var t = pl.type === '*' ? star : pl.type === '?' ? qmark : ('\\' + pl.type)
+            set hasMagic = true
+            set re = (((((re.slice(0, pl.reStart) + t)) + '\\(')) + tail)
+        _ clearStateChar()
+        if escaping
+            set re += '\\\\'
+        var addPatternStart = false
+        switch re.charAt(0)
+            case '.'
+            case '['
+            case '('
+                set addPatternStart = true
+        for var n = (negativeLists.length - 1); n > - (1); n--
+            var nl = negativeLists[n]
+            var nlBefore
+                _ re.slice
+                    @ 0
+                    @ nl.reStart
+            var nlFirst
+                _ re.slice
+                    @ nl.reStart
+                    @ (nl.reEnd - 8)
+            var nlLast
+                _ re.slice
+                    @ (nl.reEnd - 8)
+                    @ nl.reEnd
+            var nlAfter
+                _ re.slice
+                    @ nl.reEnd
+            set nlLast += nlAfter
+            var openParensBefore = (nlBefore.split('(').length - 1)
+            var cleanAfter = nlAfter
+            for i = 0; i < openParensBefore; i++
+                set cleanAfter = cleanAfter.replace(/\)[+*?]?/, '')
+            set nlAfter = cleanAfter
+            var dollar = ''
+            if ((nlAfter === '') && (isSub !== SUBPARSE))
+                set dollar = '$'
+            var newRe = (((((((nlBefore + nlFirst)) + nlAfter)) + dollar)) + nlLast)
+            set re = newRe
+        if ((re !== '') && hasMagic)
+            set re = ('(?=.)' + re)
+        if addPatternStart
+            set re = (patternStart + re)
+        if isSub === SUBPARSE
+            return 
+                [ 
+                    @ re
+                    @ hasMagic
+        if ! (hasMagic)
+            return globUnescape(pattern)
+        var flags = options.nocase ? 'i' : ''
+        try 
+            var regExp
+                new RegExp(((('^' + re)) + '$'), flags)
+        catch er
+            return 
+                new RegExp('$.')
+        set regExp._glob = pattern
+        set regExp._src = re
+        return regExp
+    set minimatch.makeRe =
+        function 
+            param pattern
+            param options
+            return 
+                new Minimatch(pattern, (options || {}))
+                    ._ makeRe()
+    set Minimatch.prototype.makeRe = makeRe
+    function makeRe
+        if (this.regexp || (this.regexp === false))
+            return this.regexp
+        var set = this.set
+        if ! (set.length)
+            set this.regexp = false
+            return this.regexp
+        var options = this.options
+        var twoStar = options.noglobstar ? star : options.dot ? twoStarDot : twoStarNoDot
+        var flags = options.nocase ? 'i' : ''
+        var re
+            _ set.map
+                function 
+                    param pattern
+                    return 
+                        _ pattern.map
+                            function 
+                                param p
+                                return 
+                                    iif p === GLOBSTAR
+                                        then twoStar
+                                        else 
+                                            iif typeof (p) === 'string'
+                                                then 
+                                                    _ regExpEscape(p)
+                                                else 
+                                                    set p._src
+                            ._ join('\\\/')
+                ._ join('|')
+        set re = ((('^(?:' + re)) + ')$')
+        if this.negate
+            set re = ((('^(?!' + re)) + ').*$')
+        try 
+            set this.regexp = new RegExp(re, flags)
+        catch ex
+            set this.regexp = false
+        return this.regexp
+    set minimatch.match =
+        function 
+            param list
+            param pattern
+            param options
+            set options = (options || {})
+            var mm
+                new Minimatch(pattern, options)
+            set list =
+                _ list.filter
+                    function 
+                        param f
+                        return mm.match(f)
+            if mm.options.nonull && ! (list.length)
+                _ list.push(pattern)
+            return list
+    set Minimatch.prototype.match = match
+    function match
+        param f
+        param partial
+        _ this.debug
+            @ 'match'
+            @ f
+            @ this.pattern
+        if this.comment
+            return false
+        if this.empty
+            return f === ''
+        if ((f === '/') && partial)
+            return true
+        var options = this.options
+        if path.sep !== '/'
+            set f = f.split(path.sep).join('/')
+        set f = f.split(slashSplit)
+        _ this.debug
+            @ this.pattern
+            @ 'split'
+            @ f
+        var set = this.set
+        _ this.debug
+            @ this.pattern
+            @ 'set'
+            @ set
+        var filename
+        var i
+        for i = (f.length - 1); i >= 0; i--
+            set filename = f[i]
+            if filename
+                break 
+        for i = 0; i < set.length; i++
+            var pattern = set[i]
+            var file = f
+            if (options.matchBase && (pattern.length === 1))
+                set file = [filename]
+            var hit = this.matchOne(file, pattern, partial)
+            if hit
+                if options.flipNegate
+                    return true
+                return ! (this.negate)
+        if options.flipNegate
+            return false
+        return this.negate
+    set Minimatch.prototype.matchOne =
+        function 
+            param file
+            param pattern
+            param partial
+            var options = this.options
+            _ this.debug
+                @ 'matchOne'
+                { 
+                    @ 'this' this
+                    @ file file
+                    @ pattern pattern
+            _ this.debug
+                @ 'matchOne'
+                @ file.length
+                @ pattern.length
+            for var fi = 0, pi = 0, fl = file.length, pl = pattern.length; ((fi < fl) && (pi < pl)); fi++, pi++
+                _ this.debug('matchOne loop')
+                var p = pattern[pi]
+                var f = file[fi]
+                _ this.debug(pattern, p, f)
+                if p === false
+                    return false
+                if p === GLOBSTAR
+                    _ this.debug
+                        @ 'GLOBSTAR'
+                        [ 
+                            @ pattern
+                            @ p
+                            @ f
+                    var fr = fi
+                    var pr = (pi + 1)
+                    if pr === pl
+                        _ this.debug('** at the end')
+                        for ; fi < fl; fi++
+                            if ((((file[fi] === '.') || (file[fi] === '..'))) || ((! (options.dot) && (file[fi].charAt(0) === '.'))))
+                                return false
+                        return true
+                    while fr < fl
+                        var swallowee = file[fr]
+                        _ this.debug('\nglobstar while', file, fr, pattern, pr, swallowee)
+                        if this.matchOne(file.slice(fr), pattern.slice(pr), partial)
+                            _ this.debug('globstar found match!', fr, fl, swallowee)
+                            return true
+                        else 
+                            if ((((swallowee === '.') || (swallowee === '..'))) || ((! (options.dot) && (swallowee.charAt(0) === '.'))))
+                                _ this.debug('dot detected!', file, fr, pattern, pr)
+                                break 
+                            _ this.debug('globstar swallow a segment, and continue')
+                            set fr++
+                    if partial
+                        _ this.debug('\n>>> no match, partial?', file, fr, pattern, pr)
+                        if fr === fl
+                            return true
+                    return false
+                var hit
+                if typeof (p) === 'string'
+                    if options.nocase
+                        set hit = f.toLowerCase() === p.toLowerCase()
+                    else 
+                        set hit = f === p
+                    _ this.debug('string match', p, f, hit)
+                else 
+                    set hit = f.match(p)
+                    _ this.debug('pattern match', p, f, hit)
+                if ! (hit)
+                    return false
+            if ((fi === fl) && (pi === pl))
+                return true
+            elif fi === fl
+                return partial
+            elif pi === pl
+                var emptyFileEnd = (((fi === ((fl - 1)))) && (file[fi] === ''))
+                return emptyFileEnd
+            throw 
+                new Error('wtf?')
+    function globUnescape
+        param s
+        return s.replace(/\\(.)/g, '$1')
+    function regExpEscape
+        param s
+        return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')

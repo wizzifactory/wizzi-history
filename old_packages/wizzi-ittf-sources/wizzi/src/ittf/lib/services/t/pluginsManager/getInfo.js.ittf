@@ -1,0 +1,16 @@
+﻿$group
+
+	m getInfo
+		var factoryPluginsInfo = []
+		foreach item in this.factoryPlugins
+			_ factoryPluginsInfo.push
+				{
+					@ packageName item.packageName
+					@ packagePath item.packagePath
+					@ provides item.provides
+		return
+			{
+				@ providedSchemas this.providedSchemas
+				@ providedModelTransformers this.providedModelTransformers
+				@ providedArtifactGenerators this.providedArtifactGenerators
+				@ factoryPlugins factoryPluginsInfo

@@ -1,0 +1,64 @@
+﻿module 
+    kind react
+	+
+	import_rsf_actions( GET_ITTF )
+	import_rsf_actions( GET_MTREE_DEBUGINFO )
+	import_rsf_actions( GEN_DEFAULT_ARTIFACT )
+	import
+		@ GET_REPO_DOCUMENT_REQUEST
+		from '../actions'
+	+
+	const wizziIttfInitialState
+		{
+			@ ittfDocument null
+			@ mTreeScript null
+			@ generatedArtifact null
+			@ loadError null
+	+
+	r( wizziIttf, wizziIttfInitialState )
+	
+		c( GET_ITTF_SUCCESS
+			{
+				@ ...state
+				@ ittfDocument action.payload.content
+				@ mTreeScript null
+				@ generatedArtifact null
+				@ loadError null
+
+		c( GET_ITTF_FAILURE
+			{
+				@ ...state
+				@ ittfDocument null
+				@ loadError action.payload.error
+		
+		c( GET_MTREE_DEBUGINFO_SUCCESS
+			{
+				@ ...state
+				@ mTreeScript action.payload.mTreeBuildUpScript
+				@ loadError null
+
+		c( GET_MTREE_DEBUGINFO_FAILURE
+			{
+				@ ...state
+				@ mTreeScript null
+				@ loadError action.payload.error
+
+		c( GEN_DEFAULT_ARTIFACT_SUCCESS
+			{
+				@ ...state
+				@ generatedArtifact action.payload.data
+				@ loadError null
+
+		c( GEN_DEFAULT_ARTIFACT_FAILURE
+			{
+				@ ...state
+				@ generatedArtifact null
+				@ loadError action.payload.error
+
+		c( GET_REPO_DOCUMENT_REQUEST
+			{
+				@ ...state
+				@ mTreeScript null
+				@ generatedArtifact null
+
+	export default wizziIttfReducer

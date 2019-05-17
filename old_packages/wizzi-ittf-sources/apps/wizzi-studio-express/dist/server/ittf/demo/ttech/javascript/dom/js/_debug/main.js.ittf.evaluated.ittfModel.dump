@@ -1,0 +1,411 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    class StyleBuilder ids: undefined undefined
+      ctor  ids: undefined undefined
+        param styleObject ids: undefined undefined
+        set this.styleObject = styleObject ids: undefined undefined
+      m getWidth ids: undefined undefined
+        var ret = 0 ids: undefined undefined
+        for var k in this.styleObject ids: undefined undefined
+          if k === 'margin' || k === 'padding' ids: undefined undefined
+            set ret += this.getLeftWidth(this.styleObject[k]) ids: undefined undefined
+            set ret += this.getRightWidth(this.styleObject[k]) ids: undefined undefined
+          elif k === 'width' ids: undefined undefined
+            set ret += this.styleObject[k] ids: undefined undefined
+          elif k === 'border' ids: undefined undefined
+            set ret += (this._getSize(this.styleObject[k]) * 2) ids: undefined undefined
+          elif k === 'borderLeft' || k === 'borderRight' ids: undefined undefined
+            set ret += this._getSize(this.styleObject[k]) ids: undefined undefined
+        return ret ids: undefined undefined
+      m getHeight ids: undefined undefined
+        var ret = 0 ids: undefined undefined
+        for var k in this.styleObject ids: undefined undefined
+          if k === 'margin' || k === 'padding' ids: undefined undefined
+            set ret += this.getTopWidth(this.styleObject[k]) ids: undefined undefined
+            set ret += this.getBottomWidth(this.styleObject[k]) ids: undefined undefined
+          elif k === 'height' ids: undefined undefined
+            set ret += this.styleObject[k] ids: undefined undefined
+          elif k === 'border' ids: undefined undefined
+            set ret += (this._getSize(this.styleObject[k]) * 2) ids: undefined undefined
+          elif k === 'borderTop' || k === 'borderBottom' ids: undefined undefined
+            set ret += this._getSize(this.styleObject[k]) ids: undefined undefined
+        return ret ids: undefined undefined
+      m getPadMarginBorderWidth ids: undefined undefined
+        var ret = 0 ids: undefined undefined
+        var seenBorder = 0 ids: undefined undefined
+        for var k in this.styleObject ids: undefined undefined
+          if k === 'margin' || k === 'padding' ids: undefined undefined
+            set ret += this.getLeftWidth(this.styleObject[k]) ids: undefined undefined
+            set ret += this.getRightWidth(this.styleObject[k]) ids: undefined undefined
+          elif k === 'border' && seenBorder == 0 ids: undefined undefined
+            set ret += (this._getSize(this.styleObject[k]) * 2) ids: undefined undefined
+            set seenBorder = 1 ids: undefined undefined
+          elif (k === 'borderLeft' || k === 'borderRight') && seenBorder != 1 ids: undefined undefined
+            set ret += this._getSize(this.styleObject[k]) ids: undefined undefined
+            set seenBorder = 2 ids: undefined undefined
+        log 'StyleBuilder.width', ret ids: undefined undefined
+        return ret ids: undefined undefined
+      m getPadMarginBorderHeight ids: undefined undefined
+        var ret = 0 ids: undefined undefined
+        for var k in this.styleObject ids: undefined undefined
+          if k === 'margin' || k === 'padding' ids: undefined undefined
+            set ret += this.getTopWidth(this.styleObject[k]) ids: undefined undefined
+            set ret += this.getBottomWidth(this.styleObject[k]) ids: undefined undefined
+          elif k === 'border' && seenBorder == 0 ids: undefined undefined
+            set ret += (this._getSize(this.styleObject[k]) * 2) ids: undefined undefined
+            set seenBorder = 1 ids: undefined undefined
+          elif (k === 'borderTop' || k === 'borderBottom') && seenBorder != 1 ids: undefined undefined
+            set ret += this._getSize(this.styleObject[k]) ids: undefined undefined
+            set seenBorder = 2 ids: undefined undefined
+        return ret ids: undefined undefined
+      m getLeftWidth ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value.left) ids: undefined undefined
+          return value.left ids: undefined undefined
+        elif isNumeric(value.horizontal) ids: undefined undefined
+          return value.horizontal ids: undefined undefined
+        elif isNumeric(value) ids: undefined undefined
+          return value ids: undefined undefined
+        else  ids: undefined undefined
+          return 0 ids: undefined undefined
+      m getTopWidth ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value.top) ids: undefined undefined
+          return value.top ids: undefined undefined
+        elif isNumeric(value.vertical) ids: undefined undefined
+          return value.vertical ids: undefined undefined
+        elif isNumeric(value) ids: undefined undefined
+          return value ids: undefined undefined
+        else  ids: undefined undefined
+          return 0 ids: undefined undefined
+      m getRightWidth ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value.right) ids: undefined undefined
+          return value.right ids: undefined undefined
+        elif isNumeric(value.horizontal) ids: undefined undefined
+          return value.horizontal ids: undefined undefined
+        elif isNumeric(value) ids: undefined undefined
+          return value ids: undefined undefined
+        else  ids: undefined undefined
+          return 0 ids: undefined undefined
+      m getBottomWidth ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value.bottom) ids: undefined undefined
+          return value.bottom ids: undefined undefined
+        elif isNumeric(value.vertical) ids: undefined undefined
+          return value.vertical ids: undefined undefined
+        elif isNumeric(value) ids: undefined undefined
+          return value ids: undefined undefined
+        else  ids: undefined undefined
+          return 0 ids: undefined undefined
+      m _getSize ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value.size) ids: undefined undefined
+          return value.size ids: undefined undefined
+        else  ids: undefined undefined
+          return 0 ids: undefined undefined
+      m toStyle ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        for var k in this.styleObject ids: undefined undefined
+          if k === 'margin' ids: undefined undefined
+            _ ret.push('margin: ' + this.toLength14(this.styleObject[k])) ids: undefined undefined
+          elif k === 'padding' ids: undefined undefined
+            _ ret.push('padding: ' + this.toLength14(this.styleObject[k])) ids: undefined undefined
+          elif k === 'width' ids: undefined undefined
+            _ ret.push('width: ' + this.toLength(this.styleObject[k])) ids: undefined undefined
+          elif k === 'border' ids: undefined undefined
+            _ ret.push('border: ' + this.toBorder(this.styleObject[k])) ids: undefined undefined
+          elif k === 'borderTop' ids: undefined undefined
+            _ ret.push('border-top: ' + this.toBorder(this.styleObject[k])) ids: undefined undefined
+          elif k === 'borderLeft' ids: undefined undefined
+            _ ret.push('border-left: ' + this.toBorder(this.styleObject[k])) ids: undefined undefined
+          elif k === 'borderBottom' ids: undefined undefined
+            _ ret.push('border-bottom: ' + this.toBorder(this.styleObject[k])) ids: undefined undefined
+          elif k === 'borderRight' ids: undefined undefined
+            _ ret.push('border-right: ' + this.toBorder(this.styleObject[k])) ids: undefined undefined
+          elif k === 'color' ids: undefined undefined
+            _ ret.push('color: ' + this.toColor(this.styleObject[k])) ids: undefined undefined
+          elif k === 'backgroundColor' ids: undefined undefined
+            _ ret.push('background-color: ' + this.toColor(this.styleObject[k])) ids: undefined undefined
+          else  ids: undefined undefined
+            _ ret.push(k + ': ' + this.styleObject[k]) ids: undefined undefined
+        return ret.join('') ids: undefined undefined
+      m toStyleObject ids: undefined undefined
+        var ret = {} ids: undefined undefined
+        for var k in this.styleObject ids: undefined undefined
+          if k === 'margin' ids: undefined undefined
+            set ret.margin = this.toLength14(this.styleObject[k]) ids: undefined undefined
+          elif k === 'padding' ids: undefined undefined
+            set ret.padding = this.toLength14(this.styleObject[k]) ids: undefined undefined
+          elif k === 'width' ids: undefined undefined
+            set ret.width = this.toLength(this.styleObject[k]) ids: undefined undefined
+          elif k === 'border' ids: undefined undefined
+            set ret.border = this.toBorder(this.styleObject[k]) ids: undefined undefined
+          elif k === 'borderTop' || k === 'borderLeft' || k === 'borderRight' || k === 'borderBottom' ids: undefined undefined
+            set ret[k] = this.toBorder(this.styleObject[k]) ids: undefined undefined
+          elif k === 'color' ids: undefined undefined
+            set ret.color = this.toColor(this.styleObject[k]) ids: undefined undefined
+          elif k === 'backgroundColor' ids: undefined undefined
+            set ret.backgroundColor = this.toColor(this.styleObject[k]) ids: undefined undefined
+          else  ids: undefined undefined
+            set ret[k] = this.styleObject[k] ids: undefined undefined
+        return ret ids: undefined undefined
+      m toLength ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value) ids: undefined undefined
+          return value + 'px' ids: undefined undefined
+        return '0' ids: undefined undefined
+      m toLength14 ids: undefined undefined
+        param value ids: undefined undefined
+        if isNumeric(value) ids: undefined undefined
+          return value + 'px' ids: undefined undefined
+        elif isNumeric(value.top) ids: undefined undefined
+          return value.left + 'px 0 0 0' ids: undefined undefined
+        elif isNumeric(value.right) ids: undefined undefined
+          return '0 ' + value.right + 'px 0 0' ids: undefined undefined
+        elif isNumeric(value.bottom) ids: undefined undefined
+          return '0 0 ' + value.bottom + 'px 0' ids: undefined undefined
+        elif isNumeric(value.left) ids: undefined undefined
+          return '0 0 0 ' + value.left + 'px' ids: undefined undefined
+        elif isNumeric(value.horizontal) ids: undefined undefined
+          return '0 ' + value.left + 'px' ids: undefined undefined
+        elif isNumeric(value.vertical) ids: undefined undefined
+          return value.left + 'px 0' ids: undefined undefined
+        return 0 ids: undefined undefined
+      m toBorder ids: undefined undefined
+        param value ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        if isNumeric(value) ids: undefined undefined
+          return value + 'px' ids: undefined undefined
+        if isNumeric(value.size) ids: undefined undefined
+          _ ret.push(value.size + 'px') ids: undefined undefined
+        if value.style ids: undefined undefined
+          _ ret.push(value.style) ids: undefined undefined
+        if value.color ids: undefined undefined
+          _ ret.push(this.toColor(value.color)) ids: undefined undefined
+        return ret.join(' ') ids: undefined undefined
+      m toColor ids: undefined undefined
+        param value ids: undefined undefined
+        return value ids: undefined undefined
+    function isNumeric ids: undefined undefined
+      param n ids: undefined undefined
+      return !isNaN(parseFloat(n)) && isFinite(n) ids: undefined undefined
+    var win = typeof window != 'undefined' && window ids: undefined undefined
+    var doc = typeof document != 'undefined' && document ids: undefined undefined
+    var docElem = doc && doc.documentElement ids: undefined undefined
+    var matchMedia = win['matchMedia'] || win['msMatchMedia'] ids: undefined undefined
+    var mq ids: undefined undefined
+      iif matchMedia ids: undefined undefined
+        then  ids: undefined undefined
+          function  ids: undefined undefined
+            param q ids: undefined undefined
+            return !!matchMedia.call(win, q).matches ids: undefined undefined
+        else  ids: undefined undefined
+          function  ids: undefined undefined
+            return false ids: undefined undefined
+    log 'win', win ids: undefined undefined
+    log 'doc', doc ids: undefined undefined
+    log 'docElem', docElem ids: undefined undefined
+    class ElementPosition ids: undefined undefined
+      ctor  ids: undefined undefined
+        param element ids: undefined undefined
+        set this.$element = $(element) ids: undefined undefined
+      m getPositionData ids: undefined undefined
+        var elem = this.$element[0] ids: undefined undefined
+        var win = elem.ownerDocument.defaultView ids: undefined undefined
+        var rect = elem.getBoundingClientRect() ids: undefined undefined
+        log 'rect', rect ids: undefined undefined
+        #  ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+              @ top rect.top + win.pageYOffset ids: undefined undefined
+              @ left rect.left + win.pageXOffset ids: undefined undefined
+        var ret ids: undefined undefined
+          {  ids: undefined undefined
+            @ winLeft win.screenX || win.screenLeft ids: undefined undefined
+            @ winTop win.screenY || win.screenTop ids: undefined undefined
+            @ winScreenWidth win.screen.width ids: undefined undefined
+            @ winScreenHeight win.screen.height ids: undefined undefined
+            @ winScreenAvailWidth win.screen.availWidth ids: undefined undefined
+            @ winScreenAvailHeight win.screen.availHeight ids: undefined undefined
+            @ winInnerWidth win.innerWidth ids: undefined undefined
+            @ winInnerHeight win.innerHeight ids: undefined undefined
+            @ winOuterWidth win.outerWidth ids: undefined undefined
+            @ winOuterHeight win.outerHeight ids: undefined undefined
+            @ winScrollX win.pageXOffset || docElem.scrollLeft ids: undefined undefined
+            @ winScrollY win.pageYOffset || docElem.scrollTop ids: undefined undefined
+            @ docBodyClientWidth doc.body.clientWidth ids: undefined undefined
+            @ docBodyClientHeight doc.body.clientHeight ids: undefined undefined
+            @ docBodyOffsetWidth doc.body.offsetWidth ids: undefined undefined
+            @ docBodyOffsetHeight doc.body.offsetHeight ids: undefined undefined
+            @ docBodyScrollWidth doc.body.scrollWidth ids: undefined undefined
+            @ docBodyScrollHeight doc.body.scrollHeight ids: undefined undefined
+            @ docElemClientWidth docElem.clientWidth ids: undefined undefined
+            @ docElemClientHeight docElem.clientHeight ids: undefined undefined
+            @ docElemOffsetWidth docElem.offsetWidth ids: undefined undefined
+            @ docElemOffsetHeight docElem.offsetHeight ids: undefined undefined
+            @ docElemScrollWidth docElem.scrollWidth ids: undefined undefined
+            @ docElemScrollHeight docElem.scrollHeight ids: undefined undefined
+            @ docInnerWidth docElem.innerWidth ids: undefined undefined
+            @ docInnerHeight docElem.innerHeight ids: undefined undefined
+            @ offset ids: undefined undefined
+              {  ids: undefined undefined
+                @ left elem.offsetLeft ids: undefined undefined
+                @ top elem.offsetTop ids: undefined undefined
+            @ elemRectLeft rect.left ids: undefined undefined
+            @ elemRectTop rect.top ids: undefined undefined
+            @ elemRectRight rect.right ids: undefined undefined
+            @ elemRectBottom rect.bottom ids: undefined undefined
+            @ elemRectWidth rect.width ids: undefined undefined
+            @ elemRectHeight rect.height ids: undefined undefined
+            @ documentRect document.body.getBoundingClientRect() ids: undefined undefined
+        return ret ids: undefined undefined
+      m popupStyle ids: undefined undefined
+        param options ids: undefined undefined
+        var width = options.width || (16 * 30) ids: undefined undefined
+        var padMarginWidth = options.padMarginWidth || 0 ids: undefined undefined
+        var height = options.height || (9 * 30) ids: undefined undefined
+        var event = options.event ids: undefined undefined
+        if event ids: undefined undefined
+          log event ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+              @ position "absolute" ids: undefined undefined
+              @ display "inline" ids: undefined undefined
+              @ top Math.max(event.pageY - (height / 2), 0) ids: undefined undefined
+              @ left this.leftCheckedFromEvent(event, width + padMarginWidth) ids: undefined undefined
+              @ width (width + "px") ids: undefined undefined
+              @ height (height + "px") ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+              @ position "absolute" ids: undefined undefined
+              @ top "50%" ids: undefined undefined
+              @ left "50%" ids: undefined undefined
+              @ width (width + "px") ids: undefined undefined
+              @ height (height + "px") ids: undefined undefined
+              @ marginLeft ((-1 * width/2) + "px") ids: undefined undefined
+              @ marginTop ((-1 * height/2) + "px") ids: undefined undefined
+      m topCheckedFromEvent ids: undefined undefined
+        param event ids: undefined undefined
+        param height ids: undefined undefined
+        var top = event.pageY - (height / 2) ids: undefined undefined
+        if top < 0 ids: undefined undefined
+          return 0 ids: undefined undefined
+        elif (top + height) > win.innerHeight ids: undefined undefined
+          return win.innerHeight - height ids: undefined undefined
+        else  ids: undefined undefined
+          return top ids: undefined undefined
+      m leftCheckedFromEvent ids: undefined undefined
+        param event ids: undefined undefined
+        param width ids: undefined undefined
+        var left = event.pageX - (width / 2) ids: undefined undefined
+        if left < 0 ids: undefined undefined
+          return 0 ids: undefined undefined
+        elif (left + width) > doc.body.clientWidth ids: undefined undefined
+          return doc.body.clientWidth - width ids: undefined undefined
+        else  ids: undefined undefined
+          return left ids: undefined undefined
+    class RichDiv ids: undefined undefined
+      ctor  ids: undefined undefined
+        param element ids: undefined undefined
+        param style ids: undefined undefined
+        set this.$element = $(element) ids: undefined undefined
+        set this.styleBuilder = new StyleBuilder(style) ids: undefined undefined
+        set this.elementPosition = new ElementPosition(element) ids: undefined undefined
+      m beaPopup ids: undefined undefined
+        param options ids: undefined undefined
+        var onClickElement = $(options.onClickElement) ids: undefined undefined
+        var onClickElementPosition = new ElementPosition(options.onClickElement) ids: undefined undefined
+        var that = this ids: undefined undefined
+        _ onClickElement.bind ids: undefined undefined
+          @ 'click' ids: undefined undefined
+          function  ids: undefined undefined
+            param event ids: undefined undefined
+            _ that.$element.css ids: undefined undefined
+              _ objUtils.extends ids: undefined undefined
+                _ that.styleBuilder.toStyleObject() ids: undefined undefined
+                _ that.elementPosition.popupStyle ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ event event ids: undefined undefined
+                    @ width options.width ids: undefined undefined
+                    @ padMarginWidth that.styleBuilder.getPadMarginBorderWidth() ids: undefined undefined
+                    @ height options.height ids: undefined undefined
+            _ that.$element.html ids: undefined undefined
+              _ JSON.stringify ids: undefined undefined
+                {  ids: undefined undefined
+                  @ eventInfo ids: undefined undefined
+                    _ posUtils.getEventInfo ids: undefined undefined
+                      @ event ids: undefined undefined
+                  @ mystyle ids: undefined undefined
+                    _ that.elementPosition.popupStyle ids: undefined undefined
+                      {  ids: undefined undefined
+                        @ event event ids: undefined undefined
+                        @ width options.width ids: undefined undefined
+                        @ padMarginWidth that.styleBuilder.getPadMarginBorderWidth() ids: undefined undefined
+                        @ height options.height ids: undefined undefined
+                  @ elementInfo ids: undefined undefined
+                    _ onClickElementPosition.getPositionData() ids: undefined undefined
+                @ null ids: undefined undefined
+                @ 2 ids: undefined undefined
+            _ that.$element.show() ids: undefined undefined
+        _ this.$element.bind ids: undefined undefined
+          @ 'click' ids: undefined undefined
+          function  ids: undefined undefined
+            _ that.$element.hide() ids: undefined undefined
+    var objUtils ids: undefined undefined
+      {  ids: undefined undefined
+        @ extends ids: undefined undefined
+          function  ids: undefined undefined
+            param objsink ids: undefined undefined
+            param objsource ids: undefined undefined
+            for var k in objsource ids: undefined undefined
+              set objsink[k] = objsource[k] ids: undefined undefined
+            log 'objsink, objsource', objsink, objsource ids: undefined undefined
+            return objsink ids: undefined undefined
+    var posUtils ids: undefined undefined
+      {  ids: undefined undefined
+        @ getEventInfo ids: undefined undefined
+          function  ids: undefined undefined
+            param event ids: undefined undefined
+            return  ids: undefined undefined
+              {  ids: undefined undefined
+                @ kind 'event' ids: undefined undefined
+                @ clientX event.clientX ids: undefined undefined
+                @ clientY event.clientY ids: undefined undefined
+                @ offsetX event.offsetX ids: undefined undefined
+                @ offsetY event.offsetY ids: undefined undefined
+                @ pageX event.pageX ids: undefined undefined
+                @ pageY event.pageY ids: undefined undefined
+                @ screenX event.screenX ids: undefined undefined
+                @ screenY event.screenY ids: undefined undefined
+    ready  ids: undefined undefined
+      var bodyPos = new ElementPosition(document.body) ids: undefined undefined
+      log 'bodyPos', bodyPos.getPositionData() ids: undefined undefined
+      var headrPos = new ElementPosition('#header') ids: undefined undefined
+      log 'headrPos', headrPos.getPositionData() ids: undefined undefined
+      var mainContentPos = new ElementPosition('#main-content') ids: undefined undefined
+      log 'mainContentPos', mainContentPos.getPositionData() ids: undefined undefined
+      var mainContentPopLayoutInfo = new RichDiv('#mainContentPopLayoutInfo', popupStyle()) ids: undefined undefined
+      _ mainContentPopLayoutInfo.beaPopup ids: undefined undefined
+        {  ids: undefined undefined
+          @ onClickElement '#main-content' ids: undefined undefined
+          @ width (20 * 16) ids: undefined undefined
+          @ height (20 * 9) ids: undefined undefined
+      var headerPopLayoutInfo = new RichDiv('#headerPopLayoutInfo', popupStyle()) ids: undefined undefined
+      _ headerPopLayoutInfo.beaPopup ids: undefined undefined
+        {  ids: undefined undefined
+          @ onClickElement '#header' ids: undefined undefined
+          @ width (20 * 16) ids: undefined undefined
+          @ height (20 * 9) ids: undefined undefined
+    function popupStyle ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ padding 5 ids: undefined undefined
+          @ border ids: undefined undefined
+            {  ids: undefined undefined
+              @ size 5 ids: undefined undefined
+              @ color '#2288AA' ids: undefined undefined
+              @ style 'solid' ids: undefined undefined
+          @ backgroundColor '#DDEEFF' ids: undefined undefined
+          @ overflow 'auto' ids: undefined undefined

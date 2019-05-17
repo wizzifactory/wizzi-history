@@ -1,0 +1,42 @@
+﻿$group
+
+	set md.copyFile
+		function
+			param userId
+			param source_projectId
+			param source_path_string
+			param dest_projectId
+			param dest_path_string
+            param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'Mongodb wizzi repository not mounted. Review your start procedure'
+
+			var sourceFsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ source_projectId
+						@ source_path_string
+				
+			var destFsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ dest_projectId
+						@ dest_path_string
+
+			log 'wizzi-repo.mongodb.filesystem.copyFile.sourceFsPath', sourceFsPath, 'destFsPath', destFsPath
+
+			_ fsDoc.copyFile
+				@ sourceFsPath
+				@ destFsPath
+				f_cb( result )
+					log 'wizzi-repo.mongodb.filesystem.copyFile.sourceFsPath', sourceFsPath, 'destFsPath', destFsPath, 'result', result
+					return 
+						_ callback(null, result)

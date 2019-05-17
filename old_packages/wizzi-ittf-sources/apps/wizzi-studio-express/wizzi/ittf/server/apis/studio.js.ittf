@@ -1,0 +1,54 @@
+﻿api_async( Studio )
+	
+	$append imports
+		import fs
+
+	$include studio/index
+
+	$append methods
+		var checkApi = makeCheckApi(config)
+		var documentApi = makeIttfDocumentApi(config)
+		var fragmentApi = makeIttfFragmentApi(config)
+		var projectApi = makeProjectApi(config)
+		var packageApi = makePackageApi(config)
+		var schemaApi = makeSchemaApi(config)
+		var userApi = makeUserApi(config)
+		var commonsApi = makeCommonsApi(config)
+		var generationApi = makeGenerationApi(config)
+		set api.studio
+			{
+				@ getCheck checkApi.get
+				@ getCommons commonsApi.getCommons
+				@ getDefaultArtifacts commonsApi.getDefaultArtifacts
+				
+				@ getUser userApi.getUser
+				@ updateUser userApi.updateUser
+
+				@ createPackage packageApi.createPackage
+				@ getPackages packageApi.getPackages
+				@ getPackage packageApi.getPackage
+
+				@ createProject projectApi.createProject
+				@ getProjects projectApi.getProjects
+
+				@ getSchemas schemaApi.getSchemas
+				@ getSchemaJsonDoc schemaApi.getSchemaJsonDoc
+				@ getSchema schemaApi.getSchema
+
+				@ getDocuments documentApi.getDocuments
+				@ getDocument documentApi.getDocument
+				@ createDocument documentApi.createDocument
+				@ updateDocument documentApi.updateDocument
+				@ deleteDocument documentApi.deleteDocument
+
+				@ getFragments fragmentApi.getFragments
+				@ getFragment fragmentApi.getFragment
+				@ createFragment fragmentApi.createFragment
+				@ updateFragment fragmentApi.updateFragment
+				@ deleteFragment fragmentApi.deleteFragment
+
+				@ generateArtifact generationApi.generateArtifact
+
+				@ paths makePaths(config)
+
+		return callback(null, api)

@@ -1,0 +1,38 @@
+﻿demo_module( plugin_examples, lexer, 1 )
+
+	# 
+		# DEMO: How to use the `lexer` wizzi model type to 
+		#       build a lexer
+	+
+	if false
+		loadMTree( 1, second.lexer.ittf, print:dumpx )
+			loadModel( 1, second.lexer.ittf, save;print:json )
+				log 'wizziModel.elements', Object.keys(wizziModel.elements)
+				log 'wizziModel.tokens', Object.keys(wizziModel.tokens)
+				var results = wizziModel.execTests()
+				foreach r in results
+					var x = r.input
+					delete r.input
+					_ printValue('test input', r.input, 'dashes')
+					_ printValue('test meter', x, 'meter', 140)
+					_ printValue('test tokens', r.tokens, 'json')
+
+	if true
+		loadMTree( 1, css.lexer.ittf, print:dumpx )
+			loadModel( 1, css.lexer.ittf, save;print:json )
+
+				var sample
+					_ fsfile.read
+						_ path.join
+							@ __dirname
+							@ 'step_1'
+							@ 'samples'
+							@ 'sample_1.css.ittf'
+				_ printValue('sample', sample, 'dashes')
+				var tokens
+					_ wizziModel.getTokens
+						@ sample
+				_ printValue('sample tokens', tokens, 'json')
+
+
+

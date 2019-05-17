@@ -1,0 +1,62 @@
+$group
+
+	var artifactGenerators = {}
+	#
+		# Async generate an artifact
+		# Generators are searched in the PluginsManager
+		#
+		# @param {Object} modelContext
+		#        A WizziModel or any other value of type Object used to drive the artifact generation.
+		#            The object may a contain options parameter and or a structure
+		#            of other objects or WizziModels.
+		# @param {String} sourceIttfDocumentInfo
+		#            For trace and documentation purposes.
+		# @param {String} generationName
+		#            The name for retrieving the ArtifactGeneration module.
+		# @param {Object} emitContext
+		#        The emitContext
+		#          . collects the generated elements of an artifact generation
+		#          . may be used as a service container during generation.
+		#        For now the wizzi/artifact/genContext is used as emitContext.
+		#            TODO revise and rename the wizzi/artifact/genContext module
+		#        The emitContext parameter may be used to pass context data to the artifact generator;
+		#            It may contain a "__data" property that will be set on the genContext "data" property.
+		# @param {Function} callback
+
+	set md.doArtifactGeneration
+		function doArtifactGeneration
+			param modelContext
+			param sourceIttfDocumentInfo
+			param generationName
+			param emitContext
+			param callback
+			+
+			if !callback
+				set callback = emitContext
+				set emitContext = {}
+			if !emitContext
+				set emitContext = {}
+			+
+			var generator = artifactGenerators[generationName]
+			if !generator
+				set generator = md.pluginsManager.getArtifactGenerator(generationName)
+			if generator == null
+				var error = new errors.NotFoundError('ArtifactGenerator', generationName, sourceIttfDocumentInfo)
+				_ fail.warn(error.message)
+				return callback(error)
+			+
+			artifactGenerators[generationName] = generator
+			+
+			var genContext = new GenContext({ options: options(null, { data: emitContext.__data }) })
+			new generator.gen
+				@ modelContext
+				@ genContext
+				function
+					param err
+					if err
+						set err.srcPath = sourceIttfDocumentInfo
+						_ fail.warn(util.inspect(err, { depth: null}))
+						return callback(err)
+					var sw = new StringWriter()
+					_ genContext.toStream(sw)
+					_ callback(null, sw.toString())

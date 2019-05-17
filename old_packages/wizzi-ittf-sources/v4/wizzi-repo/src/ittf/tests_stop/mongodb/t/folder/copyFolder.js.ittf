@@ -1,0 +1,41 @@
+﻿$group
+
+	var sourceFolder = "c:/my/starters/copyFolder/source"
+	var destFolder = "c:/my/starters/copyFolder/dest"
+	var file_1 = sourceFolder + "/f_1.ittf"
+	var file_2 = sourceFolder + "/f_2.ittf"
+	var file_3 = sourceFolder + "/fold/f_3.ittf"
+	var file_4 = sourceFolder + "/fold/f_4.ittf"
+	var file_5 = sourceFolder + "/fold/sub/f_5.ittf"
+	var content = "Hello copyFolder "
+
+	describe copy a folder
+
+		before-async
+			_ file.write
+				@ file_1
+				@ content + 'file_1'
+			_ file.write
+				@ file_2
+				@ content + 'file_2'
+			_ file.write
+				@ file_3
+				@ content + 'file_3'
+			_ file.write
+				@ file_4
+				@ content + 'file_4'
+			_ file.write
+				@ file_5
+				@ content + 'file_5'
+			_ doc.uploadFolder
+				@ sourceFolder
+				f_cb_done( r )
+					log 'doc.uploadFolder', r
+
+		it-async should copy a folder
+			_ doc.copyFolder
+				@ sourceFolder
+				@ destFolder
+				f_cb_done( r )
+					log 'doc.copyFolder', r
+					tobe_array( r, 5 )

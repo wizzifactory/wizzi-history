@@ -1,0 +1,40 @@
+﻿base_example()
+
+	var nodeOptions1
+		{
+			@ scriptPath
+				_ path.join
+					@ __dirname
+					@ 'scripts'
+					@ 'node1.js'
+			[ args
+				@ 'stefi'
+
+	_ nodeJs
+		f_cb_test(result)
+			log 'nodeJs.result', result
+			_ nodeJsToEventStream
+				f_cb_test(result)
+					log 'nodeJsToEventStream.result', result
+	
+	function nodeJs
+		param callback
+
+		_ manager.nodeJsExec
+			@ nodeOptions1
+			@ callback
+
+	function nodeJsToEventStream
+		param callback
+
+		var res = new MockResponse()
+		_ manager.nodeJsExecToEventStream
+			@ nodeOptions1
+			@ res
+			f_cb_test(result)
+				log 'res.head', res.head
+				log 'res.stdout', res.stdout
+				log 'res.stderr', res.stderr
+				_ callback
+					@ null
+					@ result

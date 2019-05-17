@@ -1,0 +1,88 @@
+﻿r-container( WizziGists, false, true
+
+	$append imports
+		common/page_imports()
+		import
+			@ getJobGists
+			gists/optionsImportActions()
+			from '../../store/actions'
+		import MyLink from '../mui/FileSystemNavItem'
+		import OptionsDialog from './dialogs/OptionsDialog'
+		import ConfirmDialog from './dialogs/ConfirmDialog'
+
+		gists/optionsData()
+
+	style
+		{ root
+			@ flexGrow 1
+		{ barHead
+			@ marginLeft '15px'
+		{ column
+			@ float 'left'
+			@ padding '20px'
+
+	state
+		$include common/optionsState
+
+	did-mount
+		prop dispatchGetJobGists
+		_ dispatchGetJobGists
+			@ 'gist'
+
+	gists/optionsHandlers()
+
+	render
+		prop classes
+		prop loadingError
+		prop match
+		prop gists
+
+		common/guardLoading( gists )
+
+		return
+			. { classes.root }
+				h2 Job gists
+				$include common/optionsRender
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						common/tlb-btn( Create, this.handleCreateJobGist
+				. { classes.column }
+					< List
+						{
+							_ gists.map
+								=>
+									param p
+									param i
+									return
+										< MyLink
+											@ key {i}
+											@ title {p.basename}
+											@ kind {1} 
+											@ to
+												`lit 
+													+ /job/gist/
+													@ match.params.userId
+													+ /
+													@ p.hash
+											@ onDuplicate
+												=> 
+													_ this.handleDuplicateJobGist(p.hash, p.basename)
+											@ onRename
+												=> 
+													_ this.handleRenameJobGist(p.hash, p.basename)
+											@ onDelete
+												=> 
+													_ this.handleDeleteJobGist(p.hash, p.basename)
+
+
+	$append state-to-props
+		@ loadingError state.job.loadingError
+		@ gists state.job.gists
+
+	$append dispatch-to-props
+
+		common/dispatch( getJobGists, kind
+		gists/optionsDispatchToProps()
+

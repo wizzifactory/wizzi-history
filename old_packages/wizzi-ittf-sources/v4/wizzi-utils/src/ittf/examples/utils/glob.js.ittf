@@ -1,0 +1,42 @@
+﻿base_example( glob )
+	
+	$append imports
+		var glob = require('../../lib/glob')
+		var file = vfile()
+
+	_ file.write
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'globs2'
+			@ 'globbed_1.ittf'
+		@ 'globbed 1'
+	_ file.write
+		_ path.join
+			@ __dirname 
+			@ 'ittf'
+			@ 'globs2'
+			@ 'globbed_2.ittf'
+		@ 'globbed 2'
+		
+	_ glob
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'globs2'
+			@ '**/*.ittf'
+		@ file
+		f_cb_test( result )
+			log 'result', result
+
+	var result
+		_ glob
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs2'
+				@ '**/*.ittf'
+			@ file
+			{
+				@ sync true
+	log 'result', result

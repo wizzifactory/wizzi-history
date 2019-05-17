@@ -1,0 +1,10 @@
+﻿$group
+	$params errorCode, method, inner|@@null
+
+	return
+		_ error
+			@ '${errorCode}'
+			@ '${method}'
+			$hook
+			$if inner != null
+				@ ${inner}

@@ -1,0 +1,82 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import url ids: undefined undefined
+    var errors = require('../../errors') ids: undefined undefined
+    set module.exports ids: undefined undefined
+      function  ids: undefined undefined
+        param uri ids: undefined undefined
+        param callback ids: undefined undefined
+        set uri = uri.toLowerCase() ids: undefined undefined
+        var ret = {} ids: undefined undefined
+        var parsedUri = url.parse(uri) ids: undefined undefined
+        if typeof(parsedUri.protocol) !== 'string' ids: undefined undefined
+          var error ids: undefined undefined
+            new errors.InvalidRequestError ids: undefined undefined
+              @ "ittf.uriparser. uri must have a protocol (must be an absolute url) : " + uri ids: undefined undefined
+              @ "UriError" ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ error ids: undefined undefined
+        var protocol ids: undefined undefined
+          iif parsedUri.protocol.substr(-1, 1) === ':' ids: undefined undefined
+            then  ids: undefined undefined
+              _ parsedUri.protocol.substr(0, (parsedUri.protocol.length - 1)) ids: undefined undefined
+            else  ids: undefined undefined
+              set parsedUri.protocol ids: undefined undefined
+        # log 'parseuri.parsedUri', parsedUri ids: undefined undefined
+        var name, parts = parsedUri.pathname.split('/') ids: undefined undefined
+        if parsedUri.pathname.length > 0 && parsedUri.pathname[0] == '/' ids: undefined undefined
+          _ parts.shift() ids: undefined undefined
+        if protocol.length === 1 ids: undefined undefined
+          if parts.length < 3 ids: undefined undefined
+            var error ids: undefined undefined
+              new errors.InvalidRequestError ids: undefined undefined
+                @ 'Invalid uri for an IttfDocument. Too short: ' + uri ids: undefined undefined
+                @ 'UriError' ids: undefined undefined
+            return  ids: undefined undefined
+              _ callback ids: undefined undefined
+                @ error ids: undefined undefined
+          set ret.storeKind = 'filesystem' ids: undefined undefined
+          set ret.userId = parts[0] ids: undefined undefined
+          set ret.projectId = parts[1] ids: undefined undefined
+          set ret.uri = uri ids: undefined undefined
+          _ parts.shift() ids: undefined undefined
+          _ parts.shift() ids: undefined undefined
+          set ret.path = parts.join('/') ids: undefined undefined
+          set name = parts[parts.length-1] ids: undefined undefined
+        elif protocol === 'repo' ids: undefined undefined
+          if parts.length < 2 ids: undefined undefined
+            var error ids: undefined undefined
+              new errors.InvalidRequestError ids: undefined undefined
+                @ 'Invalid uri for an IttfDocument. Too short: ' + uri ids: undefined undefined
+                @ 'UriError' ids: undefined undefined
+            return  ids: undefined undefined
+              _ callback ids: undefined undefined
+                @ error ids: undefined undefined
+          log 'parsedUri.parts', parts ids: undefined undefined
+          log 'parsedUri', parsedUri ids: undefined undefined
+          set ret.storeKind = 'repo' ids: undefined undefined
+          set ret.userId = parsedUri.host ids: undefined undefined
+          set ret.projectId = parts[0] ids: undefined undefined
+          set ret.uri = uri ids: undefined undefined
+          _ parts.shift(); ids: undefined undefined
+          set ret.path = parts.join('/') ids: undefined undefined
+          set name = parts[parts.length-1] ids: undefined undefined
+        else  ids: undefined undefined
+          var error ids: undefined undefined
+            new errors.InvalidRequestError ids: undefined undefined
+              @ 'Invalid uri protocol for an IttfDocument. Must be a drive letter or "repo": uri=' + uri ids: undefined undefined
+              @ 'UriError' ids: undefined undefined
+          return  ids: undefined undefined
+            _ callback ids: undefined undefined
+              @ error ids: undefined undefined
+        var nameparts = name.split('.') ids: undefined undefined
+        if nameparts.length > 2 && nameparts[nameparts.length -1] === 'ittf' ids: undefined undefined
+          set ret.isIttfDocument = true ids: undefined undefined
+          set ret.schema = nameparts[nameparts.length -2] ids: undefined undefined
+        else  ids: undefined undefined
+          set ret.isIttfDocument = false ids: undefined undefined
+        return  ids: undefined undefined
+          _ callback ids: undefined undefined
+            @ null ids: undefined undefined
+            @ ret ids: undefined undefined

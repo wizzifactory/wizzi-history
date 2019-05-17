@@ -1,0 +1,32 @@
+﻿$group
+	+
+	decl_rsf( repo_batch, delete )
+	+
+	export
+		const deleteRepoBatch
+			=>
+				param currentUserId
+				param currentProjectId
+				param currentItemPath
+				param selectedItems
+				return
+					{
+						@ type DELETE_REPO_BATCH
+						@ [HTTP_REQUEST]
+							{
+								@ types
+									[
+										@ DELETE_REPO_BATCH_REQUEST
+										@ DELETE_REPO_BATCH_SUCCESS
+										@ DELETE_REPO_BATCH_FAILURE
+								@ url '/repo/batch'
+								@ method 'delete'
+								@ payload
+									{
+										@ kind KIND_BATCH
+										@ currentPath
+											{
+												@ userId currentUserId
+												@ projectId currentProjectId
+												@ itemPath currentItemPath
+										@ fsitems selectedItems

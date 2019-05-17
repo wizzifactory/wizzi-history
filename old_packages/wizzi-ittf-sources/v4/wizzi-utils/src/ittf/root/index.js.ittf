@@ -1,0 +1,50 @@
+﻿module 
+    kind jsfile
+    
+	var ittfMTreeEx = require('./lib/ittfTree/ittfMTreeEx')
+	var asisLoader = require('./lib/ittfTree/asisLoader')
+	var folderScanner = require('./lib/scanners/folderScanner')
+	var ittfHtmlPrettifier = require('./lib/prettifiers/ittfHtmlPrettifier')
+    
+	var md
+        set module.exports
+            { 
+	set md.fail = require('./lib/fail')
+	set md.option = require('./lib/option')
+	set md.config = require('./lib/config')
+	set md.verify = require('./lib/verify')
+	set md.nodeErrors = require('./lib/errors')
+	set md.exampleErrors = require('./lib/exampleErrors')
+	set md.lineparser = require('./lib/lineparser')
+	set md.mocks = require('./lib/mocks')
+	set md.requireFromString = require('./lib/requireFromString')
+	set md.Coder = require('./lib/coder')
+
+	# fs
+	set md.file = require('./lib/fs/file')
+	set md.vfile = require('./lib/fs/vfile')
+
+	# class IttfMTreeEx
+	set md.IttfMTreeEx = ittfMTreeEx
+	
+	# function
+	#   string ittfDocumentUri
+	#   { options
+	#     { file?
+	#       api-ref wizzi.utils.file
+	#   callback?
+	set md.asisLoader = asisLoader
+	
+	# { folderScanner
+	#   m scan
+	#     string folderPath
+	#     { options
+	#       string name
+	#       string gitPath 
+	set md.folderScanner = folderScanner
+	
+	# function
+	#   { rootNode
+	#     api-ref wizzi-utils.IttfMTreeEx
+	#   { options
+	set md.ittfHtmlPrettifier = ittfHtmlPrettifier

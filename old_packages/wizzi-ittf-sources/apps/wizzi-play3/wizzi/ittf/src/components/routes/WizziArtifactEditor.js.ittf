@@ -1,0 +1,130 @@
+﻿r-container( WizziArtifactEditor, false, true
+
+	$
+		var kFolders = ['lib', 'artifactsT', 'packageT'];
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		editor/imports()
+		codesplit2/imports()
+		import
+			editor/importActions()
+			from '../../store/actions'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+		$include wfactions/constants
+
+		common/fsitem_flat_to_tree()
+			set itemPath = item.displayName
+			set hash = item.hash
+			set schema = item.schema
+			set isFragment = item.isFragment
+
+	style
+		{ root
+			@ height '100%'
+			@ width '100%'
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		editor/state()
+		codesplit2/state(&opt)
+
+	editor/handlers()
+	codesplit2/handlers(&opt)
+
+	render
+		prop classes
+		prop match
+		prop pluginArtifacts
+		prop selectedPackage
+		$foreach f in kFolders
+			prop ${f}IttfDocuments
+
+		editor/renderPropsAndState()
+		codesplit2/render_prop_state(&opt)
+
+		log 'WizziArtifactEditor.match', match
+
+		const { selectedDocumenIsFragment, selectedDocumenSchema } = this.state
+		
+		const artifactId = match.params.artifactId
+		
+		var artifactItem = null
+		for var k in pluginArtifacts
+			if pluginArtifacts[k].artifactId === artifactId
+				set artifactItem = pluginArtifacts[k]
+
+		const artifactIttfDocuments_tree
+			iif artifactItem.artifactIttfDocuments
+				then
+					_ fsitem_flat_to_tree
+						@ artifactItem.artifactIttfDocuments
+						@ 'artifact'
+				else {}
+
+		const artifactTIttfDocuments_tree
+			iif artifactItem.artifactTIttfDocuments
+				then
+					_ fsitem_flat_to_tree
+						@ artifactItem.artifactTIttfDocuments
+						@ 't'
+				else {}
+
+		$foreach f in kFolders
+			const ${f}IttfDocuments_tree
+				iif ${f}IttfDocuments
+					then
+						_ fsitem_flat_to_tree
+							@ ${f}IttfDocuments
+							@ '${f}'
+					else {}
+			# log '${f}IttfDocuments', ${f}IttfDocuments
+			# log '${f}IttfDocuments_tree', ${f}IttfDocuments_tree
+
+		return
+			. { classes.root }
+				editor/renderInfoDialog()
+				h2 {artifactItem.schema + '/' + artifactItem.artifact} artifact
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						{
+							&&
+								+ selectedDocumenIsFragment == false
+								< React.Fragment
+									common/tlb-btn( generate, this.handleGenerateDefaultArtifact
+									common/tlb-btn( script, this.handleMTreeDebugInfo
+				codesplit2/render(&opt)
+					$append pane1
+						h4 main document
+						< List
+							< MyLink
+								@ onClick
+									=>
+										_ this.handleSelectIttfDocument(artifactItem.mainDocument.hash)
+								@ title {artifactItem.mainDocument.baseName}
+						editor/docgroup( artifactIttfDocuments_tree
+						editor/docgroup( artifactTIttfDocuments_tree
+						$foreach f in kFolders
+							{
+								&&
+									+ ${f}IttfDocuments_tree.children && ${f}IttfDocuments_tree.children.length > 0
+									editor/docgroup( ${f}IttfDocuments_tree
+					$append pane2
+						editor/renderCodeEditor()
+
+	$append state-to-props
+		@ pluginArtifacts state.wizziPackages.pluginArtifacts
+		@ selectedPackage state.wizziPackages.selectedPackage
+		$foreach f in kFolders
+			@ ${f}IttfDocuments state.wizziPackages.${f}IttfDocuments
+		editor/stateToProps()
+
+	$append dispatch-to-props
+
+		editor/dispatchToProps()

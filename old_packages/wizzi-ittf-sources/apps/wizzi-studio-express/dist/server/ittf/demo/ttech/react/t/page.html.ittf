@@ -1,0 +1,99 @@
+﻿$group
+	$params &opt
+	
+	head
+		@title ${opt.title}
+		meta
+			charset utf-8
+		meta
+			name viewport
+			content user-scalable=0, initial-scale=1, minimum-scale=1, width=device-width, height=device-height
+		script
+			src https://unpkg.com/prop-types@15.6/prop-types.min.js
+			crossorigin anonymous
+		script
+			src https://unpkg.com/react@latest/umd/react.development.js
+			crossorigin anonymous
+		script
+			src https://unpkg.com/react-dom@latest/umd/react-dom.development.js
+			crossorigin anonymous
+		$if opt.useMaterialUi
+			script
+				src https://unpkg.com/@material-ui/core/umd/material-ui.development.js
+				crossorigin anonymous
+		script
+			src https://unpkg.com/babel-standalone@latest/babel.min.js
+			crossorigin anonymous
+		$if opt.useKeycode
+			script
+				src https://cdn.jsdelivr.net/npm/keycode@2.2.0/index.min.js
+				crossorigin anonymous
+		$if opt.useDownshift
+			script
+				src https://cdn.jsdelivr.net/npm/downshift@2.0.10/dist/downshift.umd.min.js
+				crossorigin anonymous
+		$if opt.mainJs
+			script
+				src js/react-grid-layout.min.js
+				crossorigin anonymous
+		$if opt.useRouter
+			script
+				src https://unpkg.com/react-router/umd/ReactRouter.min.js
+				crossorigin anonymous
+		css https://fonts.googleapis.com/css?family=Roboto:300,400,500
+		css https://fonts.googleapis.com/icon?family=Material+Icons
+		css ./styles.css.ittf
+	
+	body
+		# root
+		
+		$if opt.mainJs
+			script
+				src js/main.js.ittf
+				type text/babel
+
+		$else
+
+			script
+				type text/babel
+				module
+					kind react
+
+					const {
+						\b colors,
+						\b createMuiTheme,
+						\b CssBaseline,
+						\b MuiThemeProvider,
+						\b withStyles,
+						\b } = window['material-ui']
+
+					$hook imports
+
+					const theme
+						_ createMuiTheme
+							{
+								{ palette
+									{ primary
+										@ light colors.purple[300]
+										@ main colors.purple[500]
+										@ dark colors.purple[700]
+									{ secondary
+										@ light colors.green[300]
+										@ main colors.green[500]
+										@ dark colors.green[700]
+
+					$hook components
+
+					react App
+						$hook
+
+					const StyledApp
+						_ withStyles
+							@ styles
+							(
+								@ App
+
+					_ ReactDOM.render
+						< StyledApp
+						_ document.getElementById
+							@ 'root'

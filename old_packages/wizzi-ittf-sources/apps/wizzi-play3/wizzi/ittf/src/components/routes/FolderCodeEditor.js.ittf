@@ -1,0 +1,71 @@
+﻿r-component( FolderCodeEditor
+
+	$
+		var opt = {};
+		opt.codeInState = true;
+		opt.headerHeight = 65;
+		opt.footerHeight = 60;
+		opt.footerCommandsHeight = 40;
+		opt.splitterResizerSize = 25;
+		opt.splitterResizerDiff = opt.headerHeight + opt.footerHeight + 4;
+		opt.gray_1_tb = '#020302';
+		opt.gray_2_aside = '#0d0a10';
+		opt.gray_3_ehead = '#0a0a0a';
+		opt.gray_4_page = '#1d1f20';
+
+	$append imports
+		common/page_imports()
+		codesplit2/imports()
+		import CollapseListItem from '../mui/CollapseListItem'
+		import sample1 from './data/ittfFolder'
+		import CodeEditor from '../mui/CodeEditor'
+
+		const initialCode = ''
+
+	style
+		codesplit2/style(&opt)
+
+	state
+		@ selectedPath ''
+		codesplit2/state(&opt)
+
+	codesplit2/handlers(&opt)
+
+	=> handleCodeChange_my
+		param value
+		_ sample1.putContent
+			@ this.state.selectedPath
+			@ value
+
+	=> handleSelect
+		param item
+		log 'FolderCodeEditor.handleSelect.item', item
+		_ this.setState
+			{
+				@ selectedPath item.path
+				@ codeSnippet item.content
+	
+	render
+
+		prop classes
+
+		codesplit2/render_prop_state(&opt)
+
+		const editOptions 
+			{
+
+		return
+
+			codesplit2/render(&opt)
+				$append pane1
+					< CollapseListItem
+						@ item {sample1.getData()}
+						@ onSelect {this.handleSelect}
+				$append pane2
+					< CodeEditor 
+						@ theme 'vs-dark'
+						@ width { splitter1Sizes.secondary }
+						@ height { splitter1Sizes.third }
+						@ value { codeSnippet }
+						@ options { editOptions }
+						@ onChange { this.handleCodeChange_my }

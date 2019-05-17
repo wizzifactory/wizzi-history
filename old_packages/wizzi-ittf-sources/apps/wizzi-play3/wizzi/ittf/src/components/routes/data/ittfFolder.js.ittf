@@ -1,0 +1,86 @@
+﻿module
+	kind es6
+
+	var sample1
+		{
+			@ name 'sample1'
+			[ children
+				{
+					@ name 'doc1'
+					@ content
+						[
+							@ "module"
+							@ "    kind es6"
+							@ "    var i = 0"
+							._ join('\n')
+				{
+					@ name 'doc2'
+					@ content
+						[
+							@ "module"
+							@ "    kind es6"
+							@ "    import Brick from './bricks'"
+							@ "    _ Brick.go"
+							._ join('\n')
+				{
+					@ name 'folder1'
+					[ children
+						{
+							@ name 'doc1-1'
+							@ content
+								[
+									@ "module"
+									@ "    kind es6"
+									@ "    const a = 1"
+									._ join('\n')
+	
+	function setPaths
+		param item
+		param parent
+		set item.path = parent ? parent.path + '/' + item.name : item.name
+		if item.children
+			foreach child in item.children
+				_ setPaths(child, item)
+
+	function find
+		param item
+		param pathName
+		if item.path === pathName
+			return item
+		if item.children
+			var test
+			foreach child in item.children
+				set test
+					_ find(child, pathName)
+				if test
+					return test
+		return null
+
+	class IttfFolder
+		ctor
+			param data
+			set this.data = data
+			_ setPaths(this.data)
+
+		m getData
+			return this.data
+
+		m find
+			param pathName
+			return find(this.data, pathName)
+
+		m getContent
+			param pathName
+			var item = this.find(pathName)
+			return item ? item.content : ''
+
+		m putContent
+			param pathName
+			param content
+			var item = this.find(pathName)
+			if item
+				set item.content = content
+
+	var sample1Folder = new IttfFolder(sample1)
+
+	export-default sample1Folder

@@ -1,0 +1,41 @@
+﻿$group
+	
+	var AsyncInitializeArtifactInfo
+		{
+			@ run
+				function
+					param jobConfig
+					param callback
+
+					var pman = jobConfig.__pman
+					
+					var wfjobSrc = jobConfig.wfjob.src
+					
+					# log 'wizzi.pman.productionName, wfjobSrc', pman.productionName, wfjobSrc
+					set pman.productionName += '_' + path.basename(wfjobSrc)
+					# log 'pman.productionName formatted', pman.productionName
+					
+					var job = new WfJob(pman, jobConfig)
+					_ job.getArtifactInfoConfigs
+						f_cb( result )
+							var artifactInfoConfigs = result[1]
+							foreach artifactInfoConfig in artifactInfoConfigs
+								# log 'ProductionManager.initialize.artifactInfoConfig', util.inspect(artifactInfoConfig, { depth: 2 })
+								set artifactInfoConfig.wfjob = wfjobSrc
+								if pman.options.trace
+									log 'ProductionManager.initialize.artifactInfoConfig', artifactInfoConfig.toString()
+								if artifactInfoConfig.isWfJob
+									# log 'ProductionManager.initialize.artifactInfoConfig', "isWfJob", inspect(artifactInfoConfig, { depth: 2 })
+									_ pman.addWfJobArtifactInfo(artifactInfoConfig)
+								else
+									_ pman.addArtifactInfo(artifactInfoConfig)
+				
+							foreach artifactInfo in pman.wfJobArtifactInfos
+								_ artifactInfo.initialize(pman);
+							foreach artifactInfo in pman.artifactInfos
+								_ artifactInfo.initialize(pman);
+
+							_ callback(null, null)
+
+
+

@@ -1,0 +1,39 @@
+﻿html
+	$params currentPage, currentSubPage|@@null
+
+	$global
+		// Make global the current navigation status
+		var gcurrentPage = currentPage;
+		var gcurrentSubPage = currentSubPage;
+
+	head
+
+		@title The Wizzi Factory
+		css https://fonts.googleapis.com/css?family=Roboto
+		css css/sanitize.css
+		css css/wizzifactory.css.ittf
+		$hook styles
+
+	body
+		$if currentSubPage == null
+			class ${currentPage}
+		$else
+			class ${currentPage}-${currentSubPage}
+		. site
+			navigation( none )
+			main
+				id wrapper
+				$hook
+		
+		hr
+		h3 Test
+		p currentPage: ${gcurrentPage}
+		p currentSubPage: ${gcurrentSubPage}
+		hr
+
+		js jquery-3.2.1.js
+		
+		$if currentSubPage == null
+			js wizzifactory.js
+		$else
+			js ../wizzifactory.js

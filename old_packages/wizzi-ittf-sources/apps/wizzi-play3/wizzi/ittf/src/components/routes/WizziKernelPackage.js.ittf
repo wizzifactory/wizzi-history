@@ -1,0 +1,118 @@
+﻿r-container( WizziKernelPackage, false, true
+
+	$
+		var kFolders = ['root', 'lib', 'meta', 't'];
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		editor/imports()
+		codesplit2/imports()
+		import
+			@ getKernelPackage
+			editor/importActions()
+			from '../../store/actions'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+		$include wfactions/constants
+
+		common/fsitem_flat_to_tree()
+			set itemPath = item.displayName
+			set hash = item.hash
+			set schema = item.schema
+			set isFragment = item.isFragment
+
+	style
+		{ root
+			@ height '100%'
+			@ width '100%'
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		editor/state()
+		codesplit2/state(&opt)
+		@ selectedPackage null
+
+	did-mount
+		prop match
+		log '***** WizziPluginPackage.didmount.match', match
+		const packageName = match.params.packageName
+		_ this.setState
+			{
+				@ selectedPackage packageName
+		prop dispatchGetKernelPackage
+		_ dispatchGetKernelPackage
+			@ packageName
+
+	editor/handlers()
+	codesplit2/handlers(&opt)
+
+	render
+		prop classes
+		prop loadingError
+		prop match
+		prop generatePath
+		prop generateWfJobPath
+		$foreach f in kFolders
+			prop ${f}IttfDocuments
+		editor/renderPropsAndState()
+		
+		log 'WizziKernelPackage.match', match
+
+		common/guardLoading( rootIttfDocuments && rootIttfDocuments.length > 0)
+
+		codesplit2/render_prop_state(&opt)
+
+		const { selectedPackage, selectedDocumenIsFragment, selectedDocumenSchema } = this.state
+
+		$foreach f in kFolders
+			const ${f}IttfDocuments_tree
+				iif ${f}IttfDocuments
+					then
+						_ fsitem_flat_to_tree
+							@ ${f}IttfDocuments
+							@ '${f}'
+					else {}
+		
+		return
+			. { classes.root }
+				editor/renderInfoDialog()
+				h2 {selectedPackage} kernel package
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						{
+							&&
+								+ selectedDocumenIsFragment == false
+								< React.Fragment
+									common/tlb-btn( generate, this.handleGenerateDefaultArtifact
+									common/tlb-btn( script, this.handleMTreeDebugInfo
+				codesplit2/render(&opt)
+					$append pane1
+						$foreach f in kFolders
+							editor/docgroup( ${f}IttfDocuments_tree
+					$append pane2
+						editor/renderCodeEditor()
+
+	$append state-to-props
+		@ loadingError state.wizziPackages.loadingError
+		@ generatePath state.wizziPackages.generatePath
+		@ generateWfJobPath state.wizziPackages.generateWfJobPath
+		$foreach f in kFolders
+			@ ${f}IttfDocuments state.wizziPackages.${f}IttfDocuments
+		editor/stateToProps()
+
+	$append dispatch-to-props
+
+		@ dispatchGetKernelPackage
+			=>
+				param packageName
+				log 'dispatchGetKernelPackage', packageName
+				_ dispatch
+					_ getKernelPackage
+						@ packageName
+
+		editor/dispatchToProps()

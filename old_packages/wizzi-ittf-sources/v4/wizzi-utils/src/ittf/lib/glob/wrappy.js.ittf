@@ -1,0 +1,39 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright (c) Isaac Z. Schlueter and Contributors
+	# source https://github.com/npm/wrappy/blob/master/wrappy.js
+	# license (ISC) 
+
+	set module.exports = wrappy
+    
+	function wrappy
+        param fn
+        param cb
+        if fn && cb
+            return 
+                _ wrappy(fn)
+                    ( 
+                        @ cb
+        if typeof(fn) !== 'function'
+            throw 
+                new TypeError('need wrapper function')
+        _ Object.keys(fn)
+            ._ forEach
+                function 
+                    param k
+                    set wrapper[k] = fn[k]
+        
+		return wrapper
+        
+		function wrapper
+            var ret = fn.apply(this, arguments)
+            var cb = arguments[(arguments.length - 1)]
+            if typeof (ret) === 'function' && ret !== cb
+                _ Object.keys(cb)
+                    ._ forEach
+                        function 
+                            param k
+                            set ret[k] = cb[k]
+            return ret

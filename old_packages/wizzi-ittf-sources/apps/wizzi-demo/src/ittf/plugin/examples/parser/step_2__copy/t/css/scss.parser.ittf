@@ -1,0 +1,230 @@
+﻿$group
+
+	// block -> declarationsGroup
+	// expression -> term
+
+	sym params
+		// : param (COMMA param)* Ellipsis?
+		ref param
+		*
+			tk ,
+			ref param
+		?
+			tk Ellipsis
+
+	sym param
+		// : variableName paramOptionalValue?
+		tk VariableName 
+		?
+			ref paramOptionalValue
+  
+	sym paramOptionalValue
+		tk :
+		+
+			ref term
+
+	sym mixinDeclaration
+		// : '@mixin' Identifier (LPAREN params? RPAREN)? block
+		tk MixinAt
+		tk Ident
+		?
+			tk (
+			?
+				ref params
+			tk )
+		ref declarationsGroup
+
+	sym includeDeclaration
+		// : INCLUDE Identifier (';' | (LPAREN values? RPAREN ';'?)? block?)
+		tk IncludeAt 
+		tk Ident 
+		?
+			|
+				tk ;
+				&
+					tk (
+					?
+						ref values
+					tk )
+					?
+						tk ;
+		?
+			ref declarationsGroup
+
+	sym functionDeclaration
+		tk FunctionAt
+		tk Ident
+		tk (
+		*
+			ref params
+		tk )
+		tk {
+		?
+			ref functionBody
+		tk }
+  
+	sym functionBody
+		*
+			ref functionStatement
+		ref functionReturn
+  
+	sym functionReturn
+		tk ReturnAt
+		ref commandStatement
+		tk ;
+
+	sym functionStatement
+		|
+			&
+				ref commandStatement
+				tk ;
+			ref nested_statement
+
+	e commandStatement
+		// : (expression+ | '(' commandStatement ')') mathStatement?
+		|
+			+
+				ref term
+			&
+				tk (
+				ref commandStatement
+				tk )
+		?
+			ref mathStatement
+
+
+	e mathCharacter
+		|
+			tk *
+			tk +
+			tk /
+			tk -
+			tk %
+
+	sym mathStatement
+		ref mathCharacter
+		ref commandStatement
+
+	sym ifDeclaration
+		tk IfAt
+		ref conditions 
+		ref declarationsGroup
+		*
+			ref elseIfStatement
+		?
+			ref elseStatement
+  
+	sym elseIfStatement
+		tk ElseAt
+		ref conditions
+		ref declarationsGroup
+  
+	sym elseStatement
+		tk ElseAt
+		ref declarationsGroup
+		
+	sym conditions
+		|
+			&
+				ref condition
+				?
+					&
+						tk CombineCompare
+						ref conditions
+			tk Null
+  
+	sym condition
+		|
+			&
+				ref commandStatement
+				?
+					|
+						tk ==
+						tk <
+						tk >
+						tk !=
+					ref conditions
+			&
+				tk (
+				ref conditions
+				tk )
+
+	sym forDeclaration
+		tk ForAt
+		ref variableName
+		tk From
+		ref fromNumber
+		tk Through
+		ref throughNumber
+		ref declarationsGroup
+
+	sym fromNumber
+		tk Number
+
+	sym throughNumber
+		tk Number
+
+	sym whileDeclaration
+		tk WhileAt
+		ref conditions
+		ref declarationsGroup
+
+	sym eachDeclaration
+		tk EachAt
+		ref variableList
+		any in
+		ref eachValueList
+		ref declarationsGroup
+ 
+	sym variableList
+		tk VariableName
+		*
+			& 
+				tk ,
+				tk VariableName
+
+	sym eachValueList
+		|
+			&
+				tk VariableName
+				*
+					tk ,
+					tk VariableName
+			&
+				ref  identifierListOrMap
+				*
+					tk ,
+					ref identifierListOrMap
+  
+	sym identifierListOrMap
+		tk (
+		ref identifierValue
+		*
+			tk ,
+			ref identifierValue
+		tk )
+  
+	sym identifierValue
+		tk Ident
+		?
+			tk ,
+			ref values
+  
+	sym contentStatement
+		tk ContentAt
+		tk ;
+
+	sym variableDeclaration
+		tk VariableName
+		tk :
+		ref values
+		?
+			tk DefaultSym
+		tk ;
+
+	sym values
+		// : commandStatement (COMMA commandStatement)*
+		ref commandStatement
+		*
+			tk , 
+			ref commandStatement

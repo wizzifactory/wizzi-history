@@ -1,0 +1,15 @@
+﻿$group
+	$params &app
+	
+	
+	$if app.useNextjs
+		
+		"next/babel"
+
+	$else
+
+		"@babel/preset-env"
+
+		$if app.useReact
+			"@babel/preset-react"
+			"@babel/preset-stage-2"

@@ -1,0 +1,25 @@
+$group
+	
+	$params type, format|@@null
+
+	$
+		var typeName = format ? format : type;
+
+	e ${typeName} : datatype
+
+		$hook
+
+		$if type === 'string'
+			$include verify_string
+		$if type === 'object'
+			$include verify_object
+		$if type === 'array'
+			$include verify_array
+		$if type === 'integer' || type === 'number'
+			$include verify_num
+
+		m wminitialize
+			set this.type = '${type}'
+			$if format != null
+				set this.format = '${format}'
+			$hook wminitialize

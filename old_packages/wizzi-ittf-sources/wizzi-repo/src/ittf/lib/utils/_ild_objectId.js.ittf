@@ -1,0 +1,35 @@
+﻿module
+	kind jsfile
+	
+	const os = require('os')
+	const crypto = require('crypto')
+
+
+	class ObjectId
+		
+		ctor
+			param id
+			if id
+				set this.id = id
+				set this.generationTime = new Date()
+				return
+			#
+				# Generates a MongoDB-style ObjectId in Node.js. Uses nanosecond timestamp in place of counter; 
+				# should be impossible for same process to generate multiple objectId in same nanosecond? (clock 
+				# drift can result in an *extremely* remote possibility of id conflicts).
+				# @returns {string} Id in same format as MongoDB ObjectId.
+			const seconds = Math.floor(new Date()/1000).toString(16)
+			const machineId = crypto.createHash('md5').update(os.hostname()).digest('hex').slice(0, 6)
+			const processId = process.pid.toString(16).slice(0, 4).padStart(4, '0')
+			const counter = process.hrtime()[1].toString(16).slice(0, 6).padStart(6, '0')
+			set this.id = seconds + machineId + processId + counter
+			set this.generationTime = new Date()
+		
+		m equals
+			param otherID
+			return this.id == otherID.id
+
+		m toString
+			return this.id
+
+	set module.exports = ObjectId

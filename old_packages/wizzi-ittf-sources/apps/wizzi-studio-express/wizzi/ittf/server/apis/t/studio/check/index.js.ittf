@@ -1,0 +1,71 @@
+﻿$group
+
+	function makeCheckApi
+		param config
+
+		var paths = makePaths(config)
+		
+		return
+			{
+				@ get
+					function
+						param callback
+
+						r_cb()
+							{
+								@ data 
+									{
+										@ config config
+										@ dashboardIttfPath paths.dashboardIttfPath({})
+										@ uriFromPath
+											{
+												@ in 'C:\\My\\wizzi\\v5\\apps\\wizzi-studio\\wizzi-studio-express\\dist\\server\\data\\studio\\api\\user'
+												@ out paths.uriFromPath('C:\\My\\wizzi\\v5\\apps\\wizzi-studio\\wizzi-studio-express\\dist\\server\\data\\studio\\api\\user')
+										@ pathFromUri
+											{
+												@ in '/api/user'
+												@ out paths.pathFromUri('/api/user')
+										@ userPath
+											{
+												@ in 'stefi'
+												@ out paths.userPath('stefi')
+										@ projectPath
+											{
+												@ in 'stefi,wizzi'
+												@ out paths.projectPath('stefi', 'wizzi')
+										@ userMeta
+											{
+												@ in "{userId: 'stefi'}"
+												@ out
+													_ paths.userMeta
+														{
+															@ userId 'stefi'
+										@ projectList
+											{
+												@ in "{userId: 'stefi'}"
+												@ out
+													_ paths.projectList
+														{
+															@ userId 'stefi'
+										@ projectMeta
+											{
+												@ in "{userId: 'stefi', userId: 'wizzi'}"
+												@ out
+													_ paths.projectMeta
+														{
+															@ userId 'stefi'
+															@ projectName 'wizzi'
+										@ documentList
+											{
+												@ in "{userId: 'stefi', userId: 'wizzi'}"
+												@ out
+													_ paths.documentList
+														{
+															@ userId 'stefi'
+															@ projectName 'wizzi'
+										
+								@ status
+									_ success
+										@ 'Check data retrieved'
+
+

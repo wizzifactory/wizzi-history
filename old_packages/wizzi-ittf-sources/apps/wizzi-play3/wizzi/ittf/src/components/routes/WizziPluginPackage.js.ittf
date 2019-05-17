@@ -1,0 +1,178 @@
+﻿r-container( WizziPluginPackage, false, true
+
+	$
+		var kFolders = ['root', 'lib', 'meta', 't'];
+
+	$append imports
+		$include common/wizzi_options
+		$include codesplit2/wizzi_options
+		common/page_imports()
+		codesplit2/imports()
+		import
+			@ getPluginPackage
+			@ getPluginSchemas
+			@ getPluginArtifacts
+			editor/importActions()
+			from '../../store/actions'
+		editor/imports()
+		import Topic from './Topic'
+		import MyLink from '../mui/AppDrawerNavItem'
+
+		$include wfactions/constants
+
+		common/fsitem_flat_to_tree()
+			set itemPath = item.displayName
+			set hash = item.hash
+			set schema = item.schema
+			set isFragment = item.isFragment
+
+	style
+		{ root
+			@ height '100%'
+			@ width '100%'
+		editor/style()
+		codesplit2/style(&opt)
+
+	state
+		editor/state()
+		codesplit2/state(&opt)
+		@ selectedPackage null
+
+	did-mount
+		prop match
+		log '***** WizziPluginPackage.didmount.match', match
+		const packageName = match.params.packageName
+		_ this.setState
+			{
+				@ selectedPackage packageName
+		prop dispatchGetPluginPackage
+		_ dispatchGetPluginPackage
+			@ packageName
+		prop dispatchGetPluginSchemas
+		_ dispatchGetPluginSchemas
+			@ packageName
+		prop dispatchGetPluginArtifacts
+		_ dispatchGetPluginArtifacts
+			@ packageName
+
+	editor/handlers()
+	codesplit2/handlers(&opt)
+
+	render
+
+		prop classes
+		prop loadingError
+		prop match
+		prop pluginSchemas
+		prop pluginArtifacts
+		$foreach f in kFolders
+			prop ${f}IttfDocuments
+		editor/renderPropsAndState()
+
+		common/guardLoading( pluginSchemas )
+
+		codesplit2/render_prop_state(&opt)
+
+		const { selectedPackage, selectedDocumenIsFragment, selectedDocumenSchema } = this.state
+
+		const schemas = Object.keys(pluginSchemas)
+		const artifacts = Object.keys(pluginArtifacts)
+
+		$foreach f in kFolders
+			const ${f}IttfDocuments_tree
+				iif ${f}IttfDocuments
+					then
+						_ fsitem_flat_to_tree
+							@ ${f}IttfDocuments
+							@ '${f}'
+					else {}
+
+		return
+			. { classes.root }
+				editor/renderInfoDialog()
+				h2 {selectedPackage} plugin package
+				< AppBar
+					@ position static
+					@ color default
+					common/tlb()
+						{
+							&&
+								+ selectedDocumenIsFragment == false
+								< React.Fragment
+									common/tlb-btn( generate, this.handleGenerateDefaultArtifact
+									common/tlb-btn( script, this.handleMTreeDebugInfo
+				codesplit2/render(&opt)
+					$append pane1
+						h4 Schemas
+						< List
+							{
+								_ schemas.map
+									=>
+										param p
+										param i
+										return
+											< MyLink
+												@ key {i}
+												@ to
+													`lit 
+														+ /wizzischemaeditor/
+														@ pluginSchemas[p].schemaId
+												@ title {p}
+						h4 Artifacts
+						< List
+							{
+								_ artifacts.map
+									=>
+										param p
+										param i
+										return
+											< MyLink
+												@ key {i}
+												@ to
+													`lit 
+														+ /wizziartifacteditor/
+														@ pluginArtifacts[p].artifactId
+												@ title {p}
+						h4 Common
+						$foreach f in kFolders
+							editor/docgroup( ${f}IttfDocuments_tree
+					$append pane2
+						editor/renderCodeEditor()
+
+	$append state-to-props
+		@ loadingError state.wizziPackages.loadingError
+		@ generatePath state.wizziPackages.generatePath
+		@ generateWfJobPath state.wizziPackages.generateWfJobPath
+		@ pluginSchemas state.wizziPackages.pluginSchemas
+		@ pluginArtifacts state.wizziPackages.pluginArtifacts
+		$foreach f in kFolders
+			@ ${f}IttfDocuments state.wizziPackages.${f}IttfDocuments
+		editor/stateToProps()
+
+	$append dispatch-to-props
+
+		@ dispatchGetPluginPackage
+			=>
+				param packageName
+				log 'dispatchGetPluginPackage', packageName
+				_ dispatch
+					_ getPluginPackage
+						@ packageName
+
+		@ dispatchGetPluginSchemas
+			=>
+				param packageName
+				log 'dispatchGetPluginSchemas', packageName
+				_ dispatch
+					_ getPluginSchemas
+						@ packageName
+
+		@ dispatchGetPluginArtifacts
+			=>
+				param packageName
+				log 'dispatchGetPluginArtifacts', packageName
+				_ dispatch
+					_ getPluginArtifacts
+						@ packageName
+
+		editor/dispatchToProps()

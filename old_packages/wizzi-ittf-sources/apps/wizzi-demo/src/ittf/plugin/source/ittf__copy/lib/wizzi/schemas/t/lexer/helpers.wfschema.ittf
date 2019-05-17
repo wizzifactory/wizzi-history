@@ -1,0 +1,77 @@
+﻿$group
+
+	m countLexChildren
+		param node
+		var ret = 0
+		foreach item in node.nodes
+			if verify.isFunction(item.toCode) || verify.isFunction(item.toFunction)
+				set ret++
+		return ret
+
+	m okIfMatch
+		param coder
+		if coder.ctx.onsuccess === 'return'
+			if coder.ctx.failonsuccess === true
+				# _ coder.w(' { console.log(\'failonsuccess;\', input.codePointAt(pos)); return false; }')
+				_ coder.w(' { return false; }')
+			else
+				_ coder.w(' { return eat(1, capture); }')
+		else
+			if coder.ctx.failonsuccess === true
+				throw new Error('wizzi.model.lexer-model.g.okIfMatch Error. coder.ctx.onsuccess=return + coder.ctx.failonsuccess=true not managed.')
+			else
+				_ coder.w(' { eat(1, capture); }')
+
+	m charsetMatch
+		param lexChars
+		param coder
+		
+		var chars = getCharset(lexChars)
+		var test = 'if'
+		foreach ch in chars
+			if ch.range
+				_ coder.write(test + ' (input.codePointAt(pos) >= ' + ch.fromCP + ' && input.codePointAt(pos) <= ' + ch.toCP + ')')
+				_ okIfMatch(coder)
+				if coder.ctx.onsuccess === 'return'
+				else
+					_ coder.w('else { break; }')
+			else
+				_ coder.write(test + ' (input.codePointAt(pos) === ' + ch.chCP + ')')
+				_ okIfMatch(coder)
+				if coder.ctx.onsuccess === 'return'
+				else
+					_ coder.w('else { break; }')
+			set test = 'else if'
+
+	m getCharset
+		param lexChars
+		var ret = [], ch
+		for var i=0; i<lexChars.length; i++
+			set ch = lexChars[i]
+			if ch === '-'
+				if i === 0 || i === (lexChars.length - 1)
+					_ ret.push
+						{
+							@ range false
+							@ ch '-'
+							@ chCP '-'.codePointAt(0)
+				else
+					_ ret.push
+						{
+							@ range true
+							@ from lexChars[i-1]
+							@ fromCP lexChars.codePointAt(i-1)
+							@ to lexChars[i+1]
+							@ toCP lexChars.codePointAt(i+1)
+					set i++
+			else
+				if lexChars[i+1] === '-' && lexChars[i+2]
+					# wait next loop
+				else
+					_ ret.push
+						{
+							@ range false
+							@ ch ch
+							@ chCP ch.codePointAt(0)
+		return ret
+

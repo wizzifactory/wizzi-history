@@ -1,0 +1,179 @@
+﻿wfschema svg
+
+	# Example of language schema that targets
+	# the Scalable Vector Graphics (SVG) 1.1 (Second Edition) specification.
+	# It implements a minimal set of elements
+
+	export-to json
+
+	$
+		/*
+			We use jswizzi to build the value context : 'presentationAttributes' that will
+			be referenced below, in the template nodes that define the styles attribute of the
+			svg.
+		*/
+		var x_presentationAttributes = 'alignment-baseline,baseline-shift,clip,clip-path,clip-rule,' + 
+			'color,color-interpolation,color-interpolation-filters,color-profile,color-rendering,' +
+			'cursor,direction,display,dominant-baseline,enable-background,fill,fill-opacity,fill-rule,' +
+			'filter,flood-color,flood-opacity,font-family,font-size,font-size-adjust,font-stretch,' +
+			'font-style,font-variant,font-weight,glyph-orientation-horizontal,glyph-orientation-vertical,' +
+			'image-rendering,kerning,letter-spacing,lighting-color,marker-end,marker-mid,marker-start,' +
+			'mask,opacity,overflow,pointer-events,shape-rendering,stop-color,stop-opacity,stroke,'+ 
+			'stroke-dasharray,stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,' +
+			'stroke-opacity,stroke-width,text-anchor,text-decoration,text-rendering,unicode-bidi,' +
+			'visibility,word-spacing,writing-mode';
+		var a_presentationAttributes = x_presentationAttributes.split(',');
+		var presentationAttributes = [], len = a_presentationAttributes.length, item, i;
+		for (i=0; i<len; i++) {
+			item = a_presentationAttributes[i];
+			presentationAttributes.push({ name: _.dashToCamelCase(item), tag: item });
+		}
+	
+	declare
+		var styles
+			[
+				$foreach pa in presentationAttributes
+					{
+						@ name '${pa.name}'
+						@ tag '${pa.tag}'
+
+	e comment
+		tag #
+		r comment/s
+	
+	e item
+		# attributes common to all svg items
+		a id
+		a href
+		a rotate
+
+		$foreach pa in presentationAttributes
+			a ${pa.name}
+				$if pa.tag !== pa.name
+					tag ${pa.tag}
+		
+		r comment/s
+		r item/s
+
+		svg/getAttrs( 
+			\b id;href 
+			\b )
+
+		m getStyleAttributes
+			var ret = []
+			foreach style in styles
+				if typeof(this[style.name]) !== 'undefined' && this[style.name] != null
+					_ ret.push
+						{
+							@ name style.name
+							@ value this[style.name]
+			return ret
+
+	e rect : item
+		a x
+		a y
+		a width
+		a height
+
+		svg/getAttrs( x;y;width;height, item )
+
+	e svg : rect
+		is-root
+
+	e line : item
+		a x1
+		a y1
+		a x2
+		a y2
+
+		svg/getAttrs( x1;y1;x2;y2, item )
+
+	e polyline : item
+		a points
+
+		svg/getAttrs( points, item )
+
+	
+	e circle : item
+		a cx
+		a cy
+		a r
+
+		svg/getAttrs( cx;cy;r, item )
+
+	e ellipse : item
+		a cx
+		a cy
+		a rx
+		a ry
+
+		svg/getAttrs( cx;cy;rx;ry, item )
+
+	e path : item
+		a d
+
+		svg/getAttrs( d, item )
+
+	e text : item
+		a x
+		a y
+		a fontFamily
+			tag font-family
+		a fontSize
+			tag font-size
+
+		svg/getAttrs( x;y, item )
+
+	e textPath : item
+
+	e tspan : item
+		a x
+		a y
+		a dx
+		a dy
+
+		svg/getAttrs( x;y;dx;dy , item )
+
+	e a : item
+		# link
+		# a
+			# href http://tecfa.unige.ch
+			# rect
+				# fill #00FF00
+				# stroke #00FF00
+				# width 300
+				# height 40
+				# ry 5
+				# rx 5
+				# y 80
+				# x 50
+			# text TECFA POWER 1 click away
+				# x 100
+				# y 110
+				# stroke #000099
+				# fill #000099
+				# font-size 24
+
+	e g : item
+		# grouping
+
+	e image : rect
+
+	e title : item
+
+	# TODO this should become function
+	m extractAttributes
+		param item
+		param names_string
+		param attrs
+		if !attrs
+			set attrs = []
+		if verify.isNotEmpty(names_string)
+			var names = names_string.split(';')
+			foreach name in names
+				if typeof(item[name]) !== 'undefined' && item != null
+					_ attrs.push
+						{
+							@ name name
+							@ value item[name]
+		return attrs

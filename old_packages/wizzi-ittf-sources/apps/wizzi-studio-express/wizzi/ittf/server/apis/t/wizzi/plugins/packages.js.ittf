@@ -1,0 +1,262 @@
+﻿$group
+
+	@ getPluginsPackages
+		function
+			param options
+			param callback
+			return
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								[ packages
+									{
+										@ name 'wizzi-core'
+									{
+										@ name 'wizzi-meta'
+									{
+										@ name 'wizzi-js'
+									{
+										@ name 'wizzi-web'
+						@ status
+							_ success
+								@ 'Plugins packages data fetched'
+
+	@ getPluginPackage
+		function
+			param options
+			param callback
+
+			# options.packageName required
+
+			var version = options.version
+			var packageName = options.packageName
+			var schemaName = options.schemaName
+
+			var libIttfDocuments = []
+			var files
+				_ paths.getIttfFiles
+					_ paths.pluginLibFolderPath
+						@ packageName
+						@ version
+			foreach item in files
+				if !(item.relFolder.substr(0,5) === 'wizzi' || item.relFolder.substr(0,9) === 'artifacts')
+					_ libIttfDocuments.push(item)
+
+			return
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								@ name packageName
+								@ generatePathModule
+									_ paths.pluginGeneratePath(packageName, version)
+								@ generateWfJobDocument
+									_ paths.pluginGenerateWfJobPath(packageName, version)
+								@ rootIttfDocuments
+									_ paths.getIttfFiles(paths.pluginRootFolderPath(packageName, version))
+								@ libIttfDocuments libIttfDocuments
+								@ examplesIttfDocuments
+									_ paths.getIttfFiles(paths.pluginExamplesFolderPath(packageName, version))
+								@ testsIttfDocuments
+									_ paths.getIttfFiles(paths.pluginTestsFolderPath(packageName, version))
+								@ metaIttfDocuments
+									_ paths.getIttfFiles(paths.pluginMetaFolderPath(packageName, version))
+								@ tIttfDocuments
+									_ paths.getIttfFiles(paths.pluginTFolderPath(packageName, version))
+						@ status
+							_ success
+								@ 'Plugins package data fetched'
+
+	@ getPluginSchemas
+		function
+			param options
+			param callback
+
+			var packageName = options.packageName
+			var version = options.version || globalConfig.wizziCurrentVersion
+
+			var schemaArray
+				_ paths.pluginSchemas
+					@ packageName
+					@ version
+			
+			var schemas = {}
+			
+			foreach s in schemaArray
+
+				set s.tIttfDocuments
+					_ paths.getIttfFiles
+						_ path.join
+							_ paths.pluginWizziSchemaPath
+								@ packageName
+								@ version
+							@ 't'
+							@ s.name
+
+				set schemas[s.name] = s
+
+			return
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								@ schemas schemas
+								@ libIttfDocuments paths.pluginLibDocuments(packageName, version)
+								@ schemasTIttfDocuments 
+									_ paths.pluginSchemasTIttfDocuments
+										@ packageName
+										@ version
+								@ packageTIttfDocuments paths.pluginsPackageTDocuments(packageName, version)
+						@ status
+							_ success
+								@ 'Plugin schemas data fetched'
+
+	@ getPluginArtifacts
+		function
+			param options
+			param callback
+
+			var packageName = options.packageName
+			var version = options.version || globalConfig.wizziCurrentVersion
+
+			var schemas
+				_ paths.getFolders
+					_ paths.pluginArtifactPath
+						@ packageName
+						@ version
+
+			var artifacts = {}
+
+			var packageTDocuments = []
+			var libTDocuments = []
+			var artifactsTDocuments = []
+			foreach s in schemas
+				if s.name === 't'
+					# artifactsTDocuments
+					var files
+						_ paths.getIttfFiles
+							_ path.join
+								_ paths.pluginArtifactPath
+									@ packageName
+									@ version
+								@ s.name
+					foreach item in files
+						_ artifactsTDocuments.push
+							@ item
+				else
+					var s_artifacts
+						_ paths.getFolders
+							_ path.join
+								_ paths.pluginArtifactPath
+									@ packageName
+									@ version
+								@ s.name
+					var artifactSchemaTDocuments = []
+					foreach s_artifact in s_artifacts
+						if s_artifact.name === 't'
+							# schema folder level t-documents
+							var files
+								_ paths.getIttfFiles
+									_ paths.pluginArtifactPath
+										@ packageName
+										@ version
+										@ s.name
+										@ s_artifact.name
+							foreach item in files
+								_ artifactSchemaTDocuments.push
+									@ item
+					foreach s_artifact in s_artifacts
+						if s_artifact.name === 't'
+							# schema level t files
+						else
+							var gen_trans
+								_ paths.getFolders
+									_ path.join
+										_ paths.pluginArtifactPath
+											@ packageName
+											@ version
+										@ s.name
+										@ s_artifact.name
+							if gen_trans.length == 1
+								# artifact level documents
+								var files
+									_ paths.getIttfFiles
+										_ path.join
+											_ paths.pluginArtifactPath
+												@ packageName
+												@ version
+											@ s.name
+											@ s_artifact.name
+											@ gen_trans[0].name
+								var artifactDocuments = []
+								var artifactTDocuments = []
+								foreach item in files
+									if item.relFolder.substr(0,2) == 't/'
+										_ artifactTDocuments.push
+											@ item
+									else
+										_ artifactDocuments.push
+											@ item
+								var mainDocumentFullPath
+									_ path.join
+										_ paths.pluginArtifactPath
+											@ packageName
+											@ version
+										@ s.name
+										@ s_artifact.name
+										@ gen_trans[0].name
+										@ 'main.js.ittf'
+								set artifacts[s.name + '/' + s_artifact.name]
+									{
+										@ packageName packageName
+										@ schema s.name
+										@ schemaId paths.schemaId(packageName, version, s.name)
+										@ artifact s_artifact.name
+										@ artifactId paths.artifactId(packageName, version, s.name, s_artifact.name)
+										@ gentrans gen_trans[0].name
+										@ baseFolder
+											_ path.join
+												_ paths.pluginArtifactPath
+													@ packageName
+													@ version
+												@ s.name
+												@ s_artifact.name
+												@ gen_trans[0].name
+										@ mainDocument
+											{
+												@ baseName 'main.js.ittf'
+												@ displayName 'main.js.ittf'
+												@ baseFolder
+													_ path.join
+														_ paths.pluginArtifactPath
+															@ packageName
+															@ version
+														@ s.name
+														@ s_artifact.name
+														@ gen_trans[0].name
+												@ relFolder ''
+												@ fullPath mainDocumentFullPath
+												@ hash hashEncrypt(mainDocumentFullPath)
+												@ isFragment false
+												@ schema 'js'
+										
+										@ artifactIttfDocuments artifactDocuments
+										@ artifactTIttfDocuments artifactTDocuments
+										@ artifactSchemaTIttfDocuments artifactSchemaTDocuments
+			return
+				_ callback
+					@ null
+					{
+						@ data
+							{
+								@ artifactsTIttfDocuments artifactsTDocuments
+								@ libIttfDocuments paths.pluginLibDocuments(packageName, version)
+								@ packageTIttfDocuments paths.pluginsPackageTDocuments(packageName, version)
+								@ artifacts artifacts
+						@ status
+							_ success
+								@ 'Plugin artifacts data fetched'

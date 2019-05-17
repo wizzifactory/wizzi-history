@@ -1,0 +1,68 @@
+﻿module wizzi-mtree.loader.debugInfoBuilder
+    kind jsfile
+
+    var JsWizziContext = require('../jswizzi/jsWizziContext')
+    var dateUtil = require('../jswizzi/functions/dateutil')
+	var JsWizziScriptCoder = require('../jswizzi/JsWizziScriptCoder')
+    var mTreeBuildUpScripter = require('./mTreeBuildUpScripter')
+	var requireFromString = null
+
+	#
+		# Returns for debug purposes:
+		# . the mTreeBuildUpScript
+	set module.exports =
+        function 
+            param composedMTreePiece
+            param loadContext
+			param callback
+
+			var productionContext = loadContext.productionContext
+			set loadContext.options = loadContext.options || {}
+
+			var jsWizziContext
+                new JsWizziContext(composedMTreePiece, productionContext)
+			_ jsWizziContext.setGlobalValues
+                @ loadContext.mTreeBuildUpContext
+
+			var ctx
+                { 
+                    @ brickKey null
+                    @ counter 0
+                    @ startTime dateUtil.now_GMYHMS()
+					@ isCompile loadContext.options.isCompile
+
+			var isCompile = loadContext.options.isCompile
+            
+			var scriptCoder
+                new JsWizziScriptCoder()
+
+			_ scriptCoder.w
+				@ '// ' + ctx.startTime + '  by ' + __filename
+			
+			if isCompile
+				_ scriptCoder.w
+					@ 'module.exports = function($, $ctx) {'
+				_ scriptCoder.indent
+				foreach k in Object.keys(jsWizziContext.getIsCompileGlobals())
+					_ scriptCoder.w
+						@ 'var ' + k + ' = $ctx.' + k + ';'
+
+			_ scriptCoder.w
+				@ '$.n(); // set the context state to NodeContext'
+			_ scriptCoder.w
+				@ 'var $0 = {}; // the root node of the MTree buildup'
+            
+			foreach item in composedMTreePiece.nodes
+                _ mTreeBuildUpScripter.codify(item, 0, scriptCoder, ctx)
+            
+			if isCompile
+				_ scriptCoder.w
+					@ 'return $0;'
+				_ scriptCoder.deindent
+				_ scriptCoder.w
+					@ '}'
+
+			_ callback
+				@ null
+				{
+					@ mTreeBuildUpScript scriptCoder.toCode()

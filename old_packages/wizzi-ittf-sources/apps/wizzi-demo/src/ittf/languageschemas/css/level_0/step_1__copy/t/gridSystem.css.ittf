@@ -1,0 +1,94 @@
+﻿$group
+
+	- thanks to https://gridbyexample.com/examples/page-layout/
+
+	- example 1
+
+	. gs-1-wrapper
+		width 960px
+		padding 1em 3% 1em 3%
+		margin 0 auto 1em auto
+		display grid
+		grid-template-columns 200px 40px auto 40px 200px
+		grid-template-rows auto
+	
+	. gs-1-content
+		grid-rowcol(2,3,3,4)
+		background-color #FFC242
+	
+	. gs-1-mainnav
+		grid-rowcol(2,3,1,2)
+		background-color #FFC282
+	
+	. gs-1-subhead
+		grid-rowcol(1,2,3,4)
+		background-color #FFC2C2
+	
+	. gs-1-quote
+		background-color #FFC202
+		grid-rowcol(2,3,5,6)
+
+    - example 2
+
+	. gs-2-sidebar
+        grid-area sidebar
+    
+	. gs-2-sidebar2
+        grid-area sidebar2
+    
+	. gs-2-content
+        grid-area content
+    
+	. gs-2-header
+        grid-area header
+    
+	. gs-2-footer
+        grid-area footer
+    
+	. gs-2-wrapper
+        background-color #fff
+        color #444
+    
+	. gs-2-wrapper
+        display grid
+        grid-gap 1em
+        grid-template-areas
+			@ header
+			@ sidebar
+			@ content
+			@ sidebar2
+			@ footer
+    
+	media only screen and (min-width: 500px)
+        . gs-2-wrapper
+            grid-template-columns 20% auto
+            grid-template-areas
+				@ header   header
+				@ sidebar  content
+				@ sidebar2 sidebar2
+				@ footer   footer
+    
+	media only screen and (min-width: 600px)
+        . gs-2-wrapper
+            grid-gap 20px
+            grid-template-columns 120px auto 120px
+            grid-template-areas
+				@ header  header  header
+				@ sidebar content sidebar2
+				@ footer  footer  footer
+            max-width 600px
+    
+	. gs-2-box
+        background-color #444
+        color #fff
+        border-radius 5px
+        padding 10px
+        font-size 150%
+    
+	. gs-2-header
+        + .gs-2-footer
+        background-color #999
+    
+	. gs-2-sidebar2
+        background-color #ccc
+        color #444

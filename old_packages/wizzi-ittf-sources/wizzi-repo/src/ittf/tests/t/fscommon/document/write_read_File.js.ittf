@@ -1,0 +1,61 @@
+﻿$group
+
+	var folderPathOld = "c:/my/starters/darvin"
+	var filePathOld = "c:/my/starters/darvin/hello.md"
+	var filePathNew = "c:/my/newfolder/readme.md"
+	var content = "Hello world"
+
+	describe write a file
+
+		before-async
+			_ doc.createFolder
+				@ folderPathOld
+				f_cb_done( f )
+
+		
+		it-async should write into a non existing folder
+			_ doc.writeFile
+				@ filePathNew
+				@ content
+				f_cb_done( r )
+					log 'should write a file', err, r
+					tobe_string( r.code, DOCUMENT_WRITTEN )
+					tobe_string_value( r.item.content, content )
+
+		$*
+		it-async should be not modified
+			_ doc.writeFile
+				@ filePathNew
+				@ content
+				f_cb_done( r )
+					log 'should be not modified', err, r
+					tobe_string( r.code, DOCUMENT_NOT_MODIFIED )
+
+		it-async should write into an existing folder
+			_ doc.writeFile
+				@ filePathOld
+				@ content
+				f_cb_done( r )
+					log 'should write into an existing folder', err, r
+					tobe_string( r.code, DOCUMENT_WRITTEN )
+					tobe_string_value( r.item.content, content )
+
+		it-async should read
+			_ doc.readFile
+				@ filePathOld
+				f_cb_done( r )
+					log 'should read', err, r
+					tobe_string_value( r, content )
+
+		it-async should overwrite an existing file
+			_ doc.writeFile
+				@ filePathOld
+				@ content + ' ' + content
+				f_cb_done( r )
+					log 'should overwrite an existing file', err, r
+					tobe_string( r.code, DOCUMENT_WRITTEN )
+					tobe_string_value( r.item.content, content + ' ' + content )
+
+		*$
+
+

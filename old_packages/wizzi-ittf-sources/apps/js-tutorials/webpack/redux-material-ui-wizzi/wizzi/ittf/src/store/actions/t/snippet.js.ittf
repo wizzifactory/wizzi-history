@@ -1,0 +1,434 @@
+﻿$group
+	$params &app
+	+
+	decl( SELECT_SNIPPET_SCHEMA )
+	decl( SNIPPET_CODE_CHANGED )
+	decl_rsf( snippet, select )
+	decl_rsf( snippet, add )
+	decl_rsf( snippet, rename )
+	decl_rsf( snippet, remove )
+	+
+	wz-const selectSnippetSchema
+		=>
+			param schemaName
+			param snippetName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					log '*** store.actions.snippet.selectSnippetSchema', schemaName, snippetName
+
+					_ dispatch
+						_ completeSelectSnippetSchema
+							@ schemaName
+
+					if !snippetName || snippetName.length == 0
+						const snippetState = getState().snippet
+						const schemaObject = snippetState.index[schemaName]
+						const snippetItemObject = schemaObject.snippets.length > 0 ? schemaObject.snippets[0] : null
+						set snippetName = snippetItemObject ? (snippetItemObject.name || 'default') : 'default'
+					
+					_ dispatch
+						_ selectSnippet
+							@ snippetName
+
+	wz-const completeSelectSnippetSchema
+		=>
+			param schemaName
+			return
+				{
+					@ type SELECT_SNIPPET_SCHEMA
+					@ schema schemaName
+	
+	# thunk.withExtraArgument
+	wz-const selectSnippet
+		=>
+			param snippetName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					log '*** store.actions.snippet.selectSnippet', snippetName
+					
+					const snippetState = getState().snippet
+					const schemaObject = snippetState.index[snippetState.selectedSchema]
+
+					_ dispatch
+						_ requestSelectSnippet
+
+					const wizziArchive
+						_ extraArgument.WizziArchive.getPooledSnippetArchive
+							@ snippetState.selectedSchema
+							@ snippetName
+					
+					_ wizziArchive.retrieveFromServer
+						@ snippetState.selectedSchema + '-' + snippetName
+						f_cb_no_err( result )
+							if err
+								log '*** store.actions.snippet.selectSnippet.retrieve from cloud err', err
+								
+								var snippetItemObject
+								_ schemaObject.snippets.map
+									=>
+										param item
+										if item.name == snippetName
+											set snippetItemObject = item
+								
+								const snippetCode = snippetItemObject && snippetItemObject.snippetCode 
+									\b ? snippetItemObject.snippetCode.join('\n') 
+									\b : ""
+								
+								_ dispatch
+									_ completeSelectSnippet
+										@ snippetName
+										@ snippetCode
+								
+								_ dispatch
+									_ updateSnippetAst
+										@ snippetState.selectedSchema
+										@ snippetName
+										@ snippetCode
+								
+								_ dispatch
+									_ changeSnippetCode
+										@ snippetState.selectedSchema
+										@ snippetName
+										@ snippetCode
+							
+							else
+
+								log '*** store.actions.snippet.selectSnippet.retrieve from cloud result', result
+								
+								_ dispatch
+									_ completeSelectSnippet
+										@ snippetName
+										@ wizziArchive.snippetItemObject.content
+								
+								_ dispatch
+									_ updateSnippetAst
+										@ wizziArchive.snippetItemObject.content
+								
+								$if app.testNoArtifactGeneration == false
+									_ dispatch
+										_ generateArtifact
+											@ snippetState.selectedSchema
+											@ snippetName
+
+	wz-const requestSelectSnippet
+		=>
+			param snippetName
+			return
+				{
+					@ type SELECT_SNIPPET_REQUEST
+					@ snippet snippetName
+
+	wz-const completeSelectSnippet
+		=>
+			param snippetName
+			param snippetCode
+			return
+				{
+					@ type SELECT_SNIPPET_SUCCESS
+					@ snippet snippetName
+					@ snippetCode snippetCode
+
+	# thunk.withExtraArgument
+	wz-const changeSnippetCode
+		=>
+			param schemaName
+			param snippetName
+			param snippetCode
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					# update the store
+					_ dispatch
+						_ updateSnippet
+							@ schemaName
+							@ snippetName
+							@ snippetCode
+					
+					# TODO
+						# updateAst means updating the ui not the store
+						_ dispatch
+							_ updateAst
+								@ schemaName
+								@ snippetName
+								@ snippetCode
+					
+					$if !app.testNoWizzify
+						# wizzify means updating the ui not the store
+						_ dispatch
+							_ wizzifySnippet
+								@ schemaName
+								@ snippetName
+								@ snippetCode
+
+	wz-const changeSnippetContent
+		=>
+			param snippetCode
+			return
+				{
+					@ type SNIPPET_CODE_CHANGED
+					@ snippetCode snippetCode
+
+	wz-const addSnippet
+		=>
+			param schemaName
+			param snippetName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					log '*** store.actions.snippet.addSnippet.request', schemaName, snippetName
+
+					const fbFsClient
+						_ extraArgument.FbFsClient.getInstance
+					
+					_ dispatch
+						_ requestSnippetAdd
+					
+					# Create an empty snippet in the snippet directory in the cloud.
+					# Do not create a snippet archive, it will be created at the first update.
+					_ fbFsClient.addSnippetItem
+						@ schemaName
+						@ snippetName
+						f_cb_no_err(result)
+							if err
+								log '*** store.actions.snippet.addSnippet.fail', schemaName, snippetName, err
+								return
+									_ failSnippetAdd
+										@ err
+							
+							log '*** store.actions.snippet.addSnippet.success', schemaName, snippetName, result
+							
+							# TODO now result.data == snippetIndex object, makes 'snippetIndex' a property of result.data
+							_ dispatch
+								_ completeSnippetAdd
+									@ schemaName
+									@ snippetName
+									@ result.data
+							
+							_ dispatch
+								_ selectSnippetSchema
+									@ schemaName
+									@ snippetName
+
+	wz-const requestSnippetAdd
+		=>
+			log 'store.actions.snippet.requestSnippetAdd'
+			return
+				{
+					@ type ADD_SNIPPET_REQUEST
+	
+	wz-const failSnippetAdd
+		=>
+			param error
+			log 'store.actions.snippet.failSnippetAdd'
+			return
+				{
+					@ type ADD_SNIPPET_FAILURE
+					@ error error
+	
+	wz-const completeSnippetAdd
+		=>
+			param schemaName
+			param snippetName
+			param snippetIndex
+			log 'store.actions.snippet.completeSnippetAdd', 'snippetIndex', snippetIndex
+			return
+				{
+					@ type ADD_SNIPPET_SUCCESS
+					@ schema schemaName
+					@ snippet snippetName
+					@ snippetIndex snippetIndex
+
+	wz-const renameSnippet
+		=>
+			param schemaName
+			param oldSnippet
+			param newSnippet
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					log '*** store.actions.snippet.renameSnippet.request', schemaName, oldSnippet, newSnippet
+
+					const fbFsClient
+						_ extraArgument.FbFsClient.getInstance
+					
+					_ dispatch
+						_ requestSnippetRename
+					
+					# First rename the snippet directory.
+					_ fbFsClient.renameSnippetItem
+						@ schemaName
+						@ oldSnippet
+						@ newSnippet
+						f_cb_no_err(renameSnippetItemResult)
+							if err
+								log '*** store.actions.snippet.renameSnippetItem.fail', schemaName, oldSnippet, newSnippet, err
+								return
+									_ failSnippetRename
+										@ err
+							log '*** store.actions.snippet.renameSnippetItem.success', schemaName, oldSnippet, newSnippet, renameSnippetItemResult
+
+							# Then rename the snippet archive.
+							_ fbFsClient.renameSnippetArchive
+								@ schemaName
+								@ oldSnippet
+								@ newSnippet
+								f_cb_no_err(renameSnippetArchiveResult)
+									if err
+										log '*** store.actions.snippet.renameSnippetArchive.fail', schemaName, oldSnippet, newSnippet, err
+										return
+											_ failSnippetRename
+												@ err
+									
+									_ dispatch
+										_ completeSnippetRename
+											@ schemaName
+											@ oldSnippet
+											@ newSnippet
+											@ renameSnippetItemResult.data
+							
+									_ dispatch
+										_ selectSnippetSchema
+											@ schemaName
+											@ newSnippet
+
+	wz-const requestSnippetRename
+		=>
+			log 'store.actions.snippet.requestSnippetRename'
+			return
+				{
+					@ type RENAME_SNIPPET_REQUEST
+	
+	wz-const failSnippetRename
+		=>
+			param error
+			log 'store.actions.snippet.failSnippetRename'
+			return
+				{
+					@ type RENAME_SNIPPET_FAILURE
+					@ error error
+	
+	wz-const completeSnippetRename
+		=>
+			param schemaName
+			param oldSnippet
+			param newSnippet
+			param snippetIndex
+			log 'store.actions.snippet.completeSnippetRename', 'snippetIndex', snippetIndex
+			return
+				{
+					@ type RENAME_SNIPPET_SUCCESS
+					@ schema schemaName
+					@ oldSnippet oldSnippet
+					@ newSnippet newSnippet
+					@ snippetIndex snippetIndex
+
+	wz-const removeSnippet
+		=>
+			param schemaName
+			param snippetName
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+
+					log '*** store.actions.snippet.removeSnippet.request', schemaName, snippetName
+
+					const fbFsClient
+						_ extraArgument.FbFsClient.getInstance
+					
+					_ dispatch
+						_ requestSnippetRemove
+					
+					_ fbFsClient.removeSnippetItem
+						@ schemaName
+						@ snippetName
+						f_cb_no_err(removeResult)
+							if err
+								log '*** store.actions.snippet.removeSnippetItem.fail', schemaName, snippetName, err
+								return
+									_ failSnippetRemove
+										@ err
+							log '*** store.actions.snippet.removeSnippetItem.success', schemaName, snippetName, removeResult
+							
+							_ fbFsClient.removeSnippetArchive
+								@ schemaName
+								@ snippetName
+								f_cb_no_err( )
+									if err
+										log '*** store.actions.snippet.removeSnippetArchive.fail', schemaName, snippetName, err
+										return
+											_ failSnippetRemove
+												@ err
+									log '*** store.actions.snippet.removeSnippetArchive.success', schemaName, snippetName
+
+									_ dispatch
+										_ completeSnippetRemove
+											@ schemaName
+											@ snippetName
+											@ removeResult.data
+							
+									const snippetState = getState().snippet
+									if snippetState.selectedSchema == schemaName && 
+										\b snippetState.selectedSnippet != snippetName
+										_ dispatch
+											_ selectSnippetSchema
+												@ schemaName
+												@ snippetState.selectedSnippet
+										return
+							
+									const schemaObject = snippetState.index[schemaName]
+									const snippetItemObject = schemaObject.snippets.length > 0 ? schemaObject.snippets[0] : null
+									const gotoSnippet = snippetItemObject ? snippetItemObject.name : 'default'
+							
+									_ dispatch
+										_ selectSnippetSchema
+											@ schemaName
+											@ gotoSnippet
+
+	wz-const requestSnippetRemove
+		=>
+			log 'store.actions.snippet.requestSnippetRemove'
+			return
+				{
+					@ type REMOVE_SNIPPET_REQUEST
+	
+	wz-const failSnippetRemove
+		=>
+			param error
+			log 'store.actions.snippet.failSnippetRemove'
+			return
+				{
+					@ type REMOVE_SNIPPET_FAILURE
+					@ error error
+	
+	wz-const completeSnippetRemove
+		=>
+			param schemaName
+			param snippetName
+			param snippetIndex
+			log 'store.actions.snippet.completeSnippetRemove', 'snippetIndex', snippetIndex
+			return
+				{
+					@ type REMOVE_SNIPPET_SUCCESS
+					@ schema schemaName
+					@ snippet snippetName
+					@ snippetIndex snippetIndex
+

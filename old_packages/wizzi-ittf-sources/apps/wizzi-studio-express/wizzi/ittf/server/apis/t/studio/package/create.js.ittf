@@ -1,0 +1,61 @@
+﻿$group
+
+	@ createPackage
+		function
+			param options
+			param callback
+
+			var metaPath
+				_ paths.packageMeta
+					@ options
+
+			check_file_already_exists( metaPath, studioApi.createPackage. Package document meta
+
+			var packageMeta
+				{
+					@ name options.packageName
+					@ user options.userId
+					@ metaPath metaPath
+					@ created u.now_GMYHMS()
+					@ lastUpdated u.now_GMYHMS()
+					@ schemas
+						[
+					@ transformers
+						[
+					@ artifacts
+						[
+
+			_ file.writeJSON
+				@ metaPath
+				@ packageMeta
+
+			var inserted
+				{
+					@ name options.packageName
+					@ user options.userId
+
+			_ this.getPackages
+				@ options
+				f_cb_no_err( result )
+					if err
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ inserted inserted
+										@ packages [inserted]
+								@ status
+									_ success
+										@ 'Package created: "' + options.packageName + '"'
+					else
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ inserted inserted
+										@ packages result.data.packages
+								@ status
+									_ success
+										@ 'Package created: "' + options.packageName + '"'

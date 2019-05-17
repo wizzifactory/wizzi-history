@@ -1,0 +1,150 @@
+﻿module wizzi-mtree.loader.evaluator
+    kind jsfile
+    
+	import util
+    var jsWizziRunner = require('../jswizzi/jsWizziRunner')
+    var JsWizziContext = require('../jswizzi/jsWizziContext')
+    var dateUtil = require('../jswizzi/functions/dateutil')
+	var JsWizziScriptCoder = require('../jswizzi/JsWizziScriptCoder')
+    var mTreeBuildUpScripter = require('./mTreeBuildUpScripter')
+	var requireFromString = null
+    
+	#
+		# The final step of an mTree loading. 
+		# Executes the expressions evaluation and the
+		# template commands of the composed mTree piece and build the final mTree: 
+		# . creates the mTreeBuildUpScript from the composedMTreePiece,
+		# . creates the jsWizziContext and loads the loadContext.mTreeBuildUpContext
+		#   in the global context,
+		# . runs the script with the jsWizziRunner,
+		# . returns the builded mTree.
+		#
+		# params
+		#   { composedMTreePiece
+		#   { loadContext
+		#     { mTreeBuildUpContext
+		#     { productionContext
+		#       { runnerServer
+		#   callback
+		#
+	set module.exports =
+        function 
+            param composedMTreePiece
+            param loadContext
+			param callback
+            
+			var productionContext = loadContext.productionContext
+			set loadContext.options = loadContext.options || {}
+
+			var jsWizziContext
+                new JsWizziContext(composedMTreePiece, productionContext)
+			_ jsWizziContext.setGlobalValues
+                @ loadContext.mTreeBuildUpContext
+            
+			var ctx
+                { 
+                    @ brickKey null
+                    @ counter 0
+                    @ startTime dateUtil.now_GMYHMS()
+					@ isCompile loadContext.options.isCompile
+
+			var isCompile = loadContext.options.isCompile
+            
+			# log 'isCompile', isCompile
+			
+			var scriptCoder
+                new JsWizziScriptCoder()
+
+			_ scriptCoder.w
+				@ '// ' + ctx.startTime + '  by ' + __filename
+			
+			if isCompile
+				_ scriptCoder.w
+					@ 'module.exports = function($, $ctx) {'
+				_ scriptCoder.indent
+				foreach k in Object.keys(jsWizziContext.getIsCompileGlobals())
+					_ scriptCoder.w
+						@ 'var ' + k + ' = $ctx.' + k + ';'
+
+			_ scriptCoder.w
+				@ '$.n(); // set the context state to NodeContext'
+			_ scriptCoder.w
+				@ 'var $0 = {}; // the root node of the MTree buildup'
+            
+			foreach item in composedMTreePiece.nodes
+                _ mTreeBuildUpScripter.codify(item, 0, scriptCoder, ctx)
+            
+			if isCompile
+				_ scriptCoder.w
+					@ 'return $0;'
+				_ scriptCoder.deindent
+				_ scriptCoder.w
+					@ '}'
+			
+			_ productionContext.addMTreeBuildUpScript
+                @ composedMTreePiece.uri
+                @ scriptCoder
+
+			if isCompile
+
+				# log 'scriptCoder.toCode()', scriptCoder.toCode()
+				
+				if requireFromString === null
+					set requireFromString = require('./requireFromString')
+				
+				var md
+					_ requireFromString
+						_ scriptCoder.toCode
+				
+				var $0
+					_ md
+						_ jsWizziContext.getValue('$')
+						_ jsWizziContext.getGlobalValues
+				
+				_ finalize
+					@ composedMTreePiece
+					@ $0
+					@ ctx
+					@ callback
+
+			else
+
+				_ jsWizziRunner.run
+					_ scriptCoder.toCode()
+					@ jsWizziContext
+					{
+					f_cb( result )
+            
+						_ jsWizziContext.set_NodeContext()
+
+						var $0 = jsWizziContext.getValue('$0')
+            
+						if typeof($0) === 'undefined' || $0 == null || $0.children === 'undefined'
+							return
+								_ callback
+									{
+										@ message 'No nodes returned after IttfEvaluation.'
+										@ document composedMTreePiece.uri
+						_ finalize
+							@ composedMTreePiece
+							@ $0
+							@ ctx
+							@ callback
+            
+	function finalize
+		param composedMTreePiece
+		param $0
+		param ctx
+		param callback
+
+		set composedMTreePiece.nodes = []
+            
+		foreach item in $0.children
+			set item.parent = null
+			_ composedMTreePiece.nodes.push(item)
+            
+		set composedMTreePiece.data =
+			{ 
+				@ createdAt ctx.startTime
+            
+		_ callback(null, composedMTreePiece)

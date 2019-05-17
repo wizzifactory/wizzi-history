@@ -1,0 +1,25 @@
+﻿$group
+	$params section, level, step
+
+	_ heading2('print ${section} results')
+	_ repo.mongoDbDocumentManager
+		@ testMongodbUri
+		f_cb_throw( docman )
+			_ docman.getFiles
+				_ path.join
+					@ demoUploadMongodbBaseFolder
+					@ '${section}'
+					@ 'level_${level}'
+					@ 'step_${step}'
+					@ 'outputs'
+				{
+					@ deep true
+					@ documentContent true
+				f_cb_throw( files )
+					_ printArray
+						@ 'files'
+						@ files
+						[
+							@ 'fullPath'
+							@ 'content'
+					_ docman.close

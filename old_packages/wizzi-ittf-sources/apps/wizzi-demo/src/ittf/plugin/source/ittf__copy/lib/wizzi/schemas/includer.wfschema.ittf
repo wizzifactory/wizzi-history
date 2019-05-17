@@ -1,0 +1,33 @@
+﻿wfschema includer
+
+	# Sample schema inclusion
+	# This schema includes the `lexer` schema
+
+	export-to json
+
+	e node
+		# A tree node with unlimited depth.
+		# Is the schema base node.
+		# In itself works as a comment line.
+		tag //
+		r node/s
+
+	e includer : node
+		is-root
+
+		m wzInitialize
+
+	e child : node
+
+		include lexer simple included lexer
+
+		m wzInitialize
+			_ this.get_lexer(get_lexer_cb)
+
+	m get_lexer_cb
+		param err
+		param model
+		if err
+			log 'err', err
+		else
+			log model.getCode()

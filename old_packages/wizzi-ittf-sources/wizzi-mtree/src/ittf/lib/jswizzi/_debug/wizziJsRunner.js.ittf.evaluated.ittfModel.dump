@@ -1,0 +1,1080 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var util = require('util') ids: undefined undefined
+    var escodegen = require('escodegen') ids: undefined undefined
+    var esprima = require('esprima') ids: undefined undefined
+    var file = require('../util/file') ids: undefined undefined
+    var verify = require('../util/verify') ids: undefined undefined
+    var errors = require('./errors') ids: undefined undefined
+    var verbose = false ids: undefined undefined
+    var defaultOptions ids: undefined undefined
+      {  ids: undefined undefined
+        @ verbose true ids: undefined undefined
+    function log ids: undefined undefined
+      param label ids: undefined undefined
+      param node ids: undefined undefined
+      param force ids: undefined undefined
+      if (verbose || force) ids: undefined undefined
+        log escodegen.generate(node) ids: undefined undefined
+        _ console.log ids: undefined undefined
+          @ label ids: undefined undefined
+          _ util.inspect ids: undefined undefined
+            @ node ids: undefined undefined
+            {  ids: undefined undefined
+              @ depth 2 ids: undefined undefined
+    var runner ids: undefined undefined
+      function  ids: undefined undefined
+        param ast ids: undefined undefined
+        param ctx ids: undefined undefined
+        param action ids: undefined undefined
+        param data ids: undefined undefined
+        var type ids: undefined undefined
+          iif action ids: undefined undefined
+            then ast.type + '_' + action ids: undefined undefined
+            else  ids: undefined undefined
+              set ast.type ids: undefined undefined
+        if verbose ids: undefined undefined
+          _ console.log(('ast.type: ' + type)) ids: undefined undefined
+        if ast.trailingComments && ast.trailingComments.length == 1 ids: undefined undefined
+          _ ctx.setRunningNodeId ids: undefined undefined
+            @ ast.trailingComments[0].value ids: undefined undefined
+        var trunner = runner[type] ids: undefined undefined
+        if trunner ids: undefined undefined
+          return trunner(ast, ctx, data) ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Missing runner for type: ' + type ids: undefined undefined
+              @ 'runner' ids: undefined undefined
+    var runnerSet ids: undefined undefined
+      function  ids: undefined undefined
+        param ast ids: undefined undefined
+        param ctx ids: undefined undefined
+        param data ids: undefined undefined
+        return runner(ast, ctx, 'Set', data) ids: undefined undefined
+    var runnerCall ids: undefined undefined
+      function  ids: undefined undefined
+        param ast ids: undefined undefined
+        param ctx ids: undefined undefined
+        param data ids: undefined undefined
+        return runner(ast, ctx, 'Call', data) ids: undefined undefined
+    set runner.Program ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('Program.node', node) ids: undefined undefined
+        var state ids: undefined undefined
+        for var i = 0; i < node.body.length; i++ ids: undefined undefined
+          var statement = node.body[i] ids: undefined undefined
+          var state ids: undefined undefined
+            _ runner(statement, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error Program', state ids: undefined undefined
+            return state ids: undefined undefined
+          if state.return ids: undefined undefined
+            return state.value ids: undefined undefined
+    set runner.Identifier ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('Identifier.node', node) ids: undefined undefined
+        if node.name == 'undefined' ids: undefined undefined
+          # log 'Identifier returning node.name = undefined' ids: undefined undefined
+          return undefined ids: undefined undefined
+        if ctx.isDeclared(node.name) ids: undefined undefined
+          return  ids: undefined undefined
+            _ ctx.getValue ids: undefined undefined
+              @ node.name ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Identifier < ' + node.name + ' > not defined, on node < ' + ctx.runningNodeId + ' > ' +ctx.getDeclaredInfo() ids: undefined undefined
+              @ node ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'Identifier' ids: undefined undefined
+    set runner.Identifier_Set ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        param data ids: undefined undefined
+        _ log('Identifier_Set.node', node) ids: undefined undefined
+        _ ctx.put ids: undefined undefined
+          @ node.name ids: undefined undefined
+          @ data ids: undefined undefined
+    set runner.Literal ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('Literal.node', node) ids: undefined undefined
+        return node.value ids: undefined undefined
+    set runner.VariableDeclaration ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('VariableDeclaration.node', node) ids: undefined undefined
+        foreach declaration in node.declarations ids: undefined undefined
+          var state ids: undefined undefined
+            _ runner(declaration, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error VariableDeclaration', state ids: undefined undefined
+            return state ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.VariableDeclarator ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('VariableDeclarator.node', node) ids: undefined undefined
+        if !node.init ids: undefined undefined
+          _ ctx.declare ids: undefined undefined
+            @ node.id.name ids: undefined undefined
+        else  ids: undefined undefined
+          var value ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.init ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if value && value.__is_error ids: undefined undefined
+            log '__is_error VariableDeclaration', value ids: undefined undefined
+            return value ids: undefined undefined
+          _ ctx.declare ids: undefined undefined
+            @ node.id.name ids: undefined undefined
+            @ value ids: undefined undefined
+    set runner.EmptyStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('EmptyStatement.node', node) ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.ExpressionStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ExpressionStatement.node', node) ids: undefined undefined
+        _ ctx.beginExpr() ids: undefined undefined
+        var state ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.expression ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if state && state.__is_error ids: undefined undefined
+          log '__is_error ExpressionStatement', state ids: undefined undefined
+          return state ids: undefined undefined
+        _ ctx.endExpr() ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.IfStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('IfStatement.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl ret ids: undefined undefined
+            {  ids: undefined undefined
+          decl savedCurrentModelKey ids: undefined undefined
+        var test ids: undefined undefined
+          _ runner(node.test, ctx) ids: undefined undefined
+        if test && test.__is_error ids: undefined undefined
+          log '__is_error IfStatement', test ids: undefined undefined
+          return test ids: undefined undefined
+        if test ids: undefined undefined
+          set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: undefined undefined
+          set ret ids: undefined undefined
+            _ runner(node.consequent, ctx) ids: undefined undefined
+          if ret && ret.__is_error ids: undefined undefined
+            log '__is_error IfStatement node.consequent', ret ids: undefined undefined
+            return ret ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error IfStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+        else  ids: undefined undefined
+          if node.alternate ids: undefined undefined
+            set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: undefined undefined
+            set ret ids: undefined undefined
+              _ runner(node.alternate, ctx) ids: undefined undefined
+            if ret && ret.__is_error ids: undefined undefined
+              log '__is_error IfStatement node.alternate', ret ids: undefined undefined
+              return ret ids: undefined undefined
+            var notUsed ids: undefined undefined
+              _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+            if notUsed && notUsed.__is_error ids: undefined undefined
+              log '__is_error IfStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+              return notUsed ids: undefined undefined
+        return ret ids: undefined undefined
+    set runner.BlockStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('BlockStatement.node', node) ids: undefined undefined
+        var state ids: undefined undefined
+        for var i = 0; i < node.body.length; i++ ids: undefined undefined
+          var statement = node.body[i] ids: undefined undefined
+          set state ids: undefined undefined
+            _ runner(statement, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error BlockStatement', state ids: undefined undefined
+            return state ids: undefined undefined
+          if state.result || state.break || state.continue ids: undefined undefined
+            return state ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.WhileStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('WhileStatement.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl state ids: undefined undefined
+          decl savedCurrentModelKey ids: undefined undefined
+        var test ids: undefined undefined
+          _ runner(node.test, ctx) ids: undefined undefined
+        if test && test.__is_error ids: undefined undefined
+          log '__is_error WhileStatement node.test', test ids: undefined undefined
+          return test ids: undefined undefined
+        while test ids: undefined undefined
+          set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: undefined undefined
+          set state ids: undefined undefined
+            _ runner(node.body, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error WhileStatement node.body', state ids: undefined undefined
+            return state ids: undefined undefined
+          if state.result || state.break ids: undefined undefined
+            return state ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error set_IttfModelEvalContext', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+          set test ids: undefined undefined
+            _ runner(node.test, ctx) ids: undefined undefined
+          if test && test.__is_error ids: undefined undefined
+            log '__is_error WhileStatement node.test', test ids: undefined undefined
+            return test ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.DoWhileStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('DoWhileStatement.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl test ids: undefined undefined
+          decl state ids: undefined undefined
+          decl savedCurrentModelKey ids: undefined undefined
+        set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: undefined undefined
+        set state ids: undefined undefined
+          _ runner(node.body, ctx) ids: undefined undefined
+        if state && state.__is_error ids: undefined undefined
+          log '__is_error DoWhileStatement node.body', state ids: undefined undefined
+          return state ids: undefined undefined
+        if state.result || state.break ids: undefined undefined
+          return state ids: undefined undefined
+        var notUsed ids: undefined undefined
+          _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+        if notUsed && notUsed.__is_error ids: undefined undefined
+          log '__is_error DoWhileStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+          return notUsed ids: undefined undefined
+        set test ids: undefined undefined
+          _ runner(node.test, ctx) ids: undefined undefined
+        if test && test.__is_error ids: undefined undefined
+          log '__is_error DoWhileStatement node.test', test ids: undefined undefined
+          return test ids: undefined undefined
+        while test ids: undefined undefined
+          set state ids: undefined undefined
+            _ runner(node.body, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error DoWhileStatement node.body', state ids: undefined undefined
+            return state ids: undefined undefined
+          if state.result || state.break ids: undefined undefined
+            return state ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error DoWhileStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+          set test ids: undefined undefined
+            _ runner(node.test, ctx) ids: undefined undefined
+          if test && test.__is_error ids: undefined undefined
+            log '__is_error DoWhileStatement node.test', test ids: undefined undefined
+            return test ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.ReturnStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ReturnStatement.node', node) ids: undefined undefined
+        var value ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.argument ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if value && value.__is_error ids: undefined undefined
+          log '__is_error ReturnStatement', value ids: undefined undefined
+          return value ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+            @ result true ids: undefined undefined
+            @ value value ids: undefined undefined
+    set runner.ForStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ForStatement.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl test ids: undefined undefined
+          decl state ids: undefined undefined
+          decl savedCurrentModelKey ids: undefined undefined
+        set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: undefined undefined
+        var notUsed ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.init ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if notUsed && notUsed.__is_error ids: undefined undefined
+          log '__is_error ForStatement node.init', notUsed ids: undefined undefined
+          return notUsed ids: undefined undefined
+        var notUsed ids: undefined undefined
+          _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+        if notUsed && notUsed.__is_error ids: undefined undefined
+          log '__is_error ForStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+          return notUsed ids: undefined undefined
+        set test ids: undefined undefined
+          _ runner(node.test, ctx) ids: undefined undefined
+        if test && test.__is_error ids: undefined undefined
+          log '__is_error ForStatement node.test', test ids: undefined undefined
+          return test ids: undefined undefined
+        while test ids: undefined undefined
+          set state ids: undefined undefined
+            _ runner(node.body, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error ForStatement node.body', state ids: undefined undefined
+            return state ids: undefined undefined
+          if state.result || state.break ids: undefined undefined
+            return state ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error ForStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.update ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error ForStatement node.update', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error ForStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+          set test ids: undefined undefined
+            _ runner(node.test, ctx) ids: undefined undefined
+          if test && test.__is_error ids: undefined undefined
+            log '__is_error ForStatement node.test', test ids: undefined undefined
+            return test ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.ForInStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ForInStatement.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl test ids: undefined undefined
+          decl state ids: undefined undefined
+          decl savedCurrentModelKey ids: undefined undefined
+        set savedCurrentModelKey = ctx.get_currentIttfModelKey() ids: undefined undefined
+        var obj ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.right ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if obj && obj.__is_error ids: undefined undefined
+          log '__is_error ForInStatement node.right', obj ids: undefined undefined
+          return obj ids: undefined undefined
+        if _.isObject(obj) == false ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: undefined undefined
+              @ node.right ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'ForInStatement' ids: undefined undefined
+        var notUsed ids: undefined undefined
+          _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+        if notUsed && notUsed.__is_error ids: undefined undefined
+          log '__is_error ForInStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+          return notUsed ids: undefined undefined
+        var left = node.left.name ids: undefined undefined
+        _ ctx.declare(left) ids: undefined undefined
+        for k in obj ids: undefined undefined
+          _ ctx.put(left, k) ids: undefined undefined
+          set state ids: undefined undefined
+            _ runner(node.body, ctx) ids: undefined undefined
+          if state && state.__is_error ids: undefined undefined
+            log '__is_error ForInStatement node.body', state ids: undefined undefined
+            return state ids: undefined undefined
+          if state.result || state.break ids: undefined undefined
+            return state ids: undefined undefined
+          var notUsed ids: undefined undefined
+            _ ctx.set_IttfModelEvalContext(savedCurrentModelKey) ids: undefined undefined
+          if notUsed && notUsed.__is_error ids: undefined undefined
+            log '__is_error ForInStatement set_IttfModelEvalContext', notUsed ids: undefined undefined
+            return notUsed ids: undefined undefined
+        _ ctx.undeclare(left) ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.BreakStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('BreakStatement.node', node) ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+            @ break true ids: undefined undefined
+    set runner.ContinueStatement ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ContinueStatement.node', node) ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+            @ continue true ids: undefined undefined
+    set runner.UnaryExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('UnaryExpression.node', node) ids: undefined undefined
+        var exp ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.argument ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if exp && exp.__is_error ids: undefined undefined
+          log '__is_error UnaryExpression', exp ids: undefined undefined
+          return exp ids: undefined undefined
+        if node.prefix ids: undefined undefined
+          if node.operator === '!' ids: undefined undefined
+            return !exp ids: undefined undefined
+          elif node.operator === '-' ids: undefined undefined
+            return -exp ids: undefined undefined
+          elif node.operator === '+' ids: undefined undefined
+            return exp ids: undefined undefined
+          else  ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ 'Unmanaged unary operator ' + node.operator + ' (prefix: true)' ids: undefined undefined
+                @ node.operator ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'UnaryExpression' ids: undefined undefined
+        else  ids: undefined undefined
+          if node.operator === '!' ids: undefined undefined
+            return !exp ids: undefined undefined
+          else  ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ 'Unmanaged unary operator ' + node.operator + ' (prefix: false)' ids: undefined undefined
+                @ node.operator ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'UnaryExpression' ids: undefined undefined
+    set runner.BinaryExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('BinaryExpression.node', node) ids: undefined undefined
+        var l ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.left ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if l && l.__is_error ids: undefined undefined
+          log '__is_error BinaryExpression l', l ids: undefined undefined
+          return l ids: undefined undefined
+        var r ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.right ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if r && r.__is_error ids: undefined undefined
+          log '__is_error BinaryExpressior', r ids: undefined undefined
+          return r ids: undefined undefined
+        _ log ids: undefined undefined
+          @ 'BinaryExpression.l,r' ids: undefined undefined
+          [  ids: undefined undefined
+            @ l ids: undefined undefined
+            @ r ids: undefined undefined
+        if node.operator === '+' ids: undefined undefined
+          return (l + r) ids: undefined undefined
+        elif node.operator === '-' ids: undefined undefined
+          return (l - r) ids: undefined undefined
+        elif node.operator === '*' ids: undefined undefined
+          return l * r ids: undefined undefined
+        elif node.operator === '/' ids: undefined undefined
+          return l / r ids: undefined undefined
+        elif node.operator === '==' ids: undefined undefined
+          return l == r ids: undefined undefined
+        elif node.operator === '===' ids: undefined undefined
+          return l === r ids: undefined undefined
+        elif node.operator === '!=' ids: undefined undefined
+          return l != r ids: undefined undefined
+        elif node.operator === '!==' ids: undefined undefined
+          return l !== r ids: undefined undefined
+        elif node.operator === '>=' ids: undefined undefined
+          return l >= r ids: undefined undefined
+        elif node.operator === '>' ids: undefined undefined
+          return l > r ids: undefined undefined
+        elif node.operator === '<=' ids: undefined undefined
+          return l <= r ids: undefined undefined
+        elif node.operator === '<' ids: undefined undefined
+          return l < r ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Unmanaged binary operator ' + node.operator ids: undefined undefined
+              @ node.operator ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'BinaryExpression' ids: undefined undefined
+    set runner.UpdateExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('UpdateExpression.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl v ids: undefined undefined
+          decl exp ids: undefined undefined
+        var exp ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.argument ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if exp && exp.__is_error ids: undefined undefined
+          log '__is_error UpdateExpression', exp ids: undefined undefined
+          return exp ids: undefined undefined
+        if node.operator === '++' ids: undefined undefined
+          set v = exp + 1 ids: undefined undefined
+        elif node.operator === '--' ids: undefined undefined
+          set v = exp - 1 ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Unmanaged update expression ' + node.operator ids: undefined undefined
+              @ node.operator ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'UpdateExpression' ids: undefined undefined
+        _ ctx.put ids: undefined undefined
+          @ node.argument.name ids: undefined undefined
+          @ v ids: undefined undefined
+        return node.prefix ? v : exp ids: undefined undefined
+    set runner.LogicalExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('LogicalExpression.node', node) ids: undefined undefined
+        var l ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.left ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if l && l.__is_error ids: undefined undefined
+          log '__is_error LogicalExpression l', l ids: undefined undefined
+          return l ids: undefined undefined
+        if node.operator === '&&' && (l === false || l === null) ids: undefined undefined
+          return false ids: undefined undefined
+        var r ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.right ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if r && r.__is_error ids: undefined undefined
+          log '__is_error LogicalExpression r', r ids: undefined undefined
+          return r ids: undefined undefined
+        _ log ids: undefined undefined
+          @ 'LogicalExpression.l,r' ids: undefined undefined
+          [  ids: undefined undefined
+            @ l ids: undefined undefined
+            @ r ids: undefined undefined
+        if node.operator === '&&' ids: undefined undefined
+          return l && r ids: undefined undefined
+        elif node.operator === '||' ids: undefined undefined
+          return l || r ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Unmanaged logical expression ' + node.operator ids: undefined undefined
+              @ node.operator ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'LogicalExpression' ids: undefined undefined
+    set runner.ConditionalExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ConditionalExpression.node', node) ids: undefined undefined
+        var test ids: undefined undefined
+          _ runner(node.test, ctx) ids: undefined undefined
+        if test && test.__is_error ids: undefined undefined
+          log '__is_error ConditionalExpression', test ids: undefined undefined
+          return test ids: undefined undefined
+        if test ids: undefined undefined
+          var value ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.consequent ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if value && value.__is_error ids: undefined undefined
+            log '__is_error ConditionalExpression node.consequent', value ids: undefined undefined
+            return value ids: undefined undefined
+          return value ids: undefined undefined
+        else  ids: undefined undefined
+          var value ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.alternate ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if value && value.__is_error ids: undefined undefined
+            log '__is_error ConditionalExpression node.alternate', value ids: undefined undefined
+            return value ids: undefined undefined
+          return value ids: undefined undefined
+    set runner.CallExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('CallExpression.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl value ids: undefined undefined
+          decl args ids: undefined undefined
+            [  ids: undefined undefined
+          decl property ids: undefined undefined
+        foreach item in node.arguments ids: undefined undefined
+          set value ids: undefined undefined
+            _ runner(item, ctx) ids: undefined undefined
+          if value && value.__is_error ids: undefined undefined
+            log '__is_error CallExpression argument', value ids: undefined undefined
+            return value ids: undefined undefined
+          _ args.push(value) ids: undefined undefined
+        if node.callee.type === 'MemberExpression' ids: undefined undefined
+          var obj ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.callee.object ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if obj && obj.__is_error ids: undefined undefined
+            log '__is_error CallExpression node.callee.object', obj ids: undefined undefined
+            return obj ids: undefined undefined
+          if !obj ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ 'The value of callee must be an object. It is "' + getTypeDescription(obj) + '".' ids: undefined undefined
+                @ node.callee.object ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'CallExpression' ids: undefined undefined
+          if node.callee.computed ids: undefined undefined
+            set property ids: undefined undefined
+              _ runner ids: undefined undefined
+                @ node.callee.property ids: undefined undefined
+                @ ctx ids: undefined undefined
+            if property && property.__is_error ids: undefined undefined
+              log '__is_error CallExpression node.callee.property', property ids: undefined undefined
+              return property ids: undefined undefined
+          else  ids: undefined undefined
+            set property = node.callee.property.name ids: undefined undefined
+          if !obj[property] ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ 'Missing object property.' ids: undefined undefined
+                @ node.callee.property ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'CallExpression' ids: undefined undefined
+          if verify.isFunction(obj[property]) ids: undefined undefined
+            try  ids: undefined undefined
+              var value = obj[property].apply(obj, args) ids: undefined undefined
+              if value && value.__is_error ids: undefined undefined
+                var currentModelInfo = ctx.get_currentIttfModelInfo() ids: undefined undefined
+                log 'error calling ' + property + ', on statement: ' + escodegen.generate(node) ids: undefined undefined
+                set value.message += ' (' + 'error calling ' + property + ', on statement: ' + escodegen.generate(node) + ', currentModel_uri: ' + currentModelInfo.currentModel_uri + ', currentModel_callerUri: ' + currentModelInfo.currentModel_callerUri + ')' ids: undefined undefined
+              return value ids: undefined undefined
+            catch ex ids: undefined undefined
+              return  ids: undefined undefined
+                _ error ids: undefined undefined
+                  @ ctx ids: undefined undefined
+                  @ 'Exception calling function: ' + (ex ? ex.message : 'exception message unavailable') ids: undefined undefined
+                  @ node.callee.property ids: undefined undefined
+                  @ node ids: undefined undefined
+                  @ 'CallExpression' ids: undefined undefined
+                  @ ex ids: undefined undefined
+          else  ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ 'property: "' + property + '" is not a function' ids: undefined undefined
+                @ node.callee.property ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'CallExpression' ids: undefined undefined
+        if node.callee.type === 'Identifier' ids: undefined undefined
+          var f ids: undefined undefined
+            _ ctx.getFunction ids: undefined undefined
+              @ node.callee.name ids: undefined undefined
+          if f == null ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ ('Function undeclared ' + node.callee.name) ids: undefined undefined
+                @ node.callee ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'CallExpression' ids: undefined undefined
+          return runnerCall(f, ctx, args) ids: undefined undefined
+        return  ids: undefined undefined
+          _ error ids: undefined undefined
+            @ ctx ids: undefined undefined
+            @ 'Not implemented' ids: undefined undefined
+            @ null ids: undefined undefined
+            @ node ids: undefined undefined
+            @ 'CallExpression' ids: undefined undefined
+    set runner.MemberExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('MemberExpression.node', node) ids: undefined undefined
+        var obj ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.object ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if obj && obj.__is_error ids: undefined undefined
+          log '__is_error MemberExpression', obj ids: undefined undefined
+          return obj ids: undefined undefined
+        if !obj ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: undefined undefined
+              @ node.object ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'MemberExpression' ids: undefined undefined
+        if node.computed ids: undefined undefined
+          var property ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.property ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if property && property.__is_error ids: undefined undefined
+            log '__is_error MemberExpression node.property', property ids: undefined undefined
+            return property ids: undefined undefined
+          return obj[property] ids: undefined undefined
+        else  ids: undefined undefined
+          var property = node.property.name ids: undefined undefined
+          return obj[property] ids: undefined undefined
+    set runner.MemberExpression_Set ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        param data ids: undefined undefined
+        _ log('MemberExpression_Set.node', node) ids: undefined undefined
+        var obj ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.object ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if obj && obj.__is_error ids: undefined undefined
+          log '__is_error MemberExpression_Set', obj ids: undefined undefined
+          return obj ids: undefined undefined
+        if !obj ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: undefined undefined
+              @ node.object ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'MemberExpression_Set' ids: undefined undefined
+        if node.computed ids: undefined undefined
+          var property ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.property ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if property && property.__is_error ids: undefined undefined
+            log '__is_error MemberExpression_Set node.property', property ids: undefined undefined
+            return property ids: undefined undefined
+          set obj[property] = data ids: undefined undefined
+        else  ids: undefined undefined
+          var property = node.property.name ids: undefined undefined
+          set obj[property] = data ids: undefined undefined
+    set runner.AssignmentExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('AssignmentExpression.node', node) ids: undefined undefined
+        var l ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.left ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if l && l.__is_error ids: undefined undefined
+          log '__is_error AssignmentExpression l', l ids: undefined undefined
+          return l ids: undefined undefined
+        var r ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.right ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if r && r.__is_error ids: undefined undefined
+          log '__is_error AssignmentExpression r', r ids: undefined undefined
+          return r ids: undefined undefined
+        var v ids: undefined undefined
+        if node.operator === '=' ids: undefined undefined
+          set v = l = r ids: undefined undefined
+        elif node.operator === '*=' ids: undefined undefined
+          set v = l *= r ids: undefined undefined
+        elif node.operator === '/=' ids: undefined undefined
+          set v = l /= r ids: undefined undefined
+        elif node.operator === '%=' ids: undefined undefined
+          set v = l %= r ids: undefined undefined
+        elif node.operator === '+=' ids: undefined undefined
+          set v = l += r ids: undefined undefined
+        elif node.operator === '-=' ids: undefined undefined
+          set v = l -= r ids: undefined undefined
+        elif node.operator === '<<=' ids: undefined undefined
+          set v = l <<= r ids: undefined undefined
+        elif node.operator === '>>=' ids: undefined undefined
+          set v = l >>= r ids: undefined undefined
+        elif node.operator === '>>>=' ids: undefined undefined
+          set v = l >>>= r ids: undefined undefined
+        elif node.operator === '&=' ids: undefined undefined
+          set v = l &= r ids: undefined undefined
+        elif node.operator === '^=' ids: undefined undefined
+          set v = l ^= r ids: undefined undefined
+        elif node.operator === '|=' ids: undefined undefined
+          set v = l |= r ids: undefined undefined
+        else  ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Unmanaged expression operator ' + node.operator ids: undefined undefined
+              @ node.operator ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'AssignmentExpression' ids: undefined undefined
+        var notUsed ids: undefined undefined
+          _ runnerSet ids: undefined undefined
+            @ node.left ids: undefined undefined
+            @ ctx ids: undefined undefined
+            @ v ids: undefined undefined
+        if notUsed && notUsed.__is_error ids: undefined undefined
+          log '__is_error AssignmentExpression node.left', notUsed ids: undefined undefined
+          return notUsed ids: undefined undefined
+        return v ids: undefined undefined
+    set runner.ArrayExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ArrayExpression.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl ret ids: undefined undefined
+            [  ids: undefined undefined
+          decl value ids: undefined undefined
+        foreach element in node.elements ids: undefined undefined
+          set value ids: undefined undefined
+            _ runner(element, ctx) ids: undefined undefined
+          if value && value.__is_error ids: undefined undefined
+            log '__is_error ArrayExpression', value ids: undefined undefined
+            return value ids: undefined undefined
+          _ ret.push(value) ids: undefined undefined
+        return ret ids: undefined undefined
+    set runner.ObjectExpression ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('ObjectExpression.node', node) ids: undefined undefined
+        if node.properties.length == 0 ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+        var  ids: undefined undefined
+          decl ret ids: undefined undefined
+            {  ids: undefined undefined
+          decl prop ids: undefined undefined
+        foreach property in node.properties ids: undefined undefined
+          set prop ids: undefined undefined
+            _ runner(property, ctx) ids: undefined undefined
+          if prop && prop.__is_error ids: undefined undefined
+            log '__is_error ObjectExpression', prop ids: undefined undefined
+            return prop ids: undefined undefined
+          set ret[prop.key] = prop.value ids: undefined undefined
+        return ret ids: undefined undefined
+    set runner.Property ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('Property.node', node) ids: undefined undefined
+        var key = node.key.name ids: undefined undefined
+        var value ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.value ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if value && value.__is_error ids: undefined undefined
+          log '__is_error Property', value ids: undefined undefined
+          return value ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+            @ key key ids: undefined undefined
+            @ value value ids: undefined undefined
+    set runner.FunctionCall ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('FunctionCall.node', node) ids: undefined undefined
+        var  ids: undefined undefined
+          decl objbase ids: undefined undefined
+          decl value ids: undefined undefined
+        if node.name.base ids: undefined undefined
+          set objbase ids: undefined undefined
+            _ runner ids: undefined undefined
+              @ node.name.base ids: undefined undefined
+              @ ctx ids: undefined undefined
+          if objbase && objbase.__is_error ids: undefined undefined
+            log '__is_error FunctionCall node.name.base', objbase ids: undefined undefined
+            return objbase ids: undefined undefined
+        else  ids: undefined undefined
+          set objbase = ctx.values ids: undefined undefined
+        if _.isObject(objbase) == false ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'The value must be an object. It is "' + getTypeDescription(obj) + '".' ids: undefined undefined
+              @ node.name.base ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'FunctionCall' ids: undefined undefined
+        var args ids: undefined undefined
+          [  ids: undefined undefined
+        if Object.prototype.toString.call(node.arguments) == '[object Array]' ids: undefined undefined
+          foreach item in node.arguments ids: undefined undefined
+            set value ids: undefined undefined
+              _ runner(item, ctx) ids: undefined undefined
+            if value && value.__is_error ids: undefined undefined
+              log '__is_error FunctionCall item', value ids: undefined undefined
+              return value ids: undefined undefined
+            _ args.push(value) ids: undefined undefined
+        var f = objbase[node.name.name] ids: undefined undefined
+        if !f ids: undefined undefined
+          return  ids: undefined undefined
+            _ error ids: undefined undefined
+              @ ctx ids: undefined undefined
+              @ 'Missing function.' ids: undefined undefined
+              @ node.name.base ids: undefined undefined
+              @ node ids: undefined undefined
+              @ 'FunctionCall' ids: undefined undefined
+        if verify.isFunction(f) ids: undefined undefined
+          try  ids: undefined undefined
+            var v = objbase[node.name.name].apply(objbase, args) ids: undefined undefined
+            return v ids: undefined undefined
+          catch ex ids: undefined undefined
+            return  ids: undefined undefined
+              _ error ids: undefined undefined
+                @ ctx ids: undefined undefined
+                @ (ex ? ex.message : 'Error calling function') ids: undefined undefined
+                @ node.callee.property ids: undefined undefined
+                @ node ids: undefined undefined
+                @ 'CallExpression' ids: undefined undefined
+                @ ex ids: undefined undefined
+    set runner.FunctionDeclaration ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        _ log('FunctionDeclaration.node', node) ids: undefined undefined
+        _ ctx.declareFunction ids: undefined undefined
+          @ node.id.name ids: undefined undefined
+          @ node ids: undefined undefined
+        return  ids: undefined undefined
+          {  ids: undefined undefined
+    set runner.FunctionDeclaration_Call ids: undefined undefined
+      function  ids: undefined undefined
+        param node ids: undefined undefined
+        param ctx ids: undefined undefined
+        param data ids: undefined undefined
+        _ log('FunctionDeclaration_Call.node', node) ids: undefined undefined
+        var ctx = ctx.push() ids: undefined undefined
+        for var i = 0; i < node.params.length; i++ ids: undefined undefined
+          if data.length > i ids: undefined undefined
+            _ ctx.declare ids: undefined undefined
+              @ node.params[i].name ids: undefined undefined
+              @ data[i] ids: undefined undefined
+        var state ids: undefined undefined
+          _ runner ids: undefined undefined
+            @ node.body ids: undefined undefined
+            @ ctx ids: undefined undefined
+        if state && state.__is_error ids: undefined undefined
+          log '__is_error FunctionCall node.body', state ids: undefined undefined
+          return state ids: undefined undefined
+        _ ctx.pop() ids: undefined undefined
+        return state.value ids: undefined undefined
+    function error ids: undefined undefined
+      param ctx ids: undefined undefined
+      param message ids: undefined undefined
+      param node ids: undefined undefined
+      param parentnode ids: undefined undefined
+      param method ids: undefined undefined
+      param ex ids: undefined undefined
+      var nodeStm ids: undefined undefined
+      try  ids: undefined undefined
+        set nodeStm = node ? escodegen.generate(node) : '' ids: undefined undefined
+      catch ex ids: undefined undefined
+        set nodeStm = 'escodegen failed: ' + ex.message ids: undefined undefined
+      var nodeInsp = node ? util.inspect(node, {depth:2}) : '' ids: undefined undefined
+      var parentnodeStm ids: undefined undefined
+      try  ids: undefined undefined
+        set parentnodeStm = parentnode ? escodegen.generate(parentnode) : '' ids: undefined undefined
+      catch ex ids: undefined undefined
+        set parentnodeStm = 'escodegen failed: ' + ex.message ids: undefined undefined
+      var parentnodeInsp = node ? util.inspect(node, {depth:2}) : '' ids: undefined undefined
+      var currentModelInfo = ctx.get_currentIttfModelInfo() ids: undefined undefined
+      var message ids: undefined undefined
+        [  ids: undefined undefined
+          @ 'WizziJsRunner Error' ids: undefined undefined
+          @ 'message: ' + message ids: undefined undefined
+          @ 'node statement: ' + nodeStm ids: undefined undefined
+          @ 'node inspected: ' + nodeInsp ids: undefined undefined
+          @ 'parent node statement: ' + parentnodeStm ids: undefined undefined
+          @ 'parent node inspected: ' + parentnodeInsp ids: undefined undefined
+          @ 'currentModel_uri: ' + currentModelInfo.currentModel_uri ids: undefined undefined
+          @ 'currentModel_callerUri: ' + currentModelInfo.currentModel_callerUri ids: undefined undefined
+          @ 'method: ' + method ids: undefined undefined
+      if ex ids: undefined undefined
+        _ message.push(ex.stack) ids: undefined undefined
+      return  ids: undefined undefined
+        {  ids: undefined undefined
+          @ __is_error true ids: undefined undefined
+          @ message message.join('\n') ids: undefined undefined
+    function getTypeDescription ids: undefined undefined
+      param obj ids: undefined undefined
+      if obj == null ids: undefined undefined
+        return 'null' ids: undefined undefined
+      return typeof(obj) ids: undefined undefined
+    set module.exports = ids: undefined undefined
+      {  ids: undefined undefined
+        @ getParsed ids: undefined undefined
+          function  ids: undefined undefined
+            param source ids: undefined undefined
+            try  ids: undefined undefined
+              var parsed ids: undefined undefined
+                _ esprima.parse ids: undefined undefined
+                  @ source ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ attachComment true ids: undefined undefined
+                    @ loc true ids: undefined undefined
+                    @ sourceType 'module' ids: undefined undefined
+              return parsed ids: undefined undefined
+            catch ex ids: undefined undefined
+              throw  ids: undefined undefined
+                new errors.WizziJsSynthaxError(ex, source) ids: undefined undefined
+        @ run ids: undefined undefined
+          function  ids: undefined undefined
+            param source ids: undefined undefined
+            param ctx ids: undefined undefined
+            param options ids: undefined undefined
+            param callback ids: undefined undefined
+            set options = (options || defaultOptions) ids: undefined undefined
+            var parsed = this.getParsed(source) ids: undefined undefined
+            if options.dumpfile ids: undefined undefined
+              _ file.write ids: undefined undefined
+                @ options.dumpfile ids: undefined undefined
+                _ JSON.stringify(parsed, null, 2) ids: undefined undefined
+            var result = runner(parsed, ctx) ids: undefined undefined
+            if callback ids: undefined undefined
+              if result && result.__is_error ids: undefined undefined
+                set delete (result.__is_error) ids: undefined undefined
+                _ callback(result) ids: undefined undefined
+              else  ids: undefined undefined
+                _ callback(null, result) ids: undefined undefined
+            else  ids: undefined undefined
+              return result ids: undefined undefined

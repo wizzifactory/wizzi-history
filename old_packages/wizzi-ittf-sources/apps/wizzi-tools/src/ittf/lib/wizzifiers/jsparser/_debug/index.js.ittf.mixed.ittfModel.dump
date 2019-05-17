@@ -1,0 +1,28 @@
+  module  ids: 1 29
+    kind jsfile ids: 2 30
+    import util ids: 3 31
+    import path ids: 4 32
+    import esprima ids: 5 33
+    var file = require('wizzi').file ids: 6 34
+    function go ids: 7 35
+      param name ids: 8 36
+      var src ids: 9 37
+        _ path.join ids: 10 38
+          @ __dirname ids: 11 39
+          @ 'data' ids: 12 40
+          @ name + '.js' ids: 13 41
+      var out_esprima ids: 14 42
+        _ path.join ids: 15 43
+          @ __dirname ids: 16 44
+          @ 'data' ids: 17 45
+          @ name + '.esprima.json' ids: 18 46
+      var parsed ids: 19 47
+        _ esprima.parse ids: 20 48
+          _ file.read ids: 21 49
+            @ src ids: 22 50
+      _ file.write ids: 23 51
+        @ out_esprima ids: 24 52
+        _ JSON.stringify ids: 25 53
+          @ parsed ids: 26 54
+          @ null ids: 27 55
+          @ 4 ids: 28 56

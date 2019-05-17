@@ -1,0 +1,85 @@
+﻿$group
+	$params name, syncfunc, arg2|@@null, arg3|@@null, arg4|@@null
+	
+	m ${name}
+		param path_string
+		$if arg2 != null
+			param ${arg2}
+		$if arg3 != null
+			param ${arg3}
+		$if arg4 != null
+			param ${arg4}
+		param callback
+		+
+		$if arg4 != null
+			if typeof(callback) === 'undefined' && verify.isFunction(${arg4})
+				set callback = ${arg4}
+				set ${arg4} = null
+		$elif arg3 != null
+			if typeof(callback) === 'undefined' && verify.isFunction(${arg3})
+				set callback = ${arg3}
+				set ${arg3} = null
+		$elif arg2 != null
+			if typeof(callback) === 'undefined' && verify.isFunction(${arg2})
+				set callback = ${arg2}
+				set ${arg2} = null
+		
+		$hook
+		
+		if verify.isFunction(callback)
+			return
+				_ this.${name}Async
+					@ path_string
+					$if arg2 != null
+						@ ${arg2}
+					$if arg3 != null
+						@ ${arg3}
+					$if arg4 != null
+						@ ${arg4}
+					@ callback
+		else
+			return
+				_ this.${name}Sync
+					@ path_string
+					$if arg2 != null
+						@ ${arg2}
+					$if arg3 != null
+						@ ${arg3}
+					$if arg4 != null
+						@ ${arg4}
+
+	m ${name}Async
+		param path_string
+		$if arg2 != null
+			param ${arg2}
+		$if arg3 != null
+			param ${arg3}
+		$if arg4 != null
+			param ${arg4}
+		param callback
+		
+		$hook async
+	
+	m ${name}Sync
+		param path_string
+		$if arg2 != null
+			param ${arg2}
+		$if arg3 != null
+			param ${arg3}
+		$if arg4 != null
+			param ${arg4}
+
+		if verify.isFunction(this.fsimpl.${syncfunc}) === false
+			throw 
+				new errors.FileError
+					@ 'The filesystem implementation does not support method \'${syncfunc}\'. Unable to execute \'${name}\' method for path: \'' + path_string + '\''
+
+		var shouldThrow = true
+		$if arg2 === 'options' || arg3 === 'options' || arg4 === 'options'
+			if verify.isObject(options)
+				set shouldThrow
+					iif ('throws' in options)
+						then options.throws
+						else shouldThrow
+
+		$hook sync

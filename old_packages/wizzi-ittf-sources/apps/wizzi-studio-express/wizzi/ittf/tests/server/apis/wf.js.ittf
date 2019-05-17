@@ -1,0 +1,82 @@
+﻿module 
+    kind jsfile
+	+
+	import path
+	import util
+	import del
+	+
+	var expect = require('expect.js')
+
+	var resultsUri
+		_ path.join
+			@ __dirname
+			@ 'results'
+
+	var simpleJsUri
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+			@ 'js'
+			@ 'simple.js.ittf'
+
+	var api = {}
+	
+	_ require
+		@ '../../../server/apis/wf'
+		(
+			@ null
+			{
+				@ storeKind 'filesystem'
+				@ plugins
+					[
+						@ 'wizzi-js'
+				@ user 'stefi'
+				@ role 'admin'
+			@ api
+			f_cb_test( api )
+
+				var wfApi = api.wf
+				log 'wfApi', wfApi
+
+				describe studio api
+
+					log 'studio creation'
+					var sessionData = {}
+					var modelContext = {}
+					var artifactsContext = {}
+
+					describe creation
+
+						before-async
+
+							_ del
+								[
+									@ resultsUri
+							_ done()
+
+						it-async should load a js wizzi model
+
+							_ wfApi.loadModel
+								@ sessionData
+								@ simpleJsUri
+								@ modelContext
+								f_cb_test( wizziModel )
+									tobe_object( wizziModel )
+									_ done()
+
+						it-async should generate a js/module
+
+							_ wfApi.loadModelAndGenerateArtifact
+								@ sessionData
+								@ simpleJsUri
+								@ modelContext
+								@ 'js/module'
+								@ artifactsContext
+								f_cb_test( result )
+									log 'should generate a js/module. result', result
+									tobe_object( result )
+									tobe_object( result.status )
+									tobe_true( result.status.__is_success )
+									_ expect(result.data).to.be.a('string')
+									_ done()
+

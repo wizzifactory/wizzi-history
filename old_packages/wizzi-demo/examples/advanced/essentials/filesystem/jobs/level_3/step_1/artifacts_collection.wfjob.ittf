@@ -1,0 +1,35 @@
+wfjob model_types
+
+	$
+		var ittf_datalayer_folder = path.join(__dirname, 'ittf', 'datalayer');
+		var ittf_models_folder    = path.join(__dirname, 'ittf', 'models');
+		var dest_folder           = path.join(__dirname, 'outputs');
+
+	models-base-folder ${ittf_models_folder}
+
+	model dbschema
+		src dbschema.json.ittf
+		schema json
+
+	line one
+		cwd-folder ${ittf_datalayer_folder}
+
+		# Generates a javascript artifact for each item in the
+		# `tables` collection of the json model `schema.json.ittf`
+		
+		artifact javascript table artifacts for dbschema tables
+			src table.js.ittf
+			schema js
+			generator js/module
+			dest-path {table}Datalayer.js.ittf
+			extension js
+			model-ref dbschema
+				model-coll tables
+					item-name table
+					path-template-value
+						attribute name
+						token table
+	
+	production
+		dest-folder ${dest_folder}
+		line-ref one

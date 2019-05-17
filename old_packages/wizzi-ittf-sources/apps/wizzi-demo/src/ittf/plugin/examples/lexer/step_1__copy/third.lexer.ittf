@@ -1,0 +1,76 @@
+﻿lexer second
+lexer second
+
+	e spaces
+		+
+			[
+				blank
+				: \t
+				: \r
+				: \n
+				: \f
+
+	e integer
+		&
+			? 
+				|
+					: +
+					: -
+			+
+				[ 0-9
+
+	e float
+		&
+			? 
+				|
+					: +
+					: -
+			|
+				&
+					*
+						[ 0-9
+					: .
+					+
+						[ 0-9
+
+	e num
+		// float must be declared before of integer
+		|
+			ref float
+			ref integer
+
+	e angle-unit
+		|
+			: deg
+			: grad
+			: rad
+			: turn
+
+	tk Whitespace
+		skipped
+		line-breaks
+		pattern
+			ref spaces
+  
+	tk Angle
+		pattern
+			&
+				ref num
+				ref angle-unit
+
+	tk Float
+		// float token must be declared before of integer
+		pattern
+			ref float
+
+	tk Integer
+		pattern
+			ref integer
+
+	tk ;
+
+	// test ;
+	// test 10
+	// test 10.5
+	// test 15rad
+	test 1  .5 ; 3.5rad

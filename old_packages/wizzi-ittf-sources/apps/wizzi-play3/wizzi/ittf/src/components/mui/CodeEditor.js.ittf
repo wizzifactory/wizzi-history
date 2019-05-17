@@ -1,0 +1,78 @@
+﻿r-component( CodeEditor
+
+	$append imports
+		import MonacoEditor from 'react-monaco-editor'
+		import CodeHighLight from './CodeHighLight'
+
+	prop value
+		string
+		required
+
+	prop theme
+		string
+		default 'vs-dark'
+
+	prop language
+		string
+		default 'javascript'
+
+	prop width
+		number
+		default 800
+
+	prop height
+		number
+		default 600
+
+	prop browse
+		boolean
+		default false
+
+	prop options
+		{
+		default {}
+
+	prop onChange
+		func
+
+	style
+
+	=> handleChange
+		param newValue, e
+		log 'newValue', newValue
+		prop onChange
+		if onChange
+			_ onChange(newValue)
+
+	render
+
+		prop value
+		prop theme
+		prop language
+		prop width
+		prop height
+		prop browse
+		
+		if browse
+			const chLanguage = language === 'javascript' ? 'js' : language
+			return
+				div
+					@ style
+						{ 
+							@ width width + 'px'
+							@ height height + 'px'
+					< CodeHighLight
+						@ codeSnippet {value}
+						@ language {chLanguage}
+		else
+			return
+				< MonacoEditor
+					@ value {value}
+					@ width {width}
+					@ height {height}
+					@ theme {theme}
+					@ language {language}
+					@ options
+						{
+							@ selectOnLineNumbers true
+					@ onChange {this.handleChange}

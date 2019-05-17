@@ -1,0 +1,44 @@
+  module  ids: 1 45
+    kind jsfile ids: 2 46
+    set module.exports ids: 3 47
+      {  ids: 4 48
+        @ isEmpty ids: 5 49
+          function  ids: 6 50
+            param text ids: 7 51
+            return typeof text === 'string' && text.trim().length === 0 ids: 8 52
+        @ isNotEmpty ids: 9 53
+          function  ids: 10 54
+            param text ids: 11 55
+            return typeof text === 'string' && text.trim().length > 0 ids: 12 56
+        @ isObject ids: 13 57
+          function  ids: 14 58
+            param obj ids: 15 59
+            var type = typeof obj ids: 16 60
+            return type === 'function' || type === 'object' && !!obj ids: 17 61
+        @ isArray ids: 18 62
+          function  ids: 19 63
+            param obj ids: 20 64
+            if Array.isArray ids: 21 65
+              return Array.isArray(obj) ids: 22 66
+            else  ids: 23 67
+              return toString.call(obj) === '[object Array]' ids: 24 68
+        @ isString ids: 25 69
+          function  ids: 26 70
+            param obj ids: 27 71
+            return toString.call(obj) === '[object String]' ids: 28 72
+        @ isNumber ids: 29 73
+          function  ids: 30 74
+            param obj ids: 31 75
+            return toString.call(obj) === '[object Number]' ids: 32 76
+        @ isDate ids: 33 77
+          function  ids: 34 78
+            param obj ids: 35 79
+            return toString.call(obj) === '[object Date]' ids: 36 80
+        @ isFunction ids: 37 81
+          function  ids: 38 82
+            param obj ids: 39 83
+            return toString.call(obj) === '[object Function]' ids: 40 84
+        @ isUndefined ids: 41 85
+          function  ids: 42 86
+            param obj ids: 43 87
+            return obj === void 0 ids: 44 88

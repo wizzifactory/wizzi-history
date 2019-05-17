@@ -1,0 +1,100 @@
+﻿common/example/plugin('css examples')
+
+	$append imports
+		var cssfactory = require('../../lib/wizzi/models/css-factory.g')
+		var cssgenerator = require('../../lib/artifacts/css/document/gen/main')
+	
+	+
+	var loadModel
+		_ cssfactory.createLoadModel
+			_ getWizziObject
+	+
+	var ittfPath
+		_ path.join
+			@ __dirname
+			@ 'ittf'
+	foreach item in getFiles(ittfPath,'css')
+		set item = item.substring(0, item.length - '.css.ittf'.length)
+		log 'item', item
+		_ execute(item)
+	+
+	function execute_old
+		param name
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.css.ittf'
+		var cssOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.css'
+		log 'examples/css start loadModel', ittfSource
+		_ loadModel
+			@ ittfSource
+			{
+				@ __productionManager
+					_ mocks.getProductionManager
+			f_cb_test( wizziModel )
+				log 'css wizziModel', wizziModel
+				var ctx
+					_ mocks.getGenContext
+				_ cssgenerator.gen
+					@ wizziModel
+					@ ctx
+					f_cb_test( ctxout )
+						log 'ctxout begin ========', '\n' + ctxout.getContent(), '\nctxout end ============'
+						_ file.write
+							@ cssOutput
+							@ ctxout.getContent()
+
+
+	function execute
+		param name
+		
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.css.ittf'
+		var cssOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + '.g.css'
+
+		if wizzi == null
+			set wizzi = require('wizzi')
+		
+		log 'examples/css start loadModel', ittfSource
+
+		_ wizzi.fsnoaclFactory
+			{
+				@ plugins
+					{
+						@ items
+							[
+								@ 'wizzi-html'
+
+			f_cb_throw( wf )
+				_ wf.loadModel
+					@ 'css'
+					@ ittfSource
+					{
+					f_cb_throw( wizziModel )
+						log 'examples/css result wizziModel.rules', wizziModel.rules
+						var ctx
+							_ mocks.getGenContext
+								@ wf
+						_ cssgenerator.gen
+							@ wizziModel
+							@ ctx
+							f_cb_test( ctxout )
+								log 'ctxout begin ========', '\n' + ctxout.getContent(), '\nctxout end ============'
+								_ file.write
+									@ cssOutput
+									@ ctxout.getContent()
+
+
+

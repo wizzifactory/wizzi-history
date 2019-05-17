@@ -1,0 +1,14 @@
+﻿$group
+	$params varName, method|@@null, type|Parameter
+	var resolved_${varName} = verify.resolveToString(${varName})
+	# log 'resolved_${varName}', resolved_${varName}
+	if resolved_${varName} == null
+		return
+			_ error
+				@ 101
+				@ '${method}'
+				@ "${type} '${varName}' must be a not empty string. Received: " + util.inspect(${varName}, { depth: null })
+	else
+		set ${varName} = resolved_${varName}
+
+		

@@ -1,0 +1,43 @@
+﻿module 
+    kind jsfile
+    
+	var config
+        { 
+            @ content
+                [ 
+                    { 
+                        @ type 'row'
+                        @ content
+                            [ 
+                                { 
+                                    @ type 'component'
+                                    @ componentName 'testComponent'
+                                    @ componentState
+                                        { 
+                                            @ label 'A'
+                                { 
+                                    @ type 'column'
+                                    @ content
+                                        [ 
+                                            { 
+                                                @ type 'component'
+                                                @ componentName 'testComponent'
+                                                @ componentState
+                                                    { 
+                                                        @ label 'B'
+                                            { 
+                                                @ type 'component'
+                                                @ componentName 'testComponent'
+                                                @ componentState
+                                                    { 
+                                                        @ label 'C'
+    var myLayout
+        new GoldenLayout(config)
+    _ myLayout.registerComponent
+        @ 'testComponent'
+        function 
+            param container
+            param componentState
+            _ container.getElement()
+                ._ html('<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg/687px-Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg" width="687" height="1024" />')
+    _ myLayout.init()

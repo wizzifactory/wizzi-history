@@ -1,0 +1,133 @@
+﻿base_test( wizziFactory )
+
+	$append imports
+		var wizziFactory = require('../../lib/services/wizziFactory')
+		var mocks = require('../mocks/misc')
+    +
+	var wizziFactoryInstance = null
+	var testsMock1Model = null
+	+
+	before-async
+		_ wizziFactory.createFactory
+			{
+				@ repo
+					{
+						@ storeKind 'filesystem'
+				@ plugins
+					{
+						@ items
+							[
+								@ '../mocks/plugin'
+						@ pluginsBaseFolder __dirname
+				@ test
+					{
+						@ testOnlyMockBaseDir __dirname
+			f_cb_test( wf )
+				log 'wf.__loadMTree', wf.__loadMTree
+				set wizziFactoryInstance = wf
+				_ done
+	+
+	it-async should load a wizzi model
+		var pman = wizziFactoryInstance.createProductionManager()
+		_ wizziFactoryInstance.loadModel
+			@ 'tests'
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.tests.ittf'
+			{
+				@ __productionManager pman
+			f_cb_test( wizziModel )
+				log 'wizziModel', wizziModel
+				set testsMock1Model = wizziModel
+				tobe_object( wizziModel )
+				tobe_string( wizziModel.wzName, mock1 )
+				_ done
+	+
+	it should retrieve the loadModel function for a 'tests' wizzi model
+		var loadModel
+			_ wizziFactoryInstance.getLoadModel
+				@ 'tests'
+		tobe_function( loadModel )
+
+	it should retrieve a model transformer
+		var transformModel
+			_ wizziFactoryInstance.getModelTransformer
+				@ 'tests/trans1'
+		log 'should retrieve a model transformer. transformModel', transformModel
+		tobe_function( transformModel.trans )
+
+	it-async should transform a model from a pre loaded wizzimodel 
+		_ wizziFactoryInstance.transformModel
+			@ testsMock1Model
+			@ 'tests/trans1'
+			{
+				@ from 'stefi'
+			f_cb_test( transformedModel )
+				tobe_object( transformedModel )
+				tobe_string( transformedModel.testsName, mock1 )
+				tobe_string( transformedModel.contextFrom, stefi )
+				_ done
+
+	it should retrieve an artifact generator
+		var artifactGenerator
+			_ wizziFactoryInstance.getArtifactGenerator
+				@ 'tests/gen1'
+		tobe_function( artifactGenerator.gen )
+
+	it-async should generate an artifact from a pre loaded wizzimodel 
+		_ wizziFactoryInstance.generateArtifact
+			@ testsMock1Model
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.tests.ittf'
+			@ 'tests/gen1'
+			{
+				@ from 'stefi'
+			f_cb_test( artifact )
+				tobe_string( artifact, Hello I am mock1 artifact from stefi\n )
+				_ done
+
+	it-async should load a wizzi model and generate an artifact
+		_ wizziFactoryInstance.loadModelAndGenerateArtifact
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'mock1.tests.ittf'
+			{
+				@ modelContext {}
+				@ artifactContext
+					{
+						@ from 'stefi'
+			@ 'tests/gen1'
+			f_cb_test( artifact )
+				tobe_string( artifact, Hello I am mock1 artifact from stefi\n )
+				_ done
+
+	it should retrieve the 'tests' schema definition
+		var schemaDefinition
+			_ wizziFactoryInstance.getSchemaDefinition
+				@ 'tests'
+		tobe_object( schemaDefinition )
+		tobe_string( schemaDefinition.name, tests )
+
+	it-async should load an mTree
+		log 'wizziFactoryInstance.__loadMTree', wizziFactoryInstance.__loadMTree
+		_ wizziFactoryInstance.loadMTree
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'html'
+				@ 'simple.html.ittf'
+			{
+				@ from 'stefi'
+			f_cb( mTree )
+				log 'mTree', mTree
+				tobe_object( mTree )
+				tobe_string( mTree.nodes[0].n, html )
+				tobe_string( mTree.nodes[0].children[0].n, head )
+				tobe_string( mTree.nodes[0].children[0].children[0].n, title )
+				tobe_string( mTree.nodes[0].children[0].children[0].v, from stefi )
+				_ done
+							

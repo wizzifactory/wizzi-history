@@ -1,0 +1,20 @@
+﻿artifact( json, dump )
+
+	# DEPRECATED USE json/export
+	log 'json/dump is deprecated, use json/export instead'
+
+	$append imports
+		var stringify = require('json-stringify-safe')
+
+    $append main
+		var json
+		if model.toJson
+			set json
+				_ model.toJson()
+		else
+			return
+				_ callback
+					_ error
+						@ 'The model has no toJson method'
+		_ ctx.w
+			_ stringify(json, null, 4)

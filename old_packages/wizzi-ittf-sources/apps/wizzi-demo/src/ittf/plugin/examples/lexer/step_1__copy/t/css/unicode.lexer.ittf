@@ -1,0 +1,27 @@
+﻿$group
+	$params kind
+
+	$if kind === 'main'
+		whitespace( sub )
+
+	e h
+		[ 0-9a-f
+
+	e nonascii
+		[ \u0240-\uffff
+
+	e unicode
+		&
+			: \
+			{ 1,6
+				ref h
+
+	$if kind === 'main'
+		tk Unicode
+			pattern
+				ref unicode
+
+		test \123 \a \abc345
+			+ \23 // hello single line comment
+			+ \789 /* hello ml 
+			+ remark */ \087

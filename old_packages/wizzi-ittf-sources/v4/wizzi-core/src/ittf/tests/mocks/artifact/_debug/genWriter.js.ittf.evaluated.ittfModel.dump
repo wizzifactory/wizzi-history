@@ -1,0 +1,116 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var StringWriter = require('../util/stringwriter') ids: undefined undefined
+    var verify = require('../util/verify') ids: undefined undefined
+    var block = require('./block') ids: undefined undefined
+    var interpolate = require('../util/interpolate') ids: undefined undefined
+    var errors = require('../errors') ids: undefined undefined
+    class GenWriter ids: undefined undefined
+      ctor  ids: undefined undefined
+        param genconfig ids: undefined undefined
+        if !verify.isObject(genconfig) ids: undefined undefined
+          throw  ids: undefined undefined
+            new Error('GenWriter: genconfig argument must be an Object') ids: undefined undefined
+        if !verify.isObject(genconfig.options) ids: undefined undefined
+          throw  ids: undefined undefined
+            new Error('GenWriter: genconfig.options argument must be an Object') ids: undefined undefined
+        set this.genconfig = genconfig ids: undefined undefined
+        set this.model = genconfig.model ids: undefined undefined
+        set this.srcPath = genconfig.srcPath ids: undefined undefined
+        set this.pman = genconfig.pman ids: undefined undefined
+        set this.block = new block(this.genconfig.options) ids: undefined undefined
+        set this.values = this.genconfig.options.data || {} ids: undefined undefined
+      m forceIndent ids: undefined undefined
+        param value ids: undefined undefined
+        return this.block.forceIndent(value) ids: undefined undefined
+      m indent ids: undefined undefined
+        param value ids: undefined undefined
+        _ this.block.indent(value) ids: undefined undefined
+      m deindent ids: undefined undefined
+        param value ids: undefined undefined
+        _ this.block.deindent(value) ids: undefined undefined
+      m a ids: undefined undefined
+        param name ids: undefined undefined
+        param value ids: undefined undefined
+        set this.values[name] = value ids: undefined undefined
+      m g ids: undefined undefined
+        param name ids: undefined undefined
+        return this.values[name] ids: undefined undefined
+      m r ids: undefined undefined
+        param name ids: undefined undefined
+        if this.values[name] ids: undefined undefined
+          set delete (this.values[name]) ids: undefined undefined
+      m w ids: undefined undefined
+        param text ids: undefined undefined
+        if verify.isString(text) ids: undefined undefined
+          _ this.block.w ids: undefined undefined
+            iif text.indexOf('{') > - (1) ids: undefined undefined
+              then  ids: undefined undefined
+                _ interpolate ids: undefined undefined
+                  @ text ids: undefined undefined
+                  @ this.values ids: undefined undefined
+              else text ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.block.w('') ids: undefined undefined
+      m write ids: undefined undefined
+        param text ids: undefined undefined
+        if !verify.isString(text) ids: undefined undefined
+          return  ids: undefined undefined
+        _ this.block.write ids: undefined undefined
+          _ interpolate ids: undefined undefined
+            @ text ids: undefined undefined
+            @ this.values ids: undefined undefined
+      m writeFile ids: undefined undefined
+        param filePath ids: undefined undefined
+        _ this.block.writeFile ids: undefined undefined
+          _ interpolate ids: undefined undefined
+            @ filePath ids: undefined undefined
+            @ this.values ids: undefined undefined
+      m toStream ids: undefined undefined
+        param stream ids: undefined undefined
+        _ this.block.toStream(stream) ids: undefined undefined
+      m getContent ids: undefined undefined
+        var sw = new StringWriter() ids: undefined undefined
+        _ this.block.toStream(sw) ids: undefined undefined
+        return sw.toString() ids: undefined undefined
+      m getContentInLine ids: undefined undefined
+        return  ids: undefined undefined
+          _ verify.replaceAll ids: undefined undefined
+            _ this.getContent() ids: undefined undefined
+            @ '\n' ids: undefined undefined
+            @ '__1_2_3__' ids: undefined undefined
+      m error ids: undefined undefined
+        param message ids: undefined undefined
+        param node ids: undefined undefined
+        return  ids: undefined undefined
+          new errors.NodeError(message, node) ids: undefined undefined
+      m artifactGenerationError ids: undefined undefined
+        param message ids: undefined undefined
+        param location ids: undefined undefined
+        param node ids: undefined undefined
+        _ errors.ArtifactGenerationError(message, location, node) ids: undefined undefined
+      m terminate ids: undefined undefined
+        set delete this.pman ids: undefined undefined
+        set delete this.genconfig.pman ids: undefined undefined
+        _ this.block.terminate() ids: undefined undefined
+      m hydrate ids: undefined undefined
+        param block ids: undefined undefined
+        param options ids: undefined undefined
+        set this.block = new block(options) ids: undefined undefined
+        _ this.block.hydrate ids: undefined undefined
+          @ block.lines ids: undefined undefined
+          @ options ids: undefined undefined
+      m toStringFromJSON ids: undefined undefined
+        param block ids: undefined undefined
+        param options ids: undefined undefined
+        if !block || !block.lines ids: undefined undefined
+          return 'NO TEXT' ids: undefined undefined
+        var gw ids: undefined undefined
+          new GenWriter ids: undefined undefined
+            {  ids: undefined undefined
+              @ options options ids: undefined undefined
+        _ gw.block.hydrate ids: undefined undefined
+          @ block.lines ids: undefined undefined
+          @ options ids: undefined undefined
+        return gw.getContent() ids: undefined undefined
+    set module.exports = GenWriter ids: undefined undefined

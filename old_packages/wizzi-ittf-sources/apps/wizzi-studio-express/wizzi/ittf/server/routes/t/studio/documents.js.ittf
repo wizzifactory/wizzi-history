@@ -1,0 +1,81 @@
+﻿$group
+
+	get( /api/studio/documents )
+		
+		check-params( )
+			not-empty( query , project )
+		
+		_ studioApi.getDocuments
+			{
+				@ userId req.user.id
+				@ projectName project
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/studio/document )
+		
+		check-params( )
+			not-empty( query , uri )
+		
+		_ studioApi.getDocument
+			@ uri
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/studio/document )
+		
+		check-params( )
+			optional( body, uri )
+			if uri != null
+				log 'POST /api/studio/document req.body', req.body
+				not-empty( body, newcontent )
+				_ studioApi.updateDocument
+					@ uri
+					@ newcontent
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+
+			else
+				optional( body , kind )
+				optional( body , project )
+				optional( body , folder )
+				not-empty( body , name )
+				not-empty( body , schema )
+				_ studioApi.createDocument
+					{
+						@ kind kind
+						@ documentName name
+						@ schemaName schema
+						@ folder folder
+						@ projectName project
+						@ userId req.user.id
+					f_cb_rest( result )
+						_ sendSuccess
+							@ res
+							@ result.status
+							@ result.data
+
+	delete( /api/studio/document )
+		
+		check-params( )
+			not-empty( query , uri )
+		
+		_ studioApi.deleteDocument
+			@ uri
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+
+

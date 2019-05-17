@@ -1,0 +1,153 @@
+﻿module
+    kind jsfile
+
+	var uriparser = require('./uriparser')
+
+	var repoFS = null
+
+	function verifyFS
+		param callback
+		
+		if repoFS == null
+			set repoFS = require('wizzi-mongodb').Filesystem
+		if repoFS && repoFS.isMounted
+			return
+				_ callback(null)
+		else
+			_ callback
+				@ 'Module lib/ittf/fs/repo. MongoDB wizzi repo database not mounted. Review your wizzi instance starter.'
+
+	var md = module.exports = {}
+
+	set md.exists
+		function
+			param parsed_path_string
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.exists
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ callback
+
+	set md.isFile
+		function
+			param parsed_path_string
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.isFile
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ callback
+
+	set md.isDirectory
+		function
+			param parsed_path_string
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.isFolder
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ callback
+		
+	set md.mkdir
+		function
+			param parsed_path_string
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.mkdir
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ callback
+
+	set md.read
+		function
+			param parsed_path_string
+			param options
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.readFile
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ callback
+
+	set md.getGlobbedFiles
+		function
+			param parsed_path_string
+			param options
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.glob
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ callback
+
+	set md.write
+		function
+			param parsed_path_string
+			param content
+			param options
+			param callback
+		
+			_ verifyFS
+				f_cb( notUsed )
+					_ repoFS.writeFile
+						@ parsed_path_string.userId
+						@ parsed_path_string.projectId
+						@ parsed_path_string.path
+						@ content
+						@ callback
+
+	set md.copy
+        function 
+			param parsed_source_path_string
+			param dest_path_string
+			param callback
+
+			_ uriparser
+				@ String(dest_path_string)
+				f_cb( parsed_dest_path_string )
+					if parsed_dest_path_string.storeKind !== 'repo'
+						return
+							_ callback
+								_ error
+									@ 'Destination uri must have schema = "repo", instead it is : ' + dest_path_string
+									@ "copy"
+					elif parsed_dest_path_string.userId !== parsed_source_path_string.userId
+						return
+							_ callback
+								_ error
+									@ 'Copy of documents between different users is not implemented : ' + parsed_source_path_string.userId + '/' + parsed_dest_path_string.userId
+									@ "copy"
+
+					_ repoFS.copyFile
+						@ parsed_source_path_string.userId
+						@ parsed_source_path_string.projectId
+						@ parsed_source_path_string.path
+						@ parsed_dest_path_string.projectId
+						@ parsed_dest_path_string.path
+						f_cb( notUsed )
+							return
+								_ callback
+									@ null
+									@ true
+
+
+

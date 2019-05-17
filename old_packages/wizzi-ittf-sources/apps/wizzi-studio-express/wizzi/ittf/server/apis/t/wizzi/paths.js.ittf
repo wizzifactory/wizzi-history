@@ -1,0 +1,37 @@
+﻿$group
+
+	function makePaths
+		param config
+		
+		return
+			{
+				$include paths/ids
+				$include paths/files
+				
+				@ normalize
+					function
+						param filepath
+						return verify.replaceAll(filepath, '\\', '/')
+				
+				@ kernelUriFromPath
+					function
+						param filepath
+						param excludeIttfExtension
+						set filepath = this.normalize(filepath).toLowerCase()
+						if excludeIttfExtension && verify.endsWith(filepath, '.ittf')
+							set filepath = filepath.substr(0, filepath.length - 5)
+						return
+							_ filepath.substr
+								@ config.wizziKernelBasePath.length
+				
+				@ kernelPathFromUri
+					function
+						param uri
+						return
+							_ path.join
+								@ config.wizziKernelBasePath
+								@ uri
+				
+				$include paths/kernel
+				$include paths/plugins
+				$include paths/ide

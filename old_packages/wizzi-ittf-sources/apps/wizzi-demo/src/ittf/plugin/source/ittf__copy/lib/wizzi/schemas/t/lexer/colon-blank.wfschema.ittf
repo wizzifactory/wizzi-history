@@ -1,0 +1,70 @@
+﻿$group
+
+	e_tag( colon, :, node )
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return false
+		m getFName
+			return null
+
+		m toCode
+			param coder
+			_ coder.w('// : ' + escapeText(this.wzName))
+			var name = unescapeText(this.wzName)
+			var ic = this.getIgnoreCase()
+			var icstring = ic ? '.toLowerCase()' : ''
+			_ coder.write('if (')
+			for var i=0; i<name.length; i++
+				if i > 0
+					_ coder.write(' && ')
+					_ coder.write('input.charAt(pos + ' + i + ')' + icstring + ' === \'' + escapeText(name[i]) + '\'' + icstring + '')
+				else
+					_ coder.write('input.charAt(pos)' + icstring + ' === \'' + escapeText(name[i]) + '\'' + icstring + '')
+			var toeat = name.length > 1 ? name.length : '1'
+			if coder.ctx.onsuccess === 'return'
+				_ coder.w(') { return eat(' + toeat + ', capture); }')
+			else
+				_ coder.write(') { eat(' + toeat + ', capture);')
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.w(' }')
+				_ coder.w('else { return spit(k, false, \': ' + escapeText(this.wzName) + '\'); }')
+			elif coder.ctx.onfail === 'reset-return-true'
+				_ coder.w(' }')
+				_ coder.w('else { return spit(k, true, \': ' + escapeText(this.wzName) + '\'); }')
+			elif coder.ctx.onsuccess === 'return'
+				# done already
+			else
+				_ coder.w(' }')
+				_ coder.w('else { ' + coder.ctx.okname + ' = false; }')
+	
+	e_tag( blank, blank, node )
+
+		m wzVerify
+			if verify.isEmpty(this.wzName) === false
+				_ ctx.addError('The blank element must have an empty wzName.', this)
+
+		m getCanFailMatch
+			return false
+		m getIsFunction
+			return false
+		m getFName
+			return null
+
+		m toCode
+			param coder
+
+			_ coder.write('if (input.charAt(pos) === \' \')')
+			_ coder.write(' { eat(1, capture);')
+			if coder.ctx.onfail === 'reset-return'
+				_ coder.w(' }')
+				_ coder.w('else { return spit(k, false, \'blank\'); }')
+			elif coder.ctx.onfail === 'reset-return-true'
+				_ coder.w(' }')
+				_ coder.w('else { return spit(k, true, \'blank\'); }')
+			elif coder.ctx.onsuccess === 'return'
+				_ coder.w(' return true; }')
+			else
+				_ coder.w(' }')
+				_ coder.w('else { ' + coder.ctx.okname + ' = false; }')

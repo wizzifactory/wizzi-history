@@ -1,0 +1,102 @@
+﻿module 
+    kind jsfile
+
+    import util
+	import path
+	var 
+        decl MongoClient
+            _ require('mongodb')
+                . MongoClient
+		decl FsDb = require('./fs/fsdb')
+		decl Document = require('./fs/document')
+		decl glob = require('./glob/glob')
+	+
+    var
+		decl isMounted = false
+		decl dburi = null
+		decl mounted_db = null
+		decl fsBaseFolderPath = null
+		decl fsdb = null
+		decl fsDoc = null
+
+	$include filesystem/fsstat
+
+	var md
+        set module.exports =
+            { 
+
+	set md.isMounted
+		function
+			return isMounted
+
+	set md.mount
+		function
+			param mongoDbUri
+			param baseFolderPath
+			param callback
+			_ MongoClient.connect
+				@ mongoDbUri
+				f_cb( db )
+					set mounted_db = db
+					set dburi = mongoDbUri
+					set fsBaseFolderPath = baseFolderPath
+					set fsdb = new FsDb(db)
+					set fsDoc = new Document(fsdb)
+					set isMounted = true
+					# log 'wizzi-repo.mongodb.filesystem mounted. Uri: ' + mongoDbUri
+					return 
+						_ callback(null)
+
+	set md.unmount
+		function
+			param callback
+			_ mounted_db.close()
+			set isMounted = false
+			set fsdb = null
+			set fsDoc = null
+			_ callback(null)
+
+	set md.exists
+		function
+			param userId
+			param projectId
+			param path_string
+			param callback
+			if isMounted == false
+				return 
+					_ callback
+						{
+							@ __is_error true
+							@ message 'Mongodb wizzi repository not mounted. Review your start procedure'
+			var fsPath
+				_ normalize
+					_ path.join
+						@ fsBaseFolderPath
+						@ userId
+						@ projectId
+						@ path_string
+				
+			log 'wizzi-repo.mongodb.filesystem.exists.fsPath', fsPath
+
+			_ fsDoc.exists
+				@ fsPath
+				f_cb( exists )
+					log 'wizzi-repo.mongodb.filesystem.exists.fsPath', fsPath, 'exists', exists
+					return 
+						_ callback(null, exists)
+
+	$include filesystem/isFile
+	$include filesystem/isFolder
+	$include filesystem/readFile
+	$include filesystem/writeFile
+	$include filesystem/mkdir
+	$include filesystem/readdir
+	$include filesystem/stat
+	$include filesystem/glob
+	$include filesystem/copyFile
+
+	function normalize
+		param path
+		return path.trim().replace(/\\/g,'/').toLowerCase()
+
+	

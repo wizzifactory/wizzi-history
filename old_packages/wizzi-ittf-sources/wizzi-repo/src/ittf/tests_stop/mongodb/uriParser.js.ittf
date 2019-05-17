@@ -1,0 +1,26 @@
+﻿base_test( mongodb.uriParser )
+	+
+	$append imports
+		var uriParser = require('../../lib/mongodb/uriParser')
+
+	it should parse a valid uri
+		var parsed
+			_ uriParser
+				@ 'db://stefi/wf/utils/hello.js.ittf'
+				@ 'c://wf/users'
+		log 'parsed', parsed
+		tobe_string( parsed.userId, stefi )
+		tobe_string( parsed.projectId, wf )
+		tobe_string( parsed.schema, js )
+		tobe_true( parsed.isIttfDocument )
+		tobe_string( parsed.path, utils/hello.js.ittf )
+
+	it should throw parsing an invalid uri
+		var parsed
+			_ uriParser
+				@ '/stefi/wf/utils/hello.js.ittf'
+				@ 'c://wf/users'
+		log 'parsed', parsed
+		tobe_true( parsed.__is_error )
+		tobe_string( parsed.name,  InvalidArgument )
+

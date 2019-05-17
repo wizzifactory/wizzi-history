@@ -1,0 +1,21 @@
+﻿$group
+
+	@ getSchemas
+		function
+			param options
+			param callback
+
+			_ this.getCommons
+				@ options
+				f_cb_api( commons )
+					return
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ schemas commons.data.schemas
+								@ status
+									_ success
+										@ 'Schema list fetched'
+

@@ -1,0 +1,22 @@
+﻿r-simple( Navigation )
+
+	$append imports
+		import Link from "next/link"
+
+	=>
+		param { items, title }
+		return
+			nav
+				h2 {title}
+				ul
+					{
+						_ items.map
+							=>
+								param item
+								return
+									li
+										@ key {item.content.id}
+										< Link
+											@ href {"/activity?id=" + item.content.id}
+											@ as {"activity/" + item.content.id}
+											a {item.content.name}

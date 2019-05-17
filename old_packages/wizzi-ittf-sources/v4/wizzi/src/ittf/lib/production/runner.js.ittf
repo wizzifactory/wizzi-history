@@ -1,0 +1,284 @@
+﻿module 
+    kind jsfile
+    var assert = require('assert')
+    var path = require('path')
+    var util = require('util')
+	var verify = require('wizzi-utils').verify
+    var log
+        _ require('../util/log')
+            ( 
+                @ module
+    var GenContext = require('../artifact/GenContext')
+    var AsyncModelLoader = require('../model/asyncModelLoader')
+    var AsyncArtifactGenerator = require('../artifact/asyncArtifactGenerator').AsyncArtifactGenerator
+    var AsyncWfJobRunner = require('./asyncWfJobRunner')
+	var AsyncWizziModelTypesRunner = require('./asyncWizziModelTypesRunner')
+    +
+	#
+		# Async artifact generation runner.
+		# A runner instance runs a single artifactInfo.
+		# Input: an ArtifactInfo (constructor injected).
+		# Output: the ArtifactInfo enriched with (one or many) genContext(s),
+		#   ready to be persisted (callback ok result).
+		# A Runner can run 
+		#   a WfJob
+		#   a WfSchema (a wizzi model types generation)
+		# 	a ModelArtifact
+		#	a ModelCollectionArtifact
+		#	a CodeWriteArtifact
+		#	a FinalArtifact
+	+
+	function logme
+        if false
+            _ console.log.apply(console, arguments)
+    
+	+
+	wz-class Runner
+        ctor
+            param artifactInfo
+            set this.artifactInfo = artifactInfo
+            _ log.setLevel((artifactInfo.options.verbose || 0))
+    
+		m run
+            param callback
+            
+			if this.artifactInfo.modelInfo
+				_ this._runOnModelInfo
+                    @ this.artifactInfo.modelInfo
+                    @ callback
+            
+			else 
+            
+			    _ this._runOnContextInfos
+                    @ this.artifactInfo.contextInfos
+                    @ callback
+    
+		m _runOnContextInfos
+            param contextInfos
+            param callback
+            
+            if this.artifactInfo.isCodeWriteArtifact()
+                _ this.runCodeWriteArtifact
+                    @ this.artifactInfo.modelInfo
+                    @ this.artifactInfo.gen
+					@ callback
+            else
+				r_cb_error( 999, _runOnContextInfos
+					@ 'Artifact is in an invalid state: ' + util.inspect(this.artifactInfo, {depth: 2})
+    
+		m _runOnModelInfo
+            param modelInfo
+            param callback
+            
+            var gen = this.artifactInfo.gen
+            
+			if this.artifactInfo.isWizziModelTypesArtifact()
+                _ this.runWizziModelTypesArtifact
+                    @ modelInfo
+					@ callback
+            
+			elif this.artifactInfo.isWizziFactoryJob()
+                _ this.runWizziFactoryJob
+                    @ modelInfo
+					@ callback
+
+			elif this.artifactInfo.isWizziModelArtifact()
+                _ this.runWizziModelArtifact
+                    @ modelInfo
+                    @ gen
+                    @ callback
+            
+			elif this.artifactInfo.isModelCollectionArtifact()
+                _ this.runModelCollectionArtifact
+                    @ modelInfo
+                    @ gen
+                    @ callback
+            
+			elif this.artifactInfo.isFinalArtifact()
+                _ this.runFinalArtifact
+                    @ modelInfo
+                    @ callback
+            else 
+				r_cb_error( 999, _runOnModelInfo
+					@ 'Artifact is in an invalid state: ' + util.inspect(this.artifactInfo, {depth: 2})
+    
+		m runWizziModelTypesArtifact
+            param modelInfo
+            param callback
+            
+			_ log.warn('runWizziModelTypesArtifact ' + this.artifactInfo.name)
+			var outputPackageFolder = this.artifactInfo.getDestinationUri()
+			# log 'wizzi.production.runner.runWizziModelTypesArtifact.outputPackageFolder', outputPackageFolder
+            
+			_ modelInfo.getModelInfos
+				{
+					@ final false
+				f_cb( modelInfos )
+					
+					if modelInfos.length != 1
+						r_cb_error( 999, runWizziModelTypesArtifact )
+							@ 'Expected exactly one wizzi.model.modelInfo. Received: ' + modelInfos.length
+					
+					var wfschemaIttfDocumentUri = modelInfos[0].srcFullPath()
+					
+					var basenameParts = path.basename(wfschemaIttfDocumentUri).split('.')
+					if basenameParts.length != 3
+						r_cb_error( 999, runWizziModelTypesArtifact )
+							@ "The name of the source 'wfschema' ittf document must be in the format '<schema-name>.wfschema.ittf'. Received: " + path.basename(wfschemaIttfDocumentUri)
+					var schemaName = basenameParts[0]
+					
+					var wmtRequest
+						{
+							@ modelInfo modelInfos[0]
+							@ schemaName schemaName
+							@ wfschemaIttfDocumentUri wfschemaIttfDocumentUri
+							@ outputPackageFolder outputPackageFolder
+					_ AsyncWizziModelTypesRunner.run(wmtRequest, callback)
+
+		m runWizziFactoryJob
+            param modelInfo
+            param callback
+            
+			_ log.warn('runWizziFactoryJob ' + this.artifactInfo.name)
+            
+			_ modelInfo.getModelInfos
+				{
+					@ final false
+				f_cb( modelInfos )
+					_ AsyncWfJobRunner.run_many(modelInfos, callback)
+    
+		m runWizziModelArtifact
+            param modelInfo
+            param gen
+            param callback
+
+			var that = this
+            
+			_ modelInfo.getModelInfos
+				{
+					@ final false
+				f_cb( modelInfos )
+					
+					# log '+ wizzi.production.runner.runWizziModelArtifact, modelInfos, gen', modelInfos, gen
+					_ modelInfo.getArtifactGenerator
+						@ gen.generator
+						f_cb( generator )
+							# log '+ wizzi.production.runner.runWizziModelArtifact, generator', generator
+							_ AsyncModelLoader.loadMany
+								@ modelInfos
+								f_cb( contextModels )
+									# log '+ wizzi.production.runner.runWizziModelArtifact, contextModels', contextModels
+									_ AsyncArtifactGenerator.generate
+										@ that.artifactInfo
+										@ generator
+										@ modelInfos
+										@ contextModels
+										f_cb( notUsed )
+											_ callback(null, that.artifactInfo)
+    
+		m runModelCollectionArtifact
+            param modelInfo
+            param gen
+            param callback
+            
+			var that = this
+			_ modelInfo.getModelInfos
+				{
+					@ final false
+				f_cb( modelInfos )
+					foreach mi in modelInfos
+						_ logme
+							@ "runModelCollectionArtifact.modelInfo to load"
+							@ mi.id
+						
+					_ modelInfo.getArtifactGenerator
+						@ gen.generator
+						f_cb( generator )
+							_ AsyncModelLoader.loadMany
+								@ modelInfos
+								f_cb( contextModelsCollection )
+									_ logme
+										@ 'runModelCollectionArtifact got contextModelsCollection'
+										@ contextModelsCollection.length
+									_ AsyncArtifactGenerator.generateModelCollection
+										@ that.artifactInfo
+										@ generator
+										@ modelInfos
+										@ contextModelsCollection
+										f_cb( notUsed )
+											_ callback(null, that.artifactInfo)
+    
+		m runCodeWriteArtifact
+            param contextInfos
+            param gen
+            param callback
+            
+			var that = this
+			_ modelInfo.getArtifactGenerator
+				@ gen.generator
+				f_cb( generator )
+					
+					_ AsyncModelLoader.loadMany
+						@ contextInfos
+						f_cb( contextModels )
+							_ AsyncArtifactGenerator.generateCodeWrite
+								@ that.artifactInfo
+								@ generator
+								@ contextModels
+								f_cb( notUsed )
+									_ callback(null, that.artifactInfo)
+    
+		# TODO execute copy without loading content in genContext
+		m runFinalArtifact
+            param modelInfo
+            param callback
+            
+			var that = this
+			_ modelInfo.isDirectory
+				f_cb( isDirectory )
+					if isDirectory
+						_ modelInfo.getFiles
+							{ 
+								@ final true
+							f_cb( files )
+								foreach fileInfo in files
+									var genContext
+										new GenContext
+											{ 
+												@ model null
+												@ srcPath fileInfo.relpath
+												@ srcFullPath fileInfo.fullpath
+												@ options that.artifactInfo.options
+												@ pman modelInfo.productionManager()
+									_ genContext.writeFile
+										@ fileInfo.fullpath
+									_ that.artifactInfo.addGenContext(genContext)
+
+								return
+									_ callback
+										@ null
+										@ that.artifactInfo
+            
+					else 
+                
+						var genContext
+							new GenContext
+								{ 
+									@ model null
+									@ srcPath modelInfo.src()
+									@ srcFullPath modelInfo.srcFullPath()
+									@ options that.artifactInfo.options
+									@ pman modelInfo.productionManager()
+                
+						_ modelInfo.getSource
+							f_cb( content )
+				
+								_ genContext.write(content)
+								_ that.artifactInfo.addGenContext(genContext)
+						
+								return
+									_ callback
+										@ null
+										@ that.artifactInfo
+
+	f_error( wizzi.production.runner )

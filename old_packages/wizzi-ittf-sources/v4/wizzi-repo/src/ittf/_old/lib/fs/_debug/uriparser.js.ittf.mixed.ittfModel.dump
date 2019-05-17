@@ -1,0 +1,90 @@
+  module  ids: 1 67
+    kind jsfile ids: 2 68
+    import url ids: 3 69
+    var errors = require('../../errors') ids: 4 70
+    set module.exports ids: 5 71
+      function  ids: 6 72
+        param uri ids: 7 73
+        param callback ids: 8 74
+        set uri = uri.toLowerCase() ids: 9 75
+        var ret = {} ids: 10 76
+        var parsedUri = url.parse(uri) ids: 11 77
+        if typeof(parsedUri.protocol) !== 'string' ids: 12 78
+          $group  ids: 133 141
+            $args: InvalidRequest  $params: errorName
+            var error ids: 135 142
+              new errors.${errorName}Error ids: 136 143
+                @ "ittf.uriparser. uri must have a protocol (must be an absolute url) : " + uri ids: 14 80
+                @ "UriError" ids: 15 81
+            return  ids: 138 145
+              _ callback ids: 139 146
+                @ error ids: 140 147
+        var protocol ids: 16 82
+          iif parsedUri.protocol.substr(-1, 1) === ':' ids: 17 83
+            then  ids: 18 84
+              _ parsedUri.protocol.substr(0, (parsedUri.protocol.length - 1)) ids: 19 85
+            else  ids: 20 86
+              set parsedUri.protocol ids: 21 87
+        # log 'parseuri.parsedUri', parsedUri ids: 22 88
+        var name, parts = parsedUri.pathname.split('/') ids: 23 89
+        if parsedUri.pathname.length > 0 && parsedUri.pathname[0] == '/' ids: 24 90
+          _ parts.shift() ids: 25 91
+        if protocol.length === 1 ids: 26 92
+          if parts.length < 3 ids: 27 93
+            $group  ids: 133 148
+              $args: InvalidRequest  $params: errorName
+              var error ids: 135 149
+                new errors.${errorName}Error ids: 136 150
+                  @ 'Invalid uri for an IttfDocument. Too short: ' + uri ids: 29 95
+                  @ 'UriError' ids: 30 96
+              return  ids: 138 152
+                _ callback ids: 139 153
+                  @ error ids: 140 154
+          set ret.storeKind = 'filesystem' ids: 31 97
+          set ret.userId = parts[0] ids: 32 98
+          set ret.projectId = parts[1] ids: 33 99
+          set ret.uri = uri ids: 34 100
+          _ parts.shift() ids: 35 101
+          _ parts.shift() ids: 36 102
+          set ret.path = parts.join('/') ids: 37 103
+          set name = parts[parts.length-1] ids: 38 104
+        elif protocol === 'repo' ids: 39 105
+          if parts.length < 2 ids: 40 106
+            $group  ids: 133 155
+              $args: InvalidRequest  $params: errorName
+              var error ids: 135 156
+                new errors.${errorName}Error ids: 136 157
+                  @ 'Invalid uri for an IttfDocument. Too short: ' + uri ids: 42 108
+                  @ 'UriError' ids: 43 109
+              return  ids: 138 159
+                _ callback ids: 139 160
+                  @ error ids: 140 161
+          log 'parsedUri.parts', parts ids: 44 110
+          log 'parsedUri', parsedUri ids: 45 111
+          set ret.storeKind = 'repo' ids: 46 112
+          set ret.userId = parsedUri.host ids: 47 113
+          set ret.projectId = parts[0] ids: 48 114
+          set ret.uri = uri ids: 49 115
+          _ parts.shift(); ids: 50 116
+          set ret.path = parts.join('/') ids: 51 117
+          set name = parts[parts.length-1] ids: 52 118
+        else  ids: 53 119
+          $group  ids: 133 162
+            $args: InvalidRequest  $params: errorName
+            var error ids: 135 163
+              new errors.${errorName}Error ids: 136 164
+                @ 'Invalid uri protocol for an IttfDocument. Must be a drive letter or "repo": uri=' + uri ids: 55 121
+                @ 'UriError' ids: 56 122
+            return  ids: 138 166
+              _ callback ids: 139 167
+                @ error ids: 140 168
+        var nameparts = name.split('.') ids: 57 123
+        if nameparts.length > 2 && nameparts[nameparts.length -1] === 'ittf' ids: 58 124
+          set ret.isIttfDocument = true ids: 59 125
+          set ret.schema = nameparts[nameparts.length -2] ids: 60 126
+        else  ids: 61 127
+          set ret.isIttfDocument = false ids: 62 128
+        return  ids: 63 129
+          _ callback ids: 64 130
+            @ null ids: 65 131
+            @ ret ids: 66 132

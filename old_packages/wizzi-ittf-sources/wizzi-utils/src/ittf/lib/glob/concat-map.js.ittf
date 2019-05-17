@@ -1,0 +1,32 @@
+﻿module 
+    kind jsfile
+
+	# FROM
+	# Copyright
+	# source: https://github.com/substack/node-concat-map/blob/master/index.js
+	# license (MIT) 
+
+    set module.exports =
+        function 
+            param xs
+            param fn
+            
+			var res
+                [ 
+            for var i = 0; i < xs.length; i++
+                var x
+                    _ fn
+                        @ xs[i]
+                        @ i
+                if isArray(x)
+                    _ res.push.apply(res, x)
+                else 
+                    _ res.push(x)
+            return res
+    
+	var isArray
+        || 
+            set Array.isArray
+            function 
+                param xs
+                return Object.prototype.toString.call(xs) === '[object Array]'

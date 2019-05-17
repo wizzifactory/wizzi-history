@@ -1,0 +1,230 @@
+﻿$group
+
+	it should get files in a basefolder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+
+		var files
+			_ file.getFiles
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'globs'
+				{ 
+					@ deep false
+					@ extension null
+					@ documentContent false
+		log 'should get files in a basefolder - files', files
+		tobe_array( files, 2 )
+
+	it should get files with content in a basefolder
+		
+		var files
+			_ file.getFiles
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'globs'
+				{ 
+					@ deep false
+					@ extension null
+					@ documentContent true
+ 		
+		tobe_array( files, 2 )
+		tobe_string( files[0].content, globbed 1 )
+		tobe_string( files[0].relPath, globbed_1.ittf )
+		tobe_string( files[1].content, globbed 2 )
+		tobe_string( files[1].relPath, globbed_2.ittf )
+
+	it should get folders in a basefolder
+
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs'
+				@ 'one'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'two'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+
+		var folders
+			_ file.getFolders
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'globs'
+				{ 
+					@ deep false
+					@ tFoldersOnly false
+					@ documentNames false
+					@ documentContents false
+		log 'folders', folders
+
+		tobe_array( folders, 2 )
+
+	it should get folders in a basefolder deep
+
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs'
+				@ 'one'
+				@ 'deep'
+				@ 'globbed_1deep.ittf'
+			@ 'globbed 1 deep'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'two'
+				@ 'deep'
+				@ 'globbed_2deep.ittf'
+			@ 'globbed 2 deep'
+
+		var folders
+			_ file.getFolders
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'globs'
+				{ 
+					@ deep true
+					@ tFoldersOnly false
+					@ documentNames false
+		log 'folders', folders
+		tobe_array( folders, 4 )
+		tobe_string( folders[0].relPath, one )
+		tobe_string( folders[1].relPath, one/deep )
+		tobe_string( folders[2].relPath, two )
+		tobe_string( folders[3].relPath, two/deep )
+
+	it should get folders in a basefolder deep with document names
+
+		_ file.write
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ 'globs'
+				@ 'one'
+				@ 'deep'
+				@ 'globbed_1deep.ittf'
+			@ 'globbed 1 deep'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs'
+				@ 'two'
+				@ 'deep'
+				@ 'globbed_2deep.ittf'
+			@ 'globbed 2 deep'
+
+		var folders
+			_ file.getFolders
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'globs'
+				{ 
+					@ deep true
+					@ tFoldersOnly false
+					@ documentNames true
+					@ documentContents false
+		log 'folders', folders
+
+		tobe_array( folders, 4 )
+		tobe_array( folders[0].documents, 1 )
+		tobe_array( folders[1].documents, 1 )
+		tobe_array( folders[2].documents, 1 )
+		tobe_array( folders[3].documents, 1 )
+
+	it should get folders in a basefolder deep with document names
+
+		var folders
+			_ file.getFolders
+				_ path.join
+					@ __dirname 
+					@ 'ittf'
+					@ 'globs'
+				{ 
+					@ deep true
+					@ tFoldersOnly false
+					@ documentNames true
+		log 'folders', folders
+
+		tobe_array( folders, 4 )
+		tobe_string( folders[0].documents[0].relPath, globbed_1.ittf )
+		tobe_string( folders[1].documents[0].relPath, globbed_1deep.ittf )
+		tobe_string( folders[2].documents[0].relPath, globbed_2.ittf )
+		tobe_string( folders[3].documents[0].relPath, globbed_2deep.ittf )
+
+	it should sync glob a folder
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'globbed_1.ittf'
+			@ 'globbed 1'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'globbed_2.ittf'
+			@ 'globbed 2'
+		_ file.write
+			_ path.join
+				@ __dirname 
+				@ 'ittf'
+				@ 'globs2'
+				@ 'one'
+				@ 'globbed_2_one.ittf'
+			@ 'globbed 2 one'
+
+		var result
+			_ file.getGlobbedFilesEx
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'globs2'
+					@ '**/*.ittf'
+				@ file
+		tobe_array(result, 3)
+
+		var result
+			_ file.getGlobbedFilesEx
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'globs2'
+					@ '**/*.ittf'
+				{
+					@ removeRoot
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+		tobe_array(result, 3)
+		tobe_string(result[0], /globs2/globbed_1.ittf)

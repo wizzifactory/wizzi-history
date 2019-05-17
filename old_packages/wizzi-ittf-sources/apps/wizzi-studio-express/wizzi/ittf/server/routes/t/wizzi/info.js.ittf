@@ -1,0 +1,19 @@
+﻿$group
+
+	get( /api/wizzi/kernel/info )
+		
+		check-params( )
+			optional( query , packageName )
+			optional( query , version )
+
+		_ wizziApi.getKernelInfo
+			{
+				@ userId req.user.id
+				@ packageName packageName
+				@ version version
+
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

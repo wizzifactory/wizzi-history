@@ -1,0 +1,59 @@
+﻿$group
+	$params step, schema, model
+
+	# Create a filesystem factory without access control,
+	# requiring the core wizzi plugins and other plugins used by generators.
+	_ wizzi.fsnoaclFactory
+		{
+			@ plugins
+				{
+					@ items
+						[
+							@ 'wizzi-core'
+							@ 'wizzi-meta'
+							@ 'wizzi-js'
+							@ 'wizzi-html'
+							@ './local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+
+		f_cb_throw( wf )
+
+			# Now we can generate the wizzi schema model types.
+			# They will be written in the folder passed as second parameter.
+			_ wf.generateModelTypes
+				_ path.join
+					@ __dirname
+					@ 'step_${step}'
+					@ '${schema}.wfschema.ittf'
+				_ path.join
+					@ __dirname
+					@ 'local'
+				@ '${schema}'
+				{
+				f_cb_throw( result )
+					# And print the generation result
+					_ wf.loadModel
+						_ path.join
+							@ __dirname
+							@ 'step_${step}'
+							@ '${model}.${schema}.ittf'
+						{
+						f_cb_throw( wizziModel )
+							if wizziModel.toJson
+								_ printValue
+									@ 'wizziModel.toJson()'
+									_ stringify
+										_ wizziModel.toJson
+										@ null
+										@ 4
+									@ 'dashes'
+							else
+								_ printValue
+									@ 'wizziModel'
+									_ stringify
+										@ wizziModel
+										@ null
+										@ 4
+									@ 'dashes'

@@ -1,0 +1,264 @@
+﻿parser second
+
+	$include css/lexer
+
+	sym stylesheet
+		// [ CHARSET_SYM STRING ';' ]?
+		//   [S|CDO|CDC]* [ import [ CDO S* | CDC S* ]* ]*
+		//   [ [ ruleset | media | page ] [ CDO S* | CDC S* ]* ]*
+		?
+			ref charsetHeader
+		*
+			ref cdcCdo
+		* 
+			ref import
+			*
+				ref cdcCdo
+		*
+			|
+				ref ruleset
+				ref media
+				ref page
+			*
+				ref cdcCdo
+
+	sym charsetHeader
+		// CHARSET_SYM STRING ';'
+		tk CharsetSym
+		tk StringLiteral
+		tk ;
+
+	e cdcCdo
+		// factor out repeating pattern for cdc/cdo
+		// [S|CDO|CDC]
+		|
+			tk <!--
+			tk -->
+   
+	sym import
+		// IMPORT_SYM S*
+		// [STRING|URI] S* media_list? ';' S*
+		tk @import
+		|
+			tk StringLiteral
+			tk Uri
+		?
+			ref media_list
+		tk ;
+
+	sym media
+		// MEDIA_SYM S* media_list '{' S* ruleset* '}' S*
+		tk @media
+		ref media_list
+		tk {
+		*
+			ref ruleset
+		tk }
+
+	e media_list
+		// medium [ COMMA S* medium]*
+		ref medium
+			*
+				tk ,
+				ref medium
+    
+    sym medium
+		// IDENT S*
+		tk Ident
+
+    
+	sym page
+		// PAGE_SYM S* pseudo_page?
+		// '{' S* declaration? [ ';' S* declaration? ]* '}' S*
+		tk PageSym
+		?
+			ref pseudo_page
+		ref declarationsGroup
+    
+	e declarationsGroup
+		// '{' S* declaration? [ ';' S* declaration? ]* '}' S*
+		// factored out repeating grammar pattern
+		tk {
+		?
+			ref declaration
+		*
+			tk ;
+			ref declaration
+		tk }
+
+	sym pseudo_page
+		// ':' IDENT S*
+		tk :
+		tk Ident
+
+	sym operator
+		// '/' S* | ',' S*
+		|
+			tk /
+			tk ,
+
+	sym combinator
+		// '+' S* | '>' S*
+		|
+			tk +
+			tk >
+
+	e unary_operator
+		// '-' | '+'
+		|
+			tk -
+			tk +
+
+    e property
+		// IDENT S*
+		tk Ident
+
+	sym ruleset
+	    // selector [ ',' S* selector ]*
+		//   '{' S* declaration? [ ';' S* declaration? ]* '}' S*
+		ref selector
+		*
+			tk ,
+			ref selector
+		ref declarationsGroup
+    
+	sym selector
+		// simple_selector [ combinator selector | S+ [ combinator? selector ]? ]?
+		ref simple_selector 
+		? 
+			ref combinator
+			ref selector
+			?
+				?
+					ref combinator
+				ref selector
+
+	e simple_selector
+		// element_name [ HASH | class | attrib | pseudo ]*
+		// | [ HASH | class | attrib | pseudo ]+
+
+		|
+			&
+				ref element_name
+				*
+					ref simple_selector_suffix
+			+
+				ref simple_selector_suffix
+    
+	e simple_selector_suffix
+		// helper grammar rule to avoid repetition
+		// [ HASH | class | attrib | pseudo ]+
+		|
+			tk Hash
+			ref class
+			ref attrib
+			ref pseudo
+
+    // '.' IDENT
+    
+	sym class
+		tk .
+		tk Ident
+
+	sym element_name
+		|
+			tk Ident
+			tk *
+
+	sym attrib
+		// '[' S* IDENT S* [ [ '=' | INCLUDES | DASHMATCH ] S* [ IDENT | STRING ] S* ]? ']'
+		tk [
+		tk Ident
+		?
+			|
+				tk =
+				tk ~=
+				tk |=
+			|
+				tk Ident $$ CONSUME2 ???
+				tk StringLiteral
+		tk ]
+
+    sym pseudo
+		// ':' [ IDENT | FUNCTION S* [IDENT S*]? ')' ]
+		tk :
+		|
+			tk Ident
+			ref pseudoFunction
+
+    sym pseudoFunction
+		// FUNCTION S* [IDENT S*]? ')'
+		tk Function
+		?
+			tk Ident
+		tk )
+	
+	sym declaration
+		// property ':' S* expr prio?
+		ref property
+		tk :
+		ref expression
+		?
+			ref prio
+
+    sym prio
+		// IMPORTANT_SYM S*
+		tk ImportantSym
+    
+    e expression
+		// term [ operator? term ]*
+		ref term
+		*
+			ref operator
+			ref term
+
+	e term
+		// unary_operator?
+		// [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
+		// TIME S* | FREQ S* ]
+		// | STRING S* | IDENT S* | URI S* | hexcolor | function
+		?
+			ref unary_operator
+		|
+			ref Num
+			ref Percentage
+			ref Length
+			ref Angle
+			ref Time
+			ref Freq
+			ref StringLiteral
+			tk Ident
+			ref Uri
+			ref HexColor
+			ref cssFunction
+
+	sym CssFunction
+		tk Ident
+		tk (
+		ref expression
+		tk )
+
+	sym PropertyValue
+		|
+			tk Angle
+			tk Frequency
+			tk Length
+			tk Resolution
+			tk Time
+			tk Ident
+
+	sym PropertyDef
+		tk Ident
+		tk :
+		ref PropertyValue
+		tk ;
+	
+	sym RuleDef
+		start
+		tk Ident
+		tk {
+		*
+			ref PropertyDef
+		tk }
+	
+	test body { background: red; padding: 10px; radius: 5rad; }

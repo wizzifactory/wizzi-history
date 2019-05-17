@@ -1,0 +1,52 @@
+﻿module
+    kind jsfile
+
+	var Acl = require('./acl')
+	var Statistics = require('./statistics')
+	
+	var config = null
+
+    class AclStat
+		ctor
+			param userId
+			param subscriptionType
+			param aclConfig
+			param statisticsConfig
+			set this.userId = userId
+			set this.subscriptionType = subscriptionType
+			set this.aclConfig = aclConfig
+			set this.statisticsConfig = statisticsConfig
+			_ this._init()
+		
+		m _init
+			if config == null
+				set config = require('../../index').config
+			# log 'wizzi.acl.AclStat._init.config', config
+			# log 'wizzi.acl.AclStat._init.aclConfig', this.aclConfig
+			# log 'wizzi.acl.AclStat._init.statisticsConfig', this.statisticsConfig
+			set this.acl = new Acl(this.aclConfig, config)
+			set this.statistics = new Statistics(this.statisticsConfig, config)
+		
+		m checkAuth
+			param operId
+			param resourceType
+			param resourceName
+			return
+				_ this.acl.checkAuth
+					@ this.userId
+					@ this.subscriptionType
+					@ operId
+					@ resourceType
+					@ resourceName
+		
+		m stat
+			param operId
+			param options
+			return
+				_ this.statistics.stat
+					@ this.userId
+					@ this.subscriptionType
+					@ operId
+					@ options
+
+	set module.exports = AclStat    

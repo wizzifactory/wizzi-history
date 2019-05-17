@@ -1,0 +1,48 @@
+﻿$group
+	$params kind|main
+
+	$if kind === 'main'
+		escape( sub )
+
+	$if kind === 'main' || kind === 'sub'
+		e string1
+			&
+				: "
+				* 
+					|
+						ref escape
+						&
+							: \\
+							ref nl
+						[^
+							: \n
+							: \r
+							: \f
+							: "
+				: "
+
+		e string2
+			&
+				: '
+				*
+					|
+						ref escape
+						&
+							: \\
+							ref nl
+						[^
+							: \n
+							: \r
+							: \f
+							: '
+				: '
+
+	$if kind === 'main' || kind === 'tokens'
+		tk StringLiteral
+			pattern
+				|
+					ref string1
+					ref string2
+
+	$if kind === 'main'
+		test 'b\\ra' '\\''

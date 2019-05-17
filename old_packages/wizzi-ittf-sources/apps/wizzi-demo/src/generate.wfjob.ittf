@@ -1,0 +1,192 @@
+﻿wfjob demo
+
+	$
+		var ittf_meta_folder      = path.join(__dirname, 'ittf', 'meta');
+		var ittf_root_folder      = path.join(__dirname, 'ittf', 'root');
+		var ittf_mtree            = path.join(__dirname, 'ittf', 'mtree');
+		var ittf_repo             = path.join(__dirname, 'ittf', 'repo');
+		var ittf_jswizzi          = path.join(__dirname, 'ittf', 'jswizzi');
+		var ittf_wizzimodel       = path.join(__dirname, 'ittf', 'wizzimodel');
+		var ittf_wizzischema      = path.join(__dirname, 'ittf', 'wizzischema');
+		var ittf_languageschemas  = path.join(__dirname, 'ittf', 'languageschemas');
+		var ittf_wizzijob         = path.join(__dirname, 'ittf', 'wizzijob');
+		var ittf_plugin_source    = path.join(__dirname, 'ittf', 'plugin', 'source');
+		var ittf_plugin_examples  = path.join(__dirname, 'ittf', 'plugin', 'examples');
+		var ittf_apps             = path.join(__dirname, 'ittf', 'apps');
+		var ittf_tests            = path.join(__dirname, 'ittf', 'tests');
+
+		var dest_folder           = path.join(__dirname, '..', 'dist');
+
+	model meta
+		schema json
+		src ${ittf_meta_folder}/index.json.ittf
+
+	$include wfjob/root
+
+	line ittf-mtree
+		cwd-folder ${ittf_mtree}
+		dest-folder ${dest_folder}/mtree
+
+		wfjob/any_js()
+			ignore ${ittf_mtree}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_mtree}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-repo
+		cwd-folder ${ittf_repo}
+		dest-folder ${dest_folder}/repo
+
+		wfjob/any_js()
+			ignore ${ittf_repo}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_repo}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-jswizzi
+		cwd-folder ${ittf_jswizzi}
+		dest-folder ${dest_folder}/jswizzi
+
+		wfjob/any_js()
+			ignore ${ittf_jswizzi}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_jswizzi}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-wizzimodel
+		cwd-folder ${ittf_wizzimodel}
+		dest-folder ${dest_folder}/wizzimodel
+
+		wfjob/any_js()
+			ignore ${ittf_wizzimodel}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_wizzimodel}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-wizzischema
+		cwd-folder ${ittf_wizzischema}
+		dest-folder ${dest_folder}/wizzischema
+
+		wfjob/any_js()
+			ignore ${ittf_wizzischema}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_wizzischema}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-languageschemas
+		cwd-folder ${ittf_languageschemas}
+		dest-folder ${dest_folder}/languageschemas
+
+		wfjob/any_js()
+			ignore ${ittf_languageschemas}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_languageschemas}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-wizzijob
+		cwd-folder ${ittf_wizzijob}
+		dest-folder ${dest_folder}/wizzijob
+
+		wfjob/any_js()
+			ignore ${ittf_wizzijob}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_wizzijob}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-plugin-source
+		cwd-folder ${ittf_plugin_source}
+		dest-folder ${dest_folder}/plugin/source
+
+		wfjob/any_js()
+			ignore ${ittf_plugin_source}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_plugin_source}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-plugin-examples
+		cwd-folder ${ittf_plugin_examples}
+		dest-folder ${dest_folder}/plugin/examples
+
+		wfjob/any_js()
+			ignore ${ittf_plugin_examples}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_plugin_examples}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+		wfjob/any_tests(scss)
+
+	line ittf-apps
+		cwd-folder ${ittf_apps}
+		dest-folder ${dest_folder}/apps
+
+		wfjob/any_js()
+			ignore ${ittf_apps}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_apps}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+	line ittf-tests
+		cwd-folder ${ittf_tests}
+		dest-folder ${dest_folder}/tests
+
+		wfjob/any_js()
+			ignore ${ittf_tests}/**/*__copy/**/*.js.ittf
+
+		artifact any_ittf_inside___copy
+			src ${ittf_tests}/**/*__copy/**/*.ittf
+			extension ittf
+
+		$include wfjob/any_md
+
+		$include wfjob/any_tests_ittf
+
+	production
+		dest-folder ${dest_folder}
+		line-ref ittf-root
+		line-ref ittf-mtree
+		line-ref ittf-repo
+		line-ref ittf-languageschemas
+		$*
+		line-ref ittf-jswizzi
+		line-ref ittf-wizzimodel
+		line-ref ittf-wizzischema
+		line-ref ittf-languageschemas
+		line-ref ittf-wizzijob
+		line-ref ittf-plugin-source
+		line-ref ittf-plugin-examples
+		line-ref ittf-apps
+		line-ref ittf-tests
+		*$
+
+
+	

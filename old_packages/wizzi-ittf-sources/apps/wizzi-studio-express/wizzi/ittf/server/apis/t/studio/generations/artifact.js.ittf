@@ -1,0 +1,31 @@
+﻿$group
+
+	@ generateArtifact
+		function
+			param documentUri
+			param artifactName
+			param callback
+
+			var ittfDocumentPath
+				_ paths.pathFromUri
+					@ documentUri
+
+			var sessionData = {}
+			var modelContext = {}
+			var artifactContext = {}
+		
+			_ globalApi.wf.loadModelAndGenerateArtifact
+				@ sessionData
+				@ ittfDocumentPath
+				@ modelContext
+				@ artifactName
+				@ artifactContext
+				f_cb_api( result )
+					return
+						_ callback
+							@ null
+							{
+								@ data result
+								@ status
+									_ success
+										@ 'Artifact generation ' + artifactName + ' on uri ' + documentUri + ' executed'

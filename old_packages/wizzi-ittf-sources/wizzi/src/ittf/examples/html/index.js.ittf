@@ -1,0 +1,74 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var fs = require('fs')
+	var index = require('../../index')
+	var verify = require('wizzi-utils').verify
+	var file = require('wizzi-utils').file
+
+	var suffix_in = '.html.ittf'
+	var suffix_out = '.g.html'
+
+	_ index.createFactory
+		@ 'stefi'
+		@ 'admin'
+		{
+			@ repo
+				{
+					@ storeKind 'filesystem'
+			@ plugins
+				{
+					@ items
+						[
+							@ 'wizzi-html'
+		f_cb_test( wf )
+			var ittfPath
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+			foreach item in getFiles(ittfPath)
+				set item = item.substring(0, item.length - suffix_in.length)
+				log 'item', item
+				_ execute(item, wf)
+
+	+
+	# _ execute('function')
+	+
+	function execute
+		param name
+		param wf
+		
+		var ittfSource
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + suffix_in
+		
+		var artifactOutput
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ name + suffix_out
+		
+		_ wf.loadModelAndGenerateArtifact
+			@ ittfSource
+			{
+			@ 'html/document'
+			f_cb_test( artifactText )
+				_ file.write
+					@ artifactOutput
+					@ artifactText
+
+	function getFiles
+		param srcpath
+		return
+			_ fs.readdirSync
+				@ srcpath
+				._ filter
+					=>
+						param file
+						return 
+							&&
+								_ fs.lstatSync(path.join(srcpath, file)).isFile()
+								_ verify.endsWith(file, suffix_in)

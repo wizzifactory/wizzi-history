@@ -1,0 +1,88 @@
+﻿demo_module( plugin_examples_basic_mtree )
+
+	#
+		# Commons
+	var wizziFactoryConfig
+		{
+			@ plugins
+				{
+					[ items
+						@ './plugin/local/index'
+					@ pluginsBaseFolder
+						_ path.resolve
+							@ __dirname
+							@ '..'
+							@ '..'
+
+
+	# 
+		# DEMO: how to load an svg ittf document into an mTree.
+	+
+	# Create a filesystem factory without access control
+	_ wizzi.fsnoaclFactory
+		f_cb_throw( wf )
+			# Now we can load the mTree
+			_ wf.loadMTree
+				_ path.join
+					@ __dirname
+					@ 'ittf'
+					@ 'svg'
+					@ 'basic.svg.ittf'
+				{
+				f_cb_throw( mTreeModel )
+					# And print the mTree model object
+					log 'mTreeModel', mTreeModel
+					log 'mTreeModel.dump(true)', mTreeModel.dump(true)
+					log 'mTreeModel.toIttf()', mTreeModel.toIttf()
+					log 'mTreeModel.toText()', mTreeModel.toText()
+					_ svg_model
+
+	function svg_model
+		# Create a filesystem factory without access control
+		# requiring the local plugin.
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				# Now we can load the model
+				_ wf.loadModel
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'svg'
+						@ 'basic.svg.ittf'
+					{
+					f_cb_throw( wizziModel )
+						# And print the wizzi model object
+						log 'wizziModel', wizziModel
+						log 'wizziModel.toJson()', wizziModel.toJson()
+						_ svg_document_artifact
+
+
+	function svg_document_artifact
+		_ wizzi.fsnoaclFactory
+			@ wizziFactoryConfig
+			f_cb_throw( wf )
+				_ wf.loadModelAndGenerateArtifact
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'svg'
+						@ 'basic.svg.ittf'
+					{
+						@ modelContext {}
+						@ artifactContext {}
+					@ 'svg/document'
+					f_cb_throw( artifactText )
+						log 'artifactText', artifactText
+						_ wizzi.file.write
+							_ path.join
+								@ __dirname
+								@ 'output'
+								@ 'basic.svg'
+							@ artifactText
+
+
+
+
+
+

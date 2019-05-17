@@ -1,0 +1,126 @@
+﻿loader(call)
+    
+	stm( call
+        var name = (model.wzName || '').trim()
+        var hasParens = u.hasArguments(name)
+		# log hasParens, ctx.__artifact, ctx.__functionNames
+		if hasParens == false && ctx.__artifact === 'xittf/document'
+			if ctx.__functionNames.indexOf(name) < 0
+				set name = ctx.__functionProvider + '.' + name
+        if model.statements.length > 0
+            _ doCallChildStatements(model, name, hasParens, ctx)
+        else 
+            set name = hasParens ? name : (name + '()')
+            _ ctx.write(name)
+            if u.isTopStatement(model) && u.isDescendentOf(model, 'iif') == false
+                _ ctx.w
+                    _ u.semicolon(name)
+    
+	stm( memberCall
+        var name = (model.wzName || '').trim()
+        var hasParens = u.hasArguments(name)
+        if model.statements.length > 0
+            _ doCallChildStatements(model, ('.' + name), hasParens, ctx)
+        else 
+            set name = hasParens ? ('.' + name) : ('.' + name) + '()'
+            _ ctx.write(name)
+            if u.isTopStatement(model)
+                _ ctx.w
+                    _ u.semicolon(name)
+    
+	stm( decoratorCall
+        var name = ('@' + model.wzName).trim()
+        var hasParens = u.hasArguments(name)
+        if model.statements.length > 0
+            _ doCallChildStatements(model, name, hasParens, ctx)
+        else 
+            set name = hasParens ? name : (name + '()')
+            _ ctx.write(name)
+            if (u.isTopStatement(model) && (u.isDescendentOf(model, 'iif') == false))
+                _ ctx.w
+                    _ u.semicolon(name)
+    
+	stm( callOnValue
+        var hasParens = false
+        if model.statements.length > 0
+            _ doCallChildStatements(model, '', hasParens, ctx)
+        else 
+            _ ctx.write('()')
+    
+	function doCallChildStatements
+        param model
+        param name
+        param hasParens
+        param ctx
+        var childrenAreMemberExpr = hasParens
+        _ ctx.write(name)
+        if childrenAreMemberExpr === false
+            _ ctx.write('(')
+        for var i = 0; i < model.statements.length; i++
+            var item = model.statements[i]
+            if (u.isCallArgument(item) && childrenAreMemberExpr) || u.isMemberAccess(item)
+                if ((hasParens === false) && u.isMemberAccess(item))
+                    _ ctx.write(')')
+                if u.isCallArgument(item)
+                    _ ctx.write('.')
+                _ cnt.genItem(item, ctx)
+                for var j = (i + 1); j < model.statements.length; j++
+                    var item = model.statements[j]
+                    if u.isCallArgument(item)
+                        _ ctx.write('.')
+                    _ cnt.genItem(item, ctx)
+                if u.isTopStatement(model) && 
+					\b u.isDescendentOf(model, 'iif') == false && 
+					\b model.wzElement !== 'decoratorCall' && 
+					\b !u.parentIs(model, 'arrowfunction')
+                    _ ctx.w(';')
+                else 
+                    _ ctx.w()
+                return 
+            if i > 0
+                _ ctx.write(', ')
+            _ cnt.genItem(item, ctx)
+        + ;
+        if childrenAreMemberExpr === false
+            _ ctx.write(')')
+        if u.isTopStatement(model) && 
+			\b model.wzElement !== 'decoratorCall' && 
+			$$ 14/5/2018 (gatsby.node.js) | \b !u.parentIs(model, 'arrowfunction') && 
+			\b u.isDescendentOf(model, 'iif') == false
+            _ ctx.w(';')
+        else 
+            # 2/11/17 _ ctx.w()
+    
+	stm( memberAccess
+        if ctx.__inside_html || (model.wzParent.wzElement === 'xreturn' && ctx.__jskind === 'react')
+            var classTag = ctx.__jskind === 'react' ? 'className' : 'class'
+            _ model.statements.unshift
+                { 
+                    @ wzElement 'jsPropertyOrValue'
+                    @ wzName classTag + ' ' + model.wzName
+                    @ wzParent model
+            set model.wzElement = 'div'
+            set model.wzName = ''
+            _ cnt.stm.div(model, ctx)
+        else 
+            _ ctx.write(('.' + model.wzName))
+    
+	stm( memberAccessComputed
+        if model.statements && model.statements.length > 0
+            _ ctx.write('[')
+            var first = true
+            for var i = 0; i < model.statements.length; i++
+                var item = model.statements[i]
+                if u.isMemberAccess(item)
+                    _ ctx.write(']')
+                    _ cnt.genItem(item, ctx)
+                    if u.isTopStatement(model) && u.isDescendentOf(model, 'iif') == false
+                        _ ctx.w(';')
+                    return 
+                if !first
+                    _ ctx.write(', ')
+                _ cnt.genItem(item, ctx)
+                set ctx.first = false
+            _ ctx.write(']')
+        else 
+            _ ctx.write('[' + model.wzName + ']')

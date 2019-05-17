@@ -1,0 +1,36 @@
+﻿$group
+
+	var oldFolder = "c:/my/starters/darvin/test/rename/old"
+	var newFolder = "c:/my/starters/darvin/test/rename/new"
+	var file_1 = oldFolder + "/f1.txt"
+	var file_2 = oldFolder + "/l1/f2a.txt"
+	var file_3 = oldFolder + "/l1/f2b.txt"
+	var file_4 = oldFolder + "/l1/l2/f3a.txt"
+	var content = "Hello oldFolder "
+
+	describe rename a folder
+
+		before-async
+			_ file.write
+				@ file_1
+				@ content + 'file_1'
+			_ file.write
+				@ file_2
+				@ content + 'file_2'
+			_ file.write
+				@ file_3
+				@ content + 'file_3'
+			_ file.write
+				@ file_4
+				@ content + 'file_4'
+			_ doc.uploadFolder
+				@ oldFolder
+				f_cb_done( r )
+					log 'doc.uploadFolder', r
+
+		it-async should rename a folder
+			_ doc.renameFolder
+				@ oldFolder
+				@ newFolder
+				f_cb_done( r )
+					log 'doc.renameFolder', r

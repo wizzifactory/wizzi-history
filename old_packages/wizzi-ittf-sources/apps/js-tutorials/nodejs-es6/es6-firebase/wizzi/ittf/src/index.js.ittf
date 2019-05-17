@@ -1,0 +1,329 @@
+﻿module
+	kind es6
+
+	import path from 'path'
+	import FbFsClient from './db/fbFsClient'
+	import WizziStore from './db/wizziStore'
+	import wizziUtils from 'wizzi-utils'
+
+	const cli = new FbFsClient()
+
+	# _ cli.tryCollection
+	# _ cli.tryBatch
+
+	_ uploadSnippetsStandard
+		@ 'css'
+		f_cb()
+			_ uploadSnippetsStandard
+				@ 'scss'
+				f_cb()
+					_ uploadSnippetsStandard
+						@ 'graphql'
+						f_cb()
+							_ uploadSnippetsStandard
+								@ 'svg'
+								f_cb()
+
+	#
+		_ uploadSchemaStandard
+			@ 'scss'
+
+	#
+	function uploadSnippetsStandard
+		param schema
+		param callback
+		_ wizziStoreSnippetsUploadBatch
+			@ schema
+			_ path.join
+				@ __dirname
+				@ '..'
+				@ '..'
+				@ '..'
+				@ 'data'
+				@ 'snippets'
+				@ schema
+			_ path.join
+				@ __dirname
+				@ '..'
+				@ '..'
+				@ '..'
+				@ 'data'
+				@ 'snippets'
+				@ schema
+			f_cb_no_err(result)
+				log 'wizziStoreSnippetsUploadBatch', err, result
+				if callback
+					r_cb()
+
+	#
+		_ getSchemas
+			f_cb_no_err( result )
+				log 'getSchemas', err, result
+
+	#
+		_ fragmentsCrud
+			f_cb_no_err( result )
+				log 'fragmentsCrud', err, result
+				_ examplesCrud
+					f_cb_no_err( result )
+						log 'examplesCrud', err, result
+
+	#
+		_ wizziGenerate
+			@ 'html'
+			@ 'index.html.ittf'
+			@ 'html/document'
+			f_cb( artifactText )
+				log 'generated artifactText', artifactText
+
+	#
+	function uploadSchemaStandard
+		param schema
+		param callback
+		_ wizziStoreFragmentsUploadBatch
+			@ schema
+			_ path.join
+				@ __dirname
+				@ 'ittf'
+				@ schema
+				@ 't'
+			f_cb_no_err(result)
+				log 'uploadSchemaStandard.Fragments', err, result
+				_ wizziStoreExamplesUploadBatch
+					@ schema
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ schema
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ schema
+					f_cb_no_err( result )
+						log 'uploadSchemaStandard.examples', err, result
+						if callback
+							r_cb()
+	
+	#
+		_ wizziStoreExamples
+			@ 'ByeBye'
+			f_cb()
+				# _ wizziStoreExamplesUploadBatch
+	
+	#
+		_ cli.retrieveSchemas
+			f_cb_no_err(result)
+				log 'cli.retrieveSchemas.result', result
+
+		_ retrieveExamples
+
+	function getSchemas
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.getSchemas
+			@ callback
+
+	function examplesCrud
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.setExample
+			@ 'css'
+			@ 'main.css.ittf'
+			@ 'css\n\t. box\n\t\tcolor red'
+			f_cb( result )
+				log 'examplesCrud.setExample 1', result
+				_ ws.setExample
+					@ 'css'
+					@ 'styles.css.ittf'
+					@ 'css\n\t. box\n\t\tcolor blue'
+					f_cb( result )
+						log 'examplesCrud.setExample 2', result
+						_ ws.renameExample
+							@ 'css'
+							@ 'main.css.ittf'
+							@ 'mainnew.css.ittf'
+							f_cb( result )
+								log 'examplesCrud.renameExample', result
+								_ ws.deleteExample
+									@ 'css'
+									@ 'styles.css.ittf'
+									f_cb( result2 )
+										log 'examplesCrud.deleteExample', result2
+										r_cb( result2 )
+
+
+	function fragmentsCrud
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.setFragment
+			@ 'css'
+			@ 'grid.css.ittf'
+			@ 'css\n\t. box\n\t\tcolor red'
+			f_cb( result )
+				log 'fragmentsCrud.setFragment 1', result
+				_ ws.setFragment
+					@ 'css'
+					@ 'box.css.ittf'
+					@ 'css\n\t. box\n\t\tcolor blue'
+					f_cb( result )
+						log 'fragmentsCrud.setFragment 2', result
+						_ ws.renameFragment
+							@ 'css'
+							@ 'grid.css.ittf'
+							@ 'gridnew.css.ittf'
+							f_cb( result )
+								log 'fragmentsCrud.renameFragment', result
+								_ ws.deleteFragment
+									@ 'css'
+									@ 'box.css.ittf'
+									f_cb( result2 )
+										log 'fragmentsCrud.deleteFragment', result2
+										r_cb( result2 )
+
+
+	function wizziGenerate
+		param schema
+		param name
+		param artifactName
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.generateExample
+			@ schema
+			@ name
+			@ artifactName
+			@ callback
+
+	function wizziStoreExamples
+		param name
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.getExamples
+			{
+				@ schema 'html'
+			f_cb( examples )
+				log 'wizziStoreExamples.gotExamples',  examples
+				_ ws.setExample
+					@ 'html'
+					@ name + '.html.ittf'
+					@ 'html\n    body\n        h1 Hello ' + name
+					f_cb()
+						_ ws.getExample
+							@ 'html'
+							@ name + '.html.ittf'
+							f_cb( example )
+								log 'wizziStoreExamples.gotExample', example, example.content === 'html\n    body\n        h1 Hello ' + name
+								r_cb()
+
+	function wizziStoreExamplesUploadBatch
+		param schema
+		param folderPath
+		param basePath
+		const ws = WizziStore.createForFilesystem()
+		_ ws.initBatchLoadExamples
+			@ schema
+		_ ws.addBatchLoadExamplesFolder
+			@ folderPath
+			@ basePath
+		_ ws.commitBatchLoadExamples
+			f_cb_no_err( result )
+				log 'wizziStore. commitBatchLoadExamples', err, result
+				_ ws.downloadExamples
+					@ schema
+					_ path.join
+						@ __dirname
+						@ 'downloads'
+						@ 'examples'
+						@ schema
+					f_cb_no_err( result )
+						log 'wizziStore. downloadExamples', err, result
+
+	function wizziStoreFragmentsUploadBatch
+		param schema
+		param folder
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.initBatchLoadFragments
+			@ schema
+		_ ws.addBatchLoadFragmentsFolder
+			@ folder
+			@ folder
+		_ ws.commitBatchLoadFragments
+			f_cb_no_err( result )
+				log 'wizziStore. commitBatchLoadFragments', err, result
+				_ ws.downloadFragments
+					@ schema
+					_ path.join
+						@ __dirname
+						@ 'downloads'
+						@ 'examples'
+						@ schema
+						@ 't'
+					f_cb_no_err( result )
+						log 'wizziStore. downloadFragments', err, result
+						if callback
+							r_cb()
+
+	function wizziStoreSnippetsUploadBatch
+		param schema
+		param folderPath
+		param basePath
+		param callback
+		const ws = WizziStore.createForFilesystem()
+		_ ws.initBatchLoadSnippets
+			@ schema
+		_ ws.addBatchLoadSnippetsFolder
+			@ folderPath
+			@ basePath
+		_ ws.commitBatchLoadSnippets
+			f_cb_no_err( result )
+				log 'wizziStore. commitBatchLoadSnippets', err, result
+				_ ws.downloadSnippets
+					@ schema
+					_ path.join
+						@ __dirname
+						@ 'downloads'
+						@ 'snippets'
+						@ schema
+					f_cb_no_err( result )
+						log 'wizziStore. downloadSnippets', err, result
+						if callback
+							r_cb()
+
+	function retrieveExamples
+		_ cli.retrieveExamples
+			f_cb_no_err(result)
+				log 'cli.retrieveExamples.result', result
+				var n = 1
+				_ result.data.forEach
+					=>
+						param doc
+						log 'doc', n, '-----------------------------------'
+						for var k in doc
+						
+							if wizziUtils.verify.isObject(doc[k])
+								for var k2 in doc[k]
+									if wizziUtils.verify.isObject(doc[k][k2])
+										for var k3 in doc[k][k2]
+											log k+'.'+k2+'.'+k3, ':--->', doc[k][k2][k3]
+									else
+										log k+'.'+k2, ':-->', doc[k][k2]
+							else
+								log k, ':->', doc[k]
+
+						# log 'example doc', doc, 'data:', doc.data()
+						try
+							_ wizziUtils.file.write
+								_ path.join
+									@ __dirname
+									@ 'download'
+									@ 'f'+ n + '.json'
+								_ JSON.stringify
+									_ JSON.parse
+										@ doc.data().fsjson
+									@ null
+									@ 4
+							set n++
+						catch e
+							log 'error', e
+
+

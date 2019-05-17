@@ -1,0 +1,94 @@
+﻿module
+	kind jsfile
+
+	import path
+	var md = module.exports = {}
+	+
+	function getTitle
+		param name
+		if name === 'demo1'
+			return 'Package: wizzi-meta, schema: wfpackage'
+		elif name === 'demo2'
+			return 'Package: wizzi-docs, schema: docs'
+		else
+			return 'Unknown name: ' + name
+	+
+	set md.onConfig
+		function
+			param wizziConfig
+			param callback
+			#
+				# We can set parameters on the wizziConfig object
+			_ wizziConfig.set
+				@ 'modelTitle1'
+				@ 'wizzi-meta example'
+			_ wizziConfig.set
+				@ 'modelTitle2'
+				@ 'wizzi-docs example'
+			_ callback
+				@ null
+
+	set md.onStart
+		function
+			param runnerServer
+			param wizziConfig
+			param callback
+
+			_ runnerServer.registerApi
+				@ 'getTitle'
+				@ getTitle
+
+			_ runnerServer.registerFsNoAclFactory
+				@ 'demo1'
+				{
+					{ plugins
+						[ items
+							@ 'wizzi-meta'
+					{ globalContext
+						@ modelTitle wizziConfig.get('modelTitle1')
+			
+			_ runnerServer.registerFsNoAclFactory
+				@ 'demo2'
+				{
+					{ plugins
+						[ items 
+							@ 'wizzi-docs'
+					{ globalContext
+						@ modelTitle wizziConfig.get('modelTitle2')
+			
+			_ callback(null)
+
+	set md.onPrepare
+		function
+			param factoryName
+			param runnerServer
+			param wizziConfig
+			param callback
+
+			if factoryName === 'demo1'
+				_ runnerServer.loadModel
+					@ 'demo1'
+					@ 'wfpackage'
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'models'
+						@ 'demo1.wfpackage.ittf'
+					{
+					f_cb_throw( wizziModel )
+						return callback(null)
+
+			elif factoryName === 'demo2'
+				_ runnerServer.loadModel
+					@ 'demo2'
+					@ 'docs'
+					_ path.join
+						@ __dirname
+						@ 'ittf'
+						@ 'models'
+						@ 'demo2.docs.ittf'
+					{
+					f_cb_throw( wizziModel )
+						return callback(null)
+			else
+				return callback(null)

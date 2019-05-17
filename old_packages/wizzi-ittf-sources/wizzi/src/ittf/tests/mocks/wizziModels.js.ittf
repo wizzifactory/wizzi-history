@@ -1,0 +1,47 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+	var md = module.exports = {}
+	
+	set md.getModels
+		function
+			param schema
+			param mockBaseDir
+			log 'wizzi.tests.wizziModels.getModels: schema, mockBaseDir', schema, mockBaseDir
+			var ret = {}
+			
+			if schema === 'wfjob'
+				var wfjob_mock1_path
+					_ path.join
+						@ mockBaseDir
+						@ 'ittf'
+						@ 'mock1.wfjob.ittf'
+				set ret[wfjob_mock1_path] = wfjob_mock1()
+				var wfjob_mock2_path
+					_ path.join
+						@ mockBaseDir
+						@ 'ittf'
+						@ 'mock2.wfjob.ittf'
+				set ret[wfjob_mock2_path] = wfjob_mock2()
+			
+			if schema === 'tests'
+				var tests_mock1_path
+					_ path.join
+						@ mockBaseDir
+						@ 'ittf'
+						@ 'mock1.tests.ittf'
+				set ret[tests_mock1_path] = tests_mock1()
+				var tests_mock2_path
+					_ path.join
+						@ mockBaseDir
+						@ 'ittf'
+						@ 'mock2.tests.ittf'
+				set ret[tests_mock2_path] = tests_mock2()
+			
+			return ret
+
+	$include wizziModels/wfjob_mock1
+	$include wizziModels/wfjob_mock2
+	$include wizziModels/tests_mock1
+	$include wizziModels/tests_mock2

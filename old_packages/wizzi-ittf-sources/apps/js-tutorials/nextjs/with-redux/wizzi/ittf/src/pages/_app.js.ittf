@@ -1,0 +1,23 @@
+﻿module
+	kind react
+	import App, {Container} from 'next/app'
+	import React from 'react'
+	import withReduxStore from '../lib/with-redux-store'
+	import { Provider } from 'react-redux'
+
+	react MyApp
+		extends App
+
+		render
+			prop Component
+			prop pageProps
+			prop reduxStore
+
+			return
+				< Container
+					< Provider
+						@ store {reduxStore}
+						< Component
+							@ {...pageProps}
+
+	export default withReduxStore(MyApp)

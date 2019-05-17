@@ -1,0 +1,15 @@
+﻿$group
+
+	m getFolder
+		param folderPath
+		param callback
+
+		set folderPath = normalize(folderPath)
+
+		_ this.fsdb.getItemByPath
+			@ folderPath
+			f_cb( r )
+				if r && r.kind == 1
+					throw Error('MongoFS getFolder error: ' + folderPath + ' is a document path')
+				log 'Document.getFolder.r', r
+				_ callback(null, r)

@@ -1,0 +1,298 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    import assert ids: undefined undefined
+    import util ids: undefined undefined
+    var f_dateutil = require('./functions/dateutil') ids: undefined undefined
+    var f_verify = require('./functions/verify') ids: undefined undefined
+    var f_underscore = require('./functions/underscore') ids: undefined undefined
+    var errors = require('./errors') ids: undefined undefined
+    var WizziJsEvalHelper = require('./wizziJsEvalHelper') ids: undefined undefined
+    var ContextData = require('./contextData') ids: undefined undefined
+    var defaultValues ids: undefined undefined
+      {  ids: undefined undefined
+        @ '__dollardollar' '$$' ids: undefined undefined
+        @ '__dollaraster' '$*' ids: undefined undefined
+        @ '__asterdollar' '*$' ids: undefined undefined
+    var knownCallables ids: undefined undefined
+      {  ids: undefined undefined
+        @ 'console' console ids: undefined undefined
+        @ '_' f_underscore ids: undefined undefined
+        @ 'Object' Object ids: undefined undefined
+        @ 'Math' Math ids: undefined undefined
+        @ 'path' require('path') ids: undefined undefined
+        @ 'dateUtil' f_dateutil ids: undefined undefined
+        @ 'verify' f_verify ids: undefined undefined
+    var ittfStates ids: undefined undefined
+      {  ids: undefined undefined
+        @ nodeContext 0 ids: undefined undefined
+        @ modelEvalContext 1 ids: undefined undefined
+        @ globalContext 2 ids: undefined undefined
+    class WizziJsContext ids: undefined undefined
+      ctor  ids: undefined undefined
+        param composedIttfModel ids: undefined undefined
+        if composedIttfModel ids: undefined undefined
+          # The WizziJsContext is used for the ids: undefined undefined
+          # evaluation of an IttfModel. ids: undefined undefined
+          # Create the WizziJsEvalHelper ids: undefined undefined
+          set this.primaryIttfModel = composedIttfModel ids: undefined undefined
+          set this.loadContext = composedIttfModel.loadContext ids: undefined undefined
+          set this.evalHelper = new WizziJsEvalHelper(this, composedIttfModel) ids: undefined undefined
+        else  ids: undefined undefined
+          # The WizziJsContext is used for interpolations. ids: undefined undefined
+        +  ids: undefined undefined
+        set this.nodeContext = new ContextData(ittfStates.nodeContext) ids: undefined undefined
+        set this.globalContext = new ContextData(ittfStates.globalContext) ids: undefined undefined
+        +  ids: undefined undefined
+        set this.exprPending = null ids: undefined undefined
+        +  ids: undefined undefined
+        # The first getValue will be for the '$' variable ids: undefined undefined
+        set this.ittf_state = ittfStates.globalContext ids: undefined undefined
+        set this.currentIttfModelKey = null ids: undefined undefined
+        set this.modelEvalContext = null ids: undefined undefined
+        +  ids: undefined undefined
+        _ this.globalContext.declare('$', this.evalHelper) ids: undefined undefined
+        _ this.globalContext.$freeze() ids: undefined undefined
+        _ this.globalContext.setValues(defaultValues) ids: undefined undefined
+        _ this.globalContext.setValues(knownCallables) ids: undefined undefined
+        +  ids: undefined undefined
+        set this.runningNodeId = null ids: undefined undefined
+        +  ids: undefined undefined
+      # Called by WizziJsRunner.FunctionDeclarationCall ids: undefined undefined
+      m push ids: undefined undefined
+        var ret ids: undefined undefined
+          new WizziJsContext(this.evalHelper) ids: undefined undefined
+        return ret ids: undefined undefined
+      m pop ids: undefined undefined
+        _ this.clear() ids: undefined undefined
+      m clear ids: undefined undefined
+        _ this.globalContext.clear ids: undefined undefined
+        _ this.nodeContext.clear ids: undefined undefined
+        if this.modelEvalContext ids: undefined undefined
+          _ this.modelEvalContext.clear ids: undefined undefined
+        _ this.globalContext.declare('$', this.evalHelper) ids: undefined undefined
+        _ this.globalContext.$freeze() ids: undefined undefined
+        _ this.globalContext.setValues(defaultValues) ids: undefined undefined
+        _ this.globalContext.setValues(knownCallables) ids: undefined undefined
+      m setRunningNodeId ids: undefined undefined
+        param id ids: undefined undefined
+        set this.runningNodeId = id ids: undefined undefined
+      m get_currentIttfModelInfo ids: undefined undefined
+        if this.currentIttfModelKey == null ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+              @ currentModel_uri 'unavailable' ids: undefined undefined
+              @ currentModel_callerUri 'unavailable' ids: undefined undefined
+        else  ids: undefined undefined
+          var ittfModelData = this.loadContext.getIttfModelData(this.currentIttfModelKey) ids: undefined undefined
+          var callerUri = 'root model' ids: undefined undefined
+          if ittfModelData.ittfModel.$mixerModelKey ids: undefined undefined
+            var callerIttfModelData = this.loadContext.getIttfModelData(ittfModelData.ittfModel.$mixerModelKey) ids: undefined undefined
+            var callerUri = callerIttfModelData ? callerIttfModelData.ittfDocumentUri : 'root model'; ids: undefined undefined
+          return  ids: undefined undefined
+            {  ids: undefined undefined
+              @ currentModel_uri ittfModelData.ittfDocumentUri ids: undefined undefined
+              @ currentModel_callerUri callerUri ids: undefined undefined
+      m declare ids: undefined undefined
+        param name ids: undefined undefined
+        param value ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          _ this.globalContext.declare(name, value) ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          _ this.nodeContext.declare(name, value) ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.modelEvalContext.declare(name, value) ids: undefined undefined
+      m undeclare ids: undefined undefined
+        param name ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          _ this.globalContext.undeclare(name) ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          _ this.nodeContext.undeclare(name) ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.modelEvalContext.undeclare(name) ids: undefined undefined
+      m isDeclared ids: undefined undefined
+        param name ids: undefined undefined
+        var ret = false ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          set ret = this.globalContext.isDeclared(name) ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          var ret = this.nodeContext.isDeclared(name) ids: undefined undefined
+          if !ret ids: undefined undefined
+            set ret = this.globalContext.isDeclared(name) ids: undefined undefined
+        else  ids: undefined undefined
+          var ret = this.modelEvalContext.isDeclared(name) ids: undefined undefined
+          if !ret ids: undefined undefined
+            set ret = this.globalContext.isDeclared(name) ids: undefined undefined
+        return ret ids: undefined undefined
+      m setValue ids: undefined undefined
+        param name ids: undefined undefined
+        param value ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          _ this.globalContext.setValue(name, value) ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          _ this.nodeContext.setValue(name, value) ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.modelEvalContext.setValue(name, value) ids: undefined undefined
+      m setValues ids: undefined undefined
+        param values ids: undefined undefined
+        set values = (values || {}) ids: undefined undefined
+        for var k in values ids: undefined undefined
+          _ this.setValue ids: undefined undefined
+            @ k ids: undefined undefined
+            @ values[k] ids: undefined undefined
+      m put ids: undefined undefined
+        param name ids: undefined undefined
+        param value ids: undefined undefined
+        _ assert ids: undefined undefined
+          @ this.ittf_state != ittfStates.nodeContext ids: undefined undefined
+          @ 'put in an invalid operation for NodeContext state' ids: undefined undefined
+        var ok = false ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          set ok = this.globalContext.put(name, value) ids: undefined undefined
+        else  ids: undefined undefined
+          set ok = this.modelEvalContext.put(name, value) ids: undefined undefined
+          if !ok ids: undefined undefined
+            set ok = this.globalContext.put(name, value) ids: undefined undefined
+        if !ok ids: undefined undefined
+          throw new Error('Not declared: ' + name); ids: undefined undefined
+      m getValue ids: undefined undefined
+        param name ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          if this.globalContext.isDeclared(name) ids: undefined undefined
+            return this.globalContext.getValue(name) ids: undefined undefined
+          else  ids: undefined undefined
+            return undefined ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          if this.nodeContext.isDeclared(name) ids: undefined undefined
+            return this.nodeContext.getValue(name) ids: undefined undefined
+          if this.globalContext.isDeclared(name) ids: undefined undefined
+            return this.globalContext.getValue(name) ids: undefined undefined
+          return undefined ids: undefined undefined
+        else  ids: undefined undefined
+          if this.modelEvalContext.isDeclared(name) ids: undefined undefined
+            return this.modelEvalContext.getValue(name) ids: undefined undefined
+          if this.globalContext.isDeclared(name) ids: undefined undefined
+            return this.globalContext.getValue(name) ids: undefined undefined
+          return undefined ids: undefined undefined
+          log 'WizziJsContext.getValue context value not found for', name ids: undefined undefined
+          log 'WizziJsContext.getValue ittf_state ', this.ittf_state ids: undefined undefined
+          log 'WizziJsContext.getValue currentIttfModelKey ', this.currentIttfModelKey ids: undefined undefined
+          _ this.dumpValues ids: undefined undefined
+          throw new Error('In esprima context. Not declared: ' + name); ids: undefined undefined
+      m getValues ids: undefined undefined
+        # TODO modelEvalContext needs globalValues ??? ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          return this.globalContext.getValues() ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          return this.nodeContext.getValues() ids: undefined undefined
+        else  ids: undefined undefined
+          return this.modelEvalContext.getValues() ids: undefined undefined
+      m setGlobalValues ids: undefined undefined
+        param values ids: undefined undefined
+        _ this.globalContext.setValues(values) ids: undefined undefined
+      m getGlobalValues ids: undefined undefined
+        _ this.globalContext.values ids: undefined undefined
+      m declareFunction ids: undefined undefined
+        param name ids: undefined undefined
+        param fn ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          _ this.globalContext.declareFunction(name, fn) ids: undefined undefined
+        else  ids: undefined undefined
+          _ this.modelEvalContext.declareFunction(name, fn) ids: undefined undefined
+      m getFunction ids: undefined undefined
+        param name ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          return this.globalContext.getFunction(name) ids: undefined undefined
+        else  ids: undefined undefined
+          var ret = this.modelEvalContext.getFunction(name) ids: undefined undefined
+          return ret ? ret : this.globalContext.getFunction(name) ids: undefined undefined
+      m beginExpr ids: undefined undefined
+        set this.exprPending = ids: undefined undefined
+          {  ids: undefined undefined
+      m endExpr ids: undefined undefined
+        _ assert ids: undefined undefined
+          @ this.exprPending ids: undefined undefined
+          @ 'endExpr called without previous call to beginExpr' ids: undefined undefined
+        for var k in this.exprPending ids: undefined undefined
+          _ this.put ids: undefined undefined
+            @ k ids: undefined undefined
+            @ this.exprPending[k] ids: undefined undefined
+        set this.exprPending = null ids: undefined undefined
+      m dumpValues ids: undefined undefined
+        # TODO if this.verbose ids: undefined undefined
+        log 'Dump context value for debug' ids: undefined undefined
+        log 'WizziJsContext ittf_state ', this.ittf_state ids: undefined undefined
+        log 'WizziJsContext currentIttfModelKey ', this.currentIttfModelKey ids: undefined undefined
+        if this.modelEvalContext ids: undefined undefined
+          log 'Local values' ids: undefined undefined
+          _ this.modelEvalContext.dumpValues ids: undefined undefined
+        log 'Global values' ids: undefined undefined
+        _ this.globalContext.dumpValues ids: undefined undefined
+      m getDeclaredInfo ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          _ ret.push ids: undefined undefined
+            @ 'state=global' ids: undefined undefined
+          _ ret.push ids: undefined undefined
+            @ 'global declares:' + this.globalContext.getDeclaredInfo() ids: undefined undefined
+        elif this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          _ ret.push ids: undefined undefined
+            @ 'state=node' ids: undefined undefined
+        else  ids: undefined undefined
+          _ ret.push ids: undefined undefined
+            @ 'state=model:' + this.currentIttfModelKey ids: undefined undefined
+          _ ret.push ids: undefined undefined
+            @ 'model declares:' + this.modelEvalContext.getDeclaredInfo() ids: undefined undefined
+          _ ret.push ids: undefined undefined
+            @ 'global declares:' + this.globalContext.getDeclaredInfo() ids: undefined undefined
+        return ret.join(', ') ids: undefined undefined
+      #  ids: undefined undefined
+        # The WizziJsRunner is entering a block of statements ids: undefined undefined
+        # with instructions for the buildup of the treenode ids: undefined undefined
+        # of the final (evaluated) IttfModel. ids: undefined undefined
+      m set_NodeContext ids: undefined undefined
+        if this.ittf_state === ittfStates.nodeContext ids: undefined undefined
+          # we already are in a nodeContext state ids: undefined undefined
+          return  ids: undefined undefined
+        # log '*** => set_NodeContext' ids: undefined undefined
+        set this.ittf_state = ittfStates.nodeContext ids: undefined undefined
+        set this.currentIttfModelKey = null ids: undefined undefined
+        set this.modelEvalContext = null ids: undefined undefined
+      #  ids: undefined undefined
+        # The WizziJsRunner is entering a block of global statements ids: undefined undefined
+        # declared inside an IttfDocument. ids: undefined undefined
+        # Example: ids: undefined undefined
+        # 001     $global var message = 'hello'; ids: undefined undefined
+      m set_GlobalContext ids: undefined undefined
+        if this.ittf_state === ittfStates.globalContext ids: undefined undefined
+          # we already are in a globalContext state ids: undefined undefined
+          return  ids: undefined undefined
+        # log '*** => set_GlobalContext' ids: undefined undefined
+        set this.ittf_state = ittfStates.globalContext ids: undefined undefined
+        set this.currentIttfModelKey = null ids: undefined undefined
+        set this.modelEvalContext = null ids: undefined undefined
+      #  ids: undefined undefined
+        # The WizziJsRunner is entering a block of local statements ids: undefined undefined
+        # declared inside an IttfDocument using the $ IttfCommand. ids: undefined undefined
+        # Example: ids: undefined undefined
+        # 001     $ var message = 'hello'; ids: undefined undefined
+        # or the WizziJsEvalHelper has to execute an interpolation ids: undefined undefined
+        # on a node value which belongs to the modelKey. ids: undefined undefined
+      m set_IttfModelEvalContext ids: undefined undefined
+        param modelKey ids: undefined undefined
+        param line ids: undefined undefined
+        if this.currentIttfModelKey === modelKey ids: undefined undefined
+          return  ids: undefined undefined
+        # Must stay before the call to getIttfModelEvalContext ids: undefined undefined
+        # to allow debug info about modelKey ids: undefined undefined
+        set this.currentIttfModelKey = modelKey ids: undefined undefined
+        set this.modelEvalContext ids: undefined undefined
+          _ this.evalHelper.getIttfModelEvalContext(modelKey, line) ids: undefined undefined
+        if this.modelEvalContext && this.modelEvalContext.__is_error ids: undefined undefined
+          return this.modelEvalContext ids: undefined undefined
+        _ assert(this.modelEvalContext, 'set_IttfModelEvalContext modelEvalContext for key ' + modelKey + ' undefined') ids: undefined undefined
+        # log '*** => set_IttfModelEvalContext', modelKey ids: undefined undefined
+        set this.ittf_state = ittfStates.modelEvalContext ids: undefined undefined
+        return this.modelEvalContext ids: undefined undefined
+      m get_currentIttfModelKey ids: undefined undefined
+        return this.currentIttfModelKey ids: undefined undefined
+    set module.exports = WizziJsContext ids: undefined undefined

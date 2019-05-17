@@ -1,0 +1,117 @@
+  module  ids: undefined undefined
+    kind react ids: undefined undefined
+    ready  ids: undefined undefined
+      var UserList ids: undefined undefined
+        _ React.createClass ids: undefined undefined
+          {  ids: undefined undefined
+            @ getInitialState ids: undefined undefined
+              function  ids: undefined undefined
+                return  ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ users ids: undefined undefined
+                      [  ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ name 'Jackson Turner' ids: undefined undefined
+                          @ street '217 Tawny End' ids: undefined undefined
+                          @ img 'men_1.jpg' ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ name 'Megan Perry' ids: undefined undefined
+                          @ street '77 Burning Ramp' ids: undefined undefined
+                          @ img 'women_1.jpg' ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ name 'Ryan Harris' ids: undefined undefined
+                          @ street '12 Hazy Apple Route' ids: undefined undefined
+                          @ img 'men_2.jpg' ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ name 'Jennifer Edwards' ids: undefined undefined
+                          @ street '33 Maple Drive' ids: undefined undefined
+                          @ img 'women_2.jpg' ids: undefined undefined
+                        {  ids: undefined undefined
+                          @ name 'Noah Jenkins' ids: undefined undefined
+                          @ street '423 Indian Pond Cape' ids: undefined undefined
+                          @ img 'men_3.jpg' ids: undefined undefined
+            @ render ids: undefined undefined
+              function  ids: undefined undefined
+                var eventHub = this.props.glEventHub ids: undefined undefined
+                return  ids: undefined undefined
+                  ul  ids: undefined undefined
+                    class userlist ids: undefined undefined
+                    {  ids: undefined undefined
+                      _ this.state.users.map ids: undefined undefined
+                        function  ids: undefined undefined
+                          param user ids: undefined undefined
+                          return  ids: undefined undefined
+                            < User ids: undefined undefined
+                              @ key {user.name} ids: undefined undefined
+                              @ userData {user} ids: undefined undefined
+                              @ glEventHub {eventHub} ids: undefined undefined
+      var User ids: undefined undefined
+        _ React.createClass ids: undefined undefined
+          {  ids: undefined undefined
+            @ getInitialState ids: undefined undefined
+              function  ids: undefined undefined
+                return this.props.userData ids: undefined undefined
+            @ selectUser ids: undefined undefined
+              function  ids: undefined undefined
+                _ this.props.glEventHub.emit ids: undefined undefined
+                  @ 'user-select' ids: undefined undefined
+                  @ this.state ids: undefined undefined
+            @ render ids: undefined undefined
+              function  ids: undefined undefined
+                return  ids: undefined undefined
+                  li {this.state.name} ids: undefined undefined
+                    onClick {this.selectUser} ids: undefined undefined
+      var UserDetail ids: undefined undefined
+        _ React.createClass ids: undefined undefined
+          {  ids: undefined undefined
+            @ componentWillMount ids: undefined undefined
+              function  ids: undefined undefined
+                _ this.props.glEventHub.on ids: undefined undefined
+                  @ 'user-select' ids: undefined undefined
+                  @ this.setUser ids: undefined undefined
+            @ componentWillUnmount ids: undefined undefined
+              function  ids: undefined undefined
+                _ this.props.glEventHub.off ids: undefined undefined
+                  @ 'user-select' ids: undefined undefined
+                  @ this.setUser ids: undefined undefined
+            @ setUser ids: undefined undefined
+              function  ids: undefined undefined
+                param userData ids: undefined undefined
+                _ this.setState(userData) ids: undefined undefined
+            @ render ids: undefined undefined
+              function  ids: undefined undefined
+                if this.state ids: undefined undefined
+                  var imgUrl = ('https://s3-us-west-2.amazonaws.com/s.cdpn.io/152047/' + this.state.img) ids: undefined undefined
+                  return  ids: undefined undefined
+                    . userdetails ids: undefined undefined
+                      img  ids: undefined undefined
+                        src {imgUrl} ids: undefined undefined
+                        width "100" ids: undefined undefined
+                        height "100" ids: undefined undefined
+                      h2 {this.state.name} ids: undefined undefined
+                      p {this.state.street} ids: undefined undefined
+                else  ids: undefined undefined
+                  return  ids: undefined undefined
+                    . userdetails ids: undefined undefined
+                      + No user selected ids: undefined undefined
+      var config ids: undefined undefined
+        {  ids: undefined undefined
+          @ content ids: undefined undefined
+            [  ids: undefined undefined
+              {  ids: undefined undefined
+                @ type 'row' ids: undefined undefined
+                @ content ids: undefined undefined
+                  [  ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ title 'Users' ids: undefined undefined
+                      @ type 'react-component' ids: undefined undefined
+                      @ component 'user-list' ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ title 'User Detail' ids: undefined undefined
+                      @ type 'react-component' ids: undefined undefined
+                      @ component 'user-detail' ids: undefined undefined
+      var myLayout ids: undefined undefined
+        new GoldenLayout(config) ids: undefined undefined
+      _ myLayout.registerComponent('user-list', UserList) ids: undefined undefined
+      _ myLayout.registerComponent('user-detail', UserDetail) ids: undefined undefined
+      _ myLayout.init() ids: undefined undefined

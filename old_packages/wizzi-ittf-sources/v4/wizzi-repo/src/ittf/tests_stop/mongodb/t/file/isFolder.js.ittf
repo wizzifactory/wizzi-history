@@ -1,0 +1,14 @@
+﻿$group
+
+	m isFolder
+		param folderPath
+		param callback
+
+		set folderPath = normalize(folderPath)
+		_ this.fsdb.getItemByPath
+			@ folderPath
+			f_cb( fsitem )
+				if fsitem && fsitem.kind == 0
+					_ callback(null, true)
+				else
+					_ callback(null, false)

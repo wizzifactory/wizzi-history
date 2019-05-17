@@ -1,0 +1,12 @@
+﻿$group
+
+	function makeSchemaApi
+		param config
+
+		var paths = makePaths(config)
+		
+		return
+			{
+				$include ./get
+				$include ./getList
+				$include ./getJsonDoc

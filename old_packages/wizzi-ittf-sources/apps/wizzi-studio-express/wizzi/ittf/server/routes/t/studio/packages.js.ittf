@@ -1,0 +1,24 @@
+﻿$group
+
+	get( /api/studio/packages )
+		_ studioApi.getPackages
+			{
+				@ userId req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/studio/package )
+		check-params( )
+			not-empty( query , id )
+		_ studioApi.getPackage
+			{
+				@ userId req.user.id
+				@ packageId id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

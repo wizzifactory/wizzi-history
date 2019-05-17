@@ -1,0 +1,300 @@
+﻿module wizzi-mtree.jsWizzi.jsWizziRunner
+    kind jsfile
+
+    var util = require('util')
+    var escodegen = require('escodegen')
+    var esprima = require('esprima')
+	var verify = require('wizzi-utils').verify
+    var errors = require('./errors')
+    var verbose = false
+	var getset = true
+	var parsedCache = {}
+
+	var defaultOptions
+        { 
+            @ verbose true
+    
+	function dummy
+		string hello
+		# for emitting error function
+
+	function log
+        param label
+        param node
+        param force
+        if (verbose || force)
+			log escodegen.generate(node)
+            _ console.log
+                @ label
+                _ util.inspect
+                    @ node
+                    { 
+                        @ depth 2
+    
+	function logGet
+		param name
+		param value
+		if name[0] === '$'
+			return
+		var fmt =  util.inspect(value, { depth: null})
+		# log 'wizzi-mtree.jsWizziRunner == get == ' + name + ' : ' + fmt + ' -----'
+
+	function logSet
+		param name
+		param value
+		if name[0] === '$'
+			return
+		var fmt =  util.inspect(value, { depth: null})
+		# log 'wizzi-mtree.jsWizziRunner -- set -- ' + name + ' : ' + fmt + ' ====='
+
+	var runner
+        function 
+            param ast
+            param ctx
+            param action
+            param data
+            
+			var type
+                iif action
+                    then ast.type + '_' + action
+                    else 
+                        set ast.type
+            
+			if verbose
+                _ console.log(('ast.type: ' + type))
+            
+			if ast.trailingComments && ast.trailingComments.length == 1
+                _ ctx.setRunningNodeId
+                    @ ast.trailingComments[0].value
+            var trunner = runner[type]
+            if trunner
+                return trunner(ast, ctx, data)
+			else
+				return
+					_ local_error
+						@ ctx
+						@ 'Missing runner for type: ' + type
+						@ 'runner'
+    
+	var runnerSet
+        function 
+            param ast
+            param ctx
+            param data
+            return runner(ast, ctx, 'Set', data)
+    
+	var runnerCall
+        function 
+            param ast
+            param ctx
+            param data
+            return runner(ast, ctx, 'Call', data)
+    
+	runner( Program
+        var state
+        for var i = 0; i < node.body.length; i++
+            var statement = node.body[i]
+			checked_run( state, Program
+				_ runner(statement, ctx)
+            if state.return
+                return state.value
+    
+	runner( Identifier
+        if node.name == 'undefined'
+            # log 'Identifier returning node.name = undefined'
+            return undefined
+        if ctx.isDeclared(node.name)
+			if getset
+				_ logGet
+					@ node.name
+					_ ctx.getValue
+						@ node.name
+			return
+				_ ctx.getValue
+					@ node.name
+        else
+			# log 'wizzi-mtree.esprima.jsWizziRunner.Identifier not found', node.name, ctx
+			return
+				_ local_error
+					@ ctx
+					@ 'Identifier < ' + node.name + ' > not defined, on node < ' + ctx.runningNodeId + ' > ' +
+						\ ctx.getDeclaredInfo()
+					@ node
+					@ node
+					@ 'Identifier'
+    
+	runner( Identifier_Set, data
+        _ ctx.put
+            @ node.name
+            @ data
+
+    runner( Literal
+		return node.value
+    
+	runner( VariableDeclaration
+		foreach declaration in node.declarations
+			checked_run( state, VariableDeclaration
+				_ runner(declaration, ctx)
+        return 
+            { 
+    
+	runner( VariableDeclarator
+        if !node.init
+            _ ctx.declare
+                @ node.id.name
+        else
+			checked_run( value, VariableDeclaration
+                _ runner
+                    @ node.init
+                    @ ctx
+			# if node.id.name === '_____result'
+			# 	log 'jsWizziRunner.VariableDeclarator', node.id.name, value
+            _ ctx.declare
+                @ node.id.name
+                @ value
+    
+	$include jsWizziRunner/statements
+	$include jsWizziRunner/for
+	$include jsWizziRunner/expressions
+	$include jsWizziRunner/functions
+
+	function local_error
+		param ctx
+        param message
+        param node
+		param parentnode
+		param method
+		param ex
+
+		# throw new Error('boing')
+
+		var nodeStm
+		try
+			set nodeStm = node ? escodegen.generate(node) : ''
+		catch escodegenErr
+			set nodeStm = 'escodegen failed: ' + escodegenErr.message
+		
+		var nodeInsp = node ? util.inspect(node, {depth:2}) : ''
+		
+		var parentnodeStm
+		try
+			set parentnodeStm = parentnode ? escodegen.generate(parentnode) : ''
+		catch escodegenErr
+			set parentnodeStm = 'escodegen failed: ' + escodegenErr.message
+		
+		var parentnodeInsp = node ? util.inspect(node, {depth:2}) : ''
+
+		var currentModelInfo = ctx.get_currentMTreeBrickInfo()
+		
+		var message 
+			[
+				@ 'JsWizziRunner Error'
+				@ 'message: ' + message
+				@ 'node statement: ' + nodeStm
+				@ 'node inspected: ' + nodeInsp
+				@ 'parent node statement: ' + parentnodeStm
+				@ 'parent node inspected: ' + parentnodeInsp
+				@ 'currentModel_uri: ' + currentModelInfo.currentModel_uri
+				@ 'currentModel_mixerUri: ' + currentModelInfo.currentModel_mixerUri
+		
+		return
+			_ error
+				@ 'JsWizziError'
+				@ method
+				@ message.join('\n')
+				@ ex
+
+	function getTypeDescription
+		param obj
+		if obj == null
+			return 'null'
+		return typeof(obj)
+
+	set module.exports =
+        { 
+            @ getParsed
+                function 
+                    param source
+                    try 
+                        var parsed
+                            _ esprima.parse
+                                @ source
+                                { 
+                                    @ attachComment true
+                                    @ loc true
+                                    @ sourceType 'module'
+                        return parsed
+                    catch ex
+                        throw 
+                            new errors.JsWizziSynthaxError(ex, source)
+			@ run
+				function run
+                    param source
+                    param ctx
+                    param options
+                    param callback
+
+					# ctx : instance-of wizzi-mtree.jswizzi.jsWizziContext
+
+					if verify.isNotEmpty(source) === false
+						var err
+							_ error
+								@ 'InvalidArgument'
+								@ 'run'
+								{
+									@ parameter 'source'
+									@ message 'The source parameter must be a string. Received: ' + source
+
+						if callback
+							return
+								_ callback(err)
+						else
+							return err
+					
+					if verify.isObject(ctx) === false
+						var err
+							_ error
+								@ 'InvalidArgument'
+								@ 'run'
+								{
+									@ parameter 'ctx'
+									@ message 'The ctx parameter must be an object. Received: ' + ctx
+
+						if callback
+							return
+								_ callback(err)
+						else
+							return err
+
+					set options = (options || defaultOptions)
+                    
+					var parsed
+					# FIXME caching provokes errors, now disbled
+					#       should be:  if source.length < 100
+					if source.length < 0
+						set parsed = parsedCache[source]
+						if !parsed
+							set parsed = this.getParsed(source)
+							set parsedCache[source] = parsed
+						else
+							# log 'using cache', source
+					else
+						set parsed = this.getParsed(source)
+                    if options.dumpfile
+                        _ options.dumpfile
+                            _ JSON.stringify(parsed, null, 2)
+                    
+					var result = runner(parsed, ctx)
+
+					if result && result.__is_error
+						log 'wizzi-mtree.jswizzi.jsWizziRunner. Result has errors: ', result
+
+					if callback
+                        if result && result.__is_error
+                            set delete (result.__is_error)
+                            _ callback(result)
+                        else 
+                            _ callback(null, result)
+                    else 
+                        return result
+

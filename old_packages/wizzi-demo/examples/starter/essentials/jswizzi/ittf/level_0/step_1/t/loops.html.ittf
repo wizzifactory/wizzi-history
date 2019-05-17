@@ -1,0 +1,29 @@
+$group
+	h3 For loop
+	
+	$
+		var sletters = 'a,b,c,d,e,f,g,h';
+		var aletters = sletters.split(',');
+		var letter, label='';
+		for (var i=0; i<aletters.length; i++) {
+			letter = aletters[i];
+			label += i % 2 == 0 ? letter : letter.toUpperCase();
+		}
+
+	p The resulting label has the even letters upper cased: ${label}.
+	br
+	br
+
+	h3 While loop
+	
+	$
+		var x = 1, odds = '1';
+		while ( x < 10 ) {
+			x += 2;
+			odds += ', ' + x 
+		}
+
+	p First odd numbers: ${odds}.
+	br
+	br
+

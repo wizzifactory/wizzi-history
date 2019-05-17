@@ -1,0 +1,70 @@
+﻿base_test( mongodb.document.index )
+	+
+	$append imports
+		var index = require('../../index')
+
+	it-async should return a filesystem store
+		_ index.createStoreFactory
+			{
+			f_cb_no_err( createStore )
+				tobe_null( err )
+				_ createStore
+					f_cb_no_err( store )
+						tobe_null( err )
+						tobe_string( store.storeKind, filesystem )
+						_ done()
+
+	it-async should return InvalidStoreKind error 2
+		_ index.createStoreFactory
+			{
+				@ storeKind 'happy'
+			f_cb_no_err()
+				tobe_object( err )
+				tobe_true( err.__is_error )
+				# log 'should return InvalidStoreKind error 2.err', err
+				tobe_string( err.name, InvalidArgument )
+				tobe_string( err.info.parameter, storeKind )
+				_ done()
+
+	it-async should return MissingStoreUri
+		_ index.createStoreFactory
+			{
+				@ storeKind 'mongodb'
+			f_cb_no_err()
+				tobe_object( err )
+				tobe_true( err.__is_error )
+				tobe_string( err.name, InvalidArgument )
+				tobe_string( err.info.parameter, options.storeUri )
+				_ done()
+
+	it-async should return MissingBaseFolder
+		_ index.createStoreFactory
+			{
+				@ storeKind 'mongodb'
+				@ storeUri 'bla://bla'
+			f_cb_no_err()
+				tobe_object( err )
+				tobe_true( err.__is_error )
+				tobe_string( err.name, InvalidArgument )
+				tobe_string( err.info.parameter, options.baseFolder )
+				_ done()
+
+	it-async should return InvalidStoreUri
+		_ index.createStoreFactory
+			{
+				@ storeKind 'mongodb'
+				@ storeUri 'mongodb://localhost:27017/test'
+				@ baseFolder 'c:/alfa'
+			f_cb_no_err()
+				tobe_null( err )
+				_ index.createStoreFactory
+					{
+						@ storeKind 'mongodb'
+						@ storeUri 'mongodb://localhost:27017/ciccia'
+						@ baseFolder 'c:/alfa'
+					f_cb_no_err( notUsed )
+						tobe_object( err )
+						tobe_true( err.__is_error )
+						tobe_string( err.name, InvalidRequest )
+						tobe_string( err.info.parameter, storeUri )
+						_ done()

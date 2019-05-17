@@ -1,0 +1,56 @@
+﻿$group
+	+
+	# thunk.withExtraArgument
+	wz-const updateStoredDocument
+		=>
+			param schemaName
+			param documentName
+			param content
+			param options
+			
+			# defaults
+			set options = options || {}
+			if typeof options.cloudUpdate === 'undefined'
+				set options.cloudUpdate = true 
+			
+			return
+				=>
+					param dispatch
+					param getState
+					param extraArgument
+					
+					const wizziStore
+						_ extraArgument.WizziStore.getInstance
+
+					if options.isFragment
+					
+						_ wizziStore.setFragment
+							@ schemaName
+							@ documentName
+							@ content
+							f_cb_no_err( result )
+								_ dispatch
+									_ changeFragmentIttfContent
+										@ content
+
+					elif options.isSnippet
+					
+						_ wizziStore.setSnippet
+							@ schemaName
+							@ documentName
+							@ content
+							f_cb_no_err( result )
+								_ dispatch
+									_ changeSnippetCodeContent
+										@ content
+
+					else
+						
+						_ wizziStore.setExample
+							@ schemaName
+							@ documentName
+							@ content
+							f_cb_no_err( result )
+								_ dispatch
+									_ changeExampleIttfContent
+										@ content

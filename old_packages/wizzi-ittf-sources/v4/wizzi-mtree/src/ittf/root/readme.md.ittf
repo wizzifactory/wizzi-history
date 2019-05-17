@@ -1,0 +1,39 @@
+﻿common/kernel( wizzi-mtree, ${wfpackage.title}. )
+
+	h2 Features
+	ul
+		li Loads an ittf document into an mTree instance (
+			a wizzi-mtree.mTree
+				href
+			span , executing documents composition and template evaluation.
+	
+	h3 Interface
+	p This interface is used by the wizziFactory class and by
+		+ test and demo modules.
+	js
+		+  mtree.createLoadMTree(
+		+    createStore,
+		+    options,
+		+    callback 
+		+  );
+
+	h4 Parameters
+	table
+		tr
+			td createStore
+			td function returned by wizzi-repo.createSore
+		tr
+			td options
+			td
+				table
+					tr
+						td useCache
+						td default : false
+		tr
+			td callback
+			td returns the function 
+				a wizzi-mtree.loader.loadMTree
+					href https://wizzifactory.github.io/api.html#wizzi-mtree.loader
+				span .
+
+

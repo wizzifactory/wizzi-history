@@ -1,0 +1,16 @@
+﻿$group
+
+	m getFolder
+		string folderPath
+		callback
+
+		set folderPath = normalize(path.resolve(folderPath))
+		_ this.fsdb.getItemByPath
+			@ folderPath
+			f_cb( r )
+				log 'wizzi-repo.mongodb.document.getFolder.r', r
+				if r.kind == 1
+					r_cb_wz_err( MongoRepoError, getFolder )
+						@ 'Document getFolder error: ' + folderPath + ' is a file path'
+				else
+					r_cb( r )

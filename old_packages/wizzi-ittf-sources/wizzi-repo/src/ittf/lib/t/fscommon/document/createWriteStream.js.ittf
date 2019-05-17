@@ -1,0 +1,12 @@
+﻿$group
+	$params source|fs.mongodb, fsname|MongoFS
+
+	m createWriteStream
+		string filePath
+
+		set filePath = normalize(filePath)
+
+		return
+			new FsStream
+				@ filePath
+				@ this

@@ -1,0 +1,36 @@
+$group
+
+	+
+	# ========================================
+	# EXCEPTIONS
+	# ========================================
+	+
+
+	# 
+		# Try/catch
+	var result = null
+	try
+		set result = 100
+		var rnd = (int)(Math.random() * 99)
+		if  rnd % 2 == 0
+			set result /= 0
+		else
+			set result /= 2
+		_ sendResult
+			@ result
+	catch ex
+		log ex.message
+	finally
+		set result = null
+
+	# 
+		# Throw an exception
+	function divide
+		param a
+		param b
+		if b == 0
+			throw
+				new Error
+					@ 'You are about to divide by 0'
+
+		

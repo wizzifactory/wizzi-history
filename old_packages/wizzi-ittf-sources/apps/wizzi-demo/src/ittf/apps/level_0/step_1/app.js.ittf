@@ -1,0 +1,67 @@
+﻿demo_module( apps_runnerServer, 0, 1 )
+
+	_ wizzi.startRunnerServer
+		{
+			@ userid 'stefi'
+			@ role 'admin'
+			@ cwd __dirname
+		f_cb_throw( notUsed )
+			_ wizzi.fsnoaclFactory
+				{
+					{ plugins
+						[ items
+							@ 'wizzi-core'
+							@ 'wizzi-js'
+							@ 'wizzi-html'
+							@ 'wizzi-docs'
+				f_cb_throw( wf )
+					_ wf.loadModelAndGenerateArtifact
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ 'views'
+							@ 'demo1.html.ittf'
+						{
+						@ 'html/document'
+						f_cb_throw( artifactText )
+							# Save the artifact to the ./outputs folder
+							var dest
+								_ path.join
+									@ __dirname
+									@ 'ittf'
+									@ 'outputs'
+									@ 'demo1.html'
+							_ wizzi.file.write
+								@ dest
+								@ artifactText
+							log 'demo1.html saved to ' + dest
+							_ printValue
+								@ 'artifactText'
+								@ artifactText
+								@ 'dashes'
+					_ wf.loadModelAndGenerateArtifact
+						_ path.join
+							@ __dirname
+							@ 'ittf'
+							@ 'views'
+							@ 'demo2.html.ittf'
+						{
+						@ 'html/document'
+						f_cb_throw( artifactText )
+							# Save the artifact to the ./outputs folder
+							var dest
+								_ path.join
+									@ __dirname
+									@ 'ittf'
+									@ 'outputs'
+									@ 'demo2.html'
+							_ wizzi.file.write
+								@ dest
+								@ artifactText
+							log 'demo2.html saved to ' + dest
+							_ printValue
+								@ 'artifactText'
+								@ artifactText
+								@ 'dashes'
+
+		

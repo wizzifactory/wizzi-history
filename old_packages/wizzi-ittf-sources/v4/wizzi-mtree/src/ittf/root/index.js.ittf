@@ -1,0 +1,65 @@
+﻿module wizzi.mtree
+    kind jsfile
+
+	var loader = require('./lib/loader') 
+	+
+	var md = module.exports = {}
+	#
+		#
+		# params
+		#   function createStore
+		#     api-ref wizzi-repo.createStore
+		#   { options
+		#     boolean useCache
+		#
+	set md.createLoadMTree
+		function createLoadMTree
+			func createStore
+			{ options
+				optional
+			set options = options || {}
+			var useCache = options.useCache || false
+			var raw = options.raw || false
+			var ittfDocumentStore
+			return
+				function loadMTree
+					string ittfDocumentUri
+					{ loadContext
+						{ __productionManager
+							{ productionContext
+								{ aclstat
+						{ mTreeBuildUpContext
+							optional
+					callback
+
+					# log 'wizzi-mtree.loadMTree.loadContext', loadContext
+
+					if !useCache || !ittfDocumentStore
+						_ createStore
+							f_cb( store )
+								set ittfDocumentStore = store
+								set loadContext.__ittfDocumentStore = store
+								if raw
+									_ loader.loadMTreeRaw
+										@ ittfDocumentUri
+										@ loadContext
+										@ callback
+								else
+									_ loader.loadMTree
+										@ ittfDocumentUri
+										@ loadContext
+										@ callback
+					else
+						set loadContext.__ittfDocumentStore = ittfDocumentStore
+						if raw
+							_ loader.loadMTreeRaw
+								@ ittfDocumentUri
+								@ loadContext
+								@ callback
+						else
+							_ loader.loadMTree
+								@ ittfDocumentUri
+								@ loadContext
+								@ callback
+
+

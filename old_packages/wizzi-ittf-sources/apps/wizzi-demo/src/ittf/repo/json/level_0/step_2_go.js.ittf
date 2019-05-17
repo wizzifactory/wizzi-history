@@ -1,0 +1,39 @@
+﻿demo_module( repo_json, 0, 1 )
+
+	# 
+		# DEMO: javascript module coded in 'js' wizzi language schema
+		#       stored in a json repo
+	+
+	$append imports
+		var jsonComoponents = require('wizzi-repo').JsonComponents
+	+
+	jsonLoadModelAndGenerateArtifact( 1, module_1.js.ittf, js, module, save;print:artifact dash )
+	+
+	function getJsonFsData
+		param callback
+		var doc = jsonComoponents.createDocumentManager()
+		_ doc.writeFile
+			@ "c:/my/wizzi/v6/test/wizzi-demo/repo/json/level_0/step_1/module_1.js.ittf"
+			[
+				@ 'module'
+				@ '    kind react'
+				@ '    react MyComponent'
+				@ '        fragment_1()'
+				._ join('\n')
+			f_cb_throw()
+				_ doc.writeFile
+					@ "c:/my/wizzi/v6/test/wizzi-demo/repo/json/level_0/step_1/t/fragment_1.js.ittf"
+					[
+						@ 'render'
+						@ '    return'
+						@ '        div'
+						._ join('\n')
+					f_cb_throw()
+						return 
+							_ doc.toJson
+								@ callback
+								
+	+
+	_ getJsonFsData
+		f_cb_throw( jsonFsData )
+			_ execute( jsonFsData )

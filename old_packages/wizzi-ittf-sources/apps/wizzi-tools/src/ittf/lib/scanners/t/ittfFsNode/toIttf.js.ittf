@@ -1,0 +1,112 @@
+﻿$group
+	
+	m toIttfRoot
+		param ittf
+		var r = this.root()
+		if r === this
+			var i
+				_ ittf.add
+					@ 'info'
+			var ss
+				_ i.add
+					@ 'schemas'
+			var dd
+				_ i.add
+					@ 'documents'
+			var s
+			for var k in r.info.schemas
+				set s
+					_ ss.add
+						@ 'schema'
+						@ k
+				foreach d in r.info.schemas[k].documents
+					_ s.add
+						@ 'd'
+						@ d.path
+				
+			if r.info.lib.documents.length > 0
+				var lib 
+					_ dd.add
+						@ 'lib'
+				foreach d in r.info.lib.documents
+					_ lib.add
+						@ 'd'
+						@ d.path
+			if r.info.util.documents.length > 0
+				var util 
+					_ dd.add
+						@ 'util'
+				foreach d in r.info.util.documents
+					_ lib.add
+						@ 'd'
+						@ d.path
+			if r.info.test.documents.length > 0
+				var test 
+					_ dd.add
+						@ 'test'
+				foreach d in r.info.test.documents
+					_ test.add
+						@ 'd'
+						@ d.path
+			if r.info.example.documents.length > 0
+				var test 
+					_ dd.add
+						@ 'example'
+				foreach d in r.info.example.documents
+					_ test.add
+						@ 'd'
+						@ d.path
+			
+	m toIttf
+		param ittf
+		_ this.toIttfRoot(ittf)
+		var n
+			_ ittf.add
+				iif this.isDirectory
+					then 'f'
+					else 'd'
+				@ this.basename
+		if this.isDirectory
+			if this.isPackageRoot
+				_ n.add
+					@ 'is-package-root'
+			if this.isJobFolder
+				_ n.add
+					@ 'is-job-folder'
+			if this.isTFolder
+				_ n.add
+					@ 'is-t-folder'
+			if this.isInsideTFolder
+				_ n.add
+					@ 'is-inside-t-folder'
+		else
+			if this.isFragment
+				_ n.add
+					@ 'is-fragment'
+		if this.isTest
+			_ n.add
+				@ 'is-test'
+		if this.isExample
+			_ n.add
+				@ 'is-example'
+		if this.isUtil
+			_ n.add
+				@ 'is-util'
+
+
+		_ n.add
+			@ 'dirname'
+			@ this.dirname
+		_ n.add
+			@ 'path'
+			@ this.path
+		
+		if this.isDirectory
+			foreach f in this.folders
+				_ f.toIttf(n)
+			foreach d in this.documents
+				_ d.toIttf(n)
+		else
+			_ n.add
+				@ 'schema'
+				@ this.schema

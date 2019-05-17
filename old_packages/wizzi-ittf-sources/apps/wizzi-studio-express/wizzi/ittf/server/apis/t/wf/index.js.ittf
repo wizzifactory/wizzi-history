@@ -1,0 +1,28 @@
+﻿$group
+
+	function makeWfApi
+		param config
+
+		var hasDefaultUserFromConfig = verify.isString(config.user) && verify.isString(config.role)
+		var userAuthRequired = !hasDefaultUserFromConfig
+
+		var createWizziFactory
+			_ makeWizziFactoryCreator
+				@ config.storeKind 
+				@ config.plugins
+				@ config.globalContext
+				@ config.user
+				@ config.role
+
+		return
+			{
+				$include wfapi/loadModel
+				$include wfapi/generateArtifact
+				$include wfapi/loadModelAndGenerateArtifact
+				$include wfapi/schemaObject
+				$include wfapi/generateSchema
+				$include wfapi/executeJob
+				$include wftools/jsWizzify
+				$include wftools/htmlWizzify
+				$include wftools/cssWizzify
+				$include wftools/xmlWizzify

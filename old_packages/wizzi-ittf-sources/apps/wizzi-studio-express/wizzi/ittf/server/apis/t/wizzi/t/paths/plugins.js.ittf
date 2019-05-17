@@ -1,0 +1,404 @@
+﻿$group
+
+	# v<x>-plugins/<packageName>/src
+	@ pluginSrcPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ config.getWizziPluginsBasePath
+						@ version
+					@ packageName
+					@ 'src'
+
+	# v<x>-plugins/<packageName>/src/ittf
+	@ pluginSrcIttfPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ config.getWizziPluginsBasePath
+						@ version
+					@ packageName
+					@ 'src'
+					@ 'ittf'
+
+	# v<x>-plugins/<packageName>/src/generate.js
+	@ pluginGeneratePath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ this.pluginSrcPath
+						@ packageName
+						@ version
+					@ 'generate.js'
+				
+	# v<x>-plugins/<packageName>/src/generate.wfjob.ittf
+	@ pluginGenerateWfJobPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ this.pluginSrcPath
+						@ packageName
+						@ version
+					@ 'generate.wfjob.ittf'
+	
+	# v<x>-plugins/<packageName>/src/ittf/root
+	@ pluginRootFolderPath
+		function
+			param packageName
+			param version
+			return
+				_ path.join
+					_ this.pluginSrcIttfPath
+						@ packageName
+						@ version
+					@ 'root'
+
+	# v<x>-plugins/<packageName>/src/ittf/lib[/<folder>]
+	@ pluginLibFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'lib'
+			else
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'lib'
+						@ folder
+
+	# v<x>-plugins/<packageName>/src/ittf/examples[/<folder>]
+	@ pluginExamplesFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'examples'
+			else
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'examples'
+						@ folder
+
+	# v<x>-plugins/<packageName>/src/ittf/meta[/<folder>]
+	@ pluginMetaFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'meta'
+			else
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'meta'
+						@ folder
+	
+	# v<x>-plugins/<packageName>/src/ittf/tests[/<folder>]
+	@ pluginTestsFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'tests'
+			else
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'tests'
+						@ folder
+	
+	# v<x>-plugins/<packageName>/src/ittf/t
+	@ pluginTFolderPath
+		function
+			param packageName
+			param version
+			param folder
+			
+			if verify.isEmpty(folder)
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 't'
+			else
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 't'
+						@ folder
+	
+	# v<x>-plugins/<packageName>/src/ittf/lib/wizzi[/<schemaName>]
+	@ pluginWizziSchemaPath
+		function
+			param packageName
+			param version
+			param schemaName
+			
+			if verify.isEmpty(schemaName)
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+							@ 'wizzi'
+						@ 'schemas'
+			else
+				return
+					_ path.join
+						_ this.pluginSrcIttfPath
+							@ packageName
+							@ version
+						@ 'schemas'
+						@ schemaName + '.wfschema.ittf'
+	
+	@ pluginWizziTSchemaPath
+		function
+			param packageName
+			param version
+			param schemaName
+			
+			if verify.isEmpty(schemaName)
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+							@ 'wizzi'
+						@ 'schemas'
+						@ 't'
+			else
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+						@ 'schemas'
+						@ 't'
+						@ schemaName
+	
+	@ pluginArtifactPath
+		function
+			param packageName
+			param version
+			param schemaName
+			param artifactName
+			
+			if verify.isEmpty(schemaName)
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+							@ 'artifacts'
+			else
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+							@ 'artifacts'
+						@ schemaName
+						@ artifactName
+	
+	@ pluginTArtifactPath
+		function
+			param packageName
+			param version
+			param schemaName
+			param artifactName
+			
+			if verify.isEmpty(schemaName)
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+							@ 'artifacts'
+						@ 't'
+							
+			else
+				return
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ 'artifacts'
+							@ version
+						@ schemaName
+						@ artifactName
+						@ 't'
+
+	# v<x>-plugins/<packageName>/src/ittf/lib
+	# except lib/wizzi, lib/artifacts, lib/t
+	@ pluginLibDocuments
+		function
+			param packageName
+			param version
+			var docs
+				_ this.getIttfFiles
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+			var result = []
+			foreach doc in docs
+				if !(doc.relFolder.substr(0,6) === 'wizzi/' || 
+					\b doc.relFolder.substr(0,10) === 'artifacts/' ||
+					\b doc.relFolder.substr(0,2) === 't/')
+					_ result.push(doc)
+			return result
+	
+	# v<x>-plugins/t
+	@ pluginsTDocuments
+		function
+			param packageName
+			param version
+			return
+				_ this.getIttfFiles
+					_ path.join
+						_ config.getWizziPluginsBasePath
+							@ version
+						@ 't'
+
+	# v<x>-plugins/<packageName>/src/ittf/t
+	@ pluginsPackageTDocuments
+		function
+			param packageName
+			param version
+			return
+				_ this.getIttfFiles
+					_ path.join
+						_ this.pluginSrcPath
+							@ packageName
+							@ version
+						@ 't'
+	
+	
+	# v<x>-plugins/<packageName>/src/ittf/lib/t
+	@ pluginLibTDocuments
+		function
+			param packageName
+			param version
+			return
+				_ this.getIttfFiles
+					_ path.join
+						_ this.pluginLibFolderPath
+							@ packageName
+							@ version
+						@ 't'
+
+	# v<x>-plugins/<packageName>/src/ittf/lib/wizzi/schemas/*.wfschema.ittf
+	@ pluginSchemas
+		function
+			param packageName
+			param version
+
+			var schemas = []
+
+			var libWizziSchemaFiles
+				_ this.getIttfFiles
+					_ this.pluginWizziSchemaPath
+						@ packageName
+						@ version
+
+			foreach item in libWizziSchemaFiles
+				if item.relFolder.length == 0
+					var ss = item.baseName.split('.')
+					if ss.length == 3 && ss[1] === 'wfschema'
+						_ schemas.push
+							{
+								@ name ss[0]
+								@ schemaId this.schemaId(packageName, ss[0])
+								@ mainDocument item
+
+			return schemas
+
+	# v<x>-plugins/<packageName>/src/ittf/lib/wizzi/schemas/t/*.* excluded /t/<schemaname>
+	@ pluginSchemasTIttfDocuments
+		function
+			param packageName
+			param version
+
+			var schemaRootFiles
+				_ this.getIttfFiles
+					_ this.pluginWizziSchemaPath
+						@ packageName
+						@ version
+
+			var schemaNames = []
+
+			foreach item in schemaRootFiles
+				if item.relFolder.length == 0
+					var ss = item.baseName.split('.')
+					if ss.length == 3 && ss[1] === 'wfschema'
+						_ schemaNames.push
+							@ ss[0]
+
+			var schemaTRootFiles
+				_ this.getIttfFiles
+					_ path.join
+						_ this.pluginWizziSchemaPath
+							@ packageName
+						@ 't'
+
+			log 'pluginSchemasTIttfDocuments.schemaTRootFiles', schemaTRootFiles
+
+			var schemasTDocuments = []
+			foreach item in schemaTRootFiles
+				if item.relFolder.length == 0
+					_ schemasTDocuments.push
+						@ item
+				else
+					var ss = item.relFolder.split('/')
+					if schemaNames.indexOf(ss[0]) < 0
+						_ schemasTDocuments.push
+							@ item
+			
+			return schemasTDocuments

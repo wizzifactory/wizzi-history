@@ -1,0 +1,154 @@
+  module  ids: 1 140
+    kind jsfile ids: 2 141
+    var util = require('util') ids: 3 142
+    var _ = require('lodash') ids: 4 143
+    var errors = require('../../../../../lib/errors') ids: 5 144
+    var verify = require('../../../../../lib/util/verify') ids: 6 145
+    var log = require('../../../../../lib/util/log')(module) ids: 7 146
+    var jsModelType = require('../../../../../legacy').jsModelType ids: 8 147
+    var md = module.exports = {} ids: 9 148
+    var myname = 'model.transformation.wizzischema.html.docs.main' ids: 10 149
+    set md.trans ids: 11 150
+      function  ids: 12 151
+        param model ids: 13 152
+        param ctx ids: 14 153
+        param callback ids: 15 154
+        if model.wzElement != 'wizzischema' ids: 16 155
+          _ errors.NodeError(myname + '.trans. Model wzElement must be wizzischema. Found: ' + model.wzElement, model); ids: 17 156
+        set ctx.result ids: 18 157
+          {  ids: 19 158
+            @ name model.wzName ids: 20 159
+            @ preserveTags model.preserveTags ids: 21 160
+        _ md.wizzischema(model, ctx) ids: 22 161
+        _ callback(null, ctx.result) ids: 23 162
+    set md.${wzelement} ids: 279 286
+      $args: wizzischema  $params: wzelement
+      function  ids: 281 287
+        param model ids: 282 288
+        param ctx ids: 283 289
+        param parent ids: 284 290
+        set ctx.result.requires = [] ids: 25 164
+        set ctx.result.exportTos = [] ids: 26 165
+        set ctx.result.elements = [] ids: 27 166
+        foreach exportTo in model.exportTos ids: 28 167
+          _ md.exportTo(exportTo, ctx, ctx.result) ids: 29 168
+        foreach element in model.elements ids: 30 169
+          _ md.element(element, ctx, ctx.result) ids: 31 170
+    set md.${wzelement} ids: 279 292
+      $args: exportTo  $params: wzelement
+      function  ids: 281 293
+        param model ids: 282 294
+        param ctx ids: 283 295
+        param parent ids: 284 296
+        _ parent.exportTos.push(model.wzName) ids: 33 172
+    set md.${wzelement} ids: 279 298
+      $args: element  $params: wzelement
+      function  ids: 281 299
+        param model ids: 282 300
+        param ctx ids: 283 301
+        param parent ids: 284 302
+        var flags = '' ids: 35 174
+        set flags += model.isAbstract ? 'is-abstract ' : '' ids: 36 175
+        set flags += model.addToChildren ? 'add-to-children ' : '' ids: 37 176
+        var node ids: 38 177
+          {  ids: 39 178
+            @ name model.wzId ids: 40 179
+            @ super model.superId ids: 41 180
+            @ isRoot model.isRoot ids: 42 181
+            @ tags model.tagName.split('|') ids: 43 182
+            @ flags flags ids: 44 183
+            @ attributes ids: 45 184
+              [  ids: 46 185
+            @ relations ids: 47 186
+              [  ids: 48 187
+            @ derived ids: 49 188
+              [  ids: 50 189
+            @ restricts ids: 51 190
+              [  ids: 52 191
+            @ methods ids: 53 192
+              [  ids: 54 193
+            @ comments ids: 55 194
+              [  ids: 56 195
+        var flatAttributes = model.getFlatAttributes() ids: 57 196
+        foreach attr in flatAttributes ids: 58 197
+          _ node.attributes.push(attr) ids: 59 198
+        var flatRelations = model.getFlatRelations() ids: 60 199
+        foreach r in flatRelations ids: 61 200
+          _ node.relations.push(r) ids: 62 201
+        foreach d in model.derived ids: 63 202
+          _ node.derived.push ids: 64 203
+            {  ids: 65 204
+              @ name d.wzId ids: 66 205
+              @ tags d.tagName.split('|') ids: 67 206
+        foreach m in model.methods ids: 68 207
+          var methodNode ids: 69 208
+            {  ids: 70 209
+              @ name m.wzName ids: 71 210
+              @ emitKey m.emitKey ids: 72 211
+              @ isStatic m.isStatic ids: 73 212
+              @ isKnownMethod m.isKnownMethod ids: 74 213
+              @ params ids: 75 214
+                [  ids: 76 215
+              @ statements ids: 77 216
+                [  ids: 78 217
+              @ comments ids: 79 218
+                [  ids: 80 219
+          foreach param in m.params ids: 81 220
+            _ methodNode.params.push(param.wzName) ids: 82 221
+          foreach stm in m.statements ids: 83 222
+            foreach item in normalizeJST(stm.wzName) ids: 84 223
+              _ methodNode.statements.push(item) ids: 85 224
+          foreach comment in m.comments ids: 86 225
+            _ methodNode.comments.push(comment.wzName) ids: 87 226
+          _ node.methods.push(methodNode) ids: 88 227
+        foreach restrict in model.restricts ids: 89 228
+          _ node.restricts.push(getRestrictFill(restrict)) ids: 90 229
+        foreach comment in model.comments ids: 91 230
+          _ node.comments.push(comment.wzName) ids: 92 231
+        _ parent.elements.push(node) ids: 93 232
+    function getRestrictFill ids: 94 233
+      param model ids: 95 234
+      var restrictCloned ids: 96 235
+        {  ids: 97 236
+          @ facets ids: 98 237
+            [  ids: 99 238
+          @ comments ids: 100 239
+            [  ids: 101 240
+      foreach facet in model.facets ids: 102 241
+        var facetCloned ids: 103 242
+          {  ids: 104 243
+            @ type facet.wzElement ids: 105 244
+            @ value facet.wzName ids: 106 245
+            @ comments ids: 107 246
+              [  ids: 108 247
+        foreach comment in facet.comments ids: 109 248
+          _ facetCloned.comments.push(comment.wzName) ids: 110 249
+        _ restrictCloned.facets.push(facetCloned) ids: 111 250
+      foreach comment in model.comments ids: 112 251
+        _ restrictCloned.comments.push(comment.wzName) ids: 113 252
+      return restrictCloned ids: 114 253
+    function normalizeJST ids: 115 254
+      param stm ids: 116 255
+      var json = JSON.parse(stm) ids: 117 256
+      var ret = [] ids: 118 257
+      if verify.isArray(json) ids: 119 258
+        foreach item in json ids: 120 259
+          _ ret.push(normalizeJSTNode(item)) ids: 121 260
+      else  ids: 122 261
+        _ ret.push(normalizeJSTNode(json)) ids: 123 262
+      return ret ids: 124 263
+    function normalizeJSTNode ids: 125 264
+      param jstnode ids: 126 265
+      var node ids: 127 266
+        {  ids: 128 267
+          @ tag jstnode.n ids: 129 268
+          @ name jstnode.n ids: 130 269
+          @ value jstnode.v ids: 131 270
+          @ statements ids: 132 271
+            [  ids: 133 272
+      if jsModelType.__tagElementMapping[jstnode.n] ids: 134 273
+        set node.name = jsModelType.__tagElementMapping[jstnode.n] ids: 135 274
+      if jstnode.childs ids: 136 275
+        foreach item in jstnode.childs ids: 137 276
+          _ node.statements.push(normalizeJSTNode(item)) ids: 138 277
+      return node ids: 139 278

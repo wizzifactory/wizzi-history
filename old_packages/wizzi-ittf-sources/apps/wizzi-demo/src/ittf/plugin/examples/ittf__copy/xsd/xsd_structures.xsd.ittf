@@ -1,0 +1,1158 @@
+﻿xsd 
+    xmlns xs http://www.w3.org/2001/XMLSchema
+    element-form-default qualified
+    language EN
+    target-namespace http://www.w3.org/2001/XMLSchema
+    version structures.xsd (wd-20091203)
+    # 
+        # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html
+    # 
+        # The simpleType element and all of its members are defined
+        # in datatypes.xsd
+    # 
+        # simple type for the value of the 'namespace' attr of
+        # 'any' and 'anyAttribute'
+    # 
+        # Value is
+        # ##any      - - any non-conflicting WFXML/attribute at all
+        # ##other    - - any non-conflicting WFXML/attribute from
+        # namespace other than targetNS
+        # ##local    - - any unqualified non-conflicting WFXML/attribute
+        # one or     - - any non-conflicting WFXML/attribute from
+        # more URI        the listed namespaces
+        # references
+        # (space separated)
+        # ##targetNamespace or ##local may appear in the above list, to
+        # refer to the targetNamespace of the enclosing
+        # schema or an absent targetNamespace respectively
+    # 
+        # notations for use within  schema documents
+    # 
+        # In keeping with the XML Schema WG's standard versioning policy,
+        # this schema document will persist at the URI
+        # http://www.w3.org/2009/12/XMLSchema.xsd.
+        # At the date of issue it can also be found at the URI
+        # http://www.w3.org/2009/XMLSchema/XMLSchema.xsd.
+        # The schema document at that URI may however change in the future,
+        # in order to remain compatible with the latest version of XSD
+        # and its namespace.  In other words, if XSD or the XML Schema
+        # namespace change, the version of this document at
+        # http://www.w3.org/2009/XMLSchema/XMLSchema.xsd will change accordingly;
+        # the version at http://www.w3.org/2009/12/XMLSchema.xsd will not change.
+        # Previous dated (and unchanging) versions of this schema document
+        # include:
+        # http://www.w3.org/2009/04/XMLSchema.xsd
+        # (XSD 1.1 Candidate Recommendation)
+        # http://www.w3.org/2004/10/XMLSchema.xsd
+        # (XSD 1.0 Recommendation, Second Edition)
+        # http://www.w3.org/2001/05/XMLSchema.xsd
+        # (XSD 1.0 Recommendation, First Edition)
+        # 
+    include datatypes.xsd
+    import http://www.w3.org/2001/xml.xsd
+        namespace http://www.w3.org/XML/1998/namespace
+        # 
+            # Get access to the xml: attribute groups for xml:lang
+            # as declared on 'schema' and 'documentation' below
+            # 
+    c-type openAttrs
+        # 
+            # This type is extended by almost all schema types
+            # to allow attributes from other namespaces to be
+            # added to user schemas.
+            # 
+        c-content-restrict xs:anyType
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type annotated
+        # 
+            # This type is extended by all types which allow annotation
+            # other than <schema> itself
+            # 
+        c-content-extend xs:openAttrs
+            sequence 
+                e-ref xs:annotation
+            a id
+                type xs:ID
+    c-type attribute
+        c-content-extend xs:annotated
+            sequence 
+                e simpleType
+                    type xs:localSimpleType
+                    min-occurs 0
+            ag-ref xs:defRef
+            a type
+                type xs:QName
+            a use
+                default optional
+                is-optional
+                s-type 
+                    restrict : xs:NMTOKEN
+                        enum prohibited
+                        enum optional
+                        enum required
+            a default
+                type xs:string
+            a fixed
+                type xs:string
+            a form
+                type xs:formChoice
+            a targetNamespace
+                type xs:anyURI
+            a inheritable
+                type xs:boolean
+    c-type topLevelAttribute
+        c-content-restrict xs:attribute
+            sequence 
+                e-ref xs:annotation
+                e simpleType
+                    type xs:localSimpleType
+                    min-occurs 0
+            a ref
+                is-prohibited
+            a form
+                is-prohibited
+            a use
+                is-prohibited
+            a targetNamespace
+                is-prohibited
+            a name
+                type xs:NCName
+                is-required
+            a inheritable
+                type xs:boolean
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type assertion
+        c-content-extend xs:annotated
+            a test
+                type xs:string
+            a xpathDefaultNamespace
+                type xs:xpathDefaultNamespace
+    c-type complexType
+        is-abstract
+        c-content-extend xs:annotated
+            group-ref xs:complexTypeModel
+            a name
+                type xs:NCName
+                # 
+                    # Will be restricted to required or prohibited
+            a mixed
+                type xs:boolean
+                is-optional
+                # 
+                    # Not allowed if simpleContent child is chosen.
+                    # May be overridden by setting on complexContent child.
+            a abstract
+                type xs:boolean
+                default false
+                is-optional
+            a final
+                type xs:derivationSet
+            a block
+                type xs:derivationSet
+            a defaultAttributesApply
+                type xs:boolean
+                default true
+                is-optional
+    c-type topLevelComplexType
+        c-content-restrict xs:complexType
+            sequence 
+                e-ref xs:annotation
+                group-ref xs:complexTypeModel
+            a name
+                type xs:NCName
+                is-required
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type localComplexType
+        c-content-restrict xs:complexType
+            sequence 
+                e-ref xs:annotation
+                group-ref xs:complexTypeModel
+            a name
+                is-prohibited
+            a abstract
+                is-prohibited
+            a final
+                is-prohibited
+            a block
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type restrictionType
+        c-content-extend xs:annotated
+            sequence 
+                choice 0-
+                    sequence 
+                        e-ref xs:openContent
+                        group-ref xs:typeDefParticle
+                    group-ref xs:simpleRestrictionModel
+                group-ref xs:attrDecls
+                group-ref xs:assertions
+            a base
+                type xs:QName
+                is-required
+    c-type complexRestrictionType
+        c-content-restrict xs:restrictionType
+            sequence 
+                e-ref xs:annotation
+                choice 0-
+                    # This choice is added simply to
+                        # make this a valid restriction per the REC
+                    sequence 
+                        e-ref xs:openContent
+                        group-ref xs:typeDefParticle
+                group-ref xs:attrDecls
+                group-ref xs:assertions
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type extensionType
+        c-content-extend xs:annotated
+            sequence 
+                e-ref xs:openContent
+                group-ref xs:typeDefParticle
+                group-ref xs:attrDecls
+                group-ref xs:assertions
+            a base
+                type xs:QName
+                is-required
+    c-type simpleRestrictionType
+        c-content-restrict xs:restrictionType
+            sequence 
+                e-ref xs:annotation
+                choice 0-
+                    # This choice is added simply to
+                        # make this a valid restriction per the REC
+                    group-ref xs:simpleRestrictionModel
+                group-ref xs:attrDecls
+                group-ref xs:assertions
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type simpleExtensionType
+        c-content-restrict xs:extensionType
+            sequence 
+                # 
+                    # No typeDefParticle group reference
+                e-ref xs:annotation
+                group-ref xs:attrDecls
+                group-ref xs:assertions
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type element
+        is-abstract
+        # 
+            # The element element can be used either
+            # at the top level to define an element-type binding globally,
+            # or within a content model to either reference a globally-defined
+            # element or type or declare an element-type binding locally.
+            # The ref form is not allowed at the top level.
+        c-content-extend xs:annotated
+            sequence 
+                choice 0-
+                    e simpleType
+                        type xs:localSimpleType
+                    e complexType
+                        type xs:localComplexType
+                e alternative
+                    type xs:altType
+                    min-occurs 0
+                    max-occurs unbounded
+                group-ref xs:identityConstraint
+            ag-ref xs:defRef
+            ag-ref xs:occurs
+            a type
+                type xs:QName
+            a substitutionGroup
+                s-type 
+                    list xs:QName
+            a default
+                type xs:string
+            a fixed
+                type xs:string
+            a nillable
+                type xs:boolean
+                is-optional
+            a abstract
+                type xs:boolean
+                default false
+                is-optional
+            a final
+                type xs:derivationSet
+            a block
+                type xs:blockSet
+            a form
+                type xs:formChoice
+            a targetNamespace
+                type xs:anyURI
+    c-type topLevelElement
+        c-content-restrict xs:element
+            sequence 
+                e-ref xs:annotation
+                e alternative
+                    type xs:altType
+                    min-occurs 0
+                    max-occurs unbounded
+                choice 0-
+                    e simpleType
+                        type xs:localSimpleType
+                    e complexType
+                        type xs:localComplexType
+                group-ref xs:identityConstraint
+            a ref
+                is-prohibited
+            a form
+                is-prohibited
+            a targetNamespace
+                is-prohibited
+            a minOccurs
+                is-prohibited
+            a maxOccurs
+                is-prohibited
+            a name
+                type xs:NCName
+                is-required
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type localElement
+        c-content-restrict xs:element
+            sequence 
+                e-ref xs:annotation
+                e alternative
+                    type xs:altType
+                    min-occurs 0
+                    max-occurs unbounded
+                choice 0-
+                    e simpleType
+                        type xs:localSimpleType
+                    e complexType
+                        type xs:localComplexType
+                group-ref xs:identityConstraint
+            a substitutionGroup
+                is-prohibited
+            a final
+                is-prohibited
+            a abstract
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type altType
+        # 
+            # This type is used for 'alternative' elements.
+            # 
+        c-content-extend xs:annotated
+            choice 0-
+                e simpleType
+                    type xs:localSimpleType
+                e complexType
+                    type xs:localComplexType
+            a test
+                type xs:string
+                is-optional
+            a type
+                type xs:QName
+                is-optional
+            a xpathDefaultNamespace
+                type xs:xpathDefaultNamespace
+    c-type group
+        is-abstract
+        # 
+            # group type for explicit groups, named top-level groups and
+            # group references
+        c-content-extend xs:annotated
+            group-ref xs:particle
+            ag-ref xs:defRef
+            ag-ref xs:occurs
+    c-type realGroup
+        c-content-restrict xs:group
+            sequence 
+                e-ref xs:annotation
+                choice 0-1
+                    e-ref xs:all
+                    e-ref xs:choice
+                    e-ref xs:sequence
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type namedGroup
+        c-content-restrict xs:realGroup
+            sequence 
+                e-ref xs:annotation
+                choice 1-1
+                    e all
+                        c-type 
+                            c-content-restrict xs:all
+                                group-ref xs:allModel
+                                a minOccurs
+                                    is-prohibited
+                                a maxOccurs
+                                    is-prohibited
+                                any-a 
+                                    namespace ##other
+                                    process-contents lax
+                    e choice
+                        type xs:simpleExplicitGroup
+                    e sequence
+                        type xs:simpleExplicitGroup
+            a name
+                type xs:NCName
+                is-required
+            a ref
+                is-prohibited
+            a minOccurs
+                is-prohibited
+            a maxOccurs
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type groupRef
+        c-content-restrict xs:realGroup
+            sequence 
+                e-ref xs:annotation
+            a ref
+                type xs:QName
+                is-required
+            a name
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type explicitGroup
+        # 
+            # group type for the three kinds of group
+        c-content-restrict xs:group
+            sequence 
+                e-ref xs:annotation
+                group-ref xs:nestedParticle
+            a name
+                is-prohibited
+            a ref
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type simpleExplicitGroup
+        c-content-restrict xs:explicitGroup
+            sequence 
+                e-ref xs:annotation
+                group-ref xs:nestedParticle
+            a minOccurs
+                is-prohibited
+            a maxOccurs
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type all
+        # 
+            # Only elements allowed inside
+        c-content-restrict xs:explicitGroup
+            group-ref xs:allModel
+            a minOccurs
+                default 1
+                is-optional
+                s-type 
+                    restrict : xs:nonNegativeInteger
+                        enum 0
+                        enum 1
+            a maxOccurs
+                default 1
+                is-optional
+                s-type 
+                    restrict : xs:allNNI
+                        enum 0
+                        enum 1
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type wildcard
+        c-content-extend xs:annotated
+            ag-ref xs:anyAttrGroup
+    c-type attributeGroup
+        is-abstract
+        c-content-extend xs:annotated
+            group-ref xs:attrDecls
+            ag-ref xs:defRef
+    c-type namedAttributeGroup
+        c-content-restrict xs:attributeGroup
+            sequence 
+                e-ref xs:annotation
+                group-ref xs:attrDecls
+            a name
+                type xs:NCName
+                is-required
+            a ref
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type attributeGroupRef
+        c-content-restrict xs:attributeGroup
+            sequence 
+                e-ref xs:annotation
+            a ref
+                type xs:QName
+                is-required
+            a name
+                is-prohibited
+            any-a 
+                namespace ##other
+                process-contents lax
+    c-type keybase
+        c-content-extend xs:annotated
+            sequence 0-
+                e-ref xs:selector
+                e-ref xs:field
+            a name
+                type xs:NCName
+            a ref
+                type xs:QName
+    c-type anyType
+        mixed true
+        # 
+            # Not the real urType, but as close an approximation as we can
+            # get in the XML representation
+        sequence 
+            any 0-n
+                process-contents lax
+        any-a 
+            process-contents lax
+    group schemaTop
+        # 
+            # This group is for the
+            # elements which occur freely at the top level of schemas.
+            # All of their types are based on the "annotated" type by extension.
+        choice 
+            group-ref xs:redefinable
+            e-ref xs:element
+            e-ref xs:attribute
+            e-ref xs:notation
+    group redefinable
+        # 
+            # This group is for the
+            # elements which can self-redefine (see <redefine> below).
+        choice 
+            e-ref xs:simpleType
+            e-ref xs:complexType
+            e-ref xs:group
+            e-ref xs:attributeGroup
+    group typeDefParticle
+        # 
+            # 'complexType' uses this
+        choice 
+            e group
+                type xs:groupRef
+            e-ref xs:all
+            e-ref xs:choice
+            e-ref xs:sequence
+    group nestedParticle
+        choice 
+            e element
+                type xs:localElement
+            e group
+                type xs:groupRef
+            e-ref xs:choice
+            e-ref xs:sequence
+            e-ref xs:any
+    group particle
+        choice 
+            e element
+                type xs:localElement
+            e group
+                type xs:groupRef
+            e-ref xs:all
+            e-ref xs:choice
+            e-ref xs:sequence
+            e-ref xs:any
+    group attrDecls
+        sequence 
+            choice 0-n
+                e attribute
+                    type xs:attribute
+                e attributeGroup
+                    type xs:attributeGroupRef
+            e-ref xs:anyAttribute
+    group assertions
+        sequence 
+            e assert
+                type xs:assertion
+                min-occurs 0
+                max-occurs unbounded
+    group complexTypeModel
+        choice 
+            e-ref xs:simpleContent
+            e-ref xs:complexContent
+            sequence 
+                # 
+                    # This branch is short for
+                    # <complexContent>
+                    # <restriction base="xs:anyType">
+                    # ...
+                    # </restriction>
+                    # </complexContent>
+                e-ref xs:openContent
+                group-ref xs:typeDefParticle
+                group-ref xs:attrDecls
+                group-ref xs:assertions
+    group allModel
+        sequence 
+            e-ref xs:annotation
+            choice 0-n
+                # This choice with min/max is here to
+                    # avoid a pblm with the Elt:All/Choice/Seq
+                    # Particle derivation constraint
+                e element
+                    type xs:localElement
+                e-ref xs:any
+                e group
+                    c-type 
+                        sequence 
+                            e-ref xs:annotation
+                        a ref
+                            type xs:QName
+                            is-required
+                        a minOccurs
+                            fixed 1
+                            type xs:nonNegativeInteger
+                        a maxOccurs
+                            fixed 1
+                            type xs:nonNegativeInteger
+                        any-a 
+                            namespace ##other
+                            process-contents lax
+    group identityConstraint
+        # The three kinds of identity constraints, all with
+            # type of or derived from 'keybase'.
+            # 
+        choice 
+            e-ref xs:unique
+            e-ref xs:key
+            e-ref xs:keyref
+    s-type formChoice
+        # 
+            # A utility type, not for public use
+        restrict : xs:NMTOKEN
+            enum qualified
+            enum unqualified
+    s-type reducedDerivationControl
+        # 
+            # A utility type, not for public use
+        restrict : xs:derivationControl
+            enum extension
+            enum restriction
+    s-type derivationSet
+        # 
+            # A utility type, not for public use
+        # 
+            # #all or (possibly empty) subset of {extension, restriction}
+        union 
+            s-type 
+                restrict : xs:token
+                    enum #all
+            s-type 
+                list xs:reducedDerivationControl
+    s-type typeDerivationControl
+        # 
+            # A utility type, not for public use
+        restrict : xs:derivationControl
+            enum extension
+            enum restriction
+            enum list
+            enum union
+    s-type fullDerivationSet
+        # 
+            # A utility type, not for public use
+        # 
+            # #all or (possibly empty) subset of {extension, restriction, list, union}
+        union 
+            s-type 
+                restrict : xs:token
+                    enum #all
+            s-type 
+                list xs:typeDerivationControl
+    s-type allNNI
+        # 
+            # for maxOccurs
+        union xs:nonNegativeInteger
+            s-type 
+                restrict : xs:NMTOKEN
+                    enum unbounded
+    s-type blockSet
+        # 
+            # A utility type, not for public use
+        # 
+            # #all or (possibly empty) subset of {substitution, extension,
+            # restriction}
+        union 
+            s-type 
+                restrict : xs:token
+                    enum #all
+            s-type 
+                list 
+                    s-type 
+                        restrict : xs:derivationControl
+                            enum extension
+                            enum restriction
+                            enum substitution
+    s-type namespaceList
+        # 
+            # A utility type, not for public use
+        union xs:specialNamespaceList xs:basicNamespaceList
+    s-type basicNamespaceList
+        # 
+            # A utility type, not for public use
+        list 
+            s-type 
+                union xs:anyURI
+                    s-type 
+                        restrict : xs:token
+                            enum ##targetNamespace
+                            enum ##local
+    s-type specialNamespaceList
+        # 
+            # A utility type, not for public use
+        restrict : xs:token
+            enum ##any
+            enum ##other
+    s-type qnameList
+        # 
+            # A utility type, not for public use
+            # 
+        list 
+            s-type 
+                union xs:QName
+                    s-type 
+                        restrict : xs:token
+                            enum ##defined
+                            enum ##definedSibling
+    s-type qnameListA
+        # 
+            # A utility type, not for public use
+            # 
+        list 
+            s-type 
+                union xs:QName
+                    s-type 
+                        restrict : xs:token
+                            enum ##defined
+    s-type xpathDefaultNamespace
+        union xs:anyURI
+            s-type 
+                restrict : xs:token
+                    enum ##defaultNamespace
+                    enum ##targetNamespace
+                    enum ##local
+    s-type public
+        # 
+            # A utility type, not for public use
+        # 
+            # A public identifier, per ISO 8879
+        restrict : xs:token
+    e schema
+        id schema
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-schema
+        c-type 
+            c-content-extend xs:openAttrs
+                sequence 
+                    choice 0-n
+                        e-ref xs:include
+                        e-ref xs:import
+                        e-ref xs:redefine
+                        e-ref xs:override
+                        e-ref xs:annotation
+                    sequence 0-
+                        e-ref xs:defaultOpenContent
+                        e-ref xs:annotation
+                    sequence 0-n
+                        group-ref xs:schemaTop
+                        e-ref xs:annotation
+                a targetNamespace
+                    type xs:anyURI
+                a version
+                    type xs:token
+                a finalDefault
+                    type xs:fullDerivationSet
+                    default 
+                    is-optional
+                a blockDefault
+                    type xs:blockSet
+                    default 
+                    is-optional
+                a attributeFormDefault
+                    type xs:formChoice
+                    default unqualified
+                    is-optional
+                a elementFormDefault
+                    type xs:formChoice
+                    default unqualified
+                    is-optional
+                a defaultAttributes
+                    type xs:QName
+                a xpathDefaultNamespace
+                    type xs:xpathDefaultNamespace
+                    default ##local
+                    is-optional
+                a id
+                    type xs:ID
+                a-ref xml:lang
+        key element
+            selector 
+                xpath xs:element
+            field 
+                xpath @name
+        key attribute
+            selector 
+                xpath xs:attribute
+            field 
+                xpath @name
+        key type
+            selector 
+                xpath xs:complexType|xs:simpleType
+            field 
+                xpath @name
+        key group
+            selector 
+                xpath xs:group
+            field 
+                xpath @name
+        key attributeGroup
+            selector 
+                xpath xs:attributeGroup
+            field 
+                xpath @name
+        key notation
+            selector 
+                xpath xs:notation
+            field 
+                xpath @name
+        key identityConstraint
+            selector 
+                xpath .//xs:key|.//xs:unique|.//xs:keyref
+            field 
+                xpath @name
+    e anyAttribute
+        id anyAttribute
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-anyAttribute
+        c-type 
+            c-content-extend xs:wildcard
+                a notQName
+                    type xs:qnameListA
+                    is-optional
+    e complexContent
+        id complexContent
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-complexContent
+        c-type 
+            c-content-extend xs:annotated
+                choice 
+                    e restriction
+                        type xs:complexRestrictionType
+                    e extension
+                        type xs:extensionType
+                a mixed
+                    type xs:boolean
+                    # 
+                        # Overrides any setting on complexType parent.
+    e openContent
+        id openContent
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-openContent
+        c-type 
+            c-content-extend xs:annotated
+                sequence 
+                    e any
+                        min-occurs 0
+                        type xs:wildcard
+                a mode
+                    default interleave
+                    is-optional
+                    s-type 
+                        restrict : xs:NMTOKEN
+                            enum none
+                            enum interleave
+                            enum suffix
+    e defaultOpenContent
+        id defaultOpenContent
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-defaultOpenContent
+        c-type 
+            c-content-extend xs:annotated
+                sequence 
+                    e any
+                        type xs:wildcard
+                a appliesToEmpty
+                    type xs:boolean
+                    default false
+                    is-optional
+                a mode
+                    default interleave
+                    is-optional
+                    s-type 
+                        restrict : xs:NMTOKEN
+                            enum interleave
+                            enum suffix
+    e simpleContent
+        id simpleContent
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-simpleContent
+        c-type 
+            c-content-extend xs:annotated
+                choice 
+                    e restriction
+                        type xs:simpleRestrictionType
+                    e extension
+                        type xs:simpleExtensionType
+    e complexType
+        type xs:topLevelComplexType
+        id complexType
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-complexType
+    e element
+        type xs:topLevelElement
+        id element
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-element
+    e all
+        type xs:all
+        id all
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-all
+    e choice
+        type xs:explicitGroup
+        id choice
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-choice
+    e sequence
+        type xs:explicitGroup
+        id sequence
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-sequence
+    e group
+        type xs:namedGroup
+        id group
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-group
+    e any
+        id any
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-any
+        c-type 
+            c-content-extend xs:wildcard
+                a notQName
+                    type xs:qnameList
+                    is-optional
+                ag-ref xs:occurs
+    e attribute
+        type xs:topLevelAttribute
+        id attribute
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-attribute
+    e attributeGroup
+        type xs:namedAttributeGroup
+        id attributeGroup
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-attributeGroup
+    e include
+        id include
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-include
+        c-type 
+            c-content-extend xs:annotated
+                a schemaLocation
+                    type xs:anyURI
+                    is-required
+    e redefine
+        id redefine
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-redefine
+        c-type 
+            c-content-extend xs:openAttrs
+                choice 0-n
+                    e-ref xs:annotation
+                    group-ref xs:redefinable
+                a schemaLocation
+                    type xs:anyURI
+                    is-required
+                a id
+                    type xs:ID
+    e override
+        id override
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-override
+        c-type 
+            c-content-extend xs:openAttrs
+                sequence 
+                    e-ref xs:annotation
+                    group-ref xs:schemaTop
+                a schemaLocation
+                    type xs:anyURI
+                    is-required
+                a id
+                    type xs:ID
+    e import
+        id import
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-import
+        c-type 
+            c-content-extend xs:annotated
+                a namespace
+                    type xs:anyURI
+                a schemaLocation
+                    type xs:anyURI
+    e selector
+        id selector
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-selector
+        c-type 
+            c-content-extend xs:annotated
+                a xpath
+                    is-required
+                    s-type 
+                        # A subset of XPath expressions for use
+                            # in selectors
+                        # A utility type, not for public
+                            # use
+                        restrict : xs:token
+                a xpathDefaultNamespace
+                    type xs:xpathDefaultNamespace
+    e field
+        id field
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-field
+        c-type 
+            c-content-extend xs:annotated
+                a xpath
+                    is-required
+                    s-type 
+                        # A subset of XPath expressions for use
+                            # in fields
+                        # A utility type, not for public
+                            # use
+                        restrict : xs:token
+                a xpathDefaultNamespace
+                    type xs:xpathDefaultNamespace
+    e unique
+        type xs:keybase
+        id unique
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-unique
+    e key
+        type xs:keybase
+        id key
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-key
+    e keyref
+        id keyref
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-keyref
+        c-type 
+            c-content-extend xs:keybase
+                a refer
+                    type xs:QName
+    e notation
+        id notation
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-notation
+        c-type 
+            c-content-extend xs:annotated
+                a name
+                    type xs:NCName
+                    is-required
+                a public
+                    type xs:public
+                a system
+                    type xs:anyURI
+    e appinfo
+        id appinfo
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-appinfo
+        c-type 
+            mixed true
+            sequence 0-n
+                any 
+                    process-contents lax
+            a source
+                type xs:anyURI
+            any-a 
+                namespace ##other
+                process-contents lax
+    e documentation
+        id documentation
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-documentation
+        c-type 
+            mixed true
+            sequence 0-n
+                any 
+                    process-contents lax
+            a source
+                type xs:anyURI
+            a-ref xml:lang
+            any-a 
+                namespace ##other
+                process-contents lax
+    e annotation
+        id annotation
+        # 
+            # source http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-annotation
+        c-type 
+            c-content-extend xs:openAttrs
+                choice 0-n
+                    e-ref xs:appinfo
+                    e-ref xs:documentation
+                a id
+                    type xs:ID
+    ag occurs
+        # 
+            # for all particles
+        a minOccurs
+            type xs:nonNegativeInteger
+            default 1
+            is-optional
+        a maxOccurs
+            type xs:allNNI
+            default 1
+            is-optional
+    ag defRef
+        # 
+            # for element, group and attributeGroup,
+            # which both define and reference
+        a name
+            type xs:NCName
+        a ref
+            type xs:QName
+    ag anyAttrGroup
+        a namespace
+            type xs:namespaceList
+            is-optional
+        a notNamespace
+            is-optional
+            s-type 
+                restrict : xs:basicNamespaceList
+                    min-length 1
+        a processContents
+            default strict
+            is-optional
+            s-type 
+                restrict : xs:NMTOKEN
+                    enum skip
+                    enum lax
+                    enum strict
+    notation XMLSchemaStructures
+        public structures
+        system http://www.w3.org/2000/08/XMLSchema.xsd
+    notation XML
+        public REC-xml-19980210
+        system http://www.w3.org/TR/1998/REC-xml-19980210
