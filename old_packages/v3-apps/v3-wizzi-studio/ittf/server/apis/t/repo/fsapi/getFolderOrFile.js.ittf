@@ -1,0 +1,49 @@
+﻿$group
+
+	@ getFolderOrFile
+		function
+			param userId
+			param projectId
+			param itemPath
+			param callback
+
+			_ repoFS.isFile
+				@ userId
+				@ projectId
+				@ itemPath
+				f_cb( isfile )
+					if isfile
+						_ repoFS.readFile
+							@ userId
+							@ projectId
+							@ itemPath
+							f_cb( result )
+								return
+									_ callback
+										@ null
+										{
+											@ status
+												_ success
+													@ 'File retrieved ' + userId + '/' + projectId + '/' + itemPath
+											@ data
+												{
+													@ kind 1
+													@ content result
+					else
+						_ repoFS.readDir
+							@ userId
+							@ projectId
+							@ itemPath
+							f_cb( result )
+								return
+									_ callback
+										@ null
+										{
+											@ status
+												_ success
+													@ 'Folder retrieved ' + userId + '/' + projectId + '/' + itemPath
+											@ data
+												{
+													@ kind 0
+													@ items result
+

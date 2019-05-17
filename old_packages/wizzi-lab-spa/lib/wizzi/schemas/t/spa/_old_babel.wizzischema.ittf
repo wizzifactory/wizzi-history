@@ -1,0 +1,39 @@
+$group
+	e babel : spaitem
+		restrict
+			enum 5
+			enum 6
+		r babelOptional/s
+		r babelPlugin/s
+		r babelExtra/s
+		r feature/s
+		r babelEnv/s
+	
+	e babelEnv : spaitem
+		tag env
+		r babelOptional/s
+		r babelPlugin/s
+		r babelExtra/s
+		r feature/s
+	e babelExtra : spaitem
+		tag extra
+	e babelOptional : spaitem
+		tag optional
+		restrict
+			enum es7.decorators
+			enum es7.objectRestSpread
+	e babelPlugin : spaitem
+		# babel plugin
+		tag plugin
+		r jsProp/s
+	e babelPreset : spaitem
+		# babel preset
+		tag preset
+		restrict
+			enum env
+			enum es2017
+			enum es2016
+			enum es2015
+			enum react
+	
+		

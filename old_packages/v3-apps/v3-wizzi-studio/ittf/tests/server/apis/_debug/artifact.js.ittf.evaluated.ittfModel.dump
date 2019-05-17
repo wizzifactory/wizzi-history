@@ -1,0 +1,41 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    +  ids: undefined undefined
+    import path ids: undefined undefined
+    import util ids: undefined undefined
+    +  ids: undefined undefined
+    var expect = require('expect.js') ids: undefined undefined
+    var artifactsBasePath ids: undefined undefined
+      _ path.join ids: undefined undefined
+        @ __dirname ids: undefined undefined
+        @ 'artifactsRepo' ids: undefined undefined
+    var api = {} ids: undefined undefined
+    _ require ids: undefined undefined
+      @ '../../../server/apis/artifact' ids: undefined undefined
+      (  ids: undefined undefined
+        @ null ids: undefined undefined
+        {  ids: undefined undefined
+          @ artifactsBasePath artifactsBasePath ids: undefined undefined
+        @ api ids: undefined undefined
+    var artifactApi = api.artifact ids: undefined undefined
+    log 'artifactApi', artifactApi ids: undefined undefined
+    describe artifact creation ids: undefined undefined
+      before-async  ids: undefined undefined
+        _ del ids: undefined undefined
+          [  ids: undefined undefined
+            _ path.join ids: undefined undefined
+              @ artifactsBasePath ids: undefined undefined
+              @ '/**/.*' ids: undefined undefined
+        _ done() ids: undefined undefined
+      it-async should create a js artifact ids: undefined undefined
+        log 'should create a js artifact' ids: undefined undefined
+        _ artifactApi.create.artifact ids: undefined undefined
+          @ 'examples' ids: undefined undefined
+          @ 'ecma2015' ids: undefined undefined
+          @ 'js' ids: undefined undefined
+          function  ids: undefined undefined
+            param err ids: undefined undefined
+            param result ids: undefined undefined
+            log 'create.artifact', err, result ids: undefined undefined
+            _ expect(result).to.be.an('object') ids: undefined undefined
+            _ done() ids: undefined undefined

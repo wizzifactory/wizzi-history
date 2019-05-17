@@ -1,0 +1,57 @@
+﻿$group
+
+	post( /api/wf/jswizzify )
+
+		check-params( )
+			not-empty( body, source )
+			optional( body, checked )
+
+		var isChecked = checked === 'true' ? true : false
+
+		_ wfApi.jsWizzify
+			@ source
+			@ isChecked 
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/wf/htmlwizzify )
+
+		check-params( )
+			not-empty( body, source )
+
+		_ wfApi.htmlWizzify
+			@ source
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/wf/csswizzify )
+
+		check-params( )
+			not-empty( body, source )
+
+		_ wfApi.cssWizzify
+			@ source
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/wf/xmlwizzify )
+
+		check-params( )
+			not-empty( body, source )
+
+		_ wfApi.xmlWizzify
+			@ source
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

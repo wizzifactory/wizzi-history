@@ -1,0 +1,106 @@
+﻿$group
+
+	function emitTypes
+		param types
+		param context
+		# log 'emit types', types
+
+		var sb = ['ast babylon']
+
+		if context && context.builders
+			_ sb.push('\tbuilders')
+			for var k in context.builders
+				_ sb.push('\t\t@ ' + k)
+
+		if context && context.visitors
+			_ sb.push('\tvisitors')
+			for var k in context.visitors
+				_ sb.push('\t\t@ ' + k)
+
+		if context && context.aliases
+			_ sb.push('\taliases')
+			for var k in context.aliases
+				_ sb.push('\t\talias ' + k)
+				for var t in context.aliases[k]
+					_ sb.push('\t\t\t@ ' + t)
+
+		foreach type in types
+			# log 'type', type
+			_ sb.push('\ttype ' + type.name )
+			foreach tp in type.properties
+				if tp.name == 'inherits' ||
+					\b tp.name == 'deprecatedAlias'
+					var name = tp.name == 'deprecatedAlias' ? 'deprecated-alias' : tp.name
+					if tp.values.length < 1
+						throw new Error('emitTypes - warning missing values tp ' + tp)
+					else
+						_ sb.push('\t\t' + name + ' ' + tp.values[0].value)
+			foreach tp in type.properties
+				if tp.name == 'aliases' ||
+					\b tp.name == 'builder' ||
+					\b tp.name == 'visitor'
+					if tp.values.length < 1
+						log 'tp', tp
+					var name = tp.name == 'aliases' ? 'alias' : tp.name
+					foreach v in tp.values
+						_ sb.push('\t\t' + name + ' ' + v.value)
+				elif tp.name == 'inherits' ||
+					\b tp.name == 'deprecatedAlias'
+				elif tp.name == 'fields'
+					foreach v in tp.values
+						_ sb.push('\t\t' + v.name + ' ' + v.value)
+						if v.properties && v.properties.length > 0
+							foreach vp in v.properties
+								if vp.name == 'assertValueType'
+									if vp.arguments.length == 1
+										_ sb.push('\t\t\tvalue-type ' + vp.arguments[0].value)
+									else
+										log 'tp', tp
+										throw new Error('Emit assertValueType argument.length invalid')
+								elif vp.name == 'assertNodeType'
+									foreach arg in vp.arguments
+										_ sb.push('\t\t\tnode-type ' + arg.value)
+								elif vp.name == 'assertEach'
+									foreach arg in vp.arguments
+										# log 'each arg', arg
+										if arg.name == 'assertNodeOrValueType'
+											foreach arg2 in arg.arguments
+												_ sb.push('\t\t\teach-node-or-value-type ' + arg2.value)
+										elif arg.name == 'assertNodeType'
+											foreach arg2 in arg.arguments
+												_ sb.push('\t\t\teach-node-type ' + arg2.value)
+										else
+											log 'tp', tp
+											throw new Error('Emit assertEach argument name not managed' + arg.name)
+								elif vp.name == 'assertOneOf'
+									foreach arg in vp.arguments
+										_ sb.push('\t\t\tone-of ' + arg.name)
+										if arg.kind
+											_ sb.push('\t\t\t\tkind ' + arg.kind)
+								elif vp.name == 'assertNodeOrValueType'
+									foreach arg in vp.arguments
+										_ sb.push('\t\t\tnode-or-value-type ' + arg.value)
+								elif typeof(vp.value) != 'undefined'
+									_ sb.push('\t\t\t' + vp.name + ' ' + vp.value)
+								elif vp.params && vp.params.length > 0
+									_ sb.push('\t\t\tvalidate-method')
+									foreach param in vp.params
+										_ sb.push('\t\t\t\t\param ' + param.name)
+								else
+									throw new Error('Unexpected property name ' + vp.name + '/' + vp.value + ' in ' + tp.name)
+				else
+					throw new Error('emitTypes property not managed: '  + tp.name)
+			_ sb.push('')
+
+		var ittfASTFile
+			_ path.join
+				@ __dirname
+				@ 'outputs'
+				@ 'babylon.ast_types.ittf'
+
+		log ittfASTFile
+		_ wizzi.file.write
+			@ ittfASTFile
+			@ sb.join('\n')
+
+

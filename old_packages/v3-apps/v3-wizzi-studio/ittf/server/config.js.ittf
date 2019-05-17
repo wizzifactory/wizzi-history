@@ -1,0 +1,62 @@
+﻿module
+	kind jsfile
+
+	var path = require('path')
+
+	$include wizzi-options
+
+    var md
+        set module.exports
+            { 
+
+    set md.app
+		{
+			@ title '${spa.title}'
+			@ description '${spa.description}'
+			@ keywords '${spa.keywords}'
+			@ googleAnalyticsTrackingID (process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID')
+			
+	set md.port = process.env.PORT || ${spa.port}
+			
+	$if spa.session
+		set md.sessionCookie
+			{ 
+				@ maxAge 24 * (60 * 60) * 1000
+				@ httpOnly true
+				@ secure false
+		set md.sessionSecret = '${spa.session.secret}'
+		set md.sessionCollection = 'sessions'
+		set md.sessionKey = 'sessionId'
+
+	#
+		set md.logo = 'modules/core/client/img/brand/logo.png'
+		set md.favicon = 'modules/core/client/img/brand/favicon.ico'
+		set md.repoBaseUri = path.join(__dirname, 'data', 'repo')
+		set md.studioBasePath = path.join(__dirname, 'data', 'studio')
+
+	# set md.repoUri = 'mongodb://localhost:27017/darvin'
+	# set md.repoBaseFolderUri = 'c://users'
+	set md.repoUri = 'file://'
+	set md.repoBaseFolderUri = path.join(__dirname, 'data', 'repo')
+	set md.metaBasePath = path.join(__dirname, 'data', 'meta')
+	set md.studioBasePath = path.join(__dirname, 'data', 'studio')
+	set md.jobsBasePath = path.join(__dirname, 'data', 'jobs')
+	set md.storeKind = 'filesystem'
+	set md.plugins
+		[
+			@ 'wizzi-core'
+			@ 'wizzi-meta'
+			@ 'wizzi-js'
+			@ 'wizzi-html'
+			@ 'wizzi-docs'
+	set md.user = 'stefi'
+	set md.role = 'admin'
+
+	set md.set
+        function 
+            param key
+            param value
+            set md[key] = value
+			_ onChange(key)
+
+	function onChange

@@ -1,0 +1,29 @@
+spa
+	# from https://github.com/glenjamin/webpack-hot-middleware/tree/master/example
+	package webpack-hot-middleware
+		version 0.0.1
+		license MIT
+		author
+			name stefano bassoli
+			email sbassoli.dev@gmail.com
+		script start "node server"
+	server express
+		env dev
+	path ROOT_PATH path.resolve(__dirname)
+	path SRC_PATH path.resolve(__dirname, 'src')
+	path BUILD_PATH path.resolve(__dirname, 'build')
+	webpack
+		techne hot-middleware
+		entry
+			[
+				@ 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'
+				@ path.join(SRC_PATH, 'main.js')
+		output
+			path __dirname
+			public-path '/'
+			filename 'bundle.js'
+		plugin occurrence-order
+		plugin hot-module-replacement
+		plugin no-errors
+		omit-extension js
+	babel 5

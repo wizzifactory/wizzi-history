@@ -1,0 +1,35 @@
+﻿module 
+    kind jsfile
+	+
+    var fs = require('fs')
+	var path = require('path')
+	var babylon = require('babylon')
+	var traverse = require('babel-traverse').default
+	log 'traverse', traverse
+	+
+    var fileName
+		_ path.join
+			@ __dirname
+			@ 'sources'
+			@ 'source_1.js'
+	+
+    _ fs.readFile
+        @ fileName
+        function 
+            param err
+            param data
+            if err
+                throw err
+			var code = data.toString()
+			log 'code', code
+			var ast = babylon.parse(code)
+			_ traverse
+				@ ast
+				{ 
+					@ enter
+						function 
+							param path
+							log 'path.node', path.node
+							for var key in path
+								log 'key', key
+							# if ((path.node.type === "Identifier") && (path.node.name === "n"))

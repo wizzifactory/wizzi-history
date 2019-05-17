@@ -1,0 +1,53 @@
+spa
+	package webpack-redux-express
+		version 0.0.1
+		license MIT
+		author
+			name stefano bassoli
+			email sbassoli.dev@gmail.com
+		main index.js
+		script start "node src/server/index"
+		depend node-uuid
+			version ^1.4.7
+		depend qs
+			version ^4.0.0
+		
+	server express
+		env dev
+	
+	path ROOT_PATH path.resolve(__dirname)
+	path SRC_PATH path.resolve(__dirname, 'src')
+	path CLIENT_PATH path.resolve(__dirname, 'src', 'client')
+	path BUILD_PATH path.resolve(__dirname, 'build')
+	webpack
+		eval-source-map
+		resolve-ext
+		resolve-ext .js
+		resolve-ext .jsx
+		entry
+			[
+				@ 'webpack-hot-middleware/client'
+				@ CLIENT_PATH
+		output
+			path BUILD_PATH
+			filename 'bundle.js'
+			public-path '/static/'
+		loader babel
+			test .js
+			include SRC_PATH
+		loader babel
+			test .jsx
+			include SRC_PATH
+			techne babel-5-react
+		loader style-loader!css-loader
+			test .css
+			include SRC_PATH
+		plugin occurrence-order
+		plugin hot-module-replacement
+		plugin no-errors
+	babel 5
+		env start
+			techne survivejs
+	react
+		flux redux
+			persist redux-persist

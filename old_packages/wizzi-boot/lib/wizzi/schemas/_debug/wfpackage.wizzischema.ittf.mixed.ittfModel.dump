@@ -1,0 +1,93 @@
+  wizzischema wfpackage ids: 1 36
+    # A schema modeling a WizziFactory package ids: 2 37
+    e wfpackage ids: 3 38
+      # The root tag of the wfpackage schema. ids: 4 39
+      a title ids: 5 40
+      a ${name} ids: 143 148
+        $args: srcCwd, src-cwd  $params: name, tag|@@null, defaultValue|@@null
+        tag ${tag} ids: 145 149
+        $if defaultValue ids: 146 150
+          default ${defaultValue} ids: 147 151
+      a ${name} ids: 143 152
+        $args: assetsCwd, assets-cwd  $params: name, tag|@@null, defaultValue|@@null
+        tag ${tag} ids: 145 153
+        $if defaultValue ids: 146 154
+          default ${defaultValue} ids: 147 155
+      r buildCwd/s ids: 8 43
+      r schema/s ids: 9 44
+      $group  ids: 71 107
+        m getJobs ids: 72 108
+          var ret ids: 73 109
+            {  ids: 74 110
+              @ name this.wzName ids: 75 111
+              @ title this.title ids: 76 112
+              @ srcCwd this.srcCwd ids: 77 113
+              @ assetsCwd this.assetsCwd ids: 78 114
+              @ buildCwds ids: 79 115
+                [  ids: 80 116
+              @ schemas ids: 81 117
+                [  ids: 82 118
+              @ jobs ids: 83 119
+                [  ids: 84 120
+                  {  ids: 85 121
+                    @ title 'build ' + this.wzName + ' assets' ids: 86 122
+                    @ exe 'node' ids: 87 123
+                    @ cwd this.srcCwd ids: 88 124
+                    @ args 'index' ids: 89 125
+          if this.schemas.length > 0 ids: 90 126
+            _ ret.jobs.push ids: 91 127
+              {  ids: 92 128
+                @ title 'generate ' + this.wzName + ' wizzi model types in the assets folder' ids: 93 129
+                @ exe 'node' ids: 94 130
+                @ cwd this.assetsCwd ids: 95 131
+                @ args 'schemas' ids: 96 132
+            foreach item in this.schemas ids: 97 133
+              _ ret.schemas.push ids: 98 134
+                {  ids: 99 135
+                  @ name item.wzName ids: 100 136
+          foreach item in this.buildCwds ids: 101 137
+            _ ret.buildCwds.push ids: 102 138
+              {  ids: 103 139
+                @ cwd item.wzName ids: 104 140
+                @ title item.title ids: 105 141
+          return ret ids: 106 142
+    e ${name} ids: 156 162
+      $args: buildCwd, build-cwd  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 158 163
+        tag ${tag} ids: 159 164
+      $if xsuper != null ids: 160 165
+        super ${xsuper} ids: 161 166
+      a title ids: 12 47
+    e schema ids: 13 48
+      # A WizziSchema defined by this WizziFactoryPackage ids: 14 49
+      a title ids: 15 50
+      r transformer/s ids: 16 51
+      r artifact/s ids: 17 52
+      r example/s ids: 18 53
+    e transformer ids: 19 54
+      # A WizziModelTransformer ids: 20 55
+      a title ids: 21 56
+    e artifact ids: 22 57
+      # An ArtifactGenerator ids: 23 58
+      a title ids: 24 59
+    e example ids: 25 60
+      # The base node for examples ids: 26 61
+      a title ids: 27 62
+      r node/s ids: 28 63
+    e ${name} ids: 156 167
+      $args: ittfExample, ittf-example  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 158 168
+        tag ${tag} ids: 159 169
+      $if xsuper != null ids: 160 170
+        super ${xsuper} ids: 161 171
+      # An IttfDocument example ids: 30 65
+      super example ids: 31 66
+    e ${name} ids: 156 172
+      $args: artifactExample, artifact-example  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 158 173
+        tag ${tag} ids: 159 174
+      $if xsuper != null ids: 160 175
+        super ${xsuper} ids: 161 176
+      # An artifact generation example ids: 33 68
+      super example ids: 34 69
+    e node ids: 35 70

@@ -1,0 +1,93 @@
+﻿module 
+	kind jsfile
+	+
+	import path
+	import util
+	import del
+	+
+	var expect = require('expect.js')
+	+
+	var studioBasePath
+		_ path.join
+			@ __dirname
+			@ 'studio'
+
+	var api = {}, studioApi, docUri, firstFragUri, secondFragUri
+
+	describe studio api
+
+		log 'studio creation'
+
+		describe creation
+
+			before-async
+
+				_ del
+					[
+						_ path.join
+							@ studioBasePath
+							@ '/**/*.*'
+						_ path.join
+							@ studioBasePath
+							@ '/**/.*'
+					._ then
+						=>
+							param paths
+							log 'Deleted files and folders:\n', paths.join('\n')
+							_ require
+								@ '../../../server/apis/studio'
+								(
+									@ null
+									{
+										@ studioBasePath studioBasePath
+									@ api
+									f_cb_test( result )
+										set api = result
+										set studioApi = api.studio
+										log 'studioApi', studioApi
+										_ done()
+
+			it-async should create a js ittf document
+
+				_ studioApi.createDocument
+					{
+						@ userName 'stefi'
+						@ projectName 'demo'
+						@ folder 'examples'
+						@ schemaName 'js'
+						@ documentName 'ecma2015'
+					f_cb_test( result )
+						log 'create.document', err, result
+						tobe_object( result )
+						tobe_string( result.data.uri, /stefi/demo/examples/ecma2015.js.ittf )
+						set docUri = result.data.uri
+						_ done()
+
+			it-async should create a second js ittf document with default user and project
+
+				_ studioApi.createDocument
+					{
+						@ kind 'genexplorer'
+						@ folder 'examples'
+						@ schemaName 'js'
+						@ documentName 'ecma2015'
+					f_cb_test( result )
+						log 'create.document', err, result
+						tobe_object( result )
+						tobe_string( result.data.uri, /demo/genexplorer/examples/ecma2015.js.ittf )
+						set docUri = result.data.uri
+						_ done()
+
+			it-async should update a js ittf document
+
+				_ studioApi.updateDocument
+					@ docUri
+					@ 'module new content'
+					f_cb_test( result )
+						log 'update.document', err, result
+						tobe_object( result )
+						_ done()
+
+			$include studio/fragment
+			$include studio/documentList
+			$include studio/fragmentList

@@ -1,0 +1,31 @@
+﻿module 
+    kind jsfile
+	+
+    var fs = require('fs')
+	var path = require('path')
+    var babel = require('babel-core')
+    var moriscript = require('./moriscript')
+	+
+    var fileName
+		_ path.join
+			@ __dirname
+			@ 'sources'
+			@ 'mori.js'
+	+
+    _ fs.readFile
+        @ fileName
+        function 
+            param err
+            param data
+            if err
+                throw err
+            var src = data.toString()
+            var out
+                _ babel.transform
+                    @ src
+                    { 
+                        @ plugins
+                            [ 
+                                @ moriscript
+            _ console.log
+                @ out.code

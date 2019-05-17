@@ -1,0 +1,18 @@
+$group
+	$if rule.wzName == 'eslint'
+		{ 
+			@ test /\.(js|jsx)$/
+			@ enforce 'pre'
+			@ use
+				[ 
+					{ 
+						@ options
+							{ 
+								@ baseConfig
+									{ 
+										@ extends
+											[ 
+												@ 'react-app'
+								@ useEslintrc false
+						@ loader 'eslint-loader'
+			@ include paths.appSrc

@@ -1,0 +1,35 @@
+$group
+	e control : item
+		# The wzName is the HtmlElement id
+		tag c
+		a kind
+			default text
+			restrict
+				enum text
+				enum checkbox
+				enum select
+				enum number
+				enum color
+				enum date
+				enum array
+				enum choice
+				enum spectrum
+				enum typeahead
+				enum select2
+				enum slider
+				enum alternate
+		a datatype
+		a format
+		a default
+		r validation/s
+	
+	e itemcontrol : control
+		# child of control when control.kind == 'array'
+	e itemgroup : group
+		# child of control when control.kind == 'array'
+	e choice : control
+		# child of control when control.kind == 'choice'
+		a_flag( isChoiceDefault, is-default )
+	e alternate : control
+		tag alt
+		# child of control when control.kind == 'alternate'

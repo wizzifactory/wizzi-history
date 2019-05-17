@@ -1,0 +1,26 @@
+﻿$group
+
+	get( /repo/:user )
+		
+		_ repoApi.getUserRoot
+			@ req.params.user
+			f_cb_rest( result )
+
+				var payload
+					{
+						@ userId req.params.user
+						@ projectId null
+						@ folderId null
+						@ folderOrFile result.data
+
+				send-formats( html-json )
+
+				html_f view
+					layout-file()
+						. middle-container
+							breadcrumb-file()
+							table-file()
+
+				function jsondata
+					param ctx
+					return ctx

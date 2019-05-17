@@ -1,0 +1,30 @@
+module
+	kind jsfile
+	iife 
+		unary-prefix +
+		function
+			param $
+			function high
+				param element
+				_ $(element).addClass('highlight')
+		@ jQuery
+	iife 
+		function
+			param $
+			function high
+				param element
+				_ $(element).addClass('highlight')
+		@ jQuery
+	var spec
+		iife 
+			function
+				function getGreet
+					return 'hello'
+				return
+					{
+						@ sayHello
+							function
+								param name
+								log getGreet() + ' ' + name
+	_ spec.sayHello('stefi')
+	log 'spec.getGreet: ', spec.getGreet

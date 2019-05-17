@@ -1,0 +1,6 @@
+  alpha  ids: 1 5
+    beta  ids: 2 6
+      $foreach item in items ids: 3 7
+        gamma  ids: 9 12
+          $args: &item  $params: &item
+          var tau_${item.name} = ${item.value} ids: 11 13

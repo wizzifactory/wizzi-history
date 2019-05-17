@@ -1,0 +1,18 @@
+﻿$group
+
+	@ projectMeta
+		function
+			param options
+
+			var segments
+				[
+					@ config.studioBasePath
+					@ options.userName
+					@ options.projectName
+
+			_ segments.push('__')
+			_ segments.push(options.projectName + '.meta.json')
+			
+			return
+				_ this.joinPathFromArray
+					@ segments

@@ -1,0 +1,17 @@
+$group
+    $if rule.wzName == 'file'
+		{ 
+			@ exclude
+				[ 
+					@ /\.html$/
+					@ /\.(js|jsx)$/
+					@ /\.css$/
+					@ /\.json$/
+					@ /\.bmp$/
+					@ /\.gif$/
+					@ /\.jpe?g$/
+					@ /\.png$/
+			@ loader 'file-loader'
+			@ options
+				{ 
+					@ name 'static/media/[name].[hash:8].[ext]'

@@ -1,0 +1,13 @@
+$group
+	e plugin : webpackitem
+		# https://webpack.js.org/configuration/plugins/
+		tag plugin
+		r jsProp/s
+		m wzinitialize
+			set this.name = this.getTypeName(this.wzName)
+		m getTypeName
+			param name
+			if name === 'aggressive-merging'
+				return "AggressiveMergingPlugin"
+			else
+				return name

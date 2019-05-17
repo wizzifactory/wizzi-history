@@ -1,0 +1,25 @@
+  module  ids: 1 26
+    kind react ids: 2 27
+    import React from 'react' ids: 3 28
+    import Note from './note' ids: 4 29
+    class Notes ids: 5 30
+      super React.Component ids: 6 31
+      ctor  ids: 7 32
+        param props ids: 8 33
+        base props ids: 9 34
+        set this.renderNote = this.renderNote.bind(this) ids: 10 35
+      m render ids: 11 36
+        set const notes = this.props.notes ids: 12 37
+        return  ids: 13 38
+          ul {notes.map(this.renderNote)} ids: 14 39
+            @ className notes ids: 15 40
+      m renderNote ids: 16 41
+        param note ids: 17 42
+        return  ids: 18 43
+          li  ids: 19 44
+            @ className note ids: 20 45
+            @ key {`note§{note.id}`} ids: 21 46
+            < Note ids: 22 47
+              @ task {note.task} ids: 23 48
+              @ onEdit {this.props.onEdit.bind(null, note.id)} ids: 24 49
+              @ onDelete {this.props.onDelete.bind(null, note.id)} ids: 25 50

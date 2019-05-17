@@ -1,0 +1,16 @@
+$group
+	class ${schema.wzId}Exception
+		ctor
+			param message
+			param node
+			param instance
+			# TODO node seems superflous
+			if node && instance
+				set this.message = message + ', row:' + node.r + ', col:' + node.c + ', source:' + instance.wzSourceFilepath(node.u) 
+			elif instance
+				set this.message = message + instance.wzSourceLineInfo.toString(instance)
+			else 
+				set this.message = message 
+			set this.stack = new Error().stack
+			set this.node = node
+	set md.${schema.wzId}Exception = ${schema.wzId}Exception

@@ -1,0 +1,72 @@
+$group
+	e devServer : webpackitem
+		a contentBase
+			tag content-base
+			type code
+		
+		a_tag( clientLogLevel, log-level )
+			restrict
+				enum none
+				enum error
+				enum warning
+				enum info
+		a_flag( compress )
+		a_flag( historyApiFallback, history-api-fallback )
+			# When using the HTML5 History API, the index.html page will likely have to be served in place of any 404 responses. Enable this by passing:
+			#   historyApiFallback: true
+		a host
+			# Specify a host to use. By default this is localhost. If you want your server to be accessible externally, specify it like this:
+			#   host: "0.0.0.0"
+		
+		a_flag( hot )
+			# Enable webpack's Hot Module Replacement feature:
+		a_flag( hotOnly, hot-only )
+			# Enables Hot Module Replacement (see devServer.hot) without page refresh as fallback in case of build failures.
+		a_flag( lazy )
+			# When lazy is enabled, the dev-server will only compile the bundle when it gets requested. This means that webpack will not watch any file changes. We call this lazy mode.
+		a_flag( inline )
+		a_flag( noInfo, no-info )
+			# With noInfo enabled, messages like the webpack bundle information that is shown when starting up and after each save, will be hidden. 
+			# Errors and warnings will still be shown.
+		
+		a_flag( overlayErrors, overlay-errors )
+			# Shows a full-screen overlay in the browser when there are compiler errorss.
+			# Disabled by default. If you want to show only compiler errors:
+		
+		a_flag( overlayWarnings, overlay-warnings )
+			# Shows a full-screen overlay in the browser when there are compiler warnings. 
+			# Disabled by default.
+		a port
+			type integer
+			default 3000
+		a_flag( progress )
+		
+		r devServerProxy
+			one-to-one
+		r stats
+			one-to-one
+		m wzinitialize
+			set this.facets = []
+			string_facet( contentBase, contentBase )
+			object_facet( clientLogLevel, clientLogLevel )
+			if this.compress
+				object_facet( compress, true )
+			if this.historyApiFallback
+				object_facet( historyApiFallback, true )
+			string_facet( host, host )
+			if this.hot
+				object_facet( hot, true )
+			if this.hotOnly
+				object_facet( hotOnly, true )
+			if this.lazy
+				object_facet( lazy, true )
+			if this.inline
+				object_facet( inline, true )
+			if this.noInfo
+				object_facet( noInfo, true )
+			string_facet( port, port )
+			if this.progress
+				object_facet( progress, true )
+	e devServerProxy : webpackitem
+		tag proxy
+		r jsProp/s

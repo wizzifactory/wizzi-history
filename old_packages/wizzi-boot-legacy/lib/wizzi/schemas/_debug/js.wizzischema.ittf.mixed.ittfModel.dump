@@ -1,0 +1,500 @@
+  wizzischema js ids: 1 53
+    # A schema modeling a javascript module. ids: 2 54
+    e module ids: 3 55
+      # The root element of the js schema. ids: 4 56
+      a kind ids: 5 57
+        default jsfile ids: 6 58
+        restrict  ids: 7 59
+          enum jsfile ids: 8 60
+          enum nodejs ids: 9 61
+          enum react ids: 10 62
+          enum es6 ids: 11 63
+      a ecma ids: 12 64
+        default es5 ids: 13 65
+        restrict  ids: 14 66
+          enum es5 ids: 15 67
+          enum es6 ids: 16 68
+      a no_strict ids: 17 69
+        type boolean ids: 18 70
+        default false ids: 19 71
+      r resource/s ids: 20 72
+      r statement/s ids: 21 73
+      m wzinitialize ids: 22 74
+        if this.kind === 'react' || this.kind === 'es6' ids: 23 75
+          set this.ecma = 'es6' ids: 24 76
+        set this.wzModelState = ctx.modelState || {} ids: 25 77
+    e resource ids: 26 78
+      # A known resource (a javascript source), stored in a repository, ids: 27 79
+      # that must be included in the generated artifact. ids: 28 80
+    e statement ids: 29 81
+      # A generic code statement; the node wzName will be emitted as is. ids: 30 82
+      # The indentation will depend to the node depth. ids: 31 83
+      # Inside an html tag means a text node without line feed ids: 32 84
+      tag + ids: 33 85
+      r statement/s ids: 34 86
+    e statementmultiline : statement ids: 35 87
+      # Inside an html tag means a text node preceded by a line feed ids: 36 88
+      tag ++ ids: 37 89
+    e comment : statement ids: 38 90
+      tag # ids: 39 91
+    e commentmultiline : statement ids: 40 92
+      tag ## ids: 41 93
+    $group  ids: 105 133
+      e var : statement ids: 106 134
+        # ittf: ids: 107 135
+        # var i ids: 108 136
+        # var i = 0 ids: 109 137
+        # var f_alpha ids: 110 138
+        # function ids: 111 139
+        # param p ids: 112 140
+        # var obj_beta ids: 113 141
+        # {                | ids: 114 142
+        # @ name stefi ids: 115 143
+        # js: ids: 116 144
+        # var i; ids: 117 145
+        # var i = 0; ids: 118 146
+        # var alpha = function(p) { ids: 119 147
+        # ... ids: 120 148
+        # }; ids: 121 149
+        # var obj_beta = { name: 'stefi' }; ids: 122 150
+      e decl : statement ids: 123 151
+        # ittf: ids: 124 152
+        # var i ids: 125 153
+        # decl x = 0 ids: 126 154
+        # decl a ids: 127 155
+        # { ids: 128 156
+        # js: ids: 129 157
+        # var i, x = 0, a = {}; ids: 130 158
+      e const : statement ids: 131 159
+      e let : statement ids: 132 160
+    $group  ids: 161 187
+      e jsObject : statement ids: 162 188
+        tag { ids: 163 189
+        # ittf: ids: 164 190
+        # { ids: 165 191
+        # @ name 'stefi' ids: 166 192
+        # @ birth 1957 ids: 167 193
+        # @ friends ids: 168 194
+        # [ ids: 169 195
+        # { ids: 170 196
+        # @ name 'mario' ids: 171 197
+        # @ birth 1957 ids: 172 198
+        # { ids: 173 199
+        # @ name 'arturo' ids: 174 200
+        # @ birth 1955 ids: 175 201
+        # @ age ids: 176 202
+        # function ids: 177 203
+        # return new Date().year() - birth ids: 178 204
+        #  ids: 179 205
+      e jsArray : statement ids: 180 206
+        tag [ ids: 181 207
+      e jsPropertyOrValue : statement ids: 182 208
+        tag @ ids: 183 209
+      e jsonStatementTree : statement ids: 184 210
+        # The wzName contains a stringified node tree of statements ids: 185 211
+        tag jst ids: 186 212
+    $group  ids: 213 269
+      e require : statement ids: 214 270
+      e import : statement ids: 215 271
+      e export : statement ids: 216 272
+        r param/s ids: 217 273
+        m getParams ids: 218 274
+          var ret = [] ids: 219 275
+          foreach item in this.params ids: 220 276
+            _ ret.push(item.wzName) ids: 221 277
+          return ret ids: 222 278
+        m wzInitialize ids: 223 279
+          log 'wzInitialize', this.wzName ids: 224 280
+          var tokens = this.wzName.split(' ') ids: 225 281
+          if tokens.length > 1 ids: 226 282
+            if tokens[0] == 'default' ids: 227 283
+              set this.__default = true ids: 228 284
+              if tokens[1] == 'function' ids: 229 285
+                set this.__function = true ids: 230 286
+            elif tokens[0] == 'function' ids: 231 287
+              set this.__default = false ids: 232 288
+              set this.__function = true ids: 233 289
+              set this.__name = tokens[1] ids: 234 290
+          if this.__function ids: 235 291
+            log 'this.__function', this.__default, this.__function, this.__name ids: 236 292
+      e block : statement ids: 237 293
+      e set : statement ids: 238 294
+      e delete : statement ids: 239 295
+      e if : statement ids: 240 296
+        # ittf: ids: 241 297
+        # if a === b ids: 242 298
+        # elif a === c ids: 243 299
+        # else ids: 244 300
+        # js: ids: 245 301
+        # if ( a === b ) { ids: 246 302
+        # } ids: 247 303
+        # else if ( a === c ) { ids: 248 304
+        # } ids: 249 305
+        # else { ids: 250 306
+        # } ids: 251 307
+      e elif : statement ids: 252 308
+      e else : statement ids: 253 309
+      e for : statement ids: 254 310
+      e foreach : statement ids: 255 311
+      e backeach : statement ids: 256 312
+      e break : statement ids: 257 313
+      e continue : statement ids: 258 314
+      e label : statement ids: 259 315
+      e while : statement ids: 260 316
+      e do : statement ids: 261 317
+      e switch : statement ids: 262 318
+      e case : statement ids: 263 319
+      e default : statement ids: 264 320
+      e try : statement ids: 265 321
+      e catch : statement ids: 266 322
+      e finally : statement ids: 267 323
+      e throw : statement ids: 268 324
+    $group  ids: 325 386
+      e function : statement ids: 326 387
+        r param/s ids: 327 388
+        m getParams ids: 328 389
+          var ret = [] ids: 329 390
+          foreach item in this.params ids: 330 391
+            _ ret.push(item.wzName) ids: 331 392
+          return ret ids: 332 393
+      e arrowfunction : function ids: 333 394
+        tag => ids: 334 395
+      e return : statement ids: 335 396
+      e class : statement ids: 336 397
+        # A javascript class ids: 337 398
+        tag class ids: 338 399
+        a super ids: 339 400
+        m findCtor ids: 340 401
+          return _.find(this.statements, function(item) { return item.wzElement === 'ctor' }) ids: 341 402
+        m wzInitialize ids: 342 403
+          set ctx.modelState = ctx.modelState || {} ids: 343 404
+          set ctx.modelState.hasClasses = true ids: 344 405
+          var tokens = this.wzName.split(':') ids: 345 406
+          if tokens.length == 2 ids: 346 407
+            set this.wzName = tokens[0] ids: 347 408
+            set this.super = tokens[1] ids: 348 409
+      e ctor : function ids: 349 410
+        r base/s ids: 350 411
+        m getBaseArgs ids: 351 412
+          var ret = [] ids: 352 413
+          foreach item in this.bases ids: 353 414
+            _ ret.push(item.wzName) ids: 354 415
+          return ret ids: 355 416
+      e base : function ids: 356 417
+      e method : function ids: 357 418
+        tag m ids: 358 419
+        a ${name} ids: 949 956
+          $args: static  $params: name, tag|@@null
+          $if tag ids: 951 957
+            tag ${tag} ids: 952 958
+          type boolean ids: 953 959
+          default false ids: 954 960
+          default-when-declared true ids: 955 961
+      e property : function ids: 360 421
+        a ${name} ids: 949 962
+          $args: static  $params: name, tag|@@null
+          $if tag ids: 951 963
+            tag ${tag} ids: 952 964
+          type boolean ids: 953 965
+          default false ids: 954 966
+          default-when-declared true ids: 955 967
+      e iife : function ids: 362 423
+        a unary-prefix ids: 363 424
+        r arg/s ids: 364 425
+        m getArgs ids: 365 426
+          var ret = [] ids: 366 427
+          foreach item in this.args ids: 367 428
+            _ ret.push(item.wzName) ids: 368 429
+          return ret ids: 369 430
+      e new : statement ids: 370 431
+        r param/s ids: 371 432
+        # ittf: ids: 372 433
+        # var h ids: 373 434
+        # new Hello ids: 374 435
+        # var j ids: 375 436
+        # new Hello ids: 376 437
+        # function ids: 377 438
+        # param p ids: 378 439
+        # + ... ids: 379 440
+        # js: ids: 380 441
+        # var h = new Hello(); ids: 381 442
+        # var j = new Hello(function(p) { ... }); ids: 382 443
+      e type : statement ids: 383 444
+      e param ids: 384 445
+      e arg ids: 385 446
+    $group  ids: 447 498
+      e call : statement ids: 448 499
+        # A function call. ids: 449 500
+        tag _ ids: 450 501
+        # ittf: ids: 451 502
+        # _ sayHello('stefi', 10) ids: 452 503
+        # _ init ids: 453 504
+        # { ids: 454 505
+        # @ key 0 ids: 455 506
+        # function ids: 456 507
+        # param value ids: 457 508
+        # return calc(value) ids: 458 509
+      e memberCall : statement ids: 459 510
+        tag ._ ids: 460 511
+        # ittf: ids: 461 512
+        # set value ids: 462 513
+        # _ init ids: 463 514
+        # ._calc ids: 464 515
+        # js: ids: 465 516
+        # value = init().calc() ids: 466 517
+      e decoratorCall : statement ids: 467 518
+        tag @_ ids: 468 519
+        # ittf: ids: 469 520
+        # @_ alpha ids: 470 521
+        # @ 200 ids: 471 522
+        # function ids: 472 523
+        # return 'a'; ids: 473 524
+        # js: ids: 474 525
+        # @alpha(200, function() { return 'a'; }) ids: 475 526
+      e callOnValue : statement ids: 476 527
+        tag ( ids: 477 528
+        # ittf: ids: 478 529
+        # _ getFunction() ids: 479 530
+        # ( ids: 480 531
+        # @ 'stefi' ids: 481 532
+        # js: ids: 482 533
+        # getFunction()('stefi') ids: 483 534
+      e memberAccess : statement ids: 484 535
+        tag . ids: 485 536
+        # ittf: ids: 486 537
+        # set name = obj ids: 487 538
+        # . name ids: 488 539
+        # js: ids: 489 540
+        # name = obj.name ids: 490 541
+      e memberAccessComputed : statement ids: 491 542
+        tag .[ ids: 492 543
+        # ittf: ids: 493 544
+        # set name = obj ids: 494 545
+        # .[ name ids: 495 546
+        # js: ids: 496 547
+        # name = obj[name] ids: 497 548
+    $group  ids: 549 599
+      e iif : statement ids: 550 600
+        # ittf: ids: 551 601
+        # iif a === b ids: 552 602
+        # then 0 ids: 553 603
+        # else 1 ids: 554 604
+        # js: ids: 555 605
+        # ( a === b ) ? 0 : 1 ids: 556 606
+      e test : statement ids: 557 607
+      e then : statement ids: 558 608
+      e or : statement ids: 559 609
+        tag || ids: 560 610
+      e and : statement ids: 561 611
+        tag && ids: 562 612
+      e op_eq_strict : statement ids: 563 613
+        tag op=== ids: 564 614
+      e op_noteq_strict : statement ids: 565 615
+        tag op!== ids: 566 616
+      e op_eq : statement ids: 567 617
+        tag op== ids: 568 618
+      e op_noteq : statement ids: 569 619
+        tag op!= ids: 570 620
+      e op_or : statement ids: 571 621
+        tag op|| ids: 572 622
+      e op_and : statement ids: 573 623
+        tag op&& ids: 574 624
+      e op_minus : statement ids: 575 625
+        tag op- ids: 576 626
+      e op_plus : statement ids: 577 627
+        tag op+ ids: 578 628
+      e op_times : statement ids: 579 629
+        tag op* ids: 580 630
+      e op_div : statement ids: 581 631
+        tag op/ ids: 582 632
+      e op_power : statement ids: 583 633
+        tag op^ ids: 584 634
+      e op_mod : statement ids: 585 635
+        tag op% ids: 586 636
+      e op_xor : statement ids: 587 637
+        tag op| ids: 588 638
+      e op_xand : statement ids: 589 639
+        tag op& ids: 590 640
+      e op_gt : statement ids: 591 641
+        tag op> ids: 592 642
+      e op_ge : statement ids: 593 643
+        tag op>= ids: 594 644
+      e op_lt : statement ids: 595 645
+        tag op< ids: 596 646
+      e op_le : statement ids: 597 647
+        tag op<= ids: 598 648
+    $group  ids: 649 665
+      # elemnt of interest ids: 650 666
+      # var ids: 651 667
+      # function ids: 652 668
+      #  ids: 653 669
+      # kind public or private ids: 654 670
+      #  ids: 655 671
+      # require ids: 656 672
+      # module ids: 657 673
+      #  ids: 658 674
+      e ${name} ids: 968 974
+        $args: wzIife, wz-iife, iife  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 970 975
+          tag ${tag} ids: 971 976
+        $if xsuper != null ids: 972 977
+          super ${xsuper} ids: 973 978
+      e ${name} ids: 968 979
+        $args: wzRequire, wz-require, statement  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 970 980
+          tag ${tag} ids: 971 981
+        $if xsuper != null ids: 972 982
+          super ${xsuper} ids: 973 983
+        a from ids: 661 677
+      e ${name} ids: 968 984
+        $args: wzVar, wz-var, var  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 970 985
+          tag ${tag} ids: 971 986
+        $if xsuper != null ids: 972 987
+          super ${xsuper} ids: 973 988
+      e ${name} ids: 968 989
+        $args: wzFunction, wz-function, function  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 970 990
+          tag ${tag} ids: 971 991
+        $if xsuper != null ids: 972 992
+          super ${xsuper} ids: 973 993
+      e ${name} ids: 968 994
+        $args: wzClass, wz-class, class  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 970 995
+          tag ${tag} ids: 971 996
+        $if xsuper != null ids: 972 997
+          super ${xsuper} ids: 973 998
+    $group  ids: 681 686
+      e component : statement ids: 682 687
+        tag § ids: 683 688
+      e reactComponent : component ids: 684 689
+        tag react ids: 685 690
+    $group  ids: 691 771
+      # Those of facebook react see https://facebook.github.io/react/docs/tags-and-attributes.html ids: 692 772
+      $  ids: 693 773
+        var _tags = "a abbr address area article aside audio b base bdi bdo big blockquote body br" + ids: 694 774
+          " button canvas caption cite code col colgroup data datalist dd del details dfn" + ids: 695 775
+          " dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5" + ids: 696 776
+          " h6 head header hr html i iframe img input ins kbd keygen label legend li link" + ids: 697 777
+          " main map mark menu menuitem meta meter nav noscript object ol optgroup option" + ids: 698 778
+          " output p param picture pre progress q rp rt ruby s samp script section select" + ids: 699 779
+          " small source span strong @style sub summary sup table tbody td textarea tfoot th" + ids: 700 780
+          " thead time title tr track u ul var video wbr"; ids: 701 781
+        var html_supported_tags = _tags.split(' '); ids: 702 782
+        var _attrs = "accept acceptCharset accessKey action allowFullScreen allowTransparency alt" + ids: 703 783
+          " async autoComplete autoFocus autoPlay capture cellPadding cellSpacing charSet" + ids: 704 784
+          " challenge checked classID className cols colSpan content contentEditable contextMenu" + ids: 705 785
+          " controls coords crossOrigin data dateTime defer dir disabled download draggable" + ids: 706 786
+          " encType form formAction formEncType formMethod formNoValidate formTarget frameBorder" + ids: 707 787
+          " headers height hidden high href hrefLang htmlFor httpEquiv icon id inputMode" + ids: 708 788
+          " keyParams keyType @label lang list loop low manifest marginHeight marginWidth max" + ids: 709 789
+          " maxLength media mediaGroup method min minLength multiple muted name noValidate open" + ids: 710 790
+          " optimum pattern placeholder poster preload radioGroup readOnly rel required role" + ids: 711 791
+          " rows rowSpan sandbox scope scoped scrolling seamless selected shape size sizes" + ids: 712 792
+          " @span spellCheck src srcDoc srcSet start step style @summary tabIndex target title" + ids: 713 793
+          " type useMap value width wmode wrap"; ids: 714 794
+        var html_supported_attrs = _attrs.split(' '); ids: 715 795
+      e htmlelement : statement ids: 716 796
+        a autoCapitalize ids: 717 797
+        a autoCorrect ids: 718 798
+        a property ids: 719 799
+        a itemProp ids: 720 800
+        a itemScope ids: 721 801
+        a itemType ids: 722 802
+        a itemRef ids: 723 803
+        a itemID ids: 724 804
+        a unselectable ids: 725 805
+        a results ids: 726 806
+        a autoSave ids: 727 807
+        a class ids: 728 808
+        a aria-* ids: 729 809
+        a data-* ids: 730 810
+        $foreach item in html_supported_attrs ids: 731 811
+          $if item ids: 732 812
+            a ${item} ids: 733 813
+        tag < ids: 734 814
+      e doctype : htmlelement ids: 735 815
+      $foreach item in html_supported_tags ids: 736 816
+        $if item ids: 737 817
+          e ${item} : htmlelement ids: 738 818
+      e js : htmlelement ids: 739 819
+      e css : htmlelement ids: 740 820
+      e ready : statement ids: 741 821
+        a kind ids: 742 822
+          default jquery ids: 743 823
+          restrict  ids: 744 824
+            enum jquery ids: 745 825
+            enum window ids: 746 826
+      e tohtml : statement ids: 747 827
+        a kind ids: 748 828
+          default wizzi ids: 749 829
+          restrict  ids: 750 830
+            enum wizzi ids: 751 831
+            enum ng ids: 752 832
+              # create a function ids: 753 833
+              # that returns am html string preserving {{ }}, for interpolation use [[ ]] ids: 754 834
+            enum dom ids: 755 835
+              # that returns am html dom tree using jQuery ids: 756 836
+            enum hb ids: 757 837
+              # that returns a compiled handlebar template ids: 758 838
+      e html_f : statement ids: 759 839
+        # create a function ids: 760 840
+        # that returns am html string ids: 761 841
+      e html_ng : statement ids: 762 842
+        # create a function ids: 763 843
+        # that returns am html string preserving {{ }}, for interpolation use [[ ]] ids: 764 844
+      e html_dom : statement ids: 765 845
+        # create a function ids: 766 846
+        # that returns am html dom tree using jQuery ids: 767 847
+      e html_hb : statement ids: 768 848
+        # create a function ids: 769 849
+        # that returns a compiled handlebar template ids: 770 850
+    $group  ids: 851 876
+      e debug : statement ids: 852 877
+        m _require ctx ids: 853 878
+          _ ctx.require('debug'); ids: 854 879
+      e assert : statement ids: 855 880
+        tag !! ids: 856 881
+      e assert_equal : statement ids: 857 882
+        tag !!= ids: 858 883
+      e chalk : statement ids: 859 884
+      e log : statement ids: 860 885
+        # ittf: ids: 861 886
+        # log 'xxx', yyy ids: 862 887
+        # js: ids: 863 888
+        # console.log( 'xxx', yyy ); ids: 864 889
+        #  ids: 865 890
+        m _toJs ctx ids: 866 891
+          _ ctx.w('console.log(' + this.WmtName + ');') ids: 867 892
+      e warn : statement ids: 868 893
+      e error : statement ids: 869 894
+      e inspect : statement ids: 870 895
+        tag log? ids: 871 896
+      e log-info : statement ids: 872 897
+        # log.info(...) ids: 873 898
+        m _require ctx ids: 874 899
+          _ ctx.require('log'); ids: 875 900
+    $group  ids: 901 925
+      e describe : statement ids: 902 926
+      e it : statement ids: 903 927
+      e itAsync : statement ids: 904 928
+        tag it-async ids: 905 929
+      e before : statement ids: 906 930
+      e beforeAsync : statement ids: 907 931
+        tag before-async ids: 908 932
+      e beforeEach : statement ids: 909 933
+        tag before-each ids: 910 934
+      e after : statement ids: 911 935
+      e afterAsync : statement ids: 912 936
+        tag after-async ids: 913 937
+      e afterEach : statement ids: 914 938
+        tag after-each ids: 915 939
+      e superagent : statement ids: 916 940
+        r get/s ids: 917 941
+        r post/s ids: 918 942
+        r put/s ids: 919 943
+        r end/s ids: 920 944
+      e get ids: 921 945
+      e post ids: 922 946
+      e put ids: 923 947
+      e end ids: 924 948

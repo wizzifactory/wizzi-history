@@ -1,0 +1,67 @@
+﻿module 
+    kind jsfile
+	+
+	var path = require('path')
+	var babylon = require('babylon')
+	var traverse = require('babel-traverse').default
+	var generator = require('babel-generator')
+	var generate = generator.default
+	var wizzi = require('wizzi')
+	var typer = require('../ast_types/typer')
+	+
+	var types
+		_ typer.getTypes
+			{
+				@ list true
+
+	log types.length
+	
+	var sampleTypes = {}
+	foreach t in types
+		set sampleTypes[t.name]
+			{
+				@ bads []
+				@ goods []
+				@ minLength 999999
+				@ maxLength 0
+	+
+    var sources
+		[
+			@ 'modification.js'
+			@ 'dialog.js'
+			@ 'backbone.js'
+	+
+	var context
+		{
+			@ types sampleTypes
+			@ errorMessages {}
+
+	foreach s in sources
+		set context.sourcePath = s
+		_ loadSource
+			@ context
+
+	var countBads = 0
+	var countGoods = 0
+	for var k in context.types
+		var v = context.types[k]
+		if v.bads.length > 0 || v.goods.length > 0
+			log k, v.bads.length, v.goods.length, v.minLength, v.maxLength
+		if v.bads.length > 0 && v.goods.length == 0
+			set countBads++
+		else
+			set countGoods++
+
+	log '*** TOTAL ' + countGoods + ' goods on ' + types.length
+	log '*** TOTAL ' + countBads + ' bads'
+	log '*** TOTAL ' + (countGoods + countBads) + ' covered'
+
+	_ emitTypes(context.types)
+
+	$include load
+	$include tryGenerate
+	$include emit
+
+
+
+

@@ -1,0 +1,55 @@
+$group
+	$params &spa
+	#
+		# Create app
+	set module.exports.init
+		function
+			param options
+            var app = express()
+			var api = {}
+            
+			_ initLocalVariables(app)
+            
+			$if spa.webpack
+				_ initWebpack(app)
+			_ initMiddleware(app)
+            
+			$$ _ initViewEngine(app)
+			$if spa.staticFolders && spa.staticFolders.length > 0
+				_ initStaticFolders(app)
+			$if spa.session
+				_ initSession(app, db)
+            
+			$$ _ initModulesConfiguration(app)
+            
+			$if spa.helmet
+				_ initHelmetHeaders(app)
+			$if spa.apisPath
+				_ initApis(app, api)
+			$if spa.routesPath
+				_ initRoutes(app, api)
+            
+			$$ _ initModulesClientRoutes(app)
+            $$ _ initModulesServerPolicies(app)
+            $$ _ initModulesServerRoutes(app)
+            
+			_ initErrorRoutes(app)
+			
+			$if spa.socketio
+				set app = configureSocketIO(app, db)
+			$else
+				# TODO extract secure from ./socket.io
+				var http = require('http')
+				set app = http.createServer(app)
+            return app
+	$include express/initLocalVariables
+	$include express/initWebpack
+	$include express/initMiddleware
+	$include express/initStaticFolders
+	$include express/initSession
+	$include express/initHelmetHeaders
+	$include express/initApis
+	$include express/initRoutes
+	$include express/initErrorRoutes
+	$include express/configureSocketIO
+	$include express/getGlobbedFiles

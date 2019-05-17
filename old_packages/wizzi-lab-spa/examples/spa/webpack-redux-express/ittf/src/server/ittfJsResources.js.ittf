@@ -1,0 +1,136 @@
+module
+	kind jsfile
+	var path = require('path')
+	var file = require('wizzi-core').file
+	var md = module.exports = {}
+	var js_resources = {}
+	
+	function js_r
+		param name
+		param fileName
+		set name = name.toLowerCase()
+		set js_resources[name] = path.join(__dirname, 'static', 'lib', fileName)
+	_ js_r('ace', 'ace/ace-builds/src-noconflict/ace.js')
+	_ js_r('ace-js', 'ace/ace-builds/src-noconflict/mode-javascript.js')
+	_ js_r('ace-monokay', 'ace/ace-builds/src-noconflict/theme-monokai.js')
+	_ js_r('angular', 'angular/angular.js')
+	_ js_r('angular-animate', 'angular-animate/angular-animate.js')
+	_ js_r('angular-local-storage', 'angular-local-storage/dist/angular-local-storage.js')
+	_ js_r('angular-resource', 'angular-resource/angular-resource.js')
+	_ js_r('angular-route', 'angular-route/angular-route.js')
+	_ js_r('angular-scroll', 'angular-scroll/angular-scroll.js')
+	_ js_r('angular-strap', 'angular-strap/dist/angular-strap.js')
+	_ js_r('angular-strap-tpl', 'angular-strap/dist/angular-strap.tpl.js')
+	_ js_r('angular-table', '/angular-table/src/main/webapp/js/lib/angular-table.js')
+	_ js_r('angular-translate', 'angular-translate/angular-translate.js')
+	_ js_r('angular-translate-loader-partial', 'angular-translate-loader-partial/angular-translate-loader-partial.js')
+	_ js_r('angular-ui-router', 'angular-ui-router/release/angular-ui-router.js');
+	_ js_r('textarea-autosize', 'autosize/dist/autosize.js');
+	_ js_r('base64', 'js-base64/base64.js')
+	_ js_r('bootbox', 'bootbox.js/bootbox.js')
+	_ js_r('bootstrap', 'bootstrap/dist/js/bootstrap.js')
+	_ js_r('bootstrap-switch', 'bootstrap-switch/dist/js/bootstrap-switch.js')
+	_ js_r('bootstrap-slider', 'seiyria-bootstrap-slider/js/bootstrap-slider.js')
+	_ js_r('codemirror', 'codemirror/lib/codemirror.js')
+	_ js_r('codemirror-js', 'codemirror/mode/javascript/javascript.js')
+	_ js_r('form-validation', 'commercial/formvalidation/formvalidation.min.js')
+	_ js_r('form-validation-bootstrap', 'commercial/formvalidation/formvalidation.bootstrap.min.js')
+	_ js_r('fonticon', 'fontIconPicker/jquery.fonticonpicker.js')
+	_ js_r('geocomplete', 'geocomplete/jquery.geocomplete.js')
+	_ js_r('humane', 'humane-js/humane.js')
+	_ js_r('handlebars', 'handlebars/handlebars.js')
+	_ js_r('iconfont-awesome', 'fontawesome-iconpicker/dist/js/fontawesome-iconpicker.js')
+	_ js_r('iphonecheck', 'iphonecheck/iphone-style-checkboxes.js')
+	_ js_r('jquery', 'jquery/dist/jquery.js')
+	_ js_r('jquery-mask', 'jquery.mask/jquery.mask.js')
+	_ js_r('prettify', 'google-code-prettify/src/prettify.js')
+	_ js_r('nprogress', 'nprogress/nprogress.js')
+	_ js_r('sh', 'syntaxhighlighter/scripts/shCore.js')
+	_ js_r('sh-autoloader', 'syntaxhighlighter/scripts/shAutoloader.js')
+	_ js_r('sh-js', 'syntaxhighlighter/scripts/shBrushJScript.js')
+	_ js_r('sh-plain', 'syntaxhighlighter/scripts/shBrushPlain.js')
+	_ js_r('sh-xml', 'syntaxhighlighter/scripts/shBrushXml.js')
+	_ js_r('select2', 'select2/dist/js/select2.full.js')
+	_ js_r('semantic', 'semantic-UI/semantic.js')
+	_ js_r('spectrum', 'spectrum/spectrum.js')
+	_ js_r('spinner', 'spin/spin.js')
+	_ js_r('string', 'string/string.js')
+	_ js_r('typeahead', 'typeahead/typeahead.bundle.js');
+	_ js_r('underscore', 'underscore/underscore.js')
+	var jsRequested = {}
+	var jsIsEmitted = {}
+	set md.clearJsDependencies
+		function
+			set jsRequested = {}
+			set jsIsEmitted = {}
+	set md.addJsDependency
+		function
+			param deps
+			var depsArray = deps.split(',')
+			foreach dep in depsArray
+				set jsRequested[dep] = true;
+	set md.emitJsDependencies
+		function
+			param ctx
+			for var k in jsRequested
+				if jsRequested[k] === true
+					_ _emitJsDependency(k, ctx)
+	function _emitJsDependency
+		param dep
+		param ctx
+		var dep = dep.trim().toLowerCase()
+		if jsIsEmitted[dep]
+			return
+		set jsIsEmitted[dep] = true
+		_ checkJsRequirements(dep, ctx)
+		var fileName = js_resources[dep]
+		if !fileName
+			throw new Error("Js.module.generation. Dependency " + dep + ' not found.')
+		if file.exists(fileName)
+			var content = file.read(fileName)
+			_ ctx.w(content)
+		else
+			throw new Error("Js.module.generation. File for dependency " + dep + ' not found. Filename: ' + fileName)
+		_ jsCheckTail(dep, ctx)
+	function checkJsRequirements
+		param dep
+		param ctx
+		if dep === 'ace-js'
+			_ _emitJsDependency('ace', ctx)
+			_ _emitJsDependency('ace-monokay', ctx)
+		elif dep === 'angular-resource'
+			_ _emitJsDependency('angular', ctx)
+		elif dep === 'bootbox'
+			_ _emitJsDependency('bootstrap', ctx)
+		elif dep === 'bootstrap'
+			_ _emitJsDependency('jquery', ctx)
+		elif dep === 'angular-strap'
+			_ _emitJsDependency('angular-animate', ctx)
+		elif ['bootstrap-switch', 'bootstrap-slider'].indexOf(dep) >= 0
+			_ _emitJsDependency('bootstrap', ctx)
+		elif dep === 'codemirror-js'
+			_ _emitJsDependency('codemirror', ctx)
+		elif dep === 'form-validation-bootstrap'
+			_ _emitJsDependency('bootstrap', ctx)
+			_ _emitJsDependency('form-validation', ctx)
+		elif dep === 'select2-bootstrap'
+			_ _emitJsDependency('bootstrap', ctx)
+			_ _emitJsDependency('select2', ctx)
+		elif dep === 'iphonecheck'
+			_ _emitJsDependency('jquery', ctx)
+		elif dep === 'jquery-mask'
+			_ _emitJsDependency('jquery', ctx)
+		elif ['sh-js', 'sh-xml'].indexOf(dep) >= 0
+			_ _emitJsDependency('sh', ctx)
+			_ _emitJsDependency('sh-autoloader', ctx)
+			_ _emitJsDependency('sh-plain', ctx)
+			_ _emitJsDependency('sh-xml', ctx)
+		elif dep === 'typeahead'
+			_ _emitJsDependency('bootstrap', ctx)
+	function jsCheckTail
+		param dep
+		param ctx
+		if dep === 'angular-translate'
+			_ _emitJsDependency('angular-translate-loader-partial', ctx)
+		elif dep === 'angular-strap'
+			_ _emitJsDependency('angular-strap-tpl', ctx)

@@ -1,0 +1,988 @@
+// 23/3/2017:20:48:48  by C:\My\wizzi\current\wizzi-npm\node_modules\wizzi\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "wizzischema", v: "js", r: 1, c: 1, s: "f1", u: "f1",  }; //53
+$.a($0, $1, 5);
+var $2 = { n: "#", v: "A schema modeling a javascript module.", r: 3, c: 5, s: "f1", u: "f1",  }; //54
+$.a($1, $2, 7);
+var $3 = { n: "e", v: "module", r: 4, c: 5, s: "f1", u: "f1",  }; //55
+$.a($1, $3, 9);
+var $4 = { n: "#", v: "The root element of the js schema.", r: 5, c: 9, s: "f1", u: "f1",  }; //56
+$.a($3, $4, 11);
+var $5 = { n: "a", v: "kind", r: 6, c: 9, s: "f1", u: "f1",  }; //57
+$.a($3, $5, 13);
+var $6 = { n: "default", v: "jsfile", r: 7, c: 13, s: "f1", u: "f1",  }; //58
+$.a($5, $6, 15);
+var $7 = { n: "restrict", v: "", r: 8, c: 13, s: "f1", u: "f1",  }; //59
+$.a($5, $7, 17);
+var $8 = { n: "enum", v: "jsfile", r: 9, c: 17, s: "f1", u: "f1",  }; //60
+$.a($7, $8, 19);
+var $9 = { n: "enum", v: "nodejs", r: 10, c: 17, s: "f1", u: "f1",  }; //61
+$.a($7, $9, 21);
+var $10 = { n: "enum", v: "react", r: 11, c: 17, s: "f1", u: "f1",  }; //62
+$.a($7, $10, 23);
+var $11 = { n: "enum", v: "es6", r: 12, c: 17, s: "f1", u: "f1",  }; //63
+$.a($7, $11, 25);
+var $12 = { n: "a", v: "ecma", r: 13, c: 9, s: "f1", u: "f1",  }; //64
+$.a($3, $12, 27);
+var $13 = { n: "default", v: "es5", r: 14, c: 13, s: "f1", u: "f1",  }; //65
+$.a($12, $13, 29);
+var $14 = { n: "restrict", v: "", r: 15, c: 13, s: "f1", u: "f1",  }; //66
+$.a($12, $14, 31);
+var $15 = { n: "enum", v: "es5", r: 16, c: 17, s: "f1", u: "f1",  }; //67
+$.a($14, $15, 33);
+var $16 = { n: "enum", v: "es6", r: 17, c: 17, s: "f1", u: "f1",  }; //68
+$.a($14, $16, 35);
+var $17 = { n: "a", v: "no_strict", r: 18, c: 9, s: "f1", u: "f1",  }; //69
+$.a($3, $17, 37);
+var $18 = { n: "type", v: "boolean", r: 19, c: 13, s: "f1", u: "f1",  }; //70
+$.a($17, $18, 39);
+var $19 = { n: "default", v: "false", r: 20, c: 13, s: "f1", u: "f1",  }; //71
+$.a($17, $19, 41);
+var $20 = { n: "r", v: "resource/s", r: 21, c: 9, s: "f1", u: "f1",  }; //72
+$.a($3, $20, 43);
+var $21 = { n: "r", v: "statement/s", r: 23, c: 9, s: "f1", u: "f1",  }; //73
+$.a($3, $21, 45);
+var $22 = { n: "m", v: "wzinitialize", r: 24, c: 9, s: "f1", u: "f1",  }; //74
+$.a($3, $22, 47);
+var $23 = { n: "if", v: "this.kind === 'react' || this.kind === 'es6'", r: 25, c: 13, s: "f1", u: "f1",  }; //75
+$.a($22, $23, 49);
+var $24 = { n: "set", v: "this.ecma = 'es6'", r: 26, c: 17, s: "f1", u: "f1",  }; //76
+$.a($23, $24, 51);
+var $25 = { n: "set", v: "this.wzModelState = ctx.modelState || {}", r: 27, c: 13, s: "f1", u: "f1",  }; //77
+$.a($22, $25, 53);
+var $26 = { n: "e", v: "resource", r: 28, c: 5, s: "f1", u: "f1",  }; //78
+$.a($1, $26, 55);
+var $27 = { n: "#", v: "A known resource (a javascript source), stored in a repository,", r: 29, c: 9, s: "f1", u: "f1",  }; //79
+$.a($26, $27, 57);
+var $28 = { n: "#", v: "that must be included in the generated artifact.", r: 30, c: 9, s: "f1", u: "f1",  }; //80
+$.a($26, $28, 59);
+var $29 = { n: "e", v: "statement", r: 31, c: 5, s: "f1", u: "f1",  }; //81
+$.a($1, $29, 61);
+var $30 = { n: "#", v: "A generic code statement; the node wzName will be emitted as is.", r: 32, c: 9, s: "f1", u: "f1",  }; //82
+$.a($29, $30, 63);
+var $31 = { n: "#", v: "The indentation will depend to the node depth.", r: 33, c: 9, s: "f1", u: "f1",  }; //83
+$.a($29, $31, 65);
+var $32 = { n: "#", v: "Inside an html tag means a text node without line feed", r: 34, c: 9, s: "f1", u: "f1",  }; //84
+$.a($29, $32, 67);
+var $33 = { n: "tag", v: "+", r: 35, c: 9, s: "f1", u: "f1",  }; //85
+$.a($29, $33, 69);
+var $34 = { n: "r", v: "statement/s", r: 37, c: 9, s: "f1", u: "f1",  }; //86
+$.a($29, $34, 71);
+var $35 = { n: "e", v: "statementmultiline : statement", r: 38, c: 5, s: "f1", u: "f1",  }; //87
+$.a($1, $35, 73);
+var $36 = { n: "#", v: "Inside an html tag means a text node preceded by a line feed", r: 39, c: 9, s: "f1", u: "f1",  }; //88
+$.a($35, $36, 75);
+var $37 = { n: "tag", v: "++", r: 40, c: 9, s: "f1", u: "f1",  }; //89
+$.a($35, $37, 77);
+var $38 = { n: "e", v: "comment : statement", r: 41, c: 5, s: "f1", u: "f1",  }; //90
+$.a($1, $38, 79);
+var $39 = { n: "tag", v: "#", r: 42, c: 9, s: "f1", u: "f1",  }; //91
+$.a($38, $39, 81);
+var $40 = { n: "e", v: "commentmultiline : statement", r: 44, c: 5, s: "f1", u: "f1",  }; //92
+$.a($1, $40, 83);
+var $41 = { n: "tag", v: "##", r: 45, c: 9, s: "f1", u: "f1",  }; //93
+$.a($40, $41, 85);
+var $42 = { n: "e", v: "var : statement", r: 2, c: 5, s: "f1", u: "f2",  }; //134
+$.a($1, $42, 87);
+var $43 = { n: "#", v: "ittf:", r: 3, c: 9, s: "f1", u: "f2",  }; //135
+$.a($42, $43, 89);
+var $44 = { n: "#", v: "var i", r: 4, c: 9, s: "f1", u: "f2",  }; //136
+$.a($42, $44, 91);
+var $45 = { n: "#", v: "var i = 0", r: 5, c: 9, s: "f1", u: "f2",  }; //137
+$.a($42, $45, 93);
+var $46 = { n: "#", v: "var f_alpha", r: 6, c: 9, s: "f1", u: "f2",  }; //138
+$.a($42, $46, 95);
+var $47 = { n: "#", v: "function", r: 7, c: 9, s: "f1", u: "f2",  }; //139
+$.a($42, $47, 97);
+var $48 = { n: "#", v: "param p", r: 8, c: 9, s: "f1", u: "f2",  }; //140
+$.a($42, $48, 99);
+var $49 = { n: "#", v: "var obj_beta", r: 9, c: 9, s: "f1", u: "f2",  }; //141
+$.a($42, $49, 101);
+var $50 = { n: "#", v: "{                |", r: 10, c: 9, s: "f1", u: "f2",  }; //142
+$.a($42, $50, 103);
+var $51 = { n: "#", v: "@ name stefi", r: 11, c: 9, s: "f1", u: "f2",  }; //143
+$.a($42, $51, 105);
+var $52 = { n: "#", v: "js:", r: 12, c: 9, s: "f1", u: "f2",  }; //144
+$.a($42, $52, 107);
+var $53 = { n: "#", v: "var i;", r: 13, c: 9, s: "f1", u: "f2",  }; //145
+$.a($42, $53, 109);
+var $54 = { n: "#", v: "var i = 0;", r: 14, c: 9, s: "f1", u: "f2",  }; //146
+$.a($42, $54, 111);
+var $55 = { n: "#", v: "var alpha = function(p) {", r: 15, c: 9, s: "f1", u: "f2",  }; //147
+$.a($42, $55, 113);
+var $56 = { n: "#", v: "...", r: 16, c: 9, s: "f1", u: "f2",  }; //148
+$.a($42, $56, 115);
+var $57 = { n: "#", v: "};", r: 17, c: 9, s: "f1", u: "f2",  }; //149
+$.a($42, $57, 117);
+var $58 = { n: "#", v: "var obj_beta = { name: 'stefi' };", r: 18, c: 9, s: "f1", u: "f2",  }; //150
+$.a($42, $58, 119);
+var $59 = { n: "e", v: "decl : statement", r: 19, c: 5, s: "f1", u: "f2",  }; //151
+$.a($1, $59, 121);
+var $60 = { n: "#", v: "ittf:", r: 20, c: 9, s: "f1", u: "f2",  }; //152
+$.a($59, $60, 123);
+var $61 = { n: "#", v: "var i", r: 21, c: 9, s: "f1", u: "f2",  }; //153
+$.a($59, $61, 125);
+var $62 = { n: "#", v: "decl x = 0", r: 22, c: 9, s: "f1", u: "f2",  }; //154
+$.a($59, $62, 127);
+var $63 = { n: "#", v: "decl a", r: 23, c: 9, s: "f1", u: "f2",  }; //155
+$.a($59, $63, 129);
+var $64 = { n: "#", v: "{", r: 24, c: 9, s: "f1", u: "f2",  }; //156
+$.a($59, $64, 131);
+var $65 = { n: "#", v: "js:", r: 25, c: 9, s: "f1", u: "f2",  }; //157
+$.a($59, $65, 133);
+var $66 = { n: "#", v: "var i, x = 0, a = {};", r: 26, c: 9, s: "f1", u: "f2",  }; //158
+$.a($59, $66, 135);
+var $67 = { n: "e", v: "const : statement", r: 27, c: 5, s: "f1", u: "f2",  }; //159
+$.a($1, $67, 137);
+var $68 = { n: "e", v: "let : statement", r: 28, c: 5, s: "f1", u: "f2",  }; //160
+$.a($1, $68, 139);
+var $69 = { n: "e", v: "jsObject : statement", r: 2, c: 5, s: "f1", u: "f3",  }; //188
+$.a($1, $69, 141);
+var $70 = { n: "tag", v: "{", r: 4, c: 9, s: "f1", u: "f3",  }; //189
+$.a($69, $70, 143);
+var $71 = { n: "#", v: "ittf:", r: 6, c: 9, s: "f1", u: "f3",  }; //190
+$.a($69, $71, 145);
+var $72 = { n: "#", v: "{", r: 7, c: 9, s: "f1", u: "f3",  }; //191
+$.a($69, $72, 147);
+var $73 = { n: "#", v: "@ name 'stefi'", r: 8, c: 9, s: "f1", u: "f3",  }; //192
+$.a($69, $73, 149);
+var $74 = { n: "#", v: "@ birth 1957", r: 9, c: 9, s: "f1", u: "f3",  }; //193
+$.a($69, $74, 151);
+var $75 = { n: "#", v: "@ friends", r: 10, c: 9, s: "f1", u: "f3",  }; //194
+$.a($69, $75, 153);
+var $76 = { n: "#", v: "[", r: 11, c: 9, s: "f1", u: "f3",  }; //195
+$.a($69, $76, 155);
+var $77 = { n: "#", v: "{", r: 12, c: 9, s: "f1", u: "f3",  }; //196
+$.a($69, $77, 157);
+var $78 = { n: "#", v: "@ name 'mario'", r: 13, c: 9, s: "f1", u: "f3",  }; //197
+$.a($69, $78, 159);
+var $79 = { n: "#", v: "@ birth 1957", r: 14, c: 9, s: "f1", u: "f3",  }; //198
+$.a($69, $79, 161);
+var $80 = { n: "#", v: "{", r: 15, c: 9, s: "f1", u: "f3",  }; //199
+$.a($69, $80, 163);
+var $81 = { n: "#", v: "@ name 'arturo'", r: 16, c: 9, s: "f1", u: "f3",  }; //200
+$.a($69, $81, 165);
+var $82 = { n: "#", v: "@ birth 1955", r: 17, c: 9, s: "f1", u: "f3",  }; //201
+$.a($69, $82, 167);
+var $83 = { n: "#", v: "@ age", r: 18, c: 9, s: "f1", u: "f3",  }; //202
+$.a($69, $83, 169);
+var $84 = { n: "#", v: "function", r: 19, c: 9, s: "f1", u: "f3",  }; //203
+$.a($69, $84, 171);
+var $85 = { n: "#", v: "return new Date().year() - birth", r: 20, c: 9, s: "f1", u: "f3",  }; //204
+$.a($69, $85, 173);
+var $86 = { n: "#", v: "", r: 21, c: 9, s: "f1", u: "f3",  }; //205
+$.a($69, $86, 175);
+var $87 = { n: "e", v: "jsArray : statement", r: 23, c: 5, s: "f1", u: "f3",  }; //206
+$.a($1, $87, 177);
+var $88 = { n: "tag", v: "[", r: 25, c: 9, s: "f1", u: "f3",  }; //207
+$.a($87, $88, 179);
+var $89 = { n: "e", v: "jsPropertyOrValue : statement", r: 27, c: 5, s: "f1", u: "f3",  }; //208
+$.a($1, $89, 181);
+var $90 = { n: "tag", v: "@", r: 29, c: 9, s: "f1", u: "f3",  }; //209
+$.a($89, $90, 183);
+var $91 = { n: "e", v: "jsonStatementTree : statement", r: 30, c: 5, s: "f1", u: "f3",  }; //210
+$.a($1, $91, 185);
+var $92 = { n: "#", v: "The wzName contains a stringified node tree of statements", r: 31, c: 9, s: "f1", u: "f3",  }; //211
+$.a($91, $92, 187);
+var $93 = { n: "tag", v: "jst", r: 33, c: 9, s: "f1", u: "f3",  }; //212
+$.a($91, $93, 189);
+var $94 = { n: "e", v: "require : statement", r: 2, c: 5, s: "f1", u: "f4",  }; //270
+$.a($1, $94, 191);
+var $95 = { n: "e", v: "import : statement", r: 3, c: 5, s: "f1", u: "f4",  }; //271
+$.a($1, $95, 193);
+var $96 = { n: "e", v: "export : statement", r: 4, c: 5, s: "f1", u: "f4",  }; //272
+$.a($1, $96, 195);
+var $97 = { n: "r", v: "param/s", r: 5, c: 9, s: "f1", u: "f4",  }; //273
+$.a($96, $97, 197);
+var $98 = { n: "m", v: "getParams", r: 6, c: 9, s: "f1", u: "f4",  }; //274
+$.a($96, $98, 199);
+var $99 = { n: "var", v: "ret = []", r: 7, c: 13, s: "f1", u: "f4",  }; //275
+$.a($98, $99, 201);
+var $100 = { n: "foreach", v: "item in this.params", r: 8, c: 13, s: "f1", u: "f4",  }; //276
+$.a($98, $100, 203);
+var $101 = { n: "_", v: "ret.push(item.wzName)", r: 9, c: 17, s: "f1", u: "f4",  }; //277
+$.a($100, $101, 205);
+var $102 = { n: "return", v: "ret", r: 10, c: 13, s: "f1", u: "f4",  }; //278
+$.a($98, $102, 207);
+var $103 = { n: "m", v: "wzInitialize", r: 11, c: 9, s: "f1", u: "f4",  }; //279
+$.a($96, $103, 209);
+var $104 = { n: "log", v: "'wzInitialize', this.wzName", r: 12, c: 13, s: "f1", u: "f4",  }; //280
+$.a($103, $104, 211);
+var $105 = { n: "var", v: "tokens = this.wzName.split(' ')", r: 13, c: 13, s: "f1", u: "f4",  }; //281
+$.a($103, $105, 213);
+var $106 = { n: "if", v: "tokens.length > 1", r: 14, c: 13, s: "f1", u: "f4",  }; //282
+$.a($103, $106, 215);
+var $107 = { n: "if", v: "tokens[0] == 'default'", r: 15, c: 17, s: "f1", u: "f4",  }; //283
+$.a($106, $107, 217);
+var $108 = { n: "set", v: "this.__default = true", r: 16, c: 21, s: "f1", u: "f4",  }; //284
+$.a($107, $108, 219);
+var $109 = { n: "if", v: "tokens[1] == 'function'", r: 17, c: 21, s: "f1", u: "f4",  }; //285
+$.a($107, $109, 221);
+var $110 = { n: "set", v: "this.__function = true", r: 18, c: 25, s: "f1", u: "f4",  }; //286
+$.a($109, $110, 223);
+var $111 = { n: "elif", v: "tokens[0] == 'function'", r: 19, c: 17, s: "f1", u: "f4",  }; //287
+$.a($106, $111, 225);
+var $112 = { n: "set", v: "this.__default = false", r: 20, c: 21, s: "f1", u: "f4",  }; //288
+$.a($111, $112, 227);
+var $113 = { n: "set", v: "this.__function = true", r: 21, c: 21, s: "f1", u: "f4",  }; //289
+$.a($111, $113, 229);
+var $114 = { n: "set", v: "this.__name = tokens[1]", r: 22, c: 21, s: "f1", u: "f4",  }; //290
+$.a($111, $114, 231);
+var $115 = { n: "if", v: "this.__function", r: 23, c: 13, s: "f1", u: "f4",  }; //291
+$.a($103, $115, 233);
+var $116 = { n: "log", v: "'this.__function', this.__default, this.__function, this.__name", r: 24, c: 17, s: "f1", u: "f4",  }; //292
+$.a($115, $116, 235);
+var $117 = { n: "e", v: "block : statement", r: 25, c: 5, s: "f1", u: "f4",  }; //293
+$.a($1, $117, 237);
+var $118 = { n: "e", v: "set : statement", r: 27, c: 5, s: "f1", u: "f4",  }; //294
+$.a($1, $118, 239);
+var $119 = { n: "e", v: "delete : statement", r: 28, c: 5, s: "f1", u: "f4",  }; //295
+$.a($1, $119, 241);
+var $120 = { n: "e", v: "if : statement", r: 29, c: 5, s: "f1", u: "f4",  }; //296
+$.a($1, $120, 243);
+var $121 = { n: "#", v: "ittf:", r: 30, c: 9, s: "f1", u: "f4",  }; //297
+$.a($120, $121, 245);
+var $122 = { n: "#", v: "if a === b", r: 31, c: 9, s: "f1", u: "f4",  }; //298
+$.a($120, $122, 247);
+var $123 = { n: "#", v: "elif a === c", r: 32, c: 9, s: "f1", u: "f4",  }; //299
+$.a($120, $123, 249);
+var $124 = { n: "#", v: "else", r: 33, c: 9, s: "f1", u: "f4",  }; //300
+$.a($120, $124, 251);
+var $125 = { n: "#", v: "js:", r: 34, c: 9, s: "f1", u: "f4",  }; //301
+$.a($120, $125, 253);
+var $126 = { n: "#", v: "if ( a === b ) {", r: 35, c: 9, s: "f1", u: "f4",  }; //302
+$.a($120, $126, 255);
+var $127 = { n: "#", v: "}", r: 36, c: 9, s: "f1", u: "f4",  }; //303
+$.a($120, $127, 257);
+var $128 = { n: "#", v: "else if ( a === c ) {", r: 37, c: 9, s: "f1", u: "f4",  }; //304
+$.a($120, $128, 259);
+var $129 = { n: "#", v: "}", r: 38, c: 9, s: "f1", u: "f4",  }; //305
+$.a($120, $129, 261);
+var $130 = { n: "#", v: "else {", r: 39, c: 9, s: "f1", u: "f4",  }; //306
+$.a($120, $130, 263);
+var $131 = { n: "#", v: "}", r: 40, c: 9, s: "f1", u: "f4",  }; //307
+$.a($120, $131, 265);
+var $132 = { n: "e", v: "elif : statement", r: 41, c: 5, s: "f1", u: "f4",  }; //308
+$.a($1, $132, 267);
+var $133 = { n: "e", v: "else : statement", r: 42, c: 5, s: "f1", u: "f4",  }; //309
+$.a($1, $133, 269);
+var $134 = { n: "e", v: "for : statement", r: 44, c: 5, s: "f1", u: "f4",  }; //310
+$.a($1, $134, 271);
+var $135 = { n: "e", v: "foreach : statement", r: 45, c: 5, s: "f1", u: "f4",  }; //311
+$.a($1, $135, 273);
+var $136 = { n: "e", v: "backeach : statement", r: 46, c: 5, s: "f1", u: "f4",  }; //312
+$.a($1, $136, 275);
+var $137 = { n: "e", v: "break : statement", r: 47, c: 5, s: "f1", u: "f4",  }; //313
+$.a($1, $137, 277);
+var $138 = { n: "e", v: "continue : statement", r: 48, c: 5, s: "f1", u: "f4",  }; //314
+$.a($1, $138, 279);
+var $139 = { n: "e", v: "label : statement", r: 49, c: 5, s: "f1", u: "f4",  }; //315
+$.a($1, $139, 281);
+var $140 = { n: "e", v: "while : statement", r: 51, c: 5, s: "f1", u: "f4",  }; //316
+$.a($1, $140, 283);
+var $141 = { n: "e", v: "do : statement", r: 52, c: 5, s: "f1", u: "f4",  }; //317
+$.a($1, $141, 285);
+var $142 = { n: "e", v: "switch : statement", r: 54, c: 5, s: "f1", u: "f4",  }; //318
+$.a($1, $142, 287);
+var $143 = { n: "e", v: "case : statement", r: 55, c: 5, s: "f1", u: "f4",  }; //319
+$.a($1, $143, 289);
+var $144 = { n: "e", v: "default : statement", r: 56, c: 5, s: "f1", u: "f4",  }; //320
+$.a($1, $144, 291);
+var $145 = { n: "e", v: "try : statement", r: 57, c: 5, s: "f1", u: "f4",  }; //321
+$.a($1, $145, 293);
+var $146 = { n: "e", v: "catch : statement", r: 58, c: 5, s: "f1", u: "f4",  }; //322
+$.a($1, $146, 295);
+var $147 = { n: "e", v: "finally : statement", r: 59, c: 5, s: "f1", u: "f4",  }; //323
+$.a($1, $147, 297);
+var $148 = { n: "e", v: "throw : statement", r: 60, c: 5, s: "f1", u: "f4",  }; //324
+$.a($1, $148, 299);
+var $149 = { n: "e", v: "function : statement", r: 2, c: 5, s: "f1", u: "f5",  }; //387
+$.a($1, $149, 301);
+var $150 = { n: "r", v: "param/s", r: 4, c: 9, s: "f1", u: "f5",  }; //388
+$.a($149, $150, 303);
+var $151 = { n: "m", v: "getParams", r: 5, c: 9, s: "f1", u: "f5",  }; //389
+$.a($149, $151, 305);
+var $152 = { n: "var", v: "ret = []", r: 6, c: 13, s: "f1", u: "f5",  }; //390
+$.a($151, $152, 307);
+var $153 = { n: "foreach", v: "item in this.params", r: 7, c: 13, s: "f1", u: "f5",  }; //391
+$.a($151, $153, 309);
+var $154 = { n: "_", v: "ret.push(item.wzName)", r: 8, c: 17, s: "f1", u: "f5",  }; //392
+$.a($153, $154, 311);
+var $155 = { n: "return", v: "ret", r: 9, c: 13, s: "f1", u: "f5",  }; //393
+$.a($151, $155, 313);
+var $156 = { n: "e", v: "arrowfunction : function", r: 10, c: 5, s: "f1", u: "f5",  }; //394
+$.a($1, $156, 315);
+var $157 = { n: "tag", v: "=>", r: 11, c: 9, s: "f1", u: "f5",  }; //395
+$.a($156, $157, 317);
+var $158 = { n: "e", v: "return : statement", r: 12, c: 5, s: "f1", u: "f5",  }; //396
+$.a($1, $158, 319);
+var $159 = { n: "e", v: "class : statement", r: 13, c: 5, s: "f1", u: "f5",  }; //397
+$.a($1, $159, 321);
+var $160 = { n: "#", v: "A javascript class", r: 14, c: 9, s: "f1", u: "f5",  }; //398
+$.a($159, $160, 323);
+var $161 = { n: "tag", v: "class", r: 15, c: 9, s: "f1", u: "f5",  }; //399
+$.a($159, $161, 325);
+var $162 = { n: "a", v: "super", r: 16, c: 9, s: "f1", u: "f5",  }; //400
+$.a($159, $162, 327);
+var $163 = { n: "m", v: "findCtor", r: 17, c: 9, s: "f1", u: "f5",  }; //401
+$.a($159, $163, 329);
+var $164 = { n: "return", v: "_.find(this.statements, function(item) { return item.wzElement === 'ctor' })", r: 18, c: 13, s: "f1", u: "f5",  }; //402
+$.a($163, $164, 331);
+var $165 = { n: "m", v: "wzInitialize", r: 19, c: 9, s: "f1", u: "f5",  }; //403
+$.a($159, $165, 333);
+var $166 = { n: "set", v: "ctx.modelState = ctx.modelState || {}", r: 20, c: 13, s: "f1", u: "f5",  }; //404
+$.a($165, $166, 335);
+var $167 = { n: "set", v: "ctx.modelState.hasClasses = true", r: 21, c: 13, s: "f1", u: "f5",  }; //405
+$.a($165, $167, 337);
+var $168 = { n: "var", v: "tokens = this.wzName.split(':')", r: 22, c: 13, s: "f1", u: "f5",  }; //406
+$.a($165, $168, 339);
+var $169 = { n: "if", v: "tokens.length == 2", r: 23, c: 13, s: "f1", u: "f5",  }; //407
+$.a($165, $169, 341);
+var $170 = { n: "set", v: "this.wzName = tokens[0]", r: 24, c: 17, s: "f1", u: "f5",  }; //408
+$.a($169, $170, 343);
+var $171 = { n: "set", v: "this.super = tokens[1]", r: 25, c: 17, s: "f1", u: "f5",  }; //409
+$.a($169, $171, 345);
+var $172 = { n: "e", v: "ctor : function", r: 26, c: 5, s: "f1", u: "f5",  }; //410
+$.a($1, $172, 347);
+var $173 = { n: "r", v: "base/s", r: 27, c: 9, s: "f1", u: "f5",  }; //411
+$.a($172, $173, 349);
+var $174 = { n: "m", v: "getBaseArgs", r: 28, c: 9, s: "f1", u: "f5",  }; //412
+$.a($172, $174, 351);
+var $175 = { n: "var", v: "ret = []", r: 29, c: 13, s: "f1", u: "f5",  }; //413
+$.a($174, $175, 353);
+var $176 = { n: "foreach", v: "item in this.bases", r: 30, c: 13, s: "f1", u: "f5",  }; //414
+$.a($174, $176, 355);
+var $177 = { n: "_", v: "ret.push(item.wzName)", r: 31, c: 17, s: "f1", u: "f5",  }; //415
+$.a($176, $177, 357);
+var $178 = { n: "return", v: "ret", r: 32, c: 13, s: "f1", u: "f5",  }; //416
+$.a($174, $178, 359);
+var $179 = { n: "e", v: "base : function", r: 33, c: 5, s: "f1", u: "f5",  }; //417
+$.a($1, $179, 361);
+var $180 = { n: "e", v: "method : function", r: 34, c: 5, s: "f1", u: "f5",  }; //418
+$.a($1, $180, 363);
+var $181 = { n: "tag", v: "m", r: 35, c: 9, s: "f1", u: "f5",  }; //419
+$.a($180, $181, 365);
+var $182 = { n: "a", v: $.ip("f2", "${name}", "string", 366), r: 1, c: 1, s: "f2", u: "f13",  }; //956
+$.a($180, $182, 367);
+$.s("f2");
+if (tag) { //957
+    $.n();
+    var $184 = { n: "tag", v: $.ip("f2", "${tag}", "string", 371), r: 4, c: 9, s: "f2", u: "f13",  }; //958
+    $.a($182, $184, 372);
+}
+$.n();
+var $185 = { n: "type", v: "boolean", r: 5, c: 5, s: "f2", u: "f13",  }; //959
+$.a($182, $185, 376);
+var $186 = { n: "default", v: "false", r: 6, c: 5, s: "f2", u: "f13",  }; //960
+$.a($182, $186, 378);
+var $187 = { n: "default-when-declared", v: "true", r: 7, c: 5, s: "f2", u: "f13",  }; //961
+$.a($182, $187, 380);
+var $188 = { n: "e", v: "property : function", r: 37, c: 5, s: "f1", u: "f5",  }; //421
+$.a($1, $188, 382);
+var $189 = { n: "a", v: $.ip("f3", "${name}", "string", 383), r: 1, c: 1, s: "f3", u: "f13",  }; //962
+$.a($188, $189, 384);
+$.s("f3");
+if (tag) { //963
+    $.n();
+    var $191 = { n: "tag", v: $.ip("f3", "${tag}", "string", 388), r: 4, c: 9, s: "f3", u: "f13",  }; //964
+    $.a($189, $191, 389);
+}
+$.n();
+var $192 = { n: "type", v: "boolean", r: 5, c: 5, s: "f3", u: "f13",  }; //965
+$.a($189, $192, 393);
+var $193 = { n: "default", v: "false", r: 6, c: 5, s: "f3", u: "f13",  }; //966
+$.a($189, $193, 395);
+var $194 = { n: "default-when-declared", v: "true", r: 7, c: 5, s: "f3", u: "f13",  }; //967
+$.a($189, $194, 397);
+var $195 = { n: "e", v: "iife : function", r: 39, c: 5, s: "f1", u: "f5",  }; //423
+$.a($1, $195, 399);
+var $196 = { n: "a", v: "unary-prefix", r: 40, c: 9, s: "f1", u: "f5",  }; //424
+$.a($195, $196, 401);
+var $197 = { n: "r", v: "arg/s", r: 41, c: 9, s: "f1", u: "f5",  }; //425
+$.a($195, $197, 403);
+var $198 = { n: "m", v: "getArgs", r: 42, c: 9, s: "f1", u: "f5",  }; //426
+$.a($195, $198, 405);
+var $199 = { n: "var", v: "ret = []", r: 43, c: 13, s: "f1", u: "f5",  }; //427
+$.a($198, $199, 407);
+var $200 = { n: "foreach", v: "item in this.args", r: 44, c: 13, s: "f1", u: "f5",  }; //428
+$.a($198, $200, 409);
+var $201 = { n: "_", v: "ret.push(item.wzName)", r: 45, c: 17, s: "f1", u: "f5",  }; //429
+$.a($200, $201, 411);
+var $202 = { n: "return", v: "ret", r: 46, c: 13, s: "f1", u: "f5",  }; //430
+$.a($198, $202, 413);
+var $203 = { n: "e", v: "new : statement", r: 48, c: 5, s: "f1", u: "f5",  }; //431
+$.a($1, $203, 415);
+var $204 = { n: "r", v: "param/s", r: 49, c: 9, s: "f1", u: "f5",  }; //432
+$.a($203, $204, 417);
+var $205 = { n: "#", v: "ittf:", r: 51, c: 9, s: "f1", u: "f5",  }; //433
+$.a($203, $205, 419);
+var $206 = { n: "#", v: "var h", r: 52, c: 9, s: "f1", u: "f5",  }; //434
+$.a($203, $206, 421);
+var $207 = { n: "#", v: "new Hello", r: 53, c: 9, s: "f1", u: "f5",  }; //435
+$.a($203, $207, 423);
+var $208 = { n: "#", v: "var j", r: 54, c: 9, s: "f1", u: "f5",  }; //436
+$.a($203, $208, 425);
+var $209 = { n: "#", v: "new Hello", r: 55, c: 9, s: "f1", u: "f5",  }; //437
+$.a($203, $209, 427);
+var $210 = { n: "#", v: "function", r: 56, c: 9, s: "f1", u: "f5",  }; //438
+$.a($203, $210, 429);
+var $211 = { n: "#", v: "param p", r: 57, c: 9, s: "f1", u: "f5",  }; //439
+$.a($203, $211, 431);
+var $212 = { n: "#", v: "+ ...", r: 58, c: 9, s: "f1", u: "f5",  }; //440
+$.a($203, $212, 433);
+var $213 = { n: "#", v: "js:", r: 59, c: 9, s: "f1", u: "f5",  }; //441
+$.a($203, $213, 435);
+var $214 = { n: "#", v: "var h = new Hello();", r: 60, c: 9, s: "f1", u: "f5",  }; //442
+$.a($203, $214, 437);
+var $215 = { n: "#", v: "var j = new Hello(function(p) { ... });", r: 61, c: 9, s: "f1", u: "f5",  }; //443
+$.a($203, $215, 439);
+var $216 = { n: "e", v: "type : statement", r: 63, c: 5, s: "f1", u: "f5",  }; //444
+$.a($1, $216, 441);
+var $217 = { n: "e", v: "param", r: 64, c: 5, s: "f1", u: "f5",  }; //445
+$.a($1, $217, 443);
+var $218 = { n: "e", v: "arg", r: 65, c: 5, s: "f1", u: "f5",  }; //446
+$.a($1, $218, 445);
+var $219 = { n: "e", v: "call : statement", r: 2, c: 5, s: "f1", u: "f6",  }; //499
+$.a($1, $219, 447);
+var $220 = { n: "#", v: "A function call.", r: 3, c: 9, s: "f1", u: "f6",  }; //500
+$.a($219, $220, 449);
+var $221 = { n: "tag", v: "_", r: 5, c: 9, s: "f1", u: "f6",  }; //501
+$.a($219, $221, 451);
+var $222 = { n: "#", v: "ittf:", r: 7, c: 9, s: "f1", u: "f6",  }; //502
+$.a($219, $222, 453);
+var $223 = { n: "#", v: "_ sayHello('stefi', 10)", r: 8, c: 9, s: "f1", u: "f6",  }; //503
+$.a($219, $223, 455);
+var $224 = { n: "#", v: "_ init", r: 9, c: 9, s: "f1", u: "f6",  }; //504
+$.a($219, $224, 457);
+var $225 = { n: "#", v: "{", r: 10, c: 9, s: "f1", u: "f6",  }; //505
+$.a($219, $225, 459);
+var $226 = { n: "#", v: "@ key 0", r: 11, c: 9, s: "f1", u: "f6",  }; //506
+$.a($219, $226, 461);
+var $227 = { n: "#", v: "function", r: 12, c: 9, s: "f1", u: "f6",  }; //507
+$.a($219, $227, 463);
+var $228 = { n: "#", v: "param value", r: 13, c: 9, s: "f1", u: "f6",  }; //508
+$.a($219, $228, 465);
+var $229 = { n: "#", v: "return calc(value)", r: 14, c: 9, s: "f1", u: "f6",  }; //509
+$.a($219, $229, 467);
+var $230 = { n: "e", v: "memberCall : statement", r: 16, c: 5, s: "f1", u: "f6",  }; //510
+$.a($1, $230, 469);
+var $231 = { n: "tag", v: "._", r: 18, c: 9, s: "f1", u: "f6",  }; //511
+$.a($230, $231, 471);
+var $232 = { n: "#", v: "ittf:", r: 20, c: 9, s: "f1", u: "f6",  }; //512
+$.a($230, $232, 473);
+var $233 = { n: "#", v: "set value", r: 21, c: 9, s: "f1", u: "f6",  }; //513
+$.a($230, $233, 475);
+var $234 = { n: "#", v: "_ init", r: 22, c: 9, s: "f1", u: "f6",  }; //514
+$.a($230, $234, 477);
+var $235 = { n: "#", v: "._calc", r: 23, c: 9, s: "f1", u: "f6",  }; //515
+$.a($230, $235, 479);
+var $236 = { n: "#", v: "js:", r: 24, c: 9, s: "f1", u: "f6",  }; //516
+$.a($230, $236, 481);
+var $237 = { n: "#", v: "value = init().calc()", r: 25, c: 9, s: "f1", u: "f6",  }; //517
+$.a($230, $237, 483);
+var $238 = { n: "e", v: "decoratorCall : statement", r: 27, c: 5, s: "f1", u: "f6",  }; //518
+$.a($1, $238, 485);
+var $239 = { n: "tag", v: "@_", r: 29, c: 9, s: "f1", u: "f6",  }; //519
+$.a($238, $239, 487);
+var $240 = { n: "#", v: "ittf:", r: 30, c: 9, s: "f1", u: "f6",  }; //520
+$.a($238, $240, 489);
+var $241 = { n: "#", v: "@_ alpha", r: 31, c: 9, s: "f1", u: "f6",  }; //521
+$.a($238, $241, 491);
+var $242 = { n: "#", v: "@ 200", r: 32, c: 9, s: "f1", u: "f6",  }; //522
+$.a($238, $242, 493);
+var $243 = { n: "#", v: "function", r: 33, c: 9, s: "f1", u: "f6",  }; //523
+$.a($238, $243, 495);
+var $244 = { n: "#", v: "return 'a';", r: 34, c: 9, s: "f1", u: "f6",  }; //524
+$.a($238, $244, 497);
+var $245 = { n: "#", v: "js:", r: 35, c: 9, s: "f1", u: "f6",  }; //525
+$.a($238, $245, 499);
+var $246 = { n: "#", v: "@alpha(200, function() { return 'a'; })", r: 36, c: 9, s: "f1", u: "f6",  }; //526
+$.a($238, $246, 501);
+var $247 = { n: "e", v: "callOnValue : statement", r: 37, c: 5, s: "f1", u: "f6",  }; //527
+$.a($1, $247, 503);
+var $248 = { n: "tag", v: "(", r: 39, c: 9, s: "f1", u: "f6",  }; //528
+$.a($247, $248, 505);
+var $249 = { n: "#", v: "ittf:", r: 41, c: 9, s: "f1", u: "f6",  }; //529
+$.a($247, $249, 507);
+var $250 = { n: "#", v: "_ getFunction()", r: 42, c: 9, s: "f1", u: "f6",  }; //530
+$.a($247, $250, 509);
+var $251 = { n: "#", v: "(", r: 43, c: 9, s: "f1", u: "f6",  }; //531
+$.a($247, $251, 511);
+var $252 = { n: "#", v: "@ 'stefi'", r: 44, c: 9, s: "f1", u: "f6",  }; //532
+$.a($247, $252, 513);
+var $253 = { n: "#", v: "js:", r: 45, c: 9, s: "f1", u: "f6",  }; //533
+$.a($247, $253, 515);
+var $254 = { n: "#", v: "getFunction()('stefi')", r: 46, c: 9, s: "f1", u: "f6",  }; //534
+$.a($247, $254, 517);
+var $255 = { n: "e", v: "memberAccess : statement", r: 48, c: 5, s: "f1", u: "f6",  }; //535
+$.a($1, $255, 519);
+var $256 = { n: "tag", v: ".", r: 50, c: 9, s: "f1", u: "f6",  }; //536
+$.a($255, $256, 521);
+var $257 = { n: "#", v: "ittf:", r: 52, c: 9, s: "f1", u: "f6",  }; //537
+$.a($255, $257, 523);
+var $258 = { n: "#", v: "set name = obj", r: 53, c: 9, s: "f1", u: "f6",  }; //538
+$.a($255, $258, 525);
+var $259 = { n: "#", v: ". name", r: 54, c: 9, s: "f1", u: "f6",  }; //539
+$.a($255, $259, 527);
+var $260 = { n: "#", v: "js:", r: 55, c: 9, s: "f1", u: "f6",  }; //540
+$.a($255, $260, 529);
+var $261 = { n: "#", v: "name = obj.name", r: 56, c: 9, s: "f1", u: "f6",  }; //541
+$.a($255, $261, 531);
+var $262 = { n: "e", v: "memberAccessComputed : statement", r: 58, c: 5, s: "f1", u: "f6",  }; //542
+$.a($1, $262, 533);
+var $263 = { n: "tag", v: ".[", r: 60, c: 9, s: "f1", u: "f6",  }; //543
+$.a($262, $263, 535);
+var $264 = { n: "#", v: "ittf:", r: 62, c: 9, s: "f1", u: "f6",  }; //544
+$.a($262, $264, 537);
+var $265 = { n: "#", v: "set name = obj", r: 63, c: 9, s: "f1", u: "f6",  }; //545
+$.a($262, $265, 539);
+var $266 = { n: "#", v: ".[ name", r: 64, c: 9, s: "f1", u: "f6",  }; //546
+$.a($262, $266, 541);
+var $267 = { n: "#", v: "js:", r: 65, c: 9, s: "f1", u: "f6",  }; //547
+$.a($262, $267, 543);
+var $268 = { n: "#", v: "name = obj[name]", r: 66, c: 9, s: "f1", u: "f6",  }; //548
+$.a($262, $268, 545);
+var $269 = { n: "e", v: "iif : statement", r: 2, c: 5, s: "f1", u: "f7",  }; //600
+$.a($1, $269, 547);
+var $270 = { n: "#", v: "ittf:", r: 3, c: 9, s: "f1", u: "f7",  }; //601
+$.a($269, $270, 549);
+var $271 = { n: "#", v: "iif a === b", r: 4, c: 9, s: "f1", u: "f7",  }; //602
+$.a($269, $271, 551);
+var $272 = { n: "#", v: "then 0", r: 5, c: 9, s: "f1", u: "f7",  }; //603
+$.a($269, $272, 553);
+var $273 = { n: "#", v: "else 1", r: 6, c: 9, s: "f1", u: "f7",  }; //604
+$.a($269, $273, 555);
+var $274 = { n: "#", v: "js:", r: 7, c: 9, s: "f1", u: "f7",  }; //605
+$.a($269, $274, 557);
+var $275 = { n: "#", v: "( a === b ) ? 0 : 1", r: 8, c: 9, s: "f1", u: "f7",  }; //606
+$.a($269, $275, 559);
+var $276 = { n: "e", v: "test : statement", r: 10, c: 5, s: "f1", u: "f7",  }; //607
+$.a($1, $276, 561);
+var $277 = { n: "e", v: "then : statement", r: 11, c: 5, s: "f1", u: "f7",  }; //608
+$.a($1, $277, 563);
+var $278 = { n: "e", v: "or : statement", r: 12, c: 5, s: "f1", u: "f7",  }; //609
+$.a($1, $278, 565);
+var $279 = { n: "tag", v: "||", r: 13, c: 9, s: "f1", u: "f7",  }; //610
+$.a($278, $279, 567);
+var $280 = { n: "e", v: "and : statement", r: 15, c: 5, s: "f1", u: "f7",  }; //611
+$.a($1, $280, 569);
+var $281 = { n: "tag", v: "&&", r: 16, c: 9, s: "f1", u: "f7",  }; //612
+$.a($280, $281, 571);
+var $282 = { n: "e", v: "op_eq_strict : statement", r: 17, c: 5, s: "f1", u: "f7",  }; //613
+$.a($1, $282, 573);
+var $283 = { n: "tag", v: "op===", r: 18, c: 9, s: "f1", u: "f7",  }; //614
+$.a($282, $283, 575);
+var $284 = { n: "e", v: "op_noteq_strict : statement", r: 20, c: 5, s: "f1", u: "f7",  }; //615
+$.a($1, $284, 577);
+var $285 = { n: "tag", v: "op!==", r: 21, c: 9, s: "f1", u: "f7",  }; //616
+$.a($284, $285, 579);
+var $286 = { n: "e", v: "op_eq : statement", r: 23, c: 5, s: "f1", u: "f7",  }; //617
+$.a($1, $286, 581);
+var $287 = { n: "tag", v: "op==", r: 24, c: 9, s: "f1", u: "f7",  }; //618
+$.a($286, $287, 583);
+var $288 = { n: "e", v: "op_noteq : statement", r: 26, c: 5, s: "f1", u: "f7",  }; //619
+$.a($1, $288, 585);
+var $289 = { n: "tag", v: "op!=", r: 27, c: 9, s: "f1", u: "f7",  }; //620
+$.a($288, $289, 587);
+var $290 = { n: "e", v: "op_or : statement", r: 29, c: 5, s: "f1", u: "f7",  }; //621
+$.a($1, $290, 589);
+var $291 = { n: "tag", v: "op||", r: 30, c: 9, s: "f1", u: "f7",  }; //622
+$.a($290, $291, 591);
+var $292 = { n: "e", v: "op_and : statement", r: 32, c: 5, s: "f1", u: "f7",  }; //623
+$.a($1, $292, 593);
+var $293 = { n: "tag", v: "op&&", r: 33, c: 9, s: "f1", u: "f7",  }; //624
+$.a($292, $293, 595);
+var $294 = { n: "e", v: "op_minus : statement", r: 35, c: 5, s: "f1", u: "f7",  }; //625
+$.a($1, $294, 597);
+var $295 = { n: "tag", v: "op-", r: 36, c: 9, s: "f1", u: "f7",  }; //626
+$.a($294, $295, 599);
+var $296 = { n: "e", v: "op_plus : statement", r: 38, c: 5, s: "f1", u: "f7",  }; //627
+$.a($1, $296, 601);
+var $297 = { n: "tag", v: "op+", r: 39, c: 9, s: "f1", u: "f7",  }; //628
+$.a($296, $297, 603);
+var $298 = { n: "e", v: "op_times : statement", r: 41, c: 5, s: "f1", u: "f7",  }; //629
+$.a($1, $298, 605);
+var $299 = { n: "tag", v: "op*", r: 42, c: 9, s: "f1", u: "f7",  }; //630
+$.a($298, $299, 607);
+var $300 = { n: "e", v: "op_div : statement", r: 44, c: 5, s: "f1", u: "f7",  }; //631
+$.a($1, $300, 609);
+var $301 = { n: "tag", v: "op/", r: 45, c: 9, s: "f1", u: "f7",  }; //632
+$.a($300, $301, 611);
+var $302 = { n: "e", v: "op_power : statement", r: 47, c: 5, s: "f1", u: "f7",  }; //633
+$.a($1, $302, 613);
+var $303 = { n: "tag", v: "op^", r: 48, c: 9, s: "f1", u: "f7",  }; //634
+$.a($302, $303, 615);
+var $304 = { n: "e", v: "op_mod : statement", r: 50, c: 5, s: "f1", u: "f7",  }; //635
+$.a($1, $304, 617);
+var $305 = { n: "tag", v: "op%", r: 51, c: 9, s: "f1", u: "f7",  }; //636
+$.a($304, $305, 619);
+var $306 = { n: "e", v: "op_xor : statement", r: 53, c: 5, s: "f1", u: "f7",  }; //637
+$.a($1, $306, 621);
+var $307 = { n: "tag", v: "op|", r: 54, c: 9, s: "f1", u: "f7",  }; //638
+$.a($306, $307, 623);
+var $308 = { n: "e", v: "op_xand : statement", r: 56, c: 5, s: "f1", u: "f7",  }; //639
+$.a($1, $308, 625);
+var $309 = { n: "tag", v: "op&", r: 57, c: 9, s: "f1", u: "f7",  }; //640
+$.a($308, $309, 627);
+var $310 = { n: "e", v: "op_gt : statement", r: 59, c: 5, s: "f1", u: "f7",  }; //641
+$.a($1, $310, 629);
+var $311 = { n: "tag", v: "op>", r: 60, c: 9, s: "f1", u: "f7",  }; //642
+$.a($310, $311, 631);
+var $312 = { n: "e", v: "op_ge : statement", r: 62, c: 5, s: "f1", u: "f7",  }; //643
+$.a($1, $312, 633);
+var $313 = { n: "tag", v: "op>=", r: 63, c: 9, s: "f1", u: "f7",  }; //644
+$.a($312, $313, 635);
+var $314 = { n: "e", v: "op_lt : statement", r: 65, c: 5, s: "f1", u: "f7",  }; //645
+$.a($1, $314, 637);
+var $315 = { n: "tag", v: "op<", r: 66, c: 9, s: "f1", u: "f7",  }; //646
+$.a($314, $315, 639);
+var $316 = { n: "e", v: "op_le : statement", r: 68, c: 5, s: "f1", u: "f7",  }; //647
+$.a($1, $316, 641);
+var $317 = { n: "tag", v: "op<=", r: 69, c: 9, s: "f1", u: "f7",  }; //648
+$.a($316, $317, 643);
+var $318 = { n: "#", v: "elemnt of interest", r: 2, c: 5, s: "f1", u: "f8",  }; //666
+$.a($1, $318, 645);
+var $319 = { n: "#", v: "var", r: 3, c: 5, s: "f1", u: "f8",  }; //667
+$.a($1, $319, 647);
+var $320 = { n: "#", v: "function", r: 4, c: 5, s: "f1", u: "f8",  }; //668
+$.a($1, $320, 649);
+var $321 = { n: "#", v: "", r: 5, c: 5, s: "f1", u: "f8",  }; //669
+$.a($1, $321, 651);
+var $322 = { n: "#", v: "kind public or private", r: 6, c: 5, s: "f1", u: "f8",  }; //670
+$.a($1, $322, 653);
+var $323 = { n: "#", v: "", r: 7, c: 5, s: "f1", u: "f8",  }; //671
+$.a($1, $323, 655);
+var $324 = { n: "#", v: "require", r: 8, c: 5, s: "f1", u: "f8",  }; //672
+$.a($1, $324, 657);
+var $325 = { n: "#", v: "module", r: 9, c: 5, s: "f1", u: "f8",  }; //673
+$.a($1, $325, 659);
+var $326 = { n: "#", v: "", r: 10, c: 5, s: "f1", u: "f8",  }; //674
+$.a($1, $326, 661);
+var $327 = { n: "e", v: $.ip("f4", "${name}", "string", 662), r: 1, c: 1, s: "f4", u: "f14",  }; //974
+$.a($1, $327, 663);
+$.s("f4");
+if (tag != null) { //975
+    $.n();
+    var $329 = { n: "tag", v: $.ip("f4", "${tag}", "string", 667), r: 4, c: 9, s: "f4", u: "f14",  }; //976
+    $.a($327, $329, 668);
+}
+$.s("f4");
+if (xsuper != null) { //977
+    $.n();
+    var $331 = { n: "super", v: $.ip("f4", "${xsuper}", "string", 673), r: 6, c: 9, s: "f4", u: "f14",  }; //978
+    $.a($327, $331, 674);
+}
+$.n();
+var $332 = { n: "e", v: $.ip("f5", "${name}", "string", 677), r: 1, c: 1, s: "f5", u: "f14",  }; //979
+$.a($1, $332, 678);
+$.s("f5");
+if (tag != null) { //980
+    $.n();
+    var $334 = { n: "tag", v: $.ip("f5", "${tag}", "string", 682), r: 4, c: 9, s: "f5", u: "f14",  }; //981
+    $.a($332, $334, 683);
+}
+$.s("f5");
+if (xsuper != null) { //982
+    $.n();
+    var $336 = { n: "super", v: $.ip("f5", "${xsuper}", "string", 688), r: 6, c: 9, s: "f5", u: "f14",  }; //983
+    $.a($332, $336, 689);
+}
+$.n();
+var $337 = { n: "a", v: "from", r: 13, c: 9, s: "f1", u: "f8",  }; //677
+$.a($332, $337, 693);
+var $338 = { n: "e", v: $.ip("f6", "${name}", "string", 694), r: 1, c: 1, s: "f6", u: "f14",  }; //984
+$.a($1, $338, 695);
+$.s("f6");
+if (tag != null) { //985
+    $.n();
+    var $340 = { n: "tag", v: $.ip("f6", "${tag}", "string", 699), r: 4, c: 9, s: "f6", u: "f14",  }; //986
+    $.a($338, $340, 700);
+}
+$.s("f6");
+if (xsuper != null) { //987
+    $.n();
+    var $342 = { n: "super", v: $.ip("f6", "${xsuper}", "string", 705), r: 6, c: 9, s: "f6", u: "f14",  }; //988
+    $.a($338, $342, 706);
+}
+$.n();
+var $343 = { n: "e", v: $.ip("f7", "${name}", "string", 709), r: 1, c: 1, s: "f7", u: "f14",  }; //989
+$.a($1, $343, 710);
+$.s("f7");
+if (tag != null) { //990
+    $.n();
+    var $345 = { n: "tag", v: $.ip("f7", "${tag}", "string", 714), r: 4, c: 9, s: "f7", u: "f14",  }; //991
+    $.a($343, $345, 715);
+}
+$.s("f7");
+if (xsuper != null) { //992
+    $.n();
+    var $347 = { n: "super", v: $.ip("f7", "${xsuper}", "string", 720), r: 6, c: 9, s: "f7", u: "f14",  }; //993
+    $.a($343, $347, 721);
+}
+$.n();
+var $348 = { n: "e", v: $.ip("f8", "${name}", "string", 724), r: 1, c: 1, s: "f8", u: "f14",  }; //994
+$.a($1, $348, 725);
+$.s("f8");
+if (tag != null) { //995
+    $.n();
+    var $350 = { n: "tag", v: $.ip("f8", "${tag}", "string", 729), r: 4, c: 9, s: "f8", u: "f14",  }; //996
+    $.a($348, $350, 730);
+}
+$.s("f8");
+if (xsuper != null) { //997
+    $.n();
+    var $352 = { n: "super", v: $.ip("f8", "${xsuper}", "string", 735), r: 6, c: 9, s: "f8", u: "f14",  }; //998
+    $.a($348, $352, 736);
+}
+$.n();
+var $353 = { n: "e", v: "component : statement", r: 2, c: 5, s: "f1", u: "f9",  }; //687
+$.a($1, $353, 740);
+var $354 = { n: "tag", v: "§", r: 3, c: 9, s: "f1", u: "f9",  }; //688
+$.a($353, $354, 742);
+var $355 = { n: "e", v: "reactComponent : component", r: 4, c: 5, s: "f1", u: "f9",  }; //689
+$.a($1, $355, 744);
+var $356 = { n: "tag", v: "react", r: 5, c: 9, s: "f1", u: "f9",  }; //690
+$.a($355, $356, 746);
+var $357 = { n: "#", v: "Those of facebook react see https://facebook.github.io/react/docs/tags-and-attributes.html", r: 2, c: 5, s: "f1", u: "f10",  }; //772
+$.a($1, $357, 748);
+$.s("f1");
+var _tags = "a abbr address area article aside audio b base bdi bdo big blockquote body br" + //774
+" button canvas caption cite code col colgroup data datalist dd del details dfn" + //775
+" dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5" + //776
+" h6 head header hr html i iframe img input ins kbd keygen label legend li link" + //777
+" main map mark menu menuitem meta meter nav noscript object ol optgroup option" + //778
+" output p param picture pre progress q rp rt ruby s samp script section select" + //779
+" small source span strong @style sub summary sup table tbody td textarea tfoot th" + //780
+" thead time title tr track u ul var video wbr"; //781
+var html_supported_tags = _tags.split(' '); //782
+var _attrs = "accept acceptCharset accessKey action allowFullScreen allowTransparency alt" + //783
+" async autoComplete autoFocus autoPlay capture cellPadding cellSpacing charSet" + //784
+" challenge checked classID className cols colSpan content contentEditable contextMenu" + //785
+" controls coords crossOrigin data dateTime defer dir disabled download draggable" + //786
+" encType form formAction formEncType formMethod formNoValidate formTarget frameBorder" + //787
+" headers height hidden high href hrefLang htmlFor httpEquiv icon id inputMode" + //788
+" keyParams keyType @label lang list loop low manifest marginHeight marginWidth max" + //789
+" maxLength media mediaGroup method min minLength multiple muted name noValidate open" + //790
+" optimum pattern placeholder poster preload radioGroup readOnly rel required role" + //791
+" rows rowSpan sandbox scope scoped scrolling seamless selected shape size sizes" + //792
+" @span spellCheck src srcDoc srcSet start step style @summary tabIndex target title" + //793
+" type useMap value width wmode wrap"; //794
+var html_supported_attrs = _attrs.split(' '); //795
+$.n();
+var $359 = { n: "e", v: "htmlelement : statement", r: 27, c: 5, s: "f1", u: "f10",  }; //796
+$.a($1, $359, 774);
+var $360 = { n: "a", v: "autoCapitalize", r: 28, c: 9, s: "f1", u: "f10",  }; //797
+$.a($359, $360, 776);
+var $361 = { n: "a", v: "autoCorrect", r: 29, c: 9, s: "f1", u: "f10",  }; //798
+$.a($359, $361, 778);
+var $362 = { n: "a", v: "property", r: 30, c: 9, s: "f1", u: "f10",  }; //799
+$.a($359, $362, 780);
+var $363 = { n: "a", v: "itemProp", r: 31, c: 9, s: "f1", u: "f10",  }; //800
+$.a($359, $363, 782);
+var $364 = { n: "a", v: "itemScope", r: 32, c: 9, s: "f1", u: "f10",  }; //801
+$.a($359, $364, 784);
+var $365 = { n: "a", v: "itemType", r: 33, c: 9, s: "f1", u: "f10",  }; //802
+$.a($359, $365, 786);
+var $366 = { n: "a", v: "itemRef", r: 34, c: 9, s: "f1", u: "f10",  }; //803
+$.a($359, $366, 788);
+var $367 = { n: "a", v: "itemID", r: 35, c: 9, s: "f1", u: "f10",  }; //804
+$.a($359, $367, 790);
+var $368 = { n: "a", v: "unselectable", r: 36, c: 9, s: "f1", u: "f10",  }; //805
+$.a($359, $368, 792);
+var $369 = { n: "a", v: "results", r: 37, c: 9, s: "f1", u: "f10",  }; //806
+$.a($359, $369, 794);
+var $370 = { n: "a", v: "autoSave", r: 38, c: 9, s: "f1", u: "f10",  }; //807
+$.a($359, $370, 796);
+var $371 = { n: "a", v: "class", r: 39, c: 9, s: "f1", u: "f10",  }; //808
+$.a($359, $371, 798);
+var $372 = { n: "a", v: "aria-*", r: 40, c: 9, s: "f1", u: "f10",  }; //809
+$.a($359, $372, 800);
+var $373 = { n: "a", v: "data-*", r: 41, c: 9, s: "f1", u: "f10",  }; //810
+$.a($359, $373, 802);
+$.s("f1");
+for (var i374=0, l374 = html_supported_attrs.length; i374<l374; i374++) { //811
+    var item = html_supported_attrs[i374]; //811
+    var _index = i374; //811
+    var _count = html_supported_attrs.length; //811
+    if (item) { //812
+        $.n();
+        var $376 = { n: "a", v: $.ip("f1", "${item}", "string", 810), r: 44, c: 17, s: "f1", u: "f10",  }; //813
+        $.a($359, $376, 811);
+    }
+}
+$.n();
+var $377 = { n: "tag", v: "<", r: 46, c: 9, s: "f1", u: "f10",  }; //814
+$.a($359, $377, 816);
+var $378 = { n: "e", v: "doctype : htmlelement", r: 47, c: 5, s: "f1", u: "f10",  }; //815
+$.a($1, $378, 818);
+$.s("f1");
+for (var i379=0, l379 = html_supported_tags.length; i379<l379; i379++) { //816
+    var item = html_supported_tags[i379]; //816
+    var _index = i379; //816
+    var _count = html_supported_tags.length; //816
+    if (item) { //817
+        $.n();
+        var $381 = { n: "e", v: $.ip("f1", "${item} : htmlelement", "string", 826), r: 50, c: 13, s: "f1", u: "f10",  }; //818
+        $.a($1, $381, 827);
+    }
+}
+$.n();
+var $382 = { n: "e", v: "js : htmlelement", r: 52, c: 5, s: "f1", u: "f10",  }; //819
+$.a($1, $382, 832);
+var $383 = { n: "e", v: "css : htmlelement", r: 53, c: 5, s: "f1", u: "f10",  }; //820
+$.a($1, $383, 834);
+var $384 = { n: "e", v: "ready : statement", r: 54, c: 5, s: "f1", u: "f10",  }; //821
+$.a($1, $384, 836);
+var $385 = { n: "a", v: "kind", r: 55, c: 9, s: "f1", u: "f10",  }; //822
+$.a($384, $385, 838);
+var $386 = { n: "default", v: "jquery", r: 56, c: 13, s: "f1", u: "f10",  }; //823
+$.a($385, $386, 840);
+var $387 = { n: "restrict", v: "", r: 57, c: 13, s: "f1", u: "f10",  }; //824
+$.a($385, $387, 842);
+var $388 = { n: "enum", v: "jquery", r: 58, c: 17, s: "f1", u: "f10",  }; //825
+$.a($387, $388, 844);
+var $389 = { n: "enum", v: "window", r: 59, c: 17, s: "f1", u: "f10",  }; //826
+$.a($387, $389, 846);
+var $390 = { n: "e", v: "tohtml : statement", r: 60, c: 5, s: "f1", u: "f10",  }; //827
+$.a($1, $390, 848);
+var $391 = { n: "a", v: "kind", r: 61, c: 9, s: "f1", u: "f10",  }; //828
+$.a($390, $391, 850);
+var $392 = { n: "default", v: "wizzi", r: 62, c: 13, s: "f1", u: "f10",  }; //829
+$.a($391, $392, 852);
+var $393 = { n: "restrict", v: "", r: 63, c: 13, s: "f1", u: "f10",  }; //830
+$.a($391, $393, 854);
+var $394 = { n: "enum", v: "wizzi", r: 64, c: 17, s: "f1", u: "f10",  }; //831
+$.a($393, $394, 856);
+var $395 = { n: "enum", v: "ng", r: 65, c: 17, s: "f1", u: "f10",  }; //832
+$.a($393, $395, 858);
+var $396 = { n: "#", v: "create a function", r: 66, c: 21, s: "f1", u: "f10",  }; //833
+$.a($395, $396, 860);
+var $397 = { n: "#", v: "that returns am html string preserving {{ }}, for interpolation use [[ ]]", r: 67, c: 21, s: "f1", u: "f10",  }; //834
+$.a($395, $397, 862);
+var $398 = { n: "enum", v: "dom", r: 68, c: 17, s: "f1", u: "f10",  }; //835
+$.a($393, $398, 864);
+var $399 = { n: "#", v: "that returns am html dom tree using jQuery", r: 69, c: 21, s: "f1", u: "f10",  }; //836
+$.a($398, $399, 866);
+var $400 = { n: "enum", v: "hb", r: 70, c: 17, s: "f1", u: "f10",  }; //837
+$.a($393, $400, 868);
+var $401 = { n: "#", v: "that returns a compiled handlebar template", r: 71, c: 21, s: "f1", u: "f10",  }; //838
+$.a($400, $401, 870);
+var $402 = { n: "e", v: "html_f : statement", r: 73, c: 5, s: "f1", u: "f10",  }; //839
+$.a($1, $402, 872);
+var $403 = { n: "#", v: "create a function", r: 74, c: 9, s: "f1", u: "f10",  }; //840
+$.a($402, $403, 874);
+var $404 = { n: "#", v: "that returns am html string", r: 75, c: 9, s: "f1", u: "f10",  }; //841
+$.a($402, $404, 876);
+var $405 = { n: "e", v: "html_ng : statement", r: 77, c: 5, s: "f1", u: "f10",  }; //842
+$.a($1, $405, 878);
+var $406 = { n: "#", v: "create a function", r: 78, c: 9, s: "f1", u: "f10",  }; //843
+$.a($405, $406, 880);
+var $407 = { n: "#", v: "that returns am html string preserving {{ }}, for interpolation use [[ ]]", r: 79, c: 9, s: "f1", u: "f10",  }; //844
+$.a($405, $407, 882);
+var $408 = { n: "e", v: "html_dom : statement", r: 81, c: 5, s: "f1", u: "f10",  }; //845
+$.a($1, $408, 884);
+var $409 = { n: "#", v: "create a function", r: 82, c: 9, s: "f1", u: "f10",  }; //846
+$.a($408, $409, 886);
+var $410 = { n: "#", v: "that returns am html dom tree using jQuery", r: 83, c: 9, s: "f1", u: "f10",  }; //847
+$.a($408, $410, 888);
+var $411 = { n: "e", v: "html_hb : statement", r: 85, c: 5, s: "f1", u: "f10",  }; //848
+$.a($1, $411, 890);
+var $412 = { n: "#", v: "create a function", r: 86, c: 9, s: "f1", u: "f10",  }; //849
+$.a($411, $412, 892);
+var $413 = { n: "#", v: "that returns a compiled handlebar template", r: 87, c: 9, s: "f1", u: "f10",  }; //850
+$.a($411, $413, 894);
+var $414 = { n: "e", v: "debug : statement", r: 2, c: 5, s: "f1", u: "f11",  }; //877
+$.a($1, $414, 896);
+var $415 = { n: "m", v: "_require ctx", r: 3, c: 9, s: "f1", u: "f11",  }; //878
+$.a($414, $415, 898);
+var $416 = { n: "_", v: "ctx.require('debug');", r: 4, c: 13, s: "f1", u: "f11",  }; //879
+$.a($415, $416, 900);
+var $417 = { n: "e", v: "assert : statement", r: 5, c: 5, s: "f1", u: "f11",  }; //880
+$.a($1, $417, 902);
+var $418 = { n: "tag", v: "!!", r: 6, c: 9, s: "f1", u: "f11",  }; //881
+$.a($417, $418, 904);
+var $419 = { n: "e", v: "assert_equal : statement", r: 8, c: 5, s: "f1", u: "f11",  }; //882
+$.a($1, $419, 906);
+var $420 = { n: "tag", v: "!!=", r: 9, c: 9, s: "f1", u: "f11",  }; //883
+$.a($419, $420, 908);
+var $421 = { n: "e", v: "chalk : statement", r: 11, c: 5, s: "f1", u: "f11",  }; //884
+$.a($1, $421, 910);
+var $422 = { n: "e", v: "log : statement", r: 12, c: 5, s: "f1", u: "f11",  }; //885
+$.a($1, $422, 912);
+var $423 = { n: "#", v: "ittf:", r: 13, c: 9, s: "f1", u: "f11",  }; //886
+$.a($422, $423, 914);
+var $424 = { n: "#", v: "log 'xxx', yyy", r: 14, c: 9, s: "f1", u: "f11",  }; //887
+$.a($422, $424, 916);
+var $425 = { n: "#", v: "js:", r: 15, c: 9, s: "f1", u: "f11",  }; //888
+$.a($422, $425, 918);
+var $426 = { n: "#", v: "console.log( 'xxx', yyy );", r: 16, c: 9, s: "f1", u: "f11",  }; //889
+$.a($422, $426, 920);
+var $427 = { n: "#", v: "", r: 17, c: 9, s: "f1", u: "f11",  }; //890
+$.a($422, $427, 922);
+var $428 = { n: "m", v: "_toJs ctx", r: 18, c: 9, s: "f1", u: "f11",  }; //891
+$.a($422, $428, 924);
+var $429 = { n: "_", v: "ctx.w('console.log(' + this.WmtName + ');')", r: 19, c: 13, s: "f1", u: "f11",  }; //892
+$.a($428, $429, 926);
+var $430 = { n: "e", v: "warn : statement", r: 21, c: 5, s: "f1", u: "f11",  }; //893
+$.a($1, $430, 928);
+var $431 = { n: "e", v: "error : statement", r: 23, c: 5, s: "f1", u: "f11",  }; //894
+$.a($1, $431, 930);
+var $432 = { n: "e", v: "inspect : statement", r: 24, c: 5, s: "f1", u: "f11",  }; //895
+$.a($1, $432, 932);
+var $433 = { n: "tag", v: "log?", r: 25, c: 9, s: "f1", u: "f11",  }; //896
+$.a($432, $433, 934);
+var $434 = { n: "e", v: "log-info : statement", r: 27, c: 5, s: "f1", u: "f11",  }; //897
+$.a($1, $434, 936);
+var $435 = { n: "#", v: "log.info(...)", r: 28, c: 9, s: "f1", u: "f11",  }; //898
+$.a($434, $435, 938);
+var $436 = { n: "m", v: "_require ctx", r: 29, c: 9, s: "f1", u: "f11",  }; //899
+$.a($434, $436, 940);
+var $437 = { n: "_", v: "ctx.require('log');", r: 30, c: 13, s: "f1", u: "f11",  }; //900
+$.a($436, $437, 942);
+var $438 = { n: "e", v: "describe : statement", r: 2, c: 5, s: "f1", u: "f12",  }; //926
+$.a($1, $438, 944);
+var $439 = { n: "e", v: "it : statement", r: 4, c: 5, s: "f1", u: "f12",  }; //927
+$.a($1, $439, 946);
+var $440 = { n: "e", v: "itAsync : statement", r: 5, c: 5, s: "f1", u: "f12",  }; //928
+$.a($1, $440, 948);
+var $441 = { n: "tag", v: "it-async", r: 6, c: 9, s: "f1", u: "f12",  }; //929
+$.a($440, $441, 950);
+var $442 = { n: "e", v: "before : statement", r: 8, c: 5, s: "f1", u: "f12",  }; //930
+$.a($1, $442, 952);
+var $443 = { n: "e", v: "beforeAsync : statement", r: 9, c: 5, s: "f1", u: "f12",  }; //931
+$.a($1, $443, 954);
+var $444 = { n: "tag", v: "before-async", r: 10, c: 9, s: "f1", u: "f12",  }; //932
+$.a($443, $444, 956);
+var $445 = { n: "e", v: "beforeEach : statement", r: 11, c: 5, s: "f1", u: "f12",  }; //933
+$.a($1, $445, 958);
+var $446 = { n: "tag", v: "before-each", r: 12, c: 9, s: "f1", u: "f12",  }; //934
+$.a($445, $446, 960);
+var $447 = { n: "e", v: "after : statement", r: 14, c: 5, s: "f1", u: "f12",  }; //935
+$.a($1, $447, 962);
+var $448 = { n: "e", v: "afterAsync : statement", r: 15, c: 5, s: "f1", u: "f12",  }; //936
+$.a($1, $448, 964);
+var $449 = { n: "tag", v: "after-async", r: 16, c: 9, s: "f1", u: "f12",  }; //937
+$.a($448, $449, 966);
+var $450 = { n: "e", v: "afterEach : statement", r: 17, c: 5, s: "f1", u: "f12",  }; //938
+$.a($1, $450, 968);
+var $451 = { n: "tag", v: "after-each", r: 18, c: 9, s: "f1", u: "f12",  }; //939
+$.a($450, $451, 970);
+var $452 = { n: "e", v: "superagent : statement", r: 20, c: 5, s: "f1", u: "f12",  }; //940
+$.a($1, $452, 972);
+var $453 = { n: "r", v: "get/s", r: 21, c: 9, s: "f1", u: "f12",  }; //941
+$.a($452, $453, 974);
+var $454 = { n: "r", v: "post/s", r: 22, c: 9, s: "f1", u: "f12",  }; //942
+$.a($452, $454, 976);
+var $455 = { n: "r", v: "put/s", r: 23, c: 9, s: "f1", u: "f12",  }; //943
+$.a($452, $455, 978);
+var $456 = { n: "r", v: "end/s", r: 24, c: 9, s: "f1", u: "f12",  }; //944
+$.a($452, $456, 980);
+var $457 = { n: "e", v: "get", r: 25, c: 5, s: "f1", u: "f12",  }; //945
+$.a($1, $457, 982);
+var $458 = { n: "e", v: "post", r: 26, c: 5, s: "f1", u: "f12",  }; //946
+$.a($1, $458, 984);
+var $459 = { n: "e", v: "put", r: 27, c: 5, s: "f1", u: "f12",  }; //947
+$.a($1, $459, 986);
+var $460 = { n: "e", v: "end", r: 28, c: 5, s: "f1", u: "f12",  }; //948
+$.a($1, $460, 988);

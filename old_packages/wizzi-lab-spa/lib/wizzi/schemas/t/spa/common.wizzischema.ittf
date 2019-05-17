@@ -1,0 +1,38 @@
+$group
+	
+	e feature : spaitem
+	
+	e item : spaitem
+	e xpath : spaitem
+		m wzInitialize
+			var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+			set this.pathName = nv.name()
+			set this.pathValue = nv.value()
+	e file : spaitem
+	e glob : spaitem
+	e test : spaitem
+		r file/s
+		r glob/s
+		m wzinitialize
+			set this.fileItems = []
+			set this.globItems = []
+			foreach entry in this.entries
+				if entry.files.length > 0
+					foreach file in entry.files
+						_ this.fileItems.push
+							_ this._fullPath(file.wzName)
+						log 'file entry', this._fullPath(file.wzName)
+				if entry.globs.length > 0
+					foreach glob in entry.globs
+						_ this.globItems.push
+							_ this._fullPath(glob.wzName)
+						log 'glob entry', this._fullPath(glob.wzName)
+				if entry.files.length == 0 && entry.globs.length == 0
+					if isEmpty(entry.wzName) == false
+						_ this.fileItems.push
+							_ this._fullPath(entry.wzName)
+						log 'file entry', this._fullPath(entry.wzName)
+				set this.allItems = _.concat(this.fileItems, this.globItems)
+	e browserlist : spaitem
+		# https://github.com/ai/browserslist
+		r item/s

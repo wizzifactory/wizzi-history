@@ -1,0 +1,43 @@
+module
+	kind jsfile
+	var gulp = require('gulp')
+	var gulpLoadPlugins = require('gulp-load-plugins')
+	var $ = gulpLoadPlugins({camelize: true})
+	+
+	var packageJson = require("./package.json")
+	var runSequence = require("run-sequence")
+	+
+	$if spa.bundler === 'webpack'
+		var webpack = require("webpack")
+		var webpackConfig = require("./webpack.config")
+		$if spa.devServer === 'webpack'
+			var WebpackDevServer = require("webpack-dev-server")
+	+
+	var PORT = process.env.PORT || ${spa.devServer.port};
+	+
+	$if spa.knownFolder.serverStatic
+		# Copy static files from src to build
+		_ gulp.task
+			@ 'serve:static',
+			function
+				_ gulp.src
+					[
+						@ '${spa.knownFolder.serverStatic}/**'
+					._ pipe
+						@ $.changed('${spa.knownFolder.build}')
+					._ pipe
+						@ gulp.dest('${spa.knownFolder.build}')
+					._ pipe
+						@ $.size({title: '${spa.knownFolder.serverStatic}'})
+		_ gulp.task
+			@ 'dist:static',
+			function
+				_ gulp.src
+					[
+						@ '${spa.knownFolder.serverStatic}/**'
+					._ pipe
+						@ gulp.dest('${spa.knownFolder.dist}')
+					._ pipe
+						@ $.size({title: '${spa.knownFolder.serverStatic}'})
+	$include devserver
+	$include distributable

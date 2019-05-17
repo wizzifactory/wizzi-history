@@ -1,0 +1,3577 @@
+{
+  "name": "spa",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [
+    "json"
+  ],
+  "elements": [
+    {
+      "name": "spaitem",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "spaitem"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "comment",
+          "tags": [
+            "#"
+          ]
+        },
+        {
+          "name": "property",
+          "tags": [
+            "property"
+          ]
+        },
+        {
+          "name": "spa",
+          "tags": [
+            "spa"
+          ]
+        },
+        {
+          "name": "feature",
+          "tags": [
+            "feature"
+          ]
+        },
+        {
+          "name": "item",
+          "tags": [
+            "item"
+          ]
+        },
+        {
+          "name": "xpath",
+          "tags": [
+            "xpath"
+          ]
+        },
+        {
+          "name": "file",
+          "tags": [
+            "file"
+          ]
+        },
+        {
+          "name": "glob",
+          "tags": [
+            "glob"
+          ]
+        },
+        {
+          "name": "test",
+          "tags": [
+            "test"
+          ]
+        },
+        {
+          "name": "browserlist",
+          "tags": [
+            "browserlist"
+          ]
+        },
+        {
+          "name": "entry",
+          "tags": [
+            "entry"
+          ]
+        },
+        {
+          "name": "jsObject",
+          "tags": [
+            "{"
+          ]
+        },
+        {
+          "name": "jsArray",
+          "tags": [
+            "["
+          ]
+        },
+        {
+          "name": "jsProp",
+          "tags": [
+            "@"
+          ]
+        },
+        {
+          "name": "babel",
+          "tags": [
+            "babel"
+          ]
+        },
+        {
+          "name": "babelPreset",
+          "tags": [
+            "preset"
+          ]
+        },
+        {
+          "name": "babelPlugin",
+          "tags": [
+            "plugin"
+          ]
+        },
+        {
+          "name": "browserify",
+          "tags": [
+            "browserify"
+          ]
+        },
+        {
+          "name": "server",
+          "tags": [
+            "server"
+          ]
+        },
+        {
+          "name": "travis",
+          "tags": [
+            "travis"
+          ]
+        },
+        {
+          "name": "react",
+          "tags": [
+            "react"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "propertyOfCategory",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "categoryName"
+          ],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "ret = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "item in this.properties",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "item.category === categoryName",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "ret.push(item)",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "ret",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "comment",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "#"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "property",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "property"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "category",
+          "type": "string",
+          "tags": [
+            "category"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "tags": [
+            "value"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzInitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.name = this.wzName",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "spa",
+      "super": "spaitem",
+      "isRoot": true,
+      "tags": [
+        "spa"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "babel",
+          "role": null,
+          "tags": [
+            "babel"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "react",
+          "role": null,
+          "tags": [
+            "react"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "browserify",
+          "role": null,
+          "tags": [
+            "browserify"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "xpath",
+          "role": "xpaths",
+          "tags": [
+            "xpath"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "server",
+          "role": "servers",
+          "tags": [
+            "server"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "package",
+          "role": null,
+          "tags": [
+            "package"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "travis",
+          "role": null,
+          "tags": [
+            "travis"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.webpack",
+              "statements": [
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "wp = this.webpack",
+                  "statements": []
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "wp.webpackLoaders.length > 0",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.bundler = 'webpack'",
+                      "statements": []
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "wp.webpackEntry == null",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "wp.webpackEntry",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "wzName 'undefined'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "kind 'string'",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "wp.webpackOutput == null",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "wp.webpackOutput",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "wzName 'undefined'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "filename 'undefined'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "path 'undefined'",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "presets = []",
+                  "statements": []
+                },
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "plugins = []",
+                  "statements": []
+                },
+                {
+                  "tag": "foreach",
+                  "name": "foreach",
+                  "value": "l in wp.webpackLoaders",
+                  "statements": [
+                    {
+                      "tag": "foreach",
+                      "name": "foreach",
+                      "value": "p in l.babelPresets",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "presets.push(p.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "foreach",
+                      "name": "foreach",
+                      "value": "p in l.babelPlugins",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "plugins.push(p.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "log",
+                  "name": "log",
+                  "value": "'*** presets', presets",
+                  "statements": []
+                },
+                {
+                  "tag": "log",
+                  "name": "log",
+                  "value": "'*** plugins', plugins",
+                  "statements": []
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "presets.length > 0",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.useBabel = true",
+                      "statements": []
+                    },
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.babelPresets = this.babelPresets || []",
+                      "statements": []
+                    },
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.babelPresets = _.union(this.babelPresets, presets)",
+                      "statements": []
+                    },
+                    {
+                      "tag": "log",
+                      "name": "log",
+                      "value": "'*** babelPresets', this.babelPresets",
+                      "statements": []
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "plugins.length > 0",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.useBabel = true",
+                      "statements": []
+                    },
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.babelPlugins = this.babelPlugins || []",
+                      "statements": []
+                    },
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.babelPlugins = _.union(this.babelPlugins, plugins)",
+                      "statements": []
+                    },
+                    {
+                      "tag": "log",
+                      "name": "log",
+                      "value": "'*** babelPlugins', this.babelPlugins",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.devServer",
+              "statements": [
+                {
+                  "tag": "{",
+                  "name": "jsObject",
+                  "value": "",
+                  "statements": [
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "wzName 'webpack'",
+                      "statements": []
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "port 3000",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "s in this.servers",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "s.env === 'dev'",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.devServer = s",
+                      "statements": []
+                    }
+                  ]
+                },
+                {
+                  "tag": "else",
+                  "name": "xelse",
+                  "value": "",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.prodServer = s",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.paths = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "xpath in this.xpaths",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.paths.push(xpath)",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "The root element"
+      ]
+    },
+    {
+      "name": "feature",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "feature"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "item",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "item"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "xpath",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "xpath"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzInitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "nv = wizzi.lineParser.parseNameValueRaw(this.wzName)",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.pathName = nv.name()",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.pathValue = nv.value()",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "file",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "file"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "glob",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "glob"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "test",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "test"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "file",
+          "role": "files",
+          "tags": [
+            "file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "glob",
+          "role": "globs",
+          "tags": [
+            "glob"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.fileItems = []",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.globItems = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "entry in this.entries",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "entry.files.length > 0",
+                  "statements": [
+                    {
+                      "tag": "foreach",
+                      "name": "foreach",
+                      "value": "file in entry.files",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "this.fileItems.push",
+                          "statements": [
+                            {
+                              "tag": "_",
+                              "name": "call",
+                              "value": "this._fullPath(file.wzName)",
+                              "statements": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "log",
+                          "name": "log",
+                          "value": "'file entry', this._fullPath(file.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "entry.globs.length > 0",
+                  "statements": [
+                    {
+                      "tag": "foreach",
+                      "name": "foreach",
+                      "value": "glob in entry.globs",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "this.globItems.push",
+                          "statements": [
+                            {
+                              "tag": "_",
+                              "name": "call",
+                              "value": "this._fullPath(glob.wzName)",
+                              "statements": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "log",
+                          "name": "log",
+                          "value": "'glob entry', this._fullPath(glob.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "entry.files.length == 0 && entry.globs.length == 0",
+                  "statements": [
+                    {
+                      "tag": "if",
+                      "name": "xif",
+                      "value": "isEmpty(entry.wzName) == false",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "this.fileItems.push",
+                          "statements": [
+                            {
+                              "tag": "_",
+                              "name": "call",
+                              "value": "this._fullPath(entry.wzName)",
+                              "statements": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "log",
+                          "name": "log",
+                          "value": "'file entry', this._fullPath(entry.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.allItems = _.concat(this.fileItems, this.globItems)",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "browserlist",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "browserlist"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://github.com/ai/browserslist"
+      ]
+    },
+    {
+      "name": "entry",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "entry"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "watch",
+          "type": "boolean",
+          "tags": [
+            "watch"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "none",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "none",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "file",
+          "role": "files",
+          "tags": [
+            "file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "glob",
+          "role": "globs",
+          "tags": [
+            "glob"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "entryChunk",
+          "role": "entryChunks",
+          "tags": [
+            "chunk"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.entryChunks.length > 0",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.kind = 'object'",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.files.length > 0",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.kind = 'array'",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "entryChunk",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "chunk"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "file",
+          "role": "files",
+          "tags": [
+            "file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://webpack.js.org/concepts/entry-points/"
+      ]
+    },
+    {
+      "name": "jsObject",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "{"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "jsProp",
+          "role": "jsProps",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsArray",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "["
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "spaitem",
+          "role": "spaitems",
+          "tags": [
+            "spaitem"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsProp",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "@"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "spaitem",
+          "role": "spaitems",
+          "tags": [
+            "spaitem"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzInitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.spaitems.length == 0",
+              "statements": [
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "nv = wizzi.lineParser.parseNameValueRaw(this.wzName)",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.name = nv.name()",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.value = nv.value()",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "babel",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "babel"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "babelPreset",
+          "role": "babelPresets",
+          "tags": [
+            "preset"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "babelPlugin",
+          "role": "babelPlugins",
+          "tags": [
+            "plugin"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "babelPreset",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "preset"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [
+        {
+          "facets": [
+            {
+              "type": "enumFacet",
+              "value": "env",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "es2017",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "es2016",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "es2015",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "react",
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "methods": [],
+      "comments": [
+        "babel preset"
+      ]
+    },
+    {
+      "name": "babelPlugin",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "plugin"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "babel plugin"
+      ]
+    },
+    {
+      "name": "browserify",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "browserify"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "basePath",
+          "type": "string",
+          "tags": [
+            "base-path"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "sourceBaseName",
+          "type": "string",
+          "tags": [
+            "source-base-name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "destFolder",
+          "type": "string",
+          "tags": [
+            "dest-folder"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "sourceMapFolder",
+          "type": "string",
+          "tags": [
+            "source-map-folder"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "standalone",
+          "type": "string",
+          "tags": [
+            "standalone"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "entry",
+          "role": "entries",
+          "tags": [
+            "entry"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.fileItems = []",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.globItems = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "entry in this.entries",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "entry.files.length > 0",
+                  "statements": [
+                    {
+                      "tag": "foreach",
+                      "name": "foreach",
+                      "value": "file in entry.files",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "this.fileItems.push",
+                          "statements": [
+                            {
+                              "tag": "{",
+                              "name": "jsObject",
+                              "value": "",
+                              "statements": [
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "path this._fullPath(file.wzName)",
+                                  "statements": []
+                                },
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "watch entry.watch",
+                                  "statements": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "log",
+                          "name": "log",
+                          "value": "'file entry', this._fullPath(file.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "entry.globs.length > 0",
+                  "statements": [
+                    {
+                      "tag": "foreach",
+                      "name": "foreach",
+                      "value": "glob in entry.globs",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "this.globItems.push",
+                          "statements": [
+                            {
+                              "tag": "{",
+                              "name": "jsObject",
+                              "value": "",
+                              "statements": [
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "path this._fullPath(glob.wzName)",
+                                  "statements": []
+                                },
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "watch entry.watch",
+                                  "statements": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "log",
+                          "name": "log",
+                          "value": "'glob entry', this._fullPath(glob.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "entry.files.length == 0 && entry.globs.length == 0",
+                  "statements": [
+                    {
+                      "tag": "if",
+                      "name": "xif",
+                      "value": "isEmpty(entry.wzName) == false",
+                      "statements": [
+                        {
+                          "tag": "_",
+                          "name": "call",
+                          "value": "this.fileItems.push",
+                          "statements": [
+                            {
+                              "tag": "{",
+                              "name": "jsObject",
+                              "value": "",
+                              "statements": [
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "path this._fullPath(entry.wzName)",
+                                  "statements": []
+                                },
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "watch entry.watch",
+                                  "statements": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "log",
+                          "name": "log",
+                          "value": "'file entry', this._fullPath(entry.wzName)",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.allItems = _.concat(this.fileItems, this.globItems)",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "_fullPath",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "filePath"
+          ],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "path.isAbsolute(filePath)",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "filePath",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "isEmpty(this.basePath) == false",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "path.join",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "this.basePath",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "filePath",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "filePath",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "server",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "server"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "env",
+          "type": "string",
+          "tags": [
+            "env"
+          ],
+          "default": "dev",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "dev",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "production",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "port",
+          "type": "string",
+          "tags": [
+            "port"
+          ],
+          "default": "3000",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "contentBase",
+          "type": "string",
+          "tags": [
+            "content-base"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "historyApiFallback",
+          "type": "boolean",
+          "tags": [
+            "history-api-fallback"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "hot",
+          "type": "boolean",
+          "tags": [
+            "hot"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "true",
+          "type": "boolean",
+          "tags": [
+            "true"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "inline",
+          "type": "boolean",
+          "tags": [
+            "inline"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "progress",
+          "type": "boolean",
+          "tags": [
+            "progress"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "host",
+          "type": "string",
+          "tags": [
+            "host"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "port",
+          "type": "string",
+          "tags": [
+            "port"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [
+        {
+          "facets": [
+            {
+              "type": "enumFacet",
+              "value": "webpack",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "express",
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "xpackage",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "package"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "default": "0.0.1",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Version must be parseable by node-semver, which is bundled with npm as a dependency.",
+            "(npm install semver to use it yourself.)"
+          ]
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Put a description in it. It's a string.",
+            "This helps people discover your package, as it's listed in npm search."
+          ]
+        },
+        {
+          "name": "keywords",
+          "type": "string",
+          "tags": [
+            "keywords"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Put keywords in it. It's an array of strings.",
+            "This helps people discover your package as it's listed in npm search."
+          ]
+        },
+        {
+          "name": "license",
+          "type": "string",
+          "tags": [
+            "license"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "You should specify a license for your package so that people know how they are permitted to use it, and any restrictions you're placing on it."
+          ]
+        },
+        {
+          "name": "homepage",
+          "type": "string",
+          "tags": [
+            "homepage"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The url to the project homepage.",
+            "NOTE: This is not the same as \"url\". If you put a \"url\" field, then the registry will think it's a redirection to your package that has been published somewhere else, and spit at you."
+          ]
+        },
+        {
+          "name": "preferGlobal",
+          "type": "boolean",
+          "tags": [
+            "preferGlobal"
+          ],
+          "default": "false",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "If your package is primarily a command-line application that should be installed globally, then set this value to true to provide a warning if it is installed locally.",
+            "It doesn't actually prevent users from installing it locally, but it does help prevent some confusion if it doesn't work as expected."
+          ]
+        },
+        {
+          "name": "main",
+          "type": "string",
+          "tags": [
+            "main"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The main field is a module ID that is the primary entry point to your program. That is, if your package is named foo, and a user installs it, and then does require(\"foo\"), then your main module's exports object will be returned.",
+            "This should be a module ID relative to the root of your package folder."
+          ]
+        },
+        {
+          "name": "private",
+          "type": "boolean",
+          "tags": [
+            "private"
+          ],
+          "default": "false",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Consider also setting \"private\": true to prevent accidental publication."
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "name": "bugs",
+          "role": null,
+          "tags": [
+            "bugs"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "author",
+          "role": null,
+          "tags": [
+            "author"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "contributor",
+          "role": "contributors",
+          "tags": [
+            "contributor"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "file",
+          "role": "files",
+          "tags": [
+            "file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "repository",
+          "role": null,
+          "tags": [
+            "repository"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "script",
+          "role": "scripts",
+          "tags": [
+            "script"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "config",
+          "role": "configs",
+          "tags": [
+            "config"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "publishConfig",
+          "role": "publishConfigs",
+          "tags": [
+            "publish-config"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "dependency",
+          "role": "dependencies",
+          "tags": [
+            "depend"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "devDependency",
+          "role": "devDependencies",
+          "tags": [
+            "dev-depend"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "peerDependency",
+          "role": "peerDependencies",
+          "tags": [
+            "peer-depend"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "bundledDependency",
+          "role": "bundledDependencies",
+          "tags": [
+            "bundled-depend"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "optionalDependency",
+          "role": "optionalDependencies",
+          "tags": [
+            "optional-depend"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "engine",
+          "role": null,
+          "tags": [
+            "engine"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "os",
+          "role": "oses",
+          "tags": [
+            "os"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "cpu",
+          "role": "cpus",
+          "tags": [
+            "cpu"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "_.isEmpty(this.wzName)",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.wzName = 'MyProject'",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "addUniqueDependency",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "name",
+            "version"
+          ],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.getDependency(name)",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "else",
+              "name": "xelse",
+              "value": "",
+              "statements": [
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "dep = this.addDependency(name)",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "dep.version = version",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "addUniqueDevDependency",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "name",
+            "version"
+          ],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.getDevDependency(name)",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "else",
+              "name": "xelse",
+              "value": "",
+              "statements": [
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "dep = this.addDevDependency(name)",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "dep.version = version",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "addUniqueScript",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "name",
+            "command"
+          ],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.getScript(name)",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "else",
+              "name": "xelse",
+              "value": "",
+              "statements": [
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "s = this.addScript(name)",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "s.command = command",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "The root element of the wfpackage schema.",
+        "The wzName is the package name.",
+        "The most important things in your package.json are the name and version fields.",
+        "Those are actually required, and your package won't install without them.",
+        "The name and version together form an identifier that is assumed to be completely unique.",
+        "Changes to the package should come along with changes to the version.",
+        "The name is what your thing is called."
+      ]
+    },
+    {
+      "name": "bugs",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "bugs"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "email",
+          "type": "string",
+          "tags": [
+            "email"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The url to your project's issue tracker and / or the email address to which issues should be reported. These are helpful for people who encounter issues with your package.",
+        "The wzName is the url."
+      ]
+    },
+    {
+      "name": "person",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "person"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [
+        {
+          "name": "author",
+          "tags": [
+            "author"
+          ]
+        },
+        {
+          "name": "contributor",
+          "tags": [
+            "contributor"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "person",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "person"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "tags": [
+            "email"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "tags": [
+            "url"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [
+        {
+          "name": "author",
+          "tags": [
+            "author"
+          ]
+        },
+        {
+          "name": "contributor",
+          "tags": [
+            "contributor"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "author",
+      "super": "person",
+      "isRoot": false,
+      "tags": [
+        "author"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "contributor",
+      "super": "person",
+      "isRoot": false,
+      "tags": [
+        "contributor"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "file",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "file"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Certain files are always included, regardless of settings",
+        "Conversely, some files are always ignored"
+      ]
+    },
+    {
+      "name": "bin",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "bin"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "path",
+          "type": "string",
+          "tags": [
+            "path"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The path to a local file name"
+          ]
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A lot of packages have one or more executable files that they'd like to install into the PATH. npm makes this pretty easy (in fact, it uses this feature to install the \"npm\" executable.)",
+        "To use this, supply a bin field in your package.json which is a map of command name to local file name.",
+        "On install, npm will symlink that file into prefix/bin for global installs, or ./node_modules/.bin/ for local installs.",
+        "The wzName is the command name"
+      ]
+    },
+    {
+      "name": "repository",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "repository"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "url",
+          "type": "string",
+          "tags": [
+            "url"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Specify the place where your code lives. This is helpful for people who want to contribute.",
+        "If the git repo is on GitHub, then the npm docs command will be able to find you.",
+        "The wzName is the repository type (example: git)"
+      ]
+    },
+    {
+      "name": "script",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "script"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "command",
+          "type": "string",
+          "tags": [
+            "command"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The \"scripts\" property is a dictionary containing script commands that are run at various times in the lifecycle of your package. The key is the lifecycle event, and the value is the command to run at that point.",
+        "The wzName is the script name"
+      ]
+    },
+    {
+      "name": "config",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "config"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string",
+          "tags": [
+            "value"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A \"config\" object can be used to set configuration parameters used in package scripts that persist across upgrades.",
+        "See npm-config(7) and npm-scripts(7) for more on package configs."
+      ]
+    },
+    {
+      "name": "publishConfig",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "publish-config"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "value",
+          "type": "string",
+          "tags": [
+            "value"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "This is a set of config values that will be used at publish-time.",
+        "It's especially handy if you want to set the tag, registry or access, so that you can ensure that a given package is not tagged with \"latest\",",
+        "published to the global public registry or that a scoped module is private by default.",
+        "Any config values can be overridden, but of course only \"tag\", \"registry\" and \"access\" probably matter for the purposes of publishing.",
+        "See npm-config(7) to see the list of config options that can be overridden."
+      ]
+    },
+    {
+      "name": "dependency",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "depend"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The version range is a string which has one or more space-separated descriptors.",
+            "Dependencies can also be identified with a tarball or git URL.",
+            "See semver(7) for more details about specifying version ranges."
+          ]
+        }
+      ],
+      "relations": [],
+      "derived": [
+        {
+          "name": "devDependency",
+          "tags": [
+            "dev-depend"
+          ]
+        },
+        {
+          "name": "peerDependency",
+          "tags": [
+            "peer-depend"
+          ]
+        },
+        {
+          "name": "bundledDependency",
+          "tags": [
+            "bundled-depend"
+          ]
+        },
+        {
+          "name": "optionalDependency",
+          "tags": [
+            "optional-depend"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Dependencies are specified in a simple object that maps a package name to a version range.",
+        "Git URLs as Dependencies",
+        "Git urls can be of the form:",
+        "git://github.com/user/project.git#commit-ish",
+        "git+ssh://user@hostname:project.git#commit-ish",
+        "git+ssh://user@hostname/project.git#commit-ish",
+        "git+http://user@hostname/project/blah.git#commit-ish",
+        "git+https://user@hostname/project/blah.git#commit-ish",
+        "The commit-ish can be any tag, sha, or branch which can be supplied as an argument to git checkout. The default is master.",
+        "",
+        "GitHub URLs",
+        "As of version 1.1.65, you can refer to GitHub urls as just \"foo\": \"user/foo-project\". Just as with git URLs, a commit-ish suffix can be included.",
+        "For example:",
+        "{",
+        "\"name\": \"foo\",",
+        "\"version\": \"0.0.0\",",
+        "\"dependencies\": {",
+        "\"express\": \"visionmedia/express\",",
+        "\"mocha\": \"visionmedia/mocha#4727d357ea\"",
+        "}",
+        "}",
+        "",
+        "Local Paths",
+        "As of version 2.0.0 you can provide a path to a local directory that contains a package.",
+        "Local paths can be saved using npm install --save, using any of these forms:",
+        "../foo/bar",
+        "~/foo/bar",
+        "./foo/bar",
+        "/foo/bar",
+        "in which case they will be normalized to a relative path and added to your package.json.",
+        "For example:",
+        "{",
+        "\"name\": \"baz\",",
+        "\"dependencies\": {",
+        "\"bar\": \"file:../foo/bar\"",
+        "}",
+        "}",
+        "This feature is helpful for local offline development and creating tests that require npm installing",
+        "where you don't want to hit an external server, but should not be used when publishing packages to the public registry."
+      ]
+    },
+    {
+      "name": "devDependency",
+      "super": "dependency",
+      "isRoot": false,
+      "tags": [
+        "dev-depend"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "flags": "",
+          "inheritedFrom": "dependency",
+          "restricts": [],
+          "comments": [
+            "The version range is a string which has one or more space-separated descriptors.",
+            "Dependencies can also be identified with a tarball or git URL.",
+            "See semver(7) for more details about specifying version ranges."
+          ]
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "If someone is planning on downloading and using your module in their program, then they probably don't want or need to download and build the external test or documentation framework that you use.",
+        "In this case, it's best to map these additional items in a devDependencies object.",
+        "These things will be installed when doing npm link or npm install from the root of a package, and can be managed like any other npm configuration param. See npm-config(7) for more on the topic.",
+        "For build steps that are not platform-specific, such as compiling CoffeeScript or other languages to JavaScript, use the prepublish script to do this, and make the required package a devDependency.",
+        "For example:",
+        "{",
+        "\"name\": \"ethopia-waza\",",
+        "\"description\": \"a delightfully fruity coffee varietal\",",
+        "\"version\": \"1.2.3\",",
+        "\"devDependencies\": {",
+        "\"coffee-script\": \"~1.6.3\"",
+        "},",
+        "\"scripts\": {",
+        "\"prepublish\": \"coffee -o lib/ -c src/waza.coffee\"",
+        "},",
+        "\"main\": \"lib/waza.js\"",
+        "}",
+        "The prepublish script will be run before publishing, so that users can consume the functionality without requiring them to compile it themselves. In dev mode (ie, locally running npm install), it'll run this script as well, so that you can test it easily."
+      ]
+    },
+    {
+      "name": "peerDependency",
+      "super": "dependency",
+      "isRoot": false,
+      "tags": [
+        "peer-depend"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "flags": "",
+          "inheritedFrom": "dependency",
+          "restricts": [],
+          "comments": [
+            "The version range is a string which has one or more space-separated descriptors.",
+            "Dependencies can also be identified with a tarball or git URL.",
+            "See semver(7) for more details about specifying version ranges."
+          ]
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "In some cases, you want to express the compatibility of your package with a host tool or library, while not necessarily doing a require of this host. This is usually referred to as a plugin. Notably, your module may be exposing a specific interface, expected and specified by the host documentation.",
+        "For example:",
+        "{",
+        "\"name\": \"tea-latte\",",
+        "\"version\": \"1.3.5\",",
+        "\"peerDependencies\": {",
+        "\"tea\": \"2.x\"",
+        "}",
+        "}",
+        "This ensures your package tea-latte can be installed along with the second major version of the host package tea only. npm install tea-latte could possibly yield the following dependency graph:",
+        "├── tea-latte@1.3.5",
+        "└── tea@2.2.0",
+        "NOTE: npm versions 1 and 2 will automatically install peerDependencies if they are not explicitly depended upon higher in the dependency tree. In the next major version of npm (npm@3), this will no longer be the case. You will receive a warning that the peerDependency is not installed instead. The behavior in npms 1 & 2 was frequently confusing and could easily put you into dependency hell, a situation that npm is designed to avoid as much as possible.",
+        "Trying to install another plugin with a conflicting requirement will cause an error. For this reason, make sure your plugin requirement is as broad as possible, and not to lock it down to specific patch versions.",
+        "Assuming the host complies with semver, only changes in the host package's major version will break your plugin. Thus, if you've worked with every 1.x version of the host package, use \"^1.0\" or \"1.x\" to express this. If you depend on features introduced in 1.5.2, use \">= 1.5.2 < 2\"."
+      ]
+    },
+    {
+      "name": "bundledDependency",
+      "super": "dependency",
+      "isRoot": false,
+      "tags": [
+        "bundled-depend"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "flags": "",
+          "inheritedFrom": "dependency",
+          "restricts": [],
+          "comments": [
+            "The version range is a string which has one or more space-separated descriptors.",
+            "Dependencies can also be identified with a tarball or git URL.",
+            "See semver(7) for more details about specifying version ranges."
+          ]
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Array of package names that will be bundled when publishing the package.",
+        "If this is spelled \"bundleDependencies\", then that is also honored."
+      ]
+    },
+    {
+      "name": "optionalDependency",
+      "super": "dependency",
+      "isRoot": false,
+      "tags": [
+        "optional-depend"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "flags": "",
+          "inheritedFrom": "dependency",
+          "restricts": [],
+          "comments": [
+            "The version range is a string which has one or more space-separated descriptors.",
+            "Dependencies can also be identified with a tarball or git URL.",
+            "See semver(7) for more details about specifying version ranges."
+          ]
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "If a dependency can be used, but you would like npm to proceed if it cannot be found or fails to install, then you may put it in the optionalDependencies object. This is a map of package name to version or url, just like the dependencies object. The difference is that build failures do not cause installation to fail.",
+        "It is still your program's responsibility to handle the lack of the dependency. For example, something like this:"
+      ]
+    },
+    {
+      "name": "engine",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "engine"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "version",
+          "type": "string",
+          "tags": [
+            "version"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "You can specify the version of node that your stuff works on",
+        "If you specify an \"engines\" field, then npm will require that \"node\" be somewhere on that list.",
+        "If \"engines\" is omitted, then npm will just assume that it works on node.",
+        "Note that, unless the user has set the engine-strict config flag, this field is advisory only."
+      ]
+    },
+    {
+      "name": "os",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "os"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "You can specify which operating systems your module will run on: (example: darwin)",
+        "You can also blacklist instead of whitelist operating systems, just prepend the blacklisted os with a '!': (example: !win32)"
+      ]
+    },
+    {
+      "name": "cpu",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "cpu"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "If your code only runs on certain cpu architectures, you can specify which ones.",
+        "Like the os option, you can also blacklist architectures"
+      ]
+    },
+    {
+      "name": "travis",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "travis"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "react",
+      "super": "spaitem",
+      "isRoot": false,
+      "tags": [
+        "react"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "flux",
+          "role": null,
+          "tags": [
+            "flux"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "dnd",
+          "role": null,
+          "tags": [
+            "dnd"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "spaitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "router",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "router"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/guides/quick-start.md",
+        "https://www.themarketingtechnologist.co/react-router-an-introduction/"
+      ]
+    },
+    {
+      "name": "flux",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "flux"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "persist",
+          "type": "string",
+          "tags": [
+            "persist"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "dnd",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "dnd"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    }
+  ]
+}

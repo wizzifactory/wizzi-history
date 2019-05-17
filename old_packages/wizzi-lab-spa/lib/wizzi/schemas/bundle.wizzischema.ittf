@@ -1,0 +1,78 @@
+wizzischema bundle
+	
+	# A schema modeling a js bundle
+	e bundle
+		# The root element of the bundle schema.
+		is-root
+		r bundler/s
+		m getBrowserify
+			var items = _.where(this.bundlers, { wzElement: 'browserify' })
+			return items && items.length == 1 ? items[0] : null
+	
+		m getWebpack
+			var items = _.where(this.bundlers, { wzElement: 'webpack' })
+			return items && items.length == 1 ? items[0] : null
+	e bundler
+		a_tag( baseCwd, base-cwd )
+		a_tag( ittfFolder, ittf-folder )
+			default ittf
+		a_tag( assetsFolder, assets-folder )
+			default assets
+		a_tag( buildFolder, build-folder )
+			default build
+		
+		a entryFilename
+			tag entry
+		
+		a bundleFilename
+			tag bundle
+		
+		r babel
+			one-to-one
+	e browserify : bundler
+		
+		
+		r literal/s
+		m buildOptions
+			
+			var options
+				{
+					@ kind 'browserify'
+					@ baseCwd this.baseCwd
+					@ ittfFolder this.ittfFolder
+					@ assetsFolder this.assetsFolder
+					@ buildFolder this.buildFolder
+					@ entryFilename this.entryFilename
+					@ bundleFilename this.bundleFilename
+					@ babel {}
+					@ literal {}
+			
+			if this.babel
+				foreach item in this.babel.presets
+					set options.babel[item.wzName.trim()] = true
+			
+			foreach item in this.literals
+				set options.literal[item.package.trim()] = item.wzName.trim()
+			return options
+	e literal
+		a package
+	
+	e webpack : bundler
+		m buildOptions
+			
+			var options
+				{
+					@ kind 'webpack'
+					@ baseCwd this.baseCwd
+					@ ittfFolder this.ittfFolder
+					@ assetsFolder this.assetsFolder
+					@ buildFolder this.buildFolder
+					@ entryFilename this.entryFilename
+					@ bundleFilename this.bundleFilename
+					@ babel {}
+	e babel
+		r preset/s
+		r plugin/s
+	
+	e preset
+	e plugin

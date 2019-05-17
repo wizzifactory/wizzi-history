@@ -1,0 +1,37 @@
+{
+	name  "${spa.package.wzName}"
+	version  "${spa.package.version}"
+	description "${spa.package.description}"
+    author
+		{
+			name "${spa.package.author.name}"
+			email "${spa.package.author.email}"
+	private ${spa.package.private}
+	license "${spa.package.license}"
+	
+	$if spa.package.repository
+		repository
+			{
+				type "git"
+				url "${spa.package.repository.url}"
+	$if spa.package.main
+		main "${spa.package.main}"
+	engines
+		{
+			node ">=0.10.28"
+			npm ">=1.4.28"
+	
+	scripts
+		{
+			$foreach s in spa.package.scripts
+				@ ${s.wzName}
+			
+	dependencies
+		{
+			$foreach dep in spa.package.dependencies
+				@ ${dep.wzName} "${dep.version}"
+	
+	devDependencies
+		{
+			$foreach dep in spa.package.devDependencies
+				@ ${dep.wzName} "${dep.version}"

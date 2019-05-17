@@ -1,0 +1,31 @@
+$group
+	$params title
+	$
+		var menu = [];
+		menu.push({ text:'storage form', href:'/storage/form' });
+		menu.push({ text:'storage tree', href:'/storage/tree' });
+		menu.push({ text:'wfjob logs', href:'/wfjoblogs' });
+		menu.push({ text:'ping', href:'/ping/' });
+		menu.push({ text:'ping all', href:'/ping/all' });
+	doctype html
+	html
+		head
+			< title ${title}
+		body
+			< header
+				div Wizzi studio lab
+					@ style height:80px;background-color:#222; color:yellow; font-size:24px;
+			< section
+				@ style margin:20px;
+				table
+					tr
+						td
+							@ style vertical-align:top;padding:20px;
+							ul
+								$foreach item in menu
+									li
+										a ${item.text}
+											@ href ${item.href}
+						td
+							@ style vertical-align:top;padding:20px;
+							$hook

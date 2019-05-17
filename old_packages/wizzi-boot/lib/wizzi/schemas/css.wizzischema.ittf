@@ -1,0 +1,104 @@
+wizzischema css
+	# A schema modeling a css3 stylesheet document.
+	# ATTENTION in this model the classical python like comment char sharp(#) is replaced
+	#           by the minus(-) char, see the comment element.
+	#           The sharp(#) is used for the idRule element.
+	e css
+		# The root element
+		r resource/s
+		r rule/s
+		r comment/s
+	e resource
+		# A known resource (a fragment of a stylesheet), stored in a repository,
+		# that must be included in the generated artifact.
+	e rule
+		# The base abstract rule.
+		# It has a child relation (one-to-many) with itself so one
+		# can declare a tree with unlimited deep.
+		is-abstract
+		a -webkit-*
+		a -ms-*
+		a -o-*
+		a -moz-*
+		
+		r otherRuleSelector/s
+		r propert-y/ies
+		r rule/s
+		m wzInitialize
+			set this.ruleParts = this.getAscendingRuleParts()
+		
+		m getAscendingRuleParts
+			if typeof this.wzName === 'string' && this.wzName.length > 0
+				var ruleParts = this.wzName.trim().split(',')
+				if ruleParts.length > 0 
+					if this.wzElement === 'idRule'
+						set ruleParts[0] = '#' + ruleParts[0]
+					elif this.wzElement === 'classRule'
+						set ruleParts[0] = '.' + ruleParts[0]
+				if this.wzParent && this.wzParent.getAscendingRuleParts
+					var parentRuleParts = this.wzParent.getAscendingRuleParts()
+					var ret = []
+					foreach prp in parentRuleParts
+						foreach rp in ruleParts
+							_ ret.push(prp + ' ' + rp)
+					return ret
+				else
+					return ruleParts
+			else
+				return []
+	e elementRule : rule
+		# The element rule
+		# The wzName contain the selector(s)
+		tag <
+	e classRule : rule
+		# The class rule
+		# The wzName contain the selector(s)
+		tag .
+	e idRule : rule
+		# The id rule
+		# The wzName contain the selector(s)
+		tag #
+	e otherRuleSelector
+		# The wzName contains other selector(s) to add to those of the parent rule
+		# In case of a rule with many selectors allow the declaration on many nodes
+		# Example
+		# < td
+		#	+ span
+		#   + li
+		#   + ...
+		# for: td, span, li, ...
+		tag +
+	e property
+		# A generic rule property.
+		# You should find a proper schema element that extends this one for every valid css3 property. 
+		# In any case this element is not abstract and can be used for eventual missing properties.
+		# In this case must contain a name-value pair separated by a blank: name is
+		# the property name and value is the property value.
+		tag @
+		r propert-y/ies
+			# Nested property
+	$include css/spec-properties
+	e media : rule
+	e keyframes : rule
+		a vendor
+	
+	e keyframe : rule
+		a from
+		a to
+		a % 
+	
+	e fontface : rule
+		tag font-face
+		a font-family
+		a src
+		a font-stretch
+		a font-style
+		a font-weight
+		a unicode-range
+	
+	e import : rule
+	e include : rule
+	e comment : rule
+		# The wzName is the comment text.
+		
+		tag -

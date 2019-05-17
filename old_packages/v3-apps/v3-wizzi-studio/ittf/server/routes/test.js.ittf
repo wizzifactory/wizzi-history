@@ -1,0 +1,27 @@
+﻿route( Test )
+
+	get( /test/:user )
+
+		_ res.json
+			{
+				@ route '/test/:user'
+				@ params req.params
+				@ query req.query
+
+		
+	get( /test/:user/:project )
+
+		_ res.json
+			{
+				@ route '/test/:user/:project'
+				@ params req.params
+				@ query req.query
+
+
+	get( /test/:user/:project/* )
+
+		_ res.json
+			{
+				@ route '/test/:user/:project/*'
+				@ params req.params
+				@ query req.query

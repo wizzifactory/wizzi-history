@@ -1,0 +1,14 @@
+﻿$group
+
+	function makeIttfDocumentApi
+		param config
+
+		var paths = makePaths(config)
+		
+		return
+			{
+				$include ./get
+				$include ./getList
+				$include ./create
+				$include ./update
+				$include ./delete

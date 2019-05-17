@@ -1,0 +1,74 @@
+  wizzischema wfpackage ids: undefined undefined
+    # A schema modeling a WizziFactory package ids: undefined undefined
+    e wfpackage ids: undefined undefined
+      # The root tag of the wfpackage schema. ids: undefined undefined
+      a title ids: undefined undefined
+      a srcCwd ids: undefined undefined
+        tag src-cwd ids: undefined undefined
+      a assetsCwd ids: undefined undefined
+        tag assets-cwd ids: undefined undefined
+      r buildCwd/s ids: undefined undefined
+      r schema/s ids: undefined undefined
+      m getJobs ids: undefined undefined
+        var ret ids: undefined undefined
+          {  ids: undefined undefined
+            @ name this.wzName ids: undefined undefined
+            @ title this.title ids: undefined undefined
+            @ srcCwd this.srcCwd ids: undefined undefined
+            @ assetsCwd this.assetsCwd ids: undefined undefined
+            @ buildCwds ids: undefined undefined
+              [  ids: undefined undefined
+            @ schemas ids: undefined undefined
+              [  ids: undefined undefined
+            @ jobs ids: undefined undefined
+              [  ids: undefined undefined
+                {  ids: undefined undefined
+                  @ title 'build ' + this.wzName + ' assets' ids: undefined undefined
+                  @ exe 'node' ids: undefined undefined
+                  @ cwd this.srcCwd ids: undefined undefined
+                  @ args 'index' ids: undefined undefined
+        if this.schemas.length > 0 ids: undefined undefined
+          _ ret.jobs.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ title 'generate ' + this.wzName + ' wizzi model types in the assets folder' ids: undefined undefined
+              @ exe 'node' ids: undefined undefined
+              @ cwd this.assetsCwd ids: undefined undefined
+              @ args 'schemas' ids: undefined undefined
+          foreach item in this.schemas ids: undefined undefined
+            _ ret.schemas.push ids: undefined undefined
+              {  ids: undefined undefined
+                @ name item.wzName ids: undefined undefined
+        foreach item in this.buildCwds ids: undefined undefined
+          _ ret.buildCwds.push ids: undefined undefined
+            {  ids: undefined undefined
+              @ cwd item.wzName ids: undefined undefined
+              @ title item.title ids: undefined undefined
+        return ret ids: undefined undefined
+    e buildCwd ids: undefined undefined
+      tag build-cwd ids: undefined undefined
+      a title ids: undefined undefined
+    e schema ids: undefined undefined
+      # A WizziSchema defined by this WizziFactoryPackage ids: undefined undefined
+      a title ids: undefined undefined
+      r transformer/s ids: undefined undefined
+      r artifact/s ids: undefined undefined
+      r example/s ids: undefined undefined
+    e transformer ids: undefined undefined
+      # A WizziModelTransformer ids: undefined undefined
+      a title ids: undefined undefined
+    e artifact ids: undefined undefined
+      # An ArtifactGenerator ids: undefined undefined
+      a title ids: undefined undefined
+    e example ids: undefined undefined
+      # The base node for examples ids: undefined undefined
+      a title ids: undefined undefined
+      r node/s ids: undefined undefined
+    e ittfExample ids: undefined undefined
+      tag ittf-example ids: undefined undefined
+      # An IttfDocument example ids: undefined undefined
+      super example ids: undefined undefined
+    e artifactExample ids: undefined undefined
+      tag artifact-example ids: undefined undefined
+      # An artifact generation example ids: undefined undefined
+      super example ids: undefined undefined
+    e node ids: undefined undefined

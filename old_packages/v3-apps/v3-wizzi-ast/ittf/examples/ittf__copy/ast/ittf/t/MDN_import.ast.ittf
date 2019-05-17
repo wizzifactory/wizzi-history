@@ -1,0 +1,104 @@
+﻿$group
+
+	category Import
+
+		description
+			+ Lo statement import è usato per importare funzioni, oggetti o primitive che sono state esportate da un modulo esterno, un'altro script, ecc.
+
+		syntax
+			+ import defaultMember from "module-name";
+			+ import * as name from "module-name";
+			+ import { member } from "module-name";
+			+ import { member as alias } from "module-name";
+			+ import { member1 , member2 } from "module-name";
+			+ import { member1 , member2 as alias2 , [...] } from "module-name";
+			+ import defaultMember, { member [ , [...] ] } from "module-name";
+			+ import defaultMember, * as name from "module-name";
+			+ import "module-name";
+			+ name
+			+ Nome dell'oggetto che riceverà i valori importati
+			+ member, memberN
+			+ Nome dei membri esportati da importare.
+			+ defaultMember
+			+ Nome dell'oggetto che riceverà l'esportazione di default dal modulo.
+			+ alias, aliasN
+			+ Nome dell'oggetto che riceverà la proprietà importata.
+			+ module-name
+			+ Il nome del modulo da importare. Si tratta di un nome di file.
+		
+		subject Import entire module
+			description
+				+ Importare l'intero contenuto di un modulo. Questo inserisce myModule nello scope corrente, che contiene tutte le associazioni esportate da "my-module.js"
+			es6
+				+ import * as myModule from "my-module";
+		
+		subject Import single member
+			description
+				+ Importare un singolo membro di un modulo. Questo inserisce myMember nello scope corrente.
+			es6 
+				+ import {myMember} from "my-module";
+		
+		subject Import multiple members
+			description
+				+ Importare più membri di un modulo. Questo inserisce sia foo e bar  nello scope corrente.
+			es6
+				+ import {foo, bar} from "my-module";
+		
+		subject Import a member with alias
+			description
+				+ Import a member with a more convenient alias. This inserts shortName into the current scope.
+			es6
+				+ import {reallyReallyLongModuleMemberName as shortName} from "my-module";
+		
+		subject Import an entire module
+			description
+				+  Import an entire module for side effects only, without importing any bindings.
+			es6
+				+ import "my-module";
+		
+		subject Import multiple members with aliases
+			description
+				+ Import multiple members of a module with convenient aliases.
+			es6 
+				+ import {reallyReallyLongModuleMemberName as shortName, anotherLongModuleName as short} from "my-module";
+		
+		subject Import default directly
+			description
+				+ It is possible to have default export (whether it is an object, a function, a class, etc.). Reciprocally, it is possible to use the import instruction to import such defaults.
+				+ The simplest version directly imports the default:
+			es6
+				+ import myDefault from "my-module";
+
+		subject Import default sinthax
+			description
+				+ It is also possible to use the default syntax with the ones seen above (namespace imports or named imports). In such cases, the default import will have to be declared first. For instance:
+
+			es6
+				+ import myDefault, * as myModule from "my-module";
+				+ // myModule used as a namespace
+				+ // or
+				+ import myDefault, {foo, bar} from "my-module";
+				+ // specific, named imports
+
+		subject Import examples
+			description
+				+ Importing a secondary file to assist in processing an AJAX JSON request.
+			es6
+				+ // --file.js--
+				+ function getJSON(url, callback) {
+					+ let xhr = new XMLHttpRequest();
+					+ xhr.onload = function () { 
+						+  callback(this.responseText) 
+					+ };
+					+ xhr.open("GET", url, true);
+					+ xhr.send();
+				+ }
+				+
+				+ export function getUsefulContents(url, callback) {
+					+   getJSON(url, data => callback(JSON.parse(data)));
+				+ }
+				+ // --main.js--
+				+ import { getUsefulContents } from "file";
+				+ getUsefulContents("http://www.example.com", data => {
+					+ doSomethingUseful(data);
+				+ });

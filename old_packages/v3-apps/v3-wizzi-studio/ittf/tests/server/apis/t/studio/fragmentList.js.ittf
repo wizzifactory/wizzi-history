@@ -1,0 +1,15 @@
+﻿$group
+
+	it-async should get a fragment list
+
+		_ studioApi.getFragments
+			{
+				@ userName 'stefi'
+				@ projectName 'demo'
+			f_cb_test( result )
+				log 'get.fragments', err, result
+				log 'get.fragments.data', err, result.data
+				tobe_object( result )
+				_ done()
+
+			

@@ -1,0 +1,24 @@
+﻿$group
+
+	@ getProjectRoot
+		function
+			param userId
+			param projectId
+			param callback
+
+			_ repoFS.readDir
+				@ userId
+				@ projectId
+				@ null
+				f_cb( result )
+					return
+						_ callback
+							@ null
+							{
+								@ status
+									_ success
+										@ 'Folder retrieved for project ' + userId + '/' + projectId
+								@ data
+									{
+										@ kind 0
+										@ items result

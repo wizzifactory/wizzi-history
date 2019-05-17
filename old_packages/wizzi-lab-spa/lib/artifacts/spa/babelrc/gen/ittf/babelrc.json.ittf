@@ -1,0 +1,42 @@
+{
+	$if spa.babel
+		$if spa.babel.babelOptionals.length > 0
+			optional
+				[
+					$foreach optional in spa.babel.babelOptionals
+						@ ${optional.wzName}
+		$foreach techne in spa.babel.technes
+			$include techne
+		$foreach env in spa.babel.babelEnvs
+			$foreach techne in env.technes
+				$include techne
+		$
+			var react = spa.getTechne('react')
+			var react_plugins = react ? react.propOfCategory('plugin') : []
+			var react_transforms = react ? react.propOfCategory('transform') : []
+	
+		$if react_plugins.length > 0
+			plugins
+				[
+					# Include babel-plugin-react-display-name if you�re
+					# using React.createClass() *before* react-transform:
+					# "react-display-name",
+					# "react-transform"
+					$foreach plugin in react_plugins
+						@ "${plugin.name}"
+			extra
+				{
+					# must be an object
+					$if react_transforms.length > 0
+						react-transform
+							{
+								# must be an array
+								transforms
+									[
+										$foreach t in react_transforms
+											{
+												transform "${t.name}"
+								factoryMethods
+									[
+										"React.createClass"
+										"createClass"

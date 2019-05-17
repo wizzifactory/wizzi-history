@@ -1,0 +1,234 @@
+  wizzischema wfjob ids: undefined undefined
+    # A schema modeling a wizzi factory job. ids: undefined undefined
+    export-to json ids: undefined undefined
+    e wfjob ids: undefined undefined
+      # The root element of the wfjob schema. ids: undefined undefined
+      a modelsBaseFolder ids: undefined undefined
+        tag models-base-folder ids: undefined undefined
+        # The base path for the source models used by this "wfjob". ids: undefined undefined
+      a destBaseFolder ids: undefined undefined
+        tag dest-base-folder ids: undefined undefined
+        # The base folder path for the generated artifacts. ids: undefined undefined
+      r require/s ids: undefined undefined
+      r model/s ids: undefined undefined
+      r line/s ids: undefined undefined
+      r production/s ids: undefined undefined
+    e require ids: undefined undefined
+      # Requires a WizziFactoryPackage. ids: undefined undefined
+      # The IttfNodeValue is the package name. ids: undefined undefined
+      # If the package is not globally installed must be a fully qualified path. ids: undefined undefined
+    e model ids: undefined undefined
+      # A Wizzi model instance acting as a data context during the evaluation of another "model" ids: undefined undefined
+      # or during an artifact generation. ids: undefined undefined
+      # The IttfNodeValue is the name of the model. ids: undefined undefined
+      # The name of the model must be unique in a "wfjob"; it will become the default export name of the context ids: undefined undefined
+      # value that exposes the model during evaluations. ids: undefined undefined
+      # A "model" will be loaded once, and will be reused if ids: undefined undefined
+      # referenced in many evaluations. ids: undefined undefined
+      a src ids: undefined undefined
+        # The path to the PrimaryIttfDocument of the "model". ids: undefined undefined
+        # When relative, the base path is the "modelsBaseFolder" ids: undefined undefined
+        # declared on the "wfjob" element. ids: undefined undefined
+      a schema ids: undefined undefined
+        # The name of the WizziSchema that will validate the "model". ids: undefined undefined
+      a dumpFile ids: undefined undefined
+        tag dump-file ids: undefined undefined
+        # A filepath where the loaded must be dumped for test. ids: undefined undefined
+        # The model must implement the toJson method. See the "exportTo" attribute in wizzischema root nodes. ids: undefined undefined
+        # When declared the loaded model is JSON.stringyfied and written ids: undefined undefined
+        # to the "dumpFile" filepath. ids: undefined undefined
+      r modelRef/s ids: undefined undefined
+        # References to "model" instances acting as data context during this "model" evaluation. ids: undefined undefined
+        # A "model" is referenced by its name. ids: undefined undefined
+    e modelRef ids: undefined undefined
+      tag model-ref ids: undefined undefined
+      a exportName ids: undefined undefined
+        tag export-name ids: undefined undefined
+        # The name of the context property that will expose the loaded model during ids: undefined undefined
+        # an evaluation. Overrides the name of the "model" that is the default export name. ids: undefined undefined
+      r transformer/s ids: undefined undefined
+        # A model may have one or more transformers. ids: undefined undefined
+        # Transformers are chained and the output of a transformation ids: undefined undefined
+        # is the input for the next one. ids: undefined undefined
+      r modelCollection/s ids: undefined undefined
+        # TODO This is a one-to-one relation, not yet implemented. ids: undefined undefined
+        # Single items of a collection contained in the "model" may act as data contexts ids: undefined undefined
+        # of artifacts where each collection item generates a separate artifact. ids: undefined undefined
+      m wzinitialize ids: undefined undefined
+        if this.modelCollections.length > 0 ids: undefined undefined
+          set this.modelCollection = this.modelCollections[0] ids: undefined undefined
+          set this.collName = this.modelCollection.wzName ids: undefined undefined
+          set this.collItemName = this.modelCollection.itemName ids: undefined undefined
+          set this.collPathTemplateValues = [] ids: undefined undefined
+          foreach item in this.modelCollection.pathTemplateValues ids: undefined undefined
+            _ this.collPathTemplateValues.push ids: undefined undefined
+              {  ids: undefined undefined
+                @ token item.token ids: undefined undefined
+                @ attribute item.attribute ids: undefined undefined
+                @ function item.function ids: undefined undefined
+    e modelCollection ids: undefined undefined
+      tag model-coll ids: undefined undefined
+      # Single items of a collection contained in a "model" may act as data contexts ids: undefined undefined
+      # of artifacts where each collection item generates a separate artifact. ids: undefined undefined
+      # This element, contained in a "modelRef" element, specifies: ids: undefined undefined
+      # . the collection name: the IttfNodeValue of this element ids: undefined undefined
+      # . the export name of the collection item when acting as a data context: the "item-name" attribute ids: undefined undefined
+      # . the property names of the collection item that will be used to build the destination path ids: undefined undefined
+      # of the artifact: the "pathTemplateValues" child elements ids: undefined undefined
+      a itemName ids: undefined undefined
+        tag item-name ids: undefined undefined
+        # The export name of a collection item when acting as a data context. ids: undefined undefined
+      r pathTemplateValue/s ids: undefined undefined
+    e pathTemplateValue ids: undefined undefined
+      tag path-template-value ids: undefined undefined
+      a attribute ids: undefined undefined
+        # The property of the context object (a collection item) containing the value which will replace ids: undefined undefined
+        # the "token" value in the generated artifact path template. ids: undefined undefined
+        # Is alternative to "function" ids: undefined undefined
+      a function ids: undefined undefined
+        # The function of the context object (a collection item) that returns the value which will replace ids: undefined undefined
+        # the "token" value in the generated artifact path template. ids: undefined undefined
+        # Is alternative to "attribute" ids: undefined undefined
+      a token ids: undefined undefined
+        # The token that will be replaced by the value returned accessing "attribute" or calling "function" ids: undefined undefined
+        # on a context object. ids: undefined undefined
+    e transformer ids: undefined undefined
+      # A model transformer ids: undefined undefined
+      # The IttfNodeValue is the transformer path {wizzischema}/{transformerName} ids: undefined undefined
+      # to be found in {wizziPackage}/artifacts/{wizzischema}/{transformerName}/trans/main.js ids: undefined undefined
+      a dumpFile ids: undefined undefined
+        tag dump-file ids: undefined undefined
+        # A filepath where the transformed model must be dumped for test. ids: undefined undefined
+        # When declared the transformed model is JSON.stringyfied and written ids: undefined undefined
+        # to the "dumpFile" filepath. ids: undefined undefined
+    e artifact ids: undefined undefined
+      # An artifact to be generated. ids: undefined undefined
+      # It is a child element of a "line" element. ids: undefined undefined
+      #  ids: undefined undefined
+      # Can be one of: ids: undefined undefined
+      # . A Wizzi model instance, acting as a template, which WizziSchema targets a code language technology. ids: undefined undefined
+      # . A swig template. ids: undefined undefined
+      # . A code write generation that takes in input a context of one or more WizziModels. ids: undefined undefined
+      # . A final artifact to be copied to a destination folder without transformations. ids: undefined undefined
+      # . A reference to another WfJob, to be executed before the current WfJob where the artifact is declared. ids: undefined undefined
+      #  ids: undefined undefined
+      # Context value objects for template transformations are declared in the "model" element, child of the "wfjob" root element ids: undefined undefined
+      # and may be referenced in the elements "modelRef", children of the "artifact" element. ids: undefined undefined
+      #  ids: undefined undefined
+      # The "src" or "destPath" attributes of an "artifact" element may contain tokens enclosed in graph parens. ids: undefined undefined
+      # When one of the "modelRef@" is a collection model, the artifact generation is repeated ids: undefined undefined
+      # for each item of the collection and the "src" or "destPath" attributes become the template of the destination path. ids: undefined undefined
+      # See the "pathTemplateValues" child elements of the "modelRef" for the values that will replace the tokens. ids: undefined undefined
+      #  ids: undefined undefined
+      # Example ids: undefined undefined
+      #  ids: undefined undefined
+      # artifact ids: undefined undefined
+      # dest-path app/db/{table}Datalayer.js.ittf ids: undefined undefined
+      # ... ids: undefined undefined
+      # model-ref rdbms ids: undefined undefined
+      # model-coll tables ids: undefined undefined
+      # item-name table ids: undefined undefined
+      # path-template-value ids: undefined undefined
+      # attribute tableName ids: undefined undefined
+      # token table ids: undefined undefined
+      #  ids: undefined undefined
+      # model rdbms ids: undefined undefined
+      # ... ids: undefined undefined
+      #  ids: undefined undefined
+      # the Wizzi model instance after loading rdbms: { ids: undefined undefined
+      # .... ids: undefined undefined
+      # tables: [{ ids: undefined undefined
+      # tableName: 'user', ids: undefined undefined
+      # ... ids: undefined undefined
+      # },{ ids: undefined undefined
+      # ... ids: undefined undefined
+      # }] ids: undefined undefined
+      # } ids: undefined undefined
+      #  ids: undefined undefined
+      # will produce an artifact of path .../app/db/userDatalayer.js, and as many as the items in the tables collection. ids: undefined undefined
+      #  ids: undefined undefined
+      a src ids: undefined undefined
+        # The path to the primary source document of the artifact. ids: undefined undefined
+        # If relative, the base path is the cwdFolder of the parent line. ids: undefined undefined
+        # Can be a glob pattern ids: undefined undefined
+        # If the artifact is a code write artifact the @src@ attribute must not be declared. ids: undefined undefined
+      a ignore ids: undefined undefined
+        # files returned by the src pattern to be ignored ids: undefined undefined
+        # Can be a glob pattern ids: undefined undefined
+      a schema ids: undefined undefined
+        # When the artifact source is an Ittf document, is the schema that will load and validate the Wizzi model instance. ids: undefined undefined
+        # May be null if the artifact is a swig template or a final artifact. ids: undefined undefined
+      a isWfJob ids: undefined undefined
+        tag is-wf-job ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # Indicator that the artifact source document is a wizzi factory job (WfJob). ids: undefined undefined
+        # The job will be executed before any other artifact production of the current WfJob. ids: undefined undefined
+        # This could be autodected from the schema, but autodetection would forbid other uses or transformations ids: undefined undefined
+        # of a "wfjob" model, so the indicator is required. ids: undefined undefined
+      a generator ids: undefined undefined
+        # When the artifact is a Wizzi model instance, acting as a template is the name of ids: undefined undefined
+        # the artifact generator that will transform the template. ids: undefined undefined
+        # When the artifact is a 'swig template' must contain 'swig'. ids: undefined undefined
+        # When the artifact is a code write generation or a final artifact must be omitted. ids: undefined undefined
+      a destPath ids: undefined undefined
+        tag dest-path ids: undefined undefined
+        # The artifact source file path (@src@) is the default relative destination path ids: undefined undefined
+        # of the generated artifact. When set, this attribute overrides the default. ids: undefined undefined
+        # It may be an absolute path. ids: undefined undefined
+        # If the artifact is a code write generation the @destPath@ attribute must be declared. ids: undefined undefined
+      a extension ids: undefined undefined
+        # The document path extension of the generated artifact. Optional. The default is the #src# extension ids: undefined undefined
+        # without the ending '.ittf' string, if present. ids: undefined undefined
+      r transformer/s ids: undefined undefined
+        # When the artifact source is an Ittf document, the loaded WizziModel may need ids: undefined undefined
+        # one or more transformations before being passed to the artifact generator. ids: undefined undefined
+        # Transformers are chained and the output of a transformation ids: undefined undefined
+        # is the input for the next one. ids: undefined undefined
+      r modelRef/s ids: undefined undefined
+        # References to Wizzi model instances acting as transformation contexts for both wizzi and swig templates. ids: undefined undefined
+        # When a final artifact must not be declared. ids: undefined undefined
+    e line ids: undefined undefined
+      # A line is a group of artifacts having the same "cwdFolder". ids: undefined undefined
+      a cwdFolder ids: undefined undefined
+        tag cwd-folder ids: undefined undefined
+        # The source folder of the artifact templates of this line. ids: undefined undefined
+      a destFolder ids: undefined undefined
+        tag dest-folder ids: undefined undefined
+        # The destination folder of the generated artifacts of this line. ids: undefined undefined
+        # Overrides the attribute "destFolder" of the "production" element. ids: undefined undefined
+      r artifact/s ids: undefined undefined
+        # The artifacts of the "line" ids: undefined undefined
+    e lineRef ids: undefined undefined
+      tag line-ref ids: undefined undefined
+      # A reference to a line. ids: undefined undefined
+    e production ids: undefined undefined
+      # A job execution unit that generates a set of Software artifacts ids: undefined undefined
+      # into one destination folder. ids: undefined undefined
+      a destFolder ids: undefined undefined
+        tag dest-folder ids: undefined undefined
+        # The destination folder of the generated artifacts. ids: undefined undefined
+      r modelRef/s ids: undefined undefined
+        # References to the context WizziWodels used by this "production". ids: undefined undefined
+      r lineRef/s ids: undefined undefined
+        # References to the "line(s)" to be generated. ids: undefined undefined
+      m wzinitialize ids: undefined undefined
+        set this.wfjob = this.wzParent; ids: undefined undefined
+        foreach modelRef in this.modelRefs ids: undefined undefined
+          var model = this.wfjob.getModel(modelRef.wzName) ids: undefined undefined
+          if model == null ids: undefined undefined
+            _ this.error('Model ' + modelRef.wzName + ' not found.', modelRef) ids: undefined undefined
+          set modelRef.___model = model ids: undefined undefined
+        set this.lines = []; ids: undefined undefined
+        foreach lineRef in this.lineRefs ids: undefined undefined
+          var line = this.wfjob.getLine(lineRef.wzName) ids: undefined undefined
+          if line == null ids: undefined undefined
+            _ this.error('line ' + lineRef.wzName + ' not found.', lineRef) ids: undefined undefined
+          _ this.lines.push(line) ids: undefined undefined
+          foreach artifact in line.artifacts ids: undefined undefined
+            foreach modelRef in artifact.modelRefs ids: undefined undefined
+              var model = this.wfjob.getModel(modelRef.wzName) ids: undefined undefined
+              if model == null ids: undefined undefined
+                _ this.error('Model ' + modelRef.wzName + ' not found.', modelRef) ids: undefined undefined
+              set modelRef.___model = model; ids: undefined undefined

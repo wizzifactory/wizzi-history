@@ -1,0 +1,34 @@
+﻿ast/_root( ast )
+	
+	#
+		# A schema modeling an abstract synthax tree
+
+	export-to json
+
+	require isEmpty
+		kind function
+
+	e ast : astitem
+		# The root element of the ast model.
+		is-root
+		
+		r type/s
+			# AST type
+		r builders
+			one-to-one
+		r visitors
+			one-to-one
+		r aliases
+			one-to-one
+		r categor-y/ies
+
+		m getCode
+			var ret = []
+			foreach item in this.categories
+				var codes = item.getCode()
+				foreach code in codes
+					_ ret.push(code)
+			return ret
+		
+	$include ast/type
+	$include ast/sample

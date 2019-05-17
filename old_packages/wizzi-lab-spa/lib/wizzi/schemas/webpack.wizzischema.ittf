@@ -1,0 +1,115 @@
+spa/_root( webpack )
+	export-to json
+	require wizzi
+		kind module
+	e webpack : webpackitem
+		is-root
+		a build
+			default development
+			restrict
+				enum development
+				enum production
+		
+		a config
+			default none
+			restrict
+				enum none
+				enum react
+		a target
+			# https://webpack.js.org/configuration/target/
+			default web
+			restrict
+				enum async-node
+					# Compile for usage in a Node.js-like environment (uses fs and vm to load chunks asynchronously)
+				enum electron-main
+					# Compile for Electron for main process.
+				enum electron-renderer
+					# Compile for Electron for renderer process, providing a target using JsonpTemplatePlugin, FunctionModulePlugin for browser environments and NodeTargetPlugin and ExternalsPlugin for CommonJS and Electron built-in modules.
+				enum node
+					# Compile for usage in a Node.js-like environment (uses Node.js require to load chunks)
+				enum node-webkit
+					# Compile for usage in WebKit and uses JSONP for chunk loading. Allows importing of built-in Node.js modules and nw.gui (experimental)
+				enum web
+					# Compile for usage in a browser-like environment (default)
+				enum webworker
+					# Compile as WebWorker
+		a context
+			# The context is an absolute string to the directory that contains the entry files.
+			# The base directory, an absolute path, for resolving entry points and loaders from configuration.
+		a_tag( devtool, devtool )
+			default
+			restrict
+				enum eval
+					# +++ +++ no generated code
+				enum cheap-eval-source-map
+					# + ++ no transformed code (lines only)
+				enum cheap-source-map
+					# + o yes transformed code (lines only)
+				enum cheap-module-eval-source-map
+					# o ++ no original source (lines only)
+				enum cheap-module-source-map
+					# o - yes original source (lines only)
+				enum eval-source-map
+					# -- + no original source
+				enum source-map
+					# -- -- yes original source
+				enum nosources-source-map
+					# -- -- yes without source content
+		
+		r entry
+			one-to-one
+		r output
+			one-to-one
+		r resolve
+			one-to-one
+		
+		r module
+			one-to-one
+		r plugin/s
+		r external/s
+		r devServer
+			one-to-one
+		r watch
+			one-to-one
+		r watchOptions
+			one-to-one
+		r feature/s
+		
+	
+		m wzInitialize
+			if this.config === 'react'
+				_ this.setReactConfig()
+		m wzinitialize
+			set this.facets = []
+			string_facet( context, context )
+			string_facet( target, target )
+			string_facet( devtool, devtool )
+		m setReactConfig
+			$*
+			_ this.addWebpackLoader('eslint')
+			_ this.addWebpackLoader('file')
+			_ this.addWebpackLoader('url')
+			_ this.addWebpackLoader('babel')
+			_ this.addWebpackLoader('css')
+			_ this.addWebpackPlugin('interpolate-html')
+			_ this.addWebpackPlugin('html')
+			_ this.addWebpackPlugin('case-sensitive')
+			_ this.addWebpackPlugin('missing-node-modules')
+			_ this.addWebpackPlugin('extract-text')
+			_ this.addWebpackPlugin('uglify')
+			_ this.addWebpackPlugin('manifest')
+			*$
+	
+	$include webpack/common
+	$include webpack/entry
+	$include webpack/output
+	$include webpack/resolve
+	$include webpack/module
+	$include webpack/plugins
+	$include webpack/devserver
+	$include webpack/externals
+	$include webpack/watch
+	$include webpack/performance
+	$include webpack/stats
+	$include webpack/json
+	$include webpack/functions

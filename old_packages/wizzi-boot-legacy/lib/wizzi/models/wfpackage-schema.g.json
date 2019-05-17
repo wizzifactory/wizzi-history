@@ -1,0 +1,631 @@
+{
+  "name": "wfpackage",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [],
+  "elements": [
+    {
+      "name": "wfpackage",
+      "super": null,
+      "isRoot": true,
+      "tags": [
+        "wfpackage"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "srcCwd",
+          "type": "string",
+          "tags": [
+            "src-cwd"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "assetsCwd",
+          "type": "string",
+          "tags": [
+            "assets-cwd"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "buildCwd",
+          "role": "buildCwds",
+          "tags": [
+            "build-cwd"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "schema",
+          "role": "schemas",
+          "tags": [
+            "schema"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "getJobs",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "ret",
+              "statements": [
+                {
+                  "tag": "{",
+                  "name": "jsObject",
+                  "value": "",
+                  "statements": [
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "name this.wzName",
+                      "statements": []
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "title this.title",
+                      "statements": []
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "srcCwd this.srcCwd",
+                      "statements": []
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "assetsCwd this.assetsCwd",
+                      "statements": []
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "buildCwds",
+                      "statements": [
+                        {
+                          "tag": "[",
+                          "name": "jsArray",
+                          "value": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "schemas",
+                      "statements": [
+                        {
+                          "tag": "[",
+                          "name": "jsArray",
+                          "value": "",
+                          "statements": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "@",
+                      "name": "jsPropertyOrValue",
+                      "value": "jobs",
+                      "statements": [
+                        {
+                          "tag": "[",
+                          "name": "jsArray",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "{",
+                              "name": "jsObject",
+                              "value": "",
+                              "statements": [
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "title 'build ' + this.wzName + ' assets'",
+                                  "statements": []
+                                },
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "exe 'node'",
+                                  "statements": []
+                                },
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "cwd this.srcCwd",
+                                  "statements": []
+                                },
+                                {
+                                  "tag": "@",
+                                  "name": "jsPropertyOrValue",
+                                  "value": "args 'index'",
+                                  "statements": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.schemas.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "ret.jobs.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "title 'generate ' + this.wzName + ' wizzi model types in the assets folder'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "exe 'node'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "cwd this.assetsCwd",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "args 'schemas'",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "tag": "foreach",
+                  "name": "foreach",
+                  "value": "item in this.schemas",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "ret.schemas.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name item.wzName",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "item in this.buildCwds",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "ret.buildCwds.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "cwd item.wzName",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "title item.title",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "ret",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "The root tag of the wfpackage schema."
+      ]
+    },
+    {
+      "name": "buildCwd",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "build-cwd"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "schema",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "schema"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "transformer",
+          "role": "transformers",
+          "tags": [
+            "transformer"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "artifact",
+          "role": "artifacts",
+          "tags": [
+            "artifact"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "example",
+          "role": "examples",
+          "tags": [
+            "example"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A WizziSchema defined by this WizziFactoryPackage"
+      ]
+    },
+    {
+      "name": "transformer",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "transformer"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A WizziModelTransformer"
+      ]
+    },
+    {
+      "name": "artifact",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "artifact"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "An ArtifactGenerator"
+      ]
+    },
+    {
+      "name": "example",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "example"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "node",
+          "role": "nodes",
+          "tags": [
+            "node"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "ittfExample",
+          "tags": [
+            "ittf-example"
+          ]
+        },
+        {
+          "name": "artifactExample",
+          "tags": [
+            "artifact-example"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The base node for examples"
+      ]
+    },
+    {
+      "name": "ittfExample",
+      "super": "example",
+      "isRoot": false,
+      "tags": [
+        "ittf-example"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": "example",
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "node",
+          "role": "nodes",
+          "tags": [
+            "node"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "example",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "An IttfDocument example"
+      ]
+    },
+    {
+      "name": "artifactExample",
+      "super": "example",
+      "isRoot": false,
+      "tags": [
+        "artifact-example"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": "example",
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "node",
+          "role": "nodes",
+          "tags": [
+            "node"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "example",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "An artifact generation example"
+      ]
+    },
+    {
+      "name": "node",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "node"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    }
+  ]
+}

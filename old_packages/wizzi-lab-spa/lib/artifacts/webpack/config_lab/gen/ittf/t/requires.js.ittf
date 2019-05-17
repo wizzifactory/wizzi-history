@@ -1,0 +1,38 @@
+$group
+	var path = require("path")
+	var webpack = require('webpack')
+	
+	$if wp.ctx.useCssLoader
+		var autoprefixer = require('autoprefixer')
+    
+	$if wp.ctx.useHtmlPlugin
+		var HtmlWebpackPlugin = require('html-webpack-plugin')
+    
+	$if wp.ctx.useCaseSensitivePathPlugin
+		var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
+    
+	$if wp.ctx.useInterpolateHtmlPlugin
+		var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
+    
+	$if wp.ctx.useMissingNodeModulesPlugin
+		var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
+
+	$if wp.ctx.useOpenBrowserPlugin
+		var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+
+	$if wp.ctx.useUglifyJsPlugin
+		var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+	var paths = require('./paths')
+	var getClientEnvironment = require('./env')
+
+    $if wp.build == 'production'
+		var publicPath = paths.servedPath
+		var shouldUseRelativeAssetPaths = publicPath === './'
+		var publicUrl = publicPath.slice(0, -1)
+	$else
+		var publicPath = '/'
+		var publicUrl = ''
+	var env = getClientEnvironment(publicUrl)
+
+
+

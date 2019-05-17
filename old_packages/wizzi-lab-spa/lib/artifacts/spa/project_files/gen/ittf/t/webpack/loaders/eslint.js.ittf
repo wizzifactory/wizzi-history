@@ -1,0 +1,18 @@
+$group
+	$if wp.ctx.useEslintLoader
+		{ 
+			@ test /\.(js|jsx)$/
+			@ enforce 'pre'
+			@ use
+				[ 
+					{ 
+						@ options
+							{ 
+								@ baseConfig
+									{ 
+										@ extends
+											[ 
+												@ 'react-app'
+								@ useEslintrc false
+						@ loader 'eslint-loader'
+			@ include paths.appSrc

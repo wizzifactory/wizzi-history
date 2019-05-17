@@ -1,0 +1,84 @@
+$group
+    kind jsfile
+
+    wz-require chalk
+	
+	wz-require webpack
+	
+	wz-require clearConsole
+		from react-dev-utils/clearConsole
+	
+	wz-require formatWebpackMessages
+		from react-dev-utils/formatWebpackMessages
+
+    var isInteractive = process.stdout.isTTY
+
+    var handleCompile
+
+    wz-function createWebpackCompiler
+        param config
+        param onReadyCallback
+            
+		var compiler
+        try 
+            set compiler = webpack(config, handleCompile)
+        catch err
+            _ console.log
+                _ chalk.red('Failed to compile.')
+            _ console.log()
+            _ console.log((err.message || err))
+            _ console.log()
+            _ process.exit(1)
+            
+		_ compiler.plugin
+            @ 'invalid'
+            function 
+                if isInteractive
+                    _ clearConsole()
+                _ console.log('Compiling...')
+            
+		var isFirstCompile = true
+            
+		_ compiler.plugin
+            @ 'done'
+            function 
+                param stats
+                    
+				if isInteractive
+                    _ clearConsole()
+                    
+				var messages
+                    _ formatWebpackMessages
+                        _ stats.toJson
+                            { 
+                            @ true
+                var isSuccessful = !messages.errors.length && !messages.warnings.length
+                var showInstructions = isSuccessful && (isInteractive || isFirstCompile)
+					                    
+				if isSuccessful
+                    log chalk.green('Compiled successfully!')
+                    
+				if typeof (onReadyCallback) === 'function'
+                    _ onReadyCallback(showInstructions)
+                    
+				set isFirstCompile = false
+                    
+				if messages.errors.length
+                    log chalk.red('Failed to compile.')
+                    log
+					foreach message in messages.errors
+                        log message
+                        log
+                    return 
+                    
+				if messages.warnings.length
+                    log chalk.yellow('Compiled with warnings.')
+                    log
+                    foreach message in messages.errors
+                        log message
+                        log
+                    log 'You may use special comments to disable some warnings.'
+                    log 'Use ' + chalk.yellow('// eslint-disable-next-line') + ' to ignore the next line.'
+                    log 'Use ' + chalk.yellow('/* eslint-disable */') + ' to ignore all warnings in a file.'
+            
+		return compiler

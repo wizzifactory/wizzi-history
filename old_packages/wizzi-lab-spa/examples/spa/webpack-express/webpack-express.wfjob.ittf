@@ -1,0 +1,50 @@
+wfjob js-spa
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var dest_folder         = path.join(__dirname, 'result');
+		var js_ittf_pattern     = '**/*.js.ittf';
+		var html_ittf_pattern   = '**/*.html.ittf';
+		var less_pattern   = '**/*.less';
+	line root
+		cwd-folder ${ittf_folder}
+		artifact ./${js_ittf_pattern}
+			src ./${js_ittf_pattern}
+			schema js
+			generator js/module
+			extension js
+		artifact ./${html_ittf_pattern}
+			src ./${html_ittf_pattern}
+			schema html
+			generator html/document
+			extension html
+		artifact ./${less_pattern}
+			src ./${less_pattern}
+			extension less
+		artifact ./webpack-express.spa.ittf
+			src ./webpack-express.spa.ittf
+			schema spa
+			generator spa/bundler
+			dest-path webpack.config.js
+			extension js
+		artifact ./webpack-express.spa.ittf
+			src ./webpack-express.spa.ittf
+			schema spa
+			generator spa/package
+			dest-path package.json
+			extension json
+		artifact ./webpack-express.spa.ittf
+			src ./webpack-express.spa.ittf
+			schema spa
+			generator spa/babelrc
+			dest-path .babelrc
+			extension babelrc
+		artifact ./webpack-express.spa.ittf
+			src ./webpack-express.spa.ittf
+			schema spa
+			generator spa/gulp
+			dest-path gulpfile.js
+			extension js
+	production
+		dest-folder ${dest_folder}
+		line-ref root

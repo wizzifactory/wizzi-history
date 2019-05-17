@@ -1,0 +1,23 @@
+﻿$group
+
+	@ updateFragment
+		function
+			param fragmentUri
+			param ittfContent
+			param callback
+
+			var ittfPath = paths.pathFromUri(fragmentUri)
+
+			check_file_not_exists( ittfPath, Ittf fragment )
+
+			_ file.write
+				@ ittfPath
+				@ ittfContent
+
+			_ callback
+				@ null
+				{
+					@ data null
+					@ status
+						_ success
+							@ 'Ittf fragment updated "' + fragmentUri + '"'

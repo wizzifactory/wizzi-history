@@ -1,0 +1,19 @@
+module
+	kind jsfile
+	## eslint-env browser
+	var greetings = require('./greetings')
+	_ document.body.appendChild(greetings.html)
+	var app = document.getElementById('app')
+	var time = document.getElementById('time')
+	var timer = setInterval(updateClock, 1000)
+	function updateClock
+		set time.innerHTML = (new Date()).toString()
+	# Edit these styles to see them take effect immediately
+	set app.style.display = 'table-cell'
+	set app.style.width = '400px'
+	set app.style.height = '400px'
+	set app.style.border = '3px solid #339'
+	set app.style.background = '#9dd'
+	set app.style.color = '#333'
+	set app.style.textAlign = 'center'
+	set app.style.verticalAlign = 'middle'

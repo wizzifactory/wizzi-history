@@ -1,0 +1,10 @@
+$group
+	@ devServer
+		{
+			$foreach f in wp.devServer.facets
+				@ ${f.name} ${f.value}
+			$if _.isObject(wp.devServer.proxy)
+				@ proxy
+					{
+						$foreach item in plugin.jsProps
+							@ ${item.name} ${item.value}

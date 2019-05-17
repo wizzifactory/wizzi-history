@@ -1,0 +1,39 @@
+wizzischema wfpackage
+	# A schema modeling a WizziFactory package
+	
+	e wfpackage
+		# The root tag of the wfpackage schema.
+		a title
+		a_tag( srcCwd, src-cwd )
+		a_tag( assetsCwd, assets-cwd ) 
+		r buildCwd/s
+		r schema/s
+		$include wfpackage/root-methods
+	e_tag( buildCwd, build-cwd )
+		a title
+	e schema
+		# A WizziSchema defined by this WizziFactoryPackage
+		
+		a title
+		
+		r transformer/s
+		r artifact/s
+		r example/s
+	e transformer
+		# A WizziModelTransformer
+		a title
+	e artifact
+		# An ArtifactGenerator
+		a title
+	e example
+		# The base node for examples
+		a title
+		r node/s
+	e_tag( ittfExample, ittf-example )
+		# An IttfDocument example
+		super example
+		
+	e_tag( artifactExample, artifact-example )
+		# An artifact generation example
+		super example
+	e node

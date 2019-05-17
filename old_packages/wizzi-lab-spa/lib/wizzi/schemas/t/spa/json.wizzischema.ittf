@@ -1,0 +1,16 @@
+$group
+	e jsObject : spaitem
+		tag {
+		r jsProp/s
+	e jsArray : spaitem
+		tag [
+		r spaitem/s
+	e jsProp : spaitem
+		tag @
+		r spaitem/s
+		m wzInitialize
+			if this.spaitems.length == 0
+				var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+				set this.name = nv.name()
+				set this.value = nv.value()
+		

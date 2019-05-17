@@ -1,0 +1,40 @@
+{
+	name  "${pkg.wzName}"
+	version  "${pkg.version}"
+	description "${pkg.description}"
+    $if _.isObject(pkg.author)
+		author
+			{
+				name "${pkg.author.name}"
+				email "${pkg.author.email}"
+	private ${pkg.private}
+	license "${pkg.license}"
+	
+	$if _.isObject(pkg.repository)
+		$if pkg.repository
+			repository
+				{
+					type "git"
+					url "${pkg.repository.url}"
+	$if pkg.main
+		main "${pkg.main}"
+	engines
+		{
+			node ">=0.10.28"
+			npm ">=1.4.28"
+	
+	$if _.isObject(pkg.scripts)
+		scripts
+			{
+				$foreach s in pkg.scripts
+					@ ${s.wzName} "${s.command}"
+			
+	dependencies
+		{
+			$foreach dep in pkg.dependencies
+				@ ${dep.wzName} "${dep.version}"
+	
+	devDependencies
+		{
+			$foreach dep in pkg.devDependencies
+				@ ${dep.wzName} "${dep.version}"

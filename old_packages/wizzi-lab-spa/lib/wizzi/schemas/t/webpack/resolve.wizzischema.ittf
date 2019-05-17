@@ -1,0 +1,31 @@
+$group
+	e resolve : webpackitem
+		# https://webpack.js.org/configuration/resolve/
+		r resolveAlias/es
+		r resolveExtension/s
+		r resolveMainField/s
+		r resolveMainFile/s
+		r resolveModule/s
+		r resolvePlugin/s
+		m wzinitialize
+			set this.mainFieldsOut = stringifyArrayValue(this.resolveMainFields)
+			set this.mainFiles = stringifyArrayValue(this.resolveMainFiles)
+			set this.extensionsOut = stringifyArrayValue(this.resolveExtensions)
+	e resolveAlias : webpackitem
+		tag alias
+		
+		a path
+		
+	e resolveMainField : webpackitem
+		# When importing from an npm package, e.g. import * as D3 from "d3", 
+		# this option will determine which fields in it's package.json are checked. 
+		# The default values will vary based upon the target specified in your webpack configuration.
+		tag main-field
+	e resolveMainFile : webpackitem
+		tag main-file
+	e resolveModule : webpackitem
+		tag module
+	e resolvePlugin : webpackitem
+		tag plugin
+	e resolveExtension : webpackitem
+		tag extension

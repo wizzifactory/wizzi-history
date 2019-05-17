@@ -1,0 +1,38 @@
+  wfjob test ids: 1 39
+    $  ids: 2 40
+      var sources_folder      = path.join(__dirname, 'sources'); ids: 3 41
+      var models_folder       = path.join(__dirname, 'models'); ids: 4 42
+      var dest_folder         = path.join(__dirname, 'results'); ids: 5 43
+    models-base-folder ${models_folder} ids: 6 44
+    dest-base-folder ${dest_folder} ids: 7 45
+    require wizzi-lab-data ids: 8 46
+    require wizzi-lab-site ids: 9 47
+    model myTestRdbms ids: 10 48
+      src test.rdbms.ittf ids: 11 49
+      schema rdbms ids: 12 50
+    line plain_js ids: 13 51
+      cwd-folder ${sources_folder}/plain_js ids: 14 52
+      artifact any_plain_js ids: 15 53
+        src ./**/*.js ids: 16 54
+        extension js ids: 17 55
+    line generated_js ids: 18 56
+      cwd-folder ${sources_folder}/generated_js ids: 19 57
+      artifact any_generated_js ids: 20 58
+        src ./**/*.js.ittf ids: 21 59
+        schema js ids: 22 60
+        generator js/module ids: 23 61
+        extension js ids: 24 62
+    line generated_js_with_model_context ids: 25 63
+      cwd-folder ${sources_folder}/generated_js_with_model_context ids: 26 64
+      artifact any_generated_js_with_model_context ids: 27 65
+        src ./**/*.js.ittf ids: 28 66
+        dest-path app/db/{table}Datalayer.js ids: 29 67
+        schema js ids: 30 68
+        generator js/module ids: 31 69
+        extension js ids: 32 70
+        model-ref myTestRdbms ids: 33 71
+    production p1 ids: 34 72
+      dest-folder ${dest_folder} ids: 35 73
+      line-ref plain_js ids: 36 74
+      line-ref generated_js ids: 37 75
+      line-ref generated_js_with_model_context ids: 38 76

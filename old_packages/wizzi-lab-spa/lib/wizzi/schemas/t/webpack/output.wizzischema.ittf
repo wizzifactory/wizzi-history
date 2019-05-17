@@ -1,0 +1,172 @@
+$group
+	e output : webpackitem
+		# https://webpack.js.org/configuration/output/
+		tag output
+		
+		a path
+		a_tag( pathExpr, path-expr )
+			# The output directory as an absolute path.
+		a_flag( pathInfo, path-info )
+			# Tell webpack to include comments in bundles with information about the contained modules. 
+			# This option defaults to false and should not be used in production, 
+			# but it's very useful in development when reading the generated code.
+		
+		a_tag( chunkFilename, chunk-filename )
+		a_tag( crossOriginLoading, cross-origin-loading )
+			# Only used when target is web, which uses JSONP for loading on-demand chunks, 
+			# by adding script tags.
+			default false
+			restrict
+				enum false
+					# Disable cross-origin loading (default)
+				enum anonymous
+					# Enable cross-origin loading without credentials
+				enum use-credentials
+					# Enable cross-origin loading with credentials
+		a_tag( hashFunction, hash-function )
+			# The hashing algorithm to use, defaults to 'md5'. 
+			# All functions from Node.JS' crypto.createHash are supported.
+		a_tag( hashDigest, hash-digest )
+			# The hashing algorithm to use, defaults to 'hex'. 
+			# All functions from Node.JS' hash.digest are supported.
+		a_tag( hashDigestLength, hash-digest-length )
+			# The prefix length of the hash digest to use, defaults to 20.
+		a_tag( hashSalt, hash-salt )
+			# An optional salt to update the hash via Node.JS' hash.update.
+		a filename
+			default bundle.js
+		
+		a_tag( publicPath, public-path )
+			# This is an important option when using on-demand-loading or loading external resources like images, files, etc. If an incorrect value is specified you'll receive 404 errors while loading these resources.
+			# This option specifies the public URL of the output directory when referenced in a browser. A relative URL is resolved relative to the HTML page (or <base> tag). Server-relative URLs, protocol-relative URLs or absolute URLs are also possible and sometimes required, i. e. when hosting assets on a CDN.
+			#
+			# The value of the option is prefixed to every URL created by the runtime or loaders. Because of this the value of this option ends with / in most cases.
+			# The default value is an empty string "".
+			#
+			# Simple rule: The URL of your output.path from the view of the HTML page.
+			# path: path.resolve(__dirname, "public/assets"),
+			# publicPath: "https://cdn.example.com/assets/"
+			#
+			# For this configuration:
+			# publicPath: "/assets/",
+			# chunkFilename: "[id].chunk.js"
+			# A request to a chunk will look like /assets/4.chunk.js.
+			# 
+			# A loader outputting HTML might emit something like this:
+			# <link href="/assets/spinner.gif" />
+			#
+			# or when loading an image in CSS:
+			# background-image: url(/assets/spinner.gif);
+			#
+			# The webpack-dev-server also takes a hint from publicPath, using it to determine where to serve the output files from.
+		a library
+			# https://webpack.js.org/guides/author-libraries/
+		
+		a_tag( libraryTarget, library-target )
+			restrict
+				enum var
+					# (default) When your library is loaded, the return value of your entry point will be assigned to a variable:
+					# var MyLibrary = _entry_return_;
+					# // your users will use your library like:
+					# MyLibrary.doSomething();
+				
+				enum this
+					# When your library is loaded, the return value of your entry point will be assigned to this, the meaning of this is up to you:
+					# this["MyLibrary"] = _entry_return_;
+					# // your users will use your library like:
+					# this.MyLibrary.doSomething();
+					# MyLibrary.doSomething(); //if this is window
+				
+				enum window
+					# When your library is load, the return value of your entry point will be part window object.
+					# window["MyLibrary"] = _entry_return_;
+					# //your users will use your library like:
+					# window.MyLibrary.doSomething();
+				
+				enum global
+					# When your library is loaded, the return value of your entry point will be part global object.
+					# global["MyLibrary"] = _entry_return_;
+					# //your users will use your library like:
+					# global.MyLibrary.doSomething();
+				
+				enum commonjs
+					# When your library is loaded, the return value of your entry point will be part of the exports object. As the name implies, this is used in CommonJS environments:
+					# exports["MyLibrary"] = _entry_return_;
+					# //your users will use your library like:
+					# require("MyLibrary").doSomething();
+				
+				enum commonjs2
+					# When your library is loaded, the return value of your entry point will be part of the exports object. As the name implies, this is used in CommonJS environments:
+					# module.exports = _entry_return_;
+					# //your users will use your library like:
+					# require("MyLibrary").doSomething();
+					# Wondering the difference between CommonJS and CommonJS2? 
+					# Check this out https://github.com/webpack/webpack/issues/1114 (they are pretty much the same).
+				
+				enum commonjs-module
+					# Expose it using the module.exports object (output.library is ignored), __esModule is defined (it's threaded as ES2015 Module in interop mode)
+				
+				enum amd
+					# In this case webpack will make your library an AMD module.
+					# But there is a very important pre-requisite, your entry chunk must be defined with the define property, if not, webpack will create the AMD module, but without dependencies. The output will be something like this:
+					# define([], function() {
+					#    //what this module returns is what your entry chunk returns
+					# });
+					# But if you download this script, first you may get a error: define is not defined, it’s ok! If you are distributing your library with AMD, then your users need to use RequireJS to load it.
+					# Now that you have RequireJS loaded, you can load your library.
+					# But, require([ _what?_ ])?
+					#   output.library!
+					# output: {
+					#     library: "MyLibrary",
+					#     libraryTarget: "amd"
+					# }
+					# So your module will be like:
+					# define("MyLibrary", [], function() {
+					#     //what this module returns is what your entry chunk returns
+					# });
+					# And you can use it like this:
+					# // And then your users will be able to do:
+					# require(["MyLibrary"], function(MyLibrary){
+					#     MyLibrary.doSomething();
+					# });
+				
+				enum umd
+					# This is a way for your library to work with all the module definitions (and where aren't modules at all). It will work with CommonJS, AMD and as global variable. You can check the UMD Repository to know more about it.
+					# In this case, you need the library property to name your module:
+					# output: {
+					#     library: "MyLibrary",
+					#     libraryTarget: "umd"
+					# }
+					# And finally the output is:
+					# (function webpackUniversalModuleDefinition(root, factory) {
+					#     if(typeof exports === 'object' && typeof module === 'object')
+					#         module.exports = factory();
+					#     else if(typeof define === 'function' && define.amd)
+					#         define("MyLibrary", [], factory);
+					#     else if(typeof exports === 'object')
+					#         exports["MyLibrary"] = factory();
+					#     else
+					#         root["MyLibrary"] = factory();
+					# })(this, function() {
+					#     //what this module returns is what your entry chunk returns
+					# });
+				
+				enum assign
+					# Here webpack will blindly generate an implied global.
+					# MyLibrary = _entry_return_;
+					# Be aware that if MyLibrary isn't defined earlier your library will be set in global scope.
+				
+				enum jsonp
+					# This will wrap the return value of your entry point into a jsonp wrapper.
+					# MyLibrary(_entry_return_);
+					# The dependencies for your library will be defined by the externals config.
+		
+		m wzinitialize
+			set this.facets = []
+			string_facet( path, path )
+			object_facet( path, pathExpr )
+			string_facet( chunkFilename, chunkFilename )
+			string_facet( filename, filename )
+			string_facet( publicPath, publicPath )
+			string_facet( library, library )
+			string_facet( libraryTarget, libraryTarget )

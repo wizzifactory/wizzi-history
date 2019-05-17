@@ -1,0 +1,41 @@
+$group
+
+	$if spa.session || spa.setDangerousDefaultUser
+		function initSession
+			param app
+			param options
+			$if spa.setDangerousDefaultUser
+				_ app.use
+					function 
+						param req
+						param res
+						param next
+						set req.user
+							{
+								@ id '${spa.dangerousDefaultUser}'
+						_ next()
+				+
+			$if spa.session
+				_ app.use
+					_ session
+						{ 
+							@ saveUninitialized true
+							@ resave true
+							@ secret config.sessionSecret
+							@ cookie
+								{ 
+									@ maxAge config.sessionCookie.maxAge
+									@ httpOnly config.sessionCookie.httpOnly
+									@ secure config.sessionCookie.secure && config.secure.ssl
+							@ key config.sessionKey
+							$if spa.session_mongodb
+								@ store
+									new MongoStore
+										{ 
+											@ mongooseConnection db.connection
+											@ collection config.sessionCollection
+							$else
+								@ store null
+
+
+

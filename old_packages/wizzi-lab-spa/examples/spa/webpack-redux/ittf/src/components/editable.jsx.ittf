@@ -1,0 +1,62 @@
+module
+	kind react
+	import React from 'react'
+	export default
+		class Editable
+			super React.Component
+			ctor
+				param props
+				base props
+				set this.finishEdit = this.finishEdit.bind(this)
+				set this.checkEnter = this.checkEnter.bind(this)
+				set this.edit = this.edit.bind(this)
+				set this.renderEdit = this.renderEdit.bind(this)
+				set this.renderValue = this.renderValue.bind(this)
+				set this.state
+					{
+						@ editing false
+			m render
+				const {value, onEdit, ...props} = this.props;
+				const editing = this.state.editing
+				return
+					div {editing ? this.renderEdit() : this.renderValue()}
+						@ {...props}
+		
+			m renderEdit
+				return
+					input
+						@ type "text"
+						@ autoFocus {true}
+						@ defaultValue {this.props.value}
+						@ onBlur {this.finishEdit}
+						@ onKeyPress {this.checkEnter}
+			m renderDelete
+				return
+					button x
+						@ className "delete"
+						@ onClick {this.props.onDelete}
+    
+			m renderValue
+				const onDelete = this.props.onDelete
+				return
+					div
+						@ onClick {this.edit}
+						span {this.props.value}
+							@ className "value"
+						+ {onDelete ? this.renderDelete() : null }
+			m edit
+				_ this.setState
+					{
+						@ editing true
+		
+			m checkEnter
+				param e
+				if e.key === 'Enter'
+					_ this.finishEdit(e)
+		
+			m finishEdit
+				param e
+				_ this.props.onEdit(e.target.value)
+				_ this.setState
+					{
+						@ editing false

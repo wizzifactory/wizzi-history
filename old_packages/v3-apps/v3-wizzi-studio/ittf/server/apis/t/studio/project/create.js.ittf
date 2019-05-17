@@ -1,0 +1,61 @@
+﻿$group
+
+	@ createProject
+		function
+			param options
+			param callback
+
+			var metaPath
+				_ paths.projectMeta
+					@ options
+
+			check_file_already_exists( metaPath, Project document meta
+
+			var projectMeta
+				{
+					@ name options.projectName
+					@ user options.userName
+					@ metaPath metaPath
+					@ created u.now_GMYHMS()
+					@ lastUpdated u.now_GMYHMS()
+					@ schemas
+						[
+					@ transformers
+						[
+					@ artifacts
+						[
+
+			_ file.writeJSON
+				@ metaPath
+				@ projectMeta
+
+			var inserted
+				{
+					@ name options.projectName
+					@ user options.userName
+
+			_ this.getProjects
+				@ options
+				f_cb_no_err( result )
+					if err
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ inserted inserted
+										@ projects [inserted]
+								@ status
+									_ success
+										@ 'Project created: "' + options.projectName + '"'
+					else
+						_ callback
+							@ null
+							{
+								@ data
+									{
+										@ inserted inserted
+										@ projects result.data.projects
+								@ status
+									_ success
+										@ 'Project created: "' + options.projectName + '"'

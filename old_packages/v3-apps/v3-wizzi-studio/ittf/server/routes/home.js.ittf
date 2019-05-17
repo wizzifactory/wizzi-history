@@ -1,0 +1,60 @@
+﻿route( Home )
+
+	get( / )
+
+		#
+			return
+				_ res.redirect
+					@ '/ittf/home/index.html.ittf'
+
+		var payload = {}
+		
+		_ res.set('Content-Type', 'text/html')
+		_ res.send
+			_ view(payload)
+
+		html_f view
+
+			html
+				head
+					link
+						rel stylesheet
+						href /static/lib/codemirror/lib/codemirror.css
+					link
+						rel stylesheet
+						href /static/lib/codemirror/addon/display/fullscreen.css
+					link
+						rel stylesheet
+						href /ittf/home/css/main.css.ittf
+				body
+					div
+						id root
+					script
+						src /static/lib/codemirror/lib/codemirror.js
+					script
+						src /static/lib/codemirror/mode/javascript/javascript.js
+					script
+						src /static/lib/codemirror/mode/yaml/yaml.js
+					script
+						src /static/lib/codemirror/addon/display/fullscreen.js
+					script
+						src /webpack/ittfeditor/bundle.js
+		
+		html_f view_x
+			html
+				head
+					link
+						rel stylesheet
+						href https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css
+					link
+						rel stylesheet
+						href https://fonts.googleapis.com/css?family=Roboto:300,400,500
+				body
+					div
+						id app
+					script
+						src /webpack/home/bundle.js
+
+
+
+

@@ -1,0 +1,27 @@
+﻿module 
+    kind jsfile
+	+
+	import util
+	import fs
+	+
+	var babylon = require('babylon')
+	_ inspect('babylon', babylon)
+	+
+	var generator = require('babel-generator')
+	_ inspect('generator', generator)
+	var generate = generator.default
+	+
+	var parse = babylon.parse 
+	var code = 'class Example {}'
+	log 'code', code
+	var ast = parse(code);
+	_ inspect(ast)
+	var output = generate(ast, { /* options */ }, code)
+	log 'output', output
+
+	function inspect
+		param label
+		param obj
+		# log label, util.inspect(obj, { depth: null })
+		log label, JSON.stringify(obj, null, 2)
+

@@ -1,0 +1,94 @@
+﻿$group
+
+	@ fragmentList
+		function
+			param options
+
+			return
+				{
+					@ user this.userFragmentList(options)
+					@ project this.projectFragmentList(options)
+
+	@ projectFragmentList
+		function
+			param options
+
+			set options = this.detectOptions(options)
+
+			var folderPath
+				_ this.projectPath
+					@ options.userName
+					@ options.projectName
+
+			return 
+				_ this.folderFragmentList
+					@ folderPath
+					@ options
+
+	@ userFragmentList
+		function
+			param options
+
+			set options = this.detectOptions(options)
+			var folderPath
+				_ this.projectPath
+					@ options.userName
+					@ 't'
+
+			return 
+				_ this.folderFragmentList
+					@ folderPath
+					@ options
+
+
+	@ folderFragmentList
+		function
+			param folderPath
+			param options
+
+			var files
+				_ this.getIttfFiles
+					@ folderPath
+
+			var fragments = []
+			foreach file in files
+				if this.isFragment(file.fullPath)
+					var nameSchema = this.fragmentNameAndSchemaFromBaseName(file.baseName)
+					var dirUri = this.uriFromPath(file.dirName)
+					var folder
+						_ dirUri.substr
+							@ ('/' + options.userName + '/' + options.projectName + '/').length
+					_ fragments.push
+						{
+							@ name nameSchema.name
+							@ schema nameSchema.schema
+							@ folder folder
+							@ project options.projectName
+							@ user options.userName
+							@ uri
+								_ this.normalize
+									_ path.join
+										@ dirUri
+										@ nameSchema.name + '.' + nameSchema.schema + '.ittf'
+			return fragments
+
+	@ isFragment
+		function
+			param filePath
+			set filePath = this.normalize(filePath) 
+			return filePath.indexOf('/t/') > -1
+
+	@ fragmentNameAndSchemaFromBaseName
+		function
+			param basename
+			var suffix = '.ittf'
+			var docName = basename.substring(0, basename.length - suffix.length)
+			var lastDotPos = docName.lastIndexOf('.')
+			var docSchema = docName.substring(lastDotPos + 1, docName.length)
+			var docNameNoExt = docName.substring(0, lastDotPos)
+			return
+				{
+					@ name docNameNoExt
+					@ schema docSchema
+
+

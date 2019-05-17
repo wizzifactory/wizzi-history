@@ -1,0 +1,39 @@
+﻿$group
+
+	@ schemaObject
+		function
+			param sessionData
+			param wfschema
+			param callback
+
+			if userAuthRequired
+				_ createWizziFactory
+					@ sessionData.user
+					@ sessionData.role
+					@ null
+					_ schemaObject_cb
+						@ wfschema
+						@ callback
+			else
+				_ createWizziFactory
+					@ null
+					_ schemaObject_cb
+						@ wfschema
+						@ callback
+
+			function schemaObject_cb
+				param wfschema
+				param callback
+				return
+					f_cb_api( wizziFactory )
+						_ wizziFactory.schemaObject
+							@ wfschema 
+							f_cb_api( result )
+								return
+									_ callback
+										@ null
+										{
+											@ data result
+											@ status
+												_ success
+													@ 'Schema object ' + wfschema + ' retrieved'

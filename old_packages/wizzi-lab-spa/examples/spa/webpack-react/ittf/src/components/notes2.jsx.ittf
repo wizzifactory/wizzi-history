@@ -1,0 +1,34 @@
+module
+	kind react
+	import React from 'react'
+	import Note from './note2.jsx'
+	import Editable from './editable.jsx'
+	import LaneActions from '../actions/LaneActions'
+	export default
+		class Notes
+			super React.Component
+			ctor
+				param props
+				base props
+				set this.renderNote = this.renderNote.bind(this)
+			m render
+				const notes = this.props.items
+				return
+					ul {notes.map(this.renderNote)}
+						@ className "notes"
+			m renderNote
+				param note
+				return
+					< Note
+						@ className "note"
+						@ id {note.id}
+						@ key {note.id}
+						$$ @ onMove {this.onMoveNote}
+						@ onMove {LaneActions.move}
+						< Editable
+							@ value {note.task}
+							@ onEdit {this.props.onEdit.bind(null, note.id)}
+							@ onDelete {this.props.onDelete.bind(null, note.id)}
+			m onMoveNote
+				param {sourceId, targetId}
+				# log 'source', sourceId, 'target', targetId

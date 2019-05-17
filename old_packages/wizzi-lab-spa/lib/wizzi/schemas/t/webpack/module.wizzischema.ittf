@@ -1,0 +1,55 @@
+$group
+	e module : webpackitem
+		# https://webpack.js.org/configuration/module/
+		tag module
+		a_tag( noParse, no-parse )
+			# Prevent webpack from parsing any files matching the given regular expression(s). 
+			# Ignored files should not have calls to import, require, define or any other importing mechanism. 
+			# This can boost build performance when ignoring large libraries.
+			# Example
+			#   noParse: /jquery|lodash/
+			type regexp
+		r ruleParser
+			one-to-one
+		
+		r moduleRule/s
+	e ruleParser : webpackitem
+		# TODO node property to customize nodejs
+		
+		tag parser
+		
+		a_true( amd )
+		a_true( commonjs )
+		a_true( system )
+		a_true( harmony )
+		a_true( requireInclude )
+		a_true( requireEnsure )
+		a_true( requireContext )
+		a_true( browserify )
+		a_true( requireJs )
+		a_tag( node) 
+	e moduleRule : webpackitem
+		# In a Rule the properties test, include, exclude and resource are matched with the resource and the property issuer is matched with the issuer.
+		tag rule
+		r moduleRuleTest/s
+		r moduleRuleInclude/s
+		r moduleRuleExclude/s
+		r moduleRuleUse/s
+		m wzinitialize
+			set this.testOut = stringifyArrayValue(this.moduleRuleTests)
+			set this.includeOut = stringifyArrayValue(this.moduleRuleIncludes)
+			set this.excludeOut = stringifyArrayValue(this.moduleRuleExcludes)
+	e moduleRuleTest : webpackitem
+		tag test
+	e moduleRuleInclude : webpackitem
+		tag include
+	e moduleRuleExclude : webpackitem
+		tag exclude
+	e moduleRuleUse : webpackitem
+		# A list of UseEntries which are applied to modules.
+		# Each entry specifies a loader to be used.
+		tag use
+		
+		a loader
+		r jsProp/s
+			# properties of the 'option' property

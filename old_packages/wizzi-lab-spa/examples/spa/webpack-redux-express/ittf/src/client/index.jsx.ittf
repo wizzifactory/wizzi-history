@@ -1,0 +1,21 @@
+module
+	kind react
+	
+	import './main.css'
+	import React from 'react'
+	import ReactDOM from 'react-dom'
+	import { createStore } from 'redux'
+	import App from './containers/app1.jsx'
+	import { Provider } from 'react-redux'
+	import {persistStore, autoRehydrate} from 'redux-persist'
+	import reducers from './reducers'
+	const store = autoRehydrate()(createStore)(reducers)
+	_ persistStore(store)
+	_ main
+	function main
+		const app = document.getElementById('app')
+		_ ReactDOM.render
+			< Provider
+				@ store {store}
+				< App 
+			@ app

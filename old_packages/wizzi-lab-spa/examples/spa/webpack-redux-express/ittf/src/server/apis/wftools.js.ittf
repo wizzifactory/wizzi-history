@@ -1,0 +1,53 @@
+module
+	kind jsfile
+	#
+		# Api: wfTools
+	#
+		# Dependencies
+	var util = require('util')
+	var path = require('path')
+	var _ = require('lodash')
+	var wizzi = require('wizzi-core').wizzi
+	var tools = require('wizzi-tools')
+	var u = require('../lib/utils')
+	function jsWizzify
+		param source
+		param checked
+		param callback
+		_ tools.jsWizzify
+			@ source
+			{
+				@ checked checked
+			@ callback
+	function htmlWizzify
+		param source
+		param callback
+		_ tools.htmlWizzify
+			@ source
+			{
+			@ callback
+	
+	function cssWizzify
+		param source
+		param callback
+		_ tools.cssWizzify
+			@ source
+			{
+			@ callback
+	function xmlWizzify
+		param source
+		param callback
+		_ tools.xmlWizzify
+			@ source
+			{
+			@ callback
+	set module.exports
+		function
+			param app
+			param api
+			set api.wfTools
+				{
+					@ jsWizzify jsWizzify
+					@ htmlWizzify htmlWizzify
+					@ cssWizzify cssWizzify
+					@ xmlWizzify xmlWizzify		

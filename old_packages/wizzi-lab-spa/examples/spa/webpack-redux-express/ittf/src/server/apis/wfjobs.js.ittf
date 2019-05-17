@@ -1,0 +1,33 @@
+module
+	kind jsfile
+	#
+		# Api: wfJobs
+	#
+		# Dependencies
+	var util = require('util')
+	var path = require('path')
+	var _ = require('lodash')
+	var wizzi = require('wizzi-core').wizzi
+	var u = require('../lib/utils')
+	+
+	var wfjobsFolder = wizzi.config.wfJobsFolder
+	var wfjobsLogFolder = path.join(wizzi.config.wfJobsFolder, 'log')
+	+
+	function getJobLogs
+		var tree = u.walkDirectory(wfjobsLogFolder)
+		return _.keys(tree)
+	+
+	function getJobLog
+		param name
+		var jobPath = path.join(wfjobsLogFolder, name)
+		return wizzi.file.readJSON(jobPath)
+	+
+	set module.exports
+		function
+			param app
+			param api
+			set api.wfJobs
+				{
+					@ getJobLogs getJobLogs
+					@ getJobLog getJobLog
+					

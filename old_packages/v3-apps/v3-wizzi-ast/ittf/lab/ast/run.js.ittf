@@ -1,0 +1,232 @@
+﻿module 
+    kind jsfile
+	+
+	
+    var fs = require('fs')
+	var path = require('path')
+	var wizzi = require('wizzi')
+	+
+	function clean
+		param name
+		if !name || name.length < 1
+			return name
+		if name[0] == '"'
+			set name = name.substring(1)
+		if name[name.length-1] == ';' || name[name.length-1] == ','
+			set name = name.substring(0, name.length - 1)
+		if name[name.length-1] == '"'
+			set name = name.substring(0, name.length - 1)
+		return name
+
+	function memberName
+		param name
+		if name[name.length-1] == ':'
+			return name.substring(0, name.length-1)
+		return name
+	
+	function memberTypeArray
+		param data
+		var items = data.items
+		if items[0] == '['
+			set data.items = data.items.splice(1, data.items.length - 2)
+			set data.isArray = true
+		return data
+
+	function memberTypeComments
+		param words
+		var items = words.splice(1)
+		var comments = [], seenComment = false
+		set items
+			_ items.filter
+				=>
+					param item
+					if seenComment
+						_ comments.push(item)
+					elif item == '//'
+						set seenComment = true
+					else
+						return item
+		return
+			_ memberTypeArray
+				{
+					@ items items
+					@ comments comments
+
+	function memberType
+		param words
+		var data = memberTypeComments(words)
+		var items = data.items
+		if items.length == 1
+			set data.name = clean(items[0])
+		elif items.length == 3 && items[0] == '['
+			set data.name = clean(items[1])
+			set data.isArray = true
+		elif items.length == 3 && items[1] == '|' && items[2] == 'null;'
+			set data.name = clean(items[0])
+			set data.isOptional = true
+		elif items.length > 2 && items[1] == '|'
+			set data.name = clean(items[0])
+			set items = items.splice(0)
+			var enums = []
+			foreach item in items
+				if item != '|'
+					_ enums.push(clean(item))
+			set data.enums = enums
+		return data
+
+	function emitType
+		param sb
+		param member
+		param indent
+		_ sb.push(indent + 'm ' + member.name )
+		_ sb.push(indent + '\ttype ' + member.type.name )
+		if member.type.isArray
+			_ sb.push(indent + '\tis-array')
+		if member.type.isOptional
+			_ sb.push(indent + '\tis-optional')
+		if member.type.comments && member.type.comments.length > 0
+			_ sb.push(indent + '\tcomments ' + member.type.comments.join(' '))
+		if member.type.enums && member.type.enums.length > 0
+			_ sb.push(indent + '\toneOf')
+			foreach e in member.type.enums
+				_ sb.push(indent + '\t\tvalue ' + e)
+
+
+	+
+    var fileName
+		_ path.join
+			@ __dirname
+			@ 'sources'
+			@ 'babylon.spec.md'
+	+
+    _ fs.readFile
+        @ fileName
+        function 
+            param err
+            param data
+            if err
+                throw err
+			var code = data.toString()
+			var lines = code.split('\n')
+			var interfaces = []
+			var currentInterface = null
+			var currentTypeObject = null
+			var currentCategory = null
+			var currentSubCategory = null
+			var ifaceCommentsOn = false
+			var ifaceComments = []
+			foreach line in lines
+				if line && line.length > 0
+					var words = line.split(' ')
+					set words
+						_ words.filter
+							=>
+								param word
+								if word && word.length > 0
+									return word
+					if words.length > 0
+						if words[0] == '#'
+							log 'category', words[1]
+							set currentCategory = words[1]
+							if ifaceComments.length > 0 && interfaces.length > 0
+								set interfaces[interfaces.length -1].comments = ifaceComments
+							set ifaceCommentsOn = false
+							set ifaceComments = []
+						if words[0] == '##'
+							log 'category', words[1]
+							set currentSubCategory = words[1]
+							if ifaceComments.length > 0 && interfaces.length > 0
+								set interfaces[interfaces.length -1].comments = ifaceComments
+							set ifaceCommentsOn = false
+							set ifaceComments = []
+						if words.length == 1 && words[0] == "```"
+							set ifaceCommentsOn = true
+						elif words.length == 1 && words[0] == "```js"
+							if ifaceComments.length > 0 && interfaces.length > 0
+								set interfaces[interfaces.length -1].comments = ifaceComments
+							set ifaceCommentsOn = false
+							set ifaceComments = []
+						elif ifaceCommentsOn && words.length > 0 && words[0].length > 0
+							_ ifaceComments.push
+								@ line
+						if words[0] == 'interface'
+							set currentInterface
+								{
+									@ name words[1]
+									@ supers []
+									@ members []
+							var ifaces = words.splice(2)
+							foreach iface in ifaces
+								if iface !== '<:' && iface !== '{'
+									_ currentInterface.supers.push(clean(iface))
+						elif currentTypeObject && clean(words[0]) == '}'
+							log currentTypeObject
+							_ currentInterface.members.push
+								{
+									@ name memberName(currentTypeObject.name)
+									@ type currentTypeObject
+									@ isObject true
+							set currentTypeObject = null
+						elif currentTypeObject
+							_ currentTypeObject.properties.push
+								{
+									@ name memberName(words[0])
+									@ type memberType(words)
+						elif currentInterface && words.length == 2 && words[1] == '{'
+							set currentTypeObject
+								{
+									@ name words[0]
+									@ properties []
+						elif currentInterface && words[0] == '}'
+							set currentInterface.category = currentCategory
+							set currentInterface.subcategory = currentSubCategory
+							_ interfaces.push(currentInterface)
+							# log currentInterface
+							set currentInterface = null
+						elif currentInterface
+							_ currentInterface.members.push
+								{
+									@ name memberName(words[0])
+									@ type memberType(words)
+			
+			var sb = ['ast babylon']
+			foreach iface in interfaces
+				_ sb.push('\tinterface ' + iface.name )
+				_ sb.push('\t\tcategory ' + iface.category )
+				_ sb.push('\t\tsubcategory ' + iface.subcategory )
+				if iface.comments && iface.comments.length > 0
+					_ sb.push('\t\t#')
+					foreach comm in iface.comments
+						_ sb.push('\t\t\t# ' + comm)
+				foreach sup in iface.supers
+					_ sb.push('\t\tsuper ' + sup )
+				foreach member in iface.members
+					if member.isObject
+						_ sb.push('\t\tm ' + member.name )
+						_ sb.push('\t\t\t{')
+						foreach prop in member.type.properties
+							_ emitType
+								@ sb
+								@ prop
+								@ '\t\t\t\t'
+					else
+						_ emitType
+							@ sb
+							@ member
+							@ '\t\t'
+				_ sb.push('')
+			
+			var ittfASTFile
+				_ path.join
+					@ __dirname
+					@ 'outputs'
+					@ 'babylon.ast.ittf'
+
+			log ittfASTFile
+			_ wizzi.file.write
+				@ ittfASTFile
+				@ sb.join('\n')
+
+
+							
+							

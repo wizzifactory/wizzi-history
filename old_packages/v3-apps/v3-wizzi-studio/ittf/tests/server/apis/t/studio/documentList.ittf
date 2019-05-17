@@ -1,0 +1,14 @@
+﻿$group
+
+	it-async should get a document list
+
+		_ studioApi.getDocuments
+			{
+				@ userName 'stefi'
+				@ projectName 'demo'
+			f_cb_test( result )
+				log 'get.documents', err, result
+				tobe_object( result )
+				_ done()
+
+			

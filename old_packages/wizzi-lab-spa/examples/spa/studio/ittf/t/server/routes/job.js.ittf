@@ -1,0 +1,33 @@
+$group
+	var exec = require('exec')
+	var spawn = require('child_process').spawn
+	get( /job )
+		
+		if req.query.exe === 'node'
+			_ exec
+				[
+					@ 'node' 
+					@ req.query.args
+				{
+					@ cwd req.query.cwd
+				function
+					param err
+					param out
+					param code
+					var msg_out
+						_ wizzi.verify.replaceAll
+							@ out
+							@ '\n'
+							@ '<br>'
+					var msg_err
+						_ wizzi.verify.replaceAll
+							@ err
+							@ '\n'
+							@ '<br>'
+					_ res.send
+						{
+							@ code code
+							@ stdout msg_out
+							@ stderr msg_err
+		else
+			_ res.send('Unknown job')

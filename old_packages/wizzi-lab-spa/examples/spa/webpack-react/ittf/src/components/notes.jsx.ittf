@@ -1,0 +1,26 @@
+module
+	kind react
+	import React from 'react'
+	import Note from './Note.jsx'
+	export default
+		class Notes
+			super React.Component
+			ctor
+				param props
+				base props
+				set this.renderNote = this.renderNote.bind(this)
+			m render
+				const notes = this.props.items
+				return
+					ul {notes.map(this.renderNote)}
+						@ className "notes"
+			m renderNote
+				param note
+				return
+					li
+						@ className "note"
+						@ key {note.id}
+						< Note
+							@ task {note.task}
+							@ onEdit {this.props.onEdit.bind(null, note.id)}
+							@ onDelete {this.props.onDelete.bind(null, note.id)}

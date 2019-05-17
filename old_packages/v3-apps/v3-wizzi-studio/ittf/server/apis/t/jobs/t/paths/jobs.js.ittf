@@ -1,0 +1,62 @@
+﻿$group
+
+	@ consoleIttfFolder
+		function
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'console'
+					@ 'ittf'
+
+	@ consoleIttfDocument
+		function
+			param name
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'console'
+					@ 'ittf'
+					@ name + '.js.ittf'
+
+	@ consoleJsFolder
+		function
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'console'
+					@ 'js'
+
+	@ consoleJsDocument
+		function
+			param name
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'console'
+					@ 'js'
+					@ name + '.js'
+
+	@ consoleRunFolder
+		function
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'console'
+					@ 'run'
+
+	@ consoleRunResult
+		function
+			param name
+			return
+				_ path.join
+					@ config.jobsBasePath
+					@ 'console'
+					@ 'run'
+					@ name + '.json'
+
+	@ getConsoleIttfDocuments
+		function
+			return
+				_ this.getIttfFilesOfSchema
+					_ this.consoleIttfFolder
+					@ 'js'	

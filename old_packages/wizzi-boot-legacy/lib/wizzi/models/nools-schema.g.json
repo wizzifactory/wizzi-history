@@ -1,0 +1,958 @@
+{
+  "name": "nools",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [],
+  "elements": [
+    {
+      "name": "nools",
+      "super": null,
+      "isRoot": true,
+      "tags": [
+        "nools"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "global",
+          "role": "globals",
+          "tags": [
+            "global"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "fact",
+          "role": "facts",
+          "tags": [
+            "def"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "rule",
+          "role": "rules",
+          "tags": [
+            "rule"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "agendaGroup",
+          "role": "agendaGroups",
+          "tags": [
+            "group"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "function",
+          "role": "functions",
+          "tags": [
+            "function"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The root tag of the nools schema.",
+        "A nools IttfDocument defines one Flow.",
+        "A Flow is a container of Rule(s).",
+        "In a Flow you declare Fact types and Rule(s).",
+        "Instances of Flow(s) are called Session(s).",
+        "In a Session instances of Facts are matched against Rule(s)."
+      ]
+    },
+    {
+      "name": "global",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "global"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Globals are accessible through the current working scope of rule facts in a dsl,",
+        "very similar to using the scope option when compiling.",
+        "Note: globals are not part of the working memory and therefore are not accessible",
+        "in the LHS (when) of your rule."
+      ]
+    },
+    {
+      "name": "fact",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "def"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "ctor",
+          "role": null,
+          "tags": [
+            "ctor"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "function",
+          "role": "functions",
+          "tags": [
+            "function"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Declares a Fact type.",
+        "A Fact type must be a String or a javascript Function.",
+        "dsl > define 'type-name' {",
+        "In a Session (an istance of a Flow) instances of Fact(s) can be:",
+        ". asserted",
+        ". retracted",
+        ". modified",
+        ". retrivied (all or by Type)"
+      ]
+    },
+    {
+      "name": "ctor",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "ctor"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "param",
+          "role": "params",
+          "tags": [
+            "param"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "codeline",
+          "role": "codelines",
+          "tags": [
+            "+"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "getParams",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "ret = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "item in this.params",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "ret.push(item.wzName)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "ret",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "Fact type constructor"
+      ]
+    },
+    {
+      "name": "property",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "@"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "function",
+          "role": "functions",
+          "tags": [
+            "function"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "agendaGroup",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "group"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "rule",
+          "role": "rules",
+          "tags": [
+            "rule"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Agenda groups allow for logical groups of rules within a flow.",
+        "Rule(s) that do not have an agenda-group specified are placed into",
+        "the main agenda-group."
+      ]
+    },
+    {
+      "name": "rule",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "rule"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "agendaGroup",
+          "type": "string",
+          "tags": [
+            "agenda-group"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "autoFocus",
+          "type": "string",
+          "tags": [
+            "auto-focus"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "salience",
+          "type": "integer",
+          "tags": [
+            "salience"
+          ],
+          "default": null,
+          "defaultWhenDeclared": null,
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Salience is an option that can be specified on a rule",
+            "giving it a priority and allowing the developer some control",
+            "over conflict resolution of activations."
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "name": "option",
+          "role": "options",
+          "tags": [
+            "opt"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "action",
+          "role": "actions",
+          "tags": [
+            "then"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A Rule",
+        ". applyies to a Fact type",
+        ". has one or many Constraint(s)",
+        ". describe an Action that is execute when the Fact instance",
+        "matches the Constraint(s)"
+      ]
+    },
+    {
+      "name": "option",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "opt"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "constraint",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "constraint"
+      ],
+      "flags": "is-abstract ",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "when",
+          "tags": [
+            "when"
+          ]
+        },
+        {
+          "name": "xfor",
+          "tags": [
+            "for"
+          ]
+        },
+        {
+          "name": "and",
+          "tags": [
+            "and"
+          ]
+        },
+        {
+          "name": "or",
+          "tags": [
+            "or"
+          ]
+        },
+        {
+          "name": "not",
+          "tags": [
+            "not"
+          ]
+        },
+        {
+          "name": "is",
+          "tags": [
+            "is"
+          ]
+        },
+        {
+          "name": "set",
+          "tags": [
+            "set"
+          ]
+        },
+        {
+          "name": "exists",
+          "tags": [
+            "exists"
+          ]
+        },
+        {
+          "name": "from",
+          "tags": [
+            "from"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Constraints define how a Rule should match Fact instances.",
+        "A rule should have an array of at least one or many constraints."
+      ]
+    },
+    {
+      "name": "when",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "when"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "xfor",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "for"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "and",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "and"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "or",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "or"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The or constraint can be used to check for the existence of multiple facts."
+      ]
+    },
+    {
+      "name": "not",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "not"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "is",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "is"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "set",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "set"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "example",
+        "ittf: set name = value",
+        "dsl : { name: value}"
+      ]
+    },
+    {
+      "name": "exists",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "exists"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "exists is the logical inversion of a not constraint.",
+        "It checks for the existence of a fact in memory."
+      ]
+    },
+    {
+      "name": "from",
+      "super": "constraint",
+      "isRoot": false,
+      "tags": [
+        "from"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "constraint",
+          "role": "constraints",
+          "tags": [
+            "constraint"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "constraint",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The from modifier allows for the checking of facts that are not necessarily in the workingMemory.",
+        "The from modifier can be used to access properties on a fact in workingMemory or you can use javascript expressions."
+      ]
+    },
+    {
+      "name": "action",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "then"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "codeline",
+          "role": "codelines",
+          "tags": [
+            "+"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "Defines the code of the Action of a Rule.",
+        "An Action is a function that should be fired when all constraints in the rule match.",
+        "The tag 'then' is for readability of the nools dsl source."
+      ]
+    },
+    {
+      "name": "xfunction",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "function"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "param",
+          "role": "params",
+          "tags": [
+            "param"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "codeline",
+          "role": "codelines",
+          "tags": [
+            "+"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "getParams",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "ret = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "item in this.params",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "ret.push(item.wzName)",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "ret",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "You may define Function(s) that can be used (are in scope)",
+        "inside a Rule."
+      ]
+    },
+    {
+      "name": "param",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "param"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The parameter of a Function"
+      ]
+    },
+    {
+      "name": "codeline",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "+"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "conflictResolution",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "conflict-resolution"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "resolutionStrategy",
+          "role": "resolutionStrategies",
+          "tags": [
+            "strategy"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "resolutionStrategy",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "strategy"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [],
+      "derived": [],
+      "restricts": [
+        {
+          "facets": [
+            {
+              "type": "enumFacet",
+              "value": "salience",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "activationRecency",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "factRecency",
+              "comments": []
+            },
+            {
+              "type": "enumFacet",
+              "value": "bucketCounter",
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "methods": [],
+      "comments": []
+    }
+  ]
+}

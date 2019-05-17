@@ -1,0 +1,4399 @@
+{
+  "name": "webpack",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [
+    "json"
+  ],
+  "elements": [
+    {
+      "name": "webpackitem",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "webpackitem"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "comment",
+          "tags": [
+            "#"
+          ]
+        },
+        {
+          "name": "property",
+          "tags": [
+            "property"
+          ]
+        },
+        {
+          "name": "webpack",
+          "tags": [
+            "webpack"
+          ]
+        },
+        {
+          "name": "feature",
+          "tags": [
+            "feature"
+          ]
+        },
+        {
+          "name": "file",
+          "tags": [
+            "file"
+          ]
+        },
+        {
+          "name": "entry",
+          "tags": [
+            "entry"
+          ]
+        },
+        {
+          "name": "output",
+          "tags": [
+            "output"
+          ]
+        },
+        {
+          "name": "resolve",
+          "tags": [
+            "resolve"
+          ]
+        },
+        {
+          "name": "resolveAlias",
+          "tags": [
+            "alias"
+          ]
+        },
+        {
+          "name": "resolveMainField",
+          "tags": [
+            "main-field"
+          ]
+        },
+        {
+          "name": "resolveMainFile",
+          "tags": [
+            "main-file"
+          ]
+        },
+        {
+          "name": "resolveModule",
+          "tags": [
+            "module"
+          ]
+        },
+        {
+          "name": "resolvePlugin",
+          "tags": [
+            "plugin"
+          ]
+        },
+        {
+          "name": "resolveExtension",
+          "tags": [
+            "extension"
+          ]
+        },
+        {
+          "name": "module",
+          "tags": [
+            "module"
+          ]
+        },
+        {
+          "name": "ruleParser",
+          "tags": [
+            "parser"
+          ]
+        },
+        {
+          "name": "moduleRule",
+          "tags": [
+            "rule"
+          ]
+        },
+        {
+          "name": "moduleRuleTest",
+          "tags": [
+            "test"
+          ]
+        },
+        {
+          "name": "moduleRuleInclude",
+          "tags": [
+            "include"
+          ]
+        },
+        {
+          "name": "moduleRuleExclude",
+          "tags": [
+            "exclude"
+          ]
+        },
+        {
+          "name": "moduleRuleUse",
+          "tags": [
+            "use"
+          ]
+        },
+        {
+          "name": "plugin",
+          "tags": [
+            "plugin"
+          ]
+        },
+        {
+          "name": "devServer",
+          "tags": [
+            "devServer"
+          ]
+        },
+        {
+          "name": "devServerProxy",
+          "tags": [
+            "proxy"
+          ]
+        },
+        {
+          "name": "external",
+          "tags": [
+            "external"
+          ]
+        },
+        {
+          "name": "watch",
+          "tags": [
+            "watch"
+          ]
+        },
+        {
+          "name": "watchOptions",
+          "tags": [
+            "watch-options"
+          ]
+        },
+        {
+          "name": "performance",
+          "tags": [
+            "performance"
+          ]
+        },
+        {
+          "name": "stats",
+          "tags": [
+            "stats"
+          ]
+        },
+        {
+          "name": "jsObject",
+          "tags": [
+            "{"
+          ]
+        },
+        {
+          "name": "jsArray",
+          "tags": [
+            "["
+          ]
+        },
+        {
+          "name": "jsProp",
+          "tags": [
+            "@"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "propertyOfCategory",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "categoryName"
+          ],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "ret = []",
+              "statements": []
+            },
+            {
+              "tag": "foreach",
+              "name": "foreach",
+              "value": "item in this.properties",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "item.category === categoryName",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "ret.push(item)",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "ret",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "comment",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "#"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "property",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "property"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "category",
+          "type": "string",
+          "tags": [
+            "category"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "tags": [
+            "value"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzInitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.name = this.wzName",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "webpack",
+      "super": "webpackitem",
+      "isRoot": true,
+      "tags": [
+        "webpack"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "build",
+          "type": "string",
+          "tags": [
+            "build"
+          ],
+          "default": "development",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "development",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "production",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "config",
+          "type": "string",
+          "tags": [
+            "config"
+          ],
+          "default": "none",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "none",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "react",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "target",
+          "type": "string",
+          "tags": [
+            "target"
+          ],
+          "default": "web",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "async-node",
+                  "comments": [
+                    "Compile for usage in a Node.js-like environment (uses fs and vm to load chunks asynchronously)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "electron-main",
+                  "comments": [
+                    "Compile for Electron for main process."
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "electron-renderer",
+                  "comments": [
+                    "Compile for Electron for renderer process, providing a target using JsonpTemplatePlugin, FunctionModulePlugin for browser environments and NodeTargetPlugin and ExternalsPlugin for CommonJS and Electron built-in modules."
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "node",
+                  "comments": [
+                    "Compile for usage in a Node.js-like environment (uses Node.js require to load chunks)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "node-webkit",
+                  "comments": [
+                    "Compile for usage in WebKit and uses JSONP for chunk loading. Allows importing of built-in Node.js modules and nw.gui (experimental)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "web",
+                  "comments": [
+                    "Compile for usage in a browser-like environment (default)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "webworker",
+                  "comments": [
+                    "Compile as WebWorker"
+                  ]
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": [
+            "https://webpack.js.org/configuration/target/"
+          ]
+        },
+        {
+          "name": "context",
+          "type": "string",
+          "tags": [
+            "context"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The context is an absolute string to the directory that contains the entry files.",
+            "The base directory, an absolute path, for resolving entry points and loaders from configuration."
+          ]
+        },
+        {
+          "name": "devtool",
+          "type": "string",
+          "tags": [
+            "devtool"
+          ],
+          "default": "",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "eval",
+                  "comments": [
+                    "+++ +++ no generated code"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "cheap-eval-source-map",
+                  "comments": [
+                    "+ ++ no transformed code (lines only)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "cheap-source-map",
+                  "comments": [
+                    "+ o yes transformed code (lines only)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "cheap-module-eval-source-map",
+                  "comments": [
+                    "o ++ no original source (lines only)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "cheap-module-source-map",
+                  "comments": [
+                    "o - yes original source (lines only)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "eval-source-map",
+                  "comments": [
+                    "-- + no original source"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "source-map",
+                  "comments": [
+                    "-- -- yes original source"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "nosources-source-map",
+                  "comments": [
+                    "-- -- yes without source content"
+                  ]
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "entry",
+          "role": null,
+          "tags": [
+            "entry"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "output",
+          "role": null,
+          "tags": [
+            "output"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "resolve",
+          "role": null,
+          "tags": [
+            "resolve"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "module",
+          "role": null,
+          "tags": [
+            "module"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "plugin",
+          "role": "plugins",
+          "tags": [
+            "plugin"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "external",
+          "role": "externals",
+          "tags": [
+            "external"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "devServer",
+          "role": null,
+          "tags": [
+            "devServer"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "watch",
+          "role": null,
+          "tags": [
+            "watch"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "watchOptions",
+          "role": null,
+          "tags": [
+            "watch-options"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "feature",
+          "role": "features",
+          "tags": [
+            "feature"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzInitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.config === 'react'",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.setReactConfig()",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.facets = []",
+              "statements": []
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.context && this.context.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'context'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.context + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.target && this.target.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'target'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.target + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.devtool && this.devtool.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'devtool'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.devtool + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "setReactConfig",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [],
+          "statements": [],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "feature",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "feature"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "file",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "file"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "entry",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "entry"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "watch",
+          "type": "boolean",
+          "tags": [
+            "watch"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "file",
+          "role": "files",
+          "tags": [
+            "file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "entryChunk",
+          "role": "entryChunks",
+          "tags": [
+            "chunk"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.entryChunks.length == 0",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.value = \"'\" + this.wzName + \"'\"",
+                  "statements": []
+                },
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.files.length > 0",
+                  "statements": [
+                    {
+                      "tag": "set",
+                      "name": "set",
+                      "value": "this.value = '[ ' + this.files.join(', ') + ' ]'",
+                      "statements": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "https://webpack.js.org/configuration/entry/"
+      ]
+    },
+    {
+      "name": "entryChunk",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "chunk"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "file",
+          "role": "files",
+          "tags": [
+            "file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.files.length == 1",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.value = \"'\" + this.wzName + \"'\"",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "elif",
+              "name": "elif",
+              "value": "this.files.length > 1",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "value = '[ ' + this.files.join(', ') + ' ]'",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": [
+            "TODO error"
+          ]
+        }
+      ],
+      "comments": [
+        "https://webpack.js.org/concepts/entry-points/"
+      ]
+    },
+    {
+      "name": "output",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "output"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "path",
+          "type": "string",
+          "tags": [
+            "path"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "pathExpr",
+          "type": "string",
+          "tags": [
+            "path-expr"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The output directory as an absolute path."
+          ]
+        },
+        {
+          "name": "pathInfo",
+          "type": "boolean",
+          "tags": [
+            "path-info"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Tell webpack to include comments in bundles with information about the contained modules.",
+            "This option defaults to false and should not be used in production,",
+            "but it's very useful in development when reading the generated code."
+          ]
+        },
+        {
+          "name": "chunkFilename",
+          "type": "string",
+          "tags": [
+            "chunk-filename"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "crossOriginLoading",
+          "type": "string",
+          "tags": [
+            "cross-origin-loading"
+          ],
+          "default": "false",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "false",
+                  "comments": [
+                    "Disable cross-origin loading (default)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "anonymous",
+                  "comments": [
+                    "Enable cross-origin loading without credentials"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "use-credentials",
+                  "comments": [
+                    "Enable cross-origin loading with credentials"
+                  ]
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": [
+            "Only used when target is web, which uses JSONP for loading on-demand chunks,",
+            "by adding script tags."
+          ]
+        },
+        {
+          "name": "hashFunction",
+          "type": "string",
+          "tags": [
+            "hash-function"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The hashing algorithm to use, defaults to 'md5'.",
+            "All functions from Node.JS' crypto.createHash are supported."
+          ]
+        },
+        {
+          "name": "hashDigest",
+          "type": "string",
+          "tags": [
+            "hash-digest"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The hashing algorithm to use, defaults to 'hex'.",
+            "All functions from Node.JS' hash.digest are supported."
+          ]
+        },
+        {
+          "name": "hashDigestLength",
+          "type": "string",
+          "tags": [
+            "hash-digest-length"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The prefix length of the hash digest to use, defaults to 20."
+          ]
+        },
+        {
+          "name": "hashSalt",
+          "type": "string",
+          "tags": [
+            "hash-salt"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "An optional salt to update the hash via Node.JS' hash.update."
+          ]
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "tags": [
+            "filename"
+          ],
+          "default": "bundle.js",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "publicPath",
+          "type": "string",
+          "tags": [
+            "public-path"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "This is an important option when using on-demand-loading or loading external resources like images, files, etc. If an incorrect value is specified you'll receive 404 errors while loading these resources.",
+            "This option specifies the public URL of the output directory when referenced in a browser. A relative URL is resolved relative to the HTML page (or <base> tag). Server-relative URLs, protocol-relative URLs or absolute URLs are also possible and sometimes required, i. e. when hosting assets on a CDN.",
+            "",
+            "The value of the option is prefixed to every URL created by the runtime or loaders. Because of this the value of this option ends with / in most cases.",
+            "The default value is an empty string \"\".",
+            "",
+            "Simple rule: The URL of your output.path from the view of the HTML page.",
+            "path: path.resolve(__dirname, \"public/assets\"),",
+            "publicPath: \"https://cdn.example.com/assets/\"",
+            "",
+            "For this configuration:",
+            "publicPath: \"/assets/\",",
+            "chunkFilename: \"[id].chunk.js\"",
+            "A request to a chunk will look like /assets/4.chunk.js.",
+            "",
+            "A loader outputting HTML might emit something like this:",
+            "<link href=\"/assets/spinner.gif\" />",
+            "",
+            "or when loading an image in CSS:",
+            "background-image: url(/assets/spinner.gif);",
+            "",
+            "The webpack-dev-server also takes a hint from publicPath, using it to determine where to serve the output files from."
+          ]
+        },
+        {
+          "name": "library",
+          "type": "string",
+          "tags": [
+            "library"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "https://webpack.js.org/guides/author-libraries/"
+          ]
+        },
+        {
+          "name": "libraryTarget",
+          "type": "string",
+          "tags": [
+            "library-target"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "var",
+                  "comments": [
+                    "(default) When your library is loaded, the return value of your entry point will be assigned to a variable:",
+                    "var MyLibrary = _entry_return_;",
+                    "// your users will use your library like:",
+                    "MyLibrary.doSomething();"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "this",
+                  "comments": [
+                    "When your library is loaded, the return value of your entry point will be assigned to this, the meaning of this is up to you:",
+                    "this[\"MyLibrary\"] = _entry_return_;",
+                    "// your users will use your library like:",
+                    "this.MyLibrary.doSomething();",
+                    "MyLibrary.doSomething(); //if this is window"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "window",
+                  "comments": [
+                    "When your library is load, the return value of your entry point will be part window object.",
+                    "window[\"MyLibrary\"] = _entry_return_;",
+                    "//your users will use your library like:",
+                    "window.MyLibrary.doSomething();"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "global",
+                  "comments": [
+                    "When your library is loaded, the return value of your entry point will be part global object.",
+                    "global[\"MyLibrary\"] = _entry_return_;",
+                    "//your users will use your library like:",
+                    "global.MyLibrary.doSomething();"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "commonjs",
+                  "comments": [
+                    "When your library is loaded, the return value of your entry point will be part of the exports object. As the name implies, this is used in CommonJS environments:",
+                    "exports[\"MyLibrary\"] = _entry_return_;",
+                    "//your users will use your library like:",
+                    "require(\"MyLibrary\").doSomething();"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "commonjs2",
+                  "comments": [
+                    "When your library is loaded, the return value of your entry point will be part of the exports object. As the name implies, this is used in CommonJS environments:",
+                    "module.exports = _entry_return_;",
+                    "//your users will use your library like:",
+                    "require(\"MyLibrary\").doSomething();",
+                    "Wondering the difference between CommonJS and CommonJS2?",
+                    "Check this out https://github.com/webpack/webpack/issues/1114 (they are pretty much the same)."
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "commonjs-module",
+                  "comments": [
+                    "Expose it using the module.exports object (output.library is ignored), __esModule is defined (it's threaded as ES2015 Module in interop mode)"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "amd",
+                  "comments": [
+                    "In this case webpack will make your library an AMD module.",
+                    "But there is a very important pre-requisite, your entry chunk must be defined with the define property, if not, webpack will create the AMD module, but without dependencies. The output will be something like this:",
+                    "define([], function() {",
+                    "//what this module returns is what your entry chunk returns",
+                    "});",
+                    "But if you download this script, first you may get a error: define is not defined, it’s ok! If you are distributing your library with AMD, then your users need to use RequireJS to load it.",
+                    "Now that you have RequireJS loaded, you can load your library.",
+                    "But, require([ _what?_ ])?",
+                    "output.library!",
+                    "output: {",
+                    "library: \"MyLibrary\",",
+                    "libraryTarget: \"amd\"",
+                    "}",
+                    "So your module will be like:",
+                    "define(\"MyLibrary\", [], function() {",
+                    "//what this module returns is what your entry chunk returns",
+                    "});",
+                    "And you can use it like this:",
+                    "// And then your users will be able to do:",
+                    "require([\"MyLibrary\"], function(MyLibrary){",
+                    "MyLibrary.doSomething();",
+                    "});"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "umd",
+                  "comments": [
+                    "This is a way for your library to work with all the module definitions (and where aren't modules at all). It will work with CommonJS, AMD and as global variable. You can check the UMD Repository to know more about it.",
+                    "In this case, you need the library property to name your module:",
+                    "output: {",
+                    "library: \"MyLibrary\",",
+                    "libraryTarget: \"umd\"",
+                    "}",
+                    "And finally the output is:",
+                    "(function webpackUniversalModuleDefinition(root, factory) {",
+                    "if(typeof exports === 'object' && typeof module === 'object')",
+                    "module.exports = factory();",
+                    "else if(typeof define === 'function' && define.amd)",
+                    "define(\"MyLibrary\", [], factory);",
+                    "else if(typeof exports === 'object')",
+                    "exports[\"MyLibrary\"] = factory();",
+                    "else",
+                    "root[\"MyLibrary\"] = factory();",
+                    "})(this, function() {",
+                    "//what this module returns is what your entry chunk returns",
+                    "});"
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "assign",
+                  "comments": [
+                    "Here webpack will blindly generate an implied global.",
+                    "MyLibrary = _entry_return_;",
+                    "Be aware that if MyLibrary isn't defined earlier your library will be set in global scope."
+                  ]
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "jsonp",
+                  "comments": [
+                    "This will wrap the return value of your entry point into a jsonp wrapper.",
+                    "MyLibrary(_entry_return_);",
+                    "The dependencies for your library will be defined by the externals config."
+                  ]
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.facets = []",
+              "statements": []
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.path && this.path.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'path'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.path + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.pathExpr && this.pathExpr.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'path'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value this.pathExpr",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.chunkFilename && this.chunkFilename.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'chunkFilename'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.chunkFilename + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.filename && this.filename.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'filename'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.filename + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.publicPath && this.publicPath.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'publicPath'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.publicPath + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.library && this.library.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'library'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.library + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.libraryTarget && this.libraryTarget.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'libraryTarget'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.libraryTarget + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "https://webpack.js.org/configuration/output/"
+      ]
+    },
+    {
+      "name": "resolve",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "resolve"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "resolveAlias",
+          "role": "resolveAliases",
+          "tags": [
+            "alias"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "resolveExtension",
+          "role": "resolveExtensions",
+          "tags": [
+            "extension"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "resolveMainField",
+          "role": "resolveMainFields",
+          "tags": [
+            "main-field"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "resolveMainFile",
+          "role": "resolveMainFiles",
+          "tags": [
+            "main-file"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "resolveModule",
+          "role": "resolveModules",
+          "tags": [
+            "module"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "resolvePlugin",
+          "role": "resolvePlugins",
+          "tags": [
+            "plugin"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.mainFieldsOut = stringifyArrayValue(this.resolveMainFields)",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.mainFiles = stringifyArrayValue(this.resolveMainFiles)",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.extensionsOut = stringifyArrayValue(this.resolveExtensions)",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "https://webpack.js.org/configuration/resolve/"
+      ]
+    },
+    {
+      "name": "resolveAlias",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "alias"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "path",
+          "type": "string",
+          "tags": [
+            "path"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "resolveMainField",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "main-field"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "When importing from an npm package, e.g. import * as D3 from \"d3\",",
+        "this option will determine which fields in it's package.json are checked.",
+        "The default values will vary based upon the target specified in your webpack configuration."
+      ]
+    },
+    {
+      "name": "resolveMainFile",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "main-file"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "resolveModule",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "module"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "resolvePlugin",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "plugin"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "resolveExtension",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "extension"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "module",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "module"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "noParse",
+          "type": "regexp",
+          "tags": [
+            "no-parse"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Prevent webpack from parsing any files matching the given regular expression(s).",
+            "Ignored files should not have calls to import, require, define or any other importing mechanism.",
+            "This can boost build performance when ignoring large libraries.",
+            "Example",
+            "noParse: /jquery|lodash/"
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "name": "ruleParser",
+          "role": null,
+          "tags": [
+            "parser"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "moduleRule",
+          "role": "moduleRules",
+          "tags": [
+            "rule"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://webpack.js.org/configuration/module/"
+      ]
+    },
+    {
+      "name": "ruleParser",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "parser"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "amd",
+          "type": "boolean",
+          "tags": [
+            "amd"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "commonjs",
+          "type": "boolean",
+          "tags": [
+            "commonjs"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "system",
+          "type": "boolean",
+          "tags": [
+            "system"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "harmony",
+          "type": "boolean",
+          "tags": [
+            "harmony"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "requireInclude",
+          "type": "boolean",
+          "tags": [
+            "requireInclude"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "requireEnsure",
+          "type": "boolean",
+          "tags": [
+            "requireEnsure"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "requireContext",
+          "type": "boolean",
+          "tags": [
+            "requireContext"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "browserify",
+          "type": "boolean",
+          "tags": [
+            "browserify"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "requireJs",
+          "type": "boolean",
+          "tags": [
+            "requireJs"
+          ],
+          "default": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "node",
+          "type": "string",
+          "tags": [
+            "node"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "TODO node property to customize nodejs"
+      ]
+    },
+    {
+      "name": "moduleRule",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "rule"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "moduleRuleTest",
+          "role": "moduleRuleTests",
+          "tags": [
+            "test"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "moduleRuleInclude",
+          "role": "moduleRuleIncludes",
+          "tags": [
+            "include"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "moduleRuleExclude",
+          "role": "moduleRuleExcludes",
+          "tags": [
+            "exclude"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "moduleRuleUse",
+          "role": "moduleRuleUses",
+          "tags": [
+            "use"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.testOut = stringifyArrayValue(this.moduleRuleTests)",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.includeOut = stringifyArrayValue(this.moduleRuleIncludes)",
+              "statements": []
+            },
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.excludeOut = stringifyArrayValue(this.moduleRuleExcludes)",
+              "statements": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "In a Rule the properties test, include, exclude and resource are matched with the resource and the property issuer is matched with the issuer."
+      ]
+    },
+    {
+      "name": "moduleRuleTest",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "test"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "moduleRuleInclude",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "include"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "moduleRuleExclude",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "exclude"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "moduleRuleUse",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "use"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "loader",
+          "type": "string",
+          "tags": [
+            "loader"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "jsProp",
+          "role": "jsProps",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": [
+            "properties of the 'option' property"
+          ]
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "A list of UseEntries which are applied to modules.",
+        "Each entry specifies a loader to be used."
+      ]
+    },
+    {
+      "name": "plugin",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "plugin"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "jsProp",
+          "role": "jsProps",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.name = this.getTypeName(this.wzName)",
+              "statements": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "getTypeName",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "name"
+          ],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "name === 'aggressive-merging'",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "\"AggressiveMergingPlugin\"",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "else",
+              "name": "xelse",
+              "value": "",
+              "statements": [
+                {
+                  "tag": "return",
+                  "name": "xreturn",
+                  "value": "name",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": [
+        "https://webpack.js.org/configuration/plugins/"
+      ]
+    },
+    {
+      "name": "devServer",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "devServer"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "contentBase",
+          "type": "code",
+          "tags": [
+            "content-base"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "clientLogLevel",
+          "type": "string",
+          "tags": [
+            "log-level"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "none",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "error",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "warning",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "info",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "compress",
+          "type": "boolean",
+          "tags": [
+            "compress"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "historyApiFallback",
+          "type": "boolean",
+          "tags": [
+            "history-api-fallback"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "When using the HTML5 History API, the index.html page will likely have to be served in place of any 404 responses. Enable this by passing:",
+            "historyApiFallback: true"
+          ]
+        },
+        {
+          "name": "host",
+          "type": "string",
+          "tags": [
+            "host"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Specify a host to use. By default this is localhost. If you want your server to be accessible externally, specify it like this:",
+            "host: \"0.0.0.0\""
+          ]
+        },
+        {
+          "name": "hot",
+          "type": "boolean",
+          "tags": [
+            "hot"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Enable webpack's Hot Module Replacement feature:"
+          ]
+        },
+        {
+          "name": "hotOnly",
+          "type": "boolean",
+          "tags": [
+            "hot-only"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Enables Hot Module Replacement (see devServer.hot) without page refresh as fallback in case of build failures."
+          ]
+        },
+        {
+          "name": "lazy",
+          "type": "boolean",
+          "tags": [
+            "lazy"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "When lazy is enabled, the dev-server will only compile the bundle when it gets requested. This means that webpack will not watch any file changes. We call this lazy mode."
+          ]
+        },
+        {
+          "name": "inline",
+          "type": "boolean",
+          "tags": [
+            "inline"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "noInfo",
+          "type": "boolean",
+          "tags": [
+            "no-info"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "With noInfo enabled, messages like the webpack bundle information that is shown when starting up and after each save, will be hidden.",
+            "Errors and warnings will still be shown."
+          ]
+        },
+        {
+          "name": "overlayErrors",
+          "type": "boolean",
+          "tags": [
+            "overlay-errors"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Shows a full-screen overlay in the browser when there are compiler errorss.",
+            "Disabled by default. If you want to show only compiler errors:"
+          ]
+        },
+        {
+          "name": "overlayWarnings",
+          "type": "boolean",
+          "tags": [
+            "overlay-warnings"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "Shows a full-screen overlay in the browser when there are compiler warnings.",
+            "Disabled by default."
+          ]
+        },
+        {
+          "name": "port",
+          "type": "integer",
+          "tags": [
+            "port"
+          ],
+          "default": "3000",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "progress",
+          "type": "boolean",
+          "tags": [
+            "progress"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "devServerProxy",
+          "role": null,
+          "tags": [
+            "proxy"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "stats",
+          "role": null,
+          "tags": [
+            "stats"
+          ],
+          "cardinality": "one-to-one",
+          "flags": "is-one-to-one ",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzinitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "set",
+              "name": "set",
+              "value": "this.facets = []",
+              "statements": []
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.contentBase && this.contentBase.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'contentBase'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.contentBase + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.clientLogLevel && this.clientLogLevel.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'clientLogLevel'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value this.clientLogLevel",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.compress",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'compress'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.historyApiFallback",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'historyApiFallback'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.host && this.host.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'host'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.host + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.hot",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'hot'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.hotOnly",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'hotOnly'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.lazy",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'lazy'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.inline",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'inline'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.noInfo",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'noInfo'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.port && this.port.length > 0",
+              "statements": [
+                {
+                  "tag": "_",
+                  "name": "call",
+                  "value": "this.facets.push",
+                  "statements": [
+                    {
+                      "tag": "{",
+                      "name": "jsObject",
+                      "value": "",
+                      "statements": [
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "name 'port'",
+                          "statements": []
+                        },
+                        {
+                          "tag": "@",
+                          "name": "jsPropertyOrValue",
+                          "value": "value \"'\" + this.port + \"'\"",
+                          "statements": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.progress",
+              "statements": [
+                {
+                  "tag": "if",
+                  "name": "xif",
+                  "value": "this.true && this.true.length > 0",
+                  "statements": [
+                    {
+                      "tag": "_",
+                      "name": "call",
+                      "value": "this.facets.push",
+                      "statements": [
+                        {
+                          "tag": "{",
+                          "name": "jsObject",
+                          "value": "",
+                          "statements": [
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "name 'progress'",
+                              "statements": []
+                            },
+                            {
+                              "tag": "@",
+                              "name": "jsPropertyOrValue",
+                              "value": "value this.true",
+                              "statements": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    },
+    {
+      "name": "devServerProxy",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "proxy"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "jsProp",
+          "role": "jsProps",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "external",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "external"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "jsProp",
+          "role": "jsProps",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://webpack.js.org/configuration/externals/"
+      ]
+    },
+    {
+      "name": "watch",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "watch"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "watchOptions",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "watch-options"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "performance",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "performance"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "hints",
+          "type": "string",
+          "tags": [
+            "hints"
+          ],
+          "default": "false",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "false",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "warning",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "error",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "maxEntrypointSize",
+          "type": "integer",
+          "tags": [
+            "max-entry-point-size"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "maxAssetSize",
+          "type": "integer",
+          "tags": [
+            "max-asset-size"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://webpack.js.org/configuration/performance/"
+      ]
+    },
+    {
+      "name": "stats",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "stats"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "preset",
+          "type": "string",
+          "tags": [
+            "preset"
+          ],
+          "default": "none",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "none",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "errors-only",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "minimal",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "false",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "normal",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "verbose",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "assets",
+          "type": "boolean",
+          "tags": [
+            "assets"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "assetsSort",
+          "type": "string",
+          "tags": [
+            "assetsSort"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "cached",
+          "type": "boolean",
+          "tags": [
+            "cached"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "children",
+          "type": "boolean",
+          "tags": [
+            "children"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "chunks",
+          "type": "boolean",
+          "tags": [
+            "chunks"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "chunkModules",
+          "type": "boolean",
+          "tags": [
+            "chunkModules"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "chunkOrigins",
+          "type": "boolean",
+          "tags": [
+            "chunkOrigins"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "chunksSort",
+          "type": "string",
+          "tags": [
+            "chunksSort"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "context",
+          "type": "string",
+          "tags": [
+            "context"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "colors",
+          "type": "boolean",
+          "tags": [
+            "colors"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "errors",
+          "type": "boolean",
+          "tags": [
+            "errors"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "errorDetails",
+          "type": "boolean",
+          "tags": [
+            "errorDetails"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "hash",
+          "type": "boolean",
+          "tags": [
+            "hash"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "modules",
+          "type": "boolean",
+          "tags": [
+            "modules"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "modulesSort",
+          "type": "string",
+          "tags": [
+            "modulesSort"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "publicPath",
+          "type": "boolean",
+          "tags": [
+            "publicPath"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "reasons",
+          "type": "boolean",
+          "tags": [
+            "reasons"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "source",
+          "type": "boolean",
+          "tags": [
+            "source"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "timings",
+          "type": "boolean",
+          "tags": [
+            "timings"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "version",
+          "type": "boolean",
+          "tags": [
+            "version"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "warnings",
+          "type": "boolean",
+          "tags": [
+            "warnings"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "https://webpack.js.org/configuration/stats/"
+      ]
+    },
+    {
+      "name": "jsObject",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "{"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "jsProp",
+          "role": "jsProps",
+          "tags": [
+            "@"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsArray",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "["
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "webpackitem",
+          "role": "webpackitems",
+          "tags": [
+            "webpackitem"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsProp",
+      "super": "webpackitem",
+      "isRoot": false,
+      "tags": [
+        "@"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "webpackitem",
+          "role": "webpackitems",
+          "tags": [
+            "webpackitem"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "property",
+          "role": "properties",
+          "tags": [
+            "property"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "webpackitem",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "wzInitialize",
+          "isStatic": false,
+          "isKnownMethod": true,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "this.webpackitems.length == 0",
+              "statements": [
+                {
+                  "tag": "var",
+                  "name": "xvar",
+                  "value": "nv = wizzi.lineParser.parseNameValueRaw(this.wzName)",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.name = nv.name()",
+                  "statements": []
+                },
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.value = nv.value()",
+                  "statements": []
+                }
+              ]
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "comments": []
+    }
+  ]
+}

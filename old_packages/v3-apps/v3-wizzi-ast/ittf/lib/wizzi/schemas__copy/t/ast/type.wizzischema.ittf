@@ -1,0 +1,57 @@
+﻿$group
+
+	e param
+
+	e item : astitem
+		tag @
+
+	e assert : astitem
+		is-abstract
+
+	e assertNodeType : assert
+		tag node-type
+	
+	e assertEachNodeType : assert
+		tag each-node-type
+	
+	e assertEachNodeOrValueType : assert
+		tag each-node-or-value-type
+	
+	e assertOneOf : assert
+		tag one-of
+		a kind
+
+	e validateMethod : assert
+		tag validate-method
+		r param/params
+
+	e field : astitem
+		a_tag( ValueType, value-type )
+		a optional
+			type boolean
+			default false
+		a default
+		r assert/s
+	
+	e visitor : astitem
+    
+	e alias : astitem
+		r item/s
+    
+	e builder : astitem
+
+	e type : astitem
+		a inherits
+		a_tag(deprecatedAlias, deprecated-alias) 
+		
+		r field/s
+		r visitor/s
+		r alias/es
+		r builder/s
+
+	e visitors : item
+		r item/s
+	e aliases : item
+		r alias/es
+	e builders : item
+		r item/s

@@ -1,0 +1,665 @@
+  wizzischema js ids: undefined undefined
+    # A schema modeling a javascript module. ids: undefined undefined
+    e module ids: undefined undefined
+      # The root element of the js schema. ids: undefined undefined
+      a kind ids: undefined undefined
+        default jsfile ids: undefined undefined
+        restrict  ids: undefined undefined
+          enum jsfile ids: undefined undefined
+          enum nodejs ids: undefined undefined
+          enum react ids: undefined undefined
+          enum es6 ids: undefined undefined
+      a ecma ids: undefined undefined
+        default es5 ids: undefined undefined
+        restrict  ids: undefined undefined
+          enum es5 ids: undefined undefined
+          enum es6 ids: undefined undefined
+      a no_strict ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+      r resource/s ids: undefined undefined
+      r statement/s ids: undefined undefined
+      m wzinitialize ids: undefined undefined
+        if this.kind === 'react' || this.kind === 'es6' ids: undefined undefined
+          set this.ecma = 'es6' ids: undefined undefined
+        set this.wzModelState = ctx.modelState || {} ids: undefined undefined
+    e resource ids: undefined undefined
+      # A known resource (a javascript source), stored in a repository, ids: undefined undefined
+      # that must be included in the generated artifact. ids: undefined undefined
+    e statement ids: undefined undefined
+      # A generic code statement; the node wzName will be emitted as is. ids: undefined undefined
+      # The indentation will depend to the node depth. ids: undefined undefined
+      # Inside an html tag means a text node without line feed ids: undefined undefined
+      tag + ids: undefined undefined
+      r statement/s ids: undefined undefined
+    e statementmultiline : statement ids: undefined undefined
+      # Inside an html tag means a text node preceded by a line feed ids: undefined undefined
+      tag ++ ids: undefined undefined
+    e comment : statement ids: undefined undefined
+      tag # ids: undefined undefined
+    e commentmultiline : statement ids: undefined undefined
+      tag ## ids: undefined undefined
+    e var : statement ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # var i ids: undefined undefined
+      # var i = 0 ids: undefined undefined
+      # var f_alpha ids: undefined undefined
+      # function ids: undefined undefined
+      # param p ids: undefined undefined
+      # var obj_beta ids: undefined undefined
+      # {                | ids: undefined undefined
+      # @ name stefi ids: undefined undefined
+      # js: ids: undefined undefined
+      # var i; ids: undefined undefined
+      # var i = 0; ids: undefined undefined
+      # var alpha = function(p) { ids: undefined undefined
+      # ... ids: undefined undefined
+      # }; ids: undefined undefined
+      # var obj_beta = { name: 'stefi' }; ids: undefined undefined
+    e decl : statement ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # var i ids: undefined undefined
+      # decl x = 0 ids: undefined undefined
+      # decl a ids: undefined undefined
+      # { ids: undefined undefined
+      # js: ids: undefined undefined
+      # var i, x = 0, a = {}; ids: undefined undefined
+    e const : statement ids: undefined undefined
+    e let : statement ids: undefined undefined
+    e jsObject : statement ids: undefined undefined
+      tag { ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # { ids: undefined undefined
+      # @ name 'stefi' ids: undefined undefined
+      # @ birth 1957 ids: undefined undefined
+      # @ friends ids: undefined undefined
+      # [ ids: undefined undefined
+      # { ids: undefined undefined
+      # @ name 'mario' ids: undefined undefined
+      # @ birth 1957 ids: undefined undefined
+      # { ids: undefined undefined
+      # @ name 'arturo' ids: undefined undefined
+      # @ birth 1955 ids: undefined undefined
+      # @ age ids: undefined undefined
+      # function ids: undefined undefined
+      # return new Date().year() - birth ids: undefined undefined
+      #  ids: undefined undefined
+    e jsArray : statement ids: undefined undefined
+      tag [ ids: undefined undefined
+    e jsPropertyOrValue : statement ids: undefined undefined
+      tag @ ids: undefined undefined
+    e jsonStatementTree : statement ids: undefined undefined
+      # The wzName contains a stringified node tree of statements ids: undefined undefined
+      tag jst ids: undefined undefined
+    e require : statement ids: undefined undefined
+    e import : statement ids: undefined undefined
+    e export : statement ids: undefined undefined
+      r param/s ids: undefined undefined
+      m getParams ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        foreach item in this.params ids: undefined undefined
+          _ ret.push(item.wzName) ids: undefined undefined
+        return ret ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        log 'wzInitialize', this.wzName ids: undefined undefined
+        var tokens = this.wzName.split(' ') ids: undefined undefined
+        if tokens.length > 1 ids: undefined undefined
+          if tokens[0] == 'default' ids: undefined undefined
+            set this.__default = true ids: undefined undefined
+            if tokens[1] == 'function' ids: undefined undefined
+              set this.__function = true ids: undefined undefined
+          elif tokens[0] == 'function' ids: undefined undefined
+            set this.__default = false ids: undefined undefined
+            set this.__function = true ids: undefined undefined
+            set this.__name = tokens[1] ids: undefined undefined
+        if this.__function ids: undefined undefined
+          log 'this.__function', this.__default, this.__function, this.__name ids: undefined undefined
+    e block : statement ids: undefined undefined
+    e set : statement ids: undefined undefined
+    e delete : statement ids: undefined undefined
+    e if : statement ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # if a === b ids: undefined undefined
+      # elif a === c ids: undefined undefined
+      # else ids: undefined undefined
+      # js: ids: undefined undefined
+      # if ( a === b ) { ids: undefined undefined
+      # } ids: undefined undefined
+      # else if ( a === c ) { ids: undefined undefined
+      # } ids: undefined undefined
+      # else { ids: undefined undefined
+      # } ids: undefined undefined
+    e elif : statement ids: undefined undefined
+    e else : statement ids: undefined undefined
+    e for : statement ids: undefined undefined
+    e foreach : statement ids: undefined undefined
+    e backeach : statement ids: undefined undefined
+    e break : statement ids: undefined undefined
+    e continue : statement ids: undefined undefined
+    e label : statement ids: undefined undefined
+    e while : statement ids: undefined undefined
+    e do : statement ids: undefined undefined
+    e switch : statement ids: undefined undefined
+    e case : statement ids: undefined undefined
+    e default : statement ids: undefined undefined
+    e try : statement ids: undefined undefined
+    e catch : statement ids: undefined undefined
+    e finally : statement ids: undefined undefined
+    e throw : statement ids: undefined undefined
+    e function : statement ids: undefined undefined
+      r param/s ids: undefined undefined
+      m getParams ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        foreach item in this.params ids: undefined undefined
+          _ ret.push(item.wzName) ids: undefined undefined
+        return ret ids: undefined undefined
+    e arrowfunction : function ids: undefined undefined
+      tag => ids: undefined undefined
+    e return : statement ids: undefined undefined
+    e class : statement ids: undefined undefined
+      # A javascript class ids: undefined undefined
+      tag class ids: undefined undefined
+      a super ids: undefined undefined
+      m findCtor ids: undefined undefined
+        return _.find(this.statements, function(item) { return item.wzElement === 'ctor' }) ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        set ctx.modelState = ctx.modelState || {} ids: undefined undefined
+        set ctx.modelState.hasClasses = true ids: undefined undefined
+        var tokens = this.wzName.split(':') ids: undefined undefined
+        if tokens.length == 2 ids: undefined undefined
+          set this.wzName = tokens[0] ids: undefined undefined
+          set this.super = tokens[1] ids: undefined undefined
+    e ctor : function ids: undefined undefined
+      r base/s ids: undefined undefined
+      m getBaseArgs ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        foreach item in this.bases ids: undefined undefined
+          _ ret.push(item.wzName) ids: undefined undefined
+        return ret ids: undefined undefined
+    e base : function ids: undefined undefined
+    e method : function ids: undefined undefined
+      tag m ids: undefined undefined
+      a static ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+    e property : function ids: undefined undefined
+      a static ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+    e iife : function ids: undefined undefined
+      a unary-prefix ids: undefined undefined
+      r arg/s ids: undefined undefined
+      m getArgs ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        foreach item in this.args ids: undefined undefined
+          _ ret.push(item.wzName) ids: undefined undefined
+        return ret ids: undefined undefined
+    e new : statement ids: undefined undefined
+      r param/s ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # var h ids: undefined undefined
+      # new Hello ids: undefined undefined
+      # var j ids: undefined undefined
+      # new Hello ids: undefined undefined
+      # function ids: undefined undefined
+      # param p ids: undefined undefined
+      # + ... ids: undefined undefined
+      # js: ids: undefined undefined
+      # var h = new Hello(); ids: undefined undefined
+      # var j = new Hello(function(p) { ... }); ids: undefined undefined
+    e type : statement ids: undefined undefined
+    e param ids: undefined undefined
+    e arg ids: undefined undefined
+    e call : statement ids: undefined undefined
+      # A function call. ids: undefined undefined
+      tag _ ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # _ sayHello('stefi', 10) ids: undefined undefined
+      # _ init ids: undefined undefined
+      # { ids: undefined undefined
+      # @ key 0 ids: undefined undefined
+      # function ids: undefined undefined
+      # param value ids: undefined undefined
+      # return calc(value) ids: undefined undefined
+    e memberCall : statement ids: undefined undefined
+      tag ._ ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # set value ids: undefined undefined
+      # _ init ids: undefined undefined
+      # ._calc ids: undefined undefined
+      # js: ids: undefined undefined
+      # value = init().calc() ids: undefined undefined
+    e decoratorCall : statement ids: undefined undefined
+      tag @_ ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # @_ alpha ids: undefined undefined
+      # @ 200 ids: undefined undefined
+      # function ids: undefined undefined
+      # return 'a'; ids: undefined undefined
+      # js: ids: undefined undefined
+      # @alpha(200, function() { return 'a'; }) ids: undefined undefined
+    e callOnValue : statement ids: undefined undefined
+      tag ( ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # _ getFunction() ids: undefined undefined
+      # ( ids: undefined undefined
+      # @ 'stefi' ids: undefined undefined
+      # js: ids: undefined undefined
+      # getFunction()('stefi') ids: undefined undefined
+    e memberAccess : statement ids: undefined undefined
+      tag . ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # set name = obj ids: undefined undefined
+      # . name ids: undefined undefined
+      # js: ids: undefined undefined
+      # name = obj.name ids: undefined undefined
+    e memberAccessComputed : statement ids: undefined undefined
+      tag .[ ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # set name = obj ids: undefined undefined
+      # .[ name ids: undefined undefined
+      # js: ids: undefined undefined
+      # name = obj[name] ids: undefined undefined
+    e iif : statement ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # iif a === b ids: undefined undefined
+      # then 0 ids: undefined undefined
+      # else 1 ids: undefined undefined
+      # js: ids: undefined undefined
+      # ( a === b ) ? 0 : 1 ids: undefined undefined
+    e test : statement ids: undefined undefined
+    e then : statement ids: undefined undefined
+    e or : statement ids: undefined undefined
+      tag || ids: undefined undefined
+    e and : statement ids: undefined undefined
+      tag && ids: undefined undefined
+    e op_eq_strict : statement ids: undefined undefined
+      tag op=== ids: undefined undefined
+    e op_noteq_strict : statement ids: undefined undefined
+      tag op!== ids: undefined undefined
+    e op_eq : statement ids: undefined undefined
+      tag op== ids: undefined undefined
+    e op_noteq : statement ids: undefined undefined
+      tag op!= ids: undefined undefined
+    e op_or : statement ids: undefined undefined
+      tag op|| ids: undefined undefined
+    e op_and : statement ids: undefined undefined
+      tag op&& ids: undefined undefined
+    e op_minus : statement ids: undefined undefined
+      tag op- ids: undefined undefined
+    e op_plus : statement ids: undefined undefined
+      tag op+ ids: undefined undefined
+    e op_times : statement ids: undefined undefined
+      tag op* ids: undefined undefined
+    e op_div : statement ids: undefined undefined
+      tag op/ ids: undefined undefined
+    e op_power : statement ids: undefined undefined
+      tag op^ ids: undefined undefined
+    e op_mod : statement ids: undefined undefined
+      tag op% ids: undefined undefined
+    e op_xor : statement ids: undefined undefined
+      tag op| ids: undefined undefined
+    e op_xand : statement ids: undefined undefined
+      tag op& ids: undefined undefined
+    e op_gt : statement ids: undefined undefined
+      tag op> ids: undefined undefined
+    e op_ge : statement ids: undefined undefined
+      tag op>= ids: undefined undefined
+    e op_lt : statement ids: undefined undefined
+      tag op< ids: undefined undefined
+    e op_le : statement ids: undefined undefined
+      tag op<= ids: undefined undefined
+    # elemnt of interest ids: undefined undefined
+    # var ids: undefined undefined
+    # function ids: undefined undefined
+    #  ids: undefined undefined
+    # kind public or private ids: undefined undefined
+    #  ids: undefined undefined
+    # require ids: undefined undefined
+    # module ids: undefined undefined
+    #  ids: undefined undefined
+    e wzIife ids: undefined undefined
+      tag wz-iife ids: undefined undefined
+      super iife ids: undefined undefined
+    e wzRequire ids: undefined undefined
+      tag wz-require ids: undefined undefined
+      super statement ids: undefined undefined
+      a from ids: undefined undefined
+    e wzVar ids: undefined undefined
+      tag wz-var ids: undefined undefined
+      super var ids: undefined undefined
+    e wzFunction ids: undefined undefined
+      tag wz-function ids: undefined undefined
+      super function ids: undefined undefined
+    e wzClass ids: undefined undefined
+      tag wz-class ids: undefined undefined
+      super class ids: undefined undefined
+    e component : statement ids: undefined undefined
+      tag § ids: undefined undefined
+    e reactComponent : component ids: undefined undefined
+      tag react ids: undefined undefined
+    # Those of facebook react see https://facebook.github.io/react/docs/tags-and-attributes.html ids: undefined undefined
+    e htmlelement : statement ids: undefined undefined
+      a autoCapitalize ids: undefined undefined
+      a autoCorrect ids: undefined undefined
+      a property ids: undefined undefined
+      a itemProp ids: undefined undefined
+      a itemScope ids: undefined undefined
+      a itemType ids: undefined undefined
+      a itemRef ids: undefined undefined
+      a itemID ids: undefined undefined
+      a unselectable ids: undefined undefined
+      a results ids: undefined undefined
+      a autoSave ids: undefined undefined
+      a class ids: undefined undefined
+      a aria-* ids: undefined undefined
+      a data-* ids: undefined undefined
+      a accept ids: undefined undefined
+      a acceptCharset ids: undefined undefined
+      a accessKey ids: undefined undefined
+      a action ids: undefined undefined
+      a allowFullScreen ids: undefined undefined
+      a allowTransparency ids: undefined undefined
+      a alt ids: undefined undefined
+      a async ids: undefined undefined
+      a autoComplete ids: undefined undefined
+      a autoFocus ids: undefined undefined
+      a autoPlay ids: undefined undefined
+      a capture ids: undefined undefined
+      a cellPadding ids: undefined undefined
+      a cellSpacing ids: undefined undefined
+      a charSet ids: undefined undefined
+      a challenge ids: undefined undefined
+      a checked ids: undefined undefined
+      a classID ids: undefined undefined
+      a className ids: undefined undefined
+      a cols ids: undefined undefined
+      a colSpan ids: undefined undefined
+      a content ids: undefined undefined
+      a contentEditable ids: undefined undefined
+      a contextMenu ids: undefined undefined
+      a controls ids: undefined undefined
+      a coords ids: undefined undefined
+      a crossOrigin ids: undefined undefined
+      a data ids: undefined undefined
+      a dateTime ids: undefined undefined
+      a defer ids: undefined undefined
+      a dir ids: undefined undefined
+      a disabled ids: undefined undefined
+      a download ids: undefined undefined
+      a draggable ids: undefined undefined
+      a encType ids: undefined undefined
+      a form ids: undefined undefined
+      a formAction ids: undefined undefined
+      a formEncType ids: undefined undefined
+      a formMethod ids: undefined undefined
+      a formNoValidate ids: undefined undefined
+      a formTarget ids: undefined undefined
+      a frameBorder ids: undefined undefined
+      a headers ids: undefined undefined
+      a height ids: undefined undefined
+      a hidden ids: undefined undefined
+      a high ids: undefined undefined
+      a href ids: undefined undefined
+      a hrefLang ids: undefined undefined
+      a htmlFor ids: undefined undefined
+      a httpEquiv ids: undefined undefined
+      a icon ids: undefined undefined
+      a id ids: undefined undefined
+      a inputMode ids: undefined undefined
+      a keyParams ids: undefined undefined
+      a keyType ids: undefined undefined
+      a @label ids: undefined undefined
+      a lang ids: undefined undefined
+      a list ids: undefined undefined
+      a loop ids: undefined undefined
+      a low ids: undefined undefined
+      a manifest ids: undefined undefined
+      a marginHeight ids: undefined undefined
+      a marginWidth ids: undefined undefined
+      a max ids: undefined undefined
+      a maxLength ids: undefined undefined
+      a media ids: undefined undefined
+      a mediaGroup ids: undefined undefined
+      a method ids: undefined undefined
+      a min ids: undefined undefined
+      a minLength ids: undefined undefined
+      a multiple ids: undefined undefined
+      a muted ids: undefined undefined
+      a name ids: undefined undefined
+      a noValidate ids: undefined undefined
+      a open ids: undefined undefined
+      a optimum ids: undefined undefined
+      a pattern ids: undefined undefined
+      a placeholder ids: undefined undefined
+      a poster ids: undefined undefined
+      a preload ids: undefined undefined
+      a radioGroup ids: undefined undefined
+      a readOnly ids: undefined undefined
+      a rel ids: undefined undefined
+      a required ids: undefined undefined
+      a role ids: undefined undefined
+      a rows ids: undefined undefined
+      a rowSpan ids: undefined undefined
+      a sandbox ids: undefined undefined
+      a scope ids: undefined undefined
+      a scoped ids: undefined undefined
+      a scrolling ids: undefined undefined
+      a seamless ids: undefined undefined
+      a selected ids: undefined undefined
+      a shape ids: undefined undefined
+      a size ids: undefined undefined
+      a sizes ids: undefined undefined
+      a @span ids: undefined undefined
+      a spellCheck ids: undefined undefined
+      a src ids: undefined undefined
+      a srcDoc ids: undefined undefined
+      a srcSet ids: undefined undefined
+      a start ids: undefined undefined
+      a step ids: undefined undefined
+      a style ids: undefined undefined
+      a @summary ids: undefined undefined
+      a tabIndex ids: undefined undefined
+      a target ids: undefined undefined
+      a title ids: undefined undefined
+      a type ids: undefined undefined
+      a useMap ids: undefined undefined
+      a value ids: undefined undefined
+      a width ids: undefined undefined
+      a wmode ids: undefined undefined
+      a wrap ids: undefined undefined
+      tag < ids: undefined undefined
+    e doctype : htmlelement ids: undefined undefined
+    e a : htmlelement ids: undefined undefined
+    e abbr : htmlelement ids: undefined undefined
+    e address : htmlelement ids: undefined undefined
+    e area : htmlelement ids: undefined undefined
+    e article : htmlelement ids: undefined undefined
+    e aside : htmlelement ids: undefined undefined
+    e audio : htmlelement ids: undefined undefined
+    e b : htmlelement ids: undefined undefined
+    e base : htmlelement ids: undefined undefined
+    e bdi : htmlelement ids: undefined undefined
+    e bdo : htmlelement ids: undefined undefined
+    e big : htmlelement ids: undefined undefined
+    e blockquote : htmlelement ids: undefined undefined
+    e body : htmlelement ids: undefined undefined
+    e br : htmlelement ids: undefined undefined
+    e button : htmlelement ids: undefined undefined
+    e canvas : htmlelement ids: undefined undefined
+    e caption : htmlelement ids: undefined undefined
+    e cite : htmlelement ids: undefined undefined
+    e code : htmlelement ids: undefined undefined
+    e col : htmlelement ids: undefined undefined
+    e colgroup : htmlelement ids: undefined undefined
+    e data : htmlelement ids: undefined undefined
+    e datalist : htmlelement ids: undefined undefined
+    e dd : htmlelement ids: undefined undefined
+    e del : htmlelement ids: undefined undefined
+    e details : htmlelement ids: undefined undefined
+    e dfn : htmlelement ids: undefined undefined
+    e dialog : htmlelement ids: undefined undefined
+    e div : htmlelement ids: undefined undefined
+    e dl : htmlelement ids: undefined undefined
+    e dt : htmlelement ids: undefined undefined
+    e em : htmlelement ids: undefined undefined
+    e embed : htmlelement ids: undefined undefined
+    e fieldset : htmlelement ids: undefined undefined
+    e figcaption : htmlelement ids: undefined undefined
+    e figure : htmlelement ids: undefined undefined
+    e footer : htmlelement ids: undefined undefined
+    e form : htmlelement ids: undefined undefined
+    e h1 : htmlelement ids: undefined undefined
+    e h2 : htmlelement ids: undefined undefined
+    e h3 : htmlelement ids: undefined undefined
+    e h4 : htmlelement ids: undefined undefined
+    e h5 : htmlelement ids: undefined undefined
+    e h6 : htmlelement ids: undefined undefined
+    e head : htmlelement ids: undefined undefined
+    e header : htmlelement ids: undefined undefined
+    e hr : htmlelement ids: undefined undefined
+    e html : htmlelement ids: undefined undefined
+    e i : htmlelement ids: undefined undefined
+    e iframe : htmlelement ids: undefined undefined
+    e img : htmlelement ids: undefined undefined
+    e input : htmlelement ids: undefined undefined
+    e ins : htmlelement ids: undefined undefined
+    e kbd : htmlelement ids: undefined undefined
+    e keygen : htmlelement ids: undefined undefined
+    e label : htmlelement ids: undefined undefined
+    e legend : htmlelement ids: undefined undefined
+    e li : htmlelement ids: undefined undefined
+    e link : htmlelement ids: undefined undefined
+    e main : htmlelement ids: undefined undefined
+    e map : htmlelement ids: undefined undefined
+    e mark : htmlelement ids: undefined undefined
+    e menu : htmlelement ids: undefined undefined
+    e menuitem : htmlelement ids: undefined undefined
+    e meta : htmlelement ids: undefined undefined
+    e meter : htmlelement ids: undefined undefined
+    e nav : htmlelement ids: undefined undefined
+    e noscript : htmlelement ids: undefined undefined
+    e object : htmlelement ids: undefined undefined
+    e ol : htmlelement ids: undefined undefined
+    e optgroup : htmlelement ids: undefined undefined
+    e option : htmlelement ids: undefined undefined
+    e output : htmlelement ids: undefined undefined
+    e p : htmlelement ids: undefined undefined
+    e param : htmlelement ids: undefined undefined
+    e picture : htmlelement ids: undefined undefined
+    e pre : htmlelement ids: undefined undefined
+    e progress : htmlelement ids: undefined undefined
+    e q : htmlelement ids: undefined undefined
+    e rp : htmlelement ids: undefined undefined
+    e rt : htmlelement ids: undefined undefined
+    e ruby : htmlelement ids: undefined undefined
+    e s : htmlelement ids: undefined undefined
+    e samp : htmlelement ids: undefined undefined
+    e script : htmlelement ids: undefined undefined
+    e section : htmlelement ids: undefined undefined
+    e select : htmlelement ids: undefined undefined
+    e small : htmlelement ids: undefined undefined
+    e source : htmlelement ids: undefined undefined
+    e span : htmlelement ids: undefined undefined
+    e strong : htmlelement ids: undefined undefined
+    e @style : htmlelement ids: undefined undefined
+    e sub : htmlelement ids: undefined undefined
+    e summary : htmlelement ids: undefined undefined
+    e sup : htmlelement ids: undefined undefined
+    e table : htmlelement ids: undefined undefined
+    e tbody : htmlelement ids: undefined undefined
+    e td : htmlelement ids: undefined undefined
+    e textarea : htmlelement ids: undefined undefined
+    e tfoot : htmlelement ids: undefined undefined
+    e th : htmlelement ids: undefined undefined
+    e thead : htmlelement ids: undefined undefined
+    e time : htmlelement ids: undefined undefined
+    e title : htmlelement ids: undefined undefined
+    e tr : htmlelement ids: undefined undefined
+    e track : htmlelement ids: undefined undefined
+    e u : htmlelement ids: undefined undefined
+    e ul : htmlelement ids: undefined undefined
+    e var : htmlelement ids: undefined undefined
+    e video : htmlelement ids: undefined undefined
+    e wbr : htmlelement ids: undefined undefined
+    e js : htmlelement ids: undefined undefined
+    e css : htmlelement ids: undefined undefined
+    e ready : statement ids: undefined undefined
+      a kind ids: undefined undefined
+        default jquery ids: undefined undefined
+        restrict  ids: undefined undefined
+          enum jquery ids: undefined undefined
+          enum window ids: undefined undefined
+    e tohtml : statement ids: undefined undefined
+      a kind ids: undefined undefined
+        default wizzi ids: undefined undefined
+        restrict  ids: undefined undefined
+          enum wizzi ids: undefined undefined
+          enum ng ids: undefined undefined
+            # create a function ids: undefined undefined
+            # that returns am html string preserving {{ }}, for interpolation use [[ ]] ids: undefined undefined
+          enum dom ids: undefined undefined
+            # that returns am html dom tree using jQuery ids: undefined undefined
+          enum hb ids: undefined undefined
+            # that returns a compiled handlebar template ids: undefined undefined
+    e html_f : statement ids: undefined undefined
+      # create a function ids: undefined undefined
+      # that returns am html string ids: undefined undefined
+    e html_ng : statement ids: undefined undefined
+      # create a function ids: undefined undefined
+      # that returns am html string preserving {{ }}, for interpolation use [[ ]] ids: undefined undefined
+    e html_dom : statement ids: undefined undefined
+      # create a function ids: undefined undefined
+      # that returns am html dom tree using jQuery ids: undefined undefined
+    e html_hb : statement ids: undefined undefined
+      # create a function ids: undefined undefined
+      # that returns a compiled handlebar template ids: undefined undefined
+    e debug : statement ids: undefined undefined
+      m _require ctx ids: undefined undefined
+        _ ctx.require('debug'); ids: undefined undefined
+    e assert : statement ids: undefined undefined
+      tag !! ids: undefined undefined
+    e assert_equal : statement ids: undefined undefined
+      tag !!= ids: undefined undefined
+    e chalk : statement ids: undefined undefined
+    e log : statement ids: undefined undefined
+      # ittf: ids: undefined undefined
+      # log 'xxx', yyy ids: undefined undefined
+      # js: ids: undefined undefined
+      # console.log( 'xxx', yyy ); ids: undefined undefined
+      #  ids: undefined undefined
+      m _toJs ctx ids: undefined undefined
+        _ ctx.w('console.log(' + this.WmtName + ');') ids: undefined undefined
+    e warn : statement ids: undefined undefined
+    e error : statement ids: undefined undefined
+    e inspect : statement ids: undefined undefined
+      tag log? ids: undefined undefined
+    e log-info : statement ids: undefined undefined
+      # log.info(...) ids: undefined undefined
+      m _require ctx ids: undefined undefined
+        _ ctx.require('log'); ids: undefined undefined
+    e describe : statement ids: undefined undefined
+    e it : statement ids: undefined undefined
+    e itAsync : statement ids: undefined undefined
+      tag it-async ids: undefined undefined
+    e before : statement ids: undefined undefined
+    e beforeAsync : statement ids: undefined undefined
+      tag before-async ids: undefined undefined
+    e beforeEach : statement ids: undefined undefined
+      tag before-each ids: undefined undefined
+    e after : statement ids: undefined undefined
+    e afterAsync : statement ids: undefined undefined
+      tag after-async ids: undefined undefined
+    e afterEach : statement ids: undefined undefined
+      tag after-each ids: undefined undefined
+    e superagent : statement ids: undefined undefined
+      r get/s ids: undefined undefined
+      r post/s ids: undefined undefined
+      r put/s ids: undefined undefined
+      r end/s ids: undefined undefined
+    e get ids: undefined undefined
+    e post ids: undefined undefined
+    e put ids: undefined undefined
+    e end ids: undefined undefined

@@ -1,0 +1,81 @@
+module
+	kind react
+	import uuid from 'node-uuid'
+	import 'array.prototype.findindex'
+	import React from 'react'
+	import Notes from './notes.jsx'
+	export default
+		class App
+			super React.Component
+		
+			ctor
+				param props
+				base props
+				set this.state
+					{
+						@ notes
+							[
+								{
+									@ id uuid.v4()
+									@ task 'Learn Webpack'
+								{
+									@ id uuid.v4()
+									@ task 'Learn React
+								{
+									@ id uuid.v4()
+									@ task 'Do laundry'
+			
+				set this.findNote = this.findNote.bind(this)
+				set this.addNote = this.addNote.bind(this)
+				set this.editNote = this.editNote.bind(this)
+				set this.deleteNote = this.deleteNote.bind(this)
+		
+			m render
+				const notes = this.state.notes
+				return
+					div
+						button +
+							@ className "add-note"
+							@ onClick {this.addNote}
+						< Notes
+							@ items {notes}
+							@ onEdit {this.editNote}
+							@ onDelete {this.deleteNote}
+			m addNote
+				log 'add note'
+				_ this.setState
+					{
+						@ notes
+							_ this.state.notes.concat
+								[
+									{
+										@ id uuid.v4()
+										@ task 'New task'
+  
+			m editNote
+				param id
+				param task
+				let notes = this.state.notes
+				const noteIndex = this.findNote(id)
+				if noteIndex < 0
+					return
+				set notes[noteIndex].task = task
+				_ this.setState({notes})
+  
+			m findNote
+				param id
+			
+				const notes = this.state.notes
+				const noteIndex = notes.findIndex((note) => note.id === id)
+				if noteIndex < 0
+					warn 'Failed to find note', notes, id
+				return noteIndex
+			m deleteNote
+				param id
+				const notes = this.state.notes
+				const noteIndex = this.findNote(id)
+				if noteIndex < 0
+					return
+				_ this.setState
+					{
+						@ notes notes.slice(0, noteIndex).concat(notes.slice(noteIndex + 1))

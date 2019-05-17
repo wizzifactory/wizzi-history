@@ -1,0 +1,76 @@
+﻿$group
+
+	function emitTypes
+		param types
+		param topicName
+
+		set topicName = topicName || 'ast'
+
+		# log 'emit types', types
+
+		var sb = ['html']
+		_ sb.push('\tbody')
+		_ sb.push('\t\ttable')
+
+		for var k in types
+			# log 'type', type
+
+			_ sb.push('\t\t\ttr')
+			_ sb.push('\t\t\t\ttd ' + k)
+
+
+		var ittfASTFile = "C:/My/wizzi/next/studio/dashboard/server/ittf/demo/ttech/darvin/" + topicName + "/index.html"
+		_ wizzi.file.write
+			@ ittfASTFile
+			_ astHtml
+				{
+					@ types types
+			$$ @ sb.join('\n')
+
+	html_f astHtml
+		html
+			head
+				< style
+					+ table { border: 1px solid #900;  background: #fff; widht: 100%; }
+					+ tr {   border: 5px solid #090; }
+					+ td {   background: #ccc;   padding: 5px 0; vertical-align: top; padding: 10px; }
+					+ table + table {  border-collapse: collapse;  }
+					+ .k-code .k-code-ast {  display:none;  }
+					+ .k-code:hover .k-code-ast {  display:block;  }
+			body
+				table
+					thead
+						th Type
+						th Bads
+						th Goods
+					tbody
+						for var k in ctx.types
+							tr
+								style border-top: 1px solid gray;
+								td {{ k }}
+								td {{ ctx.types[k].bads.length }}
+								td {{ ctx.types[k].goods.length }}
+								td 
+									if ctx.types[k].goods.length > 0
+										div
+											class k-code
+											pre {{ ctx.types[k].goods[0].code }}
+											div
+												class k-code-ast
+												pre {{ JSON.stringify(cleanAst(ctx.types[k].goods[0].ast), null, 2) }}
+
+	function cleanAst
+		param ast
+		_ jsontraverse
+			@ ast
+			._ forEach
+				function
+					param x
+					if this.key == 'loc' || this.key == 'start' || this.key == 'end'
+						_ this.remove
+		return ast
+
+
+
+
+

@@ -1,0 +1,49 @@
+spa
+	package black-triangle
+		version 0.0.1
+		license MIT
+		author
+			name stefano bassoli
+			email sbassoli.dev@gmail.com
+		main src/main.js
+	usage in-browser
+	server webpack
+		env dev
+		content-base BUILD_PATH
+	
+	$$ build-system gulp
+	folder src src
+	folder build build
+	folder dist dist
+	folder serverStatic public
+	path ROOT_PATH path.resolve(__dirname)
+	path SRC_PATH path.resolve(__dirname, 'src')
+	path BUILD_PATH path.resolve(__dirname, 'build')
+	webpack
+	
+		entry
+			[
+				@ 'babel-polyfill'
+				@ path.join(SRC_PATH, 'theme/main.less')
+				@ path.join(SRC_PATH, 'main.js')
+				@ 'webpack-dev-server/client?http://localhost:8080'
+		output
+			path BUILD_PATH
+			$$ publicPath '/'
+			filename 'main.js'
+		loader babel-loader
+			test .js
+			include SRC_PATH
+			preset es2015
+		loader style!css!autoprefixer!less
+			test .less
+			include SRC_PATH
+		plugin html
+			@ title 'Black triangle'
+	
+		plugin open-browser
+	
+		plugin uglify-js
+			@ compress
+				{
+					@ warning false

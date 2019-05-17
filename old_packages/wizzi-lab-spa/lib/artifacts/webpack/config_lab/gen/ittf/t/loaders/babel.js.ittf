@@ -1,0 +1,15 @@
+$group
+	$$ paths.appSrc
+	$if rule.wzName == 'react'
+        { 
+            @ test /\.(js|jsx)$/
+            @ include paths.appSrc
+            @ loader 'babel-loader'
+            @ options
+                { 
+                    @ babelrc false
+                    @ presets
+                        [ 
+                            _ require.resolve
+                                @ 'babel-preset-react-app'
+                    @ cacheDirectory true

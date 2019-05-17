@@ -1,0 +1,32 @@
+﻿$group
+
+	$if spa.staticFolders && spa.staticFolders.length > 0
+		
+		function initStaticFolders
+			param app
+			param options
+
+			# Setting the app router and static folders
+			$foreach item in spa.staticFolders
+				
+				+
+				
+				# ATTENTION
+				# 'ittfengine' and 'ittfoptions' are var instances that must be declared
+				# before the mixin call to 'express-app'
+				
+				$if item.engine === 'ittf'
+					# Setting ittf static folder middleware
+					log 'ittf static folder: ${item.name}', path.resolve(__dirname, '${item.path}')
+					_ app.use
+						@ '${item.name}'
+						_ ittfengine
+							@ path.resolve(__dirname, '${item.path}')
+							@ '${item.name}'
+							@ ittfoptions
+				+
+				$if item.engine === 'express'
+					# Setting express static folder middleware
+					log 'express static folder: ${item.name}', path.resolve(__dirname, '${item.path}')
+					_ app.use('${item.name}', express.static(path.resolve(__dirname, '${item.path}')));
+

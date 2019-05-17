@@ -1,0 +1,25 @@
+  module  ids: undefined undefined
+    kind react ids: undefined undefined
+    import React from 'react' ids: undefined undefined
+    import Note from './note' ids: undefined undefined
+    class Notes ids: undefined undefined
+      super React.Component ids: undefined undefined
+      ctor  ids: undefined undefined
+        param props ids: undefined undefined
+        base props ids: undefined undefined
+        set this.renderNote = this.renderNote.bind(this) ids: undefined undefined
+      m render ids: undefined undefined
+        set const notes = this.props.notes ids: undefined undefined
+        return  ids: undefined undefined
+          ul {notes.map(this.renderNote)} ids: undefined undefined
+            @ className notes ids: undefined undefined
+      m renderNote ids: undefined undefined
+        param note ids: undefined undefined
+        return  ids: undefined undefined
+          li  ids: undefined undefined
+            @ className note ids: undefined undefined
+            @ key {`note§{note.id}`} ids: undefined undefined
+            < Note ids: undefined undefined
+              @ task {note.task} ids: undefined undefined
+              @ onEdit {this.props.onEdit.bind(null, note.id)} ids: undefined undefined
+              @ onDelete {this.props.onDelete.bind(null, note.id)} ids: undefined undefined

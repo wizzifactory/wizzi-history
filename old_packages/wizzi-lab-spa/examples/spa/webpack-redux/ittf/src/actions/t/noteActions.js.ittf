@@ -1,0 +1,27 @@
+$group
+	export const NOTE_ADD = 'NOTE_ADD'
+	export const NOTE_UPDATE = 'NOTE_UPDATE'
+	export const NOTE_DELETE = 'NOTE_DELETE'
+	export
+		function noteAdd
+			param task
+			return
+				{
+					@ type NOTE_ADD
+					@ task
+	export
+		function noteUpdate
+			param noteId
+			param task
+			return
+				{
+					@ type NOTE_UPDATE
+					@ noteId
+					@ task
+	export
+		function noteDelete
+			param noteId
+			return
+				{
+					@ type NOTE_DELETE
+					@ noteId

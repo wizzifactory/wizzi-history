@@ -1,0 +1,46 @@
+$group
+	
+	e browserify : spaitem
+		a_tag( basePath, base-path )
+		a_tag( sourceBaseName, source-base-name )
+		a_tag( destFolder, dest-folder )
+		a_tag( sourceMapFolder, source-map-folder )
+		a standalone
+		
+		r entr-y/ies
+		m wzinitialize
+			set this.fileItems = []
+			set this.globItems = []
+			foreach entry in this.entries
+				if entry.files.length > 0
+					foreach file in entry.files
+						_ this.fileItems.push
+							{
+								@ path this._fullPath(file.wzName)
+								@ watch entry.watch 
+						log 'file entry', this._fullPath(file.wzName)
+				if entry.globs.length > 0
+					foreach glob in entry.globs
+						_ this.globItems.push
+							{
+								@ path this._fullPath(glob.wzName)
+								@ watch entry.watch 
+						log 'glob entry', this._fullPath(glob.wzName)
+				if entry.files.length == 0 && entry.globs.length == 0
+					if isEmpty(entry.wzName) == false
+						_ this.fileItems.push
+							{
+								@ path this._fullPath(entry.wzName)
+								@ watch entry.watch 
+						log 'file entry', this._fullPath(entry.wzName)
+				set this.allItems = _.concat(this.fileItems, this.globItems)
+		m _fullPath
+			param filePath
+			if path.isAbsolute(filePath)
+				return filePath
+			if isEmpty(this.basePath) == false
+				return
+					_ path.join
+						@ this.basePath
+						@ filePath
+			return filePath

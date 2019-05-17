@@ -1,0 +1,101 @@
+$group
+	
+	e transformer
+		# A model transformer 
+		# The IttfNodeValue is the transformer path {wizzischema}/{transformerName}
+		# to be found in {wizziPackage}/artifacts/{wizzischema}/{transformerName}/trans/main.js
+		a_tag( dumpFile, dump-file )
+			# A filepath where the transformed model must be dumped for test.
+			# When declared the transformed model is JSON.stringyfied and written
+			# to the "dumpFile" filepath.
+	
+	e artifact
+		
+		# An artifact to be generated.
+		# It is a child element of a "line" element.
+		#
+		# Can be one of:
+		# . A Wizzi model instance, acting as a template, which WizziSchema targets a code language technology.
+		# . A swig template.
+		# . A code write generation that takes in input a context of one or more WizziModels.
+		# . A final artifact to be copied to a destination folder without transformations.
+		# . A reference to another WfJob, to be executed before the current WfJob where the artifact is declared.
+		#
+		# Context value objects for template transformations are declared in the "model" element, child of the "wfjob" root element
+		# and may be referenced in the elements "modelRef", children of the "artifact" element.
+		# 
+		# The "src" or "destPath" attributes of an "artifact" element may contain tokens enclosed in graph parens.
+		# When one of the "modelRef@" is a collection model, the artifact generation is repeated
+		# for each item of the collection and the "src" or "destPath" attributes become the template of the destination path.
+		# See the "pathTemplateValues" child elements of the "modelRef" for the values that will replace the tokens.
+		#
+		# Example
+		#
+		# artifact
+		#     dest-path app/db/{table}Datalayer.js.ittf
+		#     ...
+		#     model-ref rdbms
+		#         model-coll tables
+		#             item-name table
+		#             path-template-value
+		#                 attribute tableName
+		#                 token table
+		#
+		# model rdbms
+		#     ...
+		#
+		# the Wizzi model instance after loading rdbms: {
+		#     ....
+		#     tables: [{
+		#         tableName: 'user',
+		#         ...
+		#     },{
+		#        ...
+		#     }]
+		# }
+		#
+		# will produce an artifact of path .../app/db/userDatalayer.js, and as many as the items in the tables collection.
+		#
+				
+		a src
+			# The path to the primary source document of the artifact.
+			# If relative, the base path is the cwdFolder of the parent line.
+			# Can be a glob pattern
+			# If the artifact is a code write artifact the @src@ attribute must not be declared.
+		
+		a ignore
+			# files returned by the src pattern to be ignored
+			# Can be a glob pattern
+		a schema
+			# When the artifact source is an Ittf document, is the schema that will load and validate the Wizzi model instance.
+			# May be null if the artifact is a swig template or a final artifact.
+		a_flag( isWfJob, is-wf-job )
+			# Indicator that the artifact source document is a wizzi factory job (WfJob).
+			# The job will be executed before any other artifact production of the current WfJob.
+			# This could be autodected from the schema, but autodetection would forbid other uses or transformations
+			# of a "wfjob" model, so the indicator is required.
+		a generator
+			# When the artifact is a Wizzi model instance, acting as a template is the name of 
+			# the artifact generator that will transform the template.
+			# When the artifact is a 'swig template' must contain 'swig'.
+			# When the artifact is a code write generation or a final artifact must be omitted.
+		
+		a_tag( destPath, dest-path )
+			# The artifact source file path (@src@) is the default relative destination path
+			# of the generated artifact. When set, this attribute overrides the default.
+			# It may be an absolute path.
+			# If the artifact is a code write generation the @destPath@ attribute must be declared.
+		
+		a extension
+			# The document path extension of the generated artifact. Optional. The default is the #src# extension
+			# without the ending '.ittf' string, if present.
+		
+		r transformer/s
+			# When the artifact source is an Ittf document, the loaded WizziModel may need
+			# one or more transformations before being passed to the artifact generator.
+			# Transformers are chained and the output of a transformation
+			# is the input for the next one.
+		
+		r modelRef/s
+			# References to Wizzi model instances acting as transformation contexts for both wizzi and swig templates.
+			# When a final artifact must not be declared.

@@ -1,0 +1,147 @@
+  wizzischema nools ids: 1 148
+    # Nools, the rule engine. ids: 2 149
+    # When using nools you define Flow(s). ids: 3 150
+    # A Flow acts as a container for Rule(s) ids: 4 151
+    # that can later be used to get a Session. ids: 5 152
+    e nools ids: 6 153
+      # The root tag of the nools schema. ids: 7 154
+      # A nools IttfDocument defines one Flow. ids: 8 155
+      # A Flow is a container of Rule(s). ids: 9 156
+      # In a Flow you declare Fact types and Rule(s). ids: 10 157
+      # Instances of Flow(s) are called Session(s). ids: 11 158
+      # In a Session instances of Facts are matched against Rule(s). ids: 12 159
+      tag nools ids: 13 160
+      r global/s ids: 14 161
+      r fact/s ids: 15 162
+      r rule/s ids: 16 163
+      r agendaGroup/s ids: 17 164
+      r function/s ids: 18 165
+    e global ids: 19 166
+      # Globals are accessible through the current working scope of rule facts in a dsl, ids: 20 167
+      # very similar to using the scope option when compiling. ids: 21 168
+      # Note: globals are not part of the working memory and therefore are not accessible ids: 22 169
+      # in the LHS (when) of your rule. ids: 23 170
+    e fact ids: 24 171
+      # Declares a Fact type. ids: 25 172
+      # A Fact type must be a String or a javascript Function. ids: 26 173
+      # dsl > define 'type-name' { ids: 27 174
+      # In a Session (an istance of a Flow) instances of Fact(s) can be: ids: 28 175
+      # . asserted ids: 29 176
+      # . retracted ids: 30 177
+      # . modified ids: 31 178
+      # . retrivied (all or by Type) ids: 32 179
+      tag def ids: 33 180
+      r propert-y/ies ids: 34 181
+      r ctor ids: 35 182
+        one-to-one  ids: 36 183
+      r function/s ids: 37 184
+    e ctor ids: 38 185
+      # Fact type constructor ids: 39 186
+      r param/s ids: 40 187
+      r codeline/s ids: 41 188
+      m getParams ids: 42 189
+        var ret = [] ids: 43 190
+        foreach item in this.params ids: 44 191
+          _ ret.push(item.wzName) ids: 45 192
+        return ret ids: 46 193
+    e property ids: 47 194
+      tag @ ids: 48 195
+      r function/s ids: 49 196
+    # ========================================================== ids: 50 197
+    # RULES ids: 51 198
+    # ---------------------------------------------------------- ids: 52 199
+    e agendaGroup ids: 53 200
+      # Agenda groups allow for logical groups of rules within a flow. ids: 54 201
+      # Rule(s) that do not have an agenda-group specified are placed into ids: 55 202
+      # the main agenda-group. ids: 56 203
+      tag group ids: 57 204
+      r rule/s ids: 58 205
+    e rule ids: 59 206
+      # A Rule ids: 60 207
+      # . applyies to a Fact type ids: 61 208
+      # . has one or many Constraint(s) ids: 62 209
+      # . describe an Action that is execute when the Fact instance ids: 63 210
+      # matches the Constraint(s) ids: 64 211
+      a agendaGroup ids: 65 212
+        tag agenda-group ids: 66 213
+      a autoFocus ids: 67 214
+        tag auto-focus ids: 68 215
+      a salience ids: 69 216
+        # Salience is an option that can be specified on a rule ids: 70 217
+        # giving it a priority and allowing the developer some control ids: 71 218
+        # over conflict resolution of activations. ids: 72 219
+        type integer ids: 73 220
+      r option/s ids: 74 221
+      r constraint/s ids: 75 222
+      r action/s ids: 76 223
+    e option ids: 77 224
+      tag opt ids: 78 225
+    e constraint ids: 79 226
+      # Constraints define how a Rule should match Fact instances. ids: 80 227
+      # A rule should have an array of at least one or many constraints. ids: 81 228
+      is-abstract  ids: 82 229
+      r constraint/s ids: 83 230
+    e when : constraint ids: 84 231
+    e for : constraint ids: 85 232
+    e and : constraint ids: 86 233
+    e or : constraint ids: 87 234
+      # The or constraint can be used to check for the existence of multiple facts. ids: 88 235
+    e not : constraint ids: 89 236
+    e is : constraint ids: 90 237
+    e set : constraint ids: 91 238
+      # example ids: 92 239
+      # ittf: set name = value ids: 93 240
+      # dsl : { name: value} ids: 94 241
+    e exists : constraint ids: 95 242
+      # exists is the logical inversion of a not constraint. ids: 96 243
+      # It checks for the existence of a fact in memory. ids: 97 244
+    e from : constraint ids: 98 245
+      # The from modifier allows for the checking of facts that are not necessarily in the workingMemory. ids: 99 246
+      # The from modifier can be used to access properties on a fact in workingMemory or you can use javascript expressions. ids: 100 247
+    #  ids: 101 248
+    # ACTION ids: 102 249
+    #  ids: 103 250
+    e action ids: 104 251
+      # Defines the code of the Action of a Rule. ids: 105 252
+      # An Action is a function that should be fired when all constraints in the rule match. ids: 106 253
+      # The tag 'then' is for readability of the nools dsl source. ids: 107 254
+      tag then ids: 108 255
+      r codeline/s ids: 109 256
+    #  ids: 110 257
+    # EVENTS ids: 111 258
+    #  ids: 112 259
+      e event ids: 113 260
+      # A Rule Action may also emit events using the sessions emit function. ids: 114 261
+      # code -> session.emit('my custom event') ids: 115 262
+      # dsl -> emit('my custom event') ids: 116 263
+      r codeline/s ids: 117 264
+    #  ids: 118 265
+    # SCOPE ids: 119 266
+    #  ids: 120 267
+    e function ids: 121 268
+      # You may define Function(s) that can be used (are in scope) ids: 122 269
+      # inside a Rule. ids: 123 270
+      r param/s ids: 124 271
+      r codeline/s ids: 125 272
+      m getParams ids: 126 273
+        var ret = [] ids: 127 274
+        foreach item in this.params ids: 128 275
+          _ ret.push(item.wzName) ids: 129 276
+        return ret ids: 130 277
+    e param ids: 131 278
+      # The parameter of a Function ids: 132 279
+    e codeline ids: 133 280
+      tag + ids: 134 281
+    #  ids: 135 282
+    # CONFLICT RESOLUTION ids: 136 283
+    #  ids: 137 284
+    e conflictResolution ids: 138 285
+      tag conflict-resolution ids: 139 286
+      r resolutionStrateg-y/ies ids: 140 287
+    e resolutionStrategy ids: 141 288
+      tag strategy ids: 142 289
+      restrict  ids: 143 290
+        enum salience ids: 144 291
+        enum activationRecency ids: 145 292
+        enum factRecency ids: 146 293
+        enum bucketCounter ids: 147 294

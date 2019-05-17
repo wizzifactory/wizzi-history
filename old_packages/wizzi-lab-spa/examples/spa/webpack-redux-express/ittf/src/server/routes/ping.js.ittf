@@ -1,0 +1,26 @@
+route( Storage )
+	$append deps
+		var stringify = require('json-stringify-safe');
+		var u = require('../lib/utils')
+	get( /ping )
+		_ res.send(formatRequest(req))
+	get( /pingall )
+		_ res.send(formatRequestAll(req))
+	function formatProp
+		param obj
+		param name
+		var p = obj[name]
+		return name + '=' + (p ? util.inspect(p, { depth: null }) : 'undefined')
+	function formatRequest
+		param req
+		var ret = []
+		_ ret.push(formatProp(req, 'params'))
+		_ ret.push(formatProp(req, 'query'))
+		_ ret.push(formatProp(req, 'locals'))
+		return ret.join('<br>')
+	function formatRequestAll
+		param req
+		var ret = stringify(req, null, 2)
+		# return u.replaceAll(ret, '\n', '<br>')
+		return '<pre>' + ret + '</pre>'
+		

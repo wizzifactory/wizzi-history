@@ -1,0 +1,116 @@
+module 
+    kind jsfile
+
+	$$ gulp.browserify
+
+    var browserify = require('browserify')
+    var gulp = require('gulp')
+    var source = require('vinyl-source-stream')
+    var buffer = require('vinyl-buffer')
+    var uglify = require('gulp-uglify')
+    var sourcemaps = require('gulp-sourcemaps')
+    var gutil = require('gulp-util')
+	var glob = require('glob')
+    #
+		# This is a workaround for this bug...https://github.com/feross/buffer/issues/79
+		# Please refactor this, when the bug is resolved!
+		# PS: you need to depend on buffer@3.4.3
+	var OldBuffer = require.resolve('buffer/')
+    var builtinsOverride = require('browserify/lib/builtins')
+    set builtinsOverride.buffer = OldBuffer
+
+	+
+	var entries = []
+	$if browserify.fileItems.length > 0
+		$foreach item in browserify.fileItems
+			_ entries.push('${item}')
+			
+	$if browserify.globItems.length > 0
+		$foreach item in browserify.globItems
+			var files = glob.sync('${item}');
+			foreach file in files
+				_ entries.push(file)
+
+	var destFolder = '${browserify.destFolder}'
+	
+	var sourceBaseName = '${browserify.sourceBaseName}'
+	
+	var sourceMapFolder = './'
+	
+	$if _.isNotEmpty(browserify.sourceMapFolder)
+		set sourceMapFolder = '${browserify.sourceMapFolder}'
+
+	+
+
+    task( clean )
+
+        _ del
+            [ 
+                @ destFolder + '/' + sourceBaseName + '.*'
+                @ 'coverage'
+                @ 'test/browser/' + sourceBaseName + '-browser-tests.js'
+            @ cb
+
+
+	task( build )
+			_ async.map
+				[
+					@ 0
+					@ 1
+				function
+					param n
+					param callback
+					var isDebug = n % 2 === 0;
+
+					var b
+						_ browserify
+							{ 
+								@ entries entries
+								@ debug isDebug
+								@ builtins builtinsOverride
+								$if _.isNotEmpty(browserify.standalone)
+									@ standalone '${browserify.standalone}'
+					+
+					if ! (isDebug)
+						_ b.transform
+							{ 
+								@ global true
+							@ 'uglifyify'
+					+
+					var p
+						_ b.transform('brfs')
+							._ bundle()
+								._ pipe
+									_ source(sourceBaseName + (!isDebug ? '.min' : '') + '.js')
+									._ pipe
+										_ buffer()
+										._ pipe
+											_ sourcemaps.init
+												{ 
+													@ loadMaps true
+											._ pipe
+												_ header
+													@ banner
+													{ 
+														@ pkg pkg
+					if isDebug
+						set p = p.pipe(sourcemaps.write())
+
+					_ p.pipe
+						_ gulp.dest(destFolder)
+						._ on
+							@ 'error'
+							function 
+								param err
+								_ cb(err)
+							._ on
+								@ 'end'
+								function 
+									_ cb()
+
+	_ gulp.task
+		@ 'default'
+		[
+			@ 'clean'
+			@ 'build'
+

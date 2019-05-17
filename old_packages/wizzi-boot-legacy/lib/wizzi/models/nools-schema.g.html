@@ -1,0 +1,1314 @@
+<!doctype html>
+<html VERSION-5="5" VERSION-4="4" version="5">
+    <head>
+        <title>Wizzi schema nools</title>
+        <style>
+            body {
+              font-family: verdana;
+              font-size: 13px;
+            } 
+            .main-left {
+              position: fixed;
+              margin-left: 5%;
+              top: 80px;
+              width: 20%;
+              height: 80%;
+              background: #eee;
+              overflow: auto;
+            } 
+            .main-center {
+              top: 80px;
+              margin-left: 30%;
+              height: 80%;
+              width: 50%;
+              position: fixed;
+              overflow: auto;
+              z-index: 1;
+            } 
+            .well {
+              border: solid 1px #aaa;
+            } 
+            .pretty-table { border: 1px solid #333; width: 100%; margin-top: 30px; }
+            .pretty-table th, .pretty-table td { border: 1px dotted #666; }
+            .pretty-table-2 { border: 1px solid #999; width: 100%; margin-top: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="main">
+            <h1>Wizzi schema nools</h1>
+            <div class="main-left">
+                <ul>
+                    <li><a href="#element_nools">nools</a>
+                    </li>
+                    <li><a href="#element_global">global</a>
+                    </li>
+                    <li><a href="#element_fact">fact</a>
+                    </li>
+                    <li><a href="#element_ctor">ctor</a>
+                    </li>
+                    <li><a href="#element_property">property</a>
+                    </li>
+                    <li><a href="#element_agendaGroup">agendaGroup</a>
+                    </li>
+                    <li><a href="#element_rule">rule</a>
+                    </li>
+                    <li><a href="#element_option">option</a>
+                    </li>
+                    <li><a href="#element_constraint">constraint</a>
+                    </li>
+                    <li><a href="#element_when">when</a>
+                    </li>
+                    <li><a href="#element_xfor">xfor</a>
+                    </li>
+                    <li><a href="#element_and">and</a>
+                    </li>
+                    <li><a href="#element_or">or</a>
+                    </li>
+                    <li><a href="#element_not">not</a>
+                    </li>
+                    <li><a href="#element_is">is</a>
+                    </li>
+                    <li><a href="#element_set">set</a>
+                    </li>
+                    <li><a href="#element_exists">exists</a>
+                    </li>
+                    <li><a href="#element_from">from</a>
+                    </li>
+                    <li><a href="#element_action">action</a>
+                    </li>
+                    <li><a href="#element_xfunction">xfunction</a>
+                    </li>
+                    <li><a href="#element_param">param</a>
+                    </li>
+                    <li><a href="#element_codeline">codeline</a>
+                    </li>
+                    <li><a href="#element_conflictResolution">conflictResolution</a>
+                    </li>
+                    <li><a href="#element_resolutionStrategy">resolutionStrategy</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="main-center">
+                <table class="pretty-table" id="element_nools">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>nools</b>
+                            </td>
+                            <td>nools</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>The root tag of the nools schema. &nbsp;</span>
+                    <span>A nools IttfDocument defines one Flow. &nbsp;</span>
+                    <span>A Flow is a container of Rule(s). &nbsp;</span>
+                    <span>In a Flow you declare Fact types and Rule(s). &nbsp;</span>
+                    <span>Instances of Flow(s) are called Session(s). &nbsp;</span>
+                    <span>In a Session instances of Facts are matched against Rule(s). &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>global</td>
+                                <td>globals</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>fact</td>
+                                <td>facts</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>rule</td>
+                                <td>rules</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>agendaGroup</td>
+                                <td>agendaGroups</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>function</td>
+                                <td>functions</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_global">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>global</b>
+                            </td>
+                            <td>global</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>Globals are accessible through the current working scope of rule facts in a dsl, &nbsp;</span>
+                    <span>very similar to using the scope option when compiling. &nbsp;</span>
+                    <span>Note: globals are not part of the working memory and therefore are not accessible &nbsp;</span>
+                    <span>in the LHS (when) of your rule. &nbsp;</span>
+                </div>
+                <table class="pretty-table" id="element_fact">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>fact</b>
+                            </td>
+                            <td>def</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>Declares a Fact type. &nbsp;</span>
+                    <span>A Fact type must be a String or a javascript Function. &nbsp;</span>
+                    <span>dsl > define 'type-name' { &nbsp;</span>
+                    <span>In a Session (an istance of a Flow) instances of Fact(s) can be: &nbsp;</span>
+                    <span>. asserted &nbsp;</span>
+                    <span>. retracted &nbsp;</span>
+                    <span>. modified &nbsp;</span>
+                    <span>. retrivied (all or by Type) &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>ctor</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>function</td>
+                                <td>functions</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_ctor">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>ctor</b>
+                            </td>
+                            <td>ctor</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>Fact type constructor &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>param</td>
+                                <td>params</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>codeline</td>
+                                <td>codelines</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>getParams</div>
+                                </td>
+                                <td>
+                                    <div>var ret = [];</div>
+                                    <div>foreach item in this.params;</div>
+                                    <div>return ret;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_property">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>property</b>
+                            </td>
+                            <td>@</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>function</td>
+                                <td>functions</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_agendaGroup">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>agendaGroup</b>
+                            </td>
+                            <td>group</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>Agenda groups allow for logical groups of rules within a flow. &nbsp;</span>
+                    <span>Rule(s) that do not have an agenda-group specified are placed into &nbsp;</span>
+                    <span>the main agenda-group. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>rule</td>
+                                <td>rules</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_rule">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>rule</b>
+                            </td>
+                            <td>rule</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>A Rule &nbsp;</span>
+                    <span>. applyies to a Fact type &nbsp;</span>
+                    <span>. has one or many Constraint(s) &nbsp;</span>
+                    <span>. describe an Action that is execute when the Fact instance &nbsp;</span>
+                    <span>matches the Constraint(s) &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>agendaGroup</td>
+                                <td>agenda-group</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>autoFocus</td>
+                                <td>auto-focus</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>salience</td>
+                                <td>salience</td>
+                                <td>integer</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Salience is an option that can be specified on a rule &nbsp;</span>
+                                        <span>giving it a priority and allowing the developer some control &nbsp;</span>
+                                        <span>over conflict resolution of activations. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>option</td>
+                                <td>options</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>action</td>
+                                <td>actions</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_option">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>option</b>
+                            </td>
+                            <td>opt</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="pretty-table" id="element_constraint">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>constraint</b>
+                            </td>
+                            <td>constraint</td>
+                            <td></td>
+                            <td>is-abstract </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>Constraints define how a Rule should match Fact instances. &nbsp;</span>
+                    <span>A rule should have an array of at least one or many constraints. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_when">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>when</b>
+                            </td>
+                            <td>when</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_xfor">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>xfor</b>
+                            </td>
+                            <td>for</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_and">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>and</b>
+                            </td>
+                            <td>and</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_or">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>or</b>
+                            </td>
+                            <td>or</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>The or constraint can be used to check for the existence of multiple facts. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_not">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>not</b>
+                            </td>
+                            <td>not</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_is">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>is</b>
+                            </td>
+                            <td>is</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_set">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>set</b>
+                            </td>
+                            <td>set</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>example &nbsp;</span>
+                    <span>ittf: set name = value &nbsp;</span>
+                    <span>dsl : { name: value} &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_exists">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>exists</b>
+                            </td>
+                            <td>exists</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>exists is the logical inversion of a not constraint. &nbsp;</span>
+                    <span>It checks for the existence of a fact in memory. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_from">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>from</b>
+                            </td>
+                            <td>from</td>
+                            <td>constraint</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>The from modifier allows for the checking of facts that are not necessarily in the workingMemory. &nbsp;</span>
+                    <span>The from modifier can be used to access properties on a fact in workingMemory or you can use javascript expressions. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>constraint</td>
+                                <td>constraints</td>
+                                <td>one-to-many</td>
+                                <td>constraint</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_action">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>action</b>
+                            </td>
+                            <td>then</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>Defines the code of the Action of a Rule. &nbsp;</span>
+                    <span>An Action is a function that should be fired when all constraints in the rule match. &nbsp;</span>
+                    <span>The tag 'then' is for readability of the nools dsl source. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>codeline</td>
+                                <td>codelines</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_xfunction">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>xfunction</b>
+                            </td>
+                            <td>function</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>You may define Function(s) that can be used (are in scope) &nbsp;</span>
+                    <span>inside a Rule. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>param</td>
+                                <td>params</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>codeline</td>
+                                <td>codelines</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>getParams</div>
+                                </td>
+                                <td>
+                                    <div>var ret = [];</div>
+                                    <div>foreach item in this.params;</div>
+                                    <div>return ret;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_param">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>param</b>
+                            </td>
+                            <td>param</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>The parameter of a Function &nbsp;</span>
+                </div>
+                <table class="pretty-table" id="element_codeline">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>codeline</b>
+                            </td>
+                            <td>+</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="pretty-table" id="element_conflictResolution">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>conflictResolution</b>
+                            </td>
+                            <td>conflict-resolution</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>resolutionStrategy</td>
+                                <td>resolutionStrategies</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolutionStrategy">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolutionStrategy</b>
+                            </td>
+                            <td>strategy</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+
+</html>
+

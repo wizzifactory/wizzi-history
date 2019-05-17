@@ -1,0 +1,147 @@
+  wizzischema nools ids: undefined undefined
+    # Nools, the rule engine. ids: undefined undefined
+    # When using nools you define Flow(s). ids: undefined undefined
+    # A Flow acts as a container for Rule(s) ids: undefined undefined
+    # that can later be used to get a Session. ids: undefined undefined
+    e nools ids: undefined undefined
+      # The root tag of the nools schema. ids: undefined undefined
+      # A nools IttfDocument defines one Flow. ids: undefined undefined
+      # A Flow is a container of Rule(s). ids: undefined undefined
+      # In a Flow you declare Fact types and Rule(s). ids: undefined undefined
+      # Instances of Flow(s) are called Session(s). ids: undefined undefined
+      # In a Session instances of Facts are matched against Rule(s). ids: undefined undefined
+      tag nools ids: undefined undefined
+      r global/s ids: undefined undefined
+      r fact/s ids: undefined undefined
+      r rule/s ids: undefined undefined
+      r agendaGroup/s ids: undefined undefined
+      r function/s ids: undefined undefined
+    e global ids: undefined undefined
+      # Globals are accessible through the current working scope of rule facts in a dsl, ids: undefined undefined
+      # very similar to using the scope option when compiling. ids: undefined undefined
+      # Note: globals are not part of the working memory and therefore are not accessible ids: undefined undefined
+      # in the LHS (when) of your rule. ids: undefined undefined
+    e fact ids: undefined undefined
+      # Declares a Fact type. ids: undefined undefined
+      # A Fact type must be a String or a javascript Function. ids: undefined undefined
+      # dsl > define 'type-name' { ids: undefined undefined
+      # In a Session (an istance of a Flow) instances of Fact(s) can be: ids: undefined undefined
+      # . asserted ids: undefined undefined
+      # . retracted ids: undefined undefined
+      # . modified ids: undefined undefined
+      # . retrivied (all or by Type) ids: undefined undefined
+      tag def ids: undefined undefined
+      r propert-y/ies ids: undefined undefined
+      r ctor ids: undefined undefined
+        one-to-one  ids: undefined undefined
+      r function/s ids: undefined undefined
+    e ctor ids: undefined undefined
+      # Fact type constructor ids: undefined undefined
+      r param/s ids: undefined undefined
+      r codeline/s ids: undefined undefined
+      m getParams ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        foreach item in this.params ids: undefined undefined
+          _ ret.push(item.wzName) ids: undefined undefined
+        return ret ids: undefined undefined
+    e property ids: undefined undefined
+      tag @ ids: undefined undefined
+      r function/s ids: undefined undefined
+    # ========================================================== ids: undefined undefined
+    # RULES ids: undefined undefined
+    # ---------------------------------------------------------- ids: undefined undefined
+    e agendaGroup ids: undefined undefined
+      # Agenda groups allow for logical groups of rules within a flow. ids: undefined undefined
+      # Rule(s) that do not have an agenda-group specified are placed into ids: undefined undefined
+      # the main agenda-group. ids: undefined undefined
+      tag group ids: undefined undefined
+      r rule/s ids: undefined undefined
+    e rule ids: undefined undefined
+      # A Rule ids: undefined undefined
+      # . applyies to a Fact type ids: undefined undefined
+      # . has one or many Constraint(s) ids: undefined undefined
+      # . describe an Action that is execute when the Fact instance ids: undefined undefined
+      # matches the Constraint(s) ids: undefined undefined
+      a agendaGroup ids: undefined undefined
+        tag agenda-group ids: undefined undefined
+      a autoFocus ids: undefined undefined
+        tag auto-focus ids: undefined undefined
+      a salience ids: undefined undefined
+        # Salience is an option that can be specified on a rule ids: undefined undefined
+        # giving it a priority and allowing the developer some control ids: undefined undefined
+        # over conflict resolution of activations. ids: undefined undefined
+        type integer ids: undefined undefined
+      r option/s ids: undefined undefined
+      r constraint/s ids: undefined undefined
+      r action/s ids: undefined undefined
+    e option ids: undefined undefined
+      tag opt ids: undefined undefined
+    e constraint ids: undefined undefined
+      # Constraints define how a Rule should match Fact instances. ids: undefined undefined
+      # A rule should have an array of at least one or many constraints. ids: undefined undefined
+      is-abstract  ids: undefined undefined
+      r constraint/s ids: undefined undefined
+    e when : constraint ids: undefined undefined
+    e for : constraint ids: undefined undefined
+    e and : constraint ids: undefined undefined
+    e or : constraint ids: undefined undefined
+      # The or constraint can be used to check for the existence of multiple facts. ids: undefined undefined
+    e not : constraint ids: undefined undefined
+    e is : constraint ids: undefined undefined
+    e set : constraint ids: undefined undefined
+      # example ids: undefined undefined
+      # ittf: set name = value ids: undefined undefined
+      # dsl : { name: value} ids: undefined undefined
+    e exists : constraint ids: undefined undefined
+      # exists is the logical inversion of a not constraint. ids: undefined undefined
+      # It checks for the existence of a fact in memory. ids: undefined undefined
+    e from : constraint ids: undefined undefined
+      # The from modifier allows for the checking of facts that are not necessarily in the workingMemory. ids: undefined undefined
+      # The from modifier can be used to access properties on a fact in workingMemory or you can use javascript expressions. ids: undefined undefined
+    #  ids: undefined undefined
+    # ACTION ids: undefined undefined
+    #  ids: undefined undefined
+    e action ids: undefined undefined
+      # Defines the code of the Action of a Rule. ids: undefined undefined
+      # An Action is a function that should be fired when all constraints in the rule match. ids: undefined undefined
+      # The tag 'then' is for readability of the nools dsl source. ids: undefined undefined
+      tag then ids: undefined undefined
+      r codeline/s ids: undefined undefined
+    #  ids: undefined undefined
+    # EVENTS ids: undefined undefined
+    #  ids: undefined undefined
+      e event ids: undefined undefined
+      # A Rule Action may also emit events using the sessions emit function. ids: undefined undefined
+      # code -> session.emit('my custom event') ids: undefined undefined
+      # dsl -> emit('my custom event') ids: undefined undefined
+      r codeline/s ids: undefined undefined
+    #  ids: undefined undefined
+    # SCOPE ids: undefined undefined
+    #  ids: undefined undefined
+    e function ids: undefined undefined
+      # You may define Function(s) that can be used (are in scope) ids: undefined undefined
+      # inside a Rule. ids: undefined undefined
+      r param/s ids: undefined undefined
+      r codeline/s ids: undefined undefined
+      m getParams ids: undefined undefined
+        var ret = [] ids: undefined undefined
+        foreach item in this.params ids: undefined undefined
+          _ ret.push(item.wzName) ids: undefined undefined
+        return ret ids: undefined undefined
+    e param ids: undefined undefined
+      # The parameter of a Function ids: undefined undefined
+    e codeline ids: undefined undefined
+      tag + ids: undefined undefined
+    #  ids: undefined undefined
+    # CONFLICT RESOLUTION ids: undefined undefined
+    #  ids: undefined undefined
+    e conflictResolution ids: undefined undefined
+      tag conflict-resolution ids: undefined undefined
+      r resolutionStrateg-y/ies ids: undefined undefined
+    e resolutionStrategy ids: undefined undefined
+      tag strategy ids: undefined undefined
+      restrict  ids: undefined undefined
+        enum salience ids: undefined undefined
+        enum activationRecency ids: undefined undefined
+        enum factRecency ids: undefined undefined
+        enum bucketCounter ids: undefined undefined

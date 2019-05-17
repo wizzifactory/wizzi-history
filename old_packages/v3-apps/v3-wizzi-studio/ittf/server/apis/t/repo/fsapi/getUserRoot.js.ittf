@@ -1,0 +1,23 @@
+﻿$group
+
+	@ getUserRoot
+		function
+			param userId
+			param callback
+
+			_ repoFS.readDir
+				@ userId
+				@ null
+				@ null
+				f_cb( result )
+					return
+						_ callback
+							@ null
+							{
+								@ status
+									_ success
+										@ 'Folder retrieved for user ' + userId
+								@ data
+									{
+										@ kind 0
+										@ items result

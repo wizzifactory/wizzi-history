@@ -1,0 +1,45 @@
+﻿module
+	$params name, api|@@null
+	kind jsfile
+	+
+	#
+		# Router: ${name}
+	+
+	# Dependencies
+	var util = require('util')
+	var path = require('path')
+	var wizzi = require('wizzi')
+	var rest = require('../lib/rest')
+	var u = require('../lib/utils')
+	+
+	$hook requires
+	#
+		# Helpers
+	function sendError
+		param res
+		param err
+		param options
+		_ rest.sendError
+			@ res
+			@ err
+			@ options
+	+
+	function sendSuccess
+		param res
+		param result
+		param options
+		_ rest.sendSuccess
+			@ res
+			@ result
+			@ options
+	#
+		# Routes
+	set module.exports
+		function
+			param app
+			param api
+			$if api == null
+				var ${name.toLowerCase()}Api = api.${name.toLowerCase()}
+			$else
+				var ${api}Api = api.${api}
+			$hook

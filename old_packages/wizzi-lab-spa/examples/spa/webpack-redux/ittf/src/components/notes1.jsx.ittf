@@ -1,0 +1,52 @@
+module
+	kind react
+	import React from 'react'
+	import Editable from './editable.jsx'
+	import { noteAdd, noteUpdate, noteDelete } from '../actions'
+	
+	class Notes
+		super React.Component
+		ctor
+			param props
+			base props
+			set this.renderNote = this.renderNote.bind(this)
+			set this.addNote = this.addNote.bind(this)
+			set this.editNote = this.editNote.bind(this)
+			set this.deleteNote = this.deleteNote.bind(this)
+		m render
+			const notes = this.props.notes
+			log 'Notes', this.props
+			return
+				div
+					div
+						button +
+							@ className "add-note"
+							@ onClick {this.addNote}
+					ul {notes.map(this.renderNote)}
+						@ className "notes"
+		m renderNote
+			param note
+			log 'renderNote', note
+			return
+				li
+					@ className "note"
+					@ key {note.id}
+					< Editable
+						@ value {note.task}
+						@ onEdit {this.editNote.bind(null, note.id)}
+						@ onDelete {this.deleteNote.bind(null, note.id)}
+		m addNote
+			log 'addNote'
+			_ this.props.dispatch(noteAdd('New note'))
+		
+		m editNote
+			param id
+			param task
+			log 'editNote', id, task
+			_ this.props.dispatch(noteUpdate(id, task))
+			
+		m deleteNote
+			param id
+			log 'deleteNote', id
+			_ this.props.dispatch(noteDelete(id))
+	export default Notes

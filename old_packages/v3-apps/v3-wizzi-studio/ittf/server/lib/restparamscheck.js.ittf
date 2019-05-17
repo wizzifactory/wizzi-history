@@ -1,0 +1,59 @@
+﻿module
+	kind jsfile
+
+	import util
+	import wizzi
+
+	var md = module.exports = {}
+
+	class paramsCheck
+		ctor
+			param req
+			set this.req = req
+			set this.errors = null
+
+		m notEmpty
+			param qb
+			param name
+			var value = this.optional(qb, name)
+			if wizzi.verify.isEmpty(value)
+				_ this.error
+					@ 'String parameter: "' + name + '" must have a value.'
+			return value
+
+		m notEmptyBody
+			var value = this.optionalBody()
+			if wizzi.verify.isEmpty(value)
+				_ this.error
+					@ 'The body must be not empty.'
+			return value
+
+		m optional
+			param qb
+			param name
+			var value
+			if qb === 'query'
+				set value = this.req.query[name]
+			elif qb === 'params'
+				set value = this.req.params[name]
+			else
+				set value = this.req.body[name]
+			return value
+
+		m optionalBody
+			return this.req.body
+
+		m error
+			param message
+			if !this.errors
+				set this.errors = []
+			_ this.errors.push(message)
+
+		m sendErrors
+			param res
+			_ res.send
+				{
+					@ code 999
+					@ error this.errors
+
+	set md.paramsCheck = paramsCheck

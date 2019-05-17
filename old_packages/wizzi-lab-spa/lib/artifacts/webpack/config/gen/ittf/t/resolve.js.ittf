@@ -1,0 +1,12 @@
+$group
+    @ resolve
+        { 
+			$if _.isNotEmpty(wp.resolve.mainFieldsOut)
+				@ mainField ${wp.resolve.mainFieldsOut}
+			$if _.isNotEmpty(wp.resolve.mainFilesOut)
+				@ mainFiles ${wp.resolve.mainFilesOut}
+			$if _.isNotEmpty(wp.resolve.modulesOut)
+				@ modules ${wp.resolve.modulesOut}
+			$if _.isNotEmpty(wp.resolve.extensionsOut)
+				@ extensions ${wp.resolve.extensionsOut}
+			

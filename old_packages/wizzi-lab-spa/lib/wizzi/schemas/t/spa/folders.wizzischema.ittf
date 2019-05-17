@@ -1,0 +1,15 @@
+$group
+	e knownFolder
+		tag folder
+		m wzInitialize
+			var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+			set this.knownName = nv.name()
+			set this.path = nv.value()
+			log 'folder.wzInitialize', this.knownName, this.path
+	e knownFile
+		tag file
+		m wzInitialize
+			var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+			set this.knownName = nv.name()
+			set this.path = nv.value()
+			log 'folder.wzInitialize', this.knownName, this.path

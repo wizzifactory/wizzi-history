@@ -1,0 +1,3914 @@
+<!doctype html>
+<html VERSION-5="5" VERSION-4="4" version="5">
+    <head>
+        <title>Wizzi schema webpack</title>
+        <style>
+            body {
+              font-family: verdana;
+              font-size: 13px;
+            } 
+            .main-left {
+              position: fixed;
+              margin-left: 5%;
+              top: 80px;
+              width: 20%;
+              height: 80%;
+              background: #eee;
+              overflow: auto;
+            } 
+            .main-center {
+              top: 80px;
+              margin-left: 30%;
+              height: 80%;
+              width: 50%;
+              position: fixed;
+              overflow: auto;
+              z-index: 1;
+            } 
+            .well {
+              border: solid 1px #aaa;
+            } 
+            .pretty-table { border: 1px solid #333; width: 100%; margin-top: 30px; }
+            .pretty-table th, .pretty-table td { border: 1px dotted #666; }
+            .pretty-table-2 { border: 1px solid #999; width: 100%; margin-top: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="main">
+            <h1>Wizzi schema webpack</h1>
+            <div class="main-left">
+                <ul>
+                    <li><a href="#element_webpackitem">webpackitem</a>
+                    </li>
+                    <li><a href="#element_comment">comment</a>
+                    </li>
+                    <li><a href="#element_property">property</a>
+                    </li>
+                    <li><a href="#element_webpack">webpack</a>
+                    </li>
+                    <li><a href="#element_feature">feature</a>
+                    </li>
+                    <li><a href="#element_file">file</a>
+                    </li>
+                    <li><a href="#element_entry">entry</a>
+                    </li>
+                    <li><a href="#element_entryChunk">entryChunk</a>
+                    </li>
+                    <li><a href="#element_output">output</a>
+                    </li>
+                    <li><a href="#element_resolve">resolve</a>
+                    </li>
+                    <li><a href="#element_resolveAlias">resolveAlias</a>
+                    </li>
+                    <li><a href="#element_resolveMainField">resolveMainField</a>
+                    </li>
+                    <li><a href="#element_resolveMainFile">resolveMainFile</a>
+                    </li>
+                    <li><a href="#element_resolveModule">resolveModule</a>
+                    </li>
+                    <li><a href="#element_resolvePlugin">resolvePlugin</a>
+                    </li>
+                    <li><a href="#element_resolveExtension">resolveExtension</a>
+                    </li>
+                    <li><a href="#element_module">module</a>
+                    </li>
+                    <li><a href="#element_ruleParser">ruleParser</a>
+                    </li>
+                    <li><a href="#element_moduleRule">moduleRule</a>
+                    </li>
+                    <li><a href="#element_moduleRuleTest">moduleRuleTest</a>
+                    </li>
+                    <li><a href="#element_moduleRuleInclude">moduleRuleInclude</a>
+                    </li>
+                    <li><a href="#element_moduleRuleExclude">moduleRuleExclude</a>
+                    </li>
+                    <li><a href="#element_moduleRuleUse">moduleRuleUse</a>
+                    </li>
+                    <li><a href="#element_plugin">plugin</a>
+                    </li>
+                    <li><a href="#element_devServer">devServer</a>
+                    </li>
+                    <li><a href="#element_devServerProxy">devServerProxy</a>
+                    </li>
+                    <li><a href="#element_external">external</a>
+                    </li>
+                    <li><a href="#element_watch">watch</a>
+                    </li>
+                    <li><a href="#element_watchOptions">watchOptions</a>
+                    </li>
+                    <li><a href="#element_performance">performance</a>
+                    </li>
+                    <li><a href="#element_stats">stats</a>
+                    </li>
+                    <li><a href="#element_jsObject">jsObject</a>
+                    </li>
+                    <li><a href="#element_jsArray">jsArray</a>
+                    </li>
+                    <li><a href="#element_jsProp">jsProp</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="main-center">
+                <h5>Exports</h5>
+                <div>jsProp</div>
+                <table class="pretty-table" id="element_webpackitem">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>webpackitem</b>
+                            </td>
+                            <td>webpackitem</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>propertyOfCategory</div>
+                                </td>
+                                <td>
+                                    <div>var ret = [];</div>
+                                    <div>foreach item in this.properties;</div>
+                                    <div>return ret;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_comment">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>comment</b>
+                            </td>
+                            <td>#</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_property">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>property</b>
+                            </td>
+                            <td>property</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>category</td>
+                                <td>category</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>name</td>
+                                <td>name</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>value</td>
+                                <td>value</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzInitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.name = this.wzName;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_webpack">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>webpack</b>
+                            </td>
+                            <td>webpack</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>build</td>
+                                <td>build</td>
+                                <td>string</td>
+                                <td>development</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> development</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>development production</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>config</td>
+                                <td>config</td>
+                                <td>string</td>
+                                <td>none</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> none</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>none react</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>target</td>
+                                <td>target</td>
+                                <td>string</td>
+                                <td>web</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>https://webpack.js.org/configuration/target/ &nbsp;</span>
+                                    </div>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td>https://webpack.js.org/configuration/target/ async-node</td>
+                                            <td>
+                                                <span>Compile for usage in a Node.js-like environment (uses fs and vm to load chunks asynchronously) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Compile for usage in a Node.js-like environment (uses fs and vm to load chunks asynchronously) electron-main</td>
+                                            <td>
+                                                <span>Compile for Electron for main process. &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Compile for Electron for main process. electron-renderer</td>
+                                            <td>
+                                                <span>Compile for Electron for renderer process, providing a target using JsonpTemplatePlugin, FunctionModulePlugin for browser environments and NodeTargetPlugin and ExternalsPlugin for CommonJS and Electron built-in modules. &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Compile for Electron for renderer process, providing a target using JsonpTemplatePlugin, FunctionModulePlugin for browser environments and NodeTargetPlugin and ExternalsPlugin for CommonJS and Electron built-in modules. node</td>
+                                            <td>
+                                                <span>Compile for usage in a Node.js-like environment (uses Node.js require to load chunks) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Compile for usage in a Node.js-like environment (uses Node.js require to load chunks) node-webkit</td>
+                                            <td>
+                                                <span>Compile for usage in WebKit and uses JSONP for chunk loading. Allows importing of built-in Node.js modules and nw.gui (experimental) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Compile for usage in WebKit and uses JSONP for chunk loading. Allows importing of built-in Node.js modules and nw.gui (experimental) web</td>
+                                            <td>
+                                                <span>Compile for usage in a browser-like environment (default) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Compile for usage in a browser-like environment (default) webworker</td>
+                                            <td>
+                                                <span>Compile as WebWorker &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>context</td>
+                                <td>context</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>The context is an absolute string to the directory that contains the entry files. &nbsp;</span>
+                                        <span>The base directory, an absolute path, for resolving entry points and loaders from configuration. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>devtool</td>
+                                <td>devtool</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> eval</td>
+                                            <td>
+                                                <span>+++ +++ no generated code &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>+++ +++ no generated code cheap-eval-source-map</td>
+                                            <td>
+                                                <span>+ ++ no transformed code (lines only) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>+ ++ no transformed code (lines only) cheap-source-map</td>
+                                            <td>
+                                                <span>+ o yes transformed code (lines only) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>+ o yes transformed code (lines only) cheap-module-eval-source-map</td>
+                                            <td>
+                                                <span>o ++ no original source (lines only) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>o ++ no original source (lines only) cheap-module-source-map</td>
+                                            <td>
+                                                <span>o - yes original source (lines only) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>o - yes original source (lines only) eval-source-map</td>
+                                            <td>
+                                                <span>-- + no original source &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>-- + no original source source-map</td>
+                                            <td>
+                                                <span>-- -- yes original source &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>-- -- yes original source nosources-source-map</td>
+                                            <td>
+                                                <span>-- -- yes without source content &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>entry</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>output</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>resolve</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>module</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>plugin</td>
+                                <td>plugins</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>external</td>
+                                <td>externals</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>devServer</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>watch</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>watchOptions</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>feature</td>
+                                <td>features</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzInitialize</div>
+                                </td>
+                                <td>
+                                    <div>if this.config === 'react';</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.facets = [];</div>
+                                    <div>if this.context && this.context.length > 0;</div>
+                                    <div>if this.target && this.target.length > 0;</div>
+                                    <div>if this.devtool && this.devtool.length > 0;</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>setReactConfig</div>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_feature">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>feature</b>
+                            </td>
+                            <td>feature</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_file">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>file</b>
+                            </td>
+                            <td>file</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_entry">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>entry</b>
+                            </td>
+                            <td>entry</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/entry/ &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>watch</td>
+                                <td>watch</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td>files</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>entryChunk</td>
+                                <td>entryChunks</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>if this.entryChunks.length == 0;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_entryChunk">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>entryChunk</b>
+                            </td>
+                            <td>chunk</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/concepts/entry-points/ &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td>files</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                    <div>
+                                        <span>TODO error &nbsp;</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>if this.files.length == 1;</div>
+                                    <div>elif this.files.length > 1;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_output">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>output</b>
+                            </td>
+                            <td>output</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/output/ &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>path</td>
+                                <td>path</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>pathExpr</td>
+                                <td>path-expr</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>The output directory as an absolute path. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>pathInfo</td>
+                                <td>path-info</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Tell webpack to include comments in bundles with information about the contained modules. &nbsp;</span>
+                                        <span>This option defaults to false and should not be used in production, &nbsp;</span>
+                                        <span>but it's very useful in development when reading the generated code. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>chunkFilename</td>
+                                <td>chunk-filename</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>crossOriginLoading</td>
+                                <td>cross-origin-loading</td>
+                                <td>string</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Only used when target is web, which uses JSONP for loading on-demand chunks, &nbsp;</span>
+                                        <span>by adding script tags. &nbsp;</span>
+                                    </div>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td>by adding script tags. false</td>
+                                            <td>
+                                                <span>Disable cross-origin loading (default) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Disable cross-origin loading (default) anonymous</td>
+                                            <td>
+                                                <span>Enable cross-origin loading without credentials &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Enable cross-origin loading without credentials use-credentials</td>
+                                            <td>
+                                                <span>Enable cross-origin loading with credentials &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>hashFunction</td>
+                                <td>hash-function</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>The hashing algorithm to use, defaults to 'md5'. &nbsp;</span>
+                                        <span>All functions from Node.JS' crypto.createHash are supported. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>hashDigest</td>
+                                <td>hash-digest</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>The hashing algorithm to use, defaults to 'hex'. &nbsp;</span>
+                                        <span>All functions from Node.JS' hash.digest are supported. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>hashDigestLength</td>
+                                <td>hash-digest-length</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>The prefix length of the hash digest to use, defaults to 20. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>hashSalt</td>
+                                <td>hash-salt</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>An optional salt to update the hash via Node.JS' hash.update. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>filename</td>
+                                <td>filename</td>
+                                <td>string</td>
+                                <td>bundle.js</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>publicPath</td>
+                                <td>public-path</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>This is an important option when using on-demand-loading or loading external resources like images, files, etc. If an incorrect value is specified you'll receive 404 errors while loading these resources. &nbsp;</span>
+                                        <span>This option specifies the public URL of the output directory when referenced in a browser. A relative URL is resolved relative to the HTML page (or <base> tag). Server-relative URLs, protocol-relative URLs or absolute URLs are also possible and sometimes required, i. e. when hosting assets on a CDN. &nbsp;</span>
+                                        <span> &nbsp;</span>
+                                        <span>The value of the option is prefixed to every URL created by the runtime or loaders. Because of this the value of this option ends with / in most cases. &nbsp;</span>
+                                        <span>The default value is an empty string "". &nbsp;</span>
+                                        <span> &nbsp;</span>
+                                        <span>Simple rule: The URL of your output.path from the view of the HTML page. &nbsp;</span>
+                                        <span>path: path.resolve(__dirname, "public/assets"), &nbsp;</span>
+                                        <span>publicPath: "https://cdn.example.com/assets/" &nbsp;</span>
+                                        <span> &nbsp;</span>
+                                        <span>For this configuration: &nbsp;</span>
+                                        <span>publicPath: "/assets/", &nbsp;</span>
+                                        <span>chunkFilename: "[id].chunk.js" &nbsp;</span>
+                                        <span>A request to a chunk will look like /assets/4.chunk.js. &nbsp;</span>
+                                        <span> &nbsp;</span>
+                                        <span>A loader outputting HTML might emit something like this: &nbsp;</span>
+                                        <span><link href="/assets/spinner.gif" /> &nbsp;</span>
+                                        <span> &nbsp;</span>
+                                        <span>or when loading an image in CSS: &nbsp;</span>
+                                        <span>background-image: url(/assets/spinner.gif); &nbsp;</span>
+                                        <span> &nbsp;</span>
+                                        <span>The webpack-dev-server also takes a hint from publicPath, using it to determine where to serve the output files from. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>library</td>
+                                <td>library</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>https://webpack.js.org/guides/author-libraries/ &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>libraryTarget</td>
+                                <td>library-target</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> var</td>
+                                            <td>
+                                                <span>(default) When your library is loaded, the return value of your entry point will be assigned to a variable: &nbsp;</span>
+                                                <span>var MyLibrary = _entry_return_; &nbsp;</span>
+                                                <span>// your users will use your library like: &nbsp;</span>
+                                                <span>MyLibrary.doSomething(); &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>MyLibrary.doSomething(); this</td>
+                                            <td>
+                                                <span>When your library is loaded, the return value of your entry point will be assigned to this, the meaning of this is up to you: &nbsp;</span>
+                                                <span>this["MyLibrary"] = _entry_return_; &nbsp;</span>
+                                                <span>// your users will use your library like: &nbsp;</span>
+                                                <span>this.MyLibrary.doSomething(); &nbsp;</span>
+                                                <span>MyLibrary.doSomething(); //if this is window &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>MyLibrary.doSomething(); //if this is window window</td>
+                                            <td>
+                                                <span>When your library is load, the return value of your entry point will be part window object. &nbsp;</span>
+                                                <span>window["MyLibrary"] = _entry_return_; &nbsp;</span>
+                                                <span>//your users will use your library like: &nbsp;</span>
+                                                <span>window.MyLibrary.doSomething(); &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>window.MyLibrary.doSomething(); global</td>
+                                            <td>
+                                                <span>When your library is loaded, the return value of your entry point will be part global object. &nbsp;</span>
+                                                <span>global["MyLibrary"] = _entry_return_; &nbsp;</span>
+                                                <span>//your users will use your library like: &nbsp;</span>
+                                                <span>global.MyLibrary.doSomething(); &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>global.MyLibrary.doSomething(); commonjs</td>
+                                            <td>
+                                                <span>When your library is loaded, the return value of your entry point will be part of the exports object. As the name implies, this is used in CommonJS environments: &nbsp;</span>
+                                                <span>exports["MyLibrary"] = _entry_return_; &nbsp;</span>
+                                                <span>//your users will use your library like: &nbsp;</span>
+                                                <span>require("MyLibrary").doSomething(); &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>require("MyLibrary").doSomething(); commonjs2</td>
+                                            <td>
+                                                <span>When your library is loaded, the return value of your entry point will be part of the exports object. As the name implies, this is used in CommonJS environments: &nbsp;</span>
+                                                <span>module.exports = _entry_return_; &nbsp;</span>
+                                                <span>//your users will use your library like: &nbsp;</span>
+                                                <span>require("MyLibrary").doSomething(); &nbsp;</span>
+                                                <span>Wondering the difference between CommonJS and CommonJS2? &nbsp;</span>
+                                                <span>Check this out https://github.com/webpack/webpack/issues/1114 (they are pretty much the same). &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Check this out https://github.com/webpack/webpack/issues/1114 (they are pretty much the same). commonjs-module</td>
+                                            <td>
+                                                <span>Expose it using the module.exports object (output.library is ignored), __esModule is defined (it's threaded as ES2015 Module in interop mode) &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Expose it using the module.exports object (output.library is ignored), __esModule is defined (it's threaded as ES2015 Module in interop mode) amd</td>
+                                            <td>
+                                                <span>In this case webpack will make your library an AMD module. &nbsp;</span>
+                                                <span>But there is a very important pre-requisite, your entry chunk must be defined with the define property, if not, webpack will create the AMD module, but without dependencies. The output will be something like this: &nbsp;</span>
+                                                <span>define([], function() { &nbsp;</span>
+                                                <span>//what this module returns is what your entry chunk returns &nbsp;</span>
+                                                <span>}); &nbsp;</span>
+                                                <span>But if you download this script, first you may get a error: define is not defined, it’s ok! If you are distributing your library with AMD, then your users need to use RequireJS to load it. &nbsp;</span>
+                                                <span>Now that you have RequireJS loaded, you can load your library. &nbsp;</span>
+                                                <span>But, require([ _what?_ ])? &nbsp;</span>
+                                                <span>output.library! &nbsp;</span>
+                                                <span>output: { &nbsp;</span>
+                                                <span>library: "MyLibrary", &nbsp;</span>
+                                                <span>libraryTarget: "amd" &nbsp;</span>
+                                                <span>} &nbsp;</span>
+                                                <span>So your module will be like: &nbsp;</span>
+                                                <span>define("MyLibrary", [], function() { &nbsp;</span>
+                                                <span>//what this module returns is what your entry chunk returns &nbsp;</span>
+                                                <span>}); &nbsp;</span>
+                                                <span>And you can use it like this: &nbsp;</span>
+                                                <span>// And then your users will be able to do: &nbsp;</span>
+                                                <span>require(["MyLibrary"], function(MyLibrary){ &nbsp;</span>
+                                                <span>MyLibrary.doSomething(); &nbsp;</span>
+                                                <span>}); &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>}); umd</td>
+                                            <td>
+                                                <span>This is a way for your library to work with all the module definitions (and where aren't modules at all). It will work with CommonJS, AMD and as global variable. You can check the UMD Repository to know more about it. &nbsp;</span>
+                                                <span>In this case, you need the library property to name your module: &nbsp;</span>
+                                                <span>output: { &nbsp;</span>
+                                                <span>library: "MyLibrary", &nbsp;</span>
+                                                <span>libraryTarget: "umd" &nbsp;</span>
+                                                <span>} &nbsp;</span>
+                                                <span>And finally the output is: &nbsp;</span>
+                                                <span>(function webpackUniversalModuleDefinition(root, factory) { &nbsp;</span>
+                                                <span>if(typeof exports === 'object' && typeof module === 'object') &nbsp;</span>
+                                                <span>module.exports = factory(); &nbsp;</span>
+                                                <span>else if(typeof define === 'function' && define.amd) &nbsp;</span>
+                                                <span>define("MyLibrary", [], factory); &nbsp;</span>
+                                                <span>else if(typeof exports === 'object') &nbsp;</span>
+                                                <span>exports["MyLibrary"] = factory(); &nbsp;</span>
+                                                <span>else &nbsp;</span>
+                                                <span>root["MyLibrary"] = factory(); &nbsp;</span>
+                                                <span>})(this, function() { &nbsp;</span>
+                                                <span>//what this module returns is what your entry chunk returns &nbsp;</span>
+                                                <span>}); &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>}); assign</td>
+                                            <td>
+                                                <span>Here webpack will blindly generate an implied global. &nbsp;</span>
+                                                <span>MyLibrary = _entry_return_; &nbsp;</span>
+                                                <span>Be aware that if MyLibrary isn't defined earlier your library will be set in global scope. &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>Be aware that if MyLibrary isn't defined earlier your library will be set in global scope. jsonp</td>
+                                            <td>
+                                                <span>This will wrap the return value of your entry point into a jsonp wrapper. &nbsp;</span>
+                                                <span>MyLibrary(_entry_return_); &nbsp;</span>
+                                                <span>The dependencies for your library will be defined by the externals config. &nbsp;</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.facets = [];</div>
+                                    <div>if this.path && this.path.length > 0;</div>
+                                    <div>if this.pathExpr && this.pathExpr.length > 0;</div>
+                                    <div>if this.chunkFilename && this.chunkFilename.length > 0;</div>
+                                    <div>if this.filename && this.filename.length > 0;</div>
+                                    <div>if this.publicPath && this.publicPath.length > 0;</div>
+                                    <div>if this.library && this.library.length > 0;</div>
+                                    <div>if this.libraryTarget && this.libraryTarget.length > 0;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolve">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolve</b>
+                            </td>
+                            <td>resolve</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/resolve/ &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>resolveAlias</td>
+                                <td>resolveAliases</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>resolveExtension</td>
+                                <td>resolveExtensions</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>resolveMainField</td>
+                                <td>resolveMainFields</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>resolveMainFile</td>
+                                <td>resolveMainFiles</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>resolveModule</td>
+                                <td>resolveModules</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>resolvePlugin</td>
+                                <td>resolvePlugins</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.mainFieldsOut = stringifyArrayValue(this.resolveMainFields);</div>
+                                    <div>set this.mainFiles = stringifyArrayValue(this.resolveMainFiles);</div>
+                                    <div>set this.extensionsOut = stringifyArrayValue(this.resolveExtensions);</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolveAlias">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolveAlias</b>
+                            </td>
+                            <td>alias</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>path</td>
+                                <td>path</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolveMainField">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolveMainField</b>
+                            </td>
+                            <td>main-field</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>When importing from an npm package, e.g. import * as D3 from "d3", &nbsp;</span>
+                    <span>this option will determine which fields in it's package.json are checked. &nbsp;</span>
+                    <span>The default values will vary based upon the target specified in your webpack configuration. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolveMainFile">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolveMainFile</b>
+                            </td>
+                            <td>main-file</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolveModule">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolveModule</b>
+                            </td>
+                            <td>module</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolvePlugin">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolvePlugin</b>
+                            </td>
+                            <td>plugin</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_resolveExtension">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>resolveExtension</b>
+                            </td>
+                            <td>extension</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_module">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>module</b>
+                            </td>
+                            <td>module</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/module/ &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>noParse</td>
+                                <td>no-parse</td>
+                                <td>regexp</td>
+                                <td>regexp</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Prevent webpack from parsing any files matching the given regular expression(s). &nbsp;</span>
+                                        <span>Ignored files should not have calls to import, require, define or any other importing mechanism. &nbsp;</span>
+                                        <span>This can boost build performance when ignoring large libraries. &nbsp;</span>
+                                        <span>Example &nbsp;</span>
+                                        <span>noParse: /jquery|lodash/ &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ruleParser</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>moduleRule</td>
+                                <td>moduleRules</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_ruleParser">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>ruleParser</b>
+                            </td>
+                            <td>parser</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>TODO node property to customize nodejs &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>amd</td>
+                                <td>amd</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>commonjs</td>
+                                <td>commonjs</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>system</td>
+                                <td>system</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>harmony</td>
+                                <td>harmony</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>requireInclude</td>
+                                <td>requireInclude</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>requireEnsure</td>
+                                <td>requireEnsure</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>requireContext</td>
+                                <td>requireContext</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>browserify</td>
+                                <td>browserify</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>requireJs</td>
+                                <td>requireJs</td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>node</td>
+                                <td>node</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_moduleRule">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>moduleRule</b>
+                            </td>
+                            <td>rule</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>In a Rule the properties test, include, exclude and resource are matched with the resource and the property issuer is matched with the issuer. &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>moduleRuleTest</td>
+                                <td>moduleRuleTests</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>moduleRuleInclude</td>
+                                <td>moduleRuleIncludes</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>moduleRuleExclude</td>
+                                <td>moduleRuleExcludes</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>moduleRuleUse</td>
+                                <td>moduleRuleUses</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.testOut = stringifyArrayValue(this.moduleRuleTests);</div>
+                                    <div>set this.includeOut = stringifyArrayValue(this.moduleRuleIncludes);</div>
+                                    <div>set this.excludeOut = stringifyArrayValue(this.moduleRuleExcludes);</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_moduleRuleTest">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>moduleRuleTest</b>
+                            </td>
+                            <td>test</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_moduleRuleInclude">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>moduleRuleInclude</b>
+                            </td>
+                            <td>include</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_moduleRuleExclude">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>moduleRuleExclude</b>
+                            </td>
+                            <td>exclude</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_moduleRuleUse">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>moduleRuleUse</b>
+                            </td>
+                            <td>use</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>A list of UseEntries which are applied to modules. &nbsp;</span>
+                    <span>Each entry specifies a loader to be used. &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>loader</td>
+                                <td>loader</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>jsProp</td>
+                                <td>jsProps</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span>properties of the 'option' property &nbsp;</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_plugin">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>plugin</b>
+                            </td>
+                            <td>plugin</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/plugins/ &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>jsProp</td>
+                                <td>jsProps</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.name = this.getTypeName(this.wzName);</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>getTypeName</div>
+                                </td>
+                                <td>
+                                    <div>if name === 'aggressive-merging';</div>
+                                    <div>else ;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_devServer">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>devServer</b>
+                            </td>
+                            <td>devServer</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>contentBase</td>
+                                <td>content-base</td>
+                                <td>code</td>
+                                <td>code</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>clientLogLevel</td>
+                                <td>log-level</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> none</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>none error</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>error warning</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>warning info</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>compress</td>
+                                <td>compress</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>historyApiFallback</td>
+                                <td>history-api-fallback</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>When using the HTML5 History API, the index.html page will likely have to be served in place of any 404 responses. Enable this by passing: &nbsp;</span>
+                                        <span>historyApiFallback: true &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>host</td>
+                                <td>host</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Specify a host to use. By default this is localhost. If you want your server to be accessible externally, specify it like this: &nbsp;</span>
+                                        <span>host: "0.0.0.0" &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>hot</td>
+                                <td>hot</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Enable webpack's Hot Module Replacement feature: &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>hotOnly</td>
+                                <td>hot-only</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Enables Hot Module Replacement (see devServer.hot) without page refresh as fallback in case of build failures. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>lazy</td>
+                                <td>lazy</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>When lazy is enabled, the dev-server will only compile the bundle when it gets requested. This means that webpack will not watch any file changes. We call this lazy mode. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>inline</td>
+                                <td>inline</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>noInfo</td>
+                                <td>no-info</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>With noInfo enabled, messages like the webpack bundle information that is shown when starting up and after each save, will be hidden. &nbsp;</span>
+                                        <span>Errors and warnings will still be shown. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>overlayErrors</td>
+                                <td>overlay-errors</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Shows a full-screen overlay in the browser when there are compiler errorss. &nbsp;</span>
+                                        <span>Disabled by default. If you want to show only compiler errors: &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>overlayWarnings</td>
+                                <td>overlay-warnings</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <span>Shows a full-screen overlay in the browser when there are compiler warnings. &nbsp;</span>
+                                        <span>Disabled by default. &nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>port</td>
+                                <td>port</td>
+                                <td>integer</td>
+                                <td>3000</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>progress</td>
+                                <td>progress</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>devServerProxy</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>stats</td>
+                                <td></td>
+                                <td>one-to-one</td>
+                                <td></td>
+                                <td>is-one-to-one </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzinitialize</div>
+                                </td>
+                                <td>
+                                    <div>set this.facets = [];</div>
+                                    <div>if this.contentBase && this.contentBase.length > 0;</div>
+                                    <div>if this.clientLogLevel && this.clientLogLevel.length > 0;</div>
+                                    <div>if this.compress;</div>
+                                    <div>if this.historyApiFallback;</div>
+                                    <div>if this.host && this.host.length > 0;</div>
+                                    <div>if this.hot;</div>
+                                    <div>if this.hotOnly;</div>
+                                    <div>if this.lazy;</div>
+                                    <div>if this.inline;</div>
+                                    <div>if this.noInfo;</div>
+                                    <div>if this.port && this.port.length > 0;</div>
+                                    <div>if this.progress;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_devServerProxy">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>devServerProxy</b>
+                            </td>
+                            <td>proxy</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>jsProp</td>
+                                <td>jsProps</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_external">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>external</b>
+                            </td>
+                            <td>external</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/externals/ &nbsp;</span>
+                </div>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>jsProp</td>
+                                <td>jsProps</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_watch">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>watch</b>
+                            </td>
+                            <td>watch</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_watchOptions">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>watchOptions</b>
+                            </td>
+                            <td>watch-options</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_performance">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>performance</b>
+                            </td>
+                            <td>performance</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/performance/ &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>hints</td>
+                                <td>hints</td>
+                                <td>string</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> false</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>false warning</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>warning error</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>maxEntrypointSize</td>
+                                <td>max-entry-point-size</td>
+                                <td>integer</td>
+                                <td>integer</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>maxAssetSize</td>
+                                <td>max-asset-size</td>
+                                <td>integer</td>
+                                <td>integer</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_stats">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>stats</b>
+                            </td>
+                            <td>stats</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Description</h5>
+                <div>
+                    <span>https://webpack.js.org/configuration/stats/ &nbsp;</span>
+                </div>
+                <h5>Attributes</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tag</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>preset</td>
+                                <td>preset</td>
+                                <td>string</td>
+                                <td>none</td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <h5>restrict</h5>
+                                    <table>
+                                        <tr>
+                                            <td> none</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>none errors-only</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>errors-only minimal</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>minimal false</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>false normal</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table>
+                                        <tr>
+                                            <td>normal verbose</td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>assets</td>
+                                <td>assets</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>assetsSort</td>
+                                <td>assetsSort</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>cached</td>
+                                <td>cached</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>children</td>
+                                <td>children</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>chunks</td>
+                                <td>chunks</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>chunkModules</td>
+                                <td>chunkModules</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>chunkOrigins</td>
+                                <td>chunkOrigins</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>chunksSort</td>
+                                <td>chunksSort</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>context</td>
+                                <td>context</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>colors</td>
+                                <td>colors</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>errors</td>
+                                <td>errors</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>errorDetails</td>
+                                <td>errorDetails</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>hash</td>
+                                <td>hash</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>modules</td>
+                                <td>modules</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>modulesSort</td>
+                                <td>modulesSort</td>
+                                <td>string</td>
+                                <td>string</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>publicPath</td>
+                                <td>publicPath</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>reasons</td>
+                                <td>reasons</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>source</td>
+                                <td>source</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>timings</td>
+                                <td>timings</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>version</td>
+                                <td>version</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>warnings</td>
+                                <td>warnings</td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_jsObject">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>jsObject</b>
+                            </td>
+                            <td>{</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>jsProp</td>
+                                <td>jsProps</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_jsArray">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>jsArray</b>
+                            </td>
+                            <td>[</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>webpackitem</td>
+                                <td>webpackitems</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <table class="pretty-table" id="element_jsProp">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Tag</th>
+                            <th>Super</th>
+                            <th>Flags</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <b>jsProp</b>
+                            </td>
+                            <td>@</td>
+                            <td>webpackitem</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Relations</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Cardinality</th>
+                                <th>Inherited</th>
+                                <th>Flags</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>webpackitem</td>
+                                <td>webpackitems</td>
+                                <td>one-to-many</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>property</td>
+                                <td>properties</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>comment</td>
+                                <td>comments</td>
+                                <td>one-to-many</td>
+                                <td>webpackitem</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+                <h5>Methods</h5>
+                <small>
+                    <table class="table table-condensed table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Signature</th>
+                                <th>Statements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>wzInitialize</div>
+                                </td>
+                                <td>
+                                    <div>if this.webpackitems.length == 0;</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </small>
+            </div>
+        </div>
+    </body>
+
+</html>
+

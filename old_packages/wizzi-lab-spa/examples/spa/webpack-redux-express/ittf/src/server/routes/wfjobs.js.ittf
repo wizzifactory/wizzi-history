@@ -1,0 +1,69 @@
+route( wfJobs )
+	$append deps
+		var stringify = require('json-stringify-safe');
+	var db = api.wfJobs
+	get( /wfjoblogs )
+		_ res.send
+			_ renderJobLogList
+				{
+					@ jobs db.getJobLogs()
+	get( /wfjoblog )
+		if req.query.fmt && req.query.fmt === 'json' 
+			_ res.send(u.htmlEncode(formatJson(db.getJobLog(req.query.name))))
+		else
+			_ res.send
+				_ renderJobLog
+					{
+						@ name req.query.name
+						@ job db.getJobLog(req.query.name)
+	html_f renderJobLogList
+		html/layout( wfJob list)
+			h1 wfJob list
+			< ul
+				foreach job in ctx.jobs
+					li 
+						a {{job}}
+							@ href /wfjoblog?name={{job}}
+	html_f renderJobLog
+		var GenWriter = wizzi.GenWriter;
+		html/layout( wfJob log)
+			h1 wfJob {{ ctx.name }}
+			table
+				tr
+					td
+						@ style vertical-align:top;padding:20px;
+						var ai_count = 1
+						foreach ai in ctx.job.artifactInfos
+							div {{ai.name}}
+								@ onclick javascript:toggleChildVisibility(this)
+								div
+									@ style display:none;
+									< pre
+										+ {{ u.htmlEncode(JSON.stringify(ai.modelInfo, null, 2)) }}
+										+ {{ u.htmlEncode(JSON.stringify(ai.gen, null, 2)) }}
+										+ {{ u.htmlEncode(JSON.stringify(ai.dest, null, 2)) }}
+					td
+						@ style vertical-align:top;padding:20px;
+						var ai_count = 1
+						foreach ai in ctx.job.artifactInfos
+							div
+								@ id ai{{ai_count++}}
+								foreach gw in ai.genWriters
+									var gwText = GenWriter.toStringFromJSON(gw.block, gw.genconfig.options)
+									div {{gw.srcPath}}
+										@ onclick javascript:toggleChildVisibility(this)
+										div
+											@ style display:none;
+											< pre
+												@ style background-color:#333; color:#0F0;
+												+ {{ u.htmlEncode(gwText) }}
+			< script
+				@ src /static/scripts/jquery.js
+			< script
+				+ function toggleChildVisibility(elem) {
+					+ $(elem).children().toggle();
+				+ }
+	function formatJson
+		param json
+		var ret = stringify(json, null, 2)
+		return '<pre>' + ret + '</pre>'

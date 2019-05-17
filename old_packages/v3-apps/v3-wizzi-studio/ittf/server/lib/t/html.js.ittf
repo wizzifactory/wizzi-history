@@ -1,0 +1,11 @@
+﻿$group
+
+	@ htmlEncode
+		function
+			param string
+			var ret = this.replaceAll(string, '<', '&lt;')
+			set ret = this.replaceAll(ret, '>', '&gt;')
+			return this.replaceAll(ret, '&', '&amp;')
+
+
+

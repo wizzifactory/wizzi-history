@@ -1,0 +1,107 @@
+module 
+    kind jsfile
+    
+	_ process.on
+        @ 'unhandledRejection'
+        function 
+            param err
+            throw err
+    
+	set process.env.NODE_ENV = 'development'
+    
+	_ require('dotenv')
+        ._ config
+            { 
+                @ silent true
+    
+	var fs = require('fs')
+    var chalk = require('chalk')
+    var detect = require('detect-port')
+    var WebpackDevServer = require('webpack-dev-server')
+    var clearConsole = require('react-dev-utils/clearConsole')
+    var checkRequiredFiles = require('react-dev-utils/checkRequiredFiles')
+    var getProcessForPort = require('react-dev-utils/getProcessForPort')
+    var openBrowser = require('react-dev-utils/openBrowser')
+    var prompt = require('react-dev-utils/prompt')
+    
+	var paths = require('../config/paths')
+    var config = require('../config/webpack.config.dev')
+    
+	var devServerConfig = require('../config/webpackDevServer.config')
+    
+	var createWebpackCompiler = require('./utils/createWebpackCompiler')
+    var addWebpackMiddleware = require('./utils/addWebpackMiddleware')
+    
+	var useYarn
+        _ fs.existsSync
+            @ paths.yarnLockFile
+    
+	var cli = useYarn ? 'yarn' : 'npm'
+    
+	var isInteractive = process.stdout.isTTY
+
+    if !(checkRequiredFiles([paths.appHtml, paths.appIndexJs]))
+        _ process.exit(1)
+    
+	var DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000
+    
+	function run
+        param port
+        
+		var protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
+        
+		var host = process.env.HOST || 'localhost'
+        
+		var compiler
+            _ createWebpackCompiler
+                @ config
+                function onReady
+                    param showInstructions
+                    if ! (showInstructions)
+                        return 
+                    log
+                    _ console.log('The app is running at:')
+                    log
+                    _ console.log
+                        _ chalk.cyan(protocol + '://' + host + ':' + port + '/')
+                    log
+                    _ console.log('Note that the development build is not optimized.')
+                    _ console.log('To create a production build, use ' + chalk.cyan(cli + 'run build') + '.')
+                    log
+        
+		var devServer
+            new WebpackDevServer(compiler, devServerConfig)
+        
+		_ addWebpackMiddleware(devServer)
+        
+		_ devServer.listen
+            @ port
+            function 
+                param err
+                if err
+                    return console.log(err)
+                if isInteractive
+                    _ clearConsole()
+                log chalk.cyan('Starting the development server...')
+                log
+                _ openBrowser(protocol + '://' + host + ':' + port + '/')
+    
+	_ detect(DEFAULT_PORT)
+        ._ then
+            function 
+                param port
+                if port === DEFAULT_PORT
+                    _ run(port)
+                    return 
+                if isInteractive
+                    _ clearConsole()
+                    var existingProcess = getProcessForPort(DEFAULT_PORT)
+                    var question = chalk.yellow('Something is already running on port ' + DEFAULT_PORT + '.' + (existingProcess ? (' Probably:\n ' + existingProcess) : '') + '\n\nWould you like to run the app on another port instead?')
+                    _ prompt(question, true)
+                        ._ then
+                            function 
+                                param shouldChangePort
+                                if shouldChangePort
+                                    _ run(port)
+                else
+                    log

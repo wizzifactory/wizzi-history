@@ -1,0 +1,24 @@
+﻿api_async( Jobs )
+	+
+	$include filefy
+	$include makeWizziFactoryCreator
+	$include jobs/index
+	+
+	$append requires
+		import assert
+		import chalk
+		import fs
+		import temp
+
+	$append methods
+
+		var consoleApi = makeConsoleApi(config, api)
+		set api.jobs
+			{
+				@ getConsoleScriptList consoleApi.getConsoleScriptList
+				@ getConsoleScript consoleApi.getConsoleScript
+				@ saveConsoleScript consoleApi.saveConsoleScript
+				@ runConsoleScript consoleApi.runConsoleScript
+
+		return callback(null, api)
+

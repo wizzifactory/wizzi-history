@@ -1,0 +1,37 @@
+﻿$group
+
+	get( /api/studio/schemas )
+		_ studioApi.getSchemas
+			{
+				@ userName req.user.id
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/studio/schema/jsondoc )
+		check-params( )
+			not-empty( query , uri )
+		_ studioApi.getSchemaJsonDoc
+			{
+				@ userName req.user.id
+				@ schemaUri uri
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/studio/schema )
+		check-params( )
+			not-empty( query , uri )
+		_ studioApi.getSchema
+			{
+				@ userName req.user.id
+				@ schemaUri uri
+			f_cb_rest( result )
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

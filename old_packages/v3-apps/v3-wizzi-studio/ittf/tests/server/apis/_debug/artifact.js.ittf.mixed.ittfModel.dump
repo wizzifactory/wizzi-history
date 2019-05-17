@@ -1,0 +1,43 @@
+  module  ids: 1 42
+    kind jsfile ids: 2 43
+    +  ids: 3 44
+    import path ids: 4 45
+    import util ids: 5 46
+    +  ids: 6 47
+    var expect = require('expect.js') ids: 7 48
+    var artifactsBasePath ids: 8 49
+      _ path.join ids: 9 50
+        @ __dirname ids: 10 51
+        @ 'artifactsRepo' ids: 11 52
+    var api = {} ids: 12 53
+    _ require ids: 13 54
+      @ '../../../server/apis/artifact' ids: 14 55
+      (  ids: 15 56
+        @ null ids: 16 57
+        {  ids: 17 58
+          @ artifactsBasePath artifactsBasePath ids: 18 59
+        @ api ids: 19 60
+    var artifactApi = api.artifact ids: 20 61
+    log 'artifactApi', artifactApi ids: 21 62
+    describe artifact creation ids: 22 63
+      before-async  ids: 23 64
+        _ del ids: 24 65
+          [  ids: 25 66
+            _ path.join ids: 26 67
+              @ artifactsBasePath ids: 27 68
+              @ '/**/.*' ids: 28 69
+        _ done() ids: 29 70
+      it-async should create a js artifact ids: 30 71
+        log 'should create a js artifact' ids: 31 72
+        _ artifactApi.create.artifact ids: 32 73
+          @ 'examples' ids: 33 74
+          @ 'ecma2015' ids: 34 75
+          @ 'js' ids: 35 76
+          function  ids: 36 77
+            param err ids: 37 78
+            param result ids: 38 79
+            log 'create.artifact', err, result ids: 39 80
+            $group  ids: 83 86
+              $args: result  $params: name
+              _ expect(${name}).to.be.an('object') ids: 85 87
+            _ done() ids: 41 82

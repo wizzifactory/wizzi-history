@@ -1,0 +1,229 @@
+  wizzischema npmpackage ids: 1 195
+    # A schema modeling an npm package ids: 2 196
+    # see https://docs.npmjs.com/files/package.json ids: 3 197
+    export-to json ids: 4 198
+    e package ids: 5 199
+      # The root element of the wfpackage schema. ids: 6 200
+      # The wzName is the package name. ids: 7 201
+      # The most important things in your package.json are the name and version fields. ids: 8 202
+      # Those are actually required, and your package won't install without them. ids: 9 203
+      # The name and version together form an identifier that is assumed to be completely unique. ids: 10 204
+      # Changes to the package should come along with changes to the version. ids: 11 205
+      # The name is what your thing is called. ids: 12 206
+      a version ids: 13 207
+        # Version must be parseable by node-semver, which is bundled with npm as a dependency. ids: 14 208
+        # (npm install semver to use it yourself.) ids: 15 209
+      a description ids: 16 210
+        # Put a description in it. It's a string. ids: 17 211
+        # This helps people discover your package, as it's listed in npm search. ids: 18 212
+      a keywords ids: 19 213
+        # Put keywords in it. It's an array of strings. ids: 20 214
+        # This helps people discover your package as it's listed in npm search. ids: 21 215
+      a license ids: 22 216
+        # You should specify a license for your package so that people know how they are permitted to use it, and any restrictions you're placing on it. ids: 23 217
+      a homepage ids: 24 218
+        # The url to the project homepage. ids: 25 219
+        # NOTE: This is not the same as "url". If you put a "url" field, then the registry will think it's a redirection to your package that has been published somewhere else, and spit at you. ids: 26 220
+      a preferGlobal ids: 27 221
+        # If your package is primarily a command-line application that should be installed globally, then set this value to true to provide a warning if it is installed locally. ids: 28 222
+        # It doesn't actually prevent users from installing it locally, but it does help prevent some confusion if it doesn't work as expected. ids: 29 223
+        default false ids: 30 224
+        type boolean ids: 31 225
+      a main ids: 32 226
+        # The main field is a module ID that is the primary entry point to your program. That is, if your package is named foo, and a user installs it, and then does require("foo"), then your main module's exports object will be returned. ids: 33 227
+        # This should be a module ID relative to the root of your package folder. ids: 34 228
+      a private ids: 35 229
+        # Consider also setting "private": true to prevent accidental publication. ids: 36 230
+        default false ids: 37 231
+        type boolean ids: 38 232
+      r bugs ids: 39 233
+        one-to-one  ids: 40 234
+      r author ids: 41 235
+        one-to-one  ids: 42 236
+      r contributor/s ids: 43 237
+      r file/s ids: 44 238
+      r repository ids: 45 239
+        one-to-one  ids: 46 240
+      r script/s ids: 47 241
+      r config/s ids: 48 242
+      r publishConfig/s ids: 49 243
+      r dependenc-y/ies ids: 50 244
+      r peerDependenc-y/ies ids: 51 245
+      r bundledDependenc-y/ies ids: 52 246
+      r optionalDependenc-y/ies ids: 53 247
+      r engine ids: 54 248
+        one-to-one  ids: 55 249
+      r os/es ids: 56 250
+      r cpu/s ids: 57 251
+    e bugs ids: 58 252
+      # The url to your project's issue tracker and / or the email address to which issues should be reported. These are helpful for people who encounter issues with your package. ids: 59 253
+      # The wzName is the url. ids: 60 254
+      a email ids: 61 255
+    e person ids: 62 256
+      a name ids: 63 257
+      a email ids: 64 258
+      a url ids: 65 259
+    e author : person ids: 66 260
+    e contributor : person ids: 67 261
+    e file ids: 68 262
+      # Certain files are always included, regardless of settings ids: 69 263
+      # Conversely, some files are always ignored ids: 70 264
+    e bin ids: 71 265
+      # A lot of packages have one or more executable files that they'd like to install into the PATH. npm makes this pretty easy (in fact, it uses this feature to install the "npm" executable.) ids: 72 266
+      # To use this, supply a bin field in your package.json which is a map of command name to local file name. ids: 73 267
+      # On install, npm will symlink that file into prefix/bin for global installs, or ./node_modules/.bin/ for local installs. ids: 74 268
+      # The wzName is the command name ids: 75 269
+      a path ids: 76 270
+        # The path to a local file name ids: 77 271
+    e repository ids: 78 272
+      # Specify the place where your code lives. This is helpful for people who want to contribute. ids: 79 273
+      # If the git repo is on GitHub, then the npm docs command will be able to find you. ids: 80 274
+      # The wzName is the repository type (example: git) ids: 81 275
+      a url ids: 82 276
+    e script ids: 83 277
+      # The "scripts" property is a dictionary containing script commands that are run at various times in the lifecycle of your package. The key is the lifecycle event, and the value is the command to run at that point. ids: 84 278
+      # The wzName is the script name ids: 85 279
+      a command ids: 86 280
+    e ${name} ids: 389 395
+      $args: config, config  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 396
+        tag ${tag} ids: 392 397
+      $if xsuper != null ids: 393 398
+        super ${xsuper} ids: 394 399
+      # A "config" object can be used to set configuration parameters used in package scripts that persist across upgrades. ids: 88 282
+      # See npm-config(7) and npm-scripts(7) for more on package configs. ids: 89 283
+      a value ids: 90 284
+    e ${name} ids: 389 400
+      $args: publishConfig, publish-config  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 401
+        tag ${tag} ids: 392 402
+      $if xsuper != null ids: 393 403
+        super ${xsuper} ids: 394 404
+      # This is a set of config values that will be used at publish-time. ids: 92 286
+      # It's especially handy if you want to set the tag, registry or access, so that you can ensure that a given package is not tagged with "latest", ids: 93 287
+      # published to the global public registry or that a scoped module is private by default. ids: 94 288
+      # Any config values can be overridden, but of course only "tag", "registry" and "access" probably matter for the purposes of publishing. ids: 95 289
+      # See npm-config(7) to see the list of config options that can be overridden. ids: 96 290
+      a value ids: 97 291
+    e ${name} ids: 389 405
+      $args: dependency, depend  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 406
+        tag ${tag} ids: 392 407
+      $if xsuper != null ids: 393 408
+        super ${xsuper} ids: 394 409
+      # Dependencies are specified in a simple object that maps a package name to a version range. ids: 99 293
+      a version ids: 100 294
+        # The version range is a string which has one or more space-separated descriptors. ids: 101 295
+        # Dependencies can also be identified with a tarball or git URL. ids: 102 296
+        # See semver(7) for more details about specifying version ranges. ids: 103 297
+      # Git URLs as Dependencies ids: 104 298
+      # Git urls can be of the form: ids: 105 299
+      # git://github.com/user/project.git#commit-ish ids: 106 300
+      # git+ssh://user@hostname:project.git#commit-ish ids: 107 301
+      # git+ssh://user@hostname/project.git#commit-ish ids: 108 302
+      # git+http://user@hostname/project/blah.git#commit-ish ids: 109 303
+      # git+https://user@hostname/project/blah.git#commit-ish ids: 110 304
+      # The commit-ish can be any tag, sha, or branch which can be supplied as an argument to git checkout. The default is master. ids: 111 305
+      #  ids: 112 306
+      # GitHub URLs ids: 113 307
+      # As of version 1.1.65, you can refer to GitHub urls as just "foo": "user/foo-project". Just as with git URLs, a commit-ish suffix can be included. ids: 114 308
+      # For example: ids: 115 309
+      # { ids: 116 310
+      # "name": "foo", ids: 117 311
+      # "version": "0.0.0", ids: 118 312
+      # "dependencies": { ids: 119 313
+      # "express": "visionmedia/express", ids: 120 314
+      # "mocha": "visionmedia/mocha#4727d357ea" ids: 121 315
+      # } ids: 122 316
+      # } ids: 123 317
+      #  ids: 124 318
+      # Local Paths ids: 125 319
+      # As of version 2.0.0 you can provide a path to a local directory that contains a package. ids: 126 320
+      # Local paths can be saved using npm install --save, using any of these forms: ids: 127 321
+      # ../foo/bar ids: 128 322
+      # ~/foo/bar ids: 129 323
+      # ./foo/bar ids: 130 324
+      # /foo/bar ids: 131 325
+      # in which case they will be normalized to a relative path and added to your package.json. ids: 132 326
+      # For example: ids: 133 327
+      # { ids: 134 328
+      # "name": "baz", ids: 135 329
+      # "dependencies": { ids: 136 330
+      # "bar": "file:../foo/bar" ids: 137 331
+      # } ids: 138 332
+      # } ids: 139 333
+      # This feature is helpful for local offline development and creating tests that require npm installing ids: 140 334
+      # where you don't want to hit an external server, but should not be used when publishing packages to the public registry. ids: 141 335
+    e ${name} ids: 389 410
+      $args: devDependency dev-depend  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 411
+        tag ${tag} ids: 392 412
+      $if xsuper != null ids: 393 413
+        super ${xsuper} ids: 394 414
+      # If someone is planning on downloading and using your module in their program, then they probably don't want or need to download and build the external test or documentation framework that you use. ids: 143 337
+      # In this case, it's best to map these additional items in a devDependencies object. ids: 144 338
+      # These things will be installed when doing npm link or npm install from the root of a package, and can be managed like any other npm configuration param. See npm-config(7) for more on the topic. ids: 145 339
+      # For build steps that are not platform-specific, such as compiling CoffeeScript or other languages to JavaScript, use the prepublish script to do this, and make the required package a devDependency. ids: 146 340
+      # For example: ids: 147 341
+      # { ids: 148 342
+      # "name": "ethopia-waza", ids: 149 343
+      # "description": "a delightfully fruity coffee varietal", ids: 150 344
+      # "version": "1.2.3", ids: 151 345
+      # "devDependencies": { ids: 152 346
+      # "coffee-script": "~1.6.3" ids: 153 347
+      # }, ids: 154 348
+      # "scripts": { ids: 155 349
+      # "prepublish": "coffee -o lib/ -c src/waza.coffee" ids: 156 350
+      # }, ids: 157 351
+      # "main": "lib/waza.js" ids: 158 352
+      # } ids: 159 353
+      # The prepublish script will be run before publishing, so that users can consume the functionality without requiring them to compile it themselves. In dev mode (ie, locally running npm install), it'll run this script as well, so that you can test it easily. ids: 160 354
+    e ${name} ids: 389 415
+      $args: peerDependency, peer-depend  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 416
+        tag ${tag} ids: 392 417
+      $if xsuper != null ids: 393 418
+        super ${xsuper} ids: 394 419
+      # In some cases, you want to express the compatibility of your package with a host tool or library, while not necessarily doing a require of this host. This is usually referred to as a plugin. Notably, your module may be exposing a specific interface, expected and specified by the host documentation. ids: 162 356
+      # For example: ids: 163 357
+      # { ids: 164 358
+      # "name": "tea-latte", ids: 165 359
+      # "version": "1.3.5", ids: 166 360
+      # "peerDependencies": { ids: 167 361
+      # "tea": "2.x" ids: 168 362
+      # } ids: 169 363
+      # } ids: 170 364
+      # This ensures your package tea-latte can be installed along with the second major version of the host package tea only. npm install tea-latte could possibly yield the following dependency graph: ids: 171 365
+      # ├── tea-latte@1.3.5 ids: 172 366
+      # └── tea@2.2.0 ids: 173 367
+      # NOTE: npm versions 1 and 2 will automatically install peerDependencies if they are not explicitly depended upon higher in the dependency tree. In the next major version of npm (npm@3), this will no longer be the case. You will receive a warning that the peerDependency is not installed instead. The behavior in npms 1 & 2 was frequently confusing and could easily put you into dependency hell, a situation that npm is designed to avoid as much as possible. ids: 174 368
+      # Trying to install another plugin with a conflicting requirement will cause an error. For this reason, make sure your plugin requirement is as broad as possible, and not to lock it down to specific patch versions. ids: 175 369
+      # Assuming the host complies with semver, only changes in the host package's major version will break your plugin. Thus, if you've worked with every 1.x version of the host package, use "^1.0" or "1.x" to express this. If you depend on features introduced in 1.5.2, use ">= 1.5.2 < 2". ids: 176 370
+    e ${name} ids: 389 420
+      $args: bundledDependency, bundled-depend  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 421
+        tag ${tag} ids: 392 422
+      $if xsuper != null ids: 393 423
+        super ${xsuper} ids: 394 424
+      # Array of package names that will be bundled when publishing the package. ids: 178 372
+      # If this is spelled "bundleDependencies", then that is also honored. ids: 179 373
+    e ${name} ids: 389 425
+      $args: optionalDependency, optional-depend  $params: name, tag|@@null, xsuper|@@null
+      $if tag != null ids: 391 426
+        tag ${tag} ids: 392 427
+      $if xsuper != null ids: 393 428
+        super ${xsuper} ids: 394 429
+      # If a dependency can be used, but you would like npm to proceed if it cannot be found or fails to install, then you may put it in the optionalDependencies object. This is a map of package name to version or url, just like the dependencies object. The difference is that build failures do not cause installation to fail. ids: 181 375
+      # It is still your program's responsibility to handle the lack of the dependency. For example, something like this: ids: 182 376
+    e engine ids: 183 377
+      # You can specify the version of node that your stuff works on ids: 184 378
+      # If you specify an "engines" field, then npm will require that "node" be somewhere on that list. ids: 185 379
+      # If "engines" is omitted, then npm will just assume that it works on node. ids: 186 380
+      # Note that, unless the user has set the engine-strict config flag, this field is advisory only. ids: 187 381
+      a version ids: 188 382
+    e os ids: 189 383
+      # You can specify which operating systems your module will run on: (example: darwin) ids: 190 384
+      # You can also blacklist instead of whitelist operating systems, just prepend the blacklisted os with a '!': (example: !win32) ids: 191 385
+    e cpu ids: 192 386
+      # If your code only runs on certain cpu architectures, you can specify which ones. ids: 193 387
+      # Like the os option, you can also blacklist architectures ids: 194 388

@@ -1,0 +1,28 @@
+$group
+
+	$if spa.helmet
+
+		function initHelmetHeaders
+			param app
+			
+			var SIX_MONTHS = 15778476000
+			
+			_ app.use(helmet.xframe())
+			
+			_ app.use(helmet.xssFilter())
+			
+			_ app.use(helmet.nosniff())
+			
+			_ app.use(helmet.ienoopen())
+			
+			_ app.use
+				_ helmet.hsts
+					{ 
+						@ maxAge SIX_MONTHS
+						@ includeSubdomains true
+						@ force true
+			
+			_ app.disable('x-powered-by')
+
+
+

@@ -1,0 +1,56 @@
+spa
+	package webpack-react
+		version 0.0.1
+		license MIT
+		author
+			name stefano bassoli
+			email sbassoli.dev@gmail.com
+		main index.js
+		script start "webpack-dev-server"
+		depend node-uuid
+			version ^1.4.7
+		depend array.prototype.findindex
+			version ^1.0.0
+		
+	server webpack
+		env dev
+		content-base BUILD_PATH
+		history-api-fallback
+		hot
+		inline
+		progress
+		host process.env.HOST
+		port process.env.PORT
+	
+	path ROOT_PATH path.resolve(__dirname)
+	path SRC_PATH path.resolve(__dirname, 'src')
+	path BUILD_PATH path.resolve(__dirname, 'build')
+	webpack
+		eval-source-map
+		resolve-ext
+		resolve-ext .js
+		resolve-ext .jsx
+		entry
+			[
+				@ SRC_PATH
+		output
+			path BUILD_PATH
+			filename 'bundle.js'
+		loader babel
+			test .jsx
+			include SRC_PATH
+		loader babel
+			test .js
+			include SRC_PATH
+		loader style-loader!css-loader
+			test .css
+			include SRC_PATH
+		plugin html
+			@ title 'Stefi Kanban app, from survivejs'
+		plugin hot-module-replacement
+	babel 5
+		env start
+			techne survivejs
+	react
+		flux alt
+		dnd

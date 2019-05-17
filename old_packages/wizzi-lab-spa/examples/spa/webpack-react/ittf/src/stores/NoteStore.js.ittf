@@ -1,0 +1,51 @@
+module
+	kind react
+	import uuid from 'node-uuid'
+	import alt from '../libs/alt'
+	import NoteActions from '../actions/NoteActions'
+	class NoteStore
+		ctor
+			_ this.bindActions(NoteActions);
+			set this.notes = [];
+			_ this.exportPublicMethods
+				{
+					@ get this.get.bind(this)
+		m get
+			param ids = []
+			return ids.map((id) => this.notes[this.findNote(id)]).filter((a) => a);
+  
+		m create
+			param note
+			const notes = this.notes
+			set note.id = uuid.v4()
+			_ this.setState
+				{
+					@ notes notes.concat(note)
+		m update
+			param {noteId, task}
+			let notes = this.notes
+			const noteIndex = this.findNote(noteId)
+			if noteIndex < 0
+				return
+			else 
+				set notes[noteIndex].task = task
+			_ this.setState
+				@ {notes}
+		m findNote
+			param noteId
+			const notes = this.notes
+			const noteIndex = notes.findIndex((note) => note.id === noteId)
+			if noteIndex < 0
+				warn 'Failed to find note', notes, noteId
+			return noteIndex
+  
+		m delete
+			param noteId
+			const notes = this.notes
+			const noteIndex = this.findNote(noteId)
+			if noteIndex < 0
+				return
+			_ this.setState
+				{
+					@ notes notes.slice(0, noteIndex).concat(notes.slice(noteIndex + 1))
+	export default alt.createStore(NoteStore, 'NoteStore');

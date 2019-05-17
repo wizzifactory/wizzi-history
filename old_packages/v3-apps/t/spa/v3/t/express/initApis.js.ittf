@@ -1,0 +1,44 @@
+$group
+
+	$if spa.apisPath
+		
+		$if spa.apisAsync
+			function initApis
+				param app
+				param config
+				param api
+				param callback
+				var files
+					_ getGlobbedFiles
+						@ path.join(__dirname, '${spa.apisPath}')
+				_ async.map
+					@ files
+					function
+						param apiPath
+						param callback
+						chalk yellow 'gobbled api file', path.resolve(apiPath)
+						_ require
+							@ path.resolve(apiPath)
+							(
+								@ app
+								@ config
+								@ api
+								f_cb( notUsed )
+									return
+										_ callback(null)
+					f_cb( result )
+						_ initRoutes(app, api)
+						_ callback(null)
+		$else
+			function initApis
+				param app
+				param config
+				param api
+				_ getGlobbedFiles
+					@ path.join(__dirname, '${spa.apisPath}')
+					._ forEach
+						function
+							param apiPath
+							chalk yellow 'gobbled api file', path.resolve(apiPath)
+							_ require(path.resolve(apiPath))(app, config, api)
+

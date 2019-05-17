@@ -1,0 +1,23 @@
+module
+	kind jsfile
+	class animal
+		ctor
+			param kind
+			param numlegs
+			set this.kind = kind
+			set this.numlegs = numlegs
+	
+	class cat
+		super animal
+		ctor
+			param name
+			base 'cat'
+			base 4
+			set this.name = name
+		m toString
+			log this.name, this.kind, this.numlegs
+	
+	var miao
+		new cat
+			@ 'miao'
+	_ miao.toString()

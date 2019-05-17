@@ -1,0 +1,29 @@
+$group
+	$if spa.devServer === 'webpack'
+		# Start a livereloading development server
+		_ gulp.task
+			@ 'serve:start',
+			[
+				'serve:static'
+			function
+				var config = webpackConfig(true, 'build', PORT)
+				return
+					new WebpackDevServer
+						_ webpack(config)
+						{
+							@ contentBase: 'build'
+							@ publicPath config.output.publicPath
+							@ watchDelay: 100
+						._ listen
+							@ PORT
+							@ '0.0.0.0'
+							function
+								param err
+								if err
+									throw 
+										new $.util.PluginError
+											@ 'webpack-dev-server'
+											@ err
+								_ $.util.log
+									@ `[${packageJson.name} serve]`
+									@ `Listening at 0.0.0.0:${PORT}`

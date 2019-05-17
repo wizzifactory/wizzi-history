@@ -1,0 +1,40 @@
+﻿module
+	$params name
+	kind react
+	+
+	import React from 'react'
+	import PropTypes from 'prop-types'
+	import classNames from 'classnames'
+	import { createStyleSheet } from 'jss-theme-reactor'
+	import withStyles from '../styles/withStyles'
+	+
+	$hook import
+	+
+	export const styleSheet =
+		_ createStyleSheet
+			@ 'Wui${name}'
+			=>
+				param theme
+				log 'theme.palette.primary[500]', theme.palette.primary[500]
+				$hook styles-before
+				return
+					{
+						$hook styles
+	+
+	function ${name}
+		param props
+		$hook
+	+
+	set ${name}.propTypes
+		{
+			$hook propTypes
+	+
+	set ${name}.defaultProps
+		{
+			$hook defaultTypes
+	+
+	export default
+		_ withStyles
+			@ styleSheet
+			(
+				@ ${name}

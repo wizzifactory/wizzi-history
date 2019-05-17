@@ -1,0 +1,25 @@
+$group
+	e entry : spaitem
+		
+		a_flag( watch )
+		
+		a kind
+			default none
+			restrict
+				enum none
+				enum object
+		
+		r file/s
+		
+		r glob/s
+		
+		r entryChunk/s
+		m wzinitialize
+			if this.entryChunks.length > 0
+				set this.kind = 'object'
+			if this.files.length > 0
+				set this.kind = 'array'
+	e_tag( entryChunk, chunk )
+		# https://webpack.js.org/concepts/entry-points/
+		r file/s
+		

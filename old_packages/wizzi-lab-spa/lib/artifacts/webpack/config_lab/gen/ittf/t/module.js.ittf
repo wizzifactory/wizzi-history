@@ -1,0 +1,65 @@
+$group
+    $if _.isObject(wp.module)
+		@ module
+			{ 
+				@ rules
+					[ 
+						$if _.isObject(wp.module.ruleParser)
+							{ 
+								@ parser
+									{ 
+										@ requireEnsure false
+						$foreach rule in wp.module.moduleRules
+							$include loaders/eslint
+							$include loaders/file
+							$include loaders/url
+							$include loaders/babel
+							$include loaders/css
+
+
+	$* OLD
+
+	@ module
+		{
+			@ loaders
+				[
+					$foreach loader in wp.webpackLoaders
+						{
+							$if loader.wzName === 'jpg'
+								{
+									@ test /\.jpg/
+									@ loader "url-loader?limit=10000&mimetype=image/jpg"
+							$elif loader.wzName === 'gif'
+								{
+									@ test /\.gif/
+									@ loader "url-loader?limit=10000&mimetype=image/gif"
+							$elif loader.wzName === 'png'
+								{
+									@ test /\.png/
+									@ loader "url-loader?limit=10000&mimetype=image/png"
+							$elif loader.wzName === 'svg'
+								{
+									@ test /\.svg/
+									@ loader "url-loader?limit=10000&mimetype=image/svg"
+							$elif loader.wzName === 'woff'
+								{
+									@ test /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/
+									@ loader "url-loader?limit=10000&mimetype=application/font-woff"
+							$elif loader.wzName === 'ttf'
+								{
+									@ test /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/
+									@ loader "file-loader"
+							$else
+								@ test /\${loader.test}$/
+								@ loader '${loader.wzName}'
+								$if loader.include
+									@ include ${loader.include}
+								$if loader.hasQuery
+									@ query
+										{
+											$foreach query in loader.queries
+												@ ${query.queryName} ${query.queryValue}
+								$foreach f in loader.features
+									webpack/features( &f )
+	*$
+

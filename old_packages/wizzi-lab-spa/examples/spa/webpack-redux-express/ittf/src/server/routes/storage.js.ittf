@@ -1,0 +1,80 @@
+route( Storage )
+	var db = api.nodePersist
+	get( /storage )
+		var item
+			_ db.getItem
+				@ req.query.store
+				@ req.query.name
+		_ res.json(item)
+	post( /storage )
+		
+		log req.body
+		
+		_ db.setItem
+			@ req.body.store
+			@ req.body.name
+			@ req.body.value
+		
+		_ res.json
+			{
+				@ code 0
+				@ message 'item set'
+	get( /storage/form )
+		_ res.send
+			_ renderStorageForm
+				{
+	get( /storage/tree )
+		if req.query.fmt && req.query.fmt === 'json'
+			_ res.json
+				_ db.getStoreTree()
+		else
+			_ res.send
+				_ renderStorageTree
+					{
+						@ tree db.getStoreTree()
+						
+	html_f renderStorageForm
+		html/layout( Storage form)
+			h1 Storage form
+			< form
+				@ id storageForm
+				@ action /storage
+				@ method post
+				< div
+					< label Store:
+						@ for store
+					< input
+						@ type text
+						@ id store
+						@ name store
+				< div
+					< label Name:
+						@ for name
+					< input
+						@ type text
+						@ id name
+						@ name name
+				< div
+					< label Value:
+						@ for value
+					< textarea
+						@ type text
+						@ id value
+						@ name value
+						@ cols 40
+						@ rows 10
+				< div
+					< input
+						@ type submit
+						@ value Submit
+	html_f renderStorageTree
+		html/layout( Storage tree)
+			h1 Storage tree
+			ul
+				for var store in ctx.tree
+					li {{ store }}
+						ul
+							for var item in ctx.tree[store].children
+								li 
+									a {{ item }} 
+										@ href /storage?store={{ store }}&name={{item}} 

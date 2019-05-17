@@ -1,0 +1,62 @@
+$group
+	e require : statement
+	e import : statement
+	e export : statement
+		r param/s
+		m getParams
+			var ret = []
+			foreach item in this.params
+				_ ret.push(item.wzName)
+			return ret
+		m wzInitialize
+			log 'wzInitialize', this.wzName
+			var tokens = this.wzName.split(' ')
+			if tokens.length > 1
+				if tokens[0] == 'default' 
+					set this.__default = true
+					if tokens[1] == 'function' 
+						set this.__function = true
+				elif tokens[0] == 'function' 
+					set this.__default = false
+					set this.__function = true
+					set this.__name = tokens[1]
+			if this.__function
+				log 'this.__function', this.__default, this.__function, this.__name
+	e block : statement
+	
+	e set : statement
+	e delete : statement
+	e if : statement
+		# ittf:
+		#   if a === b
+		#   elif a === c
+		#   else
+		# js:
+		#   if ( a === b ) {
+		#   }
+		#   else if ( a === c ) {
+		#   }
+		#   else {
+		#   }
+	e elif : statement
+	e else : statement
+	
+	e for : statement
+	e foreach : statement
+	e backeach : statement
+	e break : statement
+	e continue : statement
+	e label : statement
+	
+	e while : statement
+	e do : statement
+	
+	e switch : statement
+	e case : statement
+	e default : statement
+	e try : statement
+	e catch : statement
+	e finally : statement
+	e throw : statement
+	
+	

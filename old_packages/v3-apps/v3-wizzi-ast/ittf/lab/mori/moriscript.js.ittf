@@ -1,0 +1,23 @@
+﻿module 
+    kind jsfile
+    +
+	set module.exports =
+        function 
+            param babel
+            var t = babel.types
+			# log 'babel.types', t
+            return 
+                { 
+                    @ visitor
+                        { 
+							@ ArrayExpression
+								function
+									param path
+									log 'path', path
+									_ path.replaceWith
+										_ t.callExpression
+											_ t.memberExpression
+												_ t.identifier('mori')
+												_ t.identifier('vector')
+											@ path.node.elements
+

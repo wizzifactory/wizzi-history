@@ -1,0 +1,26 @@
+$group
+
+	$* OLD
+			
+	$if spa.devServer.wzName === 'webpack'
+		@ devServer
+			{
+				$if spa.devServer.contentBase
+					@ contentBase ${spa.devServer.contentBase}
+				$if spa.devServer.historyApiFallback
+					@ historyApiFallback true
+				$if spa.devServer.hot
+					@ hot true
+				$if spa.devServer.inline
+					@ inline true
+				$if spa.devServer.progress
+					@ progress true
+				$if spa.devServer.host
+					@ host ${spa.devServer.host}
+				$if spa.devServer.port
+					@ port ${spa.devServer.port}
+	
+	*$
+
+
+

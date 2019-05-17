@@ -1,0 +1,139 @@
+wizzischema spa
+	# A schema modeling a Single Page Application (SPA)
+	require wizzi
+		kind module
+	e spaitem
+		r prop/s
+		r comment/s
+		m propOfCategory
+			param cat
+			var ret = []
+			foreach prop in this.props
+				if prop.category === cat
+					_ ret.push(prop)
+			return ret
+	
+	e comment : spaitem
+		tag #
+	e spa : spaitem
+		# The root element
+		is-root
+		a buildSystem
+			tag build-system
+			default none
+			restrict
+				enum none
+				enum gulp
+		a bundler
+			default none
+			restrict
+				enum none
+				enum webpack
+		r package
+			one-to-one
+		
+		r usage/s
+		r path/s
+		
+		r webpack
+			one-to-one
+		r babel
+			one-to-one
+		
+		r react
+			one-to-one
+		r server/s
+		r techne/s
+		r knownFolder/s
+		r knownFile/s
+		m wzInitialize
+			$include spa/spa-webpack-initialize
+			$include spa/spa-babel-initialize
+			set this.devServer
+				{
+					@ wzName 'webpack'
+					@ port 3000
+			
+			foreach s in this.servers
+				if s.env === 'dev'
+					set this.devServer = s
+				else
+					set this.prodServer = s
+			set this.knownFolder
+				{
+					@ src 'src'
+					@ build 'build'
+					@ serverStatic 'src/public'
+			
+			foreach f in this.knownFolders
+				set this.knownFolder[f.knownName] = f.path
+				log 'spa.wzInitialize.knownFile', f.knownName, f.path
+			set this.knownFile
+				{
+					@ htmlIndex 'index.html'
+					@ jsMain 'main.js'
+					@ cssMain 'style.css'
+			foreach f in this.knownFiles
+				set this.knownFile[f.knownName] = f.path
+				log 'spa.wzInitialize.knownFile', f.knownName, f.path
+	e usage : spaitem
+		restrict
+			enum in-browser
+	e path : spaitem
+		m wzInitialize
+			var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+			set this.pathName = nv.name()
+			set this.pathValue = nv.value()
+	e techne : spaitem
+	e server : spaitem
+		restrict
+			enum webpack
+			enum express
+		a env
+			default dev
+			restrict
+				enum dev
+				enum production
+		a port
+			default 3000
+		
+		a contentBase
+			tag content-base
+		a_flag( historyApiFallback, history-api-fallback )
+		
+		a_flag( hot )
+		
+		a_flag( true )
+		
+		a_flag( inline )
+		
+		a_flag( progress )
+		
+		a host
+		
+		a port
+	e jsObject : spaitem
+		tag {
+		r jsProp/s
+	e jsArray : spaitem
+		tag [
+		r spaitem/s
+	e jsProp : spaitem
+		tag @
+		r spaitem/s
+		m wzInitialize
+			if this.spaitems.length == 0
+				var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+				set this.name = nv.name()
+				set this.value = nv.value()
+	e prop
+		m wzInitialize
+			var nv = wizzi.lineParser.parseCategoryNameValue(this.wzName)
+			set this.category = nv.category()
+			set this.name = nv.name()
+			set this.value = nv.value()
+	$include spa/package
+	$include spa/folders
+	$include spa/webpack
+	$include spa/babel
+	$include spa/react

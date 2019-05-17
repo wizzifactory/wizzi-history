@@ -1,0 +1,322 @@
+  module  ids: undefined undefined
+    kind jsfile ids: undefined undefined
+    var path = require('path') ids: undefined undefined
+    var stringify = require('json-stringify-safe') ids: undefined undefined
+    var wizzi = require('wizzi') ids: undefined undefined
+    var acl = wizzi.acl ids: undefined undefined
+    var ProductionManager = wizzi.ProductionManager ids: undefined undefined
+    var site = require('wizzi-lab-site') ids: undefined undefined
+    var spa = require('wizzi-lab-spa') ids: undefined undefined
+    #  ids: undefined undefined
+      # *.html.ittf     wizzi/htmlDocument ids: undefined undefined
+      # ?meta=json ids: undefined undefined
+      # ?meta=html ids: undefined undefined
+      # ?meta=old_html ids: undefined undefined
+      # *.bundle.ittf   wizzi-lab-site/bundle ids: undefined undefined
+      # *.js.ittf       wizzi/jsModule ids: undefined undefined
+      # *.json.ittf     wizzi/jsonDocument ids: undefined undefined
+      # *.css.ittf      wizzi/cssDocument ids: undefined undefined
+      # *.form.ittf     wizzi-lab-site/formJsonizer ids: undefined undefined
+      # *.html ids: undefined undefined
+      # *.js ids: undefined undefined
+      # *.json ids: undefined undefined
+      # *.css ids: undefined undefined
+      # *.png | *.jpg |*.gif |*.bmp |*.tiff ids: undefined undefined
+      # *.woff | *.ttf ids: undefined undefined
+    set module.exports ids: undefined undefined
+      function  ids: undefined undefined
+        param root ids: undefined undefined
+        param routePath ids: undefined undefined
+        param options ids: undefined undefined
+        if !root ids: undefined undefined
+          throw new TypeError('root path required') ids: undefined undefined
+        if typeof root !== 'string' ids: undefined undefined
+          throw new TypeError('root path must be a string') ids: undefined undefined
+        if !routePath ids: undefined undefined
+          throw new TypeError('routePath required') ids: undefined undefined
+        if typeof routePath !== 'string' ids: undefined undefined
+          throw new TypeError('routePath must be a string') ids: undefined undefined
+        _ wizzi.option('force', true) ids: undefined undefined
+        log 'middleware.ittf.root', root ids: undefined undefined
+        return  ids: undefined undefined
+          function  ids: undefined undefined
+            param req ids: undefined undefined
+            param res ids: undefined undefined
+            param next ids: undefined undefined
+            if req.method !== 'GET' && req.method !== 'HEAD' ids: undefined undefined
+              return next() ids: undefined undefined
+            var pathname = req._parsedUrl.pathname.substr(routePath.length) ids: undefined undefined
+            var filePath = path.join(root, pathname); ids: undefined undefined
+            log 'ittf.pathname, pathname, filePath', req._parsedUrl.pathname, pathname, filePath ids: undefined undefined
+            if wizzi.file.exists(filePath) === false ids: undefined undefined
+              return next() ids: undefined undefined
+            if wizzi.file.isFile(filePath) === false ids: undefined undefined
+              return next() ids: undefined undefined
+            var ext3 = filePath.substr(-3, 3) ids: undefined undefined
+            var ext4 = filePath.substr(-4, 4) ids: undefined undefined
+            var ext5 = filePath.substr(-5, 5) ids: undefined undefined
+            if filePath.substr(-10, 10) === '.html.ittf' ids: undefined undefined
+              if req.query.meta && req.query.meta === 'json' ids: undefined undefined
+                _ wizzi.html ids: undefined undefined
+                  @ filePath ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ req req ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param wizziModelInstance ids: undefined undefined
+                    if err ids: undefined undefined
+                      _ return res.send(err) ids: undefined undefined
+                    return sendJSONStringified(res, wizziModelInstance) ids: undefined undefined
+              elif req.query.meta && req.query.meta === 'html' ids: undefined undefined
+                _ wizzi.htmlDocument ids: undefined undefined
+                  @ wizzi.config.get('meta-html-ittf-path') ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ __productionManager ids: undefined undefined
+                      _ createProductionManager ids: undefined undefined
+                        @ 'stefi' ids: undefined undefined
+                        @ 'admin' ids: undefined undefined
+                        {  ids: undefined undefined
+                    @ wizzischema 'html' ids: undefined undefined
+                    @ path filePath ids: undefined undefined
+                    @ req req ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param rendered ids: undefined undefined
+                    if err ids: undefined undefined
+                      _ return res.send(err) ids: undefined undefined
+                    return res.send(rendered) ids: undefined undefined
+              elif req.query.meta && req.query.meta === 'old_html' ids: undefined undefined
+                _ wizzi.html ids: undefined undefined
+                  @ filePath ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ __productionManager ids: undefined undefined
+                      _ createProductionManager ids: undefined undefined
+                        @ 'stefi' ids: undefined undefined
+                        @ 'admin' ids: undefined undefined
+                        {  ids: undefined undefined
+                    @ req req ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param wizziModelInstance ids: undefined undefined
+                    if err ids: undefined undefined
+                      _ return res.send(err) ids: undefined undefined
+                    _ wizzi.htmlDocument ids: undefined undefined
+                      @ wizzi.config.get('meta-html-ittf-path') ids: undefined undefined
+                      {  ids: undefined undefined
+                        @ model wizziModelInstance ids: undefined undefined
+                        @ req req ids: undefined undefined
+                      function  ids: undefined undefined
+                        param err ids: undefined undefined
+                        param rendered ids: undefined undefined
+                        if err ids: undefined undefined
+                          _ return res.send(err) ids: undefined undefined
+                        return res.send(rendered) ids: undefined undefined
+              else  ids: undefined undefined
+                _ wizzi.htmlDocument ids: undefined undefined
+                  @ filePath ids: undefined undefined
+                  {  ids: undefined undefined
+                    @ __productionManager ids: undefined undefined
+                      _ createProductionManager ids: undefined undefined
+                        @ 'stefi' ids: undefined undefined
+                        @ 'admin' ids: undefined undefined
+                        {  ids: undefined undefined
+                    @ req req ids: undefined undefined
+                  function  ids: undefined undefined
+                    param err ids: undefined undefined
+                    param rendered ids: undefined undefined
+                    if err ids: undefined undefined
+                      _ return res.send(err) ids: undefined undefined
+                    return res.send(rendered) ids: undefined undefined
+            elif filePath.substr(-12, 12) === '.bundle.ittf' ids: undefined undefined
+              _ site.bundle ids: undefined undefined
+                @ filePath ids: undefined undefined
+                {  ids: undefined undefined
+                  @ __productionManager ids: undefined undefined
+                    _ createProductionManager ids: undefined undefined
+                      @ 'stefi' ids: undefined undefined
+                      @ 'admin' ids: undefined undefined
+                      {  ids: undefined undefined
+                  @ req req ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param wizziModel ids: undefined undefined
+                  if err ids: undefined undefined
+                    _ return res.send(err) ids: undefined undefined
+                  var test = [] ids: undefined undefined
+                  foreach item in wizziModel.items ids: undefined undefined
+                    _ test.push(item.wzElement) ids: undefined undefined
+                  var pkg, bundler ids: undefined undefined
+                  set pkg = wizziModel.getPackage() ids: undefined undefined
+                  if pkg ids: undefined undefined
+                    set bundler = pkg.getBundler() ids: undefined undefined
+                  return res.send('<p>test: ' + test.join('') + '</p><p>package: ' + (pkg || {}).wzName + '</p><p>bundler: ' + (bundler || {}).wzName + '</p>') ids: undefined undefined
+            elif filePath.substr(-8, 8) === '.js.ittf' ids: undefined undefined
+              _ wizzi.jsModule ids: undefined undefined
+                @ filePath ids: undefined undefined
+                {  ids: undefined undefined
+                  @ __productionManager ids: undefined undefined
+                    _ createProductionManager ids: undefined undefined
+                      @ 'stefi' ids: undefined undefined
+                      @ 'admin' ids: undefined undefined
+                      {  ids: undefined undefined
+                  @ req req ids: undefined undefined
+                  @ __data ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ jsResources options.jsResources ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param rendered ids: undefined undefined
+                  if err ids: undefined undefined
+                    _ return res.send(err) ids: undefined undefined
+                  _ res.setHeader('content-type', 'text/javascript') ids: undefined undefined
+                  return res.send(rendered) ids: undefined undefined
+            elif filePath.substr(-10, 10) === '.json.ittf' ids: undefined undefined
+              _ wizzi.jsonDocument ids: undefined undefined
+                @ filePath ids: undefined undefined
+                {  ids: undefined undefined
+                  @ __productionManager ids: undefined undefined
+                    _ createProductionManager ids: undefined undefined
+                      @ 'stefi' ids: undefined undefined
+                      @ 'admin' ids: undefined undefined
+                      {  ids: undefined undefined
+                  @ req req ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param rendered ids: undefined undefined
+                  if err ids: undefined undefined
+                    _ return res.send(err) ids: undefined undefined
+                  _ res.setHeader('content-type', 'application/json') ids: undefined undefined
+                  return res.send(rendered) ids: undefined undefined
+            elif filePath.substr(-9, 9) === '.css.ittf' ids: undefined undefined
+              _ wizzi.cssDocument ids: undefined undefined
+                @ filePath ids: undefined undefined
+                {  ids: undefined undefined
+                  @ __productionManager ids: undefined undefined
+                    _ createProductionManager ids: undefined undefined
+                      @ 'stefi' ids: undefined undefined
+                      @ 'admin' ids: undefined undefined
+                      {  ids: undefined undefined
+                  @ req req ids: undefined undefined
+                  @ __data ids: undefined undefined
+                    {  ids: undefined undefined
+                      @ cssResources options.cssResources ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param rendered ids: undefined undefined
+                  if err ids: undefined undefined
+                    _ return res.send(err) ids: undefined undefined
+                  _ res.setHeader('content-type', 'text/css') ids: undefined undefined
+                  return res.send(rendered) ids: undefined undefined
+            elif filePath.substr(-10, 10) === '.form.ittf' ids: undefined undefined
+              _ spa.formJsonizer ids: undefined undefined
+                @ filePath ids: undefined undefined
+                {  ids: undefined undefined
+                  @ __productionManager ids: undefined undefined
+                    _ createProductionManager ids: undefined undefined
+                      @ 'stefi' ids: undefined undefined
+                      @ 'admin' ids: undefined undefined
+                      {  ids: undefined undefined
+                  @ req req ids: undefined undefined
+                  @ __data ids: undefined undefined
+                    {  ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param jsonized ids: undefined undefined
+                  if err ids: undefined undefined
+                    _ return res.send(err) ids: undefined undefined
+                  _ res.setHeader('content-type', 'application/json') ids: undefined undefined
+                  return res.json(jsonized) ids: undefined undefined
+            elif filePath.substr(-5, 5) == '.html' ids: undefined undefined
+              var content = wizzi.file.read(filePath) ids: undefined undefined
+              _ res.end(content) ids: undefined undefined
+            elif filePath.substr(-3, 3) == '.js' ids: undefined undefined
+              var content = wizzi.file.read(filePath) ids: undefined undefined
+              _ res.setHeader('content-type', 'text/javascript') ids: undefined undefined
+              _ res.end(content) ids: undefined undefined
+            elif filePath.substr(-5, 5) == '.json' ids: undefined undefined
+              var content = wizzi.file.read(filePath) ids: undefined undefined
+              _ res.setHeader('content-type', 'application/json') ids: undefined undefined
+              _ res.end(content) ids: undefined undefined
+            elif filePath.substr(-4, 4) == '.css' ids: undefined undefined
+              var content = wizzi.file.read(filePath) ids: undefined undefined
+              _ res.setHeader('content-type', 'text/css') ids: undefined undefined
+              _ res.end(content) ids: undefined undefined
+            elif ['.png', '.jpg', '.gif', '.bmp'].indexOf(ext4) > -1 || ['.jpeg', '.tiff'].indexOf(ext5) > -1 ids: undefined undefined
+              _ wizzi.file.readFile ids: undefined undefined
+                @ filePath ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param data ids: undefined undefined
+                  if err ids: undefined undefined
+                    _ return res.end("Error reading " + filePath + " " + err) ids: undefined undefined
+                  else  ids: undefined undefined
+                    _ res.setHeader('content-type', 'image/' + filePath.substr(-3, 3)) ids: undefined undefined
+                    _ res.setHeader('content-length', data.length) ids: undefined undefined
+                    _ res.end(data) ids: undefined undefined
+            elif filePath.substr(-5, 5) == '.woff' || filePath.substr(-4, 4) == '.ttf' ids: undefined undefined
+              var ctype; ids: undefined undefined
+              if filePath.substr(-5, 5) == '.woff' ids: undefined undefined
+                set ctype = 'application/x-font-woff' ids: undefined undefined
+              if filePath.substr(-4, 4) == '.ttf' ids: undefined undefined
+                set ctype = 'application/x-font-ttf' ids: undefined undefined
+              _ wizzi.file.readFile ids: undefined undefined
+                @ filePath ids: undefined undefined
+                function  ids: undefined undefined
+                  param err ids: undefined undefined
+                  param data ids: undefined undefined
+                  if err ids: undefined undefined
+                    return res.end("Error reading " + filePath + " " + err) ids: undefined undefined
+                  else  ids: undefined undefined
+                    _ res.setHeader('content-type', ctype) ids: undefined undefined
+                    _ res.setHeader('content-length', data.length) ids: undefined undefined
+                    _ res.end(data) ids: undefined undefined
+            else  ids: undefined undefined
+              return next() ids: undefined undefined
+    function createProductionManager ids: undefined undefined
+      param user ids: undefined undefined
+      param subscription ids: undefined undefined
+      param globalContext ids: undefined undefined
+      var pman ids: undefined undefined
+        new ProductionManager ids: undefined undefined
+          {  ids: undefined undefined
+      _ pman.aclStat ids: undefined undefined
+        new acl.AclStat(user, subscription) ids: undefined undefined
+      _ pman.globalContext(globalContext) ids: undefined undefined
+      return pman ids: undefined undefined
+    function sendJSONStringified ids: undefined undefined
+      param res ids: undefined undefined
+      param wizziModelInstance ids: undefined undefined
+      _ res.send('<pre>' + stringify(cleanCircular(wizziModelInstance, []), null, 2) + '</pre>') ids: undefined undefined
+    function cleanCircular ids: undefined undefined
+      param obj ids: undefined undefined
+      param stock ids: undefined undefined
+      if !obj ids: undefined undefined
+        return  ids: undefined undefined
+      if stock.indexOf(obj) >= 0 ids: undefined undefined
+        return  ids: undefined undefined
+      else  ids: undefined undefined
+        _ stock.push(obj) ids: undefined undefined
+      if typeof obj === 'object' ids: undefined undefined
+        if obj.length ids: undefined undefined
+          foreach item in obj ids: undefined undefined
+            _ cleanCircular(item, stock) ids: undefined undefined
+          return  ids: undefined undefined
+        if obj.parent ids: undefined undefined
+          delete obj.parent ids: undefined undefined
+        if obj.wzParent ids: undefined undefined
+          delete obj.wzParent ids: undefined undefined
+        if obj.nodes ids: undefined undefined
+          delete obj.nodes ids: undefined undefined
+        if obj.evalContext ids: undefined undefined
+          delete obj.evalContext ids: undefined undefined
+        if obj.loadContext && obj.sourceKey ids: undefined undefined
+          delete obj.loadContext ids: undefined undefined
+        for var k in obj ids: undefined undefined
+          var item = obj[k] ids: undefined undefined
+          if !item ids: undefined undefined
+            delete obj[k] ids: undefined undefined
+          elif typeof item === 'object' && item.length && item.length == 0 ids: undefined undefined
+            delete obj[k] ids: undefined undefined
+          else  ids: undefined undefined
+            _ cleanCircular(item, stock) ids: undefined undefined
+      return obj ids: undefined undefined

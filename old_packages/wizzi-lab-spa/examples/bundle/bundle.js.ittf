@@ -1,0 +1,18 @@
+module
+	kind jsfile
+	var path = require('path')
+	var stringify = require('json-stringify-safe')
+	var site = require('../../../index')
+	var src = path.join(__dirname, 'ittf', 'hello.bundle.ittf')
+	_ site.bundle
+		@ src
+		{
+		function
+			param err
+			param wizziModel
+			if err
+				throw err
+			_ console.log
+				@ 'buildOptions'
+				_ stringify
+					@ wizziModel.getBrowserify().buildOptions()

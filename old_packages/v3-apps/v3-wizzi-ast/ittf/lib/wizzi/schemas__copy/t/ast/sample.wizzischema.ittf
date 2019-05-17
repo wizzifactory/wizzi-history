@@ -1,0 +1,103 @@
+﻿$group
+
+	e line : astitem
+		tag +
+		r line/s
+
+		m getCode
+			param sb
+			param indent
+			if !sb
+				set sb = []
+				set indent = indent || 0
+			_ sb.push(' '.repeat(indent) + this.wzName)
+			foreach item in this.lines
+				_ item.getCode(sb, indent + 1)
+			return sb.join('\n')
+
+		m getText
+			param sb
+			param indent
+			if !sb
+				set sb = []
+				set indent = indent || 0
+			_ sb.push(' '.repeat(indent) + this.wzName)
+			foreach item in this.lines
+				_ item.getCode(sb, indent + 1)
+			return sb.join('\n')
+
+	e syntax : astitem
+
+		r line/s
+		
+		m getText
+			param sb
+			param indent
+			if !sb
+				set sb = []
+				set indent = indent || 0
+			foreach item in this.lines
+				_ item.getText(sb, indent)
+			return sb.join('\n')
+
+	e category : astitem
+		a_tag( ecmaHRef, ecma-href )
+		r description
+			one-to-one
+		r subject/s
+		r syntax
+			one-to-one
+
+		m getCode
+			var ret = []
+			foreach item in this.subjects
+				var code = item.getCode()
+				set code.category = this.wzName
+				_ ret.push(code)
+			return ret
+
+	e subject : astitem
+		r description
+			one-to-one
+		r es6
+			one-to-one
+		r es5
+			one-to-one
+		
+		m getCode
+			return
+				{
+					@ es6 this.es6 ? this.es6.getCode() : '// ES6 code not available'
+					@ es5 this.es5 ? this.es5.getCode() : '// ES5 code not available'
+
+	e description : astitem
+		r line/s
+		
+		m getText
+			param sb
+			param indent
+			if !sb
+				set sb = []
+				set indent = indent || 0
+			foreach item in this.lines
+				_ item.getText(sb, indent)
+			return sb.join('\n')
+
+	e jscode : astitem
+
+		m getCode
+			param sb
+			param indent
+			if !sb
+				set sb = []
+				set indent = indent || 0
+			foreach item in this.lines
+				_ item.getCode(sb, indent)
+			return sb.join('\n')
+
+	e es6 : jscode
+		r line/s
+
+	e es5 : jscode
+		r line/s
+	

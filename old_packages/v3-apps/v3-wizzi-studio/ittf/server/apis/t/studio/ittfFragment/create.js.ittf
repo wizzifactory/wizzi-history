@@ -1,0 +1,40 @@
+﻿$group
+
+	@ createFragment
+		function
+			param options
+			param callback
+
+			var ittfPath
+				_ paths.fragmentIttf
+					@ options
+
+			check_file_already_exists( ittfPath, Ittf document
+
+			_ file.write
+				@ ittfPath
+				@ ''
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ name options.artifactName
+							@ schema options.schemaName
+							@ folder options.folder
+							@ project options.projectName
+							@ user options.userName
+							@ uri paths.uriFromPath(ittfPath, false)
+							@ ittfContent ''
+					@ status
+						_ success
+							@ 'Ittf fragment created: "' + paths.uriFromPath(ittfPath, false) + '"'
+
+
+
+
+
+
+
+

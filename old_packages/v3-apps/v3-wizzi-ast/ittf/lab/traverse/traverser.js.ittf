@@ -1,0 +1,101 @@
+﻿module 
+    kind jsfile
+	+
+	var path = require('path')
+	var babylon = require('babylon')
+	var traverse = require('babel-traverse').default
+	var generator = require('babel-generator')
+	var generate = generator.default
+	var wizzi = require('wizzi')
+	var typer = require('../ast_types/typer')
+	var jsontraverse = require('../../lib/3dparty/traverse')
+	+
+	var md = module.exports = {}
+	set md.traverse
+		function
+			param options
+			var o = options || {}
+			var context
+				{
+					@ types loadTypes()
+					@ errorMessages {}
+			if o.default
+				_ loadDefault(context)
+			if o.codeSamples
+				set context.topic = o.topic || 'codesamples'
+				_ loadCodeSamples(o.codeSamples, context)
+				_ print
+					@ context.topic
+					@ context
+			else
+				_ print
+					@ 'ast'
+					@ context
+	+
+	function loadDefault
+		param context
+		var sources
+			[
+				@ 'modification.js'
+				@ 'dialog.js'
+				@ 'backbone.js'
+		+
+		foreach s in sources
+			set context.sourcePath = s
+			_ loadSource
+				@ context
+	+
+	function loadCodeSamples
+		param codeSamples
+		param context
+		foreach item in codeSamples
+			set context.codeSample = item
+			_ loadCodeSample
+				@ context
+
+	function loadTypes
+		var types
+			_ typer.getTypes
+				{
+					@ list true
+
+		log types.length
+	
+		var sampleTypes = {}
+		foreach t in types
+			set sampleTypes[t.name]
+				{
+					@ bads []
+					@ goods []
+					@ minLength 999999
+					@ maxLength 0
+		return sampleTypes
+
+	function print
+		param topicName
+		param context
+
+		var countBads = 0
+		var countGoods = 0
+		for var k in context.types
+			var v = context.types[k]
+			if v.bads.length > 0 || v.goods.length > 0
+				log k, v.bads.length, v.goods.length, v.minLength, v.maxLength
+			if v.bads.length > 0 && v.goods.length == 0
+				set countBads++
+			else
+				set countGoods++
+
+		log '*** TOTAL ' + countGoods + ' goods on ' + context.types.length
+		log '*** TOTAL ' + countBads + ' bads'
+		log '*** TOTAL ' + (countGoods + countBads) + ' covered'
+
+		_ emitTypes(context.types, topicName)
+
+	$include load
+	$include tryGenerate
+	$include emit
+
+
+
+

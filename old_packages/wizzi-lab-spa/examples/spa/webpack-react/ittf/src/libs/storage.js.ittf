@@ -1,0 +1,16 @@
+module
+	kind react
+	export default 
+		{
+			@ get
+				function
+					param k
+					try
+						return JSON.parse(localStorage.getItem(k))
+					catch ex
+						return null
+			@ set
+				function
+					param k
+					param v
+					_ localStorage.setItem(k, JSON.stringify(v))

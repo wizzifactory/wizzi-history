@@ -1,0 +1,14 @@
+module
+	kind jsfile
+	wz-iife spec
+		
+		wz-require util
+			# declare-var _
+		
+		function getGreet
+			return 'hello'
+		wz-function sayHello
+			param name
+			log getGreet() + ' ' + _.inspect(name)
+	_ spec.sayHello('stefi')
+	log 'spec.getGreet: ', spec.getGreet

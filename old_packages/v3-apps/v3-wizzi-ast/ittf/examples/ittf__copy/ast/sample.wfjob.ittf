@@ -1,0 +1,20 @@
+﻿wfjob ast sample
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var dest_folder         = path.join(__dirname, 'results');
+		var ast_ittf_pattern    = '**/*.ast.ittf';
+
+	line root
+		cwd-folder ${ittf_folder}
+		artifact ./${ast_ittf_pattern}
+			src ./${ast_ittf_pattern}
+			schema ast
+			generator json/dump
+			extension json
+
+	production
+		dest-folder ${dest_folder}
+		line-ref root
+
+

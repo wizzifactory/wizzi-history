@@ -1,0 +1,25 @@
+$group
+	# Create a distributable package
+	_ gulp.task
+		@ 'dist:build'
+		[
+			@ 'dist:static'
+		@ cb
+		function
+			$if spa.devServer === 'webpack'
+				var config = webpackConfig(false, 'dist-intermediate')
+				_ webpack
+					@ config
+					function
+						param err
+						param stats
+						if err
+							throw
+								new $.util.PluginError
+									@ 'dist'
+									@ err
+						_ $.util.log
+							@ `[${packageJson.name} dist]`
+							@ stats.toString({colors: true}))
+						_ cb()
+  

@@ -1,0 +1,52 @@
+﻿module 
+    kind jsfile
+	+
+    var fs = require('fs')
+	var path = require('path')
+	var babylon = require('babylon')
+	var traverse = require('babel-traverse').default
+	var wizzi = require('wizzi')
+	+
+	var md = module.exports = {}
+
+	set md.getTypes
+		function
+			param options
+			set options = options || {}
+			+
+			var sources
+				[
+					@ 'experimental.js'
+					@ 'core.js'
+					@ 'es2015.js'
+					@ 'jsx.js'
+					@ 'misc.js'
+					@ 'flow.js'
+	
+			var context
+				{
+					@ types []
+					@ builders {}
+					@ visitors {}
+					@ aliases {}
+					@ supers {}
+			
+			foreach s in sources
+				set context.source = s
+				set context.type = null
+				set context.typeProperty = null
+				_ runSource
+					@ context
+					@ options
+
+			if options.list
+				return context.types
+			else
+				_ emitTypes(context.types, context)
+				return context.types
+	+
+	$include source
+	$include type
+	$include emit
+
+

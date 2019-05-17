@@ -1,0 +1,91 @@
+form geocompleteOptions
+	
+	c map
+		# the html element where the map is shown.
+		kind alternate
+		alt	selector
+			# Might be a selector, a jQuery object or a DOM element.
+			kind text
+		alt no value
+			# Default is false which shows no map.
+			kind checkbox
+			default false
+	
+	c details
+		# The container that should be populated with data.
+		kind alternate
+		alt	selector
+			# Might be a selector, a jQuery object or a DOM element.
+			kind text
+		alt no value
+			# Default is false which ignores the setting.
+			kind checkbox
+			default false
+	
+	c location
+		# Location to initialize the map on.
+		kind alternate
+		alt address
+			kind text
+		alt [latitude, longitude]
+			kind array
+			itemcontrol
+				kind latlng
+		alt google.maps.LatLngobject. 
+			kind google-latlng
+		alt 
+			# Default is false which shows a blank map.
+			kind checkbox
+			default false
+	
+	c bounds
+		# Whether to snap geocode search to map bounds. 
+		# If false search globally. 
+		kind alternate
+		alt
+			kind google-latlng-bounds
+		alt
+			# Alternatively pass a custom LatLngBounds object
+			kind checkbox
+			default true
+	
+	c detailsAttribute
+		#  The attribute's name to use as an indicator. 
+		kind text
+		default name
+	
+	group mapOptions
+		# Options to pass to the google.maps.Map constructor. See the full list here.
+		c zoom
+			# The initial zoom level.
+			kind number
+			default 14
+		c scrollwheel
+			# Whether to enable the scrollwheel to zoom the map.
+			kind checkbox
+			default false
+		c mapTypeId
+			# The map type
+			kind text
+			default roadmap
+	
+	group markerOptions
+		# The options to pass to the google.maps.Marker constructor. See the full list here.
+		c draggable
+			# If the marker is draggable. Set to true to enable dragging.
+			kind checkbox
+			default false 
+	
+	c maxZoom
+		# The maximum zoom level to zoom in after a geocoding response.
+		kind number
+		default 16
+	
+	c types
+		# An array containing one or more of the supported types for the places request.
+		href https://developers.google.com/places/supported_types
+			text full list of supported values for the types property in the Google Places API.
+		kind array
+		default [geocode]
+		itemcontrol
+			kind text

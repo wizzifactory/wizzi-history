@@ -1,0 +1,79 @@
+$group
+	e test : spaitem
+		# http://karma-runner.github.io/1.0/config/configuration-file.html
+		# https://github.com/tongrhj/karma-test
+		# https://github.com/nikku/karma-browserify
+		a_flag( autoWatch, auto-watch )
+			# Enable or disable watching files and executing the tests whenever one of these files changes.
+		a_tag( basePath, base-path )
+		a_true( colors )
+			# Enable or disable colors in the output (reporters and logs).
+	
+		a_true( singleRun, single-run )
+		a level
+			# level of logging
+			restrict
+				enum DISABLE
+				enum ERROR
+				enum WARN
+				enum INFO
+				enum DEBUG
+		a port
+			# server port
+			default 9876
+		r file/s
+		r testFramework/s
+		r testAssertion/s
+		r testBrowser/s
+		r testReporter/s
+		r testCoverage/s
+	e testFramework
+		tag framework
+		a item
+			restrict
+				enum jasmine
+				enum mocha
+				enum qunit
+				enum unit.js
+				enum browserify
+				enum source-map-support
+	e testAssertion
+		tag assertion
+		a item
+			restrict
+				enum chai
+				enum expect
+				enum should.js
+	e testBrowser
+		tag browser
+		a item
+			restrict
+				enum Chrome
+					# (launcher requires karma-chrome-launcher plugin)
+				enum ChromeCanary
+					# (launcher requires karma-chrome-launcher plugin)
+				enum PhantomJS
+					# (launcher requires karma-phantomjs-launcher plugin)
+				enum Firefox
+					# (launcher requires karma-firefox-launcher plugin)
+				enum Opera
+					# (launcher requires karma-opera-launcher plugin)
+				enum IE
+					# (launcher requires karma-ie-launcher plugin)
+				enum Safari
+					# (launcher requires karma-safari-launcher plugin)
+	e testReporter
+		tag reporter
+		a item
+			restrict
+				enum progress
+	e testCoverage
+		tag coverage
+		a item
+			restrict
+				enum istanbul
+					# Code Coverage report generator. Tracks the percentage of your code covered by your Mocha tests.
+				enum codecov.io
+					# Integrates your Istanbul code coverage into your workflow. 
+					# Upload your reports to the cloud, visually include code coverage reports into Github pull requests, 
+					# and award yourself with a spiffy badge, among other things.

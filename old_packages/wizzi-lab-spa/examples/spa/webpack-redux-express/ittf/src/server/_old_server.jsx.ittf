@@ -1,0 +1,57 @@
+module
+	kind jsfile
+	ecma es6
+	import path from 'path'
+	import Express from 'express'
+	$$ import qs from 'qs'
+	+
+	import webpack from 'webpack'
+	import webpackDevMiddleware from 'webpack-dev-middleware'
+	import webpackHotMiddleware from 'webpack-hot-middleware'
+	import webpackConfig from '../../webpack.config'
+	+
+	const app = new Express()
+	const port = 3020
+	+
+	# Use this middleware to set up hot module reloading via webpack.
+	const compiler = webpack(webpackConfig)
+	_ app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }))
+	_ app.use(webpackHotMiddleware(compiler))
+	+
+	# This is fired every time the server side receives a request
+	_ app.use(handleRender)
+	+
+	function handleRender
+		param req
+		param res
+		$$ const params = qs.parse(req.query)
+		_ res.send
+			_ renderFullPage
+				{
+					@ html 'Hello world'
+					@ initialState
+						{
+							@ userid 'stefi'
+	+
+	html_f renderFullPage
+		doctype html
+		html
+			head
+				< title Webpack Redux Express Example
+			body
+				div {{ctx.html}}
+					@ id app
+					< script
+						+ window.__INITIAL_STATE__ = {{ JSON.stringify(ctx.initialState) }}
+					< script
+						@ src /static/bundle.js
+	+
+	# And run the server
+	_ app.listen
+		@ port
+		function
+			param err
+			if err
+				error error
+			else
+				log "==> 🌎  Listening on port " + port + ". Open up http://localhost:" + port + "/ in your browser."

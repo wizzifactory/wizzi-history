@@ -1,0 +1,126 @@
+module
+	kind react
+	import uuid from 'node-uuid'
+	const md = {}
+	set md.addItem
+		function
+			param items
+			param itemToAdd
+			param options
+			if options && options.uuid
+				set itemToAdd.id = uuid.v4()
+			var nextitems
+			if options && options.before
+				set nextitems
+					[
+						@ itemToAdd
+						@ ...items
+			else
+				set nextitems
+					[
+						@ ...items
+						@ itemToAdd
+			
+			return nextitems
+	set md.addItemState
+		function
+			param state
+			param collName
+			param nextitem
+			param options
+			if options && options.uuid
+				set nextitem.id = uuid.v4()
+			var nextitems
+			if options && options.before
+				set nextitems
+					[
+						@ nextitem
+						@ ...state[collName]
+			else
+				set nextitems
+					[
+						@ ...state[collName]
+						@ nextitem
+			
+			return _replaceCollInState(state, collName, nextitems)
+	set md.updateItem
+		function
+			param items
+			param itemId
+			param itemToUpdate
+			
+			log 'updateItem.before', items
+			const nextitems = _replaceItemInColl(items, itemId, itemToUpdate)
+			log 'updateItem.after', nextitems
+			return nextitems
+	set md.updateItemState
+		function
+			param state
+			param collName
+			param itemId
+			param nextitem
+			
+			const items = state[collName]
+			log 'updateItem.before', items, itemId
+			const nextitems = _replaceItemInColl(items, itemId, nextitem)
+			log 'updateItem.after', nextitems
+			return _replaceCollInState(state, collName, nextitems)
+			
+	set md.deleteItem
+		function
+			param items
+			param itemId
+			const index = _findIndex(items, itemId)
+			return items.slice(0, index).concat(items.slice(index + 1))
+	set md.deleteItemState
+		function
+			param state
+			param collName
+			param itemId
+			const items = state[collName]
+			const index = _findIndex(items, itemId)
+			const nextitems = items.slice(0, index).concat(items.slice(index + 1))
+			return _replaceCollInState(state, collName, nextitems)
+	set md.findItem
+		function
+			param items
+			param itemId
+			const items = state[collName]
+			return _findItem(items, itemId)
+	set md.findItemState
+		function
+			param state
+			param collName
+			param itemId
+			const items = state[collName]
+			return _findItem(items, itemId)
+	function _replaceItemInColl
+		param items
+		param itemId
+		param nextitem
+		return items.map(item => item.id === itemId ? Object.assign({}, item, nextitem) : item )
+	function _replaceCollInState
+		param state
+		param collName
+		param nextitems
+		const nextstate
+			_ Object.assign
+				{
+				@ state
+		set nextstate[collName] = nextitems
+		return nextstate
+	function _findItem
+		param items
+		param itemId
+		foreach item in items
+			if item.id === itemId
+				return item
+		return null
+	function _findIndex
+		param items
+		param itemId
+		foreach item in items
+			if item.id === itemId
+				return i
+		return -1
+	export default md

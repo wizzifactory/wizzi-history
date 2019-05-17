@@ -1,0 +1,263 @@
+  wizzischema wizzischema ids: 1 27
+    e wizzischema ids: 2 28
+      # The root element of a wizzi schema. ids: 3 29
+      a ${name} ids: 421 427
+        $args: preserveTags, preserve-tags  $params: name, tag, defaultValue|false
+        tag ${tag} ids: 423 428
+        type boolean ids: 424 429
+        default ${defaultValue} ids: 425 430
+        default-when-declared true ids: 426 431
+        # If declared, the WizziModelLoader will preserve, in the loaded WizziModelInstance, ids: 5 31
+        # the tags used in the source IttfDocuments. ids: 6 32
+      r element/s ids: 7 33
+      r include/s ids: 8 34
+      r exportTo/s ids: 9 35
+      r require/s ids: 10 36
+      r method/s ids: 11 37
+      r comment/s ids: 12 38
+    e schemaitem ids: 13 39
+      r comment/s ids: 14 40
+    e include : schemaitem ids: 15 41
+      # The parent element may include the nodes of another external schema. ids: 16 42
+      # The IttfNodeValue of this element is the name of the external schema. ids: 17 43
+    e comment ids: 18 44
+      # A comment line for describing entities. ids: 19 45
+      tag # ids: 20 46
+    $group  ids: 53 92
+      e element : schemaitem ids: 54 93
+        # A schema element. A classifier model element that may have attributes and relations. ids: 55 94
+        tag e ids: 56 95
+        a super ids: 57 96
+          # The base (super) element from which this element derives. ids: 58 97
+          # Attributes and relations of the base element are inherited. ids: 59 98
+        a ${name} ids: 421 432
+          $args: isAbstract, is-abstract  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 433
+          type boolean ids: 424 434
+          default ${defaultValue} ids: 425 435
+          default-when-declared true ids: 426 436
+          # This element is abstract and cannot be declared in Ittf documents. ids: 61 100
+        a ${name} ids: 421 437
+          $args: isRoot, is-root  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 438
+          type boolean ids: 424 439
+          default ${defaultValue} ids: 425 440
+          default-when-declared true ids: 426 441
+          # Mark the element as the root element of the schema. ids: 63 102
+          # If not explicit, the root element is inferred, ids: 64 103
+          # and the first element declared in the schema is assumed as the root. ids: 65 104
+        a tagInternal ids: 66 105
+          tag tag ids: 67 106
+          # The tag used to declare this element in Ittf documents. ids: 68 107
+          # Optional. The default is the element IttfNodeValue ids: 69 108
+        a xmlTagInternal ids: 70 109
+          tag xml-tag ids: 71 110
+          # The Xml tag used for this element when persisted in Xml Format. ids: 72 111
+        a acceptAnyTag ids: 73 112
+          tag any ids: 74 113
+          # This element can have any text as a child element. ids: 75 114
+          # The IttfNodeValue of this attribute must be the name of the element collection ids: 76 115
+          # to which child text nodes will be appended. ids: 77 116
+          # Any child node produces an internal ANY element that is appended to this collection. ids: 78 117
+          # TODO example ids: 79 118
+        a ${name} ids: 421 442
+          $args: nameIsRequired, name-is-required  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 443
+          type boolean ids: 424 444
+          default ${defaultValue} ids: 425 445
+          default-when-declared true ids: 426 446
+          # This element must have a not empty IttfNodeValue ids: 81 120
+        a ${name} ids: 421 447
+          $args: addToChildren, add-to-children  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 448
+          type boolean ids: 424 449
+          default ${defaultValue} ids: 425 450
+          default-when-declared true ids: 426 451
+          # Every child node of this element will be added to the wzChildren collection. ids: 83 122
+          # Artifact generators will use the wzElement attribute to distinguish child elements. ids: 84 123
+        a ${name} ids: 421 452
+          $args: suppressCollectionEmit, suppress-collection-emit  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 453
+          type boolean ids: 424 454
+          default ${defaultValue} ids: 425 455
+          default-when-declared true ids: 426 456
+          # TODO ??? ids: 86 125
+        r attribute/s ids: 87 126
+        r relation/s ids: 88 127
+        r restrict/s ids: 89 128
+        r method/s ids: 90 129
+        r include/s ids: 91 130
+    $group  ids: 131 159
+      e attribute : schemaitem ids: 132 160
+        # An element attribute. ids: 133 161
+        tag a ids: 134 162
+        a tagInternal ids: 135 163
+          tag tag ids: 136 164
+          # The tag used to declare the attribute in IttfDocuments. ids: 137 165
+          # Optional. The default is the attribute IttfNodeValue ids: 138 166
+        a type ids: 139 167
+          # The attribute data type ids: 140 168
+          default string ids: 141 169
+          restrict  ids: 142 170
+            enum string ids: 143 171
+            enum boolean ids: 144 172
+            enum integer ids: 145 173
+            enum float ids: 146 174
+            enum date ids: 147 175
+            enum regexp ids: 148 176
+            enum code ids: 149 177
+        a default ids: 150 178
+          # The attribute default value ids: 151 179
+        a ${name} ids: 421 457
+          $args: isRequired, is-required  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 458
+          type boolean ids: 424 459
+          default ${defaultValue} ids: 425 460
+          default-when-declared true ids: 426 461
+          # If true the attribute must be declared. ids: 153 181
+        a ${name} ids: 421 462
+          $args: isDataType, is-datatype  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 463
+          type boolean ids: 424 464
+          default ${defaultValue} ids: 425 465
+          default-when-declared true ids: 426 466
+          # This attribute is a datatype attribute and type services will be available to artifact generators. ids: 155 183
+        a ${name} ids: 467 472
+          $args: defaultWhenDeclared, default-when-declared $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 469 473
+          $if defaultValue ids: 470 474
+            default ${defaultValue} ids: 471 475
+          # When the attribute is declared without a IttfNodeValue, this will be its value. ids: 157 185
+        r restrict/s ids: 158 186
+    $group  ids: 187 196
+      e relation : schemaitem ids: 188 197
+        # A relation to a child element. ids: 189 198
+        # By default is a one-to-many relation. ids: 190 199
+        # Can be set to a one-to-one, declaring the attribute isOneToOne. ids: 191 200
+        tag r ids: 192 201
+        a ${name} ids: 421 476
+          $args: isOneToOne, one-to-one  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 477
+          type boolean ids: 424 478
+          default ${defaultValue} ids: 425 479
+          default-when-declared true ids: 426 480
+        a ${name} ids: 421 481
+          $args: noGetMethod, no-get  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 482
+          type boolean ids: 424 483
+          default ${defaultValue} ids: 425 484
+          default-when-declared true ids: 426 485
+        a ${name} ids: 421 486
+          $args: hasAddOnce, add-once  $params: name, tag, defaultValue|false
+          tag ${tag} ids: 423 487
+          type boolean ids: 424 488
+          default ${defaultValue} ids: 425 489
+          default-when-declared true ids: 426 490
+    $group  ids: 205 233
+      e restrict : schemaitem ids: 206 234
+        # Group of restrictions to the element or attribute values ids: 207 235
+        r facet/s ids: 208 236
+      e facet : schemaitem ids: 209 237
+        # The abstract base class for facet restrictions ids: 210 238
+        is-abstract  ids: 211 239
+      e enumFacet : facet ids: 212 240
+        # A restriction of type enumeration applied to an attribute. ids: 213 241
+        tag enum ids: 214 242
+      e maxLengthFacet : facet ids: 215 243
+        # A restriction of type maximum length applied to an attribute. ids: 216 244
+        tag max-length ids: 217 245
+      e minLengthFacet : facet ids: 218 246
+        # A restriction of type minimum length applied to an attribute. ids: 219 247
+        tag min-length ids: 220 248
+      e maxValueFacet : facet ids: 221 249
+        # A restriction of type maximum value applied to an attribute. ids: 222 250
+        tag max-value ids: 223 251
+      e minValueFacet : facet ids: 224 252
+        # A restriction of type minimum value applied to an attribute. ids: 225 253
+        tag min-value ids: 226 254
+      e regexpFacet : facet ids: 227 255
+        # A restriction of type regexp test applied to an attribute. ids: 228 256
+        tag regexp ids: 229 257
+      e elementFacet : facet ids: 230 258
+        # A restriction of type allowed child element applied to an element. ids: 231 259
+        tag element ids: 232 260
+    $group  ids: 261 294
+      e exportTo : schemaitem ids: 262 295
+        # Require the emission, in the WizziModelType of the schema, of a function ids: 263 296
+        # for exporting the model instance to a different format. ids: 264 297
+        # There are a few built-in ExportTo functions. New export formats may be created ids: 265 298
+        # by WizziPackage developers using methods. ids: 266 299
+        tag export-to ids: 267 300
+        restrict  ids: 268 301
+          enum json ids: 269 302
+          enum xml ids: 270 303
+          enum prettify ids: 271 304
+      e require : schemaitem ids: 272 305
+        # A node-js require statement that is emitted in the WizziModelType of the schema. ids: 273 306
+        # The IttfNodeValue is the package name. It is also the variable name of the required package ids: 274 307
+        # unless a declare-var attribute is present. ids: 275 308
+        a kind ids: 276 309
+          restrict  ids: 277 310
+            enum function ids: 278 311
+            enum module ids: 279 312
+            enum context-method ids: 280 313
+        a declareVar ids: 281 314
+          tag declare-var ids: 282 315
+      e method : schemaitem ids: 283 316
+        # A method of an element element pseudo-class generated in the WizziModelType. ids: 284 317
+        tag m ids: 285 318
+        a emitkey ids: 286 319
+          # The emit key of the artifact which should insert this method. ids: 287 320
+          # Can be any string that artifact generators will filter. ids: 288 321
+        r param/s ids: 289 322
+        r require/s ids: 290 323
+        r statement/s ids: 291 324
+      e param : schemaitem ids: 292 325
+        # A parameter of a method or function element. ids: 293 326
+    $group  ids: 327 374
+      e statement : schemaitem ids: 328 375
+        r statement/s ids: 329 376
+      e var : statement ids: 330 377
+        tag var ids: 331 378
+      e decl : statement ids: 332 379
+      e if : statement ids: 333 380
+        tag if ids: 334 381
+      e elif : statement ids: 335 382
+      e else : statement ids: 336 383
+        tag else ids: 337 384
+      e switch : statement ids: 338 385
+      e case : statement ids: 339 386
+      e for : statement ids: 340 387
+        tag for ids: 341 388
+      e foreach : statement ids: 342 389
+      e break : statement ids: 343 390
+      e continue : statement ids: 344 391
+      e while : statement ids: 345 392
+        tag while ids: 346 393
+      e do : statement ids: 347 394
+        tag do ids: 348 395
+      e try : statement ids: 349 396
+        tag try ids: 350 397
+      e catch : statement ids: 351 398
+        tag catch ids: 352 399
+      e finally : statement ids: 353 400
+        tag finally ids: 354 401
+      e throw : statement ids: 355 402
+        tag throw ids: 356 403
+      e return : statement ids: 357 404
+        tag return ids: 358 405
+      e set : statement ids: 359 406
+      e log : statement ids: 360 407
+      e call : statement ids: 361 408
+        tag _ ids: 362 409
+      e jsObject : statement ids: 363 410
+        tag { ids: 364 411
+      e jsArray : statement ids: 365 412
+        tag [ ids: 366 413
+      e jsPropertyOrValue : statement ids: 367 414
+        tag @ ids: 368 415
+      e function : statement ids: 369 416
+      e new : statement ids: 370 417
+      e codeline : statement ids: 371 418
+        tag + ids: 372 419
+      e param : statement ids: 373 420

@@ -1,0 +1,18 @@
+$group
+	e group : item
+		is-abstract
+		# The wzName is the HtmlElement id
+		a name
+			# The data name
+		a data-kind
+			default group
+			restrict
+				enum group
+				enum array
+				enum object
+				enum value
+	e tab : group
+	e pane : group
+		a_flag( isPaneDefault, is-default )
+	e accordion : group
+	e panel : group

@@ -1,0 +1,88 @@
+module
+	kind react
+
+	import React from 'react'
+	import PropTypes from 'prop-types'
+	import classNames from 'classnames'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+	import marked from 'marked'
+	import prism from '../utils/prism'
+
+	const renderer = new marked.Renderer()
+
+	set renderer.heading
+		=>
+			param text, level
+			const escapedText
+				_ text.toLowerCase()
+					._ replace(/=&gt;|&lt;| \/&gt;|<code>|<\/code>/g, '')
+					._ replace(/[^\w]+/g, '-')
+			return 
+				+ (
+				+ `<h${level}><a class="anchor-link" id="${escapedText}"></a>${text}` +
+				+ `<a class="anchor-link-style" href="#${escapedText}">${'#'}</a></h${level}>`
+				+ )
+
+	_ marked.setOptions
+		{
+			@ gfm true
+			@ tables true
+			@ breaks false
+			@ pedantic false
+			@ sanitize false
+			@ smartLists true
+			@ smartypants false
+			@ highlight
+				function highlight
+					param code
+					return prism.highlight(code, prism.languages.jsx)
+			@ renderer
+
+	const anchorLinkStyle
+		=>
+			param theme
+			return
+				{
+					@ '& .anchor-link-style'
+						{
+							@ opacity 0
+							@ display 'inline'
+							@ '&:hover .anchor-link-style'
+								{
+									@ opacity 1
+									@ fontSize '0.8em'
+									@ lineHeight '1'
+									@ paddingLeft theme.spacing.unit
+									@ color theme.palette.text.hint
+
+	var styleSheet
+        _ createStyleSheet
+            @ 'MarkdownElement'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/MarkdownElement
+
+	function MarkdownElement
+		param props
+		const { classes, className, text, ...other } = props
+
+		# eslint-disable react/no-danger
+		return
+			div
+				@ className {classNames(classes.root, 'markdown-body', className)}
+				@ dangerouslySetInnerHTML {{ __html: marked(text) }}
+				@ {...other}
+    
+	set MarkdownElement.propTypes
+		{
+			@ classes PropTypes.object.isRequired
+			@ className PropTypes.string
+			@ text PropTypes.string.isRequired
+			
+	export default
+		_ withStyles
+			@ styleSheet
+			(
+				@ MarkdownElement

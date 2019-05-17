@@ -1,0 +1,131 @@
+  module  ids: 1 132
+    kind jsfile ids: 2 133
+    #  ids: 3 134
+      # test var ids: 4 135
+    var x = 1 ids: 5 136
+    var y ids: 6 137
+      {  ids: 7 138
+        @ name 'stefi' ids: 8 139
+    var  ids: 9 140
+      decl alpha = 0 ids: 10 141
+      decl sum ids: 11 142
+        function  ids: 12 143
+          param a ids: 13 144
+          param b ids: 14 145
+          return a + b ids: 15 146
+    #  ids: 16 147
+      # test objects ids: 17 148
+    var obj_1 ids: 18 149
+      {  ids: 19 150
+        @ numbers ids: 20 151
+          [  ids: 21 152
+            @ 1 ids: 22 153
+            @ 2 ids: 23 154
+        @ letters ids: 24 155
+          [  ids: 25 156
+            @ 'a' ids: 26 157
+            @ 'b' ids: 27 158
+        @ numbers_letters ids: 28 159
+          [  ids: 29 160
+            {  ids: 30 161
+              @ num 1 ids: 31 162
+              @ letter 'a' ids: 32 163
+            {  ids: 33 164
+              @ num 2 ids: 34 165
+              @ letter 'b' ids: 35 166
+        @ start 0 ids: 36 167
+        @ state ids: 37 168
+          {  ids: 38 169
+            @ value null ids: 39 170
+            @ add ids: 40 171
+              function  ids: 41 172
+                param b ids: 42 173
+                set this.value = value + b ids: 43 174
+    #  ids: 44 175
+      # test functions ids: 45 176
+    function setNumLet ids: 46 177
+      param num ids: 47 178
+      param letter ids: 48 179
+      param mode ids: 49 180
+      if mode === 'object' ids: 50 181
+        return  ids: 51 182
+          {  ids: 52 183
+            @ num num ids: 53 184
+            @ letter letter ids: 54 185
+      else  ids: 55 186
+        return alpha + beta ids: 56 187
+    #  ids: 57 188
+      # test class ids: 58 189
+    class animal ids: 59 190
+      ctor  ids: 60 191
+        param kind ids: 61 192
+        param numlegs ids: 62 193
+        set this.kind = kind ids: 63 194
+        set this.numlegs = numlegs ids: 64 195
+    class cat ids: 65 196
+      super animal ids: 66 197
+      ctor  ids: 67 198
+        param name ids: 68 199
+        base 'cat' ids: 69 200
+        base 4 ids: 70 201
+    var miao ids: 71 202
+      new cat ids: 72 203
+        @ 'miao' ids: 73 204
+        _ getLegs('cat') ids: 74 205
+    #  ids: 75 206
+      # test call ids: 76 207
+    _ exec ids: 77 208
+      @ argument ids: 78 209
+      {  ids: 79 210
+        @ property 'hello' ids: 80 211
+      [  ids: 81 212
+        @ arrayItem1 ids: 82 213
+        @ arrayItem2 ids: 83 214
+      function  ids: 84 215
+        # ... statements ... ids: 85 216
+      _ retrieveValue ids: 86 217
+        @ argument ids: 87 218
+    #  ids: 88 219
+      # test iife ids: 89 220
+    iife  ids: 90 221
+      function  ids: 91 222
+        param $ ids: 92 223
+        function high ids: 93 224
+          param element ids: 94 225
+          _ $(element).addClass('highlight') ids: 95 226
+      @ jQuery ids: 96 227
+    #  ids: 97 228
+      # test if ids: 98 229
+    if a ids: 99 230
+      _ a ids: 100 231
+    elif b ids: 101 232
+      _ b ids: 102 233
+    else  ids: 103 234
+      _ c ids: 104 235
+    #  ids: 105 236
+      # test switch ids: 106 237
+    switch alpha ids: 107 238
+      case 0 ids: 108 239
+        _ beta(0) ids: 109 240
+      case 10 ids: 110 241
+        _ beta(1) ids: 111 242
+      default  ids: 112 243
+        _ beta(null) ids: 113 244
+    #  ids: 114 245
+      # test loops ids: 115 246
+    var j = 0 ids: 116 247
+    while j < 10 ids: 117 248
+      log j ids: 118 249
+      set j++ ids: 119 250
+    do j > 0 ids: 120 251
+      log j ids: 121 252
+      set j-- ids: 122 253
+    for k in miao ids: 123 254
+      log k, miao[k] ids: 124 255
+    foreach a in [1,2,3] ids: 125 256
+      log a ids: 126 257
+    #  ids: 127 258
+      # test debug ids: 128 259
+    log 'hello', miao ids: 129 260
+    log? miao ids: 130 261
+    chalk red miao ids: 131 262

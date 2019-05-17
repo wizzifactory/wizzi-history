@@ -1,0 +1,47 @@
+$group
+    @ resolve
+        { 
+            @ modules
+                [ 
+                    @ 'node_modules'
+                    ._ concat
+                        @ paths.nodePaths
+            @ extensions
+                [ 
+                    @ '.js'
+                    @ '.json'
+                    @ '.jsx'
+            @ alias
+                { 
+                    @ 'react-native' 'react-native-web'
+    @ resolveLoader
+        { 
+            @ modules
+                [ 
+                    @ paths.ownNodeModules
+                    @ paths.appNodeModules
+
+
+	$* OLD
+			
+		$if wp.webpackResolvers
+			@ resolveLoader
+				{
+					@ root path.join(__dirname, "node_modules")
+			
+			@ resolve
+				{
+					@ root path.join(__dirname, "node_modules")
+			@ modulesDirectories ['node_modules']
+			$if wp.webpackResolveExtensions.length > 0
+				@ resolve
+					{
+						@ extensions
+							[
+								$foreach ext in wp.webpackResolveExtensions
+									@ '${ext.wzName}'
+	
+	*$
+
+
+

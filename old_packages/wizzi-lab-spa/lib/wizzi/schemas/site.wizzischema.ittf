@@ -1,0 +1,26 @@
+wizzischema site
+	
+	# A schema modeling a site structure
+	e site
+		# The root element of the site schema.
+		a kind
+			default one
+			restrict
+				enum one
+				enum two
+		r item/s
+		m getMenus
+			if !this.menus
+				set this.menus = _.filter(this.items, { wzElement: 'menu' });
+			# log 'wizzimodel site this.menus', this.menus
+			return this.menus
+		m getMenu
+			param name
+			var menu = _.find(this.getMenus(), { wzName: name })
+			# log 'wizzimodel site menu', name, menu
+			return menu
+	e item
+		r item/s
+	e menuitem : item
+		a href
+	e menu : item

@@ -1,0 +1,86 @@
+﻿$group
+
+	function loadCodeSample
+		param context
+		var sample = context.codeSample
+		# log "sample", sample
+		var code = sample.es6
+		log "code", code
+		+
+		_ babylonTraverse
+			@ code
+			@ context
+
+	function loadSource
+		param context
+		+
+		var fileName
+			_ path.join
+				@ __dirname
+				@ 'sources'
+				@ context.sourcePath
+		+
+		var code
+			_ wizzi.file.read
+				@ fileName
+		+
+		_ babylonTraverse
+			@ code
+			@ context
+
+	function babylonTraverse
+		param code
+		param context
+
+		var ast
+		try
+			set ast
+				_ babylon.parse
+					@ code
+					{
+						@ sourceType 'module'
+						@ plugins
+							[
+								@ 'estree'
+								@ 'jsx'
+								@ 'flow'
+								@ 'doExpressions'
+								@ 'objectRestSpread'
+								@ 'classProperties'
+								@ 'exportExtensions'
+								@ 'asyncGenerators'
+								@ 'functionBind'
+								@ 'functionSent'
+								@ 'dynamicImport'
+		catch ex
+			log 'error parsing', code, ex
+			return
+
+		try
+			_ traverse
+				@ ast
+				{ 
+					@ enter
+						function 
+							param path
+
+							if path.node.type == 'Literal' ||
+								\b path.node.type == 'Property' ||
+								\b path.node.type == 'MethodDefinition'
+								return
+
+							var type = context.types[path.node.type]
+							if !type
+								log 'context.types', context.types
+								throw new Error('Type not managed ' + path.node.type)
+							if path.parent
+								var ret = tryGenerate(path.parent, type, context)
+								if !ret && path.parentPath && path.parentPath.parent
+									set ret = tryGenerate(path.parentPath.parent, type, context)
+		catch ex
+			log 'error traversing', code, ex
+			return
+
+
+
+

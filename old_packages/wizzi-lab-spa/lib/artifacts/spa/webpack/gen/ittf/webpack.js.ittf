@@ -1,0 +1,144 @@
+module
+	kind jsfile
+	$
+		var wp = spa.webpack;
+	var path = require("path")
+	var webpack = require('webpack')
+	$foreach p in wp.webpackPlugins
+		$if p.wzName === 'html'
+			var HtmlwebpackPlugin = require('html-webpack-plugin');
+		$elif p.wzName === 'open-browser'
+			var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+		$elif p.wzName === 'uglify-js'
+			var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+	+
+	# TODO
+	var DEBUG = true
+	+
+	$foreach item in spa.paths
+		var ${item.pathName} = ${item.pathValue}
+	+
+	set module.exports
+		{
+			$if wp.webpackEntry.kind === 'string'
+				@ entry ${wp.webpackEntry.wzName}
+			$elif wp.webpackEntry.kind === 'object'
+				@ entry
+					{
+						$foreach p in wp.webpackEntry.jsObject.jsProps
+							@ ${p.name} ${p.value}
+			$elif wp.webpackEntry.kind === 'array'
+				@ entry
+					[
+						$foreach p in wp.webpackEntry.jsArray.spaitems
+							@ ${p.name} ${p.value}
+			$if wp.webpackResolveExtensions.length > 0
+				@ resolve
+					{
+						@ extensions
+							[
+								$foreach ext in wp.webpackResolveExtensions
+									@ '${ext.wzName}'
+			@ output
+				{
+					@ path ${wp.webpackOutput.path}
+					@ filename ${wp.webpackOutput.filename}
+					$if wp.webpackOutput.publicPath
+						@ publicPath ${wp.webpackOutput.publicPath}
+			
+			$if wp.evalSourceMap
+				@ devtool 'eval-source-map'
+			
+			@ module
+				{
+					@ loaders
+						[
+							$foreach loader in wp.webpackLoaders
+								{
+									$if loader.wzName === 'jpg'
+										{
+											@ test /\.jpg/
+											@ loader "url-loader?limit=10000&mimetype=image/jpg"
+									$elif loader.wzName === 'gif'
+										{
+											@ test /\.gif/
+											@ loader "url-loader?limit=10000&mimetype=image/gif"
+									$elif loader.wzName === 'png'
+										{
+											@ test /\.png/
+											@ loader "url-loader?limit=10000&mimetype=image/png"
+									$elif loader.wzName === 'svg'
+										{
+											@ test /\.svg/
+											@ loader "url-loader?limit=10000&mimetype=image/svg"
+									$elif loader.wzName === 'woff'
+										{
+											@ test /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/
+											@ loader "url-loader?limit=10000&mimetype=application/font-woff"
+									$elif loader.wzName === 'ttf'
+										{
+											@ test /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/
+											@ loader "file-loader"
+									$else
+										@ test /\${loader.test}$/
+										@ loader '${loader.wzName}'
+										$if loader.include
+											@ include ${loader.include}
+										$if loader.hasQuery
+											@ query
+												{
+													$foreach query in loader.queries
+														@ ${query.queryName} ${query.queryValue}
+										$foreach techne in loader.technes
+											$include techne
+			$if wp.webpackPlugins.length > 0
+				@ plugins
+					[
+						$foreach plugin in wp.webpackPlugins
+							new ${plugin.typeName}
+								$if plugin.jsProps.length > 0
+									{
+										$foreach p in plugin.jsProps
+											@ ${p.name} ${p.value}
+			$if wp.webpackResolvers
+				@ resolveLoader
+					{
+						@ root path.join(__dirname, "node_modules")
+			
+				@ resolve
+					{
+						@ root path.join(__dirname, "node_modules")
+				@ modulesDirectories ['node_modules']
+			@ alias
+				{
+					$if wp.webpackEnvironment
+						@ environment
+							iif DEBUG
+								then path.resolve(__dirname, 'config', 'development.js')
+								else path.resolve(__dirname, 'config', 'production.js')
+			
+			$if wp.webpackOmitExtensions.length > 0
+				@ extensions
+					[
+						@ ""
+						$foreach ext in wp.webpackOmitExtensions
+							@ ".${ext.wzName}"
+						# Allow to omit extensions when requiring these files
+			$if spa.devServer.wzName === 'webpack'
+				@ devServer
+					{
+						$if spa.devServer.contentBase
+							@ contentBase ${spa.devServer.contentBase}
+						$if spa.devServer.historyApiFallback
+							@ historyApiFallback true
+						$if spa.devServer.hot
+							@ hot true
+						$if spa.devServer.inline
+							@ inline true
+						$if spa.devServer.progress
+							@ progress true
+						$if spa.devServer.host
+							@ host ${spa.devServer.host}
+						$if spa.devServer.port
+							@ port ${spa.devServer.port}
+  

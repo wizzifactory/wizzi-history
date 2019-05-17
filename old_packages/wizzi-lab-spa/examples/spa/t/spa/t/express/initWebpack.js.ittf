@@ -1,0 +1,16 @@
+$group
+	$if spa.webpack
+		function initWebpack
+			param app
+			+
+			# Use this middleware to set up hot module reloading via webpack.
+			const compiler = webpack(webpackConfig)
+		
+			_ app.use
+				_ webpackDevMiddleware
+					@ compiler
+					{
+						@ noInfo true
+						@ publicPath webpackConfig.output.publicPath
+		
+			_ app.use(webpackHotMiddleware(compiler))

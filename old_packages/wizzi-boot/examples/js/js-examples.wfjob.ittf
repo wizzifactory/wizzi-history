@@ -1,0 +1,16 @@
+wfjob documentation
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var dest_folder         = path.join(__dirname, 'results');
+		var js_ittf_pattern     = '**/*.js.ittf';
+	line root
+		cwd-folder ${ittf_folder}
+		artifact ./${js_ittf_pattern}
+			src ./${js_ittf_pattern}
+			schema js
+			generator js/module
+			extension js
+	production
+		dest-folder ${dest_folder}
+		line-ref root

@@ -1,0 +1,31 @@
+module
+	kind jsfile
+	import path
+	import express
+	var wizzi = require('wizzi-core').wizzi
+	var site = require('wizzi-lab-site')
+	var app = express()
+	+
+	var server
+		_ app.listen
+			@ 3000
+			function
+				var host = server.address().address
+				var port = server.address().port
+				_ console.log
+					@ 'Example app listening at http://%s:%s'
+					@ host
+					@ port
+	var myLogger
+		middle( )
+			log 'LOGGED', req._parsedUrl, req.params, req.query
+			_ next()
+	_ app.use(myLogger)
+	$include server/middleware/ittf
+	_ app.use(ittf)
+	# respond with "hello world" when a GET request is made to the homepage
+	_ app.get
+		@ '/'
+		middle( )
+			_ res.send('hello world')
+	$include server/routes/index

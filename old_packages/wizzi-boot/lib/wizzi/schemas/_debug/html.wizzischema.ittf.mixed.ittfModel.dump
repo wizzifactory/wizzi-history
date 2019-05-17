@@ -1,0 +1,559 @@
+  wizzischema html ids: 1 87
+    $  ids: 2 88
+      // Hack for escaping an ittf expression used in this ittf document as a literal. ids: 3 89
+      var wzName = '$' + '{wzName}'; ids: 4 90
+    # A schema modeling an html document. ids: 5 91
+    # ATTENTION in this model the classical python like comment char sharp(#) is replaced ids: 6 92
+    # by the minus(-) char, see the comment element. ids: 7 93
+    # The sharp(#) is used for the _sharp extension element. ids: 8 94
+    e element ids: 9 95
+      # A generic html element. ids: 10 96
+      # The wzName, if present becames the first TEXTNODE of the html element. ids: 11 97
+      # You should find a proper schema element that extends this one for every valid html element. ids: 12 98
+      # In any case this element is not abstract and can be used for eventual missing html elements. ids: 13 99
+      # In this case must contain a name-value pair separated by a blank: name is ids: 14 100
+      # the html element name and value (optional), if present, is the first TEXTNODE of the element. ids: 15 101
+      tag < ids: 16 102
+      $group  ids: 173 194
+        a accesskey ids: 174 195
+        a class ids: 175 196
+        a contenteditable ids: 176 197
+        a contextmenu ids: 177 198
+        a dir ids: 178 199
+        a draggable ids: 179 200
+        a dropzone ids: 180 201
+        a hidden ids: 181 202
+        a id ids: 182 203
+        a itemid ids: 183 204
+        a itemprop ids: 184 205
+        a itemref ids: 185 206
+        a itemscope ids: 186 207
+        a itemtype ids: 187 208
+        a lang ids: 188 209
+        a spellcheck ids: 189 210
+        a style ids: 190 211
+        a tabindex ids: 191 212
+        a title ids: 192 213
+        a translate ids: 193 214
+      a aria-* ids: 18 104
+      a data-* ids: 19 105
+      a ng-* ids: 20 106
+      a ui-* ids: 21 107
+      a on* ids: 22 108
+      a role ids: 23 109
+      r attribute/s ids: 24 110
+      r element/s ids: 25 111
+    e html : element ids: 26 112
+      # The root element. ids: 27 113
+      a doctype ids: 28 114
+      a manifest ids: 29 115
+      a version ids: 30 116
+        default 5 ids: 31 117
+        restrict  ids: 32 118
+          enum 5 ids: 33 119
+          enum 4 ids: 34 120
+      is-root  ids: 35 121
+    $group  ids: 215 573
+      e a	: element ids: 216 574
+        a href ids: 217 575
+        a target ids: 218 576
+        a download ids: 219 577
+        a rel ids: 220 578
+        a hreflang ids: 221 579
+        a type ids: 222 580
+      e abbr : element ids: 223 581
+      e address : element ids: 224 582
+      e area : element ids: 225 583
+        a alt ids: 226 584
+        a coords ids: 227 585
+        a shape ids: 228 586
+        a href ids: 229 587
+        a target ids: 230 588
+        a download ids: 231 589
+        a rel ids: 232 590
+        a hreflang ids: 233 591
+        a type ids: 234 592
+      e article : element ids: 235 593
+      e aside : element ids: 236 594
+      e audio : element ids: 237 595
+        a src ids: 238 596
+        a crossorigin ids: 239 597
+        a preload ids: 240 598
+        a autoplay ids: 241 599
+        a mediagroup ids: 242 600
+        a loop ids: 243 601
+        a muted ids: 244 602
+        a controls ids: 245 603
+      e b  : element ids: 246 604
+      e base : element ids: 247 605
+        a href ids: 248 606
+        a target ids: 249 607
+      e bdi : element ids: 250 608
+      e bdo : element ids: 251 609
+      e blockquote : element ids: 252 610
+        a cite ids: 253 611
+      e body : element ids: 254 612
+        a onbeforeunload ids: 255 613
+        a onhashchange ids: 256 614
+        a onlanguagechange ids: 257 615
+        a onmessage ids: 258 616
+        a onoffline ids: 259 617
+        a ononline ids: 260 618
+        a onpagehide ids: 261 619
+        a onpageshow ids: 262 620
+        a onpopstate ids: 263 621
+        a onstorage ids: 264 622
+        a onunload ids: 265 623
+      e br : element ids: 266 624
+      e button : element ids: 267 625
+        a autofocus ids: 268 626
+        a disabled ids: 269 627
+        a form ids: 270 628
+        a formaction ids: 271 629
+        a formenctype ids: 272 630
+        a formmethod ids: 273 631
+        a formnovalidate ids: 274 632
+        a formtarget ids: 275 633
+        a menua name ids: 276 634
+        a type ids: 277 635
+        a value ids: 278 636
+      e canvas : element ids: 279 637
+        a width ids: 280 638
+        a height ids: 281 639
+      e caption : element ids: 282 640
+      e cite : element ids: 283 641
+      e code : element ids: 284 642
+      e col : element ids: 285 643
+        a span ids: 286 644
+      e colgroup : element ids: 287 645
+        a span ids: 288 646
+      e data : element ids: 289 647
+        a value ids: 290 648
+      e datalist : element ids: 291 649
+      e dd : element ids: 292 650
+      e del : element ids: 293 651
+        a cite ids: 294 652
+        a datetime ids: 295 653
+      e details : element ids: 296 654
+        a open ids: 297 655
+      e dfn : element ids: 298 656
+      e dialog : element ids: 299 657
+        a open ids: 300 658
+      e div : element ids: 301 659
+      e dl : element ids: 302 660
+      e dt : element ids: 303 661
+      e em : element ids: 304 662
+      e embed : element ids: 305 663
+        a src ids: 306 664
+        a type ids: 307 665
+        a width ids: 308 666
+        a height ids: 309 667
+      e fieldset : element ids: 310 668
+        a disabled ids: 311 669
+        a form ids: 312 670
+        a name ids: 313 671
+      e figcaption : element ids: 314 672
+      e figure : element ids: 315 673
+      e footer : element ids: 316 674
+      e form : element ids: 317 675
+        a accept-charset ids: 318 676
+        a action ids: 319 677
+        a autocomplete ids: 320 678
+        a enctype ids: 321 679
+        a method ids: 322 680
+        a name ids: 323 681
+        a novalidate ids: 324 682
+        a target ids: 325 683
+      e h1 : element ids: 326 684
+      e h2 : element ids: 327 685
+      e h3 : element ids: 328 686
+      e h4 : element ids: 329 687
+      e h5 : element ids: 330 688
+      e h6 : element ids: 331 689
+      e head : element ids: 332 690
+      e header : element ids: 333 691
+      e hr : element ids: 334 692
+      e i : element ids: 335 693
+      e iframe : element ids: 336 694
+        a src ids: 337 695
+        a srcdoc ids: 338 696
+        a name ids: 339 697
+        a sandbox ids: 340 698
+        a seamless ids: 341 699
+        a allowfullscreen ids: 342 700
+        a allowTransparency ids: 343 701
+        a frameborder ids: 344 702
+        a scrolling ids: 345 703
+        a width ids: 346 704
+        a height ids: 347 705
+      e img : element ids: 348 706
+        a alt ids: 349 707
+        a src ids: 350 708
+        a srcset ids: 351 709
+        a crossorigin ids: 352 710
+        a usemap ids: 353 711
+        a ismap ids: 354 712
+        a width ids: 355 713
+        a height ids: 356 714
+      e input : element ids: 357 715
+        a accept ids: 358 716
+        a alt ids: 359 717
+        a autocomplete ids: 360 718
+        a autofocus ids: 361 719
+        a checked ids: 362 720
+        a dirname ids: 363 721
+        a disabled ids: 364 722
+        a form ids: 365 723
+        a formaction ids: 366 724
+        a formenctype ids: 367 725
+        a formmethod ids: 368 726
+        a formnovalidate ids: 369 727
+        a formtarget ids: 370 728
+        a height ids: 371 729
+        a inputmode ids: 372 730
+        a list ids: 373 731
+        a max ids: 374 732
+        a maxlength ids: 375 733
+        a min ids: 376 734
+        a minlength ids: 377 735
+        a multiple ids: 378 736
+        a name ids: 379 737
+        a pattern ids: 380 738
+        a placeholder ids: 381 739
+        a readonly ids: 382 740
+        a required ids: 383 741
+        a size ids: 384 742
+        a src ids: 385 743
+        a step ids: 386 744
+        a type ids: 387 745
+        a value ids: 388 746
+        a width ids: 389 747
+      e ins : element ids: 390 748
+        a cite ids: 391 749
+        a datetime ids: 392 750
+      e kbd : element ids: 393 751
+      e keygen : element ids: 394 752
+        a autofocus ids: 395 753
+        a challenge ids: 396 754
+        a disabled ids: 397 755
+        a form ids: 398 756
+        a keytype ids: 399 757
+        a name ids: 400 758
+      e label : element ids: 401 759
+        a form ids: 402 760
+        a for ids: 403 761
+      e legend : element ids: 404 762
+      e li : element ids: 405 763
+      e link : element ids: 406 764
+        a href ids: 407 765
+        a crossorigin ids: 408 766
+        a rel ids: 409 767
+        a media ids: 410 768
+        a hreflang ids: 411 769
+        a type ids: 412 770
+        a sizes ids: 413 771
+      e main : element ids: 414 772
+      e map : element ids: 415 773
+        a name ids: 416 774
+      e mark : element ids: 417 775
+      e math : element ids: 418 776
+      e menu : element ids: 419 777
+        a type ids: 420 778
+        a label ids: 421 779
+      e menuitem : element ids: 422 780
+        a type ids: 423 781
+        a label ids: 424 782
+        a icon ids: 425 783
+        a disabled ids: 426 784
+        a checked ids: 427 785
+        a radiogroup ids: 428 786
+        a default ids: 429 787
+        a command ids: 430 788
+      e meta : element ids: 431 789
+        a name ids: 432 790
+        a http-equiv ids: 433 791
+        a content ids: 434 792
+        a charset ids: 435 793
+      e meter : element ids: 436 794
+        a value ids: 437 795
+        a min ids: 438 796
+        a max ids: 439 797
+        a low ids: 440 798
+        a high ids: 441 799
+        a optimum ids: 442 800
+      e nav : element ids: 443 801
+      e noscript : element ids: 444 802
+      e object : element ids: 445 803
+        a data ids: 446 804
+        a type ids: 447 805
+        a typemustmatch ids: 448 806
+        a name ids: 449 807
+        a usemap ids: 450 808
+        a form ids: 451 809
+        a width ids: 452 810
+        a height ids: 453 811
+      e ol : element ids: 454 812
+        a reversed ids: 455 813
+        a start ids: 456 814
+        a type ids: 457 815
+      e optgroup : element ids: 458 816
+        a disabled ids: 459 817
+        a label ids: 460 818
+      e option : element ids: 461 819
+        a disabled ids: 462 820
+        a label ids: 463 821
+        a selected ids: 464 822
+        a value ids: 465 823
+      e output : element ids: 466 824
+        a for ids: 467 825
+        a form ids: 468 826
+        a name ids: 469 827
+      e p : element ids: 470 828
+      e param : element ids: 471 829
+        a name ids: 472 830
+        a value ids: 473 831
+      e pre : element ids: 474 832
+      e progress : element ids: 475 833
+        a value ids: 476 834
+        a max ids: 477 835
+      e q : element ids: 478 836
+        a cite ids: 479 837
+      e rb : element ids: 480 838
+      e rp : element ids: 481 839
+      e rt : element ids: 482 840
+      e rtc : element ids: 483 841
+      e rub : element ids: 484 842
+      e s : element ids: 485 843
+      e samp : element ids: 486 844
+      e script : element ids: 487 845
+        a src ids: 488 846
+        a type ids: 489 847
+        a charset ids: 490 848
+        a async ids: 491 849
+        a defer ids: 492 850
+        a crossorigin ids: 493 851
+        a nonce ids: 494 852
+      e section : element ids: 495 853
+      e select : element ids: 496 854
+        a autocomplete ids: 497 855
+        a autofocus ids: 498 856
+        a disabled ids: 499 857
+        a form ids: 500 858
+        a multiple ids: 501 859
+        a name ids: 502 860
+        a required ids: 503 861
+        a size ids: 504 862
+      e small : element ids: 505 863
+      e source : element ids: 506 864
+        a src ids: 507 865
+        a type ids: 508 866
+      e span : element ids: 509 867
+      e strong : element ids: 510 868
+      e sub : element ids: 511 869
+      e summary : element ids: 512 870
+      e sup : element ids: 513 871
+      e svg : element ids: 514 872
+      e table : element ids: 515 873
+        a sortable ids: 516 874
+        a border ids: 517 875
+      e tbody : element ids: 518 876
+      e td : element ids: 519 877
+        a colspan ids: 520 878
+        a rowspan ids: 521 879
+        a headers ids: 522 880
+      e template : element ids: 523 881
+      e textarea : element ids: 524 882
+        a autofocus ids: 525 883
+        a cols ids: 526 884
+        a dirname ids: 527 885
+        a disabled ids: 528 886
+        a form ids: 529 887
+        a inputmode ids: 530 888
+        a maxlength ids: 531 889
+        a minlength ids: 532 890
+        a name ids: 533 891
+        a placeholder ids: 534 892
+        a readonly ids: 535 893
+        a required ids: 536 894
+        a rows ids: 537 895
+        a wrap ids: 538 896
+      e tfoot : element ids: 539 897
+      e th : element ids: 540 898
+        a colspan ids: 541 899
+        a rowspan ids: 542 900
+        a headers ids: 543 901
+        a scope ids: 544 902
+        a sorted ids: 545 903
+        a abbr ids: 546 904
+      e thead : element ids: 547 905
+      e time : element ids: 548 906
+        a datetime ids: 549 907
+      e tr : element ids: 550 908
+      e track : element ids: 551 909
+        a default ids: 552 910
+        a kind ids: 553 911
+        a label ids: 554 912
+        a src ids: 555 913
+        a srclang ids: 556 914
+      e u : element ids: 557 915
+      e ul : element ids: 558 916
+      e var : element ids: 559 917
+      e video : element ids: 560 918
+        a src ids: 561 919
+        a crossorigin ids: 562 920
+        a poster ids: 563 921
+        a preload ids: 564 922
+        a autoplay ids: 565 923
+        a mediagroup ids: 566 924
+        a loop ids: 567 925
+        a muted ids: 568 926
+        a controls ids: 569 927
+        a width ids: 570 928
+        a height ids: 571 929
+      e wbr : element ids: 572 930
+    #  ids: 37 123
+    # Extension element that do not match any tag of the HTML spec. ids: 38 124
+    #  ids: 39 125
+    e attribute ids: 40 126
+      # Used for Html element attributes not declared in this schema. ids: 41 127
+      # The wzName must contain a name-value pair separated by a blank (value is optional). ids: 42 128
+      # Name is the attribute name and value, if not empty, is the attribute value. ids: 43 129
+      tag @ ids: 44 130
+    e _dot : element ids: 45 131
+      # short for <div class='${wzName}' [ attributes ]> ids: 46 132
+      tag . ids: 47 133
+    e _sharp : element ids: 48 134
+      # short for <div id='${wzName}' [...]> ... ids: 49 135
+      tag # ids: 50 136
+    e _js : element ids: 51 137
+      # When has no children is short for ids: 52 138
+      # html4: <script src="${wzName}" type="text/javascript" [ attributes ]></script> ids: 53 139
+      # html5: <script src="${wzName}"></script> ids: 54 140
+      # When has children is the root of an inline script ( script html element ) ids: 55 141
+      tag js ids: 56 142
+      r statement/s ids: 57 143
+    $group  ids: 931 968
+      e ready : element ids: 932 969
+        a kind ids: 933 970
+          default jquery ids: 934 971
+          restrict  ids: 935 972
+            enum jquery ids: 936 973
+            enum window ids: 937 974
+        r statement/s ids: 938 975
+      e statement ids: 939 976
+        # The base class of a javascript statement in an html ittf document ids: 940 977
+        r statement/s ids: 941 978
+      e var : statement ids: 942 979
+      e function : statement ids: 943 980
+        r param/s ids: 944 981
+        m getParams ids: 945 982
+          var ret = [] ids: 946 983
+          foreach item in this.params ids: 947 984
+            _ ret.push(item.wzName) ids: 948 985
+          return ret ids: 949 986
+      e set : statement ids: 950 987
+      e call : statement ids: 951 988
+        tag _ ids: 952 989
+      e if : statement ids: 953 990
+      e elif : statement ids: 954 991
+      e else : statement ids: 955 992
+      e for : statement ids: 956 993
+      e foreach : statement ids: 957 994
+      e while : statement ids: 958 995
+      e try : statement ids: 959 996
+      e catch : statement ids: 960 997
+      e jsObject : statement ids: 961 998
+        tag { ids: 962 999
+      e jsArray : statement ids: 963 1000
+        tag [ ids: 964 1001
+      e jsPropertyOrValue : statement ids: 965 1002
+        tag @ ids: 966 1003
+      e log : statement ids: 967 1004
+    e _css : element ids: 59 145
+      # When has no children is short for <link href="${wzName}" rel="stylesheet" [ attributes ]> ids: 60 146
+      # When has children is the root of an inline stylesheet ( style html element ) ids: 61 147
+      tag css ids: 62 148
+      r rule/s ids: 63 149
+    $group  ids: 1005 1066
+      e rule ids: 1006 1067
+        # The base abstract rule. ids: 1007 1068
+        # It has a child relation (one-to-many) with itself so one ids: 1008 1069
+        # can declare a tree with unlimited deep. ids: 1009 1070
+        is-abstract  ids: 1010 1071
+        r otherRuleSelector/s ids: 1011 1072
+        r propert-y/ies ids: 1012 1073
+        r rule/s ids: 1013 1074
+        m wzInitialize ids: 1014 1075
+          set this.ruleParts = this.getAscendingRuleParts() ids: 1015 1076
+        m getAscendingRuleParts ids: 1016 1077
+          if typeof this.wzName === 'string' && this.wzName.length > 0 ids: 1017 1078
+            var ruleParts = this.wzName.trim().split(',') ids: 1018 1079
+            if ruleParts.length > 0 ids: 1019 1080
+              if this.wzElement === 'idRule' ids: 1020 1081
+                set ruleParts[0] = '#' + ruleParts[0] ids: 1021 1082
+              elif this.wzElement === 'classRule' ids: 1022 1083
+                set ruleParts[0] = '.' + ruleParts[0] ids: 1023 1084
+            if this.wzParent && this.wzParent.getAscendingRuleParts ids: 1024 1085
+              var parentRuleParts = this.wzParent.getAscendingRuleParts() ids: 1025 1086
+              var ret = [] ids: 1026 1087
+              foreach prp in parentRuleParts ids: 1027 1088
+                foreach rp in ruleParts ids: 1028 1089
+                  _ ret.push(prp + ' ' + rp) ids: 1029 1090
+              return ret ids: 1030 1091
+            else  ids: 1031 1092
+              return ruleParts ids: 1032 1093
+          else  ids: 1033 1094
+            return [] ids: 1034 1095
+      e elementRule : rule ids: 1035 1096
+        # The element rule ids: 1036 1097
+        # The wzName contain the selector(s) ids: 1037 1098
+        tag < ids: 1038 1099
+      e classRule : rule ids: 1039 1100
+        # The class rule ids: 1040 1101
+        # The wzName contain the selector(s) ids: 1041 1102
+        tag . ids: 1042 1103
+      e idRule : rule ids: 1043 1104
+        # The id rule ids: 1044 1105
+        # The wzName contain the selector(s) ids: 1045 1106
+        tag # ids: 1046 1107
+      e otherRuleSelector ids: 1047 1108
+        # The wzName contains other selector(s) to add to those of the parent rule ids: 1048 1109
+        # In case of a rule with many selectors allow the declaration on many nodes ids: 1049 1110
+        # Example ids: 1050 1111
+        # < td ids: 1051 1112
+        # + span ids: 1052 1113
+        # + li ids: 1053 1114
+        # + ... ids: 1054 1115
+        # for: td, span, li, ... ids: 1055 1116
+        tag + ids: 1056 1117
+      e property ids: 1057 1118
+        # A generic rule property. ids: 1058 1119
+        # You should find a proper schema element that extends this one for every valid css3 property. ids: 1059 1120
+        # In any case this element is not abstract and can be used for eventual missing properties. ids: 1060 1121
+        # In this case must contain a name-value pair separated by a blank: name is ids: 1061 1122
+        # the property name and value is the property value. ids: 1062 1123
+        tag @ ids: 1063 1124
+        r propert-y/ies ids: 1064 1125
+          # Nested property ids: 1065 1126
+    e _text : element ids: 65 151
+      # The wzName becomes a TEXTNODE rewritten inline in the output document. ids: 66 152
+      tag + ids: 67 153
+    e _textLF : element ids: 68 154
+      # The wzName becomes a TEXTNODE rewritten in the output document followed by a LF char. ids: 69 155
+      tag ++ ids: 70 156
+    e comment : element ids: 71 157
+      # The wzName is the comment text. ids: 72 158
+      tag - ids: 73 159
+    #  ids: 74 160
+    # Disambiguation extension tags that do not match any tag of the HTML spec. ids: 75 161
+    #  ids: 76 162
+    e @title : element ids: 77 163
+      # The title html element. ids: 78 164
+      # The title tag is ambiguous it can be both a global attribute and a child element. ids: 79 165
+    e @style : element ids: 80 166
+      # The style html element. ids: 81 167
+      # The style tag is ambiguous it can be both a global attribute and a child element. ids: 82 168
+      a media ids: 83 169
+      a nonce ids: 84 170
+      a type ids: 85 171
+      a scoped ids: 86 172

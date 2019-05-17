@@ -1,0 +1,17 @@
+wfjob js-spa
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var dest_folder         = path.join(__dirname, 'result');
+	line root
+		cwd-folder ${ittf_folder}
+		$include wfjob/any_js
+		$include wfjob/any_html
+		$include wfjob/any_less
+		wfjob/spa_webpack( ./black-triangle.spa.ittf )
+		wfjob/spa_package( ./black-triangle.spa.ittf )
+		wfjob/spa_babelrc( ./black-triangle.spa.ittf )
+		wfjob/spa_gulp( ./black-triangle.spa.ittf )
+	production
+		dest-folder ${dest_folder}
+		line-ref root

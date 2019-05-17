@@ -1,0 +1,29 @@
+$group
+	@ output
+		{ 
+			$if wp.build == 'production'
+			
+				@ path paths.appBuild
+				@ filename 'static/js/[name].[chunkhash:8].js'
+				@ chunkFilename 'static/js/[name].[chunkhash:8].chunk.js'
+				@ publicPath publicPath
+			
+			$else
+			
+				@ path paths.appBuild
+				@ pathinfo true
+				@ filename 'static/js/bundle.js'
+				@ publicPath publicPath
+
+	$* OLD
+	@ output
+		{
+			@ path ${wp.webpackOutput.path}
+			@ filename ${wp.webpackOutput.filename}
+			$if wp.webpackOutput.publicPath
+				@ publicPath ${wp.webpackOutput.publicPath}
+
+	*$
+
+
+

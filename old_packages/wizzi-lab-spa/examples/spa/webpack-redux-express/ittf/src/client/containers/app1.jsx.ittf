@@ -1,0 +1,30 @@
+module
+	kind react
+	import React from 'react'
+	import { connect } from 'react-redux'
+	
+	import Notes from '../components/notes1'
+	import Lanes from '../components/lanes1'
+	class App
+		super React.Component
+		ctor
+			param props
+			base props
+		m render
+			const { dispatch, lanes, notes } = this.props
+			return
+				div
+					< Lanes
+						@ lanes {lanes}
+						@ dispatch {dispatch}
+					< Notes
+						@ notes {notes}
+						@ dispatch {dispatch}
+	function select
+		param state
+		log 'App.select', state
+		return
+			{
+				@ lanes state.lanes
+				@ notes state.notes
+	export default connect(select)(App)

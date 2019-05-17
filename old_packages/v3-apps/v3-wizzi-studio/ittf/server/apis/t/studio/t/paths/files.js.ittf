@@ -1,0 +1,66 @@
+﻿$group
+
+	@ getFolderMetaFiles
+		function
+			param folderPath
+			var files
+				_ file.getGlobbedFiles
+					@ folderPath + "/**/*.meta.json"
+			log 'getFolderMetaFiles', folderPath, files
+			var ret = []
+			foreach item in files
+				# remove /__/ meta sub folder
+				var dirName = path.dirname(path.dirname(item))
+				_ ret.push
+					{
+						@ baseName path.basename(item)
+						@ dirName dirName
+						@ fullPath
+							_ this.normalize
+								_ path.join
+									@ dirName
+									@ path.basename(item)
+			return ret
+
+	@ getIttfFiles
+		function
+			param folderPath
+			var files
+				_ file.getGlobbedFiles
+					@ folderPath + "/**/*.ittf"
+			var ret = []
+			foreach item in files
+				_ ret.push
+					{
+						@ baseName path.basename(item)
+						@ dirName path.dirname(item)
+						@ fullPath item
+			return ret
+
+	@ getFolders
+		function 
+			param folderPath
+			var ret = []
+			var dir = fs.readdirSync(folderPath)
+			foreach name in dir
+				var target = folderPath + '/' + name
+				var stats = fs.statSync(target)
+				if stats.isDirectory()
+					_ ret.push
+						{
+							@ name name
+							@ fullPath target
+			return ret
+
+	@ joinPathFromArray
+		function
+			param segments
+			var ret = segments[0]
+			for var i=1; i<segments.length; i++
+				set ret
+					_ path.join
+						@ ret
+						@ segments[i]
+			return ret
+
+

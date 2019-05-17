@@ -1,0 +1,49 @@
+module
+	kind jsfile
+	#
+		# Api: Storage
+	#
+		# Dependencies
+	var util = require('util')
+	var path = require('path')
+	var storage = require('node-persist')
+	var u = require('../lib/utils')
+	+
+	var storeFolder = path.resolve(__dirname, '../data/storage')
+	var stores = {}
+	+
+	function getStore
+		param storeName
+		var store = stores[storeName]
+		if !store
+			var storePath = path.join(storeFolder, storeName)
+			set store = storage.create({dir: storePath})
+			_ store.initSync()
+		return store
+	+
+	function setItem
+		param storeName
+		param itemName
+		param itemValue
+		var store = getStore(storeName)
+		_ store.setItem(itemName, itemValue)
+	+
+	function getItem
+		param storeName
+		param itemName
+		var store = getStore(storeName)
+		return store.getItem(itemName)
+	+
+	function getStoreTree
+		return u.walkDirectory(storeFolder)
+	+
+	set module.exports
+		function
+			param app
+			param api
+			set api.nodePersist
+				{
+					@ getItem getItem
+					@ setItem setItem
+					@ getStoreTree getStoreTree
+					

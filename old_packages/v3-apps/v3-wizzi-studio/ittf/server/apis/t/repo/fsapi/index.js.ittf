@@ -1,0 +1,12 @@
+﻿$group
+
+	function makeFsApi
+		param config
+
+		var paths = makePaths(config)
+		
+		return
+			{
+				$include ./getUserRoot
+				$include ./getProjectRoot
+				$include ./getFolderOrFile

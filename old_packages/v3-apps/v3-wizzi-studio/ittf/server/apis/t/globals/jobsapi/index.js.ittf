@@ -1,0 +1,24 @@
+﻿$group
+
+	function makeJobsApi
+		param config
+		param api
+
+		var paths = makePaths(config)
+
+		var hasDefaultUserFromConfig = verify.isString(config.user) && verify.isString(config.role)
+		var userAuthRequired = !hasDefaultUserFromConfig
+
+		var createWizziFactory
+			_ makeWizziFactoryCreator
+				@ config.storeKind 
+				@ config.plugins
+				@ config.globalContext
+				@ config.user
+				@ config.role
+
+		return
+			{
+				$include ./getExecFileJobList
+				$include ./getExecFile
+				$include ./runExecFile

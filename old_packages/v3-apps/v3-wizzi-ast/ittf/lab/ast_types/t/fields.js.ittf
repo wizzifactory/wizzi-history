@@ -1,0 +1,149 @@
+﻿$group
+
+	function extractFieldsProperty
+		param node
+		param context
+		if node.type == 'ObjectExpression'
+			foreach p in node.properties
+				var fp
+					{
+						@ name 'field'
+						@ value p.key.name
+						@ properties []
+				set context.fieldsProperty = fp
+				_ context.typeProperty.values.push(fp)
+				foreach pp in p.value.properties
+					if pp.type == 'ObjectProperty'
+						if pp.key.name == 'validate'
+							if !pp.value
+								log 'extractFieldsProperty validate node', pp
+							_ extractFieldsValidate(pp.value, context)
+						elif pp.key.name == 'default'
+							_ extractFieldsDefault(pp.value, context)
+						elif pp.key.name == 'optional'
+							_ extractFieldsOptional(pp.value, context)
+						elif pp.key.name == 'handler'
+							_ extractFieldsHandler(pp.value, context)
+						elif pp.key.name == 'object'
+							_ extractFieldsObject(pp.value, context)
+						else
+							_ logPath(context)
+							throw new Error('extractFieldsProperty.property.key.name not managed: ' + pp.key.name)
+					elif pp.type == 'ObjectMethod'
+						if pp.key.name == 'validate'
+							_ fp.properties.push
+								{
+									@ name pp.key.name
+									@ params get_methodParams(pp)
+						else
+							throw new Error('extractFieldsProperty.objectmethos.key.name not managed: ' + pp.key.name)
+					else
+						throw new Error('extractFieldsProperty.property.type not managed: ' + pp.type)
+		else
+			log 'extractFieldsProperty.node', node
+			_ logPath(context)
+			throw new Error('extractFieldsProperty.node.type not managed: ' + node.type)
+
+	function extractFieldsValidate
+		param node
+		param context
+		if node.type == 'CallExpression' && node.callee.name == 'chain'
+			# log 'extractFieldsValidate.node', node
+			foreach arg in node.arguments
+				if arg.type == 'CallExpression'
+					if arg.callee.name == 'assertValueType'
+						_ context.fieldsProperty.properties.push
+							_ get_assertValueType(arg, context)
+					elif arg.callee.name == 'assertEach'
+						_ context.fieldsProperty.properties.push
+							_ get_assertEach(arg, context)
+					elif arg.callee.name == 'assertOneOf'
+						_ context.fieldsProperty.properties.push
+							_ get_assertOneOf(arg, context)
+					else
+						log 'extractFieldsValidate.chain.argument', arg
+						_ logPath(context)
+						throw new Error('fields.extractFieldsValidate.callExpression.chain.argument.callExpression.calle.name not managed: ' + arg.callee.name)
+				else
+					log 'extractFieldsValidate.arg.type not managed', arg.type
+					_ logPath(context)
+					throw new Error('fields.extractFieldsValidate.arg.type not managed: ' + arg.type)
+		elif node.type == 'CallExpression' && node.callee.name == 'assertValueType'
+			_ context.fieldsProperty.properties.push
+				_ get_assertValueType(node, context)
+		elif node.type == 'CallExpression' && node.callee.name == 'assertNodeType'
+			_ context.fieldsProperty.properties.push
+				_ get_assertNodeType(node, context)
+		elif node.type == 'CallExpression' && node.callee.name == 'assertOneOf'
+			_ context.fieldsProperty.properties.push
+				_ get_assertOneOf(node, context)
+		else
+			log 'fields validate node', node
+			_ logPath(context)
+			throw new Error('fields validate type not managed: ' + node.type)
+
+	function extractFieldsOptional
+		param node
+		param context
+		if node.type == 'BooleanLiteral'
+			_ context.fieldsProperty.properties.push
+				{
+					@ name 'optional'
+					@ value node.value
+		else
+			log 'fields default node', node
+			_ logPath(context)
+			throw new Error('fields optional type not managed: ' + node.type)
+
+	function extractFieldsHandler
+		param node
+		param context
+			#
+				if node.type == 'BooleanLiteral'
+					_ context.fieldsProperty.properties.push
+						{
+							@ name 'optional'
+							@ value node.value
+				else
+			log 'fields handler node', node
+			_ logPath(context)
+			throw new Error('fields handler type not managed: ' + node.type)
+
+	function extractFieldsObject
+		param node
+		param context
+			#
+				if node.type == 'BooleanLiteral'
+					_ context.fieldsProperty.properties.push
+						{
+							@ name 'optional'
+							@ value node.value
+				else
+			log 'fields object node', node
+			_ logPath(context)
+			throw new Error('fields object type not managed: ' + node.type)
+
+	function extractFieldsDefault
+		param node
+		param context
+		if node.type == 'ArrayExpression'
+			foreach element in node.elements
+				log 'fields default node', node
+				_ logPath(context)
+				throw new Error('fields default element type not managed: ' + node.type)
+		elif node.type == 'BooleanLiteral'
+			_ context.fieldsProperty.properties.push
+				{
+					@ name 'default'
+					@ value node.value
+					@ type 'boolean'
+		elif node.type == 'StringLiteral'
+			_ context.fieldsProperty.properties.push
+				{
+					@ name 'default'
+					@ value node.value
+					@ type 'string'
+		else
+			log 'fields default node', node
+			_ logPath(context)
+			throw new Error('fields default type not managed: ' + node.type)

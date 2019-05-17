@@ -1,0 +1,93 @@
+﻿module
+	kind jsfile
+
+	var util = require('util')
+	var path = require('path')
+	var serverConfig = require('./config')
+	+
+	# var CommonsManager = require('./config/commonsManager').CommonsManager
+	+
+	log 'serverConfig', serverConfig
+	+
+	var md = module.exports = {}
+	+
+	set md.models = {}
+	+
+	set md.onConfig
+		function
+			param wizziConfig
+			param callback
+			#
+				# Set the path of the html page
+				# for metaediting of IttfDocuments
+			_ wizziConfig.set('meta-html-ittf-path', path.join(__dirname, 'ittf', 'meta', 'index.html.ittf'))
+			log 'wizzifile.onConfig'
+			_ callback(null)
+
+	set md.onStart
+		function
+			param runnerServer
+			param wizziConfig
+			param callback
+			#
+				_ runnerServer.registerPackage('wizzi-lab-site')
+				_ runnerServer.registerPackage('wizzi-lab-spa')
+				_ runnerServer.registerPackage('wizzi-lab-studio')
+				_ runnerServer.registerApi('default', md.defaultApi)
+			log 'wizzifile.onStart'
+			_ callback(null)
+
+	set md.onPrepare
+		function
+			param runnerServer
+			param wizziConfig
+			param callback
+			
+			# log 'runnerServer.callApi', runnerServer.callApi('default', 'menu')
+				var demositeIttfPath = path.join(__dirname, 'ittf', 'runnermodels', 'demo.site.ittf')
+				# log 'wizzifile loading', demositeIttfPath
+				_ runnerServer.loadWizziModel
+					@ 'site'
+					@ demositeIttfPath
+					{
+					f_cb( wizziModel
+						set md.models['demosite'] = wizziModel
+						# log 'wizzifile loaded', demositeIttfPath
+						_ prepareCommons
+							@ wizziConfig
+							@ runnerServer
+							f_cb( result )
+			log 'wizzifile.onPrepare'
+			_ callback(null)
+
+	set md.defaultApi
+		function
+			param name
+			param query
+			log 'defaultApi context is runnerServer? this.cwd: ', this.cwd
+			#
+				if name === 'newmenu'
+					var model = md.models['demosite']
+					return model.getMenu(query)
+				
+				if name === 'menu'
+					return 
+						[
+							@ 'alpha'
+							@ 'beta'
+							@ 'gamma'
+
+	function prepareCommons
+		param wizziConfig
+		param runnerServer
+		param callback
+		log 'prepareCommons', wizziConfig
+		#
+			var cm
+				new CommonsManager
+					@ serverConfig.metaBasePath
+			_ serverConfig.set('commonsManager', cm)
+			_ cm.init
+				@ runnerServer
+				@ callback
+		_ callback(null)

@@ -1,0 +1,7 @@
+$group
+	$if gd.name === 'gitignore' ||
+		\b gd.name === 'travis' ||
+		\b gd.name === 'license'
+		$foreach line in gd.lines
+			+ ${line}
+  

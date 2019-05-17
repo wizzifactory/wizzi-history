@@ -1,0 +1,309 @@
+  wizzischema css ids: undefined undefined
+    # A schema modeling a css3 stylesheet document. ids: undefined undefined
+    # ATTENTION in this model the classical python like comment char sharp(#) is replaced ids: undefined undefined
+    # by the minus(-) char, see the comment element. ids: undefined undefined
+    # The sharp(#) is used for the idRule element. ids: undefined undefined
+    e css ids: undefined undefined
+      # The root element ids: undefined undefined
+      r resource/s ids: undefined undefined
+      r rule/s ids: undefined undefined
+      r comment/s ids: undefined undefined
+    e resource ids: undefined undefined
+      # A known resource (a fragment of a stylesheet), stored in a repository, ids: undefined undefined
+      # that must be included in the generated artifact. ids: undefined undefined
+    e rule ids: undefined undefined
+      # The base abstract rule. ids: undefined undefined
+      # It has a child relation (one-to-many) with itself so one ids: undefined undefined
+      # can declare a tree with unlimited deep. ids: undefined undefined
+      is-abstract  ids: undefined undefined
+      a -webkit-* ids: undefined undefined
+      a -ms-* ids: undefined undefined
+      a -o-* ids: undefined undefined
+      a -moz-* ids: undefined undefined
+      r otherRuleSelector/s ids: undefined undefined
+      r propert-y/ies ids: undefined undefined
+      r rule/s ids: undefined undefined
+      m wzInitialize ids: undefined undefined
+        set this.ruleParts = this.getAscendingRuleParts() ids: undefined undefined
+      m getAscendingRuleParts ids: undefined undefined
+        if typeof this.wzName === 'string' && this.wzName.length > 0 ids: undefined undefined
+          var ruleParts = this.wzName.trim().split(',') ids: undefined undefined
+          if ruleParts.length > 0 ids: undefined undefined
+            if this.wzElement === 'idRule' ids: undefined undefined
+              set ruleParts[0] = '#' + ruleParts[0] ids: undefined undefined
+            elif this.wzElement === 'classRule' ids: undefined undefined
+              set ruleParts[0] = '.' + ruleParts[0] ids: undefined undefined
+          if this.wzParent && this.wzParent.getAscendingRuleParts ids: undefined undefined
+            var parentRuleParts = this.wzParent.getAscendingRuleParts() ids: undefined undefined
+            var ret = [] ids: undefined undefined
+            foreach prp in parentRuleParts ids: undefined undefined
+              foreach rp in ruleParts ids: undefined undefined
+                _ ret.push(prp + ' ' + rp) ids: undefined undefined
+            return ret ids: undefined undefined
+          else  ids: undefined undefined
+            return ruleParts ids: undefined undefined
+        else  ids: undefined undefined
+          return [] ids: undefined undefined
+    e elementRule : rule ids: undefined undefined
+      # The element rule ids: undefined undefined
+      # The wzName contain the selector(s) ids: undefined undefined
+      tag < ids: undefined undefined
+    e classRule : rule ids: undefined undefined
+      # The class rule ids: undefined undefined
+      # The wzName contain the selector(s) ids: undefined undefined
+      tag . ids: undefined undefined
+    e idRule : rule ids: undefined undefined
+      # The id rule ids: undefined undefined
+      # The wzName contain the selector(s) ids: undefined undefined
+      tag # ids: undefined undefined
+    e otherRuleSelector ids: undefined undefined
+      # The wzName contains other selector(s) to add to those of the parent rule ids: undefined undefined
+      # In case of a rule with many selectors allow the declaration on many nodes ids: undefined undefined
+      # Example ids: undefined undefined
+      # < td ids: undefined undefined
+      # + span ids: undefined undefined
+      # + li ids: undefined undefined
+      # + ... ids: undefined undefined
+      # for: td, span, li, ... ids: undefined undefined
+      tag + ids: undefined undefined
+    e property ids: undefined undefined
+      # A generic rule property. ids: undefined undefined
+      # You should find a proper schema element that extends this one for every valid css3 property. ids: undefined undefined
+      # In any case this element is not abstract and can be used for eventual missing properties. ids: undefined undefined
+      # In this case must contain a name-value pair separated by a blank: name is ids: undefined undefined
+      # the property name and value is the property value. ids: undefined undefined
+      tag @ ids: undefined undefined
+      r propert-y/ies ids: undefined undefined
+        # Nested property ids: undefined undefined
+    e align-content : property ids: undefined undefined
+    e align-items : property ids: undefined undefined
+    e align-self : property ids: undefined undefined
+    e animation : property ids: undefined undefined
+    e animation-delay : property ids: undefined undefined
+    e animation-direction : property ids: undefined undefined
+    e animation-duration : property ids: undefined undefined
+    e animation-fill-mode : property ids: undefined undefined
+    e animation-iteration-count : property ids: undefined undefined
+    e animation-name : property ids: undefined undefined
+    e animation-play-state : property ids: undefined undefined
+    e animation-timing-function : property ids: undefined undefined
+    e azimuth : property ids: undefined undefined
+    e background-attachment : property ids: undefined undefined
+    e background-color : property ids: undefined undefined
+    e background-image : property ids: undefined undefined
+    e background-position : property ids: undefined undefined
+    e background-repeat : property ids: undefined undefined
+    e background-blend-mode : property ids: undefined undefined
+    e background-clip : property ids: undefined undefined
+    e background-origin : property ids: undefined undefined
+    e background-size : property ids: undefined undefined
+    e background : property ids: undefined undefined
+    e backface-visibility : property ids: undefined undefined
+    e border-collapse : property ids: undefined undefined
+    e border-color : property ids: undefined undefined
+    e border-spacing : property ids: undefined undefined
+    e border-style : property ids: undefined undefined
+    e border-top : property ids: undefined undefined
+    e border-right : property ids: undefined undefined
+    e border-bottom : property ids: undefined undefined
+    e border-left : property ids: undefined undefined
+    e border-top-color : property ids: undefined undefined
+    e border-right-color : property ids: undefined undefined
+    e border-bottom-color : property ids: undefined undefined
+    e border-left-color : property ids: undefined undefined
+    e border-top-style : property ids: undefined undefined
+    e border-right-style : property ids: undefined undefined
+    e border-bottom-style : property ids: undefined undefined
+    e border-left-style : property ids: undefined undefined
+    e border-top-width : property ids: undefined undefined
+    e border-right-width : property ids: undefined undefined
+    e border-bottom-width : property ids: undefined undefined
+    e border-left-width : property ids: undefined undefined
+    e border-width : property ids: undefined undefined
+    e border : property ids: undefined undefined
+    e border-radius : property ids: undefined undefined
+    e border-top-left-radius : property ids: undefined undefined
+    e border-top-right-radius : property ids: undefined undefined
+    e border-bottom-left-radius : property ids: undefined undefined
+    e border-bottom-right-radius : property ids: undefined undefined
+    e border-image : property ids: undefined undefined
+    e border-image-outset : property ids: undefined undefined
+    e border-image-repeat : property ids: undefined undefined
+    e border-image-source : property ids: undefined undefined
+    e border-image-slice : property ids: undefined undefined
+    e border-image-width : property ids: undefined undefined
+    e bottom : property ids: undefined undefined
+    e box-sizing : property ids: undefined undefined
+    e box-decoration-break : property ids: undefined undefined
+    e box-shadow : property ids: undefined undefined
+    e break-after : property ids: undefined undefined
+    e break-before : property ids: undefined undefined
+    e break-inside : property ids: undefined undefined
+    e caption-side : property ids: undefined undefined
+    e clear : property ids: undefined undefined
+    e clip : property ids: undefined undefined
+    e color : property ids: undefined undefined
+    e columns : property ids: undefined undefined
+    e column-count : property ids: undefined undefined
+    e column-fill : property ids: undefined undefined
+    e column-gap : property ids: undefined undefined
+    e column-rule : property ids: undefined undefined
+    e column-rule-color : property ids: undefined undefined
+    e column-rule-style : property ids: undefined undefined
+    e column-rule-width : property ids: undefined undefined
+    e column-span : property ids: undefined undefined
+    e column-width : property ids: undefined undefined
+    e content : property ids: undefined undefined
+    e counter-increment : property ids: undefined undefined
+    e counter-reset : property ids: undefined undefined
+    e cue-after : property ids: undefined undefined
+    e cue-before : property ids: undefined undefined
+    e cue : property ids: undefined undefined
+    e cursor : property ids: undefined undefined
+    e direction : property ids: undefined undefined
+    e display : property ids: undefined undefined
+    e elevation : property ids: undefined undefined
+    e empty-cells : property ids: undefined undefined
+    e filter : property ids: undefined undefined
+    e flex : property ids: undefined undefined
+    e flex-basis : property ids: undefined undefined
+    e flex-direction : property ids: undefined undefined
+    e flex-flow : property ids: undefined undefined
+    e flex-grow : property ids: undefined undefined
+    e flex-shrink : property ids: undefined undefined
+    e flex-wrap : property ids: undefined undefined
+    e float : property ids: undefined undefined
+    e font-family : property ids: undefined undefined
+    e font-size : property ids: undefined undefined
+    e font-style : property ids: undefined undefined
+    e font-variant : property ids: undefined undefined
+    e font-weight : property ids: undefined undefined
+    e font : property ids: undefined undefined
+    e hanging-punctuation : property ids: undefined undefined
+    e height : property ids: undefined undefined
+    e hyphens : property ids: undefined undefined
+    e isolation : property ids: undefined undefined
+    e justify-content : property ids: undefined undefined
+    e left : property ids: undefined undefined
+    e letter-spacing : property ids: undefined undefined
+    e line-break : property ids: undefined undefined
+    e line-height : property ids: undefined undefined
+    e list-style-image : property ids: undefined undefined
+    e list-style-position : property ids: undefined undefined
+    e list-style-type : property ids: undefined undefined
+    e list-style : property ids: undefined undefined
+    e margin-right : property ids: undefined undefined
+    e margin-top : property ids: undefined undefined
+    e margin-bottom : property ids: undefined undefined
+    e margin-left : property ids: undefined undefined
+    e margin : property ids: undefined undefined
+    e max-height : property ids: undefined undefined
+    e max-width : property ids: undefined undefined
+    e min-height : property ids: undefined undefined
+    e min-width : property ids: undefined undefined
+    e mix-blend-mode : property ids: undefined undefined
+    e nav-up : property ids: undefined undefined
+    e nav-down : property ids: undefined undefined
+    e nav-left : property ids: undefined undefined
+    e nav-right : property ids: undefined undefined
+    e opacity : property ids: undefined undefined
+    e order : property ids: undefined undefined
+    e orphans : property ids: undefined undefined
+    e outline-color : property ids: undefined undefined
+    e outline-style : property ids: undefined undefined
+    e outline-width : property ids: undefined undefined
+    e outline-offset : property ids: undefined undefined
+    e outline : property ids: undefined undefined
+    e overflow : property ids: undefined undefined
+    e overflow-wrap : property ids: undefined undefined
+    e overflow-x : property ids: undefined undefined
+    e overflow-y : property ids: undefined undefined
+    e padding-top : property ids: undefined undefined
+    e padding-right : property ids: undefined undefined
+    e padding-bottom : property ids: undefined undefined
+    e padding-left : property ids: undefined undefined
+    e padding : property ids: undefined undefined
+    e page-break-after : property ids: undefined undefined
+    e page-break-before : property ids: undefined undefined
+    e page-break-inside : property ids: undefined undefined
+    e pause-after : property ids: undefined undefined
+    e pause-before : property ids: undefined undefined
+    e pause : property ids: undefined undefined
+    e perspective : property ids: undefined undefined
+    e perspective-origin : property ids: undefined undefined
+    e pitch-range : property ids: undefined undefined
+    e pitch : property ids: undefined undefined
+    e play-during : property ids: undefined undefined
+    e pointer-events : property ids: undefined undefined
+    e position : property ids: undefined undefined
+    e quotes : property ids: undefined undefined
+    e resize : property ids: undefined undefined
+    e richness : property ids: undefined undefined
+    e right : property ids: undefined undefined
+    e speak-header : property ids: undefined undefined
+    e speak-numeral : property ids: undefined undefined
+    e speak-punctuation : property ids: undefined undefined
+    e speak : property ids: undefined undefined
+    e speech-rate : property ids: undefined undefined
+    e stress : property ids: undefined undefined
+    e tab-size : property ids: undefined undefined
+    e table-layout : property ids: undefined undefined
+    e target-name : property ids: undefined undefined
+    e target-new : property ids: undefined undefined
+    e target-position : property ids: undefined undefined
+    e text-align : property ids: undefined undefined
+    e text-align-last : property ids: undefined undefined
+    e text-decoration : property ids: undefined undefined
+    e text-decoration-line : property ids: undefined undefined
+    e text-decoration-style : property ids: undefined undefined
+    e text-decoration-color : property ids: undefined undefined
+    e text-decoration-skip : property ids: undefined undefined
+    e text-indent : property ids: undefined undefined
+    e text-overflow : property ids: undefined undefined
+    e text-shadow : property ids: undefined undefined
+    e text-transform : property ids: undefined undefined
+    e text-underline-position : property ids: undefined undefined
+    e touch-action : property ids: undefined undefined
+    e transform : property ids: undefined undefined
+    e transform-origin : property ids: undefined undefined
+    e transform-style : property ids: undefined undefined
+    e transition : property ids: undefined undefined
+    e transition-delay : property ids: undefined undefined
+    e transition-duration : property ids: undefined undefined
+    e transition-property : property ids: undefined undefined
+    e transition-timing-function : property ids: undefined undefined
+    e top : property ids: undefined undefined
+    e unicode-bidi : property ids: undefined undefined
+    e user-select : property ids: undefined undefined
+    e vertical-align : property ids: undefined undefined
+    e visibility : property ids: undefined undefined
+    e voice-family : property ids: undefined undefined
+    e volume : property ids: undefined undefined
+    e white-space : property ids: undefined undefined
+    e widows : property ids: undefined undefined
+    e width : property ids: undefined undefined
+    e word-break : property ids: undefined undefined
+    e word-spacing : property ids: undefined undefined
+    e word-wrap : property ids: undefined undefined
+    e z-index : property ids: undefined undefined
+    e zoom : property ids: undefined undefined
+    e media : rule ids: undefined undefined
+    e keyframes : rule ids: undefined undefined
+      a vendor ids: undefined undefined
+    e keyframe : rule ids: undefined undefined
+      a from ids: undefined undefined
+      a to ids: undefined undefined
+      a % ids: undefined undefined
+    e fontface : rule ids: undefined undefined
+      tag font-face ids: undefined undefined
+      a font-family ids: undefined undefined
+      a src ids: undefined undefined
+      a font-stretch ids: undefined undefined
+      a font-style ids: undefined undefined
+      a font-weight ids: undefined undefined
+      a unicode-range ids: undefined undefined
+    e import : rule ids: undefined undefined
+    e include : rule ids: undefined undefined
+    e comment : rule ids: undefined undefined
+      # The wzName is the comment text. ids: undefined undefined
+      tag - ids: undefined undefined

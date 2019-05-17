@@ -1,0 +1,47 @@
+route( Home )
+	get( / )
+		_ res.send
+			_ renderFullPage
+				{
+					@ html 'Hello world'
+					@ initialState
+						{
+							@ userid 'stefi'
+	html_f renderFullPage
+		doctype html
+		html
+			head
+				< title Webpack Redux Express Example
+			body
+				< header
+				table
+					tr
+						td
+							ul
+								+ {{ menuItem('storage', '/storage/form') }}
+								+ {{ menuItem('ping', '/ping') }}
+								+ {{ menuItem('ping all', '/pingall') }}
+						td
+							< section
+								div {{ctx.html}}
+									@ id app
+									< script
+										+ window.__INITIAL_STATE__ = {{ JSON.stringify(ctx.initialState) }}
+									< script
+										@ src /static/bundle.js
+				< footer
+	
+	function menuItem
+		param text
+		param href
+		return 
+			_ renderMenuItem
+				{
+					@ text text
+					@ href href
+	
+	html_f renderMenuItem
+		li
+			@ class ls-m-i
+			a {{ ctx.text }}
+				@ href {{ ctx.href }}

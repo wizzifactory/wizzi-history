@@ -1,0 +1,32 @@
+wfjob js-spa
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var views_folder        = path.join(__dirname, 'views');
+		var dest_folder         = path.join(__dirname, 'result');
+		var js_ittf_pattern     = '**/*.js.ittf';
+		var jsx_ittf_pattern    = '**/*.jsx.ittf';
+		var html_ittf_pattern   = '**/*.html.ittf';
+	line root
+		cwd-folder ${ittf_folder}
+		artifact ./${js_ittf_pattern}
+			src ./${js_ittf_pattern}
+			schema js
+			generator js/module
+			extension js
+		artifact ./${jsx_ittf_pattern}
+			src ./${jsx_ittf_pattern}
+			schema js
+			generator js/module
+			extension jsx
+		artifact ./${html_ittf_pattern}
+			src ./${html_ittf_pattern}
+			schema html
+			generator html/document
+			extension html
+		artifact views
+			src ${views_folder}
+			dest-path ${dest_folder}/views
+	production
+		dest-folder ${dest_folder}
+		line-ref root

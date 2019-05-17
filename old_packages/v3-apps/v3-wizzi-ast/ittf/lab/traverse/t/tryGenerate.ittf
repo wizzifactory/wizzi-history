@@ -1,0 +1,37 @@
+﻿$group
+
+	function tryGenerate
+		param node
+		param type
+		param context
+
+		try
+
+			var output
+				_ generate
+					@ node
+					{
+					
+			_ type.goods.push
+				{
+					@ ast node
+					@ code output.code
+
+			set type.minLength = Math.min(type.minLength, output.code.length )
+			set type.maxLength = Math.max(type.maxLength, output.code.length )
+
+			return true
+
+		catch ex
+			_ type.bads.push
+				{
+					@ ast node
+					@ error ex.message
+			if !context.errorMessages[ex.message]
+				log ex.message
+				set context.errorMessages[ex.message] = true
+			return false
+
+
+
+

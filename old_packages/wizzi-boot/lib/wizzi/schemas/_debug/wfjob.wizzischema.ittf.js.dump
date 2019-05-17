@@ -1,0 +1,590 @@
+// 23/3/2017:20:48:48  by C:\My\wizzi\current\wizzi-npm\node_modules\wizzi\lib\ittf\evaluator.js
+$.n(); // set the context state to NodeContext first
+var $0 = {}; // the root node of the IttfModel buildup
+var $1 = { n: "wizzischema", v: "wfjob", r: 1, c: 1, s: "f1", u: "f1",  }; //21
+$.a($0, $1, 5);
+var $2 = { n: "#", v: "A schema modeling a wizzi factory job.", r: 3, c: 5, s: "f1", u: "f1",  }; //22
+$.a($1, $2, 7);
+var $3 = { n: "export-to", v: "json", r: 4, c: 5, s: "f1", u: "f1",  }; //23
+$.a($1, $3, 9);
+var $4 = { n: "e", v: "wfjob", r: 6, c: 5, s: "f1", u: "f1",  }; //24
+$.a($1, $4, 11);
+var $5 = { n: "#", v: "The root element of the wfjob schema.", r: 8, c: 9, s: "f1", u: "f1",  }; //25
+$.a($4, $5, 13);
+var $6 = { n: "a", v: $.ip("f2", "${name}", "string", 14), r: 1, c: 1, s: "f2", u: "f5",  }; //450
+$.a($4, $6, 15);
+var $7 = { n: "tag", v: $.ip("f2", "${tag}", "string", 16), r: 3, c: 5, s: "f2", u: "f5",  }; //451
+$.a($6, $7, 17);
+$.s("f2");
+if (defaultValue) { //452
+    $.n();
+    var $9 = { n: "default", v: $.ip("f2", "${defaultValue}", "string", 21), r: 5, c: 9, s: "f2", u: "f5",  }; //453
+    $.a($6, $9, 22);
+}
+$.n();
+var $10 = { n: "#", v: "The base path for the source models used by this \"wfjob\".", r: 11, c: 13, s: "f1", u: "f1",  }; //27
+$.a($6, $10, 26);
+var $11 = { n: "a", v: $.ip("f3", "${name}", "string", 27), r: 1, c: 1, s: "f3", u: "f5",  }; //454
+$.a($4, $11, 28);
+var $12 = { n: "tag", v: $.ip("f3", "${tag}", "string", 29), r: 3, c: 5, s: "f3", u: "f5",  }; //455
+$.a($11, $12, 30);
+$.s("f3");
+if (defaultValue) { //456
+    $.n();
+    var $14 = { n: "default", v: $.ip("f3", "${defaultValue}", "string", 34), r: 5, c: 9, s: "f3", u: "f5",  }; //457
+    $.a($11, $14, 35);
+}
+$.n();
+var $15 = { n: "#", v: "The base folder path for the generated artifacts.", r: 14, c: 13, s: "f1", u: "f1",  }; //29
+$.a($11, $15, 39);
+var $16 = { n: "r", v: "require/s", r: 15, c: 9, s: "f1", u: "f1",  }; //30
+$.a($4, $16, 41);
+var $17 = { n: "r", v: "model/s", r: 16, c: 9, s: "f1", u: "f1",  }; //31
+$.a($4, $17, 43);
+var $18 = { n: "r", v: "line/s", r: 17, c: 9, s: "f1", u: "f1",  }; //32
+$.a($4, $18, 45);
+var $19 = { n: "r", v: "production/s", r: 18, c: 9, s: "f1", u: "f1",  }; //33
+$.a($4, $19, 47);
+var $20 = { n: "e", v: "require", r: 19, c: 5, s: "f1", u: "f1",  }; //34
+$.a($1, $20, 49);
+var $21 = { n: "#", v: "Requires a WizziFactoryPackage.", r: 20, c: 9, s: "f1", u: "f1",  }; //35
+$.a($20, $21, 51);
+var $22 = { n: "#", v: "The IttfNodeValue is the package name.", r: 21, c: 9, s: "f1", u: "f1",  }; //36
+$.a($20, $22, 53);
+var $23 = { n: "#", v: "If the package is not globally installed must be a fully qualified path.", r: 22, c: 9, s: "f1", u: "f1",  }; //37
+$.a($20, $23, 55);
+var $24 = { n: "e", v: "model", r: 3, c: 5, s: "f1", u: "f2",  }; //112
+$.a($1, $24, 57);
+var $25 = { n: "#", v: "A Wizzi model instance acting as a data context during the evaluation of another \"model\"", r: 4, c: 9, s: "f1", u: "f2",  }; //113
+$.a($24, $25, 59);
+var $26 = { n: "#", v: "or during an artifact generation.", r: 5, c: 9, s: "f1", u: "f2",  }; //114
+$.a($24, $26, 61);
+var $27 = { n: "#", v: "The IttfNodeValue is the name of the model.", r: 6, c: 9, s: "f1", u: "f2",  }; //115
+$.a($24, $27, 63);
+var $28 = { n: "#", v: "The name of the model must be unique in a \"wfjob\"; it will become the default export name of the context", r: 7, c: 9, s: "f1", u: "f2",  }; //116
+$.a($24, $28, 65);
+var $29 = { n: "#", v: "value that exposes the model during evaluations.", r: 8, c: 9, s: "f1", u: "f2",  }; //117
+$.a($24, $29, 67);
+var $30 = { n: "#", v: "A \"model\" will be loaded once, and will be reused if", r: 9, c: 9, s: "f1", u: "f2",  }; //118
+$.a($24, $30, 69);
+var $31 = { n: "#", v: "referenced in many evaluations.", r: 10, c: 9, s: "f1", u: "f2",  }; //119
+$.a($24, $31, 71);
+var $32 = { n: "a", v: "src", r: 11, c: 9, s: "f1", u: "f2",  }; //120
+$.a($24, $32, 73);
+var $33 = { n: "#", v: "The path to the PrimaryIttfDocument of the \"model\".", r: 12, c: 13, s: "f1", u: "f2",  }; //121
+$.a($32, $33, 75);
+var $34 = { n: "#", v: "When relative, the base path is the \"modelsBaseFolder\"", r: 13, c: 13, s: "f1", u: "f2",  }; //122
+$.a($32, $34, 77);
+var $35 = { n: "#", v: "declared on the \"wfjob\" element.", r: 14, c: 13, s: "f1", u: "f2",  }; //123
+$.a($32, $35, 79);
+var $36 = { n: "a", v: "schema", r: 16, c: 9, s: "f1", u: "f2",  }; //124
+$.a($24, $36, 81);
+var $37 = { n: "#", v: "The name of the WizziSchema that will validate the \"model\".", r: 17, c: 13, s: "f1", u: "f2",  }; //125
+$.a($36, $37, 83);
+var $38 = { n: "a", v: $.ip("f4", "${name}", "string", 84), r: 1, c: 1, s: "f4", u: "f5",  }; //458
+$.a($24, $38, 85);
+var $39 = { n: "tag", v: $.ip("f4", "${tag}", "string", 86), r: 3, c: 5, s: "f4", u: "f5",  }; //459
+$.a($38, $39, 87);
+$.s("f4");
+if (defaultValue) { //460
+    $.n();
+    var $41 = { n: "default", v: $.ip("f4", "${defaultValue}", "string", 91), r: 5, c: 9, s: "f4", u: "f5",  }; //461
+    $.a($38, $41, 92);
+}
+$.n();
+var $42 = { n: "#", v: "A filepath where the loaded must be dumped for test.", r: 20, c: 13, s: "f1", u: "f2",  }; //127
+$.a($38, $42, 96);
+var $43 = { n: "#", v: "The model must implement the toJson method. See the \"exportTo\" attribute in wizzischema root nodes.", r: 21, c: 13, s: "f1", u: "f2",  }; //128
+$.a($38, $43, 98);
+var $44 = { n: "#", v: "When declared the loaded model is JSON.stringyfied and written", r: 22, c: 13, s: "f1", u: "f2",  }; //129
+$.a($38, $44, 100);
+var $45 = { n: "#", v: "to the \"dumpFile\" filepath.", r: 23, c: 13, s: "f1", u: "f2",  }; //130
+$.a($38, $45, 102);
+var $46 = { n: "r", v: "modelRef/s", r: 24, c: 9, s: "f1", u: "f2",  }; //131
+$.a($24, $46, 104);
+var $47 = { n: "#", v: "References to \"model\" instances acting as data context during this \"model\" evaluation.", r: 25, c: 13, s: "f1", u: "f2",  }; //132
+$.a($46, $47, 106);
+var $48 = { n: "#", v: "A \"model\" is referenced by its name.", r: 26, c: 13, s: "f1", u: "f2",  }; //133
+$.a($46, $48, 108);
+var $49 = { n: "e", v: $.ip("f5", "${name}", "string", 109), r: 1, c: 1, s: "f5", u: "f6",  }; //468
+$.a($1, $49, 110);
+$.s("f5");
+if (tag != null) { //469
+    $.n();
+    var $51 = { n: "tag", v: $.ip("f5", "${tag}", "string", 114), r: 4, c: 9, s: "f5", u: "f6",  }; //470
+    $.a($49, $51, 115);
+}
+$.s("f5");
+if (xsuper != null) { //471
+    $.n();
+    var $53 = { n: "super", v: $.ip("f5", "${xsuper}", "string", 120), r: 6, c: 9, s: "f5", u: "f6",  }; //472
+    $.a($49, $53, 121);
+}
+$.n();
+var $54 = { n: "a", v: $.ip("f6", "${name}", "string", 124), r: 1, c: 1, s: "f6", u: "f5",  }; //473
+$.a($49, $54, 125);
+var $55 = { n: "tag", v: $.ip("f6", "${tag}", "string", 126), r: 3, c: 5, s: "f6", u: "f5",  }; //474
+$.a($54, $55, 127);
+$.s("f6");
+if (defaultValue) { //475
+    $.n();
+    var $57 = { n: "default", v: $.ip("f6", "${defaultValue}", "string", 131), r: 5, c: 9, s: "f6", u: "f5",  }; //476
+    $.a($54, $57, 132);
+}
+$.n();
+var $58 = { n: "#", v: "The name of the context property that will expose the loaded model during", r: 31, c: 13, s: "f1", u: "f2",  }; //136
+$.a($54, $58, 136);
+var $59 = { n: "#", v: "an evaluation. Overrides the name of the \"model\" that is the default export name.", r: 32, c: 13, s: "f1", u: "f2",  }; //137
+$.a($54, $59, 138);
+var $60 = { n: "r", v: "transformer/s", r: 34, c: 9, s: "f1", u: "f2",  }; //138
+$.a($49, $60, 140);
+var $61 = { n: "#", v: "A model may have one or more transformers.", r: 35, c: 13, s: "f1", u: "f2",  }; //139
+$.a($60, $61, 142);
+var $62 = { n: "#", v: "Transformers are chained and the output of a transformation", r: 36, c: 13, s: "f1", u: "f2",  }; //140
+$.a($60, $62, 144);
+var $63 = { n: "#", v: "is the input for the next one.", r: 37, c: 13, s: "f1", u: "f2",  }; //141
+$.a($60, $63, 146);
+var $64 = { n: "r", v: "modelCollection/s", r: 38, c: 9, s: "f1", u: "f2",  }; //142
+$.a($49, $64, 148);
+var $65 = { n: "#", v: "TODO This is a one-to-one relation, not yet implemented.", r: 39, c: 13, s: "f1", u: "f2",  }; //143
+$.a($64, $65, 150);
+var $66 = { n: "#", v: "Single items of a collection contained in the \"model\" may act as data contexts", r: 40, c: 13, s: "f1", u: "f2",  }; //144
+$.a($64, $66, 152);
+var $67 = { n: "#", v: "of artifacts where each collection item generates a separate artifact.", r: 41, c: 13, s: "f1", u: "f2",  }; //145
+$.a($64, $67, 154);
+var $68 = { n: "m", v: "wzinitialize", r: 43, c: 9, s: "f1", u: "f2",  }; //146
+$.a($49, $68, 156);
+var $69 = { n: "if", v: "this.modelCollections.length > 0", r: 44, c: 13, s: "f1", u: "f2",  }; //147
+$.a($68, $69, 158);
+var $70 = { n: "set", v: "this.modelCollection = this.modelCollections[0]", r: 46, c: 17, s: "f1", u: "f2",  }; //148
+$.a($69, $70, 160);
+var $71 = { n: "set", v: "this.collName = this.modelCollection.wzName", r: 47, c: 17, s: "f1", u: "f2",  }; //149
+$.a($69, $71, 162);
+var $72 = { n: "set", v: "this.collItemName = this.modelCollection.itemName", r: 48, c: 17, s: "f1", u: "f2",  }; //150
+$.a($69, $72, 164);
+var $73 = { n: "set", v: "this.collPathTemplateValues = []", r: 49, c: 17, s: "f1", u: "f2",  }; //151
+$.a($69, $73, 166);
+var $74 = { n: "foreach", v: "item in this.modelCollection.pathTemplateValues", r: 51, c: 17, s: "f1", u: "f2",  }; //152
+$.a($69, $74, 168);
+var $75 = { n: "_", v: "this.collPathTemplateValues.push", r: 52, c: 21, s: "f1", u: "f2",  }; //153
+$.a($74, $75, 170);
+var $76 = { n: "{", v: "", r: 53, c: 25, s: "f1", u: "f2",  }; //154
+$.a($75, $76, 172);
+var $77 = { n: "@", v: "token item.token", r: 54, c: 29, s: "f1", u: "f2",  }; //155
+$.a($76, $77, 174);
+var $78 = { n: "@", v: "attribute item.attribute", r: 55, c: 29, s: "f1", u: "f2",  }; //156
+$.a($76, $78, 176);
+var $79 = { n: "@", v: "function item.function", r: 56, c: 29, s: "f1", u: "f2",  }; //157
+$.a($76, $79, 178);
+var $80 = { n: "e", v: $.ip("f7", "${name}", "string", 179), r: 1, c: 1, s: "f7", u: "f6",  }; //477
+$.a($1, $80, 180);
+$.s("f7");
+if (tag != null) { //478
+    $.n();
+    var $82 = { n: "tag", v: $.ip("f7", "${tag}", "string", 184), r: 4, c: 9, s: "f7", u: "f6",  }; //479
+    $.a($80, $82, 185);
+}
+$.s("f7");
+if (xsuper != null) { //480
+    $.n();
+    var $84 = { n: "super", v: $.ip("f7", "${xsuper}", "string", 190), r: 6, c: 9, s: "f7", u: "f6",  }; //481
+    $.a($80, $84, 191);
+}
+$.n();
+var $85 = { n: "#", v: "Single items of a collection contained in a \"model\" may act as data contexts", r: 63, c: 9, s: "f1", u: "f2",  }; //159
+$.a($80, $85, 195);
+var $86 = { n: "#", v: "of artifacts where each collection item generates a separate artifact.", r: 64, c: 9, s: "f1", u: "f2",  }; //160
+$.a($80, $86, 197);
+var $87 = { n: "#", v: "This element, contained in a \"modelRef\" element, specifies:", r: 65, c: 9, s: "f1", u: "f2",  }; //161
+$.a($80, $87, 199);
+var $88 = { n: "#", v: ". the collection name: the IttfNodeValue of this element", r: 66, c: 9, s: "f1", u: "f2",  }; //162
+$.a($80, $88, 201);
+var $89 = { n: "#", v: ". the export name of the collection item when acting as a data context: the \"item-name\" attribute", r: 67, c: 9, s: "f1", u: "f2",  }; //163
+$.a($80, $89, 203);
+var $90 = { n: "#", v: ". the property names of the collection item that will be used to build the destination path", r: 68, c: 9, s: "f1", u: "f2",  }; //164
+$.a($80, $90, 205);
+var $91 = { n: "#", v: "of the artifact: the \"pathTemplateValues\" child elements", r: 69, c: 9, s: "f1", u: "f2",  }; //165
+$.a($80, $91, 207);
+var $92 = { n: "a", v: $.ip("f8", "${name}", "string", 208), r: 1, c: 1, s: "f8", u: "f5",  }; //482
+$.a($80, $92, 209);
+var $93 = { n: "tag", v: $.ip("f8", "${tag}", "string", 210), r: 3, c: 5, s: "f8", u: "f5",  }; //483
+$.a($92, $93, 211);
+$.s("f8");
+if (defaultValue) { //484
+    $.n();
+    var $95 = { n: "default", v: $.ip("f8", "${defaultValue}", "string", 215), r: 5, c: 9, s: "f8", u: "f5",  }; //485
+    $.a($92, $95, 216);
+}
+$.n();
+var $96 = { n: "#", v: "The export name of a collection item when acting as a data context.", r: 72, c: 13, s: "f1", u: "f2",  }; //167
+$.a($92, $96, 220);
+var $97 = { n: "r", v: "pathTemplateValue/s", r: 74, c: 9, s: "f1", u: "f2",  }; //168
+$.a($80, $97, 222);
+var $98 = { n: "e", v: $.ip("f9", "${name}", "string", 223), r: 1, c: 1, s: "f9", u: "f6",  }; //486
+$.a($1, $98, 224);
+$.s("f9");
+if (tag != null) { //487
+    $.n();
+    var $100 = { n: "tag", v: $.ip("f9", "${tag}", "string", 228), r: 4, c: 9, s: "f9", u: "f6",  }; //488
+    $.a($98, $100, 229);
+}
+$.s("f9");
+if (xsuper != null) { //489
+    $.n();
+    var $102 = { n: "super", v: $.ip("f9", "${xsuper}", "string", 234), r: 6, c: 9, s: "f9", u: "f6",  }; //490
+    $.a($98, $102, 235);
+}
+$.n();
+var $103 = { n: "a", v: "attribute", r: 77, c: 9, s: "f1", u: "f2",  }; //170
+$.a($98, $103, 239);
+var $104 = { n: "#", v: "The property of the context object (a collection item) containing the value which will replace", r: 78, c: 13, s: "f1", u: "f2",  }; //171
+$.a($103, $104, 241);
+var $105 = { n: "#", v: "the \"token\" value in the generated artifact path template.", r: 79, c: 13, s: "f1", u: "f2",  }; //172
+$.a($103, $105, 243);
+var $106 = { n: "#", v: "Is alternative to \"function\"", r: 80, c: 13, s: "f1", u: "f2",  }; //173
+$.a($103, $106, 245);
+var $107 = { n: "a", v: "function", r: 81, c: 9, s: "f1", u: "f2",  }; //174
+$.a($98, $107, 247);
+var $108 = { n: "#", v: "The function of the context object (a collection item) that returns the value which will replace", r: 82, c: 13, s: "f1", u: "f2",  }; //175
+$.a($107, $108, 249);
+var $109 = { n: "#", v: "the \"token\" value in the generated artifact path template.", r: 83, c: 13, s: "f1", u: "f2",  }; //176
+$.a($107, $109, 251);
+var $110 = { n: "#", v: "Is alternative to \"attribute\"", r: 84, c: 13, s: "f1", u: "f2",  }; //177
+$.a($107, $110, 253);
+var $111 = { n: "a", v: "token", r: 85, c: 9, s: "f1", u: "f2",  }; //178
+$.a($98, $111, 255);
+var $112 = { n: "#", v: "The token that will be replaced by the value returned accessing \"attribute\" or calling \"function\"", r: 86, c: 13, s: "f1", u: "f2",  }; //179
+$.a($111, $112, 257);
+var $113 = { n: "#", v: "on a context object.", r: 87, c: 13, s: "f1", u: "f2",  }; //180
+$.a($111, $113, 259);
+var $114 = { n: "e", v: "transformer", r: 3, c: 5, s: "f1", u: "f3",  }; //274
+$.a($1, $114, 261);
+var $115 = { n: "#", v: "A model transformer", r: 4, c: 9, s: "f1", u: "f3",  }; //275
+$.a($114, $115, 263);
+var $116 = { n: "#", v: "The IttfNodeValue is the transformer path {wizzischema}/{transformerName}", r: 5, c: 9, s: "f1", u: "f3",  }; //276
+$.a($114, $116, 265);
+var $117 = { n: "#", v: "to be found in {wizziPackage}/artifacts/{wizzischema}/{transformerName}/trans/main.js", r: 6, c: 9, s: "f1", u: "f3",  }; //277
+$.a($114, $117, 267);
+var $118 = { n: "a", v: $.ip("f10", "${name}", "string", 268), r: 1, c: 1, s: "f10", u: "f5",  }; //491
+$.a($114, $118, 269);
+var $119 = { n: "tag", v: $.ip("f10", "${tag}", "string", 270), r: 3, c: 5, s: "f10", u: "f5",  }; //492
+$.a($118, $119, 271);
+$.s("f10");
+if (defaultValue) { //493
+    $.n();
+    var $121 = { n: "default", v: $.ip("f10", "${defaultValue}", "string", 275), r: 5, c: 9, s: "f10", u: "f5",  }; //494
+    $.a($118, $121, 276);
+}
+$.n();
+var $122 = { n: "#", v: "A filepath where the transformed model must be dumped for test.", r: 8, c: 13, s: "f1", u: "f3",  }; //279
+$.a($118, $122, 280);
+var $123 = { n: "#", v: "When declared the transformed model is JSON.stringyfied and written", r: 9, c: 13, s: "f1", u: "f3",  }; //280
+$.a($118, $123, 282);
+var $124 = { n: "#", v: "to the \"dumpFile\" filepath.", r: 10, c: 13, s: "f1", u: "f3",  }; //281
+$.a($118, $124, 284);
+var $125 = { n: "e", v: "artifact", r: 12, c: 5, s: "f1", u: "f3",  }; //282
+$.a($1, $125, 286);
+var $126 = { n: "#", v: "An artifact to be generated.", r: 14, c: 9, s: "f1", u: "f3",  }; //283
+$.a($125, $126, 288);
+var $127 = { n: "#", v: "It is a child element of a \"line\" element.", r: 15, c: 9, s: "f1", u: "f3",  }; //284
+$.a($125, $127, 290);
+var $128 = { n: "#", v: "", r: 16, c: 9, s: "f1", u: "f3",  }; //285
+$.a($125, $128, 292);
+var $129 = { n: "#", v: "Can be one of:", r: 17, c: 9, s: "f1", u: "f3",  }; //286
+$.a($125, $129, 294);
+var $130 = { n: "#", v: ". A Wizzi model instance, acting as a template, which WizziSchema targets a code language technology.", r: 18, c: 9, s: "f1", u: "f3",  }; //287
+$.a($125, $130, 296);
+var $131 = { n: "#", v: ". A swig template.", r: 19, c: 9, s: "f1", u: "f3",  }; //288
+$.a($125, $131, 298);
+var $132 = { n: "#", v: ". A code write generation that takes in input a context of one or more WizziModels.", r: 20, c: 9, s: "f1", u: "f3",  }; //289
+$.a($125, $132, 300);
+var $133 = { n: "#", v: ". A final artifact to be copied to a destination folder without transformations.", r: 21, c: 9, s: "f1", u: "f3",  }; //290
+$.a($125, $133, 302);
+var $134 = { n: "#", v: ". A reference to another WfJob, to be executed before the current WfJob where the artifact is declared.", r: 22, c: 9, s: "f1", u: "f3",  }; //291
+$.a($125, $134, 304);
+var $135 = { n: "#", v: "", r: 23, c: 9, s: "f1", u: "f3",  }; //292
+$.a($125, $135, 306);
+var $136 = { n: "#", v: "Context value objects for template transformations are declared in the \"model\" element, child of the \"wfjob\" root element", r: 24, c: 9, s: "f1", u: "f3",  }; //293
+$.a($125, $136, 308);
+var $137 = { n: "#", v: "and may be referenced in the elements \"modelRef\", children of the \"artifact\" element.", r: 25, c: 9, s: "f1", u: "f3",  }; //294
+$.a($125, $137, 310);
+var $138 = { n: "#", v: "", r: 26, c: 9, s: "f1", u: "f3",  }; //295
+$.a($125, $138, 312);
+var $139 = { n: "#", v: "The \"src\" or \"destPath\" attributes of an \"artifact\" element may contain tokens enclosed in graph parens.", r: 27, c: 9, s: "f1", u: "f3",  }; //296
+$.a($125, $139, 314);
+var $140 = { n: "#", v: "When one of the \"modelRef@\" is a collection model, the artifact generation is repeated", r: 28, c: 9, s: "f1", u: "f3",  }; //297
+$.a($125, $140, 316);
+var $141 = { n: "#", v: "for each item of the collection and the \"src\" or \"destPath\" attributes become the template of the destination path.", r: 29, c: 9, s: "f1", u: "f3",  }; //298
+$.a($125, $141, 318);
+var $142 = { n: "#", v: "See the \"pathTemplateValues\" child elements of the \"modelRef\" for the values that will replace the tokens.", r: 30, c: 9, s: "f1", u: "f3",  }; //299
+$.a($125, $142, 320);
+var $143 = { n: "#", v: "", r: 31, c: 9, s: "f1", u: "f3",  }; //300
+$.a($125, $143, 322);
+var $144 = { n: "#", v: "Example", r: 32, c: 9, s: "f1", u: "f3",  }; //301
+$.a($125, $144, 324);
+var $145 = { n: "#", v: "", r: 33, c: 9, s: "f1", u: "f3",  }; //302
+$.a($125, $145, 326);
+var $146 = { n: "#", v: "artifact", r: 34, c: 9, s: "f1", u: "f3",  }; //303
+$.a($125, $146, 328);
+var $147 = { n: "#", v: "dest-path app/db/{table}Datalayer.js.ittf", r: 35, c: 9, s: "f1", u: "f3",  }; //304
+$.a($125, $147, 330);
+var $148 = { n: "#", v: "...", r: 36, c: 9, s: "f1", u: "f3",  }; //305
+$.a($125, $148, 332);
+var $149 = { n: "#", v: "model-ref rdbms", r: 37, c: 9, s: "f1", u: "f3",  }; //306
+$.a($125, $149, 334);
+var $150 = { n: "#", v: "model-coll tables", r: 38, c: 9, s: "f1", u: "f3",  }; //307
+$.a($125, $150, 336);
+var $151 = { n: "#", v: "item-name table", r: 39, c: 9, s: "f1", u: "f3",  }; //308
+$.a($125, $151, 338);
+var $152 = { n: "#", v: "path-template-value", r: 40, c: 9, s: "f1", u: "f3",  }; //309
+$.a($125, $152, 340);
+var $153 = { n: "#", v: "attribute tableName", r: 41, c: 9, s: "f1", u: "f3",  }; //310
+$.a($125, $153, 342);
+var $154 = { n: "#", v: "token table", r: 42, c: 9, s: "f1", u: "f3",  }; //311
+$.a($125, $154, 344);
+var $155 = { n: "#", v: "", r: 43, c: 9, s: "f1", u: "f3",  }; //312
+$.a($125, $155, 346);
+var $156 = { n: "#", v: "model rdbms", r: 44, c: 9, s: "f1", u: "f3",  }; //313
+$.a($125, $156, 348);
+var $157 = { n: "#", v: "...", r: 45, c: 9, s: "f1", u: "f3",  }; //314
+$.a($125, $157, 350);
+var $158 = { n: "#", v: "", r: 46, c: 9, s: "f1", u: "f3",  }; //315
+$.a($125, $158, 352);
+var $159 = { n: "#", v: "the Wizzi model instance after loading rdbms: {", r: 47, c: 9, s: "f1", u: "f3",  }; //316
+$.a($125, $159, 354);
+var $160 = { n: "#", v: "....", r: 48, c: 9, s: "f1", u: "f3",  }; //317
+$.a($125, $160, 356);
+var $161 = { n: "#", v: "tables: [{", r: 49, c: 9, s: "f1", u: "f3",  }; //318
+$.a($125, $161, 358);
+var $162 = { n: "#", v: "tableName: 'user',", r: 50, c: 9, s: "f1", u: "f3",  }; //319
+$.a($125, $162, 360);
+var $163 = { n: "#", v: "...", r: 51, c: 9, s: "f1", u: "f3",  }; //320
+$.a($125, $163, 362);
+var $164 = { n: "#", v: "},{", r: 52, c: 9, s: "f1", u: "f3",  }; //321
+$.a($125, $164, 364);
+var $165 = { n: "#", v: "...", r: 53, c: 9, s: "f1", u: "f3",  }; //322
+$.a($125, $165, 366);
+var $166 = { n: "#", v: "}]", r: 54, c: 9, s: "f1", u: "f3",  }; //323
+$.a($125, $166, 368);
+var $167 = { n: "#", v: "}", r: 55, c: 9, s: "f1", u: "f3",  }; //324
+$.a($125, $167, 370);
+var $168 = { n: "#", v: "", r: 56, c: 9, s: "f1", u: "f3",  }; //325
+$.a($125, $168, 372);
+var $169 = { n: "#", v: "will produce an artifact of path .../app/db/userDatalayer.js, and as many as the items in the tables collection.", r: 57, c: 9, s: "f1", u: "f3",  }; //326
+$.a($125, $169, 374);
+var $170 = { n: "#", v: "", r: 58, c: 9, s: "f1", u: "f3",  }; //327
+$.a($125, $170, 376);
+var $171 = { n: "a", v: "src", r: 60, c: 9, s: "f1", u: "f3",  }; //328
+$.a($125, $171, 378);
+var $172 = { n: "#", v: "The path to the primary source document of the artifact.", r: 61, c: 13, s: "f1", u: "f3",  }; //329
+$.a($171, $172, 380);
+var $173 = { n: "#", v: "If relative, the base path is the cwdFolder of the parent line.", r: 62, c: 13, s: "f1", u: "f3",  }; //330
+$.a($171, $173, 382);
+var $174 = { n: "#", v: "Can be a glob pattern", r: 63, c: 13, s: "f1", u: "f3",  }; //331
+$.a($171, $174, 384);
+var $175 = { n: "#", v: "If the artifact is a code write artifact the @src@ attribute must not be declared.", r: 64, c: 13, s: "f1", u: "f3",  }; //332
+$.a($171, $175, 386);
+var $176 = { n: "a", v: "ignore", r: 66, c: 9, s: "f1", u: "f3",  }; //333
+$.a($125, $176, 388);
+var $177 = { n: "#", v: "files returned by the src pattern to be ignored", r: 67, c: 13, s: "f1", u: "f3",  }; //334
+$.a($176, $177, 390);
+var $178 = { n: "#", v: "Can be a glob pattern", r: 68, c: 13, s: "f1", u: "f3",  }; //335
+$.a($176, $178, 392);
+var $179 = { n: "a", v: "schema", r: 69, c: 9, s: "f1", u: "f3",  }; //336
+$.a($125, $179, 394);
+var $180 = { n: "#", v: "When the artifact source is an Ittf document, is the schema that will load and validate the Wizzi model instance.", r: 70, c: 13, s: "f1", u: "f3",  }; //337
+$.a($179, $180, 396);
+var $181 = { n: "#", v: "May be null if the artifact is a swig template or a final artifact.", r: 71, c: 13, s: "f1", u: "f3",  }; //338
+$.a($179, $181, 398);
+var $182 = { n: "a", v: $.ip("f11", "${name}", "string", 399), r: 1, c: 1, s: "f11", u: "f7",  }; //502
+$.a($125, $182, 400);
+$.s("f11");
+if (tag) { //503
+    $.n();
+    var $184 = { n: "tag", v: $.ip("f11", "${tag}", "string", 404), r: 4, c: 9, s: "f11", u: "f7",  }; //504
+    $.a($182, $184, 405);
+}
+$.n();
+var $185 = { n: "type", v: "boolean", r: 5, c: 5, s: "f11", u: "f7",  }; //505
+$.a($182, $185, 409);
+var $186 = { n: "default", v: "false", r: 6, c: 5, s: "f11", u: "f7",  }; //506
+$.a($182, $186, 411);
+var $187 = { n: "default-when-declared", v: "true", r: 7, c: 5, s: "f11", u: "f7",  }; //507
+$.a($182, $187, 413);
+var $188 = { n: "#", v: "Indicator that the artifact source document is a wizzi factory job (WfJob).", r: 73, c: 13, s: "f1", u: "f3",  }; //340
+$.a($182, $188, 415);
+var $189 = { n: "#", v: "The job will be executed before any other artifact production of the current WfJob.", r: 74, c: 13, s: "f1", u: "f3",  }; //341
+$.a($182, $189, 417);
+var $190 = { n: "#", v: "This could be autodected from the schema, but autodetection would forbid other uses or transformations", r: 75, c: 13, s: "f1", u: "f3",  }; //342
+$.a($182, $190, 419);
+var $191 = { n: "#", v: "of a \"wfjob\" model, so the indicator is required.", r: 76, c: 13, s: "f1", u: "f3",  }; //343
+$.a($182, $191, 421);
+var $192 = { n: "a", v: "generator", r: 77, c: 9, s: "f1", u: "f3",  }; //344
+$.a($125, $192, 423);
+var $193 = { n: "#", v: "When the artifact is a Wizzi model instance, acting as a template is the name of", r: 78, c: 13, s: "f1", u: "f3",  }; //345
+$.a($192, $193, 425);
+var $194 = { n: "#", v: "the artifact generator that will transform the template.", r: 79, c: 13, s: "f1", u: "f3",  }; //346
+$.a($192, $194, 427);
+var $195 = { n: "#", v: "When the artifact is a 'swig template' must contain 'swig'.", r: 80, c: 13, s: "f1", u: "f3",  }; //347
+$.a($192, $195, 429);
+var $196 = { n: "#", v: "When the artifact is a code write generation or a final artifact must be omitted.", r: 81, c: 13, s: "f1", u: "f3",  }; //348
+$.a($192, $196, 431);
+var $197 = { n: "a", v: $.ip("f12", "${name}", "string", 432), r: 1, c: 1, s: "f12", u: "f5",  }; //508
+$.a($125, $197, 433);
+var $198 = { n: "tag", v: $.ip("f12", "${tag}", "string", 434), r: 3, c: 5, s: "f12", u: "f5",  }; //509
+$.a($197, $198, 435);
+$.s("f12");
+if (defaultValue) { //510
+    $.n();
+    var $200 = { n: "default", v: $.ip("f12", "${defaultValue}", "string", 439), r: 5, c: 9, s: "f12", u: "f5",  }; //511
+    $.a($197, $200, 440);
+}
+$.n();
+var $201 = { n: "#", v: "The artifact source file path (@src@) is the default relative destination path", r: 84, c: 13, s: "f1", u: "f3",  }; //350
+$.a($197, $201, 444);
+var $202 = { n: "#", v: "of the generated artifact. When set, this attribute overrides the default.", r: 85, c: 13, s: "f1", u: "f3",  }; //351
+$.a($197, $202, 446);
+var $203 = { n: "#", v: "It may be an absolute path.", r: 86, c: 13, s: "f1", u: "f3",  }; //352
+$.a($197, $203, 448);
+var $204 = { n: "#", v: "If the artifact is a code write generation the @destPath@ attribute must be declared.", r: 87, c: 13, s: "f1", u: "f3",  }; //353
+$.a($197, $204, 450);
+var $205 = { n: "a", v: "extension", r: 89, c: 9, s: "f1", u: "f3",  }; //354
+$.a($125, $205, 452);
+var $206 = { n: "#", v: "The document path extension of the generated artifact. Optional. The default is the #src# extension", r: 90, c: 13, s: "f1", u: "f3",  }; //355
+$.a($205, $206, 454);
+var $207 = { n: "#", v: "without the ending '.ittf' string, if present.", r: 91, c: 13, s: "f1", u: "f3",  }; //356
+$.a($205, $207, 456);
+var $208 = { n: "r", v: "transformer/s", r: 93, c: 9, s: "f1", u: "f3",  }; //357
+$.a($125, $208, 458);
+var $209 = { n: "#", v: "When the artifact source is an Ittf document, the loaded WizziModel may need", r: 94, c: 13, s: "f1", u: "f3",  }; //358
+$.a($208, $209, 460);
+var $210 = { n: "#", v: "one or more transformations before being passed to the artifact generator.", r: 95, c: 13, s: "f1", u: "f3",  }; //359
+$.a($208, $210, 462);
+var $211 = { n: "#", v: "Transformers are chained and the output of a transformation", r: 96, c: 13, s: "f1", u: "f3",  }; //360
+$.a($208, $211, 464);
+var $212 = { n: "#", v: "is the input for the next one.", r: 97, c: 13, s: "f1", u: "f3",  }; //361
+$.a($208, $212, 466);
+var $213 = { n: "r", v: "modelRef/s", r: 99, c: 9, s: "f1", u: "f3",  }; //362
+$.a($125, $213, 468);
+var $214 = { n: "#", v: "References to Wizzi model instances acting as transformation contexts for both wizzi and swig templates.", r: 100, c: 13, s: "f1", u: "f3",  }; //363
+$.a($213, $214, 470);
+var $215 = { n: "#", v: "When a final artifact must not be declared.", r: 101, c: 13, s: "f1", u: "f3",  }; //364
+$.a($213, $215, 472);
+var $216 = { n: "e", v: "line", r: 3, c: 5, s: "f1", u: "f4",  }; //406
+$.a($1, $216, 474);
+var $217 = { n: "#", v: "A line is a group of artifacts having the same \"cwdFolder\".", r: 4, c: 9, s: "f1", u: "f4",  }; //407
+$.a($216, $217, 476);
+var $218 = { n: "a", v: $.ip("f13", "${name}", "string", 477), r: 1, c: 1, s: "f13", u: "f5",  }; //512
+$.a($216, $218, 478);
+var $219 = { n: "tag", v: $.ip("f13", "${tag}", "string", 479), r: 3, c: 5, s: "f13", u: "f5",  }; //513
+$.a($218, $219, 480);
+$.s("f13");
+if (defaultValue) { //514
+    $.n();
+    var $221 = { n: "default", v: $.ip("f13", "${defaultValue}", "string", 484), r: 5, c: 9, s: "f13", u: "f5",  }; //515
+    $.a($218, $221, 485);
+}
+$.n();
+var $222 = { n: "#", v: "The source folder of the artifact templates of this line.", r: 7, c: 13, s: "f1", u: "f4",  }; //409
+$.a($218, $222, 489);
+var $223 = { n: "a", v: $.ip("f14", "${name}", "string", 490), r: 1, c: 1, s: "f14", u: "f5",  }; //516
+$.a($216, $223, 491);
+var $224 = { n: "tag", v: $.ip("f14", "${tag}", "string", 492), r: 3, c: 5, s: "f14", u: "f5",  }; //517
+$.a($223, $224, 493);
+$.s("f14");
+if (defaultValue) { //518
+    $.n();
+    var $226 = { n: "default", v: $.ip("f14", "${defaultValue}", "string", 497), r: 5, c: 9, s: "f14", u: "f5",  }; //519
+    $.a($223, $226, 498);
+}
+$.n();
+var $227 = { n: "#", v: "The destination folder of the generated artifacts of this line.", r: 10, c: 13, s: "f1", u: "f4",  }; //411
+$.a($223, $227, 502);
+var $228 = { n: "#", v: "Overrides the attribute \"destFolder\" of the \"production\" element.", r: 11, c: 13, s: "f1", u: "f4",  }; //412
+$.a($223, $228, 504);
+var $229 = { n: "r", v: "artifact/s", r: 13, c: 9, s: "f1", u: "f4",  }; //413
+$.a($216, $229, 506);
+var $230 = { n: "#", v: "The artifacts of the \"line\"", r: 14, c: 13, s: "f1", u: "f4",  }; //414
+$.a($229, $230, 508);
+var $231 = { n: "e", v: $.ip("f15", "${name}", "string", 509), r: 1, c: 1, s: "f15", u: "f6",  }; //520
+$.a($1, $231, 510);
+$.s("f15");
+if (tag != null) { //521
+    $.n();
+    var $233 = { n: "tag", v: $.ip("f15", "${tag}", "string", 514), r: 4, c: 9, s: "f15", u: "f6",  }; //522
+    $.a($231, $233, 515);
+}
+$.s("f15");
+if (xsuper != null) { //523
+    $.n();
+    var $235 = { n: "super", v: $.ip("f15", "${xsuper}", "string", 520), r: 6, c: 9, s: "f15", u: "f6",  }; //524
+    $.a($231, $235, 521);
+}
+$.n();
+var $236 = { n: "#", v: "A reference to a line.", r: 18, c: 9, s: "f1", u: "f4",  }; //416
+$.a($231, $236, 525);
+var $237 = { n: "e", v: "production", r: 20, c: 5, s: "f1", u: "f4",  }; //417
+$.a($1, $237, 527);
+var $238 = { n: "#", v: "A job execution unit that generates a set of Software artifacts", r: 21, c: 9, s: "f1", u: "f4",  }; //418
+$.a($237, $238, 529);
+var $239 = { n: "#", v: "into one destination folder.", r: 22, c: 9, s: "f1", u: "f4",  }; //419
+$.a($237, $239, 531);
+var $240 = { n: "a", v: $.ip("f16", "${name}", "string", 532), r: 1, c: 1, s: "f16", u: "f5",  }; //525
+$.a($237, $240, 533);
+var $241 = { n: "tag", v: $.ip("f16", "${tag}", "string", 534), r: 3, c: 5, s: "f16", u: "f5",  }; //526
+$.a($240, $241, 535);
+$.s("f16");
+if (defaultValue) { //527
+    $.n();
+    var $243 = { n: "default", v: $.ip("f16", "${defaultValue}", "string", 539), r: 5, c: 9, s: "f16", u: "f5",  }; //528
+    $.a($240, $243, 540);
+}
+$.n();
+var $244 = { n: "#", v: "The destination folder of the generated artifacts.", r: 25, c: 13, s: "f1", u: "f4",  }; //421
+$.a($240, $244, 544);
+var $245 = { n: "r", v: "modelRef/s", r: 27, c: 9, s: "f1", u: "f4",  }; //422
+$.a($237, $245, 546);
+var $246 = { n: "#", v: "References to the context WizziWodels used by this \"production\".", r: 28, c: 13, s: "f1", u: "f4",  }; //423
+$.a($245, $246, 548);
+var $247 = { n: "r", v: "lineRef/s", r: 30, c: 9, s: "f1", u: "f4",  }; //424
+$.a($237, $247, 550);
+var $248 = { n: "#", v: "References to the \"line(s)\" to be generated.", r: 31, c: 13, s: "f1", u: "f4",  }; //425
+$.a($247, $248, 552);
+var $249 = { n: "m", v: "wzinitialize", r: 33, c: 9, s: "f1", u: "f4",  }; //426
+$.a($237, $249, 554);
+var $250 = { n: "set", v: "this.wfjob = this.wzParent;", r: 35, c: 13, s: "f1", u: "f4",  }; //427
+$.a($249, $250, 556);
+var $251 = { n: "foreach", v: "modelRef in this.modelRefs", r: 37, c: 13, s: "f1", u: "f4",  }; //428
+$.a($249, $251, 558);
+var $252 = { n: "var", v: "model = this.wfjob.getModel(modelRef.wzName)", r: 39, c: 17, s: "f1", u: "f4",  }; //429
+$.a($251, $252, 560);
+var $253 = { n: "if", v: "model == null", r: 40, c: 17, s: "f1", u: "f4",  }; //430
+$.a($251, $253, 562);
+var $254 = { n: "_", v: "this.error('Model ' + modelRef.wzName + ' not found.', modelRef)", r: 41, c: 21, s: "f1", u: "f4",  }; //431
+$.a($253, $254, 564);
+var $255 = { n: "set", v: "modelRef.___model = model", r: 42, c: 17, s: "f1", u: "f4",  }; //432
+$.a($251, $255, 566);
+var $256 = { n: "set", v: "this.lines = [];", r: 43, c: 13, s: "f1", u: "f4",  }; //433
+$.a($249, $256, 568);
+var $257 = { n: "foreach", v: "lineRef in this.lineRefs", r: 45, c: 13, s: "f1", u: "f4",  }; //434
+$.a($249, $257, 570);
+var $258 = { n: "var", v: "line = this.wfjob.getLine(lineRef.wzName)", r: 47, c: 17, s: "f1", u: "f4",  }; //435
+$.a($257, $258, 572);
+var $259 = { n: "if", v: "line == null", r: 48, c: 17, s: "f1", u: "f4",  }; //436
+$.a($257, $259, 574);
+var $260 = { n: "_", v: "this.error('line ' + lineRef.wzName + ' not found.', lineRef)", r: 49, c: 21, s: "f1", u: "f4",  }; //437
+$.a($259, $260, 576);
+var $261 = { n: "_", v: "this.lines.push(line)", r: 50, c: 17, s: "f1", u: "f4",  }; //438
+$.a($257, $261, 578);
+var $262 = { n: "foreach", v: "artifact in line.artifacts", r: 52, c: 17, s: "f1", u: "f4",  }; //439
+$.a($257, $262, 580);
+var $263 = { n: "foreach", v: "modelRef in artifact.modelRefs", r: 55, c: 21, s: "f1", u: "f4",  }; //440
+$.a($262, $263, 582);
+var $264 = { n: "var", v: "model = this.wfjob.getModel(modelRef.wzName)", r: 57, c: 25, s: "f1", u: "f4",  }; //441
+$.a($263, $264, 584);
+var $265 = { n: "if", v: "model == null", r: 58, c: 25, s: "f1", u: "f4",  }; //442
+$.a($263, $265, 586);
+var $266 = { n: "_", v: "this.error('Model ' + modelRef.wzName + ' not found.', modelRef)", r: 59, c: 29, s: "f1", u: "f4",  }; //443
+$.a($265, $266, 588);
+var $267 = { n: "set", v: "modelRef.___model = model;", r: 60, c: 25, s: "f1", u: "f4",  }; //444
+$.a($263, $267, 590);

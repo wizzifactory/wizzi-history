@@ -1,0 +1,67 @@
+﻿$group
+
+	get( /api/jobs/scripts )
+
+		check-params( )
+			optional( query , refresh )
+		
+		_ api.jobs.getConsoleScriptList
+			{
+				@ userName req.user.id
+				@ refresh refresh === 'true'
+			f_cb_rest( result )
+				log '/api/jobs/scripts', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/script )
+
+		check-params( )
+			not-empty( query , name )
+		
+		_ api.jobs.getConsoleScript
+			{
+				@ userName req.user.id
+				@ name name
+			f_cb_rest( result )
+				log '/api/jobs/script', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	post( /api/jobs/script )
+
+		check-params( )
+			not-empty( body , name )
+			not-empty( body , content )
+		
+		_ api.jobs.saveConsoleScript
+			{
+				@ userName req.user.id
+				@ name name
+				@ content content
+			f_cb_rest( result )
+				log '/api/jobs/script', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data
+
+	get( /api/jobs/runscript )
+
+		check-params( )
+			not-empty( query , name )
+		
+		_ api.jobs.runConsoleScript
+			{
+				@ userName req.user.id
+				@ name name
+			f_cb_rest( result )
+				log '/api/jobs/runscript', result.data
+				_ sendSuccess
+					@ res
+					@ result.status
+					@ result.data

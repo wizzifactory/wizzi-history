@@ -1,0 +1,30 @@
+wfjob js-spa
+	
+	$
+		var ittf_folder         = path.join(__dirname, 'ittf');
+		var static_folder       = path.join(ittf_folder, 'src', 'server', 'static');
+		var static_ittf_folder  = path.join(ittf_folder, 'src', 'server', 'ittf');
+		var dest_folder         = path.join(__dirname, 'result');
+	line root
+		cwd-folder ${ittf_folder}
+		$include wfjob/any_js
+		$include wfjob/any_jsx
+		$$ $include wfjob/any_html
+		$include wfjob/any_css
+		$include wfjob/any_less
+		artifact static
+			src ${static_folder}
+			dest-path ${dest_folder}
+		artifact static_ittf
+			src ${static_ittf_folder}
+			dest-path ${dest_folder}
+		wfjob/spa_webpack( ./webpack-redux-express.spa.ittf )
+		wfjob/spa_package( ./webpack-redux-express.spa.ittf )
+		
+		$*
+		wfjob/spa_babelrc( ./webpack-redux-express.spa.ittf )
+		wfjob/spa_gulp( ./webpack-redux-express.spa.ittf )
+		*$
+	production
+		dest-folder ${dest_folder}
+		line-ref root

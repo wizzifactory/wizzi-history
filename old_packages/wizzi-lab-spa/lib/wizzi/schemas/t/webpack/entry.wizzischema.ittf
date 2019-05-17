@@ -1,0 +1,23 @@
+$group
+	e entry : webpackitem
+		# https://webpack.js.org/configuration/entry/
+		tag entry
+		a_flag( watch )
+		
+		r file/s
+		
+		r entryChunk/s
+		m wzinitialize
+			if this.entryChunks.length == 0
+				set this.value = "'" + this.wzName + "'"
+				if this.files.length > 0
+					set this.value = '[ ' + this.files.join(', ') + ' ]'
+	e_tag( entryChunk, chunk )
+		# https://webpack.js.org/concepts/entry-points/
+		r file/s
+		m wzinitialize
+			if this.files.length == 1
+				set this.value = "'" + this.wzName + "'"
+			elif this.files.length > 1
+				set value = '[ ' + this.files.join(', ') + ' ]'
+			# TODO error

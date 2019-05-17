@@ -1,0 +1,50 @@
+module
+	kind react
+	import React from 'react'
+	import Notes from './Notes2.jsx'
+	import NoteActions from '../actions/NoteActions'
+	import NoteStore from '../stores/NoteStore'
+	export default
+		class App
+			super React.Component
+			ctor
+				param props
+				base props
+				# We have to bind the context of `storeChanged`
+				# explicitly so that `this` will point at the `App`
+				# instance. You'll be seeing this pattern a lot.
+			
+				set this.storeChanged = this.storeChanged.bind(this)
+				set this.state = NoteStore.getState()
+			m componentDidMount
+				_ NoteStore.listen(this.storeChanged)
+			m componentWillUnmount
+				_ NoteStore.unlisten(this.storeChanged)
+			m storeChanged
+				param state
+				# Without proper `bind`, `this` wouldn't
+				# point at the right context (defaults to `window`
+				# in browser environment)
+				_ this.setState(state)
+		
+			m render
+				const notes = this.state.notes
+				return
+					div
+						button +
+							@ className "add-note"
+							@ onClick {this.addNote}
+						< Notes
+							@ items {notes}
+							@ onEdit {this.editNote}
+							@ onDelete {this.deleteNote}
+			m addNote
+				_ NoteActions.create({task: 'New task'})
+		
+			m editNote
+				param id
+				param task
+				_ NoteActions.update({id, task})
+			m deleteNote
+				param id
+				_ NoteActions.delete(id)

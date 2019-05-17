@@ -1,0 +1,15 @@
+  wfjob documentation ids: 1 16
+    $  ids: 2 17
+      var ittf_folder         = path.join(__dirname, 'ittf'); ids: 3 18
+      var dest_folder         = path.join(__dirname, 'results'); ids: 4 19
+      var js_ittf_pattern     = '**/*.js.ittf'; ids: 5 20
+    line root ids: 6 21
+      cwd-folder ${ittf_folder} ids: 7 22
+      artifact ./${js_ittf_pattern} ids: 8 23
+        src ./${js_ittf_pattern} ids: 9 24
+        schema js ids: 10 25
+        generator js/module ids: 11 26
+        extension js ids: 12 27
+    production  ids: 13 28
+      dest-folder ${dest_folder} ids: 14 29
+      line-ref root ids: 15 30

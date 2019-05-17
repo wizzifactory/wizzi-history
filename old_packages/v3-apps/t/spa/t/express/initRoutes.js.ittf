@@ -1,0 +1,15 @@
+$group
+
+	$if spa.routesPath
+		
+		function initRoutes
+			param app
+			param api
+			_ getGlobbedFiles
+				@ path.join(__dirname, '${spa.routesPath}')
+				._ forEach
+					function
+						param routePath
+						chalk yellow 'gobbled routing file', path.resolve(routePath)
+						_ require(path.resolve(routePath))(app, api)
+

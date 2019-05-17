@@ -1,0 +1,25 @@
+﻿module
+	kind jsfile
+
+	+
+	var server = require('./server')
+	+
+	# start the wizzi RunnerServer.
+		# It requires the module wizzifile.js in the 
+		# current process.cwd()
+	_ require('wizzi').startRunnerServer
+		{
+			@ cwd __dirname
+			@ userid 'stefi'
+			@ role 'admin'
+		function
+			param err
+			if (err)
+				log 'wizzi-studio/index error', err
+				throw new Error(err)
+			_ server.start
+				function
+					param err
+					if (err)
+						log 'wizzi-studio/index error', err
+						throw new Error(err)

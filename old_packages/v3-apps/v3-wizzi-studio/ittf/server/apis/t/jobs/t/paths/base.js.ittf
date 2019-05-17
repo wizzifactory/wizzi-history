@@ -1,0 +1,37 @@
+﻿$group
+
+	@ normalize
+		function
+			param filepath
+			return verify.replaceAll(filepath, '\\', '/')
+				
+	@ uriFromPath
+		function
+			param filepath
+			param excludeIttfExtension
+			set filepath = this.normalize(filepath).toLowerCase()
+			if excludeIttfExtension && verify.endsWith(filepath, '.ittf')
+				set filepath = filepath.substr(0, filepath.length - 5)
+			return
+				_ filepath.substr
+					@ config.studioBasePath.length
+				
+	@ pathFromUri
+		function
+			param uri
+			return
+				_ path.join
+					@ config.studioBasePath
+					@ uri
+
+	@ joinPathFromArray
+		function
+			param segments
+			var ret = segments[0]
+			for var i=1; i<segments.length; i++
+				set ret
+					_ path.join
+						@ ret
+						@ segments[i]
+			return ret
+

@@ -1,0 +1,27 @@
+module
+	kind jsfile
+	$include wizzi-options
+    set module.exports =
+        { 
+			@ app
+				{
+					@ title '${spa.title}'
+					@ description '${spa.description}'
+					@ keywords '${spa.keywords}'
+					@ googleAnalyticsTrackingID (process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID')
+			
+			@ port process.env.PORT || ${spa.port}
+			
+			$if spa.viewEngine
+				@ templateEngine '${spa.viewEngine}'
+			$if spa.session
+				@ sessionCookie
+					{ 
+						@ maxAge (24 * (((60 * 60) * 1000)))
+						@ httpOnly true
+						@ secure false
+				@ sessionSecret '${spa.session.secret}'
+				@ sessionCollection 'sessions'
+				@ sessionKey 'sessionId'
+			@ logo 'modules/core/client/img/brand/logo.png'
+            @ favicon 'modules/core/client/img/brand/favicon.ico'

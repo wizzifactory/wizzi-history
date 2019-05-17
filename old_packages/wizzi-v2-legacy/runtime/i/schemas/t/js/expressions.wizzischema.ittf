@@ -1,0 +1,73 @@
+$group
+	e iif : statement
+		# ittf:
+		#   iif a === b
+		#       then 0
+		#       else 1
+		# js:
+		#   ( a === b ) ? 0 : 1
+	
+	e test : statement
+	e then : statement
+	e void : statement
+		tag void
+	e not : statement
+		tag !
+	e or : statement
+		tag ||
+	
+	e and : statement
+		tag &&
+	e op_eq_strict : statement
+		tag op===
+	
+	e op_noteq_strict : statement
+		tag op!==
+	
+	e op_eq : statement
+		tag op==
+	
+	e op_noteq : statement
+		tag op!=
+	
+	e op_or : statement
+		tag op||
+	
+	e op_and : statement
+		tag op&&
+	
+	e op_minus : statement
+		tag op-
+	
+	e op_plus : statement
+		tag op+
+	
+	e op_times : statement
+		tag op*
+	
+	e op_div : statement
+		tag op/
+	
+	e op_power : statement
+		tag op^
+	
+	e op_mod : statement
+		tag op%
+	
+	e op_xor : statement
+		tag op|
+	
+	e op_xand : statement
+		tag op&
+	
+	e op_gt : statement
+		tag op>
+	
+	e op_ge : statement
+		tag op>=
+	
+	e op_lt : statement
+		tag op<
+	
+	e op_le : statement
+		tag op<=

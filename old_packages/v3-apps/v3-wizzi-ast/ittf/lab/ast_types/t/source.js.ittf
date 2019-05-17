@@ -1,0 +1,43 @@
+﻿$group
+
+	function runSource
+		param context
+		param options
+		+
+		var fileName
+			_ path.join
+				@ __dirname
+				@ 'sources'
+				@ context.source
+		+
+		var code
+			_ wizzi.file.read
+				@ fileName
+		var ast
+			_ babylon.parse
+				@ code
+				{
+					@ sourceType 'module'
+		var type = null
+		var state = 0
+		_ traverse
+			@ ast
+			{ 
+				@ enter
+					function 
+						param path
+						if path.node.type == 'CallExpression' && path.node.callee.name == 'defineType'
+							var typeName = path.node.arguments[0].value
+							set type
+								{
+									@ name typeName
+									@ properties []
+							set context.type = type
+							set context.typeProperty = null
+							_ context.types.push(type)
+							if options.list
+								return
+							else
+								_ extractType
+									@ path.node.arguments[1]
+									@ context

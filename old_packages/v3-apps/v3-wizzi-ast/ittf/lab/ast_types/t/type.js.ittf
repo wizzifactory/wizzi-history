@@ -1,0 +1,142 @@
+﻿$group
+
+	function extractType
+		param typeObjectNode
+		param context
+		foreach p in typeObjectNode.properties
+			# log 'p.key.name', p.key.name
+			var typeProperty
+				{
+					@ name p.key.name
+					@ values []
+			set context.typeProperty = typeProperty
+			_ context.type.properties.push(typeProperty)
+			
+			if p.key.name == 'builder'
+				_ extractBuilderProperty(p.value, context)
+			
+			elif p.key.name == 'visitor'
+				_ extractVisitorProperty(p.value, context)
+			
+			elif p.key.name == 'aliases'
+				_ extractAliasesProperty(p.value, context)
+			
+			elif p.key.name == 'fields'
+				_ extractFieldsProperty(p.value, context)
+			
+			elif p.key.name == 'inherits'
+				_ extractInheritsProperty(p.value, context)
+			
+			elif p.key.name == 'deprecatedAlias'
+				_ extractDeprecatedAliasProperty(p.value, context)
+			
+			else
+				throw new Error('define.key.name not managed: ' + p.key.name)
+
+	function extractBuilderProperty
+		param node
+		param context
+		if node.type == 'ArrayExpression'
+			foreach item in node.elements
+				if item.type == 'StringLiteral'
+					_ context.typeProperty.values.push
+						{
+							@ name 'item'
+							@ value item.value
+					set context.builders[item.value] = true
+				else
+					_ logPath(context)
+					throw new Error('builder.property.element.type not managed: ' + item.type)
+		else
+			_ logPath(context)
+			throw new Error('builder.property.type not managed: ' + node.type)
+
+	function extractVisitorProperty
+		param node
+		param context
+		if node.type == 'ArrayExpression'
+			foreach item in node.elements
+				if item.type == 'StringLiteral'
+					_ context.typeProperty.values.push
+						{
+							@ name 'item'
+							@ value item.value
+					set context.visitors[item.value] = true
+				else
+					_ logPath(context)
+					throw new Error('visitor.property.element.type not managed: ' + item.type)
+		else
+			_ logPath(context)
+			throw new Error('visitor.property.type not managed: ' + node.type)
+
+	function extractAliasesProperty
+		param node
+		param context
+		if node.type == 'ArrayExpression'
+			foreach item in node.elements
+				if item.type == 'StringLiteral'
+					_ context.typeProperty.values.push
+						{
+							@ name 'item'
+							@ value item.value
+					if !context.aliases[item.value]
+						set context.aliases[item.value] = {}
+					set context.aliases[item.value][context.type.name] = true
+				else
+					_ logPath(context)
+					throw new Error('aliases.property.element.type not managed: ' + item.type)
+		else
+			_ logPath(context)
+			throw new Error('aliases.property.type not managed: ' + node.type)
+
+	$include fields
+
+	function extractInheritsProperty
+		param node
+		param context
+		if node.type == 'StringLiteral'
+			_ context.typeProperty.values.push
+				{
+					@ name 'inherits'
+					@ value node.value
+		else
+			log 'inherits property', node
+			_ logPath(context)
+			throw new Error('inherits property type not managed: ' + node.type)
+
+	function extractDeprecatedAliasProperty
+		param node
+		param context
+		if node.type == 'StringLiteral'
+			_ context.typeProperty.values.push
+				{
+					@ name 'deprecatedAlias'
+					@ value node.value
+		else
+			log 'deprecated alias property', node
+			_ logPath(context)
+			throw new Error('deprecated alias property type not managed: ' + node.type)
+
+	$include ./asserts
+
+	function get_methodParams
+		param node
+		param context
+		var ret = []
+		foreach param in node.params
+			if param.type == 'Identifier'
+				_ ret.push
+					{
+						@ name param.name
+			else
+				log 'get_methodParams node', node
+				_ logPath(context)
+				throw new Error('get_methodParams param type not managed: ' + param.type)
+		return ret
+
+	function logPath
+		param context
+		log 'source', context.source
+		log 'type', context.type.name
+		if context.typeProperty
+			log 'typeProperty', context.typeProperty.name

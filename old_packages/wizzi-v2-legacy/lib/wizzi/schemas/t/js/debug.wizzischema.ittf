@@ -1,0 +1,30 @@
+$group
+	e debug : statement
+		m _require ctx
+			_ ctx.require('debug');
+	e assert : statement
+		tag !!
+	
+	e assert_equal : statement
+		tag !!=
+	
+	e chalk : statement
+	e log : statement
+		# ittf:
+		#     log 'xxx', yyy
+		# js:
+		#     console.log( 'xxx', yyy );
+		#
+		m _toJs ctx
+			_ ctx.w('console.log(' + this.WmtName + ');')
+	
+	e warn : statement
+	
+	e error : statement
+	e inspect : statement
+		tag log?
+	
+	e log-info : statement
+		# log.info(...)
+		m _require ctx
+			_ ctx.require('log');

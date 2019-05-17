@@ -1,0 +1,72 @@
+$group
+	$params &spa
+    kind jsfile
+	var config = require('./config')
+	$if spa.mongoose
+		var mongoose = require('./mongoose')
+	
+	var serverApp = require('./serverApp')
+	var chalk = require('chalk')
+    
+	$if spa.mongoose
+		+
+		# Initialize Models
+		_ mongoose.loadModels()
+    
+		# Seed DB
+		if config.seedDB
+			_ require('./seed')
+    
+		set module.exports.loadModels =
+			function loadModels
+				_ mongoose.loadModels()
+	+
+	# Connect to DB and initialize serverApp
+    function initServerApp
+        param callback
+		var initResult = {}
+		$if spa.mongoose
+			_ mongoose.connect
+				function 
+					param db
+					set initResult.mongodb = db
+					var app = serverApp.init(initResult)
+					if callback
+						_ callback(app, initResult, config)
+		$else
+			var app = serverApp.init(initResult)
+			if callback
+				_ callback(app, initResult, config)
+	# 
+		# Start server
+	set module.exports.start =
+        function start
+            param callback
+            _ initServerApp
+                function 
+                    param app
+                    param db
+                    param config
+					# Start the app by listening on <port>
+                    _ app.listen
+                        @ config.port
+                        function 
+                            
+							log '--'
+                            
+							chalk green config.app.title
+							
+							chalk green 'Environment:\t' + process.env.NODE_ENV
+							
+							chalk green 'Port:\t\t' + config.port
+							
+							$if spa.mongoose
+								chalk green 'Database:\t' + config.db.uri
+                            
+							if process.env.NODE_ENV === 'secure'
+								chalk green 'HTTPs:\ton'
+                            
+							log '--'
+                            
+							if callback
+                                _ callback(app, db, config)

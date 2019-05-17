@@ -1,0 +1,23 @@
+﻿$group
+
+	@ deleteFragment
+		function
+			param fragmentUri
+			param callback
+
+			var ittfPath = paths.pathFromUri(fragmentUri)
+
+			check_file_not_exists( ittfPath, Ittf fragment )
+
+			_ file.delete
+				@ ittfPath
+
+			_ callback
+				@ null
+				{
+					@ data
+						{
+							@ uri fragmentUri
+					@ status
+						_ success
+							@ 'Ittf fragment deleted: "' + fragmentUri + '"'

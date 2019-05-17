@@ -1,0 +1,156 @@
+module 
+    kind jsfile
+
+    var browserify = require('browserify')
+    var gulp = require('gulp')
+	var async = require('async')
+	var del = require('del')
+    var source = require('vinyl-source-stream')
+    var buffer = require('vinyl-buffer')
+	$if _.isObject(react)
+		var reactify = require('reactify')
+    var uglify = require('gulp-uglify')
+    var sourcemaps = require('gulp-sourcemaps')
+    var gutil = require('gulp-util')
+	var gheader = require('gulp-header')
+	var gbanner = require('gulp-banner')
+	$if browserify.globItems.length > 0
+		var glob = require('glob')
+	$if browserify.useWatch == true
+		var watch = require('gulp-watch')
+    #
+		# This is a workaround for this bug...https://github.com/feross/buffer/issues/79
+		# Please refactor this, when the bug is resolved!
+		# PS: you need to depend on buffer@3.4.3
+	var OldBuffer = require.resolve('buffer/')
+    var builtinsOverride = require('browserify/lib/builtins')
+    set builtinsOverride.buffer = OldBuffer
+
+	+
+	var entries = []
+	$if browserify.fileItems.length > 0
+		$foreach item in browserify.fileItems
+			_ entries.push('${item.path}')
+			
+	$if browserify.globItems.length > 0
+		$foreach item in browserify.globItems
+			var files = glob.sync('${item.path}');
+			foreach file in files
+				_ entries.push(file)
+
+	var watches = []
+	$if browserify.fileItems.length > 0
+		$foreach item in browserify.fileItems
+			$if item.watch == true
+				_ watches.push('${item.path}')
+			
+	$if browserify.globItems.length > 0
+		$foreach item in browserify.globItems
+			$if item.watch == true
+				_ watches.push('${item.path}')
+
+	var destFolder = '${browserify.destFolder}'
+	
+	var sourceBaseName = '${browserify.sourceBaseName}'
+	
+	var sourceMapFolder = './'
+	
+	$if _.isNotEmpty(browserify.sourceMapFolder)
+		set sourceMapFolder = '${browserify.sourceMapFolder}'
+
+	var pkg = require('./package.json')
+	var banner
+		[
+			@ '/**'
+			@ ' * <%= pkg.name %> - <%= pkg.description %>'
+			@ ' * @version v<%= pkg.version %>'
+			@ ' * @link <%= pkg.homepage %>'
+			@ ' * @license <%= pkg.license %>'
+			@ ' */',
+		._ join('\n')
+
+	+
+
+    task( clean )
+
+        _ del
+            [ 
+                @ destFolder + '/' + sourceBaseName + '.*'
+                @ 'coverage'
+                @ 'test/browser/' + sourceBaseName + '-browser-tests.js'
+            @ cb
+
+
+	task( build )
+			_ async.map
+				[
+					@ 0
+					@ 1
+				function
+					param n
+					param callback
+					var isDebug = n % 2 === 0;
+
+					var b
+						_ browserify
+							{ 
+								@ entries entries
+								@ debug isDebug
+								@ builtins builtinsOverride
+								$if _.isNotEmpty(browserify.standalone)
+									@ standalone '${browserify.standalone}'
+					+
+					if ! (isDebug)
+						_ b.transform
+							{ 
+								@ global true
+							@ 'uglifyify'
+					+
+					$if _.isObject(react)
+						_ b.transform(reactify)
+					+
+					var p
+						_ b.transform('brfs')
+							._ bundle()
+								._ pipe
+									_ source(sourceBaseName + (!isDebug ? '.min' : '') + '.js')
+									._ pipe
+										_ buffer()
+										._ pipe
+											_ sourcemaps.init
+												{ 
+													@ loadMaps true
+											._ pipe
+												_ gheader
+													@ gbanner
+													{ 
+														@ pkg pkg
+					if isDebug
+						set p = p.pipe(sourcemaps.write())
+
+					_ p.pipe
+						_ gulp.dest(destFolder)
+						._ on
+							@ 'error'
+							function 
+								param err
+								_ cb(err)
+							._ on
+								@ 'end'
+								function 
+									if n === 1
+										_ cb()
+
+	task( watch )
+		_ gulp.watch
+			@ watches
+			[
+				@ 'build'
+
+	_ gulp.task
+		@ 'default'
+		[
+			@ 'clean'
+			@ 'build'
+			@ 'watch'
+

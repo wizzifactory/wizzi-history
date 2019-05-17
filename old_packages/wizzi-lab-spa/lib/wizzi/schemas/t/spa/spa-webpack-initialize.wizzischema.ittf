@@ -1,0 +1,38 @@
+$group
+	if this.webpack
+		var wp = this.webpack
+		if wp.webpackLoaders.length > 0
+			set this.bundler = 'webpack'
+		if wp.webpackEntry == null
+			set wp.webpackEntry
+				{
+					@ wzName 'undefined'
+					@ kind 'string'
+		if wp.webpackOutput == null
+			set wp.webpackOutput
+				{
+					@ wzName 'undefined'
+					@ filename 'undefined'
+					@ path 'undefined'
+		var presets = []
+		var plugins = []
+		foreach l in wp.webpackLoaders
+			foreach p in l.babelPresets
+				_ presets.push(p.wzName)
+			foreach p in l.babelPlugins
+				_ plugins.push(p.wzName)
+		
+		log '*** presets', presets
+		log '*** plugins', plugins
+		
+		if presets.length > 0
+			set this.useBabel = true
+			set this.babelPresets = this.babelPresets || []
+			set this.babelPresets = _.union(this.babelPresets, presets)
+			log '*** babelPresets', this.babelPresets
+		
+		if plugins.length > 0
+			set this.useBabel = true
+			set this.babelPlugins = this.babelPlugins || []
+			set this.babelPlugins = _.union(this.babelPlugins, plugins)
+			log '*** babelPlugins', this.babelPlugins

@@ -1,0 +1,52 @@
+module
+	kind react
+	import React from 'react'
+	import Editable from './editable.jsx'
+	import { laneAdd, laneUpdate, laneDelete } from '../actions'
+	
+	class Lanes
+		super React.Component
+		ctor
+			param props
+			base props
+			set this.renderLane = this.renderLane.bind(this)
+			set this.addLane = this.addLane.bind(this)
+			set this.editLane = this.editLane.bind(this)
+			set this.deleteLane = this.deleteLane.bind(this)
+		m render
+			const lanes = this.props.lanes
+			log 'Lanes', this.props
+			return
+				div
+					div
+						button +
+							@ className "add-lane"
+							@ onClick {this.addLane}
+					ul {lanes.map(this.renderLane)}
+						@ className "lanes"
+		m renderLane
+			param lane
+			log 'renderLane', lane
+			return
+				li
+					@ className "lane"
+					@ key {lane.id}
+					< Editable
+						@ value {lane.name}
+						@ onEdit {this.editLane.bind(null, lane.id)}
+						$$ TODO @ onDelete {this.deleteLane.bind(null, lane.id)}
+		m addLane
+			log 'addLane'
+			_ this.props.dispatch(laneAdd('New lane'))
+		
+		m editLane
+			param id
+			param name
+			log 'editLane', id, name
+			_ this.props.dispatch(laneUpdate(id, name))
+			
+		m deleteLane
+			param id
+			log 'deleteLane', id
+			_ this.props.dispatch(laneDelete(id))
+	export default Lanes

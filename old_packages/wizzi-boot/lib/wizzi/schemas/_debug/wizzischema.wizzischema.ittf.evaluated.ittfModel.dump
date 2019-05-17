@@ -1,0 +1,243 @@
+  wizzischema wizzischema ids: undefined undefined
+    e wizzischema ids: undefined undefined
+      # The root element of a wizzi schema. ids: undefined undefined
+      a preserveTags ids: undefined undefined
+        tag preserve-tags ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # If declared, the WizziModelLoader will preserve, in the loaded WizziModelInstance, ids: undefined undefined
+        # the tags used in the source IttfDocuments. ids: undefined undefined
+      r element/s ids: undefined undefined
+      r include/s ids: undefined undefined
+      r exportTo/s ids: undefined undefined
+      r require/s ids: undefined undefined
+      r method/s ids: undefined undefined
+      r comment/s ids: undefined undefined
+    e schemaitem ids: undefined undefined
+      r comment/s ids: undefined undefined
+    e include : schemaitem ids: undefined undefined
+      # The parent element may include the nodes of another external schema. ids: undefined undefined
+      # The IttfNodeValue of this element is the name of the external schema. ids: undefined undefined
+    e comment ids: undefined undefined
+      # A comment line for describing entities. ids: undefined undefined
+      tag # ids: undefined undefined
+    e element : schemaitem ids: undefined undefined
+      # A schema element. A classifier model element that may have attributes and relations. ids: undefined undefined
+      tag e ids: undefined undefined
+      a super ids: undefined undefined
+        # The base (super) element from which this element derives. ids: undefined undefined
+        # Attributes and relations of the base element are inherited. ids: undefined undefined
+      a isAbstract ids: undefined undefined
+        tag is-abstract ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # This element is abstract and cannot be declared in Ittf documents. ids: undefined undefined
+      a isRoot ids: undefined undefined
+        tag is-root ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # Mark the element as the root element of the schema. ids: undefined undefined
+        # If not explicit, the root element is inferred, ids: undefined undefined
+        # and the first element declared in the schema is assumed as the root. ids: undefined undefined
+      a tagInternal ids: undefined undefined
+        tag tag ids: undefined undefined
+        # The tag used to declare this element in Ittf documents. ids: undefined undefined
+        # Optional. The default is the element IttfNodeValue ids: undefined undefined
+      a xmlTagInternal ids: undefined undefined
+        tag xml-tag ids: undefined undefined
+        # The Xml tag used for this element when persisted in Xml Format. ids: undefined undefined
+      a acceptAnyTag ids: undefined undefined
+        tag any ids: undefined undefined
+        # This element can have any text as a child element. ids: undefined undefined
+        # The IttfNodeValue of this attribute must be the name of the element collection ids: undefined undefined
+        # to which child text nodes will be appended. ids: undefined undefined
+        # Any child node produces an internal ANY element that is appended to this collection. ids: undefined undefined
+        # TODO example ids: undefined undefined
+      a nameIsRequired ids: undefined undefined
+        tag name-is-required ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # This element must have a not empty IttfNodeValue ids: undefined undefined
+      a addToChildren ids: undefined undefined
+        tag add-to-children ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # Every child node of this element will be added to the wzChildren collection. ids: undefined undefined
+        # Artifact generators will use the wzElement attribute to distinguish child elements. ids: undefined undefined
+      a suppressCollectionEmit ids: undefined undefined
+        tag suppress-collection-emit ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # TODO ??? ids: undefined undefined
+      r attribute/s ids: undefined undefined
+      r relation/s ids: undefined undefined
+      r restrict/s ids: undefined undefined
+      r method/s ids: undefined undefined
+      r include/s ids: undefined undefined
+    e attribute : schemaitem ids: undefined undefined
+      # An element attribute. ids: undefined undefined
+      tag a ids: undefined undefined
+      a tagInternal ids: undefined undefined
+        tag tag ids: undefined undefined
+        # The tag used to declare the attribute in IttfDocuments. ids: undefined undefined
+        # Optional. The default is the attribute IttfNodeValue ids: undefined undefined
+      a type ids: undefined undefined
+        # The attribute data type ids: undefined undefined
+        default string ids: undefined undefined
+        restrict  ids: undefined undefined
+          enum string ids: undefined undefined
+          enum boolean ids: undefined undefined
+          enum integer ids: undefined undefined
+          enum float ids: undefined undefined
+          enum date ids: undefined undefined
+          enum regexp ids: undefined undefined
+          enum code ids: undefined undefined
+      a default ids: undefined undefined
+        # The attribute default value ids: undefined undefined
+      a isRequired ids: undefined undefined
+        tag is-required ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # If true the attribute must be declared. ids: undefined undefined
+      a isDataType ids: undefined undefined
+        tag is-datatype ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+        # This attribute is a datatype attribute and type services will be available to artifact generators. ids: undefined undefined
+      a defaultWhenDeclared ids: undefined undefined
+        tag default-when-declared ids: undefined undefined
+        # When the attribute is declared without a IttfNodeValue, this will be its value. ids: undefined undefined
+      r restrict/s ids: undefined undefined
+    e relation : schemaitem ids: undefined undefined
+      # A relation to a child element. ids: undefined undefined
+      # By default is a one-to-many relation. ids: undefined undefined
+      # Can be set to a one-to-one, declaring the attribute isOneToOne. ids: undefined undefined
+      tag r ids: undefined undefined
+      a isOneToOne ids: undefined undefined
+        tag one-to-one ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+      a noGetMethod ids: undefined undefined
+        tag no-get ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+      a hasAddOnce ids: undefined undefined
+        tag add-once ids: undefined undefined
+        type boolean ids: undefined undefined
+        default false ids: undefined undefined
+        default-when-declared true ids: undefined undefined
+    e restrict : schemaitem ids: undefined undefined
+      # Group of restrictions to the element or attribute values ids: undefined undefined
+      r facet/s ids: undefined undefined
+    e facet : schemaitem ids: undefined undefined
+      # The abstract base class for facet restrictions ids: undefined undefined
+      is-abstract  ids: undefined undefined
+    e enumFacet : facet ids: undefined undefined
+      # A restriction of type enumeration applied to an attribute. ids: undefined undefined
+      tag enum ids: undefined undefined
+    e maxLengthFacet : facet ids: undefined undefined
+      # A restriction of type maximum length applied to an attribute. ids: undefined undefined
+      tag max-length ids: undefined undefined
+    e minLengthFacet : facet ids: undefined undefined
+      # A restriction of type minimum length applied to an attribute. ids: undefined undefined
+      tag min-length ids: undefined undefined
+    e maxValueFacet : facet ids: undefined undefined
+      # A restriction of type maximum value applied to an attribute. ids: undefined undefined
+      tag max-value ids: undefined undefined
+    e minValueFacet : facet ids: undefined undefined
+      # A restriction of type minimum value applied to an attribute. ids: undefined undefined
+      tag min-value ids: undefined undefined
+    e regexpFacet : facet ids: undefined undefined
+      # A restriction of type regexp test applied to an attribute. ids: undefined undefined
+      tag regexp ids: undefined undefined
+    e elementFacet : facet ids: undefined undefined
+      # A restriction of type allowed child element applied to an element. ids: undefined undefined
+      tag element ids: undefined undefined
+    e exportTo : schemaitem ids: undefined undefined
+      # Require the emission, in the WizziModelType of the schema, of a function ids: undefined undefined
+      # for exporting the model instance to a different format. ids: undefined undefined
+      # There are a few built-in ExportTo functions. New export formats may be created ids: undefined undefined
+      # by WizziPackage developers using methods. ids: undefined undefined
+      tag export-to ids: undefined undefined
+      restrict  ids: undefined undefined
+        enum json ids: undefined undefined
+        enum xml ids: undefined undefined
+        enum prettify ids: undefined undefined
+    e require : schemaitem ids: undefined undefined
+      # A node-js require statement that is emitted in the WizziModelType of the schema. ids: undefined undefined
+      # The IttfNodeValue is the package name. It is also the variable name of the required package ids: undefined undefined
+      # unless a declare-var attribute is present. ids: undefined undefined
+      a kind ids: undefined undefined
+        restrict  ids: undefined undefined
+          enum function ids: undefined undefined
+          enum module ids: undefined undefined
+          enum context-method ids: undefined undefined
+      a declareVar ids: undefined undefined
+        tag declare-var ids: undefined undefined
+    e method : schemaitem ids: undefined undefined
+      # A method of an element element pseudo-class generated in the WizziModelType. ids: undefined undefined
+      tag m ids: undefined undefined
+      a emitkey ids: undefined undefined
+        # The emit key of the artifact which should insert this method. ids: undefined undefined
+        # Can be any string that artifact generators will filter. ids: undefined undefined
+      r param/s ids: undefined undefined
+      r require/s ids: undefined undefined
+      r statement/s ids: undefined undefined
+    e param : schemaitem ids: undefined undefined
+      # A parameter of a method or function element. ids: undefined undefined
+    e statement : schemaitem ids: undefined undefined
+      r statement/s ids: undefined undefined
+    e var : statement ids: undefined undefined
+      tag var ids: undefined undefined
+    e decl : statement ids: undefined undefined
+    e if : statement ids: undefined undefined
+      tag if ids: undefined undefined
+    e elif : statement ids: undefined undefined
+    e else : statement ids: undefined undefined
+      tag else ids: undefined undefined
+    e switch : statement ids: undefined undefined
+    e case : statement ids: undefined undefined
+    e for : statement ids: undefined undefined
+      tag for ids: undefined undefined
+    e foreach : statement ids: undefined undefined
+    e break : statement ids: undefined undefined
+    e continue : statement ids: undefined undefined
+    e while : statement ids: undefined undefined
+      tag while ids: undefined undefined
+    e do : statement ids: undefined undefined
+      tag do ids: undefined undefined
+    e try : statement ids: undefined undefined
+      tag try ids: undefined undefined
+    e catch : statement ids: undefined undefined
+      tag catch ids: undefined undefined
+    e finally : statement ids: undefined undefined
+      tag finally ids: undefined undefined
+    e throw : statement ids: undefined undefined
+      tag throw ids: undefined undefined
+    e return : statement ids: undefined undefined
+      tag return ids: undefined undefined
+    e set : statement ids: undefined undefined
+    e log : statement ids: undefined undefined
+    e call : statement ids: undefined undefined
+      tag _ ids: undefined undefined
+    e jsObject : statement ids: undefined undefined
+      tag { ids: undefined undefined
+    e jsArray : statement ids: undefined undefined
+      tag [ ids: undefined undefined
+    e jsPropertyOrValue : statement ids: undefined undefined
+      tag @ ids: undefined undefined
+    e function : statement ids: undefined undefined
+    e new : statement ids: undefined undefined
+    e codeline : statement ids: undefined undefined
+      tag + ids: undefined undefined
+    e param : statement ids: undefined undefined

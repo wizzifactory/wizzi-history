@@ -1,0 +1,45 @@
+$group
+	
+	m stringifyArrayValue
+		param array
+		param isString
+		var quote = ""
+		if array.length == 0
+			return null
+		elif array.length == 1
+			set quote = detectObjectFromText(array[0].wzName) ? '' : "'"
+			return quote + array[0].wzName + quote
+		else
+			var values = []
+			foreach item in array
+				set quote = detectObjectFromText(item.wzName) ? '' : "'"
+				_ values.push(quote + item.wzName + quote)
+			return '[' + values.join(', ') + ']'
+	m detectObjectFromText
+		param text
+		if text == null || text == undefined
+			return false
+		var
+			decl ch
+			decl op = 0
+			decl cl = 0
+			decl pslash_1 = -1
+			decl pslash_2 = -1
+			decl i
+			decl len = text.length
+		set text = text.trim()
+		for i=0; i<len; i++
+			set ch = text[i]
+			if ch == '('
+				set op++
+			elif ch == ')'
+				set cl++
+			elif ch == '/'
+				if pslash_1 == -1
+					set pslash_1 = i
+				elif pslash_1 >  -1
+					set pslash_2 = i
+		return (op > 0 && cl == op) || 
+			\b (pslash_1 == 0 && (pslash_2 == len-1 || pslash_2 == len-2))
+				
+	

@@ -1,0 +1,15 @@
+﻿$group
+
+	@ fileExecJobsPath
+		function
+			return
+				_ path.join
+					@ config.studioBasePath
+					@ 'fileExecs'
+
+	@ getFileExecJobsIttfDocuments
+		function
+			return
+				_ this.getIttfFilesOfSchema
+					_ this.fileExecJobsPath
+					@ 'wfjob'

@@ -1,0 +1,9 @@
+module 
+    kind jsfile
+
+    if typeof(Promise) === 'undefined'
+        _ require('promise/lib/rejection-tracking')
+            ._ enable()
+        set window.Promise = require('promise/lib/es6-extensions.js')
+    _ require('whatwg-fetch')
+    set Object.assign = require('object-assign')

@@ -1,0 +1,322 @@
+{
+  "name": "wftest",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [],
+  "elements": [
+    {
+      "name": "wftest",
+      "super": null,
+      "isRoot": true,
+      "tags": [
+        "wftest"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "table",
+          "role": "tables",
+          "tags": [
+            "table"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "site",
+          "role": "sites",
+          "tags": [
+            "site"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The root tag of the test schema."
+      ]
+    },
+    {
+      "name": "site",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "site"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "one",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "one",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "two",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [
+        {
+          "name": "getMenus",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [],
+          "statements": [
+            {
+              "tag": "if",
+              "name": "xif",
+              "value": "!this.menus",
+              "statements": [
+                {
+                  "tag": "set",
+                  "name": "set",
+                  "value": "this.menus = _.filter(this.items, { wzElement: 'menu' });",
+                  "statements": []
+                }
+              ]
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "this.menus",
+              "statements": []
+            }
+          ],
+          "comments": [
+            "log 'wizzimodel site this.menus', this.menus"
+          ]
+        },
+        {
+          "name": "getMenu",
+          "isStatic": false,
+          "isKnownMethod": false,
+          "params": [
+            "name"
+          ],
+          "statements": [
+            {
+              "tag": "var",
+              "name": "xvar",
+              "value": "menu = _.find(this.getMenus(), { wzName: name })",
+              "statements": []
+            },
+            {
+              "tag": "return",
+              "name": "xreturn",
+              "value": "menu",
+              "statements": []
+            }
+          ],
+          "comments": [
+            "log 'wizzimodel site menu', name, menu"
+          ]
+        }
+      ],
+      "comments": [
+        "The root element of the site schema."
+      ]
+    },
+    {
+      "name": "item",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "item"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "menuitem",
+          "tags": [
+            "menuitem"
+          ]
+        },
+        {
+          "name": "menu",
+          "tags": [
+            "menu"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "menuitem",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "menuitem"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "href",
+          "type": "string",
+          "tags": [
+            "href"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "menu",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "menu"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "table",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "table"
+      ],
+      "flags": "",
+      "attributes": [],
+      "relations": [
+        {
+          "name": "tableColumm",
+          "role": "tableColumms",
+          "tags": [
+            "c"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "tableColumm",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "c"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "type",
+          "type": "string",
+          "tags": [
+            "type"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        }
+      ],
+      "relations": [],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    }
+  ]
+}

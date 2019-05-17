@@ -1,0 +1,87 @@
+$group
+	# Those of facebook react see https://facebook.github.io/react/docs/tags-and-attributes.html
+	$
+		var _tags = "a abbr address area article aside audio b base bdi bdo big blockquote body br" +
+			" button canvas caption cite code col colgroup data datalist dd del details dfn" +
+			" dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5" +
+			" h6 head header hr html i iframe img input ins kbd keygen label legend li link" +
+			" main map mark menu menuitem meta meter nav noscript object ol optgroup option" +
+			" output p param picture pre progress q rp rt ruby s samp script section select" +
+			" small source span strong @style sub summary sup table tbody td textarea tfoot th" +
+			" thead time title tr track u ul var video wbr";
+		var html_supported_tags = _tags.split(' ');
+		var _attrs = "accept acceptCharset accessKey action allowFullScreen allowTransparency alt" + 
+			" async autoComplete autoFocus autoPlay capture cellPadding cellSpacing charSet" +
+			" challenge checked classID className cols colSpan content contentEditable contextMenu" +
+			" controls coords crossOrigin data dateTime defer dir disabled download draggable" + 
+			" encType form formAction formEncType formMethod formNoValidate formTarget frameBorder" +
+			" headers height hidden high href hrefLang htmlFor httpEquiv icon id inputMode" +
+			" keyParams keyType @label lang list loop low manifest marginHeight marginWidth max" +
+			" maxLength media mediaGroup method min minLength multiple muted name noValidate open" +
+			" optimum pattern placeholder poster preload radioGroup readOnly rel required role" +
+			" rows rowSpan sandbox scope scoped scrolling seamless selected shape size sizes" +
+			" @span spellCheck src srcDoc srcSet start step style @summary tabIndex target title" +
+			" type useMap value width wmode wrap";
+		var html_supported_attrs = _attrs.split(' ');
+	
+	e htmlelement : statement
+		a autoCapitalize
+		a autoCorrect
+		a property
+		a itemProp
+		a itemScope
+		a itemType
+		a itemRef
+		a itemID
+		a unselectable
+		a results
+		a autoSave
+		a class
+		a aria-*
+		a data-*
+		$foreach item in html_supported_attrs
+			$if item
+				a ${item}
+		
+		tag <
+	e doctype : htmlelement
+	$foreach item in html_supported_tags
+		$if item
+			e ${item} : htmlelement
+	
+	e js : htmlelement
+	e css : htmlelement
+	e ready : statement
+		a kind
+			default jquery
+			restrict
+				enum jquery
+				enum window
+	e tohtml : statement
+		a kind
+			default wizzi
+			restrict
+				enum wizzi
+				enum ng
+					# create a function
+					# that returns am html string preserving {{ }}, for interpolation use [[ ]]
+				enum dom
+					# that returns am html dom tree using jQuery
+				enum hb
+					# that returns a compiled handlebar template
+	
+	e html_f : statement
+		# create a function 
+		# that returns am html string
+	
+	e html_ng : statement
+		# create a function 
+		# that returns am html string preserving {{ }}, for interpolation use [[ ]]
+	
+	e html_dom : statement
+		# create a function 
+		# that returns am html dom tree using jQuery
+	
+	e html_hb : statement
+		# create a function 
+		# that returns a compiled handlebar template

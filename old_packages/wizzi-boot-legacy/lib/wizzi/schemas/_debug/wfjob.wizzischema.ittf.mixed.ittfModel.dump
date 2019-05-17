@@ -1,0 +1,285 @@
+  wizzischema wfjob ids: 1 21
+    # A schema modeling a wizzi factory job. ids: 2 22
+    export-to json ids: 3 23
+    e wfjob ids: 4 24
+      # The root element of the wfjob schema. ids: 5 25
+      a ${name} ids: 445 450
+        $args: modelsBaseFolder, models-base-folder  $params: name, tag|@@null, defaultValue|@@null
+        tag ${tag} ids: 447 451
+        $if defaultValue ids: 448 452
+          default ${defaultValue} ids: 449 453
+        # The base path for the source models used by this "wfjob". ids: 7 27
+      a ${name} ids: 445 454
+        $args: destBaseFolder, dest-base-folder  $params: name, tag|@@null, defaultValue|@@null
+        tag ${tag} ids: 447 455
+        $if defaultValue ids: 448 456
+          default ${defaultValue} ids: 449 457
+        # The base folder path for the generated artifacts. ids: 9 29
+      r require/s ids: 10 30
+      r model/s ids: 11 31
+      r line/s ids: 12 32
+      r production/s ids: 13 33
+    e require ids: 14 34
+      # Requires a WizziFactoryPackage. ids: 15 35
+      # The IttfNodeValue is the package name. ids: 16 36
+      # If the package is not globally installed must be a fully qualified path. ids: 17 37
+    $group  ids: 41 111
+      e model ids: 42 112
+        # A Wizzi model instance acting as a data context during the evaluation of another "model" ids: 43 113
+        # or during an artifact generation. ids: 44 114
+        # The IttfNodeValue is the name of the model. ids: 45 115
+        # The name of the model must be unique in a "wfjob"; it will become the default export name of the context ids: 46 116
+        # value that exposes the model during evaluations. ids: 47 117
+        # A "model" will be loaded once, and will be reused if ids: 48 118
+        # referenced in many evaluations. ids: 49 119
+        a src ids: 50 120
+          # The path to the PrimaryIttfDocument of the "model". ids: 51 121
+          # When relative, the base path is the "modelsBaseFolder" ids: 52 122
+          # declared on the "wfjob" element. ids: 53 123
+        a schema ids: 54 124
+          # The name of the WizziSchema that will validate the "model". ids: 55 125
+        a ${name} ids: 445 458
+          $args: dumpFile, dump-file  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 459
+          $if defaultValue ids: 448 460
+            default ${defaultValue} ids: 449 461
+          # A filepath where the loaded must be dumped for test. ids: 57 127
+          # The model must implement the toJson method. See the "exportTo" attribute in wizzischema root nodes. ids: 58 128
+          # When declared the loaded model is JSON.stringyfied and written ids: 59 129
+          # to the "dumpFile" filepath. ids: 60 130
+        r modelRef/s ids: 61 131
+          # References to "model" instances acting as data context during this "model" evaluation. ids: 62 132
+          # A "model" is referenced by its name. ids: 63 133
+      e ${name} ids: 462 468
+        $args: modelRef, model-ref  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 464 469
+          tag ${tag} ids: 465 470
+        $if xsuper != null ids: 466 471
+          super ${xsuper} ids: 467 472
+        a ${name} ids: 445 473
+          $args: exportName, export-name  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 474
+          $if defaultValue ids: 448 475
+            default ${defaultValue} ids: 449 476
+          # The name of the context property that will expose the loaded model during ids: 66 136
+          # an evaluation. Overrides the name of the "model" that is the default export name. ids: 67 137
+        r transformer/s ids: 68 138
+          # A model may have one or more transformers. ids: 69 139
+          # Transformers are chained and the output of a transformation ids: 70 140
+          # is the input for the next one. ids: 71 141
+        r modelCollection/s ids: 72 142
+          # TODO This is a one-to-one relation, not yet implemented. ids: 73 143
+          # Single items of a collection contained in the "model" may act as data contexts ids: 74 144
+          # of artifacts where each collection item generates a separate artifact. ids: 75 145
+        m wzinitialize ids: 76 146
+          if this.modelCollections.length > 0 ids: 77 147
+            set this.modelCollection = this.modelCollections[0] ids: 78 148
+            set this.collName = this.modelCollection.wzName ids: 79 149
+            set this.collItemName = this.modelCollection.itemName ids: 80 150
+            set this.collPathTemplateValues = [] ids: 81 151
+            foreach item in this.modelCollection.pathTemplateValues ids: 82 152
+              _ this.collPathTemplateValues.push ids: 83 153
+                {  ids: 84 154
+                  @ token item.token ids: 85 155
+                  @ attribute item.attribute ids: 86 156
+                  @ function item.function ids: 87 157
+      e ${name} ids: 462 477
+        $args: modelCollection, model-coll  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 464 478
+          tag ${tag} ids: 465 479
+        $if xsuper != null ids: 466 480
+          super ${xsuper} ids: 467 481
+        # Single items of a collection contained in a "model" may act as data contexts ids: 89 159
+        # of artifacts where each collection item generates a separate artifact. ids: 90 160
+        # This element, contained in a "modelRef" element, specifies: ids: 91 161
+        # . the collection name: the IttfNodeValue of this element ids: 92 162
+        # . the export name of the collection item when acting as a data context: the "item-name" attribute ids: 93 163
+        # . the property names of the collection item that will be used to build the destination path ids: 94 164
+        # of the artifact: the "pathTemplateValues" child elements ids: 95 165
+        a ${name} ids: 445 482
+          $args: itemName, item-name  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 483
+          $if defaultValue ids: 448 484
+            default ${defaultValue} ids: 449 485
+          # The export name of a collection item when acting as a data context. ids: 97 167
+        r pathTemplateValue/s ids: 98 168
+      e ${name} ids: 462 486
+        $args: pathTemplateValue, path-template-value  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 464 487
+          tag ${tag} ids: 465 488
+        $if xsuper != null ids: 466 489
+          super ${xsuper} ids: 467 490
+        a attribute ids: 100 170
+          # The property of the context object (a collection item) containing the value which will replace ids: 101 171
+          # the "token" value in the generated artifact path template. ids: 102 172
+          # Is alternative to "function" ids: 103 173
+        a function ids: 104 174
+          # The function of the context object (a collection item) that returns the value which will replace ids: 105 175
+          # the "token" value in the generated artifact path template. ids: 106 176
+          # Is alternative to "attribute" ids: 107 177
+        a token ids: 108 178
+          # The token that will be replaced by the value returned accessing "attribute" or calling "function" ids: 109 179
+          # on a context object. ids: 110 180
+    $group  ids: 181 273
+      e transformer ids: 182 274
+        # A model transformer ids: 183 275
+        # The IttfNodeValue is the transformer path {wizzischema}/{transformerName} ids: 184 276
+        # to be found in {wizziPackage}/artifacts/{wizzischema}/{transformerName}/trans/main.js ids: 185 277
+        a ${name} ids: 445 491
+          $args: dumpFile, dump-file  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 492
+          $if defaultValue ids: 448 493
+            default ${defaultValue} ids: 449 494
+          # A filepath where the transformed model must be dumped for test. ids: 187 279
+          # When declared the transformed model is JSON.stringyfied and written ids: 188 280
+          # to the "dumpFile" filepath. ids: 189 281
+      e artifact ids: 190 282
+        # An artifact to be generated. ids: 191 283
+        # It is a child element of a "line" element. ids: 192 284
+        #  ids: 193 285
+        # Can be one of: ids: 194 286
+        # . A Wizzi model instance, acting as a template, which WizziSchema targets a code language technology. ids: 195 287
+        # . A swig template. ids: 196 288
+        # . A code write generation that takes in input a context of one or more WizziModels. ids: 197 289
+        # . A final artifact to be copied to a destination folder without transformations. ids: 198 290
+        # . A reference to another WfJob, to be executed before the current WfJob where the artifact is declared. ids: 199 291
+        #  ids: 200 292
+        # Context value objects for template transformations are declared in the "model" element, child of the "wfjob" root element ids: 201 293
+        # and may be referenced in the elements "modelRef", children of the "artifact" element. ids: 202 294
+        #  ids: 203 295
+        # The "src" or "destPath" attributes of an "artifact" element may contain tokens enclosed in graph parens. ids: 204 296
+        # When one of the "modelRef@" is a collection model, the artifact generation is repeated ids: 205 297
+        # for each item of the collection and the "src" or "destPath" attributes become the template of the destination path. ids: 206 298
+        # See the "pathTemplateValues" child elements of the "modelRef" for the values that will replace the tokens. ids: 207 299
+        #  ids: 208 300
+        # Example ids: 209 301
+        #  ids: 210 302
+        # artifact ids: 211 303
+        # dest-path app/db/{table}Datalayer.js.ittf ids: 212 304
+        # ... ids: 213 305
+        # model-ref rdbms ids: 214 306
+        # model-coll tables ids: 215 307
+        # item-name table ids: 216 308
+        # path-template-value ids: 217 309
+        # attribute tableName ids: 218 310
+        # token table ids: 219 311
+        #  ids: 220 312
+        # model rdbms ids: 221 313
+        # ... ids: 222 314
+        #  ids: 223 315
+        # the Wizzi model instance after loading rdbms: { ids: 224 316
+        # .... ids: 225 317
+        # tables: [{ ids: 226 318
+        # tableName: 'user', ids: 227 319
+        # ... ids: 228 320
+        # },{ ids: 229 321
+        # ... ids: 230 322
+        # }] ids: 231 323
+        # } ids: 232 324
+        #  ids: 233 325
+        # will produce an artifact of path .../app/db/userDatalayer.js, and as many as the items in the tables collection. ids: 234 326
+        #  ids: 235 327
+        a src ids: 236 328
+          # The path to the primary source document of the artifact. ids: 237 329
+          # If relative, the base path is the cwdFolder of the parent line. ids: 238 330
+          # Can be a glob pattern ids: 239 331
+          # If the artifact is a code write artifact the @src@ attribute must not be declared. ids: 240 332
+        a ignore ids: 241 333
+          # files returned by the src pattern to be ignored ids: 242 334
+          # Can be a glob pattern ids: 243 335
+        a schema ids: 244 336
+          # When the artifact source is an Ittf document, is the schema that will load and validate the Wizzi model instance. ids: 245 337
+          # May be null if the artifact is a swig template or a final artifact. ids: 246 338
+        a ${name} ids: 495 502
+          $args: isWfJob, is-wf-job  $params: name, tag|@@null
+          $if tag ids: 497 503
+            tag ${tag} ids: 498 504
+          type boolean ids: 499 505
+          default false ids: 500 506
+          default-when-declared true ids: 501 507
+          # Indicator that the artifact source document is a wizzi factory job (WfJob). ids: 248 340
+          # The job will be executed before any other artifact production of the current WfJob. ids: 249 341
+          # This could be autodected from the schema, but autodetection would forbid other uses or transformations ids: 250 342
+          # of a "wfjob" model, so the indicator is required. ids: 251 343
+        a generator ids: 252 344
+          # When the artifact is a Wizzi model instance, acting as a template is the name of ids: 253 345
+          # the artifact generator that will transform the template. ids: 254 346
+          # When the artifact is a 'swig template' must contain 'swig'. ids: 255 347
+          # When the artifact is a code write generation or a final artifact must be omitted. ids: 256 348
+        a ${name} ids: 445 508
+          $args: destPath, dest-path  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 509
+          $if defaultValue ids: 448 510
+            default ${defaultValue} ids: 449 511
+          # The artifact source file path (@src@) is the default relative destination path ids: 258 350
+          # of the generated artifact. When set, this attribute overrides the default. ids: 259 351
+          # It may be an absolute path. ids: 260 352
+          # If the artifact is a code write generation the @destPath@ attribute must be declared. ids: 261 353
+        a extension ids: 262 354
+          # The document path extension of the generated artifact. Optional. The default is the #src# extension ids: 263 355
+          # without the ending '.ittf' string, if present. ids: 264 356
+        r transformer/s ids: 265 357
+          # When the artifact source is an Ittf document, the loaded WizziModel may need ids: 266 358
+          # one or more transformations before being passed to the artifact generator. ids: 267 359
+          # Transformers are chained and the output of a transformation ids: 268 360
+          # is the input for the next one. ids: 269 361
+        r modelRef/s ids: 270 362
+          # References to Wizzi model instances acting as transformation contexts for both wizzi and swig templates. ids: 271 363
+          # When a final artifact must not be declared. ids: 272 364
+    $group  ids: 365 405
+      e line ids: 366 406
+        # A line is a group of artifacts having the same "cwdFolder". ids: 367 407
+        a ${name} ids: 445 512
+          $args: cwdFolder, cwd-folder  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 513
+          $if defaultValue ids: 448 514
+            default ${defaultValue} ids: 449 515
+          # The source folder of the artifact templates of this line. ids: 369 409
+        a ${name} ids: 445 516
+          $args: destFolder, dest-folder  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 517
+          $if defaultValue ids: 448 518
+            default ${defaultValue} ids: 449 519
+          # The destination folder of the generated artifacts of this line. ids: 371 411
+          # Overrides the attribute "destFolder" of the "production" element. ids: 372 412
+        r artifact/s ids: 373 413
+          # The artifacts of the "line" ids: 374 414
+      e ${name} ids: 462 520
+        $args: lineRef, line-ref  $params: name, tag|@@null, xsuper|@@null
+        $if tag != null ids: 464 521
+          tag ${tag} ids: 465 522
+        $if xsuper != null ids: 466 523
+          super ${xsuper} ids: 467 524
+        # A reference to a line. ids: 376 416
+      e production ids: 377 417
+        # A job execution unit that generates a set of Software artifacts ids: 378 418
+        # into one destination folder. ids: 379 419
+        a ${name} ids: 445 525
+          $args: destFolder, dest-folder  $params: name, tag|@@null, defaultValue|@@null
+          tag ${tag} ids: 447 526
+          $if defaultValue ids: 448 527
+            default ${defaultValue} ids: 449 528
+          # The destination folder of the generated artifacts. ids: 381 421
+        r modelRef/s ids: 382 422
+          # References to the context WizziWodels used by this "production". ids: 383 423
+        r lineRef/s ids: 384 424
+          # References to the "line(s)" to be generated. ids: 385 425
+        m wzinitialize ids: 386 426
+          set this.wfjob = this.wzParent; ids: 387 427
+          foreach modelRef in this.modelRefs ids: 388 428
+            var model = this.wfjob.getModel(modelRef.wzName) ids: 389 429
+            if model == null ids: 390 430
+              _ this.error('Model ' + modelRef.wzName + ' not found.', modelRef) ids: 391 431
+            set modelRef.___model = model ids: 392 432
+          set this.lines = []; ids: 393 433
+          foreach lineRef in this.lineRefs ids: 394 434
+            var line = this.wfjob.getLine(lineRef.wzName) ids: 395 435
+            if line == null ids: 396 436
+              _ this.error('line ' + lineRef.wzName + ' not found.', lineRef) ids: 397 437
+            _ this.lines.push(line) ids: 398 438
+            foreach artifact in line.artifacts ids: 399 439
+              foreach modelRef in artifact.modelRefs ids: 400 440
+                var model = this.wfjob.getModel(modelRef.wzName) ids: 401 441
+                if model == null ids: 402 442
+                  _ this.error('Model ' + modelRef.wzName + ' not found.', modelRef) ids: 403 443
+                set modelRef.___model = model; ids: 404 444

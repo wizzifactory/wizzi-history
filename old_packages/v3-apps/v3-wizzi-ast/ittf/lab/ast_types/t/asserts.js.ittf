@@ -1,0 +1,114 @@
+﻿$group
+
+	function get_assertValueType
+		param node
+		param context
+		var ret
+			{
+				@ name 'assertValueType'
+				@ arguments []
+		foreach arg in node.arguments
+			if arg.type == 'StringLiteral'
+				_ ret.arguments.push
+					{
+						@ value arg.value
+			else
+				log 'get_assertValueType node', node
+				_ logPath(context)
+				throw new Error('assertValueType argument type not managed: ' + arg.type)
+		return ret
+
+	function get_assertNodeType
+		param node
+		param context
+		var ret
+			{
+				@ name 'assertNodeType'
+				@ arguments []
+		foreach arg in node.arguments
+			if arg.type == 'StringLiteral'
+				_ ret.arguments.push
+					{
+						@ value arg.value
+			else
+				log 'get_assertNodeType node', node
+				_ logPath(context)
+				throw new Error('assertNodeType argument type not managed: ' + arg.type)
+		return ret
+
+	function get_assertEach
+		param node
+		param context
+		var ret
+			{
+				@ name 'assertEach'
+				@ arguments []
+		foreach arg in node.arguments
+			if arg.type == 'CallExpression' && arg.callee.name == 'assertNodeOrValueType'
+				_ ret.arguments.push
+					_ get_assertNodeOrValueType(arg, context)
+			elif arg.type == 'CallExpression' && arg.callee.name == 'assertNodeType'
+				_ ret.arguments.push
+					_ get_assertNodeType(arg, context)
+			else
+				log 'get_assertEach argument', arg
+				_ logPath(context)
+				throw new Error('assertEach argument type not managed: ' + arg.type)
+		return ret
+
+	function get_assertOneOf
+		param node
+		param context
+
+		var ret
+			{
+				@ name 'assertOneOf'
+				@ arguments []
+		
+		foreach arg in node.arguments
+			if arg.type == 'SpreadElement'
+				var sp
+				if arg.argument.type == 'Identifier'
+					set sp
+						{
+							@ name arg.argument.name
+							@ kind 'spread'
+				else
+					log 'assertOneOf SpreadElement', arg.argument
+					_ logPath(context)
+					throw new Error('get_assertOneOf SpreadElement argument type not managed: ' + arg.argument.type)
+				_ ret.arguments.push(sp)
+			elif arg.type == 'StringLiteral'
+				_ ret.arguments.push
+					{
+						@ name arg.value
+						@ kind 'string'
+
+			elif arg.type == 'NullLiteral'
+				_ ret.arguments.push
+					{
+						@ name 'null'
+			else
+				log 'assertOneOf argument', arg
+				_ logPath(context)
+				throw new Error('get_assertOneOf argument type not managed: ' + arg.type)
+
+		return ret
+
+	function get_assertNodeOrValueType
+		param node
+		param context
+		var ret
+			{
+				@ name 'assertNodeOrValueType'
+				@ arguments []
+		foreach arg in node.arguments
+			if arg.type == 'StringLiteral'
+				_ ret.arguments.push
+					{
+						@ value arg.value
+			else
+				log 'get_assertNodeOrValueType node', node
+				_ logPath(context)
+				throw new Error('get_assertNodeOrValueType argument type not managed: ' + arg.type)
+		return ret

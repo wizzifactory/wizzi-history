@@ -1,0 +1,25 @@
+spa
+	# from https://webpack.github.io/docs/webpack-dev-middleware.html
+	package webpack-middleware
+		version 0.0.1
+		license MIT
+		author
+			name stefano bassoli
+			email sbassoli.dev@gmail.com
+		script start "node server"
+	path ROOT_PATH path.resolve(__dirname)
+	path SRC_PATH path.resolve(__dirname, 'src')
+	path BUILD_PATH path.resolve(__dirname, 'build')
+	server express
+		env dev
+	webpack
+		techne middleware
+		entry
+			[
+				@ path.join(SRC_PATH, 'main.js')
+		output
+			path ROOT_PATH
+			public-path '/'
+			filename 'bundle.js'
+		omit-extension js
+	babel 5

@@ -1,0 +1,23 @@
+spa
+	# from https://github.com/ruanyf/webpack-demos
+	package webpack-demo01
+		version 0.0.1
+		license MIT
+		author
+			name stefano bassoli
+			email sbassoli.dev@gmail.com
+	server webpack
+		env dev
+		content-base BUILD_PATH
+	
+	path ROOT_PATH path.resolve(__dirname)
+	path SRC_PATH path.resolve(__dirname, 'src')
+	path BUILD_PATH path.resolve(__dirname, 'build')
+	webpack
+		entry
+			[
+				@ path.join(SRC_PATH, 'main.js')
+		output
+			path BUILD_PATH
+			filename 'bundle.js'
+		omit-extension js

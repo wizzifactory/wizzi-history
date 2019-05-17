@@ -1,0 +1,52 @@
+module
+	kind jsfile
+	var path = require('path')
+	var express = require('express')
+	var webpackDevMiddleware = require("webpack-dev-middleware")
+	var webpack = require("webpack");
+	var app = express()
+	var isProduction = process.env.NODE_ENV === 'production'
+	var port = isProduction ? process.env.PORT : 3010
+	var publicPath = path.resolve(__dirname, 'public')
+	# We point to our static assets
+	_ app.use
+		_ express.static(publicPath)
+	
+	var webpackConfig = require(process.env.WEBPACK_CONFIG ? process.env.WEBPACK_CONFIG : './webpack.config')
+	var compiler
+		_ webpack
+			@ webpackConfig
+	# We point to our dynamic assets
+	_ app.use
+		_ webpackDevMiddleware
+			@ compiler
+			{
+				@ log console.log
+				@ publicPath webpackConfig.output.publicPath
+				# options
+				# @ noInfo (false)
+				#   Display no info to console (only warnings and errors)
+				# @ quiet (false
+				#   Display nothing to the console
+				# @ lazy (false
+				#   Switch into lazy mode.
+				# @ filename
+				#   In lazy mode: Switch request should trigger the compilation.
+				#   In most cases this equals the webpack configuration option output.filename.
+				# @ watchOptions.aggregateTimeout (300)
+				#   Delay the rebuilt after the first change. Value is a time in ms.
+				# @ watchOptions.poll (undefined)
+				#   true: use polling
+				#   number: use polling with specified interval
+				# @ publicPath
+				#   The path where to bind the middleware to the server.
+				#   In most cases this equals the webpack configuration option output.publicPath.
+				# @ headers
+				#   Add custom headers. i. e. { "X-Custom-Header": "yes" }
+				# @ stats
+				#   Output options for the stats. See node.js API.
+	# And run the server
+	_ app.listen
+		@ port
+		function
+			log 'Server running on port ' + port

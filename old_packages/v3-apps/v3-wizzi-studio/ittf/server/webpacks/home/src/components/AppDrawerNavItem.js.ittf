@@ -1,0 +1,81 @@
+﻿module
+	kind react
+
+	import React, { Component } from 'react'
+	import PropTypes from 'prop-types'
+	import { Link } from 'react-router'
+	import classNames from 'classnames'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+	import { ListItem } from 'material-ui/List'
+	import Button from 'material-ui/Button'
+	import Collapse from 'material-ui/transitions/Collapse'
+
+	const styleSheet
+        _ createStyleSheet
+            @ 'AppDrawerNavItem'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/AppDrawerNavItem
+
+	class AppDrawerNavItem
+		super Component
+		
+		p defaultProps
+			@ openImmediately false
+
+		p state
+			@ open false
+
+		m componentWillMount
+			if this.props.openImmediately
+				_ this.setState
+					{
+						@ open true
+    
+		=> handleClick
+			_ this.setState
+				{
+					@ open !this.state.open
+
+		m render
+			const { children, classes, title, to } = this.props;
+
+			if to
+				return
+					< ListItem
+						@ className {classes.navLink}
+						@ disableGutters
+						< Button
+							@ component {Link}
+							@ to {to}
+							@ className {classNames(classes.button, classes.navLinkButton)}
+							@ activeClassName {classes.activeButton}
+							@ ripple {false}
+							@ onClick {this.props.onClick}
+							+ {title}
+			return
+				< ListItem
+					@ className {classes.navItem} 
+					@ disableGutters
+					< Button
+						@ className {classes.button}
+						@ onClick {this.handleClick}
+						+ {title}
+					< Collapse
+						@ in {this.state.open}
+						@ transitionDuration auto
+						@ unmountOnExit
+						+ {children}
+
+	set AppDrawerNavItem.propTypes
+		{
+			@ children PropTypes.node
+			@ classes PropTypes.object.isRequired
+			@ onClick  PropTypes.func
+			@ openImmediately PropTypes.bool
+			@ title PropTypes.string.isRequired
+			@ to PropTypes.string
+
+	export default withStyles(styleSheet)(AppDrawerNavItem);

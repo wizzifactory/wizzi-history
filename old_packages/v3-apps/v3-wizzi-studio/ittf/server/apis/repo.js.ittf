@@ -1,0 +1,48 @@
+﻿api_async( Repo )
+
+	var repoFS
+
+	$include repo/index
+
+	$append requires
+		import assert
+		import chalk
+
+	$append methods
+
+		_ assert.ok( typeof(config.repoUri) === 'string' )
+		_ assert.ok( typeof(config.repoBaseFolderUri) === 'string' )
+
+		if config.repoUri === 'file://'
+			set repoFS = require('wizzi').Filesystem
+			_ repoFS.mount
+				@ config.repoBaseFolderUri
+				_ mount_cb
+					@ config
+					@ api
+					@ callback
+		else
+			set repoFS = require('wizzi-mongodb').Filesystem
+			_ repoFS.mount
+				@ config.repoUri
+				@ config.repoBaseFolderUri
+				_ mount_cb
+					@ config
+					@ api
+					@ callback
+	
+	function mount_cb
+		param config
+		param api
+		param callback
+		return
+			f_cb( notUsed )
+				log chalk.yellow('REPO DB CONNECTED on uri: ' + config.repoUri + ' - repoBaseFolderUri: ' + config.repoBaseFolderUri)
+				var fsApi = makeFsApi(config)
+				set api.repo
+					{
+						@ getUserRoot fsApi.getUserRoot
+						@ getProjectRoot fsApi.getProjectRoot
+						@ getFolderOrFile fsApi.getFolderOrFile
+
+				return callback(null, api)

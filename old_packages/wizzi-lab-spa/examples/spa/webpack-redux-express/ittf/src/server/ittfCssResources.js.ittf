@@ -1,0 +1,86 @@
+module
+	kind jsfile
+	var path = require('path')
+	var file = require('wizzi-core').file
+	var md = module.exports = {}
+	var css_resources = {}
+	function css_r
+		param name
+		param fileName
+		set name = name.toLowerCase()
+		set css_resources[name] = path.join(__dirname, 'static', 'lib', fileName)
+	_ css_r('angular-table', '/angular-table/src/main/webapp/css/lib/angular-table.css')
+	_ css_r('bootstrap', 'wizzi/bootstrap.wizzi.css')
+	_ css_r('bootstrap-slider', 'seiyria-bootstrap-slider/css/bootstrap-slider.css')
+	_ css_r('codemirror-js', 'codemirror/lib/codemirror.css')
+	_ css_r('font-awesome', 'font-awesome/css/font-awesome.wizzi.css')
+	_ css_r('form-validation', 'commercial/formValidation/formValidation.min.css')
+	_ css_r('humane', 'humane-js/themes/jackedup.css')
+	_ css_r('iconfont-awesome', 'fontawesome-iconpicker/dist/css/fontawesome-iconpicker.css')
+	_ css_r('iphonecheck', 'iphonecheck/iphone-style-checkboxes.wizzi.css')
+	_ css_r('prettify', 'google-code-prettify/src/prettify.css')
+	_ css_r('select2', 'select2/dist/css/select2.css')
+	_ css_r('select2-bootstrap', 'select2-bootstrap-theme/dist/select2-bootstrap.css')
+	_ css_r('sh', 'syntaxhighlighter/styles/shCore.css')
+	_ css_r('sh-core-default', 'syntaxhighlighter/styles/shCoreDefault.css')
+	_ css_r('sh-theme-default', 'syntaxhighlighter/styles/shThemeDefault.css')
+	_ css_r('semantic', 'semantic-UI/semantic.css')
+	_ css_r('spectrum', 'spectrum/spectrum.css')
+	_ css_r('typeahead', 'typeahead/typeahead.css')
+	var cssRequested = {}
+	var cssIsEmitted = {}
+	set md.clearCssDependencies
+		function
+			set cssRequested = {}
+			set cssIsEmitted = {}
+	set md.addCssDependency
+		function 
+			param deps
+			var depsArray = deps.split(',')
+			foreach dep in depsArray
+				set cssRequested[dep] = true
+	set md.emitCssDependencies
+		function
+			param ctx
+			for var k in cssRequested
+				if cssRequested[k] === true
+					_ _emitCssDependency(k, ctx)
+	function _emitCssDependency
+		param dep
+		param ctx
+		var dep = dep.trim().toLowerCase()
+		if cssIsEmitted[dep]
+			return
+		set cssIsEmitted[dep] = true
+		_ checkCssRequirements(dep, ctx)
+		var fileName = css_resources[dep]
+		if !fileName
+			throw new Error("Css.module.generation. Dependency " + dep + ' not found.')
+		if file.exists(fileName)
+			var content = file.read(fileName)
+			_ ctx.w(content)
+		else
+			throw new Error("Css.module.generation. File for dependency " + dep + ' not found. Filename: ' + fileName)
+		_ cssCheckTail(dep, ctx)
+	function checkCssRequirements
+		param dep
+		param ctx
+		if dep === 'form-validation'
+			_ _emitCssDependency('font-awesome', ctx)
+		elif dep === 'form-validation-bootstrap'
+			_ _emitCssDependency('bootstrap', ctx)
+			_ _emitCssDependency('form-validation', ctx)
+			return false
+		elif ['bootstrap-switch', 'bootstrap-slider'].indexOf(dep) >= 0
+			_ _emitCssDependency('bootstrap', ctx)
+		elif ['sh-js', 'sh-xml'].indexOf(dep) >= 0
+			_ _emitCssDependency('sh', ctx)
+			_ _emitCssDependency('sh-core-default', ctx)
+			_ _emitCssDependency('sh-theme-default', ctx)
+			return false
+		return true;
+	function cssCheckTail
+		param dep
+		param ctx
+		if dep === 'select2'
+			_ _emitCssDependency('select2-bootstrap', ctx)

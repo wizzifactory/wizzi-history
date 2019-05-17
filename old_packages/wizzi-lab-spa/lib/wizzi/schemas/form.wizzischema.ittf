@@ -1,0 +1,75 @@
+wizzischema form
+	# A schema modeling data entry actions
+	export-to json
+	e item
+		# The abstract base node for all form nodes
+		
+		is-abstract
+		
+		a name
+		a label
+		a description
+		a size
+			restrict
+				enum @@null
+				enum small
+				enum large
+				enum medium
+		
+		r comment/s
+		r item/s
+	e comment : item
+		tag #
+	
+	e form : item
+		# The root element of the form schema
+		# A WizziModel models one form
+		# The wzName is the HtmlElement id
+		is-root
+		
+		a name
+			# The data name
+		a title
+		a kind
+			default basic
+			restrict
+				enum basic
+				enum option
+				enum bootstrap-horizontal
+		a data-kind
+			default object
+			restrict
+				enum array
+				enum object
+				enum singlevalue
+		a validation-engine
+		a size
+			restrict
+				enum @@null
+				enum tiny
+				enum small
+				enum medium
+				enum large
+				enum big
+				enum huge
+				enum massive
+	e href : item
+		# The wzName is the HtmlAttribute href
+		a text
+	$include form/groups
+	$include form/controls
+	e mask : item
+	e translations : item
+	e validation : item
+		is-abstract
+	e required : validation
+	e source : item
+	e options : item
+	e jsObject : item
+		tag {
+	
+	e jsArray : item
+		tag [
+	
+	e jsProperty : item
+		tag @

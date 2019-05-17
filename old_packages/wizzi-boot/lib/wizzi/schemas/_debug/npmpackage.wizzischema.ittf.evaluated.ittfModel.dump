@@ -1,0 +1,200 @@
+  wizzischema npmpackage ids: undefined undefined
+    # A schema modeling an npm package ids: undefined undefined
+    # see https://docs.npmjs.com/files/package.json ids: undefined undefined
+    export-to json ids: undefined undefined
+    e package ids: undefined undefined
+      # The root element of the wfpackage schema. ids: undefined undefined
+      # The wzName is the package name. ids: undefined undefined
+      # The most important things in your package.json are the name and version fields. ids: undefined undefined
+      # Those are actually required, and your package won't install without them. ids: undefined undefined
+      # The name and version together form an identifier that is assumed to be completely unique. ids: undefined undefined
+      # Changes to the package should come along with changes to the version. ids: undefined undefined
+      # The name is what your thing is called. ids: undefined undefined
+      a version ids: undefined undefined
+        # Version must be parseable by node-semver, which is bundled with npm as a dependency. ids: undefined undefined
+        # (npm install semver to use it yourself.) ids: undefined undefined
+      a description ids: undefined undefined
+        # Put a description in it. It's a string. ids: undefined undefined
+        # This helps people discover your package, as it's listed in npm search. ids: undefined undefined
+      a keywords ids: undefined undefined
+        # Put keywords in it. It's an array of strings. ids: undefined undefined
+        # This helps people discover your package as it's listed in npm search. ids: undefined undefined
+      a license ids: undefined undefined
+        # You should specify a license for your package so that people know how they are permitted to use it, and any restrictions you're placing on it. ids: undefined undefined
+      a homepage ids: undefined undefined
+        # The url to the project homepage. ids: undefined undefined
+        # NOTE: This is not the same as "url". If you put a "url" field, then the registry will think it's a redirection to your package that has been published somewhere else, and spit at you. ids: undefined undefined
+      a preferGlobal ids: undefined undefined
+        # If your package is primarily a command-line application that should be installed globally, then set this value to true to provide a warning if it is installed locally. ids: undefined undefined
+        # It doesn't actually prevent users from installing it locally, but it does help prevent some confusion if it doesn't work as expected. ids: undefined undefined
+        default false ids: undefined undefined
+        type boolean ids: undefined undefined
+      a main ids: undefined undefined
+        # The main field is a module ID that is the primary entry point to your program. That is, if your package is named foo, and a user installs it, and then does require("foo"), then your main module's exports object will be returned. ids: undefined undefined
+        # This should be a module ID relative to the root of your package folder. ids: undefined undefined
+      a private ids: undefined undefined
+        # Consider also setting "private": true to prevent accidental publication. ids: undefined undefined
+        default false ids: undefined undefined
+        type boolean ids: undefined undefined
+      r bugs ids: undefined undefined
+        one-to-one  ids: undefined undefined
+      r author ids: undefined undefined
+        one-to-one  ids: undefined undefined
+      r contributor/s ids: undefined undefined
+      r file/s ids: undefined undefined
+      r repository ids: undefined undefined
+        one-to-one  ids: undefined undefined
+      r script/s ids: undefined undefined
+      r config/s ids: undefined undefined
+      r publishConfig/s ids: undefined undefined
+      r dependenc-y/ies ids: undefined undefined
+      r peerDependenc-y/ies ids: undefined undefined
+      r bundledDependenc-y/ies ids: undefined undefined
+      r optionalDependenc-y/ies ids: undefined undefined
+      r engine ids: undefined undefined
+        one-to-one  ids: undefined undefined
+      r os/es ids: undefined undefined
+      r cpu/s ids: undefined undefined
+    e bugs ids: undefined undefined
+      # The url to your project's issue tracker and / or the email address to which issues should be reported. These are helpful for people who encounter issues with your package. ids: undefined undefined
+      # The wzName is the url. ids: undefined undefined
+      a email ids: undefined undefined
+    e person ids: undefined undefined
+      a name ids: undefined undefined
+      a email ids: undefined undefined
+      a url ids: undefined undefined
+    e author : person ids: undefined undefined
+    e contributor : person ids: undefined undefined
+    e file ids: undefined undefined
+      # Certain files are always included, regardless of settings ids: undefined undefined
+      # Conversely, some files are always ignored ids: undefined undefined
+    e bin ids: undefined undefined
+      # A lot of packages have one or more executable files that they'd like to install into the PATH. npm makes this pretty easy (in fact, it uses this feature to install the "npm" executable.) ids: undefined undefined
+      # To use this, supply a bin field in your package.json which is a map of command name to local file name. ids: undefined undefined
+      # On install, npm will symlink that file into prefix/bin for global installs, or ./node_modules/.bin/ for local installs. ids: undefined undefined
+      # The wzName is the command name ids: undefined undefined
+      a path ids: undefined undefined
+        # The path to a local file name ids: undefined undefined
+    e repository ids: undefined undefined
+      # Specify the place where your code lives. This is helpful for people who want to contribute. ids: undefined undefined
+      # If the git repo is on GitHub, then the npm docs command will be able to find you. ids: undefined undefined
+      # The wzName is the repository type (example: git) ids: undefined undefined
+      a url ids: undefined undefined
+    e script ids: undefined undefined
+      # The "scripts" property is a dictionary containing script commands that are run at various times in the lifecycle of your package. The key is the lifecycle event, and the value is the command to run at that point. ids: undefined undefined
+      # The wzName is the script name ids: undefined undefined
+      a command ids: undefined undefined
+    e config ids: undefined undefined
+      tag config ids: undefined undefined
+      # A "config" object can be used to set configuration parameters used in package scripts that persist across upgrades. ids: undefined undefined
+      # See npm-config(7) and npm-scripts(7) for more on package configs. ids: undefined undefined
+      a value ids: undefined undefined
+    e publishConfig ids: undefined undefined
+      tag publish-config ids: undefined undefined
+      # This is a set of config values that will be used at publish-time. ids: undefined undefined
+      # It's especially handy if you want to set the tag, registry or access, so that you can ensure that a given package is not tagged with "latest", ids: undefined undefined
+      # published to the global public registry or that a scoped module is private by default. ids: undefined undefined
+      # Any config values can be overridden, but of course only "tag", "registry" and "access" probably matter for the purposes of publishing. ids: undefined undefined
+      # See npm-config(7) to see the list of config options that can be overridden. ids: undefined undefined
+      a value ids: undefined undefined
+    e dependency ids: undefined undefined
+      tag depend ids: undefined undefined
+      # Dependencies are specified in a simple object that maps a package name to a version range. ids: undefined undefined
+      a version ids: undefined undefined
+        # The version range is a string which has one or more space-separated descriptors. ids: undefined undefined
+        # Dependencies can also be identified with a tarball or git URL. ids: undefined undefined
+        # See semver(7) for more details about specifying version ranges. ids: undefined undefined
+      # Git URLs as Dependencies ids: undefined undefined
+      # Git urls can be of the form: ids: undefined undefined
+      # git://github.com/user/project.git#commit-ish ids: undefined undefined
+      # git+ssh://user@hostname:project.git#commit-ish ids: undefined undefined
+      # git+ssh://user@hostname/project.git#commit-ish ids: undefined undefined
+      # git+http://user@hostname/project/blah.git#commit-ish ids: undefined undefined
+      # git+https://user@hostname/project/blah.git#commit-ish ids: undefined undefined
+      # The commit-ish can be any tag, sha, or branch which can be supplied as an argument to git checkout. The default is master. ids: undefined undefined
+      #  ids: undefined undefined
+      # GitHub URLs ids: undefined undefined
+      # As of version 1.1.65, you can refer to GitHub urls as just "foo": "user/foo-project". Just as with git URLs, a commit-ish suffix can be included. ids: undefined undefined
+      # For example: ids: undefined undefined
+      # { ids: undefined undefined
+      # "name": "foo", ids: undefined undefined
+      # "version": "0.0.0", ids: undefined undefined
+      # "dependencies": { ids: undefined undefined
+      # "express": "visionmedia/express", ids: undefined undefined
+      # "mocha": "visionmedia/mocha#4727d357ea" ids: undefined undefined
+      # } ids: undefined undefined
+      # } ids: undefined undefined
+      #  ids: undefined undefined
+      # Local Paths ids: undefined undefined
+      # As of version 2.0.0 you can provide a path to a local directory that contains a package. ids: undefined undefined
+      # Local paths can be saved using npm install --save, using any of these forms: ids: undefined undefined
+      # ../foo/bar ids: undefined undefined
+      # ~/foo/bar ids: undefined undefined
+      # ./foo/bar ids: undefined undefined
+      # /foo/bar ids: undefined undefined
+      # in which case they will be normalized to a relative path and added to your package.json. ids: undefined undefined
+      # For example: ids: undefined undefined
+      # { ids: undefined undefined
+      # "name": "baz", ids: undefined undefined
+      # "dependencies": { ids: undefined undefined
+      # "bar": "file:../foo/bar" ids: undefined undefined
+      # } ids: undefined undefined
+      # } ids: undefined undefined
+      # This feature is helpful for local offline development and creating tests that require npm installing ids: undefined undefined
+      # where you don't want to hit an external server, but should not be used when publishing packages to the public registry. ids: undefined undefined
+    e devDependency dev-depend ids: undefined undefined
+      # If someone is planning on downloading and using your module in their program, then they probably don't want or need to download and build the external test or documentation framework that you use. ids: undefined undefined
+      # In this case, it's best to map these additional items in a devDependencies object. ids: undefined undefined
+      # These things will be installed when doing npm link or npm install from the root of a package, and can be managed like any other npm configuration param. See npm-config(7) for more on the topic. ids: undefined undefined
+      # For build steps that are not platform-specific, such as compiling CoffeeScript or other languages to JavaScript, use the prepublish script to do this, and make the required package a devDependency. ids: undefined undefined
+      # For example: ids: undefined undefined
+      # { ids: undefined undefined
+      # "name": "ethopia-waza", ids: undefined undefined
+      # "description": "a delightfully fruity coffee varietal", ids: undefined undefined
+      # "version": "1.2.3", ids: undefined undefined
+      # "devDependencies": { ids: undefined undefined
+      # "coffee-script": "~1.6.3" ids: undefined undefined
+      # }, ids: undefined undefined
+      # "scripts": { ids: undefined undefined
+      # "prepublish": "coffee -o lib/ -c src/waza.coffee" ids: undefined undefined
+      # }, ids: undefined undefined
+      # "main": "lib/waza.js" ids: undefined undefined
+      # } ids: undefined undefined
+      # The prepublish script will be run before publishing, so that users can consume the functionality without requiring them to compile it themselves. In dev mode (ie, locally running npm install), it'll run this script as well, so that you can test it easily. ids: undefined undefined
+    e peerDependency ids: undefined undefined
+      tag peer-depend ids: undefined undefined
+      # In some cases, you want to express the compatibility of your package with a host tool or library, while not necessarily doing a require of this host. This is usually referred to as a plugin. Notably, your module may be exposing a specific interface, expected and specified by the host documentation. ids: undefined undefined
+      # For example: ids: undefined undefined
+      # { ids: undefined undefined
+      # "name": "tea-latte", ids: undefined undefined
+      # "version": "1.3.5", ids: undefined undefined
+      # "peerDependencies": { ids: undefined undefined
+      # "tea": "2.x" ids: undefined undefined
+      # } ids: undefined undefined
+      # } ids: undefined undefined
+      # This ensures your package tea-latte can be installed along with the second major version of the host package tea only. npm install tea-latte could possibly yield the following dependency graph: ids: undefined undefined
+      # ├── tea-latte@1.3.5 ids: undefined undefined
+      # └── tea@2.2.0 ids: undefined undefined
+      # NOTE: npm versions 1 and 2 will automatically install peerDependencies if they are not explicitly depended upon higher in the dependency tree. In the next major version of npm (npm@3), this will no longer be the case. You will receive a warning that the peerDependency is not installed instead. The behavior in npms 1 & 2 was frequently confusing and could easily put you into dependency hell, a situation that npm is designed to avoid as much as possible. ids: undefined undefined
+      # Trying to install another plugin with a conflicting requirement will cause an error. For this reason, make sure your plugin requirement is as broad as possible, and not to lock it down to specific patch versions. ids: undefined undefined
+      # Assuming the host complies with semver, only changes in the host package's major version will break your plugin. Thus, if you've worked with every 1.x version of the host package, use "^1.0" or "1.x" to express this. If you depend on features introduced in 1.5.2, use ">= 1.5.2 < 2". ids: undefined undefined
+    e bundledDependency ids: undefined undefined
+      tag bundled-depend ids: undefined undefined
+      # Array of package names that will be bundled when publishing the package. ids: undefined undefined
+      # If this is spelled "bundleDependencies", then that is also honored. ids: undefined undefined
+    e optionalDependency ids: undefined undefined
+      tag optional-depend ids: undefined undefined
+      # If a dependency can be used, but you would like npm to proceed if it cannot be found or fails to install, then you may put it in the optionalDependencies object. This is a map of package name to version or url, just like the dependencies object. The difference is that build failures do not cause installation to fail. ids: undefined undefined
+      # It is still your program's responsibility to handle the lack of the dependency. For example, something like this: ids: undefined undefined
+    e engine ids: undefined undefined
+      # You can specify the version of node that your stuff works on ids: undefined undefined
+      # If you specify an "engines" field, then npm will require that "node" be somewhere on that list. ids: undefined undefined
+      # If "engines" is omitted, then npm will just assume that it works on node. ids: undefined undefined
+      # Note that, unless the user has set the engine-strict config flag, this field is advisory only. ids: undefined undefined
+      a version ids: undefined undefined
+    e os ids: undefined undefined
+      # You can specify which operating systems your module will run on: (example: darwin) ids: undefined undefined
+      # You can also blacklist instead of whitelist operating systems, just prepend the blacklisted os with a '!': (example: !win32) ids: undefined undefined
+    e cpu ids: undefined undefined
+      # If your code only runs on certain cpu architectures, you can specify which ones. ids: undefined undefined
+      # Like the os option, you can also blacklist architectures ids: undefined undefined

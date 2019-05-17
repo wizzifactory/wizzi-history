@@ -1,0 +1,15 @@
+﻿$group
+
+	@ dashboardIttfPath
+		function
+			param options
+
+			log 'config.metaBasePath', config.metaBasePath
+			var segments
+				[
+					@ config.metaBasePath
+					@ 'dashboard.wfstudio.ittf'
+
+			return
+				_ this.joinPathFromArray
+					@ segments

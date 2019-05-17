@@ -1,0 +1,59 @@
+﻿$group
+
+	function makePaths
+		param config
+		
+		return
+			{
+				@ normalize
+					function
+						param filepath
+						return verify.replaceAll(filepath, '\\', '/')
+				
+				@ uriFromPath
+					function
+						param filepath
+						param excludeIttfExtension
+						set filepath = this.normalize(filepath).toLowerCase()
+						if excludeIttfExtension && verify.endsWith(filepath, '.ittf')
+							set filepath = filepath.substr(0, filepath.length - 5)
+						return
+							_ filepath.substr
+								@ config.studioBasePath.length
+				
+				@ pathFromUri
+					function
+						param uri
+						return
+							_ path.join
+								@ config.studioBasePath
+								@ uri
+				
+				@ projectPath
+					function
+						param userName
+						param projectName
+						return
+							_ path.join
+								@ config.studioBasePath
+								@ userName
+								@ projectName
+
+				@ userPath
+					function
+						param userName
+						return
+							_ path.join
+								@ config.studioBasePath
+								@ userName
+
+				$include paths/detect
+				$include paths/files
+				$include paths/commons
+				$include paths/user
+				$include paths/project
+				$include paths/projects
+				$include paths/document
+				$include paths/documents
+				$include paths/fragment
+				$include paths/fragments

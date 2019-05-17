@@ -1,0 +1,72 @@
+module
+	kind react
+	import React from 'react'
+	import {DragSource, DropTarget} from 'react-dnd'
+	import ItemTypes from '../constants/itemTypes';
+	const noteSource
+		{
+			@ beginDrag
+				function beginDrag
+					param props
+					# log 'begin dragging note', props
+					return
+						{
+							@ id props.id
+			@ isDragging
+				function
+					param props
+					param monitor
+					return props.id === monitor.getItem().id
+  
+	const noteTarget
+		{
+			@ hover
+				function
+					param targetProps
+					param monitor
+					const targetId = targetProps.id;
+					const sourceProps = monitor.getItem();
+					const sourceId = sourceProps.id;
+					
+					$*
+					if sourceId !== targetId
+    					# log 'dragging note', sourceProps, targetProps
+						_ targetProps.onMove({sourceId, targetId})
+					*$
+					if !targetProps.lane.notes.length
+						_ LaneActions.attachToLane
+							{
+								@ laneId targetProps.lane.id
+								@ noteId sourceId
+  
+	@_ DragSource
+		@ ItemTypes.NOTE
+		@ noteSource
+		=>
+			param connect
+			param monitor
+			(
+				{
+					@ connectDragSource connect.dragSource()
+					@ isDragging monitor.isDragging()
+  
+	@_ DropTarget
+		@ ItemTypes.NOTE
+		@ noteTarget
+		=>
+			param connect
+			(
+				{
+					@ connectDropTarget connect.dropTarget()
+	export default
+		class Note
+			super React.Component
+			m render
+				const {connectDragSource, connectDropTarget, isDragging, id, onMove, ...props} = this.props;
+				
+				return 
+					_ connectDragSource
+						_ connectDropTarget
+							li {this.props.children}
+								@ style {{ opacity: isDragging ? 0 : 1 }} 
+								@ {...this.props}

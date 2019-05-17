@@ -1,0 +1,30 @@
+$group
+
+	$if spa.webpack
+
+		function initWebpack
+			param app
+			+
+			var webpackConfig
+			_ getGlobbedFiles
+				@ path.join(__dirname, '${spa.webpacksPath}')
+				._ forEach
+					function
+						param configPath
+						chalk yellow 'gobbled webpack config', path.resolve(configPath)
+						set webpackConfig = require(path.resolve(configPath))
+						+
+						# Use this middleware to set up hot module reloading via webpack.
+						const compiler = webpack(webpackConfig)
+						+
+						_ app.use
+							_ webpackDevMiddleware
+								@ compiler
+								{
+									@ noInfo true
+									@ publicPath webpackConfig.output.publicPath
+						+
+						_ app.use(webpackHotMiddleware(compiler))
+						+
+
+

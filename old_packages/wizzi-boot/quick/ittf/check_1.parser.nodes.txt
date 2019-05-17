@@ -1,0 +1,47 @@
+  $group  ids: undefined 1
+    wz-iife errors ids: undefined 2
+      wz-var throwErrorWithCode ids: undefined 3
+        function  ids: undefined 4
+          param code ids: undefined 5
+          param msg ids: undefined 6
+          var err = new Error(msg) ids: undefined 7
+          set err.code = code ids: undefined 8
+          set err.failedValidation = true ids: undefined 9
+          throw err ids: undefined 10
+      wz-function debugError ids: undefined 11
+        param err ids: undefined 12
+        param debug ids: undefined 13
+        var reason ids: undefined 14
+          _ err.message.replace ids: undefined 15
+            @ /^.*validation failed: / ids: undefined 16
+            @ '' ids: undefined 17
+        set reason = reason.charAt(0).toUpperCase() + reason.substring(1) ids: undefined 18
+        _ debug('  Reason: %s', reason) ids: undefined 19
+        if err.failedValidation === true ids: undefined 20
+          if err.results ids: undefined 21
+            _ debug('  Errors:') ids: undefined 22
+            _ _.each ids: undefined 23
+              @ err.results.errors ids: undefined 24
+              function  ids: undefined 25
+                param error ids: undefined 26
+                param index ids: undefined 27
+                _ debug('    %d:', index) ids: undefined 28
+                _ debug ids: undefined 29
+                  @ '      code: %s' ids: undefined 30
+                  @ error.code ids: undefined 31
+                _ debug ids: undefined 32
+                  @ '      message: %s' ids: undefined 33
+                  @ error.message ids: undefined 34
+                _ debug ids: undefined 35
+                  @ '      path: %s' ids: undefined 36
+                  _ JSON.stringify ids: undefined 37
+                    @ error.path ids: undefined 38
+        if err.stack ids: undefined 39
+          _ debug('  Stack:') ids: undefined 40
+          _ _.each ids: undefined 41
+            _ err.stack.split('\n') ids: undefined 42
+            function  ids: undefined 43
+              param line ids: undefined 44
+              param index ids: undefined 45
+              if index > 0 ids: undefined 46
+                _ debug('  %s', line) ids: undefined 47

@@ -1,0 +1,3736 @@
+{
+  "name": "form",
+  "preserveTags": true,
+  "requires": [],
+  "exportTos": [
+    "json"
+  ],
+  "elements": [
+    {
+      "name": "item",
+      "super": null,
+      "isRoot": false,
+      "tags": [
+        "item"
+      ],
+      "flags": "is-abstract ",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "comment",
+          "tags": [
+            "#"
+          ]
+        },
+        {
+          "name": "form",
+          "tags": [
+            "form"
+          ]
+        },
+        {
+          "name": "href",
+          "tags": [
+            "href"
+          ]
+        },
+        {
+          "name": "group",
+          "tags": [
+            "group"
+          ]
+        },
+        {
+          "name": "tab",
+          "tags": [
+            "tab"
+          ]
+        },
+        {
+          "name": "pane",
+          "tags": [
+            "pane"
+          ]
+        },
+        {
+          "name": "accordion",
+          "tags": [
+            "accordion"
+          ]
+        },
+        {
+          "name": "panel",
+          "tags": [
+            "panel"
+          ]
+        },
+        {
+          "name": "itemgroup",
+          "tags": [
+            "itemgroup"
+          ]
+        },
+        {
+          "name": "control",
+          "tags": [
+            "c"
+          ]
+        },
+        {
+          "name": "itemcontrol",
+          "tags": [
+            "itemcontrol"
+          ]
+        },
+        {
+          "name": "choice",
+          "tags": [
+            "choice"
+          ]
+        },
+        {
+          "name": "alternate",
+          "tags": [
+            "alt"
+          ]
+        },
+        {
+          "name": "mask",
+          "tags": [
+            "mask"
+          ]
+        },
+        {
+          "name": "translations",
+          "tags": [
+            "translations"
+          ]
+        },
+        {
+          "name": "validation",
+          "tags": [
+            "validation"
+          ]
+        },
+        {
+          "name": "required",
+          "tags": [
+            "required"
+          ]
+        },
+        {
+          "name": "source",
+          "tags": [
+            "source"
+          ]
+        },
+        {
+          "name": "options",
+          "tags": [
+            "options"
+          ]
+        },
+        {
+          "name": "jsObject",
+          "tags": [
+            "{"
+          ]
+        },
+        {
+          "name": "jsArray",
+          "tags": [
+            "["
+          ]
+        },
+        {
+          "name": "jsProperty",
+          "tags": [
+            "@"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The abstract base node for all form nodes"
+      ]
+    },
+    {
+      "name": "comment",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "#"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "form",
+      "super": "item",
+      "isRoot": true,
+      "tags": [
+        "form"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "tags": [
+            "title"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "basic",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "basic",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "option",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "bootstrap-horizontal",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "object",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "singlevalue",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "validation_engine",
+          "type": "string",
+          "tags": [
+            "validation-engine"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "tiny",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "big",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "huge",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "massive",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The root element of the form schema",
+        "A WizziModel models one form",
+        "The wzName is the HtmlElement id"
+      ]
+    },
+    {
+      "name": "href",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "href"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "text",
+          "type": "string",
+          "tags": [
+            "text"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The wzName is the HtmlAttribute href"
+      ]
+    },
+    {
+      "name": "group",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "group"
+      ],
+      "flags": "is-abstract ",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "group",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "group",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "value",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "tab",
+          "tags": [
+            "tab"
+          ]
+        },
+        {
+          "name": "pane",
+          "tags": [
+            "pane"
+          ]
+        },
+        {
+          "name": "accordion",
+          "tags": [
+            "accordion"
+          ]
+        },
+        {
+          "name": "panel",
+          "tags": [
+            "panel"
+          ]
+        },
+        {
+          "name": "itemgroup",
+          "tags": [
+            "itemgroup"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The wzName is the HtmlElement id"
+      ]
+    },
+    {
+      "name": "tab",
+      "super": "group",
+      "isRoot": false,
+      "tags": [
+        "tab"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "group",
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "group",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "value",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "pane",
+      "super": "group",
+      "isRoot": false,
+      "tags": [
+        "pane"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "isPaneDefault",
+          "type": "boolean",
+          "tags": [
+            "is-default"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "group",
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "group",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "value",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "accordion",
+      "super": "group",
+      "isRoot": false,
+      "tags": [
+        "accordion"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "group",
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "group",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "value",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "panel",
+      "super": "group",
+      "isRoot": false,
+      "tags": [
+        "panel"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "group",
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "group",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "value",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "control",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "c"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "text",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "text",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "checkbox",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "number",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "color",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "date",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "choice",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "spectrum",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "typeahead",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select2",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "slider",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "alternate",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "datatype",
+          "type": "string",
+          "tags": [
+            "datatype"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "tags": [
+            "format"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "default",
+          "type": "string",
+          "tags": [
+            "default"
+          ],
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "validation",
+          "role": "validations",
+          "tags": [
+            "validation"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": null,
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "itemcontrol",
+          "tags": [
+            "itemcontrol"
+          ]
+        },
+        {
+          "name": "choice",
+          "tags": [
+            "choice"
+          ]
+        },
+        {
+          "name": "alternate",
+          "tags": [
+            "alt"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "The wzName is the HtmlElement id"
+      ]
+    },
+    {
+      "name": "itemcontrol",
+      "super": "control",
+      "isRoot": false,
+      "tags": [
+        "itemcontrol"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "text",
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "text",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "checkbox",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "number",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "color",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "date",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "choice",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "spectrum",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "typeahead",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select2",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "slider",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "alternate",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "datatype",
+          "type": "string",
+          "tags": [
+            "datatype"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "tags": [
+            "format"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "default",
+          "type": "string",
+          "tags": [
+            "default"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "validation",
+          "role": "validations",
+          "tags": [
+            "validation"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "control",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "child of control when control.kind == 'array'"
+      ]
+    },
+    {
+      "name": "itemgroup",
+      "super": "group",
+      "isRoot": false,
+      "tags": [
+        "itemgroup"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [],
+          "comments": [
+            "The data name"
+          ]
+        },
+        {
+          "name": "data_kind",
+          "type": "string",
+          "tags": [
+            "data-kind"
+          ],
+          "default": "group",
+          "flags": "",
+          "inheritedFrom": "group",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "group",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "object",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "value",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "child of control when control.kind == 'array'"
+      ]
+    },
+    {
+      "name": "choice",
+      "super": "control",
+      "isRoot": false,
+      "tags": [
+        "choice"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "isChoiceDefault",
+          "type": "boolean",
+          "tags": [
+            "is-default"
+          ],
+          "default": "false",
+          "defaultWhenDeclared": "true",
+          "flags": "",
+          "inheritedFrom": null,
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "text",
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "text",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "checkbox",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "number",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "color",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "date",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "choice",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "spectrum",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "typeahead",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select2",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "slider",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "alternate",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "datatype",
+          "type": "string",
+          "tags": [
+            "datatype"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "tags": [
+            "format"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "default",
+          "type": "string",
+          "tags": [
+            "default"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "validation",
+          "role": "validations",
+          "tags": [
+            "validation"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "control",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "child of control when control.kind == 'choice'"
+      ]
+    },
+    {
+      "name": "alternate",
+      "super": "control",
+      "isRoot": false,
+      "tags": [
+        "alt"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "kind",
+          "type": "string",
+          "tags": [
+            "kind"
+          ],
+          "default": "text",
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "text",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "checkbox",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "number",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "color",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "date",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "array",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "choice",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "spectrum",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "typeahead",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "select2",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "slider",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "alternate",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        },
+        {
+          "name": "datatype",
+          "type": "string",
+          "tags": [
+            "datatype"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "tags": [
+            "format"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "default",
+          "type": "string",
+          "tags": [
+            "default"
+          ],
+          "flags": "",
+          "inheritedFrom": "control",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "validation",
+          "role": "validations",
+          "tags": [
+            "validation"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "control",
+          "comments": []
+        },
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": [
+        "child of control when control.kind == 'alternate'"
+      ]
+    },
+    {
+      "name": "mask",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "mask"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "translations",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "translations"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "validation",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "validation"
+      ],
+      "flags": "is-abstract ",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [
+        {
+          "name": "required",
+          "tags": [
+            "required"
+          ]
+        }
+      ],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "required",
+      "super": "validation",
+      "isRoot": false,
+      "tags": [
+        "required"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "source",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "source"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "options",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "options"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsObject",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "{"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsArray",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "["
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    },
+    {
+      "name": "jsProperty",
+      "super": "item",
+      "isRoot": false,
+      "tags": [
+        "@"
+      ],
+      "flags": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "string",
+          "tags": [
+            "name"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "tags": [
+            "label"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "tags": [
+            "description"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [],
+          "comments": []
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "tags": [
+            "size"
+          ],
+          "flags": "",
+          "inheritedFrom": "item",
+          "restricts": [
+            {
+              "facets": [
+                {
+                  "type": "enumFacet",
+                  "value": "@@null",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "small",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "large",
+                  "comments": []
+                },
+                {
+                  "type": "enumFacet",
+                  "value": "medium",
+                  "comments": []
+                }
+              ],
+              "comments": []
+            }
+          ],
+          "comments": []
+        }
+      ],
+      "relations": [
+        {
+          "name": "comment",
+          "role": "comments",
+          "tags": [
+            "#"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        },
+        {
+          "name": "item",
+          "role": "items",
+          "tags": [
+            "item"
+          ],
+          "cardinality": "one-to-many",
+          "flags": "",
+          "inheritedFrom": "item",
+          "comments": []
+        }
+      ],
+      "derived": [],
+      "restricts": [],
+      "methods": [],
+      "comments": []
+    }
+  ]
+}

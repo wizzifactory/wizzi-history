@@ -1,0 +1,13 @@
+$group
+	$if spa.apisPath
+		
+		function initApis
+			param app
+			param api
+			_ getGlobbedFiles
+				@ path.join(__dirname, '${spa.apisPath}')
+				._ forEach
+					function
+						param apiPath
+						chalk yellow 'gobbled api file', path.resolve(apiPath)
+						_ require(path.resolve(apiPath))(app, api)

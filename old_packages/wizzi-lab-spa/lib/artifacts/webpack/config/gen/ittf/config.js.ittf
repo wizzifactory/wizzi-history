@@ -1,0 +1,29 @@
+module
+	kind jsfile
+    set module.exports
+		{
+			$if _.isObject(wp.entry)
+				$include entry
+		
+			$if _.isObject(wp.output)
+				$include output
+
+			$if _.isObject(wp.module)
+				$include module
+
+			$if _.isObject(wp.resolve)
+				$include resolve
+
+			$if wp.plugins.length > 0
+				@ plugins
+					[ 
+						$foreach plugin in wp.plugins
+							$include plugin
+			$if _.isObject(wp.devServer)
+				$include devServer
+
+			$foreach f in wp.facets
+				@ ${f.name} ${f.value}
+
+
+  

@@ -1,0 +1,47 @@
+﻿module
+	$params name
+	kind jsfile
+	
+	#
+		# Api: ${name}
+	+
+	#
+		# Dependencies
+	import util
+	import path
+	import async
+	var _ = require('lodash')
+	import wizzi
+	var file = wizzi.file
+	var verify = wizzi.verify
+	var u = require('../lib/utils')
+	var globalApi
+	$hook requires
+	+
+	function error
+		param message
+		return
+			{
+				@ __is_error true
+				@ message message
+	+
+	function success
+		param message
+		return
+			{
+				@ __is_success true
+				@ message message
+	+
+	$hook
+	+
+	set module.exports
+		function
+			param app
+			param config
+			param api
+			param callback
+			set globalApi = api
+			$hook methods
+
+
+

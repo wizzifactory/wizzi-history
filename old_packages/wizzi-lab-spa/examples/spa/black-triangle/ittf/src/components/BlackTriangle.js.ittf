@@ -1,0 +1,17 @@
+module
+	kind jsfile
+	ecma es6
+	class BlackTriangle
+		ctor
+			param selector
+			set this.angle = 0
+			set this.innerEl = document.createElement('div')
+			set this.innerEl.className = "BlackTriangle-inner"
+			set this.el = document.querySelector(selector)
+			set this.el.className = "BlackTriangle";
+			_ this.el.appendChild(this.innerEl);
+		m rotate 
+			param amount
+			set this.angle = (this.angle + amount) % 360
+		m render
+			set this.innerEl.style.transform = 'rotate(' + this.angle + 'deg)'

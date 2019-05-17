@@ -1,0 +1,18 @@
+module
+	kind react
+	import makeFinalStore from 'alt/utils/makeFinalStore'
+	export default 
+		function
+			param alt
+			param storage
+			param storeName
+			const finalStore = makeFinalStore(alt)
+			try
+				_ alt.bootstrap(storage.get(storeName))
+			catch ex
+				error 'Failed to bootstrap data', e
+			_ finalStore.listen
+				=>
+					if !storage.get('debug')
+						_ storage.set(storeName, alt.takeSnapshot())
+    

@@ -1,0 +1,135 @@
+﻿module
+	kind react
+
+	import React, { Component } from 'react';
+	import PropTypes from 'prop-types'
+	import { connect } from 'react-redux'
+	import compose from 'recompose/compose'
+	import { withStyles, createStyleSheet } from 'material-ui/styles'
+	import withWidth, { isWidthUp } from 'material-ui/utils/withWidth'
+	import Typography from 'material-ui/Typography'
+	import AppBar from 'material-ui/AppBar'
+	import Toolbar from 'material-ui/Toolbar'
+	import IconButton from 'material-ui/IconButton'
+	import MenuIcon from 'material-ui-icons/Menu'
+	import LightbulbOutline from 'material-ui-icons/LightbulbOutline'
+	import Github from './Github'
+	import DemoButton from './DemoButton'
+	import AppSearch from './AppSearch'
+	import ApiMenu from './ApiMenu'
+	import AppDrawer from './AppDrawer'
+
+    function getTitle
+        param routes
+        for var i = routes.length - 1; i >= 0; i -= 1
+            if routes[i].hasOwnProperty('title') && routes[i].title
+                return routes[i].title
+        return null
+
+	var styleSheet
+        _ createStyleSheet
+            @ 'AppFrame'
+            =>
+                param theme
+				return
+					{ 
+						$include styles/AppFrame
+
+	class AppFrame
+		super React.Component
+
+		p state
+			@ drawerOpen false
+
+		=> handleDrawerClose
+			_ this.setState
+				{
+					@ drawerOpen false
+
+		=> handleDrawerToggle
+			_ this.setState
+				{
+					@ drawerOpen !this.state.drawerOpen
+
+		=> handleToggleShade
+			_ this.props.dispatch
+				{
+					@ type 'TOGGLE_THEME_SHADE'
+
+		m render
+			log 'AppFrame.props', this.props
+			const {children, routes, width} = this.props
+			const classes = this.props.classes
+			const title = getTitle(routes)
+			log 'title', title
+			let drawerDocked = isWidthUp('lg', width)
+			let navIconClassName = classes.icon
+			let appBarClassName = classes.appBar
+			if title === null
+				# home route, don't shift app bar or dock drawer
+				set drawerDocked = false
+				set appBarClassName += ` ${classes.appBarHome}`
+			else
+				set navIconClassName += ` ${classes.navIconHide}`
+				set appBarClassName += ` ${classes.appBarShift}`
+
+			return
+				. {classes.appFrame}
+					< AppBar
+						@ className {appBarClassName}
+						< Toolbar
+							< IconButton
+								@ contrast 
+								@ onClick {this.handleDrawerToggle}
+								@ className {navIconClassName}
+								< MenuIcon
+							{
+								&&
+									+ title !== null
+									< Typography
+										@ className {classes.title}
+										@ type "title" 
+										@ colorInherit
+										@ noWrap
+										+ {title}
+							. {classes.grow}
+							< AppSearch
+							< DemoButton
+								@ routes {routes}
+							< ApiMenu
+								@ routes={routes}
+							< IconButton
+								@ title Toggle light/dark theme
+								@ contrast
+								@ onClick {this.handleToggleShade}
+								< LightbulbOutline
+							< IconButton
+								@ component a
+								@ title GitHub
+								@ contrast
+								@ href https://github.com/callemall/material-ui/tree/next
+								< Github
+					< AppDrawer
+						@ className {classes.drawer}
+						@ docked {drawerDocked}
+						@ routes {routes}
+						@ onRequestClose {this.handleDrawerClose}
+						@ open {drawerDocked || this.state.drawerOpen}
+					+ {children}
+	
+    set AppFrame.propTypes =
+        { 
+            @ children PropTypes.node.isRequired
+            @ classes PropTypes.object.isRequired
+            @ dispatch PropTypes.func.isRequired
+            @ routes PropTypes.array.isRequired
+            @ width PropTypes.string.isRequired
+    
+	export default
+		_ compose
+			_ withStyles(styleSheet)
+			_ withWidth()
+			_ connect()
+			( 
+				@ AppFrame
+

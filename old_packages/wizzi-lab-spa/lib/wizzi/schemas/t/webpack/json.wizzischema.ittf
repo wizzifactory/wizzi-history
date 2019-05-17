@@ -1,0 +1,16 @@
+$group
+	e jsObject : webpackitem
+		tag {
+		r jsProp/s
+	e jsArray : webpackitem
+		tag [
+		r webpackitem/s
+	e jsProp : webpackitem
+		tag @
+		r webpackitem/s
+		m wzInitialize
+			if this.webpackitems.length == 0
+				var nv = wizzi.lineParser.parseNameValueRaw(this.wzName)
+				set this.name = nv.name()
+				set this.value = nv.value()
+		

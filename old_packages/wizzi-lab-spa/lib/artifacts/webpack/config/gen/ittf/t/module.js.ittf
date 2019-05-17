@@ -1,0 +1,22 @@
+$group
+	@ module
+		{ 
+			$if wp.module.moduleRules.length > 0 || _.isObject(wp.module.ruleParser)
+				@ rules
+					[ 
+						$if _.isObject(wp.module.ruleParser)
+							{ 
+								@ parser
+									{ 
+						$foreach rule in wp.module.moduleRules
+							{
+								$if _.isNotEmpty(rule.testOut)
+									@ test ${rule.testOut}
+								$if _.isNotEmpty(rule.includeOut)
+									@ include ${rule.includeOut}
+								$if _.isNotEmpty(rule.excludeOut)
+									@ include ${rule.excludeOut}
+								$if rule.moduleRuleUses.length > 0
+									@ use
+										[
+							

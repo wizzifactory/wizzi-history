@@ -1,0 +1,15 @@
+﻿$group
+
+	$append functions
+		function escapeRegExp
+			param s
+			return s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
+
+	@ replaceAll
+		function
+			param s
+			param find
+			param replace
+			if typeof s === 'undefined' || s == null
+				return s
+			return s.replace(new RegExp(escapeRegExp(find), 'g'), replace)

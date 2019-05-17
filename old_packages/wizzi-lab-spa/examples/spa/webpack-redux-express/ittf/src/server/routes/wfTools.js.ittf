@@ -1,0 +1,31 @@
+route( wfJobs )
+	var tools = api.wfTools
+	get( /wftools/jswizzify )
+		var checked = req.query.checked === 'true' ? true : false
+		_ tools.jsWizzify
+			@ req.query.source
+			@ checked 
+			@ sendResponse(res)
+	get( /wftools/htmlwizzify )
+		_ tools.htmlWizzify
+			@ req.query.source
+			@ sendResponse(res)
+	get( /wftools/csswizzify )
+		_ tools.cssWizzify
+			@ req.query.source
+			@ sendResponse(res)
+	get( /wftools/xmlwizzify )
+		_ tools.xmlWizzify
+			@ req.query.source
+			@ sendResponse(res)
+	function sendResponse
+		param res
+		return
+			function
+				param err
+				param result
+				if err
+					set err = typeof err === 'string' ? err : util.inspect(err, { depth: null} )
+					_ res.send( { ittf: err} )
+				else
+					_ res.json( { ittf: result } );	

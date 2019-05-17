@@ -1,0 +1,21 @@
+﻿$group
+
+	get( /app/formbuilder )
+
+		var payload = {}
+		
+		_ res.set('Content-Type', 'text/html')
+		_ res.send
+			_ view(payload)
+
+		html_f view
+
+			html
+				head
+					css /ittf/demo/apps/formbuilder/styles.css.ittf
+				body
+					div
+						id root
+					script
+						src /webpack/formbuilder/bundle.js
+		

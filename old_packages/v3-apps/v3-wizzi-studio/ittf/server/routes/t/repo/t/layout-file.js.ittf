@@ -1,0 +1,27 @@
+﻿$group
+
+	html
+		head
+			< link
+				@ href /ittf/repo/repo.css.ittf
+				@ rel stylesheet
+			if ctx.content
+				< link
+					@ href /static/lib/codemirror/lib/codemirror.css
+					@ rel stylesheet
+				< link
+					@ href /static/lib/codemirror/addon/display/fullscreen.css
+					@ rel stylesheet
+		body
+			$hook
+			if ctx.content
+				< script
+					@ src /static/lib/codemirror/lib/codemirror.js
+				< script
+					@ src /static/lib/codemirror/mode/javascript/javascript.js
+				< script
+					@ src /static/lib/codemirror/mode/yaml/yaml.js
+				< script
+					@ src /static/lib/codemirror/addon/display/fullscreen.js
+				< script
+					@ src /ittf/repo/editFile.js.ittf

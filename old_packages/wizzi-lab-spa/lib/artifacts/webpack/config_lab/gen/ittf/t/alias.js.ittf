@@ -1,0 +1,15 @@
+$group
+	$* OLD
+	
+	@ alias
+		{
+			$if wp.webpackEnvironment
+				@ environment
+					iif DEBUG
+						then path.resolve(__dirname, 'config', 'development.js')
+						else path.resolve(__dirname, 'config', 'production.js')
+			
+	*$
+
+
+

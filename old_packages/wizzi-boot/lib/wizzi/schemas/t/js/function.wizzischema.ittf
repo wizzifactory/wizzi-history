@@ -1,0 +1,65 @@
+$group
+	e function : statement
+		
+		r param/s
+		m getParams
+			var ret = []
+			foreach item in this.params
+				_ ret.push(item.wzName)
+			return ret
+	e arrowfunction : function
+		tag =>
+	e return : statement
+	e class : statement
+		# A javascript class
+		tag class
+		a super
+		m findCtor
+			return _.find(this.statements, function(item) { return item.wzElement === 'ctor' })
+		m wzInitialize
+			set ctx.modelState = ctx.modelState || {}
+			set ctx.modelState.hasClasses = true
+			var tokens = this.wzName.split(':')
+			if tokens.length == 2
+				set this.wzName = tokens[0]
+				set this.super = tokens[1]
+	e ctor : function
+		r base/s
+		m getBaseArgs
+			var ret = []
+			foreach item in this.bases
+				_ ret.push(item.wzName)
+			return ret
+	e base : function
+	e method : function
+		tag m
+		a_flag( static )
+	e property : function
+		a_flag( static )
+	e iife : function
+		a unary-prefix
+		r arg/s
+		m getArgs
+			var ret = []
+			foreach item in this.args
+				_ ret.push(item.wzName)
+			return ret
+		
+	e new : statement
+		r param/s
+		
+		# ittf:
+		#     var h
+		#         new Hello
+		#     var j
+		#         new Hello
+		#             function
+		#                 param p
+		#                 + ...
+		# js:
+		#     var h = new Hello();
+		#     var j = new Hello(function(p) { ... });
+	
+	e type : statement
+	e param
+	e arg

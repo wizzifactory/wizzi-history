@@ -1,0 +1,48 @@
+spa/_root( spa )
+	
+	# A schema modeling a Single Page Application (SPA)
+	export-to json
+	e spa : spaitem
+		# The root element
+		is-root
+		r babel
+			one-to-one
+		r react
+			one-to-one
+		r browserify
+			one-to-one
+		$*
+		r webpack
+			one-to-one
+		*$
+		r xpath/s
+		r server/s
+		r package
+			one-to-one
+		r travis
+			one-to-one
+		
+		m wzinitialize
+			$include spa/spa-webpack-initialize
+			set this.devServer
+				{
+					@ wzName 'webpack'
+					@ port 3000
+			
+			foreach s in this.servers
+				if s.env === 'dev'
+					set this.devServer = s
+				else
+					set this.prodServer = s
+			set this.paths = []
+			foreach xpath in this.xpaths
+				_ this.paths.push(xpath)
+	$include spa/common
+	$include spa/bundler
+	$include spa/json
+	$include spa/babel
+	$include spa/browserify
+	$include spa/server
+	$include spa/package
+	$include spa/travis
+	$include spa/react

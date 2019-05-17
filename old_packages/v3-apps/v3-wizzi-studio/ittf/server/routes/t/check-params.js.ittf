@@ -1,0 +1,7 @@
+$group
+
+	var check = rest.paramsCheck(req)
+	$hook
+	if check.errors
+		return check.sendErrors(res)
+

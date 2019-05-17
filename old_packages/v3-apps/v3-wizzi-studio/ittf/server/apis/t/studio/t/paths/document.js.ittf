@@ -1,0 +1,52 @@
+﻿$group
+
+	@ documentMeta
+		function
+			param options
+
+			set options = this.detectOptions(options)
+
+			var segments
+				[
+					@ config.studioBasePath
+					@ options.userName
+			
+			if options.level === 'folder'
+				_ segments.push(options.projectName)
+				_ segments.push(options.folder)
+			elif options.level === 'project'
+				_ segments.push(options.projectName)
+			else
+				# user level
+
+			_ segments.push('__')
+			_ segments.push(options.documentName + '.' + options.schemaName + '.meta.json')
+			
+			return
+				_ this.joinPathFromArray
+					@ segments
+
+	@ documentIttf
+		function
+			param options
+
+			set options = this.detectOptions(options)
+
+			var segments
+				[
+					@ config.studioBasePath
+					@ options.userName
+			
+			if options.level === 'folder'
+				_ segments.push(options.projectName)
+				_ segments.push(options.folder)
+			elif options.level === 'project'
+				_ segments.push(options.projectName)
+			else
+				# user level
+
+			_ segments.push(options.documentName + '.' + options.schemaName + '.ittf')
+			
+			return
+				_ this.joinPathFromArray
+					@ segments

@@ -1,0 +1,36 @@
+$group
+	@ entry
+		[ 
+			$if wp.build == 'production'
+				_ require.resolve
+					@ './polyfills'
+				@ paths.appIndexJs
+	
+			$else
+				_ require.resolve
+					@ 'react-dev-utils/webpackHotDevClient'
+				_ require.resolve
+					@ './polyfills'
+				_ require.resolve
+					@ 'react-dev-utils/crashOverlay'
+				@ paths.appIndexJs
+
+	$* OLD
+			
+	$if wp.webpackEntry.kind === 'string'
+		@ entry ${wp.webpackEntry.wzName}
+	$elif wp.webpackEntry.kind === 'object'
+		@ entry
+			{
+				$foreach p in wp.webpackEntry.jsObject.jsProps
+					@ ${p.name} ${p.value}
+	$elif wp.webpackEntry.kind === 'array'
+		@ entry
+			[
+				$foreach p in wp.webpackEntry.jsArray.spaitems
+					@ ${p.name} ${p.value}
+	
+	*$
+
+
+

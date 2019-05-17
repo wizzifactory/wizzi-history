@@ -1,0 +1,14 @@
+﻿$group
+	$params result
+
+	function
+		param err
+		param ${result}
+		if err
+			return
+				_ sendError
+					@ res
+					@ err
+					{
+						@ format 'string'
+		$hook

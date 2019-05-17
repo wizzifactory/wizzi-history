@@ -1,0 +1,30 @@
+module
+	kind react
+	import uuid from 'node-uuid'
+	import h from '../utils/statehelper'
+	const initialState
+		[
+			{
+				@ id uuid.v4()
+				@ task 'Learn redux'
+				@ completed false
+	redux( )
+		case 'NOTE_ADD'
+			return
+				_ h.addItem
+					@ state
+					{
+						@ id uuid.v4()
+						@ task action.task
+						@ completed false
+					{
+						@ before true
+		case 'NOTE_UPDATE'
+			return
+				_ h.updateItem
+					@ state
+					@ action.noteId
+					{
+						@ task action.task
+		case 'NOTE_DELETE'
+			return h.deleteItem(state, action.noteId)

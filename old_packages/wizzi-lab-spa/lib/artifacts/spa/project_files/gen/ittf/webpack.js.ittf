@@ -1,0 +1,54 @@
+module
+	kind jsfile
+	$
+		var wp = spa.webpack;
+	+
+	$include webpack/requires
+	+
+	$if wp.build == 'production'
+		#
+			# PRODUCTION CONFIGURATION
+		if env.stringified['process.env'].NODE_ENV !== '"production"'
+			throw 
+				new Error('Production builds must have NODE_ENV=production.')
+	$else
+		#
+			# DEVELOPMENT CONFIGURATION
+		var DEBUG = true
+	+
+	$foreach item in spa.paths
+		var ${item.pathName} = '${item.pathValue}'
+	+
+	set module.exports
+		{
+			$if wp.build == 'production'
+			
+				@ bail true
+				@ devtool 'source-map'
+				
+				$* OLD
+				$if wp.evalSourceMap
+					@ devtool 'eval-source-map'
+				*$
+			
+			$else
+			
+				@ devtool 'cheap-module-source-map'
+
+			$include webpack/entry
+			$include webpack/output
+			$include webpack/resolve
+            $include webpack/module
+			$include webpack/plugins
+			$include webpack/server
+			
+			@ node
+                { 
+                    @ fs 'empty'
+                    @ net 'empty'
+                    @ tls 'empty'
+            
+			@ performance
+                { 
+                    @ hints false
+  
